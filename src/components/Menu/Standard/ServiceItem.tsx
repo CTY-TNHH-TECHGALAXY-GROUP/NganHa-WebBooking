@@ -26,6 +26,7 @@ export default function ServiceItem({ service, quantity, lang, isBestSeller, onC
     const name = service.names[lang as keyof typeof service.names] || service.names['en'];
     const desc = service.descriptions[lang as keyof typeof service.descriptions] || service.descriptions['en'];
     const isSelected = quantity > 0;
+    const [isVideoLoading, setIsVideoLoading] = React.useState(true);
 
     return (
         <div
@@ -47,15 +48,25 @@ export default function ServiceItem({ service, quantity, lang, isBestSeller, onC
             {/* 1. Ảnh vuông bo tròn / Video */}
             <div className="w-20 h-20 shrink-0 rounded-xl overflow-hidden bg-[#1c1c1e] relative shadow-sm">
                 {service.media_type === 'video' && service.media_url ? (
-                    <video
-                        src={service.media_url}
-                        poster={service.img}
-                        className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
-                        muted
-                        autoPlay
-                        playsInline
-                        loop
-                    />
+                    <>
+                        <video
+                            src={service.media_url}
+                            poster={service.img}
+                            className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
+                            muted
+                            autoPlay
+                            playsInline
+                            loop
+                            onWaiting={() => setIsVideoLoading(true)}
+                            onPlaying={() => setIsVideoLoading(false)}
+                            onCanPlay={() => setIsVideoLoading(false)}
+                        />
+                        {isVideoLoading && (
+                            <div className="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-[2px]">
+                                <div className="w-5 h-5 border-2 border-white/70 border-t-transparent rounded-full animate-spin" />
+                            </div>
+                        )}
+                    </>
                 ) : (
                     <img
                         src={service.media_type === 'image' && service.media_url ? service.media_url : service.img}

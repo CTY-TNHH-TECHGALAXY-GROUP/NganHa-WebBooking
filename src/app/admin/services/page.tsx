@@ -47,11 +47,12 @@ const ServicesAdminPage = () => {
     }
   };
 
-  const handleFileUpload = async (id: string, file: File) => {
+  const handleFileUpload = async (ids: string[], file: File) => {
     const isVideo = file.type.startsWith('video/');
     const type = isVideo ? 'video' : 'image';
 
-    setUploadingId(id);
+    const representId = ids[0];
+    setUploadingId(representId);
     setSuccessId(null);
 
     try {
@@ -86,19 +87,22 @@ const ServicesAdminPage = () => {
       });
       fetchMediaLibrary(); // Refresh library
 
-      // 3. Update service
-      const updateRes = await fetch(`/api/admin/services/${id}`, {
+      // 3. Update all services in group
+      const updatePromises = ids.map(id => fetch(`/api/admin/services/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ media_url: publicUrl, media_type: type }),
-      });
+      }));
 
-      if (updateRes.ok) {
-        setSuccessId(id);
+      const results = await Promise.all(updatePromises);
+      const allSuccess = results.every(res => res.ok);
+
+      if (allSuccess) {
+        setSuccessId(representId);
         setTimeout(() => setSuccessId(null), 3000);
         fetchServices();
       } else {
-        alert('Lỗi cập nhật!');
+        alert('Lỗi cập nhật một số dịch vụ!');
       }
     } catch {
       alert('Lỗi hệ thống');
@@ -106,22 +110,26 @@ const ServicesAdminPage = () => {
       setUploadingId(null);
     }
   };
-  const handleSelectMedia = async (id: string, mediaUrl: string, mediaType: string) => {
-    setUploadingId(id);
+  const handleSelectMedia = async (ids: string[], mediaUrl: string, mediaType: string) => {
+    const representId = ids[0];
+    setUploadingId(representId);
     setSuccessId(null);
     try {
-      const updateRes = await fetch(`/api/admin/services/${id}`, {
+      const updatePromises = ids.map(id => fetch(`/api/admin/services/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ media_url: mediaUrl, media_type: mediaType }),
-      });
+      }));
 
-      if (updateRes.ok) {
-        setSuccessId(id);
+      const results = await Promise.all(updatePromises);
+      const allSuccess = results.every(res => res.ok);
+
+      if (allSuccess) {
+        setSuccessId(representId);
         setTimeout(() => setSuccessId(null), 3000);
         fetchServices();
       } else {
-        alert('Lỗi cập nhật dịch vụ');
+        alert('Lỗi cập nhật một số dịch vụ');
       }
     } catch (err) {
       console.error(err);
@@ -178,7 +186,18 @@ const ServicesAdminPage = () => {
               
               {isExpanded && (
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 pt-4 border-t border-admin-line-strong">
-                {items.map((service: any) => (
+                {Object.values(
+                  items.reduce((acc: any, service: any) => {
+                    const baseNameEn = service.names?.en?.trim().toLowerCase() || service.id;
+                    if (!acc[baseNameEn]) acc[baseNameEn] = [];
+                    acc[baseNameEn].push(service);
+                    return acc;
+                  }, {})
+                ).map((group: any) => {
+                  const service = group[0];
+                  const allIds = group.map((s: any) => s.id);
+                  const isMultiple = group.length > 1;
+                  return (
             <div
               key={service.id}
               className={`
@@ -228,7 +247,12 @@ const ServicesAdminPage = () => {
                   </span>
                 </div>
                 <h3 className="text-base font-bold text-admin-text mb-0.5">{service.names?.vi || service.id}</h3>
-                <p className="text-xs text-admin-text-dim mb-4">{service.names?.en || ''}</p>
+                <p className="text-xs text-admin-text-dim mb-2">{service.names?.en || ''}</p>
+                {isMultiple && (
+                  <p className="text-[11px] text-admin-gold font-medium mb-4">
+                    ✨ Cập nhật ảnh/video sẽ áp dụng cho {group.length} dịch vụ
+                  </p>
+                )}
 
                 {/* Action Buttons: Select & Upload */}
                 <div className="mt-auto space-y-2">
@@ -241,7 +265,7 @@ const ServicesAdminPage = () => {
                         if (!e.target.value) return;
                         const selectedMedia = mediaLibrary.find(m => m.url === e.target.value);
                         if (selectedMedia) {
-                          handleSelectMedia(service.id, selectedMedia.url, selectedMedia.type);
+                          handleSelectMedia(allIds, selectedMedia.url, selectedMedia.type);
                         }
                       }}
                       value={service.media_url || ''}
@@ -273,7 +297,7 @@ const ServicesAdminPage = () => {
                       disabled={uploadingId === service.id}
                       onChange={e => {
                         const file = e.target.files?.[0];
-                        if (file) handleFileUpload(service.id, file);
+                        if (file) handleFileUpload(allIds, file);
                         e.target.value = '';
                       }}
                     />
@@ -281,7 +305,7 @@ const ServicesAdminPage = () => {
                 </div>
               </div>
             </div>
-          ))}
+          )})}
               </div>
             )}
             </div>

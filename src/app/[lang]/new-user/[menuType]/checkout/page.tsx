@@ -281,6 +281,57 @@ const seekServiceClipStart = (video: HTMLVideoElement, start: number, end: numbe
   if (Math.abs(video.currentTime - safeStart) > 0.2) video.currentTime = safeStart;
 };
 
+const CheckoutVideoThumbnail = ({ media, onVideoPreview }: { media: any, onVideoPreview?: any }) => {
+  const [isLoading, setIsLoading] = React.useState(true);
+
+  return (
+    <div className={styles.serviceMedia} style={{ position: 'relative', overflow: 'hidden' }}>
+      <video
+        className={styles.serviceMedia}
+        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+        src={media.src}
+        poster={media.poster}
+        muted
+        autoPlay
+        playsInline
+        preload="metadata"
+        aria-label={media.alt}
+        data-clip-start={media.start}
+        data-clip-end={media.end}
+        onClick={(event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          onVideoPreview?.(media);
+        }}
+        onLoadedMetadata={(event) => seekServiceClipStart(event.currentTarget, media.start, media.end)}
+        onCanPlay={(event) => {
+          setIsLoading(false);
+          event.currentTarget.play().catch(() => undefined);
+        }}
+        onWaiting={() => setIsLoading(true)}
+        onPlaying={() => setIsLoading(false)}
+        onTimeUpdate={(event) => {
+          const video = event.currentTarget;
+          const start = Number(video.dataset.clipStart || media.start);
+          const end = Number(video.dataset.clipEnd || media.end);
+          if (Number.isFinite(end) && video.currentTime >= end) {
+            video.currentTime = Number.isFinite(start) ? start : 0;
+            video.play().catch(() => undefined);
+          }
+        }}
+        onError={(event) => {
+          event.currentTarget.style.display = 'none';
+        }}
+      />
+      {isLoading && (
+        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(2px)' }}>
+          <div style={{ width: '20px', height: '20px', border: '2px solid rgba(255,255,255,0.7)', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
+        </div>
+      )}
+    </div>
+  );
+};
+
 const renderCheckoutServiceMedia = (
   service: Service,
   onVideoPreview?: (media: ReturnType<typeof resolveServiceMedia>) => void
@@ -298,44 +349,83 @@ const renderCheckoutServiceMedia = (
     );
   }
 
-  return (
-    <video
-      className={styles.serviceMedia}
-      src={media.src}
-      poster={media.poster}
-      muted
-      autoPlay
-      playsInline
-      preload="metadata"
-      aria-label={media.alt}
-      data-clip-start={media.start}
-      data-clip-end={media.end}
-      onClick={(event) => {
-        event.preventDefault();
-        event.stopPropagation();
-        onVideoPreview?.(media);
-      }}
-      onLoadedMetadata={(event) => seekServiceClipStart(event.currentTarget, media.start, media.end)}
-      onCanPlay={(event) => event.currentTarget.play().catch(() => undefined)}
-      onTimeUpdate={(event) => {
-        const video = event.currentTarget;
-        const start = Number(video.dataset.clipStart || media.start);
-        const end = Number(video.dataset.clipEnd || media.end);
-        if (Number.isFinite(end) && video.currentTime >= end) {
-          video.currentTime = Number.isFinite(start) ? start : 0;
-          video.play().catch(() => undefined);
-        }
-      }}
-      onError={(event) => {
-        event.currentTarget.style.display = 'none';
-      }}
-    />
-  );
+  return <CheckoutVideoThumbnail media={media} onVideoPreview={onVideoPreview} />;
 };
 
 const categoryName = (categoryId: string, lang: string) => {
   const category = CATEGORIES.find((item) => item.id === categoryId);
   return category?.names?.[langKey(lang)] || category?.names?.en || categoryId;
+};
+
+const CheckoutGroupedServiceCard = ({
+  group,
+  lang,
+  dict,
+  addService,
+  openVideoPreview,
+}: {
+  group: Service[];
+  lang: SupportedLanguage;
+  dict: any;
+  addService: (service: Service) => void;
+  openVideoPreview: (media: any) => void;
+}) => {
+  const [selectedVariant, setSelectedVariant] = useState(group[0]);
+
+  useEffect(() => {
+    setSelectedVariant(group[0]);
+  }, [group]);
+
+  return (
+    <article className={styles.pickerServiceCard}>
+      {renderCheckoutServiceMedia(selectedVariant, openVideoPreview)}
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+        <h3>{serviceName(selectedVariant, lang)}</h3>
+        <p>{serviceDescription(selectedVariant, lang)}</p>
+        <div className={styles.serviceMeta} style={{ marginTop: '0.5rem', flexWrap: 'wrap' }}>
+          {group.length > 1 ? (
+            <select
+              style={{
+                padding: '4px 8px',
+                borderRadius: '8px',
+                border: '1px solid #e2e8f0',
+                background: '#ffffff',
+                fontSize: '0.85rem',
+                outline: 'none',
+                minWidth: '120px'
+              }}
+              value={selectedVariant.id}
+              onChange={(e) => {
+                const variant = group.find((v) => v.id === e.target.value);
+                if (variant) setSelectedVariant(variant);
+              }}
+            >
+              {group.map((v) => (
+                <option key={v.id} value={v.id}>
+                  {v.timeValue} {dict.checkout?.mins || 'mins'} - {formatCurrency(v.priceVND)} VNĐ
+                </option>
+              ))}
+            </select>
+          ) : (
+            <>
+              <span>{selectedVariant.timeValue} {dict.checkout?.mins || 'mins'}</span>
+              <strong>{formatCurrency(selectedVariant.priceVND)} VNĐ</strong>
+            </>
+          )}
+        </div>
+      </div>
+      <button 
+        type="button" 
+        className={styles.pickerAddButton} 
+        onClick={() => addService(selectedVariant)} 
+        aria-label={`${t('add', lang)} ${serviceName(selectedVariant, lang)}`}
+        style={{ alignSelf: 'center', minWidth: '80px' }}
+      >
+        <Plus size={17} />
+        <span>{t('add', lang)}</span>
+      </button>
+    </article>
+  );
 };
 
 export default function CheckoutPage({ params }: { params: PageParams }) {
@@ -429,6 +519,17 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
       : serviceOptions.filter((service) => service.cat === activeCategory),
     [activeCategory, serviceOptions]
   );
+
+  const groupedVisibleServices = useMemo(() => {
+    return Object.values(
+      visibleServices.reduce((acc, service) => {
+        const baseNameEn = service.names?.en?.trim().toLowerCase() || service.id;
+        if (!acc[baseNameEn]) acc[baseNameEn] = [];
+        acc[baseNameEn].push(service);
+        return acc;
+      }, {} as Record<string, Service[]>)
+    );
+  }, [visibleServices]);
 
   const openVideoPreview = (media: ReturnType<typeof resolveServiceMedia>) => {
     setIsVideoPreviewClosing(false);
@@ -885,22 +986,15 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
             </div>
 
             <div className={styles.servicePickerList}>
-              {visibleServices.map((service) => (
-                <article key={service.id} className={styles.pickerServiceCard}>
-                  {renderCheckoutServiceMedia(service, openVideoPreview)}
-                  <div>
-                    <h3>{serviceName(service, lang)}</h3>
-                    <p>{serviceDescription(service, lang)}</p>
-                    <div className={styles.serviceMeta}>
-                      <span>{service.timeValue} {dict.checkout.mins || 'mins'}</span>
-                      <strong>{formatCurrency(service.priceVND)} VNĐ</strong>
-                    </div>
-                  </div>
-                  <button type="button" className={styles.pickerAddButton} onClick={() => addService(service)} aria-label={`${t('add', lang)} ${serviceName(service, lang)}`}>
-                    <Plus size={17} />
-                    <span>{t('add', lang)}</span>
-                  </button>
-                </article>
+              {groupedVisibleServices.map((group) => (
+                <CheckoutGroupedServiceCard
+                  key={group[0].id}
+                  group={group}
+                  lang={lang}
+                  dict={dict}
+                  addService={addService}
+                  openVideoPreview={openVideoPreview}
+                />
               ))}
             </div>
           </section>
