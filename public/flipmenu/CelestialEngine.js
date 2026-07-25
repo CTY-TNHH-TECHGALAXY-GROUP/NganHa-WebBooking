@@ -110,8 +110,8 @@ export class CelestialEngine {
             { id: "oil", icon: { src: "standalone-celestial-menu%20(2)/public/images/services/coconut-oil.png", alt: "Coconut oil", mode: "gold-mask", scale: 0.74 }, angle: 318, distance: 1.5, size: 0.23, orbitSpeed: 0.14 },
           ],
           services: [
-            { id: "body-60", name: "Massage Body 60'", description: "Nhịp lực êm, dầu thơm nhẹ, phù hợp phục hồi sau ngày dài.", duration: 60, price: 450000, image: { src: "standalone-celestial-menu%20(2)/public/images/services/thai.png", alt: "Massage Body", mode: "original", fit: "cover" }, media: serviceClip("/videos/spa-bg-1.mp4", "standalone-celestial-menu%20(2)/public/images/services/thai.png", "Massage Body clip"), badge: "Được chọn nhiều" },
-            { id: "hot-stone-90", name: "Đá nóng thư giãn 90'", description: "Nhiệt đá ấm và thao tác chậm giúp thả lỏng vùng cổ vai gáy.", duration: 90, price: 690000, image: { src: "standalone-celestial-menu%20(2)/public/images/services/hotstone.png", alt: "Hot stone", mode: "original", fit: "cover" }, media: serviceClip("/videos/spa-bg-2.mp4", "standalone-celestial-menu%20(2)/public/images/services/hotstone.png", "Hot stone clip") },
+            { id: "body-60", name: "Massage Body 60'", description: "Nhịp lực êm, dầu thơm nhẹ, phù hợp phục hồi sau ngày dài.", duration: 60, price: 450000, image: { src: "standalone-celestial-menu%20(2)/public/images/services/thai.png", alt: "Massage Body", mode: "original", fit: "cover" }, badge: "Được chọn nhiều" },
+            { id: "hot-stone-90", name: "Đá nóng thư giãn 90'", description: "Nhiệt đá ấm và thao tác chậm giúp thả lỏng vùng cổ vai gáy.", duration: 90, price: 690000, image: { src: "standalone-celestial-menu%20(2)/public/images/services/hotstone.png", alt: "Hot stone", mode: "original", fit: "cover" } },
           ],
         },
         {
@@ -134,7 +134,7 @@ export class CelestialEngine {
             { id: "tool", icon: { src: "standalone-celestial-menu%20(2)/public/assets/icons/add-more.webp", alt: "Care", mode: "gold-mask", scale: 0.7 }, angle: 248, distance: 0.82, size: 0.16, orbitSpeed: 0.18 },
           ],
           services: [
-            { id: "ear-clean", name: "Lấy ráy tai thư giãn", description: "Làm sạch nhẹ nhàng, kết hợp massage vùng tai và thái dương.", duration: 30, price: 180000, image: { src: "standalone-celestial-menu%20(2)/public/images/services/ear-clean.png", alt: "Ear clean", mode: "original", fit: "cover" }, media: serviceClip("/videos/spa-bg-3.mp4", "standalone-celestial-menu%20(2)/public/images/services/ear-clean.png", "Ear care clip") },
+            { id: "ear-clean", name: "Lấy ráy tai thư giãn", description: "Làm sạch nhẹ nhàng, kết hợp massage vùng tai và thái dương.", duration: 30, price: 180000, image: { src: "standalone-celestial-menu%20(2)/public/images/services/ear-clean.png", alt: "Ear clean", mode: "original", fit: "cover" } },
           ],
         },
         {
@@ -158,7 +158,7 @@ export class CelestialEngine {
             { id: "lotus", icon: { src: "standalone-celestial-menu%20(2)/public/assets/icons/add-more.webp", alt: "Lotus", mode: "gold-mask", scale: 0.82 }, angle: 8, distance: 1.6, size: 0.25, orbitSpeed: 0.12 },
           ],
           services: [
-            { id: "herbal-wash", name: "Gội đầu thảo mộc", description: "Gội, xả, massage đầu cổ vai gáy với hương thảo mộc dịu.", duration: 45, price: 260000, image: { src: "standalone-celestial-menu%20(2)/public/images/services/hair-wash.png", alt: "Herbal hair wash", mode: "original", fit: "cover" }, media: serviceClip("/videos/spa-bg-4.mp4", "standalone-celestial-menu%20(2)/public/images/services/hair-wash.png", "Hair wash clip"), badge: "Mới" },
+            { id: "herbal-wash", name: "Gội đầu thảo mộc", description: "Gội, xả, massage đầu cổ vai gáy với hương thảo mộc dịu.", duration: 45, price: 260000, image: { src: "standalone-celestial-menu%20(2)/public/images/services/hair-wash.png", alt: "Herbal hair wash", mode: "original", fit: "cover" }, badge: "Mới" },
             { id: "premium-scalp", name: "Dưỡng da đầu premium", description: "Làm sạch da đầu và dưỡng tóc chuyên sâu cho cảm giác nhẹ tênh.", duration: 60, price: 380000, image: { src: "standalone-celestial-menu%20(2)/public/images/hair-wash.png", alt: "Scalp care", mode: "original", fit: "cover" } },
           ],
         },
@@ -182,7 +182,7 @@ export class CelestialEngine {
             { id: "leaf", icon: { src: "standalone-celestial-menu%20(2)/public/assets/icons/add-more.webp", alt: "Leaf", mode: "gold-mask", scale: 0.78 }, angle: 348, distance: 1.05, size: 0.18, orbitSpeed: 0.14 },
           ],
           services: [
-            { id: "foot-reflex", name: "Ấn huyệt bàn chân", description: "Tập trung lòng bàn chân, bắp chân, giúp giảm mỏi khi di chuyển nhiều.", duration: 45, price: 280000, image: { src: "standalone-celestial-menu%20(2)/public/images/services/foot-massage.png", alt: "Foot massage", mode: "original", fit: "cover" }, media: serviceClip("/videos/spa-bg-1.mp4", "standalone-celestial-menu%20(2)/public/images/services/foot-massage.png", "Foot massage clip") },
+            { id: "foot-reflex", name: "Ấn huyệt bàn chân", description: "Tập trung lòng bàn chân, bắp chân, giúp giảm mỏi khi di chuyển nhiều.", duration: 45, price: 280000, image: { src: "standalone-celestial-menu%20(2)/public/images/services/foot-massage.png", alt: "Foot massage", mode: "original", fit: "cover" } },
           ],
         },
         {
@@ -206,7 +206,7 @@ export class CelestialEngine {
             { id: "cream", icon: { src: "standalone-celestial-menu%20(2)/public/images/services/coconut-oil.png", alt: "Cream", mode: "gold-mask", scale: 0.7 }, angle: 186, distance: 1.48, size: 0.23, orbitSpeed: 0.13 },
           ],
           services: [
-            { id: "facial-ritual", name: "Facial Ritual", description: "Làm sạch, massage nâng cơ nhẹ và cấp ẩm cho làn da mệt mỏi.", duration: 60, price: 520000, image: { src: "standalone-celestial-menu%20(2)/public/images/services/facial.png", alt: "Facial ritual", mode: "original", fit: "cover" }, media: serviceClip("/videos/spa-bg-2.mp4", "standalone-celestial-menu%20(2)/public/images/services/facial.png", "Facial ritual clip"), badge: "Signature" },
+            { id: "facial-ritual", name: "Facial Ritual", description: "Làm sạch, massage nâng cơ nhẹ và cấp ẩm cho làn da mệt mỏi.", duration: 60, price: 520000, image: { src: "standalone-celestial-menu%20(2)/public/images/services/facial.png", alt: "Facial ritual", mode: "original", fit: "cover" }, badge: "Signature" },
           ],
         },
         {
@@ -3274,23 +3274,35 @@ export class CelestialEngine {
       }
 
       function defaultServiceClipSrc(service) {
-        const key = [
-          service.id,
-          service.cat,
-          service.category,
-          service.categoryId,
-          service.name,
-          service.names?.vi,
-          service.names?.en,
-        ].filter(Boolean).join(" ").toLowerCase();
-        if (key.includes("ear") || key.includes("ráy") || key.includes("tai")) return "/videos/spa-bg-3.mp4";
-        if (key.includes("hair") || key.includes("gội") || key.includes("scalp")) return "/videos/spa-bg-4.mp4";
-        if (key.includes("stone") || key.includes("đá")) return "/videos/spa-bg-2.mp4";
-        if (key.includes("facial") || key.includes("da mặt")) return "/videos/spa-bg-2.mp4";
-        return "/videos/spa-bg-1.mp4";
+        // Removed hardcoded video fallback — return null so services without
+        // uploaded media will show images instead of broken /videos/spa-bg-*.mp4
+        return null;
       }
 
       function serviceMediaFromSource(service, fallbackImage, alt) {
+        // Priority 1: media_url / media_type from DB (admin uploaded via /admin/services)
+        if (service.media_type === "video" && service.media_url) {
+          return {
+            type: "video",
+            src: service.media_url,
+            poster: service.img || service.poster || service.thumbnail || fallbackImage,
+            alt,
+            start: 0,
+            end: 9999,
+          };
+        }
+        if (service.media_url) {
+          return {
+            type: "image",
+            src: service.media_url,
+            poster: service.media_url,
+            alt,
+            start: 0,
+            end: 0,
+          };
+        }
+
+        // Priority 2: legacy media/video objects (for backward compat with fallback data)
         const media = service.media && typeof service.media === "object" ? service.media : null;
         const videoObject = service.video && typeof service.video === "object" ? service.video : null;
         const videoSrc =
@@ -3301,7 +3313,7 @@ export class CelestialEngine {
           service.videoUrl ||
           service.clipSrc ||
           service.mediaVideo ||
-          defaultServiceClipSrc(service);
+          null; // No hardcoded fallback
 
         if (!videoSrc) {
           return {
