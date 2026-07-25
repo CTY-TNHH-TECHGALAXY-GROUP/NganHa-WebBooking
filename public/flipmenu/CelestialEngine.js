@@ -3801,38 +3801,110 @@ export class CelestialEngine {
 
         const content = document.getElementById("cel-serviceContent");
         if (state.stage === "services") {
-          content.innerHTML = category.services.length
-            ? category.services
-                .map((item) => {
-                  const quantity = serviceQuantity(item.id);
+          // Group services by name (same name, different durations)
+          const serviceGroups = [];
+          const groupMap = new Map();
+          category.services.forEach((item) => {
+            // Use sourceService.names.en for grouping (consistent key across languages)
+            const groupKey = (item.sourceService?.names?.en || item.name || item.id).trim().toLowerCase();
+            if (!groupMap.has(groupKey)) {
+              const group = { key: groupKey, items: [] };
+              groupMap.set(groupKey, group);
+              serviceGroups.push(group);
+            }
+            groupMap.get(groupKey).items.push(item);
+          });
+          // Sort items within each group by duration
+          serviceGroups.forEach((group) => group.items.sort((a, b) => a.duration - b.duration));
+
+          content.innerHTML = serviceGroups.length
+            ? serviceGroups
+                .map((group, groupIdx) => {
+                  const representative = group.items[0];
+                  const hasVariants = group.items.length > 1;
+                  // Total quantity across all variants in this group
+                  const totalQty = group.items.reduce((sum, item) => sum + serviceQuantity(item.id), 0);
+
+                  if (!hasVariants) {
+                    // Single variant — render as before (no dropdown)
+                    const item = representative;
+                    const quantity = serviceQuantity(item.id);
+                    return `
+                      <article class="service-card ${quantity > 0 ? "is-selected" : ""}">
+                        ${renderServiceMedia(item)}
+                        <div>
+                          <h3>${item.name}</h3>
+                          <p>${item.description}</p>
+                        </div>
+                        <div class="service-price">
+                          <span>${item.duration} phút</span>
+                          <strong>${formatPrice(item.price)}</strong>
+                        </div>
+                        <div class="service-actions">
+                          <button class="book-now-button" type="button" data-book-service="${item.id}">BOOK NOW</button>
+                          ${quantity > 0 ? `
+                            <div class="service-qty-control" aria-label="${item.name} đã chọn ${quantity}">
+                              <button type="button" data-cart-dec="${item.id}" aria-label="Giảm ${item.name}">−</button>
+                              <span>${quantity}</span>
+                              <button type="button" data-cart-inc="${item.id}" aria-label="Tăng ${item.name}">+</button>
+                            </div>
+                          ` : `
+                            <button class="add-cart-button" type="button" data-cart-inc="${item.id}" aria-label="Thêm ${item.name} vào giỏ hàng">
+                              <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none">
+                                <path d="M7 8h10l-.8 11H7.8L7 8Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"></path>
+                                <path d="M9 8a3 3 0 0 1 6 0" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+                                <path d="M18.5 6.5h3M20 5v3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></path>
+                              </svg>
+                            </button>
+                          `}
+                        </div>
+                      </article>
+                    `;
+                  }
+
+                  // Multiple variants — grouped card with dropdown
                   return `
-                    <article class="service-card ${quantity > 0 ? "is-selected" : ""}">
-                      ${renderServiceMedia(item)}
+                    <article class="service-card service-card--grouped ${totalQty > 0 ? "is-selected" : ""}" data-group-idx="${groupIdx}">
+                      ${renderServiceMedia(representative)}
                       <div>
-                        <h3>${item.name}</h3>
-                        <p>${item.description}</p>
+                        <h3>${representative.name}</h3>
+                        <p>${representative.description}</p>
                       </div>
-                      <div class="service-price">
-                        <span>${item.duration} phút</span>
-                        <strong>${formatPrice(item.price)}</strong>
+                      <div class="service-price service-price--grouped">
+                        <select class="variant-select" data-group-idx="${groupIdx}" style="
+                          background: rgba(255,255,255,0.08);
+                          color: #fff;
+                          border: 1px solid rgba(201,169,110,0.4);
+                          border-radius: 8px;
+                          padding: 6px 10px;
+                          font-size: 13px;
+                          cursor: pointer;
+                          outline: none;
+                          min-width: 140px;
+                          appearance: none;
+                          -webkit-appearance: none;
+                          background-image: url('data:image/svg+xml;utf8,<svg fill=\"white\" viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M7 10l5 5 5-5z\"/></svg>');
+                          background-repeat: no-repeat;
+                          background-position: right 6px center;
+                          background-size: 16px;
+                          padding-right: 26px;
+                        ">
+                          ${group.items.map((variant, vIdx) => `
+                            <option value="${variant.id}" ${vIdx === 0 ? "selected" : ""}>
+                              ${variant.duration} phút — ${formatPrice(variant.price)}
+                            </option>
+                          `).join("")}
+                        </select>
                       </div>
                       <div class="service-actions">
-                        <button class="book-now-button" type="button" data-book-service="${item.id}">BOOK NOW</button>
-                        ${quantity > 0 ? `
-                          <div class="service-qty-control" aria-label="${item.name} đã chọn ${quantity}">
-                            <button type="button" data-cart-dec="${item.id}" aria-label="Giảm ${item.name}">−</button>
-                            <span>${quantity}</span>
-                            <button type="button" data-cart-inc="${item.id}" aria-label="Tăng ${item.name}">+</button>
-                          </div>
-                        ` : `
-                          <button class="add-cart-button" type="button" data-cart-inc="${item.id}" aria-label="Thêm ${item.name} vào giỏ hàng">
-                            <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none">
-                              <path d="M7 8h10l-.8 11H7.8L7 8Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"></path>
-                              <path d="M9 8a3 3 0 0 1 6 0" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
-                              <path d="M18.5 6.5h3M20 5v3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></path>
-                            </svg>
-                          </button>
-                        `}
+                        <button class="book-now-button" type="button" data-book-group="${groupIdx}">BOOK NOW</button>
+                        <button class="add-cart-button" type="button" data-cart-group="${groupIdx}" aria-label="Thêm ${representative.name} vào giỏ hàng">
+                          <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none">
+                            <path d="M7 8h10l-.8 11H7.8L7 8Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"></path>
+                            <path d="M9 8a3 3 0 0 1 6 0" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+                            <path d="M18.5 6.5h3M20 5v3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></path>
+                          </svg>
+                        </button>
                       </div>
                     </article>
                   `;
@@ -3840,6 +3912,8 @@ export class CelestialEngine {
                 .join("")
             : `<div class="detail-box">Danh mục này chưa có dịch vụ mẫu.</div>`;
           setupServiceClipVideos(content);
+
+          // Event: BOOK NOW for single-variant services
           content.querySelectorAll("[data-book-service]").forEach((button) => {
             button.addEventListener("click", () => {
               state.serviceId = button.dataset.bookService;
@@ -3847,10 +3921,36 @@ export class CelestialEngine {
               if (serviceToBook) postBookingAction("flipmenu:book-now", category, serviceToBook);
             });
           });
+          // Event: BOOK NOW for grouped services (reads dropdown selection)
+          content.querySelectorAll("[data-book-group]").forEach((button) => {
+            button.addEventListener("click", () => {
+              const groupIdx = button.dataset.bookGroup;
+              const select = content.querySelector(`.variant-select[data-group-idx="${groupIdx}"]`);
+              const selectedId = select?.value;
+              if (selectedId) {
+                state.serviceId = selectedId;
+                const serviceToBook = category.services.find((item) => item.id === selectedId);
+                if (serviceToBook) postBookingAction("flipmenu:book-now", category, serviceToBook);
+              }
+            });
+          });
+          // Event: Add to cart for single-variant
           content.querySelectorAll("[data-cart-inc]").forEach((button) => {
             button.addEventListener("click", () => {
               const serviceToAdd = category.services.find((item) => item.id === button.dataset.cartInc);
               if (serviceToAdd) addToCart(category, serviceToAdd, button);
+            });
+          });
+          // Event: Add to cart for grouped services (reads dropdown selection)
+          content.querySelectorAll("[data-cart-group]").forEach((button) => {
+            button.addEventListener("click", () => {
+              const groupIdx = button.dataset.cartGroup;
+              const select = content.querySelector(`.variant-select[data-group-idx="${groupIdx}"]`);
+              const selectedId = select?.value;
+              if (selectedId) {
+                const serviceToAdd = category.services.find((item) => item.id === selectedId);
+                if (serviceToAdd) addToCart(category, serviceToAdd, button);
+              }
             });
           });
           content.querySelectorAll("[data-cart-dec]").forEach((button) => {
