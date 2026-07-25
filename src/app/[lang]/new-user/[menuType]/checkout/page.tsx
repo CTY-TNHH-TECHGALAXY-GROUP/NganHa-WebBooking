@@ -71,7 +71,6 @@ const fallbackServices: Service[] = [
     names: { vi: "Massage Body 60'", en: "Body Massage 60'" },
     descriptions: { vi: 'Nhịp lực êm, dầu thơm nhẹ, phù hợp phục hồi sau ngày dài.', en: 'Gentle rhythm, light aromatic oil, ideal after a long day.' },
     img: '/flipmenu/standalone-celestial-menu%20(2)/public/images/services/thai.png',
-    media: { type: 'video', src: '/videos/spa-bg-1.mp4', poster: '/flipmenu/standalone-celestial-menu%20(2)/public/images/services/thai.png', start: 10, end: 15 },
     priceVND: 450000,
     priceUSD: 18,
     timeValue: 60,
@@ -84,7 +83,6 @@ const fallbackServices: Service[] = [
     names: { vi: "Đá nóng thư giãn 90'", en: "Hot Stone Relaxation 90'" },
     descriptions: { vi: 'Nhiệt đá ấm và thao tác chậm giúp thả lỏng vùng cổ vai gáy.', en: 'Warm stones and slow pressure help release neck and shoulder tension.' },
     img: '/flipmenu/standalone-celestial-menu%20(2)/public/images/services/hotstone.png',
-    media: { type: 'video', src: '/videos/spa-bg-2.mp4', poster: '/flipmenu/standalone-celestial-menu%20(2)/public/images/services/hotstone.png', start: 10, end: 15 },
     priceVND: 690000,
     priceUSD: 28,
     timeValue: 90,
@@ -97,7 +95,6 @@ const fallbackServices: Service[] = [
     names: { vi: 'Lấy ráy tai thư giãn', en: 'Relaxing Ear Clean' },
     descriptions: { vi: 'Làm sạch nhẹ nhàng, kết hợp massage vùng tai và thái dương.', en: 'Gentle ear care with ear and temple massage.' },
     img: '/flipmenu/standalone-celestial-menu%20(2)/public/images/services/ear-clean.png',
-    media: { type: 'video', src: '/videos/spa-bg-3.mp4', poster: '/flipmenu/standalone-celestial-menu%20(2)/public/images/services/ear-clean.png', start: 10, end: 15 },
     priceVND: 180000,
     priceUSD: 8,
     timeValue: 30,
@@ -110,7 +107,6 @@ const fallbackServices: Service[] = [
     names: { vi: 'Gội đầu thảo mộc', en: 'Herbal Hair Wash' },
     descriptions: { vi: 'Gội, xả, massage đầu cổ vai gáy với hương thảo mộc dịu.', en: 'Wash, rinse, and head-neck-shoulder massage with soft herbal scent.' },
     img: '/flipmenu/standalone-celestial-menu%20(2)/public/images/services/hair-wash.png',
-    media: { type: 'video', src: '/videos/spa-bg-4.mp4', poster: '/flipmenu/standalone-celestial-menu%20(2)/public/images/services/hair-wash.png', start: 10, end: 15 },
     priceVND: 260000,
     priceUSD: 11,
     timeValue: 45,
@@ -123,7 +119,6 @@ const fallbackServices: Service[] = [
     names: { vi: 'Ấn huyệt bàn chân', en: 'Foot Reflexology' },
     descriptions: { vi: 'Tập trung lòng bàn chân, bắp chân, giúp giảm mỏi khi di chuyển nhiều.', en: 'Focused foot and calf relief for tired legs.' },
     img: '/flipmenu/standalone-celestial-menu%20(2)/public/images/services/foot-massage.png',
-    media: { type: 'video', src: '/videos/spa-bg-1.mp4', poster: '/flipmenu/standalone-celestial-menu%20(2)/public/images/services/foot-massage.png', start: 10, end: 15 },
     priceVND: 280000,
     priceUSD: 12,
     timeValue: 45,
@@ -136,7 +131,6 @@ const fallbackServices: Service[] = [
     names: { vi: 'Facial Ritual', en: 'Facial Ritual' },
     descriptions: { vi: 'Làm sạch, massage nâng cơ nhẹ và cấp ẩm cho làn da mệt mỏi.', en: 'Cleanse, gentle lifting massage, and hydration for tired skin.' },
     img: '/flipmenu/standalone-celestial-menu%20(2)/public/images/services/facial.png',
-    media: { type: 'video', src: '/videos/spa-bg-2.mp4', poster: '/flipmenu/standalone-celestial-menu%20(2)/public/images/services/facial.png', start: 10, end: 15 },
     priceVND: 520000,
     priceUSD: 21,
     timeValue: 60,
@@ -197,23 +191,8 @@ const serviceName = (service: Service | CartItem, lang: string) =>
 const serviceDescription = (service: Service, lang: string) =>
   service.descriptions?.[langKey(lang)] || service.descriptions?.en || '';
 
-const defaultServiceClipSrc = (service: Service) => {
-  const key = [
-    service.id,
-    service.cat,
-    service.names?.vi,
-    service.names?.en,
-  ].filter(Boolean).join(' ').toLowerCase();
-
-  if (key.includes('ear') || key.includes('ráy') || key.includes('tai')) return '/videos/spa-bg-3.mp4';
-  if (key.includes('hair') || key.includes('gội') || key.includes('scalp')) return '/videos/spa-bg-4.mp4';
-  if (key.includes('stone') || key.includes('đá')) return '/videos/spa-bg-2.mp4';
-  if (key.includes('facial') || key.includes('da mặt')) return '/videos/spa-bg-2.mp4';
-  return '/videos/spa-bg-1.mp4';
-};
-
 const resolveServiceMedia = (service: Service) => {
-  // Ưu tiên dùng media_url / media_type từ DB
+  // Ưu tiên dùng media_url / media_type từ DB (admin đã upload)
   if (service.media_type === 'video' && service.media_url) {
     return {
       type: 'video' as const,
@@ -225,50 +204,25 @@ const resolveServiceMedia = (service: Service) => {
     };
   }
 
-  if (service.media_type === 'image' && service.media_url) {
+  if (service.media_url) {
     return {
       type: 'image' as const,
       src: service.media_url,
       poster: service.media_url,
       alt: serviceName(service, 'en'),
-      start: 10,
-      end: 15,
+      start: 0,
+      end: 0,
     };
   }
 
-  // Logic cũ fallback
-  const mediaObject =
-    service.media?.type === 'video'
-      ? service.media
-      : typeof service.video === 'object'
-        ? service.video
-        : null;
-  const videoSrc =
-    mediaObject?.src ||
-    (typeof service.video === 'string' ? service.video : '') ||
-    service.videoSrc ||
-    service.videoUrl ||
-    service.clipSrc ||
-    defaultServiceClipSrc(service);
-
-  if (videoSrc) {
-    return {
-      type: 'video' as const,
-      src: videoSrc,
-      poster: mediaObject?.poster || service.poster || service.thumbnail || service.img,
-      alt: mediaObject?.alt || serviceName(service, 'en'),
-      start: Number.isFinite(mediaObject?.start) ? Number(mediaObject?.start) : 10,
-      end: Number.isFinite(mediaObject?.end) ? Number(mediaObject?.end) : 15,
-    };
-  }
-
+  // Fallback: hiển thị ảnh mặc định, KHÔNG dùng video hardcoded
   return {
     type: 'image' as const,
-    src: service.img,
-    poster: service.img,
+    src: service.img || 'https://placehold.co/300x200?text=SPA',
+    poster: service.img || 'https://placehold.co/300x200?text=SPA',
     alt: serviceName(service, 'en'),
-    start: 10,
-    end: 15,
+    start: 0,
+    end: 0,
   };
 };
 
