@@ -3871,30 +3871,20 @@ export class CelestialEngine {
                         <p>${representative.description}</p>
                       </div>
                       <div class="service-price service-price--grouped">
-                        <select class="variant-select" data-group-idx="${groupIdx}" style="
-                          background: rgba(255,255,255,0.08);
-                          color: #fff;
-                          border: 1px solid rgba(201,169,110,0.4);
-                          border-radius: 8px;
-                          padding: 6px 10px;
-                          font-size: 13px;
-                          cursor: pointer;
-                          outline: none;
-                          min-width: 140px;
-                          appearance: none;
-                          -webkit-appearance: none;
-                          background-image: url('data:image/svg+xml;utf8,<svg fill=\"white\" viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M7 10l5 5 5-5z\"/></svg>');
-                          background-repeat: no-repeat;
-                          background-position: right 6px center;
-                          background-size: 16px;
-                          padding-right: 26px;
-                        ">
-                          ${group.items.map((variant, vIdx) => `
-                            <option value="${variant.id}" ${vIdx === 0 ? "selected" : ""}>
-                              ${variant.duration} phút — ${formatPrice(variant.price)}
-                            </option>
-                          `).join("")}
-                        </select>
+                        <div class="celestial-dropdown" data-group-idx="${groupIdx}">
+                          <div class="celestial-dropdown-trigger">
+                            <span class="celestial-dropdown-label">${group.items[0].duration} phút — ${formatPrice(group.items[0].price)}</span>
+                            <svg class="celestial-dropdown-arrow" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+                          </div>
+                          <div class="celestial-dropdown-menu">
+                            ${group.items.map((variant, vIdx) => `
+                              <div class="celestial-dropdown-option ${vIdx === 0 ? "is-selected" : ""}" data-value="${variant.id}">
+                                ${variant.duration} phút — ${formatPrice(variant.price)}
+                              </div>
+                            `).join("")}
+                          </div>
+                          <input type="hidden" class="variant-select" data-group-idx="${groupIdx}" value="${group.items[0].id}" />
+                        </div>
                       </div>
                       <div class="service-actions">
                         <button class="book-now-button" type="button" data-book-group="${groupIdx}">BOOK NOW</button>
@@ -3912,6 +3902,39 @@ export class CelestialEngine {
                 .join("")
             : `<div class="detail-box">Danh mục này chưa có dịch vụ mẫu.</div>`;
           setupServiceClipVideos(content);
+
+          // Event: Custom dropdown logic
+          content.querySelectorAll(".celestial-dropdown").forEach((dropdown) => {
+            const trigger = dropdown.querySelector(".celestial-dropdown-trigger");
+            const label = dropdown.querySelector(".celestial-dropdown-label");
+            const input = dropdown.querySelector(".variant-select");
+            const options = dropdown.querySelectorAll(".celestial-dropdown-option");
+
+            trigger.addEventListener("click", (e) => {
+              e.stopPropagation();
+              const isOpen = dropdown.classList.contains("is-open");
+              content.querySelectorAll(".celestial-dropdown").forEach((d) => d.classList.remove("is-open"));
+              if (!isOpen) {
+                dropdown.classList.add("is-open");
+                const closeHandler = () => {
+                  dropdown.classList.remove("is-open");
+                  document.removeEventListener("click", closeHandler);
+                };
+                document.addEventListener("click", closeHandler);
+              }
+            });
+
+            options.forEach((opt) => {
+              opt.addEventListener("click", (e) => {
+                e.stopPropagation();
+                options.forEach((o) => o.classList.remove("is-selected"));
+                opt.classList.add("is-selected");
+                label.textContent = opt.textContent.trim();
+                input.value = opt.dataset.value;
+                dropdown.classList.remove("is-open");
+              });
+            });
+          });
 
           // Event: BOOK NOW for single-variant services
           content.querySelectorAll("[data-book-service]").forEach((button) => {

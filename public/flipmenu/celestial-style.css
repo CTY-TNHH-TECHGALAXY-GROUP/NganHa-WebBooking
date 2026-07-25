@@ -1334,3 +1334,100 @@
     visibility: visible !important;
   }
 }
+
+/* =========================================================
+   CUSTOM DROPDOWN CHO MENU GALAXY (Sang trọng / Luxury)
+   ========================================================= */
+.celestial-dropdown {
+  position: relative;
+  width: 170px;
+}
+.celestial-dropdown-trigger {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(201, 169, 110, 0.3);
+  border-radius: 8px;
+  padding: 8px 12px;
+  color: #f1dfb0;
+  font-family: var(--ui-font);
+  font-size: 13.5px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+.celestial-dropdown-trigger:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(201, 169, 110, 0.7);
+  box-shadow: 0 0 12px rgba(201, 169, 110, 0.15);
+}
+.celestial-dropdown-arrow {
+  width: 14px;
+  height: 14px;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  opacity: 0.8;
+}
+.celestial-dropdown.is-open .celestial-dropdown-arrow {
+  transform: rotate(180deg);
+  opacity: 1;
+}
+.celestial-dropdown.is-open .celestial-dropdown-trigger {
+  border-color: #c9a96e;
+  background: rgba(201, 169, 110, 0.1);
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.celestial-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  width: 100%;
+  background: rgba(7, 12, 21, 0.95);
+  border: 1px solid rgba(201, 169, 110, 0.4);
+  border-top: none;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  padding: 4px 0;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-4px);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 100;
+  overflow: hidden;
+}
+.celestial-dropdown.is-open .celestial-dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+.celestial-dropdown-option {
+  padding: 10px 12px;
+  color: rgba(241, 223, 176, 0.7);
+  font-family: var(--ui-font);
+  font-size: 13.5px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+.celestial-dropdown-option:hover {
+  background: rgba(201, 169, 110, 0.12);
+  color: #fff;
+  padding-left: 16px;
+}
+.celestial-dropdown-option.is-selected {
+  color: #c9a96e;
+  font-weight: 500;
+  background: rgba(201, 169, 110, 0.08);
+}
+.celestial-dropdown-option.is-selected::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: #c9a96e;
+}
