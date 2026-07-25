@@ -1,18 +1,39 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { ArrowLeft, Image as ImageIcon, Video, Upload, CheckCircle } from 'lucide-react';
+import { ArrowLeft, Image as ImageIcon, Video, Upload, CheckCircle, ChevronDown, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
+import { createClient } from '@/lib/supabase';
 
 const ServicesAdminPage = () => {
   const [services, setServices] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploadingId, setUploadingId] = useState<string | null>(null);
   const [successId, setSuccessId] = useState<string | null>(null);
+  const [mediaLibrary, setMediaLibrary] = useState<any[]>([]);
+  const [expandedCats, setExpandedCats] = useState<Record<string, boolean>>({});
+
+  const toggleCat = (cat: string) => {
+    setExpandedCats(prev => ({
+      ...prev,
+      [cat]: prev[cat] === undefined ? false : !prev[cat] // Mặc định là true nên khi undefined đổi thành false
+    }));
+  };
 
   useEffect(() => {
     fetchServices();
+    fetchMediaLibrary();
   }, []);
+
+  const fetchMediaLibrary = async () => {
+    try {
+      const res = await fetch('/api/admin/media-library');
+      const json = await res.json();
+      if (json.success) setMediaLibrary(json.data || []);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const fetchServices = async () => {
     try {
@@ -34,24 +55,42 @@ const ServicesAdminPage = () => {
     setSuccessId(null);
 
     try {
-      // 1. Upload file
-      const form = new FormData();
-      form.append('file', file);
-      form.append('folder', 'services');
+      // 1. Upload file trực tiếp lên Supabase
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+      const filePath = `services/${fileName}`;
 
-      const uploadRes = await fetch('/api/admin/media', { method: 'POST', body: form });
-      const uploadJson = await uploadRes.json();
+      const supabase = createClient();
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('media-uploads')
+        .upload(filePath, file, { cacheControl: '3600', upsert: true });
 
-      if (!uploadJson.success) {
-        alert('Lỗi tải lên: ' + (uploadJson.error?.message || 'Không rõ'));
+      if (uploadError) {
+        alert('Lỗi tải lên (Supabase): ' + uploadError.message);
+        setUploadingId(null);
         return;
       }
 
-      // 2. Update service
+      const { data: { publicUrl } } = supabase.storage.from('media-uploads').getPublicUrl(uploadData.path);
+
+      // 2. Add to Media Library
+      await fetch('/api/admin/media-library', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: `Service Media - ${file.name}`,
+          type: type,
+          url: publicUrl,
+          source: 'supabase',
+        }),
+      });
+      fetchMediaLibrary(); // Refresh library
+
+      // 3. Update service
       const updateRes = await fetch(`/api/admin/services/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ media_url: uploadJson.data.url, media_type: type }),
+        body: JSON.stringify({ media_url: publicUrl, media_type: type }),
       });
 
       if (updateRes.ok) {
@@ -62,6 +101,30 @@ const ServicesAdminPage = () => {
         alert('Lỗi cập nhật!');
       }
     } catch {
+      alert('Lỗi hệ thống');
+    } finally {
+      setUploadingId(null);
+    }
+  };
+  const handleSelectMedia = async (id: string, mediaUrl: string, mediaType: string) => {
+    setUploadingId(id);
+    setSuccessId(null);
+    try {
+      const updateRes = await fetch(`/api/admin/services/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ media_url: mediaUrl, media_type: mediaType }),
+      });
+
+      if (updateRes.ok) {
+        setSuccessId(id);
+        setTimeout(() => setSuccessId(null), 3000);
+        fetchServices();
+      } else {
+        alert('Lỗi cập nhật dịch vụ');
+      }
+    } catch (err) {
+      console.error(err);
       alert('Lỗi hệ thống');
     } finally {
       setUploadingId(null);
@@ -96,15 +159,25 @@ const ServicesAdminPage = () => {
         ) : (
           Object.entries(
             services.reduce((acc: any, service) => {
-              const cat = service.category || 'Khác';
+              const cat = service.cat || 'Khác';
               if (!acc[cat]) acc[cat] = [];
               acc[cat].push(service);
               return acc;
             }, {})
-          ).map(([category, items]: [string, any]) => (
-            <div key={category} className="space-y-6">
-              <h2 className="text-xl font-bold text-admin-gold border-b border-admin-line-strong pb-2">{category}</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          ).map(([category, items]: [string, any]) => {
+            const isExpanded = expandedCats[category] !== false; // Mặc định mở
+            return (
+            <div key={category} className="space-y-4 bg-admin-panel p-4 rounded-2xl border border-admin-line shadow-sm">
+              <button 
+                onClick={() => toggleCat(category)}
+                className="w-full flex items-center justify-between text-lg font-bold text-admin-gold hover:opacity-80 transition-opacity"
+              >
+                <span>{category} <span className="text-admin-text-dim text-sm font-normal ml-2">({items.length} dịch vụ)</span></span>
+                {isExpanded ? <ChevronDown size={20} /> : <ChevronRight size={20} />}
+              </button>
+              
+              {isExpanded && (
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 pt-4 border-t border-admin-line-strong">
                 {items.map((service: any) => (
             <div
               key={service.id}
@@ -151,41 +224,69 @@ const ServicesAdminPage = () => {
               <div className="p-5 flex flex-col flex-1">
                 <div className="mb-3">
                   <span className="text-[10px] font-bold uppercase tracking-wider bg-admin-gold-dim text-admin-gold px-2 py-0.5 rounded-full border border-admin-gold/20">
-                    {service.category}
+                    {service.cat}
                   </span>
                 </div>
-                <h3 className="text-base font-bold text-admin-text mb-0.5">{service.name_vi}</h3>
-                <p className="text-xs text-admin-text-dim mb-4">{service.name_en}</p>
+                <h3 className="text-base font-bold text-admin-text mb-0.5">{service.names?.vi || service.id}</h3>
+                <p className="text-xs text-admin-text-dim mb-4">{service.names?.en || ''}</p>
 
-                {/* Upload Button */}
-                <label className={`
-                  mt-auto flex items-center justify-center gap-2 py-2.5 rounded-xl cursor-pointer
-                  font-semibold text-[13.5px] transition-all duration-200 border border-admin-line-strong
-                  ${uploadingId === service.id
-                    ? 'bg-admin-line text-admin-text-faint cursor-wait'
-                    : 'bg-transparent hover:border-admin-gold hover:bg-admin-gold-dim text-admin-text-dim hover:text-admin-gold'
-                  }
-                `}>
-                  <Upload size={16} />
-                  Chọn ảnh / video
-                  <input
-                    type="file"
-                    accept="image/*,video/*"
-                    className="hidden"
-                    disabled={uploadingId === service.id}
-                    onChange={e => {
-                      const file = e.target.files?.[0];
-                      if (file) handleFileUpload(service.id, file);
-                      e.target.value = '';
-                    }}
-                  />
-                </label>
+                {/* Action Buttons: Select & Upload */}
+                <div className="mt-auto space-y-2">
+                  {/* Select Existing Media */}
+                  <div className="relative">
+                    <select
+                      className="w-full appearance-none bg-admin-panel border border-admin-line-strong text-admin-text-dim text-sm rounded-xl px-3 py-2.5 outline-none focus:border-admin-gold transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                      disabled={uploadingId === service.id}
+                      onChange={(e) => {
+                        if (!e.target.value) return;
+                        const selectedMedia = mediaLibrary.find(m => m.url === e.target.value);
+                        if (selectedMedia) {
+                          handleSelectMedia(service.id, selectedMedia.url, selectedMedia.type);
+                        }
+                      }}
+                      value={service.media_url || ''}
+                    >
+                      <option value="">-- Chọn ảnh/video có sẵn --</option>
+                      {mediaLibrary.map(media => (
+                        <option key={media.id} value={media.url}>
+                          {media.type === 'video' ? '🎬' : '🖼️'} {media.title}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* Upload New Media */}
+                  <label className={`
+                    flex items-center justify-center gap-2 py-2.5 rounded-xl cursor-pointer
+                    font-semibold text-[13.5px] transition-all duration-200 border border-admin-line-strong
+                    ${uploadingId === service.id
+                      ? 'bg-admin-line text-admin-text-faint cursor-wait'
+                      : 'bg-transparent hover:border-admin-gold hover:bg-admin-gold-dim text-admin-text-dim hover:text-admin-gold'
+                    }
+                  `}>
+                    <Upload size={16} />
+                    Tải lên file mới
+                    <input
+                      type="file"
+                      accept="image/*, video/*, .mp4, .mov, .webm"
+                      className="hidden"
+                      disabled={uploadingId === service.id}
+                      onChange={e => {
+                        const file = e.target.files?.[0];
+                        if (file) handleFileUpload(service.id, file);
+                        e.target.value = '';
+                      }}
+                    />
+                  </label>
+                </div>
               </div>
             </div>
           ))}
               </div>
+            )}
             </div>
-          ))
+          );
+        })
         )}
       </div>
     </div>

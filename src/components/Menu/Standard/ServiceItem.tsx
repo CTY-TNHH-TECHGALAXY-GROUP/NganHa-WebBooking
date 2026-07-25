@@ -44,14 +44,26 @@ export default function ServiceItem({ service, quantity, lang, isBestSeller, onC
                 </div>
             )}
 
-            {/* 1. Ảnh vuông bo tròn */}
+            {/* 1. Ảnh vuông bo tròn / Video */}
             <div className="w-20 h-20 shrink-0 rounded-xl overflow-hidden bg-[#1c1c1e] relative shadow-sm">
-                <img
-                    src={service.img}
-                    className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
-                    alt={name}
-                    onError={(e) => (e.currentTarget.src = 'https://placehold.co/100x100?text=SPA')}
-                />
+                {service.media_type === 'video' && service.media_url ? (
+                    <video
+                        src={service.media_url}
+                        poster={service.img}
+                        className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
+                        muted
+                        autoPlay
+                        playsInline
+                        loop
+                    />
+                ) : (
+                    <img
+                        src={service.media_type === 'image' && service.media_url ? service.media_url : service.img}
+                        className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
+                        alt={name}
+                        onError={(e) => (e.currentTarget.src = 'https://placehold.co/100x100?text=SPA')}
+                    />
+                )}
             </div>
 
             {/* 2. Nội dung text (Không hiện giá) */}

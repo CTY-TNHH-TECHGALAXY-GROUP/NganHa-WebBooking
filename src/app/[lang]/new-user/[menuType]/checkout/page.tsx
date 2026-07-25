@@ -213,6 +213,30 @@ const defaultServiceClipSrc = (service: Service) => {
 };
 
 const resolveServiceMedia = (service: Service) => {
+  // Ưu tiên dùng media_url / media_type từ DB
+  if (service.media_type === 'video' && service.media_url) {
+    return {
+      type: 'video' as const,
+      src: service.media_url,
+      poster: service.img || service.poster || service.thumbnail,
+      alt: serviceName(service, 'en'),
+      start: 0,
+      end: 9999,
+    };
+  }
+
+  if (service.media_type === 'image' && service.media_url) {
+    return {
+      type: 'image' as const,
+      src: service.media_url,
+      poster: service.media_url,
+      alt: serviceName(service, 'en'),
+      start: 10,
+      end: 15,
+    };
+  }
+
+  // Logic cũ fallback
   const mediaObject =
     service.media?.type === 'video'
       ? service.media

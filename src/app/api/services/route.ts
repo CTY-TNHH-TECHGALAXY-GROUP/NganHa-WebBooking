@@ -68,6 +68,8 @@ export const GET = async () => {
       ACTIVE: item.isActive,
       BEST_SELLER: item.isBestSeller,
       BEST_CHOICE: item.isBestChoice,
+      media_url: item.media_url,
+      media_type: item.media_type,
     }));
 
     // Return Service[] directly (same as wrb-noi-bo-dev)

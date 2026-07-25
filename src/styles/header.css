@@ -144,6 +144,7 @@
   padding: 8px 0;
   position: relative;
   transition: opacity 200ms ease, color 200ms ease;
+  white-space: nowrap;
 }
 
 .header-nav-link::after {
@@ -740,6 +741,12 @@
 
 
 /* ═══ RESPONSIVE - HEADER & HERO ═══ */
+
+@media (max-width: 1200px) {
+  .header-nav-desktop {
+    gap: 20px;
+  }
+}
 
 @media (max-width: 1024px) {
   :root {

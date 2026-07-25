@@ -45,6 +45,8 @@ export interface Service {
   clipSrc?: string;
   poster?: string;
   thumbnail?: string;
+  media_url?: string;
+  media_type?: string;
 
   // Giá và Thời gian
   priceVND: number;
