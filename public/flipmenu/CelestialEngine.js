@@ -4477,7 +4477,10 @@ export class CelestialEngine {
         `;
         const container = document.createElement("div");
         container.innerHTML = drawerHTML;
-        document.body.appendChild(container);
+        // Append INSIDE #celestial-app so drawer shares the same stacking context
+        // as the canvas/hud. This ensures z-index: 100000 is actually the highest layer.
+        const celestialApp = document.getElementById("celestial-app");
+        (celestialApp || document.body).appendChild(container);
 
         const drawer = document.getElementById("durationDrawer");
         const backdrop = document.getElementById("drawerBackdrop");
