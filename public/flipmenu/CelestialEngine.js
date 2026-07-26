@@ -3341,12 +3341,14 @@ export class CelestialEngine {
       }
 
       function toGalaxyService(service) {
-        const name = serviceName(service);
+        // Normalize NFC to fix Vietnamese diacritics (decomposed -> composed)
+        const name = (serviceName(service) || "").normalize("NFC");
+        const desc = (serviceDescription(service) || "").normalize("NFC");
         const imageSrc = service.img || service.image || service.thumbnail || service.poster || "https://placehold.co/360x220?text=Ngan+Ha+Spa";
         return {
           id: service.id,
           name,
-          description: serviceDescription(service),
+          description: desc,
           duration: Number(service.timeValue || service.duration || 0),
           price: Number(service.priceVND || service.price || 0),
           image: {
@@ -3355,6 +3357,8 @@ export class CelestialEngine {
             mode: "original",
             fit: "cover",
           },
+          img: imageSrc,
+          poster: service.poster || service.thumbnail || imageSrc,
           media: serviceMediaFromSource(service, imageSrc, name),
           sourceService: service,
         };
@@ -4515,10 +4519,12 @@ export class CelestialEngine {
           currentOptionIdx = 0;
 
           const representative = items[0];
-          drawerTitle.textContent = representative.name;
-          drawerSub.textContent = representative.description || "";
-          if (representative.image) {
-            drawerThumb.style.backgroundImage = `url('${escapeAttribute(representative.image.src)}')`;
+          // Normalize NFC to fix Vietnamese diacritics rendering (decomposed -> composed)
+          drawerTitle.textContent = (representative.name || "").normalize("NFC");
+          drawerSub.textContent = (representative.description || "").normalize("NFC");
+          const thumbSrc = representative.poster || representative.thumbnail || representative.img || "";
+          if (thumbSrc) {
+            drawerThumb.style.backgroundImage = `url('${thumbSrc}')`;
             drawerThumb.style.display = "block";
           } else {
             drawerThumb.style.backgroundImage = "none";
@@ -4625,7 +4631,7 @@ export class CelestialEngine {
         
         // Only go back if we missed all planets and didn't click a UI button
         if (activeFocusMode()) {
-           const isUI = event.target.closest('.hud') || event.target.closest('.layout-editor') || event.target.closest('.build-mark');
+           const isUI = event.target.closest('.hud') || event.target.closest('.layout-editor') || event.target.closest('.build-mark') || event.target.closest('.duration-drawer') || event.target.closest('.drawer-backdrop');
            if (!isUI) {
                goBack();
            }
