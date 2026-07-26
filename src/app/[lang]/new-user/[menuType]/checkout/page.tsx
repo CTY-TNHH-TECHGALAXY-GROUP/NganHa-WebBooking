@@ -309,6 +309,93 @@ const renderCheckoutServiceMedia = (
 const categoryName = (categoryId: string, lang: string) => {
   const category = CATEGORIES.find((item) => item.id === categoryId);
   return category?.names?.[langKey(lang)] || category?.names?.en || categoryId;
+}
+
+const DurationDrawer = ({
+  group,
+  isOpen,
+  onClose,
+  onConfirm,
+  lang,
+  dict,
+}: {
+  group: Service[] | null;
+  isOpen: boolean;
+  onClose: () => void;
+  onConfirm: (service: Service) => void;
+  lang: SupportedLanguage;
+  dict: any;
+}) => {
+  const [selectedVariantId, setSelectedVariantId] = useState<string>('');
+
+  useEffect(() => {
+    if (group && group.length > 0) {
+      setSelectedVariantId(group[0].id);
+    }
+  }, [group]);
+
+  if (!group || group.length === 0) return null;
+
+  const selectedVariant = group.find((v) => v.id === selectedVariantId) || group[0];
+
+  return (
+    <>
+      <div 
+        className={`${styles.drawerBackdrop} ${isOpen ? styles.drawerShow : ''}`} 
+        onClick={onClose}
+        role="presentation"
+      />
+      <section 
+        className={`${styles.durationDrawer} ${isOpen ? styles.drawerShow : ''}`}
+        role="dialog"
+        aria-modal="true"
+      >
+        <div className={styles.drawerHandle}></div>
+        <div className={styles.drawerHead}>
+          <div 
+            className={styles.drawerThumb} 
+            style={{ 
+              backgroundImage: `url('${group[0].img || '/images/placeholders/service-placeholder.jpg'}')` 
+            }}
+          />
+          <div>
+            <h2 className={styles.drawerTitle}>{serviceName(group[0], lang)}</h2>
+            <div className={styles.drawerSub}>{serviceDescription(group[0], lang)}</div>
+          </div>
+          <button className={styles.drawerClose} onClick={onClose} aria-label="Đóng">×</button>
+        </div>
+        <div className={styles.drawerBody}>
+          <div className={styles.drawerLabel}>{dict.checkout?.chooseDuration || 'Chọn thời lượng phù hợp'}</div>
+          <div className={styles.drawerOptions}>
+            {group.map((v) => (
+              <button
+                key={v.id}
+                className={`${styles.drawerOption} ${v.id === selectedVariantId ? styles.drawerOptionActive : ''}`}
+                onClick={() => setSelectedVariantId(v.id)}
+              >
+                <span>{v.timeValue} {dict.checkout?.mins || 'mins'}</span>
+                <strong>{formatCurrency(v.priceVND)} {lang === 'vi' ? 'đ' : 'VND'}</strong>
+              </button>
+            ))}
+          </div>
+          <div className={styles.drawerFooter}>
+            <div className={styles.drawerSelection}>
+              {dict.checkout?.yourSelection || 'Lựa chọn của bạn'}
+              <strong>
+                {selectedVariant.timeValue} {dict.checkout?.mins || 'mins'} · {formatCurrency(selectedVariant.priceVND)} {lang === 'vi' ? 'đ' : 'VND'}
+              </strong>
+            </div>
+            <button 
+              className={styles.drawerConfirm} 
+              onClick={() => onConfirm(selectedVariant)}
+            >
+              {dict.checkout?.addToCart || 'THÊM VÀO GIỎ'}
+            </button>
+          </div>
+        </div>
+      </section>
+    </>
+  );
 };
 
 const CheckoutGroupedServiceCard = ({
@@ -316,54 +403,35 @@ const CheckoutGroupedServiceCard = ({
   lang,
   dict,
   addService,
+  openDurationDrawer,
   openVideoPreview,
 }: {
   group: Service[];
   lang: SupportedLanguage;
   dict: any;
   addService: (service: Service) => void;
+  openDurationDrawer: (group: Service[]) => void;
   openVideoPreview: (media: any) => void;
 }) => {
-  const [selectedVariant, setSelectedVariant] = useState(group[0]);
-
-  useEffect(() => {
-    setSelectedVariant(group[0]);
-  }, [group]);
+  const selectedVariant = group[0];
 
   return (
     <article className={styles.pickerServiceCard}>
       {renderCheckoutServiceMedia(selectedVariant, openVideoPreview)}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', minWidth: 0 }}>
         <h3>{serviceName(selectedVariant, lang)}</h3>
         <p>{serviceDescription(selectedVariant, lang)}</p>
-        <div className={styles.serviceMeta} style={{ marginTop: '0.5rem', flexWrap: 'wrap' }}>
+        <div className={styles.serviceMeta} style={{ marginTop: '0.5rem', flexWrap: 'wrap', display: 'flex', alignItems: 'center', gap: '8px' }}>
           {group.length > 1 ? (
-            <select
-              style={{
-                padding: '4px 8px',
-                borderRadius: '8px',
-                border: '1px solid #e2e8f0',
-                background: '#ffffff',
-                fontSize: '0.85rem',
-                outline: 'none',
-                minWidth: '120px'
-              }}
-              value={selectedVariant.id}
-              onChange={(e) => {
-                const variant = group.find((v) => v.id === e.target.value);
-                if (variant) setSelectedVariant(variant);
-              }}
-            >
-              {group.map((v) => (
-                <option key={v.id} value={v.id}>
-                  {v.timeValue} {dict.checkout?.mins || 'mins'} - {formatCurrency(v.priceVND)} VNĐ
-                </option>
-              ))}
-            </select>
+            <>
+              <span style={{ fontSize: '11px', textTransform: 'uppercase', color: '#9b978e' }}>Từ</span>
+              <strong>{formatCurrency(group[0].priceVND)} {lang === 'vi' ? 'đ' : 'VND'}</strong>
+              <span style={{ fontSize: '11px', color: '#b29e5d', marginLeft: 'auto' }}>{group.length} lựa chọn</span>
+            </>
           ) : (
             <>
               <span>{selectedVariant.timeValue} {dict.checkout?.mins || 'mins'}</span>
-              <strong>{formatCurrency(selectedVariant.priceVND)} VNĐ</strong>
+              <strong>{formatCurrency(selectedVariant.priceVND)} {lang === 'vi' ? 'đ' : 'VND'}</strong>
             </>
           )}
         </div>
@@ -371,7 +439,13 @@ const CheckoutGroupedServiceCard = ({
       <button 
         type="button" 
         className={styles.pickerAddButton} 
-        onClick={() => addService(selectedVariant)} 
+        onClick={() => {
+          if (group.length > 1) {
+            openDurationDrawer(group);
+          } else {
+            addService(selectedVariant);
+          }
+        }} 
         aria-label={`${t('add', lang)} ${serviceName(selectedVariant, lang)}`}
         style={{ alignSelf: 'center', minWidth: '80px' }}
       >
@@ -408,6 +482,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
   const [videoPreview, setVideoPreview] = useState<ReturnType<typeof resolveServiceMedia> | null>(null);
   const [isVideoPreviewClosing, setIsVideoPreviewClosing] = useState(false);
   const [alertState, setAlertState] = useState<{ isOpen: boolean; message: string; type?: 'error' | 'success' | 'info' }>({ isOpen: false, message: '' });
+  const [activeDrawerGroup, setActiveDrawerGroup] = useState<Service[] | null>(null);
 
   const dateOptions = useMemo(() => nextDates(), []);
   const allSlots = useMemo(() => buildTimeSlots(), []);
@@ -866,6 +941,17 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
         lang={lang}
       />
 
+      <DurationDrawer
+        group={activeDrawerGroup}
+        isOpen={!!activeDrawerGroup}
+        onClose={() => setActiveDrawerGroup(null)}
+        onConfirm={(service) => {
+          addService(service);
+        }}
+        lang={lang}
+        dict={dict}
+      />
+
       {videoPreview?.type === 'video' && (
         <div
           className={`${styles.videoPreviewOverlay} ${isVideoPreviewClosing ? styles.videoPreviewClosing : ''}`}
@@ -947,6 +1033,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                   lang={lang}
                   dict={dict}
                   addService={addService}
+                  openDurationDrawer={setActiveDrawerGroup}
                   openVideoPreview={openVideoPreview}
                 />
               ))}

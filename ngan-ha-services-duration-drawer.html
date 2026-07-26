@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ngân Hà — Service Duration Drawer</title>
+  <style>
+    :root{
+      --bg:#070706;--panel:rgba(24,24,22,.88);--panel2:rgba(31,31,28,.94);
+      --line:rgba(220,184,85,.18);--gold:#d9b85e;--gold2:#f0d98c;
+      --text:#f4efe2;--muted:#aaa69d;--shadow:0 30px 90px rgba(0,0,0,.55)
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    body{overflow-x:hidden;background:radial-gradient(circle at 17% 62%,rgba(178,141,47,.19),transparent 33%),radial-gradient(circle at 73% 20%,rgba(89,56,32,.22),transparent 25%),linear-gradient(180deg,#12100d 0%,#050505 100%)}
+    .stars,.stars:before,.stars:after{position:fixed;inset:0;pointer-events:none;content:"";background-repeat:repeat;opacity:.55}
+    .stars{background-image:radial-gradient(circle,rgba(255,255,255,.75) 0 1px,transparent 1.7px);background-size:88px 88px;animation:drift 26s linear infinite}
+    .stars:before{background-image:radial-gradient(circle,rgba(220,184,85,.85) 0 1px,transparent 1.8px);background-size:143px 143px;transform:translateX(40px)}
+    .stars:after{background-image:radial-gradient(circle,rgba(255,255,255,.35) 0 1px,transparent 1.4px);background-size:57px 57px;transform:translateY(18px)}
+    @keyframes drift{to{transform:translate3d(-88px,28px,0)}}
+
+    header{height:86px;padding:0 38px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.06);background:linear-gradient(90deg,rgba(91,52,16,.92),rgba(53,38,11,.82),rgba(39,22,12,.92));backdrop-filter:blur(16px);position:relative;z-index:5}
+    .brand{display:flex;align-items:center;gap:12px;font-family:Georgia,"Times New Roman",serif;color:#e5c260;font-size:28px;white-space:nowrap}.brand-mark{font-size:25px;filter:drop-shadow(0 0 8px rgba(229,194,96,.5))}
+    nav{display:flex;align-items:center;gap:34px;font-size:14px;letter-spacing:1.4px}nav a{color:#e5dfd4;text-decoration:none;opacity:.88}.header-actions{display:flex;align-items:center;gap:16px}
+    .flag{width:24px;height:17px;border-radius:2px;box-shadow:0 0 0 1px rgba(255,255,255,.18)}.icon-btn{width:34px;height:34px;border:0;background:transparent;color:#e9e1cf;font-size:20px}
+
+    main{position:relative;min-height:calc(100vh - 86px);display:grid;grid-template-columns:minmax(240px,34%) minmax(580px,1fr) 230px;gap:18px;padding:90px 26px 30px;z-index:1}
+    .back{position:absolute;left:28px;top:22px;width:44px;height:44px;border-radius:50%;border:1px solid rgba(217,184,94,.34);display:grid;place-items:center;color:#dbc16e;background:rgba(5,5,5,.46);font-size:22px}
+    .visual{position:relative;min-height:650px;overflow:hidden;border-radius:22px}.orbit{position:absolute;border:2px solid rgba(217,184,94,.19);border-radius:50%;transform:rotate(-12deg)}
+    .o1{width:610px;height:610px;left:-260px;top:50px}.o2{width:470px;height:470px;left:-185px;top:120px;border-width:10px;opacity:.45}.o3{width:360px;height:720px;left:-35px;top:-120px;border-color:rgba(217,184,94,.35);transform:rotate(15deg)}
+    .massage-figure{position:absolute;left:14%;top:33%;width:270px;height:230px;filter:drop-shadow(0 0 22px rgba(242,205,104,.28))}.massage-figure svg{width:100%;height:100%}
+
+    .service-panel{align-self:center;background:linear-gradient(180deg,rgba(31,31,29,.91),rgba(18,18,17,.95));border:1px solid rgba(255,255,255,.035);border-radius:12px;padding:24px 26px;box-shadow:var(--shadow);backdrop-filter:blur(18px);max-height:690px;overflow:auto;scrollbar-width:thin;scrollbar-color:rgba(217,184,94,.28) transparent}
+    .eyebrow{font-family:Georgia,"Times New Roman",serif;color:#bca767;font-size:13px;letter-spacing:2px;text-transform:uppercase;margin-bottom:7px}h1{font-family:Georgia,"Times New Roman",serif;font-size:31px;margin:0 0 8px;color:#f0e1ad;font-weight:500}.intro{margin:0 0 18px;color:#8f8b82;font-size:13px}
+    .service-list{display:flex;flex-direction:column;gap:10px}
+    .service-item{border:1px solid rgba(255,255,255,.045);background:linear-gradient(180deg,rgba(28,28,27,.96),rgba(20,20,19,.96));border-radius:11px;overflow:hidden;transition:.25s ease}.service-item.open{border-color:rgba(217,184,94,.34);box-shadow:0 12px 34px rgba(0,0,0,.28)}
+    .service-header{width:100%;display:grid;grid-template-columns:78px minmax(0,1fr) auto 142px;gap:15px;align-items:center;padding:11px 14px;border:0;background:transparent;color:inherit;text-align:left;cursor:pointer}
+    .thumb{height:66px;border-radius:8px;background-size:cover;background-position:center;box-shadow:inset 0 0 0 1px rgba(255,255,255,.05)}
+    .service-copy h2{font-family:Georgia,"Times New Roman",serif;font-size:19px;margin:0 0 4px;color:#fff7e4}.service-copy p{margin:0;color:var(--muted);font-size:13px;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .service-meta{text-align:right;min-width:118px}.from{font-size:10px;letter-spacing:1.1px;text-transform:uppercase;color:#8d897f;margin-bottom:4px}.price{font-family:Georgia,"Times New Roman",serif;font-size:17px;color:#f4e7bf;font-weight:700;white-space:nowrap}.duration-count{font-size:11px;color:#b29e5d;margin-top:3px}
+    .service-cta{height:42px;min-width:132px;border-radius:999px;border:1px solid rgba(217,184,94,.48);background:linear-gradient(180deg,rgba(217,184,94,.14),rgba(122,91,24,.08));color:#f0d98c;display:flex;align-items:center;justify-content:center;gap:8px;font-size:10px;font-weight:800;letter-spacing:1px;white-space:nowrap;box-shadow:0 0 0 0 rgba(217,184,94,0);transition:transform .2s ease,border-color .2s ease,background .2s ease,box-shadow .2s ease}
+    .service-cta .cta-icon{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:rgba(217,184,94,.16);font-size:14px;line-height:1;transition:.2s ease}
+    .service-header:hover .service-cta{transform:translateY(-1px);border-color:rgba(240,217,140,.82);background:linear-gradient(180deg,rgba(217,184,94,.23),rgba(122,91,24,.12));box-shadow:0 8px 24px rgba(217,184,94,.10)}
+    .service-item.open .service-cta{border-color:rgba(217,184,94,.76);background:linear-gradient(180deg,rgba(217,184,94,.30),rgba(122,91,24,.18));color:#fff1bd;box-shadow:0 0 0 3px rgba(217,184,94,.07)}
+    .service-item.open .service-cta .cta-icon{background:rgba(217,184,94,.28)}
+    .service-details{display:grid;grid-template-rows:0fr;transition:grid-template-rows .28s ease;border-top:1px solid transparent}.service-item.open .service-details{grid-template-rows:1fr;border-top-color:rgba(255,255,255,.05)}.details-inner{overflow:hidden}
+    .details-content{padding:14px;background:rgba(255,255,255,.012)}.duration-label{font-size:11px;letter-spacing:1.3px;text-transform:uppercase;color:#9b978e;margin-bottom:9px}.duration-row{display:flex;gap:8px;flex-wrap:wrap}
+    .duration-chip{border:1px solid rgba(217,184,94,.18);background:rgba(217,184,94,.035);color:#cbc5b8;padding:9px 12px;border-radius:999px;font-size:12px;cursor:pointer;transition:.2s ease}.duration-chip:hover{border-color:rgba(217,184,94,.5);color:#fff}.duration-chip.active{background:linear-gradient(180deg,rgba(217,184,94,.25),rgba(138,106,29,.16));border-color:rgba(217,184,94,.72);color:#f7e6a8;box-shadow:0 0 0 3px rgba(217,184,94,.07)}
+    .selection-summary{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.05)}.selected-text{font-size:12px;color:#9d998f}.selected-text strong{display:block;margin-top:3px;color:#f0e4bf;font-family:Georgia,"Times New Roman",serif;font-size:16px}.actions{display:flex;gap:9px}.book,.cart{height:39px;border-radius:7px;cursor:pointer}.book{border:1px solid rgba(217,184,94,.28);background:rgba(217,184,94,.05);color:#d9c77e;padding:0 18px;font-size:11px;font-weight:800;letter-spacing:1.2px}.cart{width:39px;border:1px solid rgba(217,184,94,.20);background:transparent;color:#d9c77e;font-size:17px}
+
+    .categories{align-self:center;display:flex;flex-direction:column;gap:10px;max-height:610px;overflow:auto;padding-right:4px;scrollbar-width:none}.categories::-webkit-scrollbar{display:none}.cat{display:flex;align-items:center;gap:12px;color:#dbc985;font-family:Georgia,"Times New Roman",serif;font-size:16px;opacity:.88}.cat-icon{width:80px;height:80px;border-radius:50%;display:grid;place-items:center;border:1px solid rgba(217,184,94,.25);box-shadow:0 0 0 9px rgba(217,184,94,.025),0 0 0 17px rgba(217,184,94,.018);font-size:30px;background:rgba(19,18,15,.62)}.cat.active .cat-icon{border-color:rgba(217,184,94,.72);box-shadow:0 0 0 9px rgba(217,184,94,.06),0 0 32px rgba(217,184,94,.12)}
+    .floating-actions{position:fixed;right:14px;top:49%;display:flex;flex-direction:column;gap:12px;z-index:8}.float{width:47px;height:47px;border-radius:50%;border:1px solid rgba(217,184,94,.58);background:rgba(20,20,18,.82);color:#ddbd4d;display:grid;place-items:center;font-size:19px}.toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,20px);background:#1d1d1a;border:1px solid rgba(217,184,94,.3);color:#f2e4b7;padding:12px 18px;border-radius:9px;opacity:0;pointer-events:none;transition:.25s ease;z-index:20}.toast.show{opacity:1;transform:translate(-50%,0)}
+
+    @media(max-width:1100px){nav{display:none}main{grid-template-columns:220px minmax(0,1fr);padding-top:70px}.categories{grid-column:1/-1;flex-direction:row;overflow-x:auto;max-height:none;padding:10px 4px}.cat{min-width:135px;flex-direction:column;text-align:center;font-size:14px}.cat-icon{width:64px;height:64px}.visual{min-height:540px}}
+    @media(max-width:760px){header{height:70px;padding:0 16px}.brand{font-size:22px}.header-actions .flag:nth-child(n+3){display:none}main{display:block;padding:76px 12px 24px;min-height:calc(100vh - 70px)}.visual{position:absolute;inset:72px 0 auto 0;height:300px;opacity:.42;border-radius:0;pointer-events:none}.service-panel{position:relative;z-index:2;padding:18px 12px;margin-top:100px;max-height:none}.service-header{grid-template-columns:64px minmax(0,1fr) 104px}.thumb{height:58px}.service-meta{grid-column:2/3;text-align:left;display:flex;gap:9px;align-items:center;min-width:0}.service-meta .from{display:none}.price{font-size:15px}.duration-count{margin:0}.service-cta{grid-column:3;grid-row:1/3;min-width:96px;height:38px;padding:0 10px}.service-cta .cta-text{font-size:9px}.service-cta .cta-icon{width:20px;height:20px}.service-copy p{max-width:200px}.selection-summary{align-items:flex-end}.duration-row{display:grid;grid-template-columns:repeat(2,1fr)}.duration-chip{width:100%}.categories{margin-top:14px;display:flex;flex-direction:row}.cat{min-width:100px}.cat-icon{width:58px;height:58px;font-size:24px}.floating-actions{display:none}h1{font-size:27px}}
+
+
+    /* Compact service actions: no bordered CTA; duration is selected in a drawer */
+    .service-item,.service-item.open{border-color:rgba(255,255,255,.045);box-shadow:none}
+    .service-header{grid-template-columns:78px minmax(0,1fr) auto 126px;cursor:default}
+    .service-actions{display:flex;align-items:center;justify-content:flex-end;gap:17px;min-width:126px}
+    .quick-action{border:0;background:transparent;color:#d9c77e;padding:7px 0;cursor:pointer;transition:color .2s ease,transform .2s ease,filter .2s ease}
+    .quick-action:hover{color:#fff0b2;transform:translateY(-1px);filter:drop-shadow(0 0 8px rgba(217,184,94,.28))}
+    .quick-action.cart-trigger{width:30px;height:34px;display:grid;place-items:center;font-size:21px;padding:0}
+    .quick-action.book-trigger{font-size:10px;font-weight:800;letter-spacing:1.25px;white-space:nowrap}
+    .service-header:hover{background:linear-gradient(90deg,rgba(217,184,94,.025),transparent 70%)}
+    .service-details{display:none!important}
+
+    .drawer-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.62);backdrop-filter:blur(5px);opacity:0;visibility:hidden;transition:.28s ease;z-index:30}
+    .drawer-backdrop.show{opacity:1;visibility:visible}
+    .duration-drawer{position:fixed;left:50%;bottom:0;width:min(760px,calc(100% - 28px));transform:translate(-50%,105%);background:linear-gradient(180deg,rgba(34,33,29,.99),rgba(15,15,14,.995));border:1px solid rgba(217,184,94,.26);border-bottom:0;border-radius:18px 18px 0 0;box-shadow:0 -24px 80px rgba(0,0,0,.62);z-index:31;transition:transform .34s cubic-bezier(.22,.8,.25,1);overflow:hidden}
+    .duration-drawer.show{transform:translate(-50%,0)}
+    .drawer-handle{width:54px;height:4px;border-radius:999px;background:rgba(217,184,94,.38);margin:11px auto 4px}
+    .drawer-head{display:grid;grid-template-columns:64px minmax(0,1fr) 38px;gap:13px;align-items:center;padding:15px 22px 13px;border-bottom:1px solid rgba(255,255,255,.055)}
+    .drawer-thumb{width:64px;height:54px;border-radius:8px;background-size:cover;background-position:center}
+    .drawer-title{font-family:Georgia,"Times New Roman",serif;font-size:22px;color:#fff3cf;margin:0 0 3px}.drawer-sub{font-size:12px;color:#99958c}
+    .drawer-close{width:38px;height:38px;border:0;background:transparent;color:#c8b66f;font-size:24px;cursor:pointer}
+    .drawer-body{padding:18px 22px 22px}.drawer-label{font-size:11px;letter-spacing:1.4px;text-transform:uppercase;color:#a7a196;margin-bottom:11px}
+    .drawer-options{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+    .drawer-option{border:1px solid rgba(217,184,94,.16);background:rgba(217,184,94,.03);border-radius:10px;padding:13px 10px;cursor:pointer;text-align:left;color:#d8d2c5;transition:.2s ease}
+    .drawer-option span{display:block;font-size:12px;margin-bottom:5px}.drawer-option strong{font-family:Georgia,"Times New Roman",serif;font-size:16px;color:#f0e3bb}
+    .drawer-option:hover{border-color:rgba(217,184,94,.48);background:rgba(217,184,94,.07)}
+    .drawer-option.active{border-color:rgba(217,184,94,.72);background:linear-gradient(180deg,rgba(217,184,94,.20),rgba(115,85,24,.10));box-shadow:0 0 0 3px rgba(217,184,94,.06)}
+    .drawer-footer{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:17px;padding-top:16px;border-top:1px solid rgba(255,255,255,.06)}
+    .drawer-selection{font-size:11px;color:#9c988f}.drawer-selection strong{display:block;margin-top:4px;font-family:Georgia,"Times New Roman",serif;font-size:19px;color:#f2e5bc}
+    .drawer-confirm{border:0;background:transparent;color:#f0d98c;font-size:11px;font-weight:800;letter-spacing:1.3px;padding:12px 0;cursor:pointer;white-space:nowrap}
+    .drawer-confirm:hover{color:#fff2bd;text-shadow:0 0 14px rgba(217,184,94,.28)}
+    body.drawer-open{overflow:hidden}
+
+    @media(max-width:760px){
+      .service-header{grid-template-columns:64px minmax(0,1fr) 108px;gap:11px}
+      .service-actions{grid-column:3;grid-row:1/3;min-width:108px;gap:13px}
+      .quick-action.book-trigger{font-size:9px;letter-spacing:1px}.quick-action.cart-trigger{font-size:19px}
+      .drawer-options{grid-template-columns:repeat(2,minmax(0,1fr))}.drawer-head,.drawer-body{padding-left:16px;padding-right:16px}
+      .drawer-footer{align-items:flex-end}.drawer-title{font-size:20px}
+    }
+
+  </style>
+</head>
+<body>
+<div class="stars"></div>
+<header>
+  <div class="brand"><span class="brand-mark">✦</span> Ngân Hà</div>
+  <nav><a href="#">Home</a><a href="#">Service</a><a href="#">Shop</a><a href="#">service_area</a><a href="#">blogs</a><a href="#">academy</a><a href="#">spa_home</a></nav>
+  <div class="header-actions"><span class="flag" style="background:#da251d"></span><span class="flag" style="background:linear-gradient(90deg,#21468b 0 35%,#fff 35% 65%,#ae1c28 65%)"></span><span class="flag" style="background:#de2910"></span><span class="flag" style="background:#fff"></span><button class="icon-btn">♙</button><button class="icon-btn">▢</button></div>
+</header>
+<main>
+  <button class="back">←</button>
+  <section class="visual" aria-hidden="true">
+    <div class="orbit o1"></div><div class="orbit o2"></div><div class="orbit o3"></div>
+    <div class="massage-figure"><svg viewBox="0 0 310 260" fill="none" xmlns="http://www.w3.org/2000/svg"><g fill="#f3cf69" stroke="#f3cf69" stroke-linecap="round" stroke-linejoin="round"><circle cx="150" cy="56" r="24"/><path d="M131 84c-15 19-22 40-17 61l20 26 31-14-15-28 19-22 28 15 9-15-34-32c-15-11-29-8-41 9Z" stroke-width="6"/><path d="m120 166-48 13-43-27-10 12 48 37 58-8 34 24 9-13-31-38Z" stroke-width="7"/><path d="M170 145c37-10 69-4 109 12l-8 23c-48-17-82-15-116-7l15-28Z" opacity=".9"/><path d="M16 205h278v19H16z" opacity=".55"/></g></svg></div>
+  </section>
+
+  <section class="service-panel">
+    <div class="eyebrow">Danh mục</div>
+    <h1>Body Massage</h1>
+    <p class="intro">Chọn dịch vụ trước, sau đó chọn thời lượng phù hợp.</p>
+    <div class="service-list" id="serviceList"></div>
+  </section>
+
+  <aside class="categories">
+    <div class="cat"><div class="cat-icon">👂</div><span>Ráy Tai</span></div><div class="cat"><div class="cat-icon">💆</div><span>Gội Đầu</span></div><div class="cat"><div class="cat-icon">🦶</div><span>Chăm Sóc Chân</span></div><div class="cat"><div class="cat-icon">🎭</div><span>Da Mặt</span></div><div class="cat"><div class="cat-icon">💅</div><span>Móng</span></div><div class="cat active"><div class="cat-icon">💆‍♀️</div><span>Body Massage</span></div>
+  </aside>
+</main>
+<div class="floating-actions"><button class="float">◯</button><button class="float">⌖</button><button class="float">⌕</button></div>
+<div class="drawer-backdrop" id="drawerBackdrop"></div>
+<section class="duration-drawer" id="durationDrawer" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="drawerTitle">
+  <div class="drawer-handle"></div>
+  <div class="drawer-head">
+    <div class="drawer-thumb" id="drawerThumb"></div>
+    <div><h2 class="drawer-title" id="drawerTitle">Chọn thời lượng</h2><div class="drawer-sub" id="drawerSub"></div></div>
+    <button class="drawer-close" id="drawerClose" aria-label="Đóng">×</button>
+  </div>
+  <div class="drawer-body">
+    <div class="drawer-label">Chọn thời lượng phù hợp</div>
+    <div class="drawer-options" id="drawerOptions"></div>
+    <div class="drawer-footer">
+      <div class="drawer-selection">Lựa chọn của bạn<strong id="drawerSelection"></strong></div>
+      <button class="drawer-confirm" id="drawerConfirm">BOOK NOW</button>
+    </div>
+  </div>
+</section>
+<div class="toast" id="toast"></div>
+
+<script>
+const services=[
+ {name:'Tinh dầu',desc:'Chăm sóc toàn thân với tinh dầu',img:'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=400&q=85',options:[['60 phút','525.000 đ'],['70 phút','580.000 đ'],['90 phút','735.000 đ'],['120 phút','945.000 đ']]},
+ {name:'Đá nóng',desc:'Massage thư giãn kết hợp đá nóng',img:'https://images.unsplash.com/photo-1600334089648-b0d9d3028eb2?auto=format&fit=crop&w=400&q=85',options:[['70 phút','680.000 đ'],['90 phút','830.000 đ'],['120 phút','1.050.000 đ']]},
+ {name:'Thảo dược',desc:'Chườm thảo dược và trị liệu toàn thân',img:'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=400&q=85',options:[['60 phút','620.000 đ'],['90 phút','790.000 đ'],['120 phút','990.000 đ']]},
+ {name:'Massage Thái',desc:'Kéo giãn cơ và giải phóng căng cứng',img:'https://images.unsplash.com/photo-1519823551278-64ac92734fb1?auto=format&fit=crop&w=400&q=85',options:[['60 phút','580.000 đ'],['90 phút','760.000 đ'],['120 phút','960.000 đ']]}
+];
+const list=document.getElementById('serviceList');
+const toast=document.getElementById('toast');
+const drawer=document.getElementById('durationDrawer');
+const backdrop=document.getElementById('drawerBackdrop');
+const drawerTitle=document.getElementById('drawerTitle');
+const drawerSub=document.getElementById('drawerSub');
+const drawerThumb=document.getElementById('drawerThumb');
+const drawerOptions=document.getElementById('drawerOptions');
+const drawerSelection=document.getElementById('drawerSelection');
+const drawerConfirm=document.getElementById('drawerConfirm');
+let currentService=null,currentOption=0,currentIntent='book';
+
+function showToast(message){toast.textContent=message;toast.classList.add('show');clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>toast.classList.remove('show'),1900)}
+function closeDrawer(){drawer.classList.remove('show');backdrop.classList.remove('show');drawer.setAttribute('aria-hidden','true');document.body.classList.remove('drawer-open')}
+function updateDrawerSelection(){
+ const option=currentService.options[currentOption];
+ drawerSelection.textContent=`${option[0]} · ${option[1]}`;
+ drawerConfirm.textContent=currentIntent==='cart'?'ADD TO CART':'BOOK NOW';
+ [...drawerOptions.children].forEach((el,i)=>el.classList.toggle('active',i===currentOption));
+}
+function openDrawer(service,intent){
+ currentService=service;currentIntent=intent;currentOption=0;
+ drawerTitle.textContent=service.name;drawerSub.textContent=service.desc;drawerThumb.style.backgroundImage=`url('${service.img}')`;
+ drawerOptions.innerHTML=service.options.map((o,i)=>`<button class="drawer-option${i===0?' active':''}" data-index="${i}"><span>${o[0]}</span><strong>${o[1]}</strong></button>`).join('');
+ drawerOptions.querySelectorAll('.drawer-option').forEach(btn=>btn.addEventListener('click',()=>{currentOption=Number(btn.dataset.index);updateDrawerSelection()}));
+ updateDrawerSelection();drawer.classList.add('show');backdrop.classList.add('show');drawer.setAttribute('aria-hidden','false');document.body.classList.add('drawer-open');
+}
+
+services.forEach((s)=>{
+ const item=document.createElement('article');item.className='service-item';
+ item.innerHTML=`
+  <div class="service-header">
+   <div class="thumb" style="background-image:url('${s.img}')"></div>
+   <div class="service-copy"><h2>${s.name}</h2><p>${s.desc}</p></div>
+   <div class="service-meta"><div class="from">Từ</div><div class="price">${s.options[0][1]}</div><div class="duration-count">${s.options.length} thời lượng</div></div>
+   <div class="service-actions">
+     <button class="quick-action cart-trigger" aria-label="Chọn thời lượng và thêm ${s.name} vào giỏ">♧</button>
+     <button class="quick-action book-trigger">BOOK NOW</button>
+   </div>
+  </div>`;
+ list.appendChild(item);
+ item.querySelector('.cart-trigger').addEventListener('click',()=>openDrawer(s,'cart'));
+ item.querySelector('.book-trigger').addEventListener('click',()=>openDrawer(s,'book'));
+});
+
+document.getElementById('drawerClose').addEventListener('click',closeDrawer);
+backdrop.addEventListener('click',closeDrawer);
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDrawer()});
+drawerConfirm.addEventListener('click',()=>{
+ const option=currentService.options[currentOption];
+ const message=currentIntent==='cart'?`Đã thêm vào giỏ: ${currentService.name} — ${option[0]} · ${option[1]}`:`Đã chọn đặt lịch: ${currentService.name} — ${option[0]} · ${option[1]}`;
+ closeDrawer();showToast(message);
+});
+</script>
+</body>
+</html>

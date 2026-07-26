@@ -3862,7 +3862,7 @@ export class CelestialEngine {
                     `;
                   }
 
-                  // Multiple variants — grouped card with dropdown
+                  // Multiple variants — grouped card
                   return `
                     <article class="service-card service-card--grouped ${totalQty > 0 ? "is-selected" : ""}" data-group-idx="${groupIdx}">
                       ${renderServiceMedia(representative)}
@@ -3870,31 +3870,20 @@ export class CelestialEngine {
                         <h3>${representative.name}</h3>
                         <p>${representative.description}</p>
                       </div>
-                      <div class="service-price service-price--grouped">
-                        <div class="celestial-dropdown" data-group-idx="${groupIdx}">
-                          <div class="celestial-dropdown-trigger">
-                            <span class="celestial-dropdown-label">${group.items[0].duration} phút — ${formatPrice(group.items[0].price)}</span>
-                            <svg class="celestial-dropdown-arrow" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
-                          </div>
-                          <div class="celestial-dropdown-menu">
-                            ${group.items.map((variant, vIdx) => `
-                              <div class="celestial-dropdown-option ${vIdx === 0 ? "is-selected" : ""}" data-value="${variant.id}">
-                                ${variant.duration} phút — ${formatPrice(variant.price)}
-                              </div>
-                            `).join("")}
-                          </div>
-                          <input type="hidden" class="variant-select" data-group-idx="${groupIdx}" value="${group.items[0].id}" />
-                        </div>
+                      <div class="service-meta">
+                        <div class="from">Từ</div>
+                        <div class="price">${formatPrice(group.items[0].price)}</div>
+                        <div class="duration-count">${group.items.length} thời lượng</div>
                       </div>
                       <div class="service-actions">
-                        <button class="book-now-button" type="button" data-book-group="${groupIdx}">BOOK NOW</button>
-                        <button class="add-cart-button" type="button" data-cart-group="${groupIdx}" aria-label="Thêm ${representative.name} vào giỏ hàng">
-                          <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none">
+                        <button class="quick-action cart-trigger" type="button" data-cart-group="${groupIdx}" aria-label="Chọn thời lượng và thêm ${representative.name} vào giỏ">
+                          <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none">
                             <path d="M7 8h10l-.8 11H7.8L7 8Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"></path>
                             <path d="M9 8a3 3 0 0 1 6 0" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
                             <path d="M18.5 6.5h3M20 5v3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></path>
                           </svg>
                         </button>
+                        <button class="quick-action book-trigger" type="button" data-book-group="${groupIdx}">BOOK NOW</button>
                       </div>
                     </article>
                   `;
@@ -3903,38 +3892,7 @@ export class CelestialEngine {
             : `<div class="detail-box">Danh mục này chưa có dịch vụ mẫu.</div>`;
           setupServiceClipVideos(content);
 
-          // Event: Custom dropdown logic
-          content.querySelectorAll(".celestial-dropdown").forEach((dropdown) => {
-            const trigger = dropdown.querySelector(".celestial-dropdown-trigger");
-            const label = dropdown.querySelector(".celestial-dropdown-label");
-            const input = dropdown.querySelector(".variant-select");
-            const options = dropdown.querySelectorAll(".celestial-dropdown-option");
-
-            trigger.addEventListener("click", (e) => {
-              e.stopPropagation();
-              const isOpen = dropdown.classList.contains("is-open");
-              content.querySelectorAll(".celestial-dropdown").forEach((d) => d.classList.remove("is-open"));
-              if (!isOpen) {
-                dropdown.classList.add("is-open");
-                const closeHandler = () => {
-                  dropdown.classList.remove("is-open");
-                  document.removeEventListener("click", closeHandler);
-                };
-                document.addEventListener("click", closeHandler);
-              }
-            });
-
-            options.forEach((opt) => {
-              opt.addEventListener("click", (e) => {
-                e.stopPropagation();
-                options.forEach((o) => o.classList.remove("is-selected"));
-                opt.classList.add("is-selected");
-                label.textContent = opt.textContent.trim();
-                input.value = opt.dataset.value;
-                dropdown.classList.remove("is-open");
-              });
-            });
-          });
+          // (Dropdown event code removed since UI changed to Drawer)
 
           // Event: BOOK NOW for single-variant services
           content.querySelectorAll("[data-book-service]").forEach((button) => {
@@ -3944,16 +3902,13 @@ export class CelestialEngine {
               if (serviceToBook) postBookingAction("flipmenu:book-now", category, serviceToBook);
             });
           });
-          // Event: BOOK NOW for grouped services (reads dropdown selection)
+          // Event: BOOK NOW for grouped services (opens Drawer)
           content.querySelectorAll("[data-book-group]").forEach((button) => {
             button.addEventListener("click", () => {
               const groupIdx = button.dataset.bookGroup;
-              const select = content.querySelector(`.variant-select[data-group-idx="${groupIdx}"]`);
-              const selectedId = select?.value;
-              if (selectedId) {
-                state.serviceId = selectedId;
-                const serviceToBook = category.services.find((item) => item.id === selectedId);
-                if (serviceToBook) postBookingAction("flipmenu:book-now", category, serviceToBook);
+              const group = serviceGroups[groupIdx];
+              if (group && window.openDurationDrawer) {
+                window.openDurationDrawer(group.items, category, button, "book");
               }
             });
           });
@@ -3964,15 +3919,13 @@ export class CelestialEngine {
               if (serviceToAdd) addToCart(category, serviceToAdd, button);
             });
           });
-          // Event: Add to cart for grouped services (reads dropdown selection)
+          // Event: Add to cart for grouped services (opens Drawer)
           content.querySelectorAll("[data-cart-group]").forEach((button) => {
             button.addEventListener("click", () => {
               const groupIdx = button.dataset.cartGroup;
-              const select = content.querySelector(`.variant-select[data-group-idx="${groupIdx}"]`);
-              const selectedId = select?.value;
-              if (selectedId) {
-                const serviceToAdd = category.services.find((item) => item.id === selectedId);
-                if (serviceToAdd) addToCart(category, serviceToAdd, button);
+              const group = serviceGroups[groupIdx];
+              if (group && window.openDurationDrawer) {
+                window.openDurationDrawer(group.items, category, button, "cart");
               }
             });
           });
@@ -4495,6 +4448,116 @@ export class CelestialEngine {
           toggleCartDrawer(event.data.open);
         }
       });
+      
+      // Khởi tạo Duration Drawer
+      function initDurationDrawer() {
+        if (document.getElementById("durationDrawer")) return;
+        const drawerHTML = `
+          <div class="drawer-backdrop" id="drawerBackdrop"></div>
+          <section class="duration-drawer" id="durationDrawer" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="drawerTitle">
+            <div class="drawer-handle"></div>
+            <div class="drawer-head">
+              <div class="drawer-thumb" id="drawerThumb"></div>
+              <div><h2 class="drawer-title" id="drawerTitle">Chọn thời lượng</h2><div class="drawer-sub" id="drawerSub"></div></div>
+              <button class="drawer-close" id="drawerClose" aria-label="Đóng">×</button>
+            </div>
+            <div class="drawer-body">
+              <div class="drawer-label">Chọn thời lượng phù hợp</div>
+              <div class="drawer-options" id="drawerOptions"></div>
+              <div class="drawer-footer">
+                <div class="drawer-selection">Lựa chọn của bạn<strong id="drawerSelection"></strong></div>
+                <button class="drawer-confirm" id="drawerConfirm">BOOK NOW</button>
+              </div>
+            </div>
+          </section>
+        `;
+        const container = document.createElement("div");
+        container.innerHTML = drawerHTML;
+        document.body.appendChild(container);
+
+        const drawer = document.getElementById("durationDrawer");
+        const backdrop = document.getElementById("drawerBackdrop");
+        const drawerTitle = document.getElementById("drawerTitle");
+        const drawerSub = document.getElementById("drawerSub");
+        const drawerThumb = document.getElementById("drawerThumb");
+        const drawerOptions = document.getElementById("drawerOptions");
+        const drawerSelection = document.getElementById("drawerSelection");
+        const drawerConfirm = document.getElementById("drawerConfirm");
+
+        let currentItems = null;
+        let currentCategory = null;
+        let currentOptionIdx = 0;
+        let currentIntent = "book";
+
+        function closeDrawer() {
+          drawer.classList.remove("show");
+          backdrop.classList.remove("show");
+          drawer.setAttribute("aria-hidden", "true");
+          document.body.classList.remove("drawer-open");
+        }
+
+        document.getElementById("drawerClose").addEventListener("click", closeDrawer);
+        backdrop.addEventListener("click", closeDrawer);
+
+        function updateDrawerSelection() {
+          if (!currentItems || currentItems.length === 0) return;
+          const option = currentItems[currentOptionIdx];
+          drawerSelection.textContent = `${option.duration} phút · ${formatPrice(option.price)}`;
+          drawerConfirm.textContent = currentIntent === "cart" ? "ADD TO CART" : "BOOK NOW";
+          Array.from(drawerOptions.children).forEach((el, i) => el.classList.toggle("active", i === currentOptionIdx));
+        }
+
+        window.openDurationDrawer = function(items, category, btnElement, intent) {
+          if (!items || items.length === 0) return;
+          currentItems = items;
+          currentCategory = category;
+          currentIntent = intent;
+          currentOptionIdx = 0;
+
+          const representative = items[0];
+          drawerTitle.textContent = representative.name;
+          drawerSub.textContent = representative.description || "";
+          if (representative.image) {
+            drawerThumb.style.backgroundImage = `url('${escapeAttribute(representative.image.src)}')`;
+            drawerThumb.style.display = "block";
+          } else {
+            drawerThumb.style.backgroundImage = "none";
+            drawerThumb.style.display = "none";
+          }
+
+          drawerOptions.innerHTML = items.map((opt, i) => `
+            <button class="drawer-option ${i === 0 ? "active" : ""}" data-index="${i}">
+              <span>${opt.duration} phút</span>
+              <strong>${formatPrice(opt.price)}</strong>
+            </button>
+          `).join("");
+
+          drawerOptions.querySelectorAll(".drawer-option").forEach((btn) => {
+            btn.addEventListener("click", () => {
+              currentOptionIdx = Number(btn.dataset.index);
+              updateDrawerSelection();
+            });
+          });
+
+          updateDrawerSelection();
+          drawer.classList.add("show");
+          backdrop.classList.add("show");
+          drawer.setAttribute("aria-hidden", "false");
+          document.body.classList.add("drawer-open");
+        };
+
+        drawerConfirm.addEventListener("click", () => {
+          const option = currentItems[currentOptionIdx];
+          if (currentIntent === "cart") {
+            addToCart(currentCategory, option, drawerConfirm);
+          } else {
+            state.serviceId = option.id;
+            postBookingAction("flipmenu:book-now", currentCategory, option);
+          }
+          closeDrawer();
+        });
+      }
+      initDurationDrawer();
       document.getElementById("cel-mobilePrev").addEventListener("click", () => shiftMobileCategory(-1));
       document.getElementById("cel-mobileNext").addEventListener("click", () => shiftMobileCategory(1));
 

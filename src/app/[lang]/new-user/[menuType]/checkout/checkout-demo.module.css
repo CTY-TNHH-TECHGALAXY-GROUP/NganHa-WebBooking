@@ -1082,6 +1082,193 @@
   }
 }
 
+
+/* ═══════════════════════════════════════════════ */
+/*  Duration Drawer Styles                         */
+/* ═══════════════════════════════════════════════ */
+
+.drawerBackdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.62);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.28s ease, visibility 0.28s ease;
+  z-index: 100;
+}
+
+.drawerBackdrop.drawerShow {
+  opacity: 1;
+  visibility: visible;
+}
+
+.durationDrawer {
+  position: fixed;
+  left: 50%;
+  bottom: 0;
+  width: min(760px, calc(100% - 28px));
+  transform: translate(-50%, 105%);
+  background: linear-gradient(180deg, rgba(34, 33, 29, 0.99), rgba(15, 15, 14, 0.995));
+  border: 1px solid rgba(217, 184, 94, 0.26);
+  border-bottom: 0;
+  border-radius: 18px 18px 0 0;
+  box-shadow: 0 -24px 80px rgba(0, 0, 0, 0.62);
+  z-index: 101;
+  transition: transform 0.34s cubic-bezier(0.22, 0.8, 0.25, 1);
+  overflow: hidden;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.durationDrawer.drawerShow {
+  transform: translate(-50%, 0);
+}
+
+.drawerHandle {
+  width: 54px;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(217, 184, 94, 0.38);
+  margin: 11px auto 4px;
+}
+
+.drawerHead {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr) 38px;
+  gap: 13px;
+  align-items: center;
+  padding: 15px 22px 13px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.055);
+}
+
+.drawerThumb {
+  width: 64px;
+  height: 54px;
+  border-radius: 8px;
+  background-size: cover;
+  background-position: center;
+  background-color: #10141d;
+  border: 1px solid rgba(199, 154, 75, 0.14);
+}
+
+.drawerTitle {
+  font-family: var(--serif);
+  font-size: 22px;
+  color: #fff3cf;
+  margin: 0 0 3px;
+}
+
+.drawerSub {
+  font-size: 12px;
+  color: #99958c;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.drawerClose {
+  width: 38px;
+  height: 38px;
+  border: 0;
+  background: transparent;
+  color: #c8b66f;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.drawerBody {
+  padding: 18px 22px 22px;
+}
+
+.drawerLabel {
+  font-size: 11px;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: #a7a196;
+  margin-bottom: 11px;
+}
+
+.drawerOptions {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.drawerOption {
+  border: 1px solid rgba(217, 184, 94, 0.16);
+  background: rgba(217, 184, 94, 0.03);
+  border-radius: 10px;
+  padding: 13px 10px;
+  cursor: pointer;
+  text-align: left;
+  color: #d8d2c5;
+  transition: 0.2s ease;
+}
+
+.drawerOption span {
+  display: block;
+  font-size: 12px;
+  margin-bottom: 5px;
+}
+
+.drawerOption strong {
+  font-family: var(--serif);
+  font-size: 16px;
+  color: #f0e3bb;
+}
+
+.drawerOption:hover {
+  border-color: rgba(217, 184, 94, 0.48);
+  background: rgba(217, 184, 94, 0.07);
+}
+
+.drawerOption.drawerOptionActive {
+  border-color: rgba(217, 184, 94, 0.72);
+  background: linear-gradient(180deg, rgba(217, 184, 94, 0.20), rgba(115, 85, 24, 0.10));
+  box-shadow: 0 0 0 3px rgba(217, 184, 94, 0.06);
+}
+
+.drawerFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 17px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.drawerSelection {
+  font-size: 11px;
+  color: #9c988f;
+}
+
+.drawerSelection strong {
+  display: block;
+  margin-top: 4px;
+  font-family: var(--serif);
+  font-size: 19px;
+  color: #f2e5bc;
+}
+
+.drawerConfirm {
+  border: 0;
+  background: transparent;
+  color: #f0d98c;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.3px;
+  padding: 12px 0;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.drawerConfirm:hover {
+  color: #fff2bd;
+  text-shadow: 0 0 14px rgba(217, 184, 94, 0.28);
+}
+
 @media (max-width: 860px) {
   .grid {
     grid-template-columns: 1fr;
