@@ -66,8 +66,14 @@ const Hero = () => {
     fetch('/api/hero-videos')
       .then(res => res.json())
       .then(json => {
-        if (json.success && json.data?.length > 0) {
-          setHomepageVideos(json.data.sort((a: any, b: any) => a.sort_order - b.sort_order));
+        const remoteVideos = Array.isArray(json.data)
+          ? json.data
+              .filter((video: any) => video?.url || video?.media_url)
+              .sort((a: any, b: any) => (a.sort_order || 0) - (b.sort_order || 0))
+          : [];
+
+        if (json.success && remoteVideos.length >= DEFAULT_HOMEPAGE_VIDEOS.length) {
+          setHomepageVideos(remoteVideos);
           setActiveVideoIndex(0);
           setLoadedIndices([0]);
         }
