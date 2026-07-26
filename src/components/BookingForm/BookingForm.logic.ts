@@ -430,7 +430,7 @@ export const useBookingForm = () => {
           date: formData.date,
           time: formData.time,
           branchId: formData.branchId,
-          branchName: selectedBranch?.name || 'Ngan Ha Spa',
+          branchName: selectedBranch?.name || 'ORIARETREAT Spa',
           guests: formData.guests,
           staffGender: formData.staffGender,
           lang: formData.lang,

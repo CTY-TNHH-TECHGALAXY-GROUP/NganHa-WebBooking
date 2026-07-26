@@ -1,0 +1,878 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2821
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 Refactor and redesign the existing \'93Qu\uc0\u7843 n L\'fd S\'e1ch L\u7853 t (Flipbook)\'94 admin page into a complete, user-friendly service-book editor.\
+\
+IMPORTANT CONTEXT\
+\
+The public website displays a realistic open flipbook.\
+\
+The flipbook currently supports two essential page templates:\
+\
+1. CATEGORY COVER\
+A page used as the opening cover of a service category.\
+\
+2. SIX-VIDEO GRID\
+A page displaying up to six service videos in a 2-column \'d7 3-row grid.\
+\
+The current admin interface is insufficient because it uses one generic form, does not reflect the actual book layout, does not support six individual video slots, and does not provide a clear editing, ordering or preview workflow.\
+\
+Do not make superficial visual changes only. Redesign the information architecture, editing workflow and page-management logic.\
+\
+PRIMARY GOAL\
+\
+Build an admin editor in which a non-technical employee can:\
+\
+- create category-cover pages;\
+- create six-video-grid pages;\
+- create a complete two-page service spread;\
+- upload and manage each video independently;\
+- reorder pages visually;\
+- preview the actual open book;\
+- save drafts;\
+- publish changes safely.\
+\
+Preserve the existing warm beige and brown admin identity, but improve hierarchy, usability, information density and visual consistency.\
+\
+==================================================\
+1. PAGE TITLE AND TOP TOOLBAR\
+==================================================\
+\
+Rename the page:\
+\
+\'93Qu\uc0\u7843 n l\'fd S\'e1ch D\u7883 ch v\u7909 \'94\
+\
+Subtitle:\
+\
+\'93T\uc0\u7841 o, s\u7855 p x\u7871 p v\'e0 xu\u7845 t b\u7843 n n\u7897 i dung hi\u7875 n th\u7883  trong cu\u7889 n s\'e1ch d\u7883 ch v\u7909 .\'94\
+\
+Create a sticky top toolbar containing:\
+\
+- book name;\
+- page count;\
+- current status badge;\
+- last saved time;\
+- Preview button;\
+- Save Draft button;\
+- Publish button;\
+- overflow menu.\
+\
+Example:\
+\
+S\'c1CH D\uc0\u7882 CH V\u7908  SPA\
+12 trang \'b7 L\uc0\u432 u 2 ph\'fat tr\u432 \u7899 c\
+[B\uc0\u7843 n nh\'e1p]\
+\
+[Xem tr\uc0\u432 \u7899 c] [L\u432 u b\u7843 n nh\'e1p] [Xu\u7845 t b\u7843 n]\
+\
+Do not use emoji inside action buttons.\
+Use consistent inline SVG icons.\
+\
+==================================================\
+2. THREE-COLUMN EDITOR LAYOUT\
+==================================================\
+\
+Create a professional three-column editing workspace.\
+\
+LEFT SIDEBAR:\
+Page/spread navigator.\
+\
+CENTRE:\
+Real-time open-book preview canvas.\
+\
+RIGHT SIDEBAR:\
+Properties inspector for the selected page or media item.\
+\
+Desktop layout suggestion:\
+\
+- Left sidebar: 260\'96290 px\
+- Centre canvas: flexible\
+- Right inspector: 360\'96400 px\
+\
+The top toolbar remains sticky.\
+The left and right panels may scroll independently.\
+Prevent the browser page from producing unnecessary horizontal overflow.\
+\
+==================================================\
+3. LEFT PAGE NAVIGATOR\
+==================================================\
+\
+Replace the existing generic empty panel with a visual page navigator.\
+\
+Display pages as thumbnail items.\
+\
+Each item must show:\
+\
+- drag handle;\
+- page number or spread number;\
+- page thumbnail;\
+- category name;\
+- page template badge;\
+- status indicator;\
+- three-dot context menu.\
+\
+Example:\
+\
+01\'9602\
+STANDARD\
+Category Cover + 6 Video Grid\
+Published\
+\
+Context menu:\
+\
+- Edit\
+- Duplicate\
+- Hide\
+- Move\
+- Delete\
+\
+Support drag-and-drop reordering.\
+\
+The page numbers must be generated automatically from their visual order.\
+\
+Do not require the administrator to manually enter page numbers.\
+\
+After reorder:\
+\
+- update the book order immediately;\
+- automatically recalculate page numbers;\
+- display an undo toast;\
+- preserve the change in draft state.\
+\
+Add search and filter controls:\
+\
+- Search by category or page name;\
+- All templates;\
+- Category Cover;\
+- Six-Video Grid;\
+- Draft;\
+- Published;\
+- Hidden.\
+\
+Add these primary creation buttons:\
+\
+\'93+ Th\'eam trang\'94\
+\
+\'93+ T\uc0\u7841 o c\u7863 p trang d\u7883 ch v\u7909 \'94\
+\
+==================================================\
+4. PAGE TEMPLATE SELECTION\
+==================================================\
+\
+When the user clicks \'93Th\'eam trang\'94, open a template-picker modal.\
+\
+Do not show a long generic form immediately.\
+\
+Template option 1:\
+\
+Title:\
+\'93B\'eca danh m\uc0\u7909 c\'94\
+\
+Description:\
+\'93Trang m\uc0\u7903  \u273 \u7847 u c\u7911 a m\u7897 t nh\'f3m d\u7883 ch v\u7909  v\u7899 i \u7843 nh ho\u7863 c video l\u7899 n, ti\'eau \u273 \u7873  v\'e0 m\'f4 t\u7843 .\'94\
+\
+Visual thumbnail:\
+Large media background with editorial text.\
+\
+Template option 2:\
+\
+Title:\
+\'93Grid 6 video\'94\
+\
+Description:\
+\'93B\uc0\u7889  c\u7909 c t\u7889 i \u273 a s\'e1u video d\u7883 ch v\u7909  theo l\u432 \u7899 i hai c\u7897 t v\'e0 ba h\'e0ng.\'94\
+\
+Visual thumbnail:\
+Six media placeholders.\
+\
+Each template card must have:\
+\
+- clear preview;\
+- description;\
+- Select button;\
+- keyboard focus state;\
+- hover state.\
+\
+==================================================\
+5. SERVICE SPREAD WORKFLOW\
+==================================================\
+\
+The public interface displays two pages as one open book.\
+\
+Introduce a \'93Service Spread\'94 workflow.\
+\
+When the administrator clicks:\
+\
+\'93+ T\uc0\u7841 o c\u7863 p trang d\u7883 ch v\u7909 \'94\
+\
+Open a guided setup dialog with:\
+\
+- Internal category name;\
+- Display title;\
+- Description;\
+- Language;\
+- Category media;\
+- Six service videos.\
+\
+Automatically create:\
+\
+LEFT PAGE:\
+Category Cover.\
+\
+RIGHT PAGE:\
+Six-Video Grid.\
+\
+Example:\
+\
+Spread 01\'9602\
+\
+Left:\
+STANDARD\
+Experience our in-spa treatments.\
+Relax your mind and body.\
+\
+Right:\
+Six service video slots.\
+\
+Allow the user to save incomplete spreads as drafts.\
+\
+Show completion progress:\
+\
+\'937/10 n\uc0\u7897 i dung \u273 \'e3 ho\'e0n th\'e0nh\'94\
+\
+==================================================\
+6. CENTRE OPEN-BOOK PREVIEW\
+==================================================\
+\
+The centre of the editor must show an accurate preview of the actual public flipbook.\
+\
+Display:\
+\
+- left page;\
+- right page;\
+- centre spine;\
+- page borders;\
+- safe content area;\
+- page numbers;\
+- titles;\
+- media thumbnails;\
+- video play buttons;\
+- current book curvature or a simplified admin-safe preview.\
+\
+The preview must update immediately when fields are edited.\
+\
+Add preview controls:\
+\
+- Previous spread;\
+- Next spread;\
+- Desktop;\
+- Tablet;\
+- Mobile;\
+- Fit to screen;\
+- Zoom out;\
+- Zoom percentage;\
+- Zoom in;\
+- Fullscreen.\
+\
+When an element is clicked directly on the preview, select the corresponding property or video slot in the right inspector.\
+\
+Selected elements must have a subtle editing outline.\
+\
+Do not make the preview look like a static image.\
+It must be an interactive editing canvas.\
+\
+==================================================\
+7. CATEGORY COVER TEMPLATE\
+==================================================\
+\
+Create a dedicated inspector for Category Cover pages.\
+\
+Fields:\
+\
+GENERAL\
+- Internal page name\
+- Service category\
+- Display status\
+- Language\
+\
+CONTENT\
+- Eyebrow text, optional\
+- Main title\
+- Short description\
+- Secondary description, optional\
+- CTA label, optional\
+- CTA URL, optional\
+\
+MEDIA\
+- Background type: Image or Video\
+- Upload media\
+- Select from Media Library\
+- Replace media\
+- Remove media\
+- Preview media\
+- Poster image for video\
+- Image focal point\
+- Overlay intensity\
+\
+LAYOUT\
+- Content alignment:\
+  - top left\
+  - top centre\
+  - top right\
+  - centre left\
+  - centre\
+  - centre right\
+  - bottom left\
+  - bottom centre\
+  - bottom right\
+- Text width\
+- Title size\
+- Text colour\
+- Overlay colour\
+- Page theme\
+\
+ACCESSIBILITY\
+- Alt text\
+- Accessible media label\
+\
+Show a live thumbnail and real-time book preview.\
+\
+==================================================\
+8. SIX-VIDEO GRID TEMPLATE\
+==================================================\
+\
+Create a dedicated inspector for the Six-Video Grid page.\
+\
+The template must support exactly six available slots:\
+\
+1\
+2\
+3\
+4\
+5\
+6\
+\
+Display them visually as:\
+\
+[1] [2]\
+[3] [4]\
+[5] [6]\
+\
+Each slot must support:\
+\
+- Upload video;\
+- Select from Media Library;\
+- Replace video;\
+- Remove video;\
+- Preview video;\
+- Upload or generate thumbnail;\
+- Service name;\
+- Optional short description;\
+- Optional service duration;\
+- Optional service link;\
+- Alt/accessibility label;\
+- Visible/hidden toggle.\
+\
+Each slot must clearly show its status:\
+\
+- Empty;\
+- Uploading;\
+- Processing;\
+- Ready;\
+- Error;\
+- Hidden.\
+\
+Add drag-and-drop sorting among the six slots.\
+\
+After reordering, animate the slot movement and update the preview.\
+\
+Display slot numbering:\
+\
+\'93V\uc0\u7883  tr\'ed 1/6\'94\
+\
+Do not combine all six videos into one file input.\
+\
+Do not represent the grid page with a single generic media field.\
+\
+Add bulk actions:\
+\
+- Select multiple videos;\
+- Upload multiple videos;\
+- Clear all;\
+- Auto-fill empty slots from Media Library.\
+\
+Validation:\
+\
+- Minimum: 1 visible video;\
+- Maximum: 6 videos;\
+- Warn if a video has no thumbnail;\
+- Warn if unsupported format;\
+- Warn if file exceeds configured upload size;\
+- Prevent duplicate upload unless the user confirms.\
+\
+==================================================\
+9. MEDIA UPLOAD EXPERIENCE\
+==================================================\
+\
+Improve the upload component.\
+\
+Each upload area must support:\
+\
+- drag and drop;\
+- click to browse;\
+- upload progress;\
+- file name;\
+- file size;\
+- duration;\
+- format;\
+- cancel upload;\
+- retry failed upload;\
+- preview;\
+- replace;\
+- delete.\
+\
+Accepted media types must be stated visibly.\
+\
+Example:\
+\
+\'93MP4, WebM \'b7 T\uc0\u7889 i \u273 a 100 MB\'94\
+\
+For images:\
+\
+\'93JPG, PNG, WebP \'b7 T\uc0\u7889 i \u273 a 10 MB\'94\
+\
+Show readable validation errors beside the relevant field.\
+\
+Do not use vague text such as:\
+\
+\'93Nh\uc0\u7845 n \u273 \u7875  ch\u7885 n file kh\'e1c\'94\
+\
+without also providing clear Replace and Remove actions.\
+\
+==================================================\
+10. MEDIA LIBRARY INTEGRATION\
+==================================================\
+\
+Allow every image and video field to choose an existing item from \'93Kho Media\'94.\
+\
+The picker must include:\
+\
+- search;\
+- media type filter;\
+- service category filter;\
+- newest/oldest sort;\
+- thumbnail grid;\
+- file details;\
+- selected state;\
+- preview panel.\
+\
+Avoid forcing administrators to upload duplicate media files.\
+\
+==================================================\
+11. RIGHT PROPERTIES INSPECTOR\
+==================================================\
+\
+The right panel changes according to the selected item.\
+\
+Possible inspector states:\
+\
+- No selection;\
+- Category Cover selected;\
+- Six-Video Grid selected;\
+- Individual video slot selected;\
+- Spread selected.\
+\
+Organise fields into collapsible groups:\
+\
+- General;\
+- Content;\
+- Media;\
+- Layout;\
+- Link;\
+- Language;\
+- Accessibility;\
+- Publishing.\
+\
+Keep the most frequently used fields expanded by default.\
+\
+Place page-level actions at the bottom:\
+\
+- Save changes;\
+- Duplicate;\
+- Hide;\
+- Delete.\
+\
+The delete action must be visually separated and require confirmation.\
+\
+==================================================\
+12. MULTILINGUAL CONTENT\
+==================================================\
+\
+Support these language tabs:\
+\
+- VI\
+- EN\
+- \uc0\u20013 \u25991 \
+- \uc0\u26085 \u26412 \u35486 \
+- \uc0\u54620 \u44397 \u50612 \
+\
+Media remains shared between languages.\
+\
+Text fields change according to the selected language.\
+\
+Show translation completeness per language:\
+\
+VI 100%\
+EN 80%\
+\uc0\u20013 \u25991  40%\
+\
+Allow fallback to Vietnamese when a translation is missing, based on system settings.\
+\
+Do not create duplicated physical pages for each language.\
+\
+==================================================\
+13. DRAFT, PREVIEW AND PUBLISHING\
+==================================================\
+\
+Support:\
+\
+- autosave;\
+- manual Save Draft;\
+- Preview Draft;\
+- Publish;\
+- Unpublish;\
+- scheduled publishing;\
+- change history;\
+- restore previous version.\
+\
+Autosave indicator examples:\
+\
+\'93\uc0\u272 ang l\u432 u\'85\'94\
+\
+\'93\uc0\u272 \'e3 l\u432 u l\'fac 01:46\'94\
+\
+\'93Kh\'f4ng th\uc0\u7875  l\u432 u \'97 Th\u7917  l\u7841 i\'94\
+\
+Before publishing, run validation.\
+\
+Example validation summary:\
+\
+- 2 pages have no title;\
+- 1 video has no thumbnail;\
+- English translation is incomplete;\
+- 1 hidden page is included in navigation.\
+\
+Allow publishing only after required issues are resolved.\
+\
+Warnings may remain publishable if configured as non-blocking.\
+\
+==================================================\
+14. USER FEEDBACK\
+==================================================\
+\
+Implement:\
+\
+- success toasts;\
+- error toasts;\
+- undo after delete/reorder;\
+- loading skeletons;\
+- confirmation dialogs;\
+- unsaved-change warning;\
+- empty states with clear actions;\
+- hover tooltips;\
+- visible focus states.\
+\
+Example empty state:\
+\
+\'93Ch\uc0\u432 a c\'f3 trang n\'e0o trong s\'e1ch\'94\
+\
+\'93T\uc0\u7841 o m\u7897 t c\u7863 p trang d\u7883 ch v\u7909  ho\u7863 c ch\u7885 n m\u7897 t template \u273 \u7875  b\u7855 t \u273 \u7847 u.\'94\
+\
+[+ T\uc0\u7841 o c\u7863 p trang d\u7883 ch v\u7909 ]\
+[+ Th\'eam trang ri\'eang]\
+\
+==================================================\
+15. VISUAL DESIGN\
+==================================================\
+\
+Preserve the existing warm premium admin identity.\
+\
+Suggested colours:\
+\
+- background: #F7F2E8\
+- panel background: #FFFFFF\
+- sidebar: #F1E6D2\
+- primary brown: #8B5A24\
+- gold accent: #C28A3A\
+- main text: #2D261F\
+- secondary text: #786E63\
+- border: #DDD1C1\
+- danger: #B84A3A\
+- success: #4E7658\
+\
+Use:\
+\
+- modest corner radii;\
+- fine borders;\
+- subtle shadows;\
+- strong information hierarchy;\
+- consistent 8 px spacing system;\
+- clear section headings;\
+- accessible contrast.\
+\
+Do not:\
+\
+- use emoji as interface icons;\
+- create extremely large empty containers;\
+- overuse rounded cards;\
+- hide important controls behind unexplained icons;\
+- use placeholders as permanent field labels;\
+- require unnecessary manual numbering.\
+\
+==================================================\
+16. RESPONSIVE ADMIN BEHAVIOUR\
+==================================================\
+\
+Desktop:\
+Three-column editor.\
+\
+Tablet:\
+- collapsible left navigator;\
+- centre preview;\
+- right inspector shown as slide-over drawer.\
+\
+Mobile:\
+- do not attempt to display all three columns;\
+- use tabs:\
+  1. Pages\
+  2. Preview\
+  3. Edit\
+- keep Save Draft and Publish accessible;\
+- support touch drag sorting;\
+- use minimum 44\'9648 px touch targets.\
+\
+==================================================\
+17. ACCESSIBILITY\
+==================================================\
+\
+Implement:\
+\
+- semantic HTML;\
+- proper labels;\
+- aria-labels for icon-only buttons;\
+- keyboard-operated drag/reorder alternatives;\
+- visible focus rings;\
+- sufficient contrast;\
+- Escape to close modals;\
+- focus trapping;\
+- screen-reader status announcements for uploads and saves;\
+- reduced-motion support.\
+\
+==================================================\
+18. TECHNICAL REQUIREMENTS\
+==================================================\
+\
+First inspect the current repository, existing admin components, database schema, API routes and public flipbook rendering logic.\
+\
+Reuse existing architecture where safe.\
+\
+Do not create a disconnected static mock if the current project already has functional APIs and components.\
+\
+Before changing code:\
+\
+1. Identify the current page model.\
+2. Identify how flipbook pages are fetched.\
+3. Identify media storage and upload services.\
+4. Identify multilingual data structure.\
+5. Identify publishing status logic.\
+6. Identify current public flipbook page renderer.\
+\
+Create or refactor data structures so that each page has a clear template type.\
+\
+Suggested model:\
+\
+Book \{\
+  id\
+  title\
+  status\
+  publishedAt\
+  updatedAt\
+  pages[]\
+\}\
+\
+BookPage \{\
+  id\
+  bookId\
+  sortOrder\
+  pageSide\
+  templateType\
+  status\
+  categoryId\
+  translations\
+  settings\
+  media\
+\}\
+\
+templateType:\
+\
+- category_cover\
+- six_video_grid\
+\
+For six_video_grid:\
+\
+videoSlots: [\
+  \{\
+    id,\
+    position,\
+    mediaId,\
+    thumbnailId,\
+    serviceId,\
+    title,\
+    description,\
+    duration,\
+    link,\
+    visible,\
+    accessibilityLabel\
+  \}\
+]\
+\
+For category_cover:\
+\
+coverSettings: \{\
+  mediaType,\
+  mediaId,\
+  posterId,\
+  title,\
+  eyebrow,\
+  description,\
+  ctaLabel,\
+  ctaUrl,\
+  alignment,\
+  overlayOpacity,\
+  textColour,\
+  focalPoint\
+\}\
+\
+Use stable IDs.\
+Do not use array indexes as permanent record identifiers.\
+\
+Support optimistic UI carefully and restore previous state if an API request fails.\
+\
+==================================================\
+19. PUBLIC FLIPBOOK COMPATIBILITY\
+==================================================\
+\
+Ensure the redesigned admin remains compatible with the public flipbook.\
+\
+The public renderer must interpret:\
+\
+category_cover:\
+Render editorial category title, description and selected media.\
+\
+six_video_grid:\
+Render a maximum of six videos in a 2 \'d7 3 layout.\
+\
+The public book must:\
+\
+- preserve page order;\
+- skip hidden pages;\
+- support each language;\
+- display poster images before playback;\
+- lazy-load videos;\
+- not autoplay all six videos;\
+- pause videos when a page is turned;\
+- preserve responsive behaviour;\
+- avoid page overflow;\
+- preserve existing flip animations.\
+\
+Do not rewrite the flip animation unless required for compatibility.\
+\
+==================================================\
+20. IMPLEMENTATION PHASES\
+==================================================\
+\
+Work in controlled phases.\
+\
+PHASE 1 \'97 AUDIT\
+Inspect existing files, routes, components, APIs and schemas.\
+Provide a brief implementation plan before editing.\
+\
+PHASE 2 \'97 DATA MODEL\
+Add or refactor page-template and video-slot data structures.\
+Create migrations if needed.\
+\
+PHASE 3 \'97 EDITOR SHELL\
+Build the top toolbar, three-column layout and page navigator.\
+\
+PHASE 4 \'97 TEMPLATE EDITORS\
+Implement Category Cover and Six-Video Grid editors.\
+\
+PHASE 5 \'97 PREVIEW\
+Connect editor fields to the real-time open-book preview.\
+\
+PHASE 6 \'97 MEDIA\
+Connect upload and Media Library selection.\
+\
+PHASE 7 \'97 ORDERING AND PUBLISHING\
+Implement drag sorting, drafts, validation and publishing.\
+\
+PHASE 8 \'97 PUBLIC RENDERER\
+Ensure the public flipbook renders both templates correctly.\
+\
+PHASE 9 \'97 RESPONSIVE AND ACCESSIBILITY\
+Test desktop, tablet, mobile and keyboard behaviour.\
+\
+PHASE 10 \'97 QA\
+Test:\
+- creating a category cover;\
+- creating a six-video grid;\
+- uploading six videos;\
+- reordering videos;\
+- reordering pages;\
+- duplicating pages;\
+- hiding pages;\
+- saving drafts;\
+- publishing;\
+- multilingual switching;\
+- public flipbook playback;\
+- video pause after page turn;\
+- mobile responsiveness.\
+\
+==================================================\
+21. ACCEPTANCE CRITERIA\
+==================================================\
+\
+The work is complete only when:\
+\
+1. Admin can create a Category Cover page.\
+2. Admin can create a Six-Video Grid page.\
+3. Admin can independently manage six video slots.\
+4. Admin can create both pages as one service spread.\
+5. Admin can drag and reorder pages.\
+6. Page numbers update automatically.\
+7. Admin can preview an open-book layout.\
+8. Admin can select elements directly from the preview.\
+9. Admin can save draft and publish.\
+10. Validation prevents incomplete required content.\
+11. Media can be uploaded or selected from Media Library.\
+12. Multilingual content is editable without duplicating pages.\
+13. Hidden pages do not appear publicly.\
+14. Public flipbook correctly displays both templates.\
+15. Videos stop when the user turns the page.\
+16. The editor works on desktop and tablet.\
+17. There are no console errors.\
+18. Existing working flipbook behaviour is not broken.\
+\
+Before coding, explain:\
+\
+- which files will be modified;\
+- whether the database schema needs migration;\
+- how existing page records will be preserved;\
+- how backward compatibility will be handled.\
+\
+Then implement the changes directly in the repository.\
+Do not return only conceptual recommendations.}

@@ -12,7 +12,7 @@ const VietQRPayment = ({ amount, orderInfo }: VietQRPaymentProps) => {
 
   const bankCode = process.env.NEXT_PUBLIC_VIETQR_BANK || 'MB';
   const accountNo = process.env.NEXT_PUBLIC_VIETQR_ACCOUNT || '0123456789';
-  const accountName = process.env.NEXT_PUBLIC_VIETQR_NAME || 'NGAN HA SPA';
+  const accountName = process.env.NEXT_PUBLIC_VIETQR_NAME || 'ORIARETREAT SPA';
   const template = 'qr_only'; 
   
   const qrUrl = `https://img.vietqr.io/image/${bankCode}-${accountNo}-${template}.png?amount=${amount}&addInfo=${encodeURIComponent(orderInfo)}&accountName=${encodeURIComponent(accountName)}`;

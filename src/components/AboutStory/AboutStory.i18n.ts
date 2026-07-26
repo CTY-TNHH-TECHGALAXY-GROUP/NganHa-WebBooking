@@ -17,7 +17,7 @@ export const aboutTexts = {
       },
       {
         heading: 'Hoạt Động Du Lịch',
-        body: 'Xe buýt 2 tầng ngắm cảnh thành phố từ trên cao. Tàu buýt sông hít thở không khí mát mẻ. Ăn tối trên du thuyền thưởng thức đặc sản đa dạng — tất cả ngay trước cửa Spa Ngân Hà.',
+        body: 'Xe buýt 2 tầng ngắm cảnh thành phố từ trên cao. Tàu buýt sông hít thở không khí mát mẻ. Ăn tối trên du thuyền thưởng thức đặc sản đa dạng — tất cả ngay trước cửa ORIARETREAT Spa.',
       },
       {
         heading: 'Linh Hồn Trải Nghiệm',
@@ -49,7 +49,7 @@ export const aboutTexts = {
       },
       {
         heading: 'Tourism Activities',
-        body: 'Double-decker sightseeing buses, river ferries with fresh breezes, and dinner cruises with diverse specialties — all right at the doorstep of Ngan Ha Spa.',
+        body: 'Double-decker sightseeing buses, river ferries with fresh breezes, and dinner cruises with diverse specialties — all right at the doorstep of ORIARETREAT Spa.',
       },
       {
         heading: 'The Soul of Experience',

@@ -96,7 +96,7 @@ export default function MenuTypeSelector({ lang, onSelect, onBack }: Props) {
                     <div className="relative w-full h-full">
                         <Image
                             src="/assets/logos/logo-gold.webp"
-                            alt="Ngan Ha Spa"
+                            alt="ORIARETREAT Spa"
                             fill
                             className="object-contain drop-shadow-[0_0_25px_rgba(234,179,8,0.6)]"
                             priority

@@ -24,11 +24,11 @@
 
   /* Logo */
   --header-logo-gap: 10px;
-  /* Khoang cach icon va chu "Ngan Ha" */
+  /* Khoang cach icon va chu "ORIARETREAT" */
   --header-logo-icon-size: 30px;
   /* Kich thuoc icon */
   --header-logo-name-size: 26px;
-  /* Kich thuoc chu "Ngan Ha" */
+  /* Kich thuoc chu "ORIARETREAT" */
   --header-logo-sub-size: 11px;
   /* Kich thuoc "let us understand you" */
 
@@ -69,10 +69,10 @@
   /* Gian chu badge */
   --hero-sub-spacing: 10px;
   /* Gian chu "HE THONG" */
-  --hero-title-spacing: 8px;
-  /* Gian chu "NGAN HA" */
-  --hero-sub2-spacing: 6px;
-  /* Gian chu "Barbershop & Spa" */
+  --hero-title-spacing: -0.035em;
+  /* Natural luxury serif spacing for "OriaRetreat" */
+  --hero-sub2-spacing: 0.08em;
+  /* Gentle spacing for the lower "spa" line */
 
   /* Countdown timer */
   --hero-countdown-box-radius: 12px;

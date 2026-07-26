@@ -86,7 +86,7 @@ const ServiceBook = () => {
   return (
     <FlipbookFrame
       src={`/flipmenu/index.html?lang=${lang}`}
-      title="Ngan Ha Spa 3D Menu"
+      title="ORIARETREAT Spa 3D Menu"
       isFullscreen={isFullscreen}
       containerRef={containerRef}
       iframeRef={iframeRef}
