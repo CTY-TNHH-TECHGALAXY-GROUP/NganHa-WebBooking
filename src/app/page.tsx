@@ -2,7 +2,7 @@
 
 import Hero from '@/components/Hero/Hero';
 import AboutStory from '@/components/AboutStory/AboutStory';
-import SignatureServices from '@/components/SignatureServices/SignatureServices';
+import BestSeller from '@/components/BestSeller/BestSeller';
 import ServiceBook from '@/components/ServiceBook/ServiceBook';
 
 const HomePage = () => {
@@ -16,7 +16,7 @@ const HomePage = () => {
       {/* Our Story - About Section */}
       <AboutStory />
 
-      <SignatureServices />
+      <BestSeller />
 
       {/* Service Menu - Book flip */}
       <section id="services" className="section-services">

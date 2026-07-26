@@ -1,6 +1,6 @@
 'use client';
 
-const SIGNATURE_SERVICES = [
+const BEST_SELLER_SERVICES = [
   {
     title: 'Body Renewal Ritual',
     category: 'Body Massage',
@@ -27,10 +27,10 @@ const SIGNATURE_SERVICES = [
   },
 ];
 
-const SignatureServices = () => (
-  <section id="best-seller" className="signature-services">
-    <div className="signature-services__inner">
-      <div className="signature-services__intro">
+const BestSeller = () => (
+  <section id="best-seller" className="best-seller-services">
+    <div className="best-seller-services__inner">
+      <div className="best-seller-services__intro">
         <h2>
           Best-seller of
           <br />
@@ -38,20 +38,20 @@ const SignatureServices = () => (
         </h2>
       </div>
 
-      <div className="signature-services__grid">
-        {SIGNATURE_SERVICES.map((service) => (
-          <article className="signature-card" key={service.title}>
-            <img src={service.image} alt={service.title} className="signature-card__image" />
-            <div className="signature-card__content">
+      <div className="best-seller-services__grid">
+        {BEST_SELLER_SERVICES.map((service) => (
+          <article className="best-seller-card" key={service.title}>
+            <img src={service.image} alt={service.title} className="best-seller-card__image" />
+            <div className="best-seller-card__content">
               <span>{service.category}</span>
               <h3>{service.title}</h3>
               <p>{service.description}</p>
-              <div className="signature-card__meta">
+              <div className="best-seller-card__meta">
                 <strong>{service.duration}</strong>
                 <strong>{service.price}</strong>
               </div>
             </div>
-            <a href="/en/new-user/standard/checkout" className="signature-card__action">
+            <a href="/en/new-user/standard/checkout" className="best-seller-card__action">
               Book now
             </a>
           </article>
@@ -61,4 +61,4 @@ const SignatureServices = () => (
   </section>
 );
 
-export default SignatureServices;
+export default BestSeller;
