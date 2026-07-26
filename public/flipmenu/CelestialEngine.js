@@ -4498,6 +4498,8 @@ export class CelestialEngine {
           backdrop.classList.remove("show");
           drawer.setAttribute("aria-hidden", "true");
           document.body.classList.remove("drawer-open");
+          // Tell parent to lower iframe z-index
+          window.parent?.postMessage({ type: "flipmenu:drawer-closed" }, "*");
         }
 
         document.getElementById("drawerClose").addEventListener("click", closeDrawer);
@@ -4550,6 +4552,8 @@ export class CelestialEngine {
           backdrop.classList.add("show");
           drawer.setAttribute("aria-hidden", "false");
           document.body.classList.add("drawer-open");
+          // Tell parent to raise iframe z-index above header/floating buttons
+          window.parent?.postMessage({ type: "flipmenu:drawer-opened" }, "*");
         };
 
         drawerConfirm.addEventListener("click", () => {

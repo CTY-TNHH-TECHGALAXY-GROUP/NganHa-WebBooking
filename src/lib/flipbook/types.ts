@@ -24,7 +24,9 @@ export type FlipbookMessageType =
   | 'flipmenu:add-service-to-cart'
   | 'flipmenu:remove-service-from-cart'
   | 'flipmenu:book-now'
-  | 'flipmenu:place-order';
+  | 'flipmenu:place-order'
+  | 'flipmenu:drawer-opened'
+  | 'flipmenu:drawer-closed';
 
 export type FlipbookMessage<TService = FlipbookServicePayload> = {
   type: FlipbookMessageType;
