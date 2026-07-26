@@ -4509,8 +4509,12 @@ export class CelestialEngine {
           window.parent?.postMessage({ type: "flipmenu:drawer-closed" }, "*");
         }
 
-        document.getElementById("drawerClose").addEventListener("click", closeDrawer);
-        backdrop.addEventListener("click", closeDrawer);
+        document.getElementById("drawerClose").addEventListener("click", () => {
+          closeDrawer();
+        });
+        backdrop.addEventListener("click", () => {
+          closeDrawer();
+        });
 
         function updateDrawerSelection() {
           if (!currentItems || currentItems.length === 0) return;
