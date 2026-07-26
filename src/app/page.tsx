@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useLayoutEffect } from 'react';
 import Hero from '@/components/Hero/Hero';
 import AboutStory from '@/components/AboutStory/AboutStory';
+import SignatureServices from '@/components/SignatureServices/SignatureServices';
 import ServiceBook from '@/components/ServiceBook/ServiceBook';
 
 const HomePage = () => {
@@ -15,6 +15,8 @@ const HomePage = () => {
 
       {/* Our Story - About Section */}
       <AboutStory />
+
+      <SignatureServices />
 
       {/* Service Menu - Book flip */}
       <section id="services" className="section-services">

@@ -28,12 +28,12 @@ export default function CheckoutHeader({ title, backLabel = "Menu", onBack }: Ch
             {/* Branding Row */}
             <div className="px-5 flex items-center justify-between">
                 <h2 className="text-white text-2xl font-bold tracking-tight">
-                    Ngan Ha Spa
+                    ORIARETREAT Spa
                 </h2>
                 {/* Logo Placeholder */}
                 <img
                     src="/assets/logos/logo-gold.webp"
-                    alt="Ngan Ha Spa Logo"
+                    alt="ORIARETREAT Spa Logo"
                     className="w-12 h-12 object-contain opacity-90"
                     onError={(e) => { e.currentTarget.src = '/assets/logos/spaden.png' }}
                 />

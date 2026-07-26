@@ -3,6 +3,7 @@ import { Playfair_Display, Inter } from "next/font/google";
 import LayoutWrapper from "@/components/LayoutWrapper";
 import { TranslationProvider } from "@/components/TranslationProvider";
 import { SystemSettingsProvider } from "@/components/SystemSettingsProvider";
+import { getSupabaseAdmin } from "@/lib/supabase-server";
 import "./globals.css";
 
 // 🔧 FONT CONFIGURATION
@@ -21,12 +22,13 @@ const inter = Inter({
   display: "swap",
 });
 
-import { getSupabaseAdmin } from '@/lib/supabase-server';
 export async function generateMetadata(): Promise<Metadata> {
   let seo = {
-    title: "Ngân Hà Barbershop & Spa | Premium Spa in District 1, HCMC",
-    description: "Experience premium spa, barbershop, and wellness services at Ngan Ha. Located at 11 Ngo Duc Ke & 6B Thi Sach, District 1, Ho Chi Minh City. Book online now!",
-    keywords: "spa district 1, barbershop HCMC, Ngan Ha Spa",
+    title: "ORIARETREAT | Premium Spa in District 1, HCMC",
+    description:
+      "Experience premium spa, barbershop, and wellness services at ORIARETREAT. Located at 11 Ngo Duc Ke & 6B Thi Sach, District 1, Ho Chi Minh City. Book online now!",
+    keywords:
+      "spa district 1, barbershop HCMC, ORIARETREAT Spa, massage Saigon, ear cleaning spa, đặt lịch spa, spa Quận 1",
     ogImage: "https://i.ibb.co/fs2MBD4/hero-spa-bg.jpg"
   };
 
@@ -43,7 +45,9 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: seo.title,
     description: seo.description,
-    keywords: seo.keywords.split(',').map((k: string) => k.trim()),
+    keywords: Array.isArray(seo.keywords)
+      ? seo.keywords
+      : seo.keywords.split(',').map((k: string) => k.trim()),
     openGraph: {
       title: seo.title,
       description: seo.description,

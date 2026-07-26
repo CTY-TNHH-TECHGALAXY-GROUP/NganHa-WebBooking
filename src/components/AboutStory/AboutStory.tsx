@@ -21,7 +21,7 @@ const VIEWPORT_THRESHOLD = 0.1;
 
 const GALLERY_IMAGES = [
   { src: 'https://i.ibb.co/7tJW9WYR/about-cruise.jpg', caption: 'Buổi tối trên Saigon Princess' },
-  { src: 'https://i.ibb.co/W48KXqCY/about-treatment.jpg', caption: 'Bấm huyệt chân tại Ngân Hà' },
+  { src: 'https://i.ibb.co/W48KXqCY/about-treatment.jpg', caption: 'Bấm huyệt chân tại ORIARETREAT' },
   { src: 'https://i.ibb.co/b5ZLkbVt/about-street.jpg', caption: 'Tham quan thành phố dưới Saigon Waterbus' },
   { src: 'https://images.pexels.com/photos/14883151/pexels-photo-14883151.jpeg?auto=compress&cs=tinysrgb&w=600', caption: 'Ngắm Landmark 81 & Bitexco lung linh' },
   { src: 'https://images.pexels.com/photos/3757942/pexels-photo-3757942.jpeg?auto=compress&cs=tinysrgb&w=600', caption: 'Thư giãn massage đá nóng chuyên sâu' },
@@ -67,7 +67,7 @@ const AboutStory = () => {
           <div className="about-header-brand">
             <span className="about-header-system">{t('about_story', 'system') || 'Hệ thống'}</span>
             <h2 className="about-header-name">
-              Ngân Hà
+              ORIARETREAT
               <br />
               <span className="about-header-sub">Barbershop &amp; Spa</span>
             </h2>
@@ -174,7 +174,7 @@ const AboutStory = () => {
                   className="about-bullet-content"
                   dangerouslySetInnerHTML={{ 
                     __html: t('about_story', 'desc_3') || `
-                      <div class="about-bullet"><span class="about-bullet-dot"></span><p>Bên cạnh những trải nghiệm thị giác và ẩm thực du khách không nên bỏ lỡ mà nhất định phải thử qua hoạt động phục hồi cơ thể. Đó chính là <em class="about-highlight">bấm huyệt chân và Aroma toàn thân</em> được thực hiện bằng đôi bàn tay của các nghệ nhân kết hợp với xông hơi khô, nơi mọi giác quan được đánh thức, một tách trà nóng, một âm điệu spa du dương — đó là linh hồn của sự trải nghiệm mà Hệ Thống Ngân Hà Barbershop &amp; Spa luôn hướng đến.</p></div>
+                      <div class="about-bullet"><span class="about-bullet-dot"></span><p>Bên cạnh những trải nghiệm thị giác và ẩm thực du khách không nên bỏ lỡ mà nhất định phải thử qua hoạt động phục hồi cơ thể. Đó chính là <em class="about-highlight">bấm huyệt chân và Aroma toàn thân</em> được thực hiện bằng đôi bàn tay của các nghệ nhân kết hợp với xông hơi khô, nơi mọi giác quan được đánh thức, một tách trà nóng, một âm điệu spa du dương — đó là linh hồn của sự trải nghiệm mà ORIARETREAT luôn hướng đến.</p></div>
                     ` 
                   }} 
                 />

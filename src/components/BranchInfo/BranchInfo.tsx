@@ -46,7 +46,7 @@ const BranchInfo = () => {
             transition={{ delay: 0.1 }}
             className="text-4xl md:text-5xl font-serif text-white tracking-wide"
           >
-            Visit <span className="italic text-[#D4AF37]">Ngan Ha</span>
+            Visit <span className="italic text-[#D4AF37]">ORIARETREAT</span>
           </motion.h2>
         </div>
 

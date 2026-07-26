@@ -3,76 +3,28 @@
 
 import { useMemo, useState, useEffect, useCallback, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { MapPin, Clock, ExternalLink, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
+import { MapPin, Clock, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useTranslation } from '@/components/TranslationProvider';
 import { useSystemSettings } from '@/components/SystemSettingsProvider';
 import { BRANCH_LIST } from '@/data/branches';
 import { Locale } from '@/lib/constants';
 import {
-  heroStagger, fadeInUp, fadeInDown, heroTitle, scaleIn, branchEntrance,
+  heroStagger, fadeInUp, heroTitle, scaleIn, branchEntrance,
 } from './Hero.animation';
 
 // 🔧 UI CONFIGURATION
 const HERO_PARTICLE_COUNT = 30;
-const COUNTDOWN_HOURS = 24;
 
 // 🔧 TEXT CONTENT
 const HERO_TEXT = {
   badge: '✦ Premium Spa & Barbershop ✦',
-  subtitle: 'Hệ Thống',
-  title: 'NGÂN HÀ',
-  subTitle2: 'Barbershop & Spa',
-  tagline: 'Nơi nghệ thuật chăm sóc gặp gỡ sự thư giãn đích thực',
-  cta1: 'Khám Phá Dịch Vụ',
+  subtitle: '',
+  title: 'Oria Retreat',
+  subTitle2: 'Welcome to',
+  tagline: 'SPA',
+  cta1: 'BEST-SELLER',
   cta2: 'Đặt Lịch Ngay',
   scrollHint: 'Cuộn xuống để khám phá',
-  countdown: {
-    title: 'Ưu đãi đặc biệt kết thúc sau:',
-    days: 'Ngày',
-    hours: 'Giờ',
-    minutes: 'Phút',
-    seconds: 'Giây',
-  },
-};
-
-// ─── useCountdown Hook ───
-const useCountdown = () => {
-  const getTargetTime = useCallback(() => {
-    const stored = typeof window !== 'undefined'
-      ? localStorage.getItem('hero-countdown-target')
-      : null;
-
-    if (stored) {
-      const target = parseInt(stored, 10);
-      if (target > Date.now()) return target;
-    }
-
-    const target = Date.now() + COUNTDOWN_HOURS * 60 * 60 * 1000;
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('hero-countdown-target', target.toString());
-    }
-    return target;
-  }, []);
-
-  const [targetTime] = useState(getTargetTime);
-  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-
-  useEffect(() => {
-    const tick = () => {
-      const diff = Math.max(0, targetTime - Date.now());
-      setTimeLeft({
-        days: Math.floor(diff / (1000 * 60 * 60 * 24)),
-        hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
-        minutes: Math.floor((diff / (1000 * 60)) % 60),
-        seconds: Math.floor((diff / 1000) % 60),
-      });
-    };
-    tick();
-    const interval = setInterval(tick, 1000);
-    return () => clearInterval(interval);
-  }, [targetTime]);
-
-  return timeLeft;
 };
 
 // ═══════════════════════════════════════════
@@ -80,17 +32,22 @@ const useCountdown = () => {
 // ═══════════════════════════════════════════
 
 const DEFAULT_HOMEPAGE_VIDEOS = [
-  { id: '1', url: '/videos/video1.mp4', poster: 'https://i.ibb.co/fs2MBD4/hero-spa-bg.jpg' },
-  { id: '0720', url: '/videos/0720.mp4', poster: 'https://i.ibb.co/fs2MBD4/hero-spa-bg.jpg' },
+  { id: 'foot-massage', url: '/videos/video1.mp4', poster: 'https://i.ibb.co/fs2MBD4/hero-spa-bg.jpg' },
+  { id: 'space-v1', url: '/videos/space/v1-2.mp4', poster: 'https://i.ibb.co/fs2MBD4/hero-spa-bg.jpg' },
+  { id: 'space-v3', url: '/videos/space/v3.mp4', poster: 'https://i.ibb.co/fs2MBD4/hero-spa-bg.jpg' },
+  { id: 'space-v4', url: '/videos/space/v4-r.mp4', poster: 'https://i.ibb.co/fs2MBD4/hero-spa-bg.jpg' },
+  { id: 'space-stair', url: '/videos/space/stair-resize.mp4', poster: 'https://i.ibb.co/fs2MBD4/hero-spa-bg.jpg' },
+  { id: 'space-toilet', url: '/videos/space/toilet-resize.mp4', poster: 'https://i.ibb.co/fs2MBD4/hero-spa-bg.jpg' },
+  { id: 'space-yumi', url: '/videos/space/yumi.mp4', poster: 'https://i.ibb.co/fs2MBD4/hero-spa-bg.jpg' },
 ];
 
 const Hero = () => {
   const { t, currentLang } = useTranslation();
   const { systemSettings, getLocalizedText } = useSystemSettings();
-  const countdown = useCountdown();
   const [activeVideoIndex, setActiveVideoIndex] = useState(0);
   const [loadedIndices, setLoadedIndices] = useState<number[]>([0]);
   const [homepageVideos, setHomepageVideos] = useState<any[]>(DEFAULT_HOMEPAGE_VIDEOS);
+  const videoCount = homepageVideos.length;
 
   // Mảng hiển thị branch
   const displayBranches = BRANCH_LIST.map((branch, index) => {
@@ -111,45 +68,22 @@ const Hero = () => {
       .then(json => {
         if (json.success && json.data?.length > 0) {
           setHomepageVideos(json.data.sort((a: any, b: any) => a.sort_order - b.sort_order));
+          setActiveVideoIndex(0);
+          setLoadedIndices([0]);
         }
       })
       .catch(err => console.error('Error fetching hero videos:', err));
   }, []);
 
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
-  const touchStartX = useRef(0);
-  const touchEndX = useRef(0);
-  const lastScrollTime = useRef(0);
 
   const handleNextVideo = useCallback(() => {
-    setActiveVideoIndex((prev) => (prev + 1) % homepageVideos.length);
-  }, []);
+    setActiveVideoIndex((prev) => (prev + 1) % Math.max(videoCount, 1));
+  }, [videoCount]);
 
   const handlePrevVideo = useCallback(() => {
-    setActiveVideoIndex((prev) => (prev - 1 + homepageVideos.length) % homepageVideos.length);
-  }, []);
-
-  // Swipe detection
-  const handleTouchStart = (e: React.TouchEvent) => {
-    touchStartX.current = e.targetTouches[0].clientX;
-    touchEndX.current = e.targetTouches[0].clientX;
-  };
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    touchEndX.current = e.targetTouches[0].clientX;
-  };
-
-  const handleTouchEnd = () => {
-    const diffX = touchStartX.current - touchEndX.current;
-    const minSwipeDistance = 50;
-    if (Math.abs(diffX) > minSwipeDistance) {
-      if (diffX > 0) {
-        handleNextVideo();
-      } else {
-        handlePrevVideo();
-      }
-    }
-  };
+    setActiveVideoIndex((prev) => (prev - 1 + Math.max(videoCount, 1)) % Math.max(videoCount, 1));
+  }, [videoCount]);
 
   // Lazy load video index
   useEffect(() => {
@@ -173,34 +107,6 @@ const Hero = () => {
       }
     });
   }, [activeVideoIndex, loadedIndices]);
-
-  // Horizontal scroll trackpad detection with debounce
-  useEffect(() => {
-    const handleWheel = (e: WheelEvent) => {
-      const now = Date.now();
-      if (now - lastScrollTime.current < 800) return;
-
-      // Detect horizontal scroll (trackpad)
-      if (Math.abs(e.deltaX) > 20) {
-        lastScrollTime.current = now;
-        if (e.deltaX > 0) {
-          handleNextVideo();
-        } else {
-          handlePrevVideo();
-        }
-      }
-    };
-
-    const element = document.getElementById('hero');
-    if (element) {
-      element.addEventListener('wheel', handleWheel, { passive: true });
-    }
-    return () => {
-      if (element) {
-        element.removeEventListener('wheel', handleWheel);
-      }
-    };
-  }, [handleNextVideo, handlePrevVideo]);
 
   // Memoize particles to avoid hydration mismatch
   const particles = useMemo(() =>
@@ -231,15 +137,13 @@ const Hero = () => {
       <div className="hero-gradient-bg" />
 
       {/* Background Videos with Lazy-load & Cross-fade */}
-      <div 
-        className="hero-bg"
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-      >
+      <div className="hero-bg">
         {homepageVideos.map((video, idx) => {
           const isActive = idx === activeVideoIndex;
           const isLoaded = loadedIndices.includes(idx);
+          const videoUrl = video.url || video.media_url;
+          const posterUrl = video.poster || video.poster_url || 'https://i.ibb.co/fs2MBD4/hero-spa-bg.jpg';
+
           return (
             <div
               key={video.id}
@@ -258,12 +162,13 @@ const Hero = () => {
                     videoRefs.current[idx] = el;
                   }}
                   className="hero-video"
-                  src={video.url}
-                  poster={video.poster}
+                  src={videoUrl}
+                  poster={posterUrl}
                   autoPlay={isActive}
                   muted
                   playsInline
-                  onEnded={handleNextVideo}
+                  loop={videoCount === 1}
+                  onEnded={videoCount > 1 ? handleNextVideo : undefined}
                   style={{
                     width: '100%',
                     height: '100%',
@@ -273,7 +178,7 @@ const Hero = () => {
               ) : (
                 <div
                   className="hero-image"
-                  style={{ backgroundImage: `url(${video.poster})` }}
+                  style={{ backgroundImage: `url(${posterUrl})` }}
                 />
               )}
             </div>
@@ -291,9 +196,14 @@ const Hero = () => {
       >
 
 
-        {/* Subtitle */}
-        <motion.span className="hero-cinematic-sub" variants={fadeInUp}>
-          {HERO_TEXT.subtitle}
+        {HERO_TEXT.subtitle ? (
+          <motion.span className="hero-cinematic-sub" variants={fadeInUp}>
+            {HERO_TEXT.subtitle}
+          </motion.span>
+        ) : null}
+
+        <motion.span className="hero-cinematic-sub2" variants={fadeInUp}>
+          {HERO_TEXT.subTitle2}
         </motion.span>
 
         {/* Main Title */}
@@ -301,30 +211,16 @@ const Hero = () => {
           {HERO_TEXT.title}
         </motion.h1>
 
-        {/* Sub Title 2 */}
-        <motion.span className="hero-cinematic-sub2" variants={fadeInUp}>
-          {HERO_TEXT.subTitle2}
-        </motion.span>
+        <motion.div className="hero-cinematic-divider" variants={scaleIn} />
 
-
-
-        {/* Countdown */}
-        <motion.div className="hero-countdown" variants={fadeInUp}>
-          <div className="hero-countdown__label">{t('hero_section', 'ending_soon') || HERO_TEXT.countdown.title}</div>
-          <div className="hero-countdown__boxes">
-            {Object.entries(countdown).map(([unit, value]) => (
-              <div key={unit} className="hero-countdown__unit">
-                <span className="hero-countdown__num">{value.toString().padStart(2, '0')}</span>
-                <span className="hero-countdown__text">{HERO_TEXT.countdown[unit as keyof typeof HERO_TEXT.countdown] || unit}</span>
-              </div>
-            ))}
-          </div>
-        </motion.div>
+        <motion.p className="hero-cinematic-tagline" variants={fadeInUp}>
+          {HERO_TEXT.tagline}
+        </motion.p>
 
         {/* CTA Buttons */}
         <motion.div className="hero-ctas" variants={fadeInUp}>
-          <a href="#services" className="hero-cta-btn hero-cta-primary hero-cta--pill">
-            {t('hero_section', 'explore') || HERO_TEXT.cta1}
+          <a href="#best-seller" className="hero-cta-btn hero-cta-primary hero-cta--pill">
+            {HERO_TEXT.cta1}
           </a>
           <a href={`/${currentLang}/new-user/standard/checkout`} className="hero-cta-btn hero-cta-secondary hero-cta--pill">
             {t('hero_section', 'book_now') || HERO_TEXT.cta2}

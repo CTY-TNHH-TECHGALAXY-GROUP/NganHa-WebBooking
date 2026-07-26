@@ -21,12 +21,12 @@ const Footer = () => {
           <h4 className="font-serif text-[#D4AF37] text-lg font-semibold tracking-wide">Chi nhánh</h4>
           <ul className="text-sm text-[rgba(255,255,255,0.6)] space-y-3">
             <li>
-              <strong className="text-white">Ngan Ha Barbershop</strong><br/>
+              <strong className="text-white">ORIARETREAT Barbershop</strong><br/>
               11 Ngô Đức Kế, Q.1, TP.HCM<br/>
               9:00 AM - 12:00 AM
             </li>
             <li>
-              <strong className="text-white">Ngan Ha Spa</strong><br/>
+              <strong className="text-white">ORIARETREAT Spa</strong><br/>
               6B Thi Sách, Q.1, TP.HCM<br/>
               9:00 AM - 12:00 AM
             </li>
@@ -37,14 +37,14 @@ const Footer = () => {
           <h4 className="font-serif text-[#D4AF37] text-lg font-semibold tracking-wide">Liên hệ</h4>
           <ul className="text-sm text-[rgba(255,255,255,0.6)] space-y-3">
             <li>Hotline: <a href="tel:+84" className="text-[#D4AF37] hover:underline">+84</a></li>
-            <li>Fanpage: Ngân Hà Barbershop & Spa</li>
+            <li>Fanpage: ORIARETREAT</li>
           </ul>
         </div>
       </div>
       
       <div className="max-w-6xl mx-auto mt-12 pt-6 border-t border-[rgba(255,255,255,0.05)] text-center">
         <p className="text-xs text-[rgba(255,255,255,0.4)]">
-          &copy; {new Date().getFullYear()} Ngan Ha Spa. All rights reserved.
+          &copy; {new Date().getFullYear()} ORIARETREAT Spa. All rights reserved.
         </p>
       </div>
     </footer>

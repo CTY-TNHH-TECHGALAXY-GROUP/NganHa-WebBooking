@@ -13,16 +13,48 @@ import { useHeaderLogic, LANGUAGES } from './Header.logic';
 const HEADER_TRANSITION_DURATION = 0.3;
 const MOBILE_MENU_DURATION = 0.25;
 
+type NavChildItem = {
+  id?: string;
+  label: string;
+  href: string;
+  isComingSoon?: boolean;
+};
+
+type NavItem = {
+  id?: string;
+  label: string;
+  href: string;
+  target?: string;
+  isComingSoon?: boolean;
+  children?: NavChildItem[];
+};
+
 // Navigation items matching Canva design
-// These will be translated dynamically below
-const NAV_ITEMS_CONFIG = [
-  { id: 'home', href: '/' },
-  { id: 'service', href: '#services' },
-  { id: 'shop', href: '#shop' },
-  { id: 'service_area', href: '#branches' },
-  { id: 'blogs', href: '/blog.html', target: '_blank' },
-  { id: 'academy', href: '#academy', isComingSoon: true },
-  { id: 'spa_home', href: '#hero', isComingSoon: true },
+const NAV_ITEMS: NavItem[] = [
+  { id: 'home', label: 'Home', href: '/' },
+  {
+    id: 'service',
+    label: 'Service',
+    href: '#best-seller',
+    children: [
+      { id: 'best_seller', label: 'Best-seller', href: '#best-seller' },
+      { id: 'service_menu', label: 'Service Menu', href: '#services' },
+      { id: 'book_now', label: 'Book Now', href: '/en/new-user/standard/checkout' },
+    ],
+  },
+  { id: 'history', label: 'History', href: '#branches' },
+  { id: 'blogs', label: 'Blogs', href: '/blog.html', target: '_blank' },
+  { id: 'academy', label: 'Academy', href: '#academy', isComingSoon: true },
+  { id: 'spa_home', label: 'Spa home', href: '#hero', isComingSoon: true },
+  {
+    id: 'oriafarm',
+    label: 'OriaFarm',
+    href: '#shop',
+    children: [
+      { id: 'oriafarm_store', label: 'OriaFarm Store', href: '#shop' },
+      { id: 'homestay', label: 'Homestay', href: '#homestay', isComingSoon: true },
+    ],
+  },
 ];
 
 const CART_COPY = {
@@ -128,31 +160,56 @@ const Header = () => {
               <a href="/" className="header-logo">
                 <span className="header-logo-icon">✦</span>
                 <div className="header-logo-text">
-                  <span className="header-logo-name">Ngân Hà</span>
+                  <span className="header-logo-name">OriaRetreat</span>
+                  <span className="header-logo-sub">spa</span>
                 </div>
               </a>
             </div>
 
             {/* Desktop Navigation Centered */}
             <nav className="header-nav-desktop">
-              {NAV_ITEMS_CONFIG.map((item) => {
-                const label = t('header_menu', item.id) || item.id;
+              {NAV_ITEMS.map((item) => {
+                const label = item.id ? t('header_menu', item.id) || item.label : item.label;
+
                 return (
-                <a 
-                  key={item.href} 
-                  href={item.href} 
-                  target={item.target || undefined}
-                  className={`header-nav-link ${item.isComingSoon ? 'dimmed' : ''}`}
-                >
-                  {item.isComingSoon ? (
-                    <span className="nav-item-coming-soon">
-                      <span className="nav-text-primary">{label}</span>
-                      <span className="nav-text-secondary">Coming Soon</span>
-                    </span>
-                  ) : (
-                    label
+                <div key={item.href} className={`header-nav-item ${item.children ? 'has-subnav' : ''}`}>
+                  <a
+                    href={item.href}
+                    target={item.target || undefined}
+                    className={`header-nav-link ${item.isComingSoon ? 'dimmed' : ''}`}
+                  >
+                    {item.isComingSoon ? (
+                      <span className="nav-item-coming-soon">
+                        <span className="nav-text-primary">{label}</span>
+                        <span className="nav-text-secondary">Coming Soon</span>
+                      </span>
+                    ) : (
+                      <>
+                        {label}
+                        {item.children && <ChevronDown size={13} className="header-nav-chevron" />}
+                      </>
+                    )}
+                  </a>
+                  {item.children && (
+                    <div className="header-subnav" aria-label={`${label} submenu`}>
+                      {item.children.map((child) => {
+                        const childLabel = child.id ? t('header_menu', child.id) || child.label : child.label;
+
+                        return (
+                          <a
+                            key={child.href}
+                            href={child.href}
+                            className={`header-subnav__link ${child.isComingSoon ? 'is-coming-soon' : ''}`}
+                            aria-disabled={child.isComingSoon ? 'true' : undefined}
+                          >
+                            {childLabel}
+                            {child.isComingSoon && <span>Coming Soon</span>}
+                          </a>
+                        );
+                      })}
+                    </div>
                   )}
-                </a>
+                </div>
               )})}
             </nav>
 
@@ -236,8 +293,9 @@ const Header = () => {
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: MOBILE_MENU_DURATION }}
             >
-              {NAV_ITEMS_CONFIG.map((item) => {
-                const label = t('header_menu', item.id) || item.id;
+              {NAV_ITEMS.map((item) => {
+                const label = item.id ? t('header_menu', item.id) || item.label : item.label;
+
                 return (
                 <div key={item.href} className="mobile-nav-link-wrapper">
                   <a
@@ -250,6 +308,21 @@ const Header = () => {
                   </a>
                   {item.isComingSoon && (
                     <span className="coming-soon-badge">Coming Soon</span>
+                  )}
+                  {item.children && (
+                    <div className="mobile-subnav">
+                      {item.children.map((child) => (
+                        <a
+                          key={child.href}
+                          href={child.href}
+                          className={`mobile-subnav__link ${child.isComingSoon ? 'is-coming-soon' : ''}`}
+                          onClick={toggleMobileMenu}
+                        >
+                          {child.id ? t('header_menu', child.id) || child.label : child.label}
+                          {child.isComingSoon && <span>Coming Soon</span>}
+                        </a>
+                      ))}
+                    </div>
                   )}
                 </div>
               )})}
