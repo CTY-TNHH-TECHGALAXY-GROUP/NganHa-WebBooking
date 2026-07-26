@@ -4498,6 +4498,10 @@ export class CelestialEngine {
           backdrop.classList.remove("show");
           drawer.setAttribute("aria-hidden", "true");
           document.body.classList.remove("drawer-open");
+          // Restore pointer events on 3D canvas and overlays
+          document.querySelectorAll("#cel-scene-celestial, #scene, #galaxy-canvas, .hud, #cel-sheetOverlay").forEach((el) => {
+            el.style.pointerEvents = "";
+          });
           // Tell parent to lower iframe z-index
           window.parent?.postMessage({ type: "flipmenu:drawer-closed" }, "*");
         }
@@ -4552,6 +4556,10 @@ export class CelestialEngine {
           backdrop.classList.add("show");
           drawer.setAttribute("aria-hidden", "false");
           document.body.classList.add("drawer-open");
+          // Disable pointer events on 3D canvas and overlays so clicks reach drawer
+          document.querySelectorAll("#cel-scene-celestial, #scene, #galaxy-canvas, .hud, #cel-sheetOverlay").forEach((el) => {
+            el.style.pointerEvents = "none";
+          });
           // Tell parent to raise iframe z-index above header/floating buttons
           window.parent?.postMessage({ type: "flipmenu:drawer-opened" }, "*");
         };
