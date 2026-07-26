@@ -4602,6 +4602,17 @@ export class CelestialEngine {
         const celestialApp = document.getElementById("celestial-app");
         if (celestialApp && celestialApp.style.display === "none") return;
         
+        // EARLY RETURN: If click lands on Duration Drawer or its backdrop,
+        // skip ALL 3D logic (raycaster, goBack, selectCategory) entirely.
+        if (event.target.closest('.duration-drawer') || event.target.closest('.drawer-backdrop')) {
+          return;
+        }
+        
+        // Also skip if drawer is open (body has drawer-open class)
+        if (document.body.classList.contains('drawer-open')) {
+          return;
+        }
+
         console.log("[DEBUG] Window pointerup triggered! Target:", event.target);
         
         if (event.clientX !== undefined) {
@@ -4631,7 +4642,7 @@ export class CelestialEngine {
         
         // Only go back if we missed all planets and didn't click a UI button
         if (activeFocusMode()) {
-           const isUI = event.target.closest('.hud') || event.target.closest('.layout-editor') || event.target.closest('.build-mark') || event.target.closest('.duration-drawer') || event.target.closest('.drawer-backdrop');
+           const isUI = event.target.closest('.hud') || event.target.closest('.layout-editor') || event.target.closest('.build-mark');
            if (!isUI) {
                goBack();
            }
