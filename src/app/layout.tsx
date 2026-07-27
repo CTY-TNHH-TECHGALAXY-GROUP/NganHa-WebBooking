@@ -24,11 +24,11 @@ const inter = Inter({
 
 export async function generateMetadata(): Promise<Metadata> {
   let seo = {
-    title: "ORIARETREAT | Premium Spa in District 1, HCMC",
+    title: "ORIA SPA | Premium Spa in District 1, HCMC",
     description:
-      "Experience premium spa, barbershop, and wellness services at ORIARETREAT. Located at 11 Ngo Duc Ke & 6B Thi Sach, District 1, Ho Chi Minh City. Book online now!",
+      "Experience premium spa, barbershop, and wellness services at ORIA SPA. Located at 11 Ngo Duc Ke & 6B Thi Sach, District 1, Ho Chi Minh City. Book online now!",
     keywords:
-      "spa district 1, barbershop HCMC, ORIARETREAT Spa, massage Saigon, ear cleaning spa, đặt lịch spa, spa Quận 1",
+      "spa district 1, barbershop HCMC, ORIA SPA, massage Saigon, ear cleaning spa, đặt lịch spa, spa Quận 1",
     ogImage: "https://i.ibb.co/fs2MBD4/hero-spa-bg.jpg"
   };
 

@@ -529,7 +529,7 @@ export class FlipMenu {
 
         if (pageIndex === 0) {
           ctx.font = 'italic 80px "Cormorant Garamond", serif';
-          ctx.fillText('ORIARETREAT Spa', canvas.width / 2, 500);
+          ctx.fillText('ORIA SPA', canvas.width / 2, 500);
           ctx.font = '30px Inter, sans-serif';
           ctx.fillText('Welcome to tranquility', canvas.width / 2, 600);
 

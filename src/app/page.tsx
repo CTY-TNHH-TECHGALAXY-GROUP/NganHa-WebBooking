@@ -1,7 +1,6 @@
 'use client';
 
 import Hero from '@/components/Hero/Hero';
-import AboutStory from '@/components/AboutStory/AboutStory';
 import BestSeller from '@/components/BestSeller/BestSeller';
 import ServiceBook from '@/components/ServiceBook/ServiceBook';
 
@@ -12,9 +11,6 @@ const HomePage = () => {
     <main>
       {/* Hero Section - Fullscreen with video/image background */}
       <Hero />
-
-      {/* Our Story - About Section */}
-      <AboutStory />
 
       <BestSeller />
 

@@ -17,7 +17,7 @@ import {
 // 🔧 UI CONFIGURATION
 const ANIMATION_DURATION = 300;
 const BRANCH_LIST = [
-  { id: 'barbershop', name: 'ORIARETREAT Barbershop', address: '11 Ngô Đức Kế, P. Bến Nghé, Q.1, TP.HCM' },
+  { id: 'barbershop', name: 'ORIA SPA Barbershop', address: '11 Ngô Đức Kế, P. Bến Nghé, Q.1, TP.HCM' },
 ];
 const TIME_SLOTS = [
   '09:00', '09:30', '10:00', '10:30', '11:00', '11:30',

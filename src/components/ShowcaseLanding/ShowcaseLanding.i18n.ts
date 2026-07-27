@@ -56,14 +56,14 @@ export const t = {
     ],
     solution: {
       title: 'Giải pháp của bạn nằm ở đây.',
-      desc: 'ORIARETREAT mang đến không gian sang trọng giữa lòng Quận 1, nơi bạn được thư giãn hoàn toàn với đội ngũ KTV chuyên nghiệp trên 10 năm kinh nghiệm.',
+      desc: 'ORIA SPA mang đến không gian sang trọng giữa lòng Quận 1, nơi bạn được thư giãn hoàn toàn với đội ngũ KTV chuyên nghiệp trên 10 năm kinh nghiệm.',
     },
   },
 
   // ─── Section 3: Feature Grid ───
   features: {
     badge: 'TRẢI NGHIỆM CAO CẤP',
-    title: 'Tại sao khách hàng yêu thích\nORIARETREAT?',
+    title: 'Tại sao khách hàng yêu thích\nORIA SPA?',
     items: [
       {
         icon: 'CalendarCheck',
@@ -269,7 +269,7 @@ export const t = {
         a: 'Có, chúng tôi khuyến khích đặt lịch trước qua website hoặc Zalo để đảm bảo bạn có slot và KTV yêu thích. Tuy nhiên, walk-in cũng được chào đón nếu còn chỗ.',
       },
       {
-        q: 'ORIARETREAT Spa mở cửa đến mấy giờ?',
+        q: 'ORIA SPA mở cửa đến mấy giờ?',
         a: 'Chúng tôi hoạt động từ 9:00 sáng đến 12:00 đêm mỗi ngày, kể cả cuối tuần và ngày lễ. Last order lúc 22:30.',
       },
       {
@@ -298,7 +298,7 @@ export const t = {
   // ─── Section 8: Blog Preview ───
   blog: {
     badge: 'TIN TỨC & MẸO HAY',
-    title: 'Câu chuyện từ ORIARETREAT',
+    title: 'Câu chuyện từ ORIA SPA',
     viewAll: 'Xem tất cả bài viết →',
     items: [
       {
@@ -312,15 +312,15 @@ export const t = {
       {
         title: 'Ear Cleaning: Nghệ Thuật Lấy Ráy Tai Từ Xứ Trung Hoa',
         excerpt:
-          'Tìm hiểu lịch sử hàng trăm năm của nghệ thuật lấy ráy tai và tại sao nó trở thành dịch vụ được yêu thích nhất tại ORIARETREAT...',
+          'Tìm hiểu lịch sử hàng trăm năm của nghệ thuật lấy ráy tai và tại sao nó trở thành dịch vụ được yêu thích nhất tại ORIA SPA...',
         category: 'Văn hóa',
         readTime: '7 phút đọc',
         date: '10 Tháng 3, 2026',
       },
       {
-        title: 'Top 3 Lý Do Du Khách Quốc Tế Chọn ORIARETREAT Spa',
+        title: 'Top 3 Lý Do Du Khách Quốc Tế Chọn ORIA SPA',
         excerpt:
-          'Với vị trí đắc địa tại Quận 1, dịch vụ 5 ngôn ngữ và đội ngũ KTV chuyên nghiệp, ORIARETREAT đã chinh phục du khách từ hơn 20 quốc gia...',
+          'Với vị trí đắc địa tại Quận 1, dịch vụ 5 ngôn ngữ và đội ngũ KTV chuyên nghiệp, ORIA SPA đã chinh phục du khách từ hơn 20 quốc gia...',
         category: 'Review',
         readTime: '4 phút đọc',
         date: '5 Tháng 3, 2026',
@@ -336,14 +336,14 @@ export const t = {
       'Liên hệ ngay hoặc đặt lịch online để nhận ưu đãi đặc biệt dành riêng cho bạn.',
     branches: [
       {
-        name: 'ORIARETREAT Barbershop',
+        name: 'ORIA SPA Barbershop',
         address: '11 Ngô Đức Kế, P. Sài Gòn, Quận 1, TP.HCM',
         hours: '9:00 - 00:00 hàng ngày',
         phone: '028 392 509 25',
         mapUrl: 'https://maps.google.com/?q=11+Ngo+Duc+Ke+Quan+1',
       },
       {
-        name: 'ORIARETREAT Spa',
+        name: 'ORIA SPA',
         address: '6B Thi Sách, Bến Nghé, Quận 1, TP.HCM',
         hours: '9:00 - 00:00 hàng ngày',
         phone: '028 392 509 25',

@@ -7,8 +7,8 @@
 import BookingPage from './BookingPage';
 
 export const metadata = {
-  title: 'Đặt Lịch | ORIARETREAT',
-  description: 'Đặt lịch trực tuyến tại ORIARETREAT Spa — chọn dịch vụ, thời gian và chi nhánh.',
+  title: 'Đặt Lịch | ORIA SPA',
+  description: 'Đặt lịch trực tuyến tại ORIA SPA — chọn dịch vụ, thời gian và chi nhánh.',
 };
 
 const Page = () => {

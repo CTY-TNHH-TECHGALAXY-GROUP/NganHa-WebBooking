@@ -3568,7 +3568,7 @@ export class CelestialEngine {
         const media = item.media || serviceMediaFromSource(item, image.src, image.alt || item.name);
         const src = media.src || image.src || "https://placehold.co/360x220?text=Ngan+Ha+Spa";
         const poster = media.poster || image.src || src;
-        const alt = media.alt || image.alt || item.name || "ORIARETREAT Spa service";
+        const alt = media.alt || image.alt || item.name || "ORIA SPA service";
         if (media.type !== "video" || !src) {
           return `<img class="service-card-media" src="${escapeAttribute(src)}" alt="${escapeAttribute(alt)}" loading="lazy" onerror="this.style.opacity=.25" />`;
         }
@@ -3627,7 +3627,7 @@ export class CelestialEngine {
             const image = document.createElement("img");
             image.className = "service-card-media";
             image.src = video.poster || "https://placehold.co/360x220?text=SPA";
-            image.alt = video.getAttribute("aria-label") || "ORIARETREAT Spa service";
+            image.alt = video.getAttribute("aria-label") || "ORIA SPA service";
             video.replaceWith(image);
           };
           video.addEventListener("loadedmetadata", () => seekVideoIntoClip(video), { once: true });

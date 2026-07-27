@@ -8,7 +8,7 @@ import { getSupabaseAdmin } from '@/lib/supabase-server';
 export const dynamic = 'force-dynamic';
 
 // 🔧 CONFIGURATION
-const BRANCH_DEFAULT = 'ORIARETREAT Spa';
+const BRANCH_DEFAULT = 'ORIA SPA';
 const BOOKING_ID_PREFIX = 'WB';
 
 /** Sinh mã đơn theo format: WB-001-27032026 */

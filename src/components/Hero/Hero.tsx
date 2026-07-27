@@ -19,7 +19,7 @@ const HERO_PARTICLE_COUNT = 30;
 const HERO_TEXT = {
   badge: '✦ Premium Spa & Barbershop ✦',
   subtitle: '',
-  title: 'Oria Retreat',
+  title: 'Oria Spa',
   subTitle2: 'Welcome to',
   tagline: 'SPA',
   cta1: 'BEST-SELLER',
@@ -49,6 +49,20 @@ const Hero = () => {
   const [homepageVideos, setHomepageVideos] = useState<any[]>(DEFAULT_HOMEPAGE_VIDEOS);
   const videoCount = homepageVideos.length;
 
+  const applyRequestedHeroVideo = useCallback((count: number) => {
+    if (typeof window === 'undefined' || count <= 0) return;
+
+    const params = new URLSearchParams(window.location.search);
+    const requestedVideo = Number(params.get('heroVideo'));
+
+    if (Number.isInteger(requestedVideo) && requestedVideo >= 0 && requestedVideo < count) {
+      setActiveVideoIndex(requestedVideo);
+      setLoadedIndices((prev) => (
+        prev.includes(requestedVideo) ? prev : [...prev, requestedVideo]
+      ));
+    }
+  }, []);
+
   // Mảng hiển thị branch
   const displayBranches = BRANCH_LIST.map((branch, index) => {
     if (index === 0) {
@@ -74,12 +88,21 @@ const Hero = () => {
 
         if (json.success && remoteVideos.length >= DEFAULT_HOMEPAGE_VIDEOS.length) {
           setHomepageVideos(remoteVideos);
-          setActiveVideoIndex(0);
-          setLoadedIndices([0]);
+          const params = new URLSearchParams(window.location.search);
+          const requestedVideo = Number(params.get('heroVideo'));
+          const nextIndex = Number.isInteger(requestedVideo) && requestedVideo >= 0 && requestedVideo < remoteVideos.length
+            ? requestedVideo
+            : 0;
+          setActiveVideoIndex(nextIndex);
+          setLoadedIndices([nextIndex]);
         }
       })
       .catch(err => console.error('Error fetching hero videos:', err));
   }, []);
+
+  useEffect(() => {
+    applyRequestedHeroVideo(videoCount);
+  }, [applyRequestedHeroVideo, videoCount]);
 
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
 
@@ -281,6 +304,7 @@ const Hero = () => {
 
       {/* Branch Cards — kept below hero content */}
       <motion.div
+        id="branches"
         className="hero-branches"
         variants={branchEntrance}
         initial="hidden"

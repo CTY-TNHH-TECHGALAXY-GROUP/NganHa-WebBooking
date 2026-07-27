@@ -160,6 +160,12 @@
   white-space: nowrap;
 }
 
+.header-nav-link--button {
+  border: 0;
+  background: transparent;
+  cursor: default;
+}
+
 .header-nav-chevron {
   opacity: 0.72;
   transition: transform 220ms ease, opacity 220ms ease;
@@ -708,6 +714,14 @@
   padding: 14px 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   transition: color 0.3s ease;
+}
+
+.mobile-nav-link--button {
+  border: 0;
+  background: transparent;
+  text-align: left;
+  font: inherit;
+  cursor: default;
 }
 
 .mobile-nav-link:hover {
