@@ -23,36 +23,44 @@ type NavChildItem = {
 type NavItem = {
   id?: string;
   label: string;
-  href: string;
+  href?: string;
   target?: string;
+  isUnclickable?: boolean;
   isComingSoon?: boolean;
   children?: NavChildItem[];
 };
 
 // Navigation items matching Canva design
 const NAV_ITEMS: NavItem[] = [
-  { id: 'home', label: 'Home', href: '/' },
   {
     id: 'service',
     label: 'Service',
-    href: '#best-seller',
+    href: '/#best-seller',
     children: [
-      { id: 'best_seller', label: 'Best-seller', href: '#best-seller' },
-      { id: 'service_menu', label: 'Service Menu', href: '#services' },
-      { id: 'book_now', label: 'Book Now', href: '/en/new-user/standard/checkout' },
+      { id: 'best_seller', label: 'Best-seller', href: '/#best-seller' },
+      { id: 'service_menu', label: 'Menu', href: '/#services' },
+      { id: 'service_area', label: 'Area', href: '/?heroVideo=1#hero' },
     ],
   },
-  { id: 'history', label: 'History', href: '#branches' },
+  { id: 'history', label: 'History', href: '/history' },
   { id: 'blogs', label: 'Blogs', href: '/blog.html', target: '_blank' },
-  { id: 'academy', label: 'Academy', href: '#academy', isComingSoon: true },
-  { id: 'spa_home', label: 'Spa home', href: '#hero', isComingSoon: true },
+  { id: 'academy', label: 'Academy', href: '/#academy', isComingSoon: true },
+  {
+    id: 'spa_home',
+    label: 'Home Spa',
+    isUnclickable: true,
+    children: [
+      { id: 'home_therapy', label: 'Home Therapy', href: '/#home-therapy' },
+      { id: 'home_care', label: 'Home Care', href: '/#home-care' },
+    ],
+  },
   {
     id: 'oriafarm',
     label: 'OriaFarm',
-    href: '#shop',
+    href: '/#shop',
     children: [
-      { id: 'oriafarm_store', label: 'OriaFarm Store', href: '#shop' },
-      { id: 'homestay', label: 'Homestay', href: '#homestay', isComingSoon: true },
+      { id: 'oriafarm_store', label: 'OriaFarm Store', href: '/#shop' },
+      { id: 'homestay', label: 'Homestay', href: '/#homestay', isComingSoon: true },
     ],
   },
 ];
@@ -160,7 +168,7 @@ const Header = () => {
               <a href="/" className="header-logo">
                 <span className="header-logo-icon">✦</span>
                 <div className="header-logo-text">
-                  <span className="header-logo-name">OriaRetreat</span>
+                  <span className="header-logo-name">Oria Spa</span>
                   <span className="header-logo-sub">spa</span>
                 </div>
               </a>
@@ -172,24 +180,31 @@ const Header = () => {
                 const label = item.id ? t('header_menu', item.id) || item.label : item.label;
 
                 return (
-                <div key={item.href} className={`header-nav-item ${item.children ? 'has-subnav' : ''}`}>
-                  <a
-                    href={item.href}
-                    target={item.target || undefined}
-                    className={`header-nav-link ${item.isComingSoon ? 'dimmed' : ''}`}
-                  >
-                    {item.isComingSoon ? (
-                      <span className="nav-item-coming-soon">
-                        <span className="nav-text-primary">{label}</span>
-                        <span className="nav-text-secondary">Coming Soon</span>
-                      </span>
-                    ) : (
-                      <>
-                        {label}
-                        {item.children && <ChevronDown size={13} className="header-nav-chevron" />}
-                      </>
-                    )}
-                  </a>
+                <div key={item.id || item.href} className={`header-nav-item ${item.children ? 'has-subnav' : ''}`}>
+                  {item.isUnclickable ? (
+                    <button type="button" className="header-nav-link header-nav-link--button">
+                      {label}
+                      {item.children && <ChevronDown size={13} className="header-nav-chevron" />}
+                    </button>
+                  ) : (
+                    <a
+                      href={item.href}
+                      target={item.target || undefined}
+                      className={`header-nav-link ${item.isComingSoon ? 'dimmed' : ''}`}
+                    >
+                      {item.isComingSoon ? (
+                        <span className="nav-item-coming-soon">
+                          <span className="nav-text-primary">{label}</span>
+                          <span className="nav-text-secondary">Coming Soon</span>
+                        </span>
+                      ) : (
+                        <>
+                          {label}
+                          {item.children && <ChevronDown size={13} className="header-nav-chevron" />}
+                        </>
+                      )}
+                    </a>
+                  )}
                   {item.children && (
                     <div className="header-subnav" aria-label={`${label} submenu`}>
                       {item.children.map((child) => {
@@ -297,15 +312,21 @@ const Header = () => {
                 const label = item.id ? t('header_menu', item.id) || item.label : item.label;
 
                 return (
-                <div key={item.href} className="mobile-nav-link-wrapper">
-                  <a
-                    href={item.href}
-                    target={item.target || undefined}
-                    className={`mobile-nav-link ${item.isComingSoon ? 'dimmed' : ''}`}
-                    onClick={toggleMobileMenu}
-                  >
-                    {label}
-                  </a>
+                <div key={item.id || item.href} className="mobile-nav-link-wrapper">
+                  {item.isUnclickable ? (
+                    <button type="button" className="mobile-nav-link mobile-nav-link--button">
+                      {label}
+                    </button>
+                  ) : (
+                    <a
+                      href={item.href}
+                      target={item.target || undefined}
+                      className={`mobile-nav-link ${item.isComingSoon ? 'dimmed' : ''}`}
+                      onClick={toggleMobileMenu}
+                    >
+                      {label}
+                    </a>
+                  )}
                   {item.isComingSoon && (
                     <span className="coming-soon-badge">Coming Soon</span>
                   )}

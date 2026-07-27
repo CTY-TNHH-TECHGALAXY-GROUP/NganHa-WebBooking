@@ -1430,7 +1430,7 @@ function ExperiencePanel() {
   return (
     <motion.section className="experience-panel" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
       <p className="eyebrow">EXPERIENCE SELECTION</p>
-      <h1>ORIARETREAT Signature Spa</h1>
+      <h1>ORIA SPA Signature Spa</h1>
       <p>Chọn trải nghiệm trước khi bước vào vũ trụ dịch vụ.</p>
       <button type="button" onClick={() => selectExperience('luxury-spa')}>
         Bắt đầu chọn dịch vụ

@@ -1,4 +1,4 @@
-// /api/chat/route.ts - Gemini AI chat endpoint for ORIARETREAT Spa
+// /api/chat/route.ts - Gemini AI chat endpoint for ORIA SPA
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -9,10 +9,10 @@ export const dynamic = 'force-dynamic';
 // ═══════════════════════════════════════
 
 const SPA_KNOWLEDGE = `
-## ORIARETREAT Spa - Thông tin
+## ORIA SPA - Thông tin
 
 ### Chi nhánh
-- **ORIARETREAT Barbershop**: 11 Ngô Đức Kế, P. Sài Gòn, Quận 1, TP.HCM
+- **ORIA SPA Barbershop**: 11 Ngô Đức Kế, P. Sài Gòn, Quận 1, TP.HCM
   - Giờ mở cửa: 9:00 AM - 12:00 AM (Last order 11:30 PM)
   - Google Maps: https://maps.app.goo.gl/8XBkjsJicXqdNsZk7
 
@@ -61,23 +61,23 @@ const LANGUAGE_INSTRUCTIONS: Record<string, string> = {
 const buildSystemPrompt = (locale: string): string => {
   const langInstruction = LANGUAGE_INSTRUCTIONS[locale] || LANGUAGE_INSTRUCTIONS.vi;
 
-  return `Bạn là trợ lý AI chăm sóc khách hàng cao cấp của ORIARETREAT Spa (ORIARETREAT) tại Quận 1, TP. Hồ Chí Minh.
+  return `Bạn là trợ lý AI chăm sóc khách hàng cao cấp của ORIA SPA (ORIA SPA) tại Quận 1, TP. Hồ Chí Minh.
 
 ${langInstruction}
 
 [Giọng điệu và Phong cách]
 - Luôn thể hiện sự niềm nở, hòa đồng, lịch sự và cực kỳ trang nhã.
-- Xưng hô là "em" hoặc "ORIARETREAT", và gọi khách hàng là "anh/chị" hoặc "Quý khách".
+- Xưng hô là "em" hoặc "ORIA SPA", và gọi khách hàng là "anh/chị" hoặc "Quý khách".
 - Trả lời ngắn gọn, súc tích (tối đa 150 từ). Dùng emoji phù hợp.
 - Nếu khách hỏi ngoài phạm vi spa, lịch sự từ chối và hướng lại về dịch vụ spa.
 
 [Nguyên tắc Giao tiếp BẮT BUỘC]
-- Mở đầu cuộc trò chuyện (câu đầu tiên khi gặp khách): BẮT BUỘC dùng "ORIARETREAT Xin Chào,".
-- Kết thúc cuộc trò chuyện (khi khách chào tạm biệt hoặc đã chốt xong): BẮT BUỘC dùng "ORIARETREAT Xin Cảm ơn.".
+- Mở đầu cuộc trò chuyện (câu đầu tiên khi gặp khách): BẮT BUỘC dùng "ORIA SPA Xin Chào,".
+- Kết thúc cuộc trò chuyện (khi khách chào tạm biệt hoặc đã chốt xong): BẮT BUỘC dùng "ORIA SPA Xin Cảm ơn.".
 
 [QUY TRÌNH TƯ VẤN 3 BƯỚC]
 Bước 1: Chào hỏi & Khám phá nhu cầu
-- Sau câu chào "ORIARETREAT Xin Chào,", HÃY CHỦ ĐỘNG hỏi thăm tình trạng cơ thể của khách (vd: "Hôm nay anh/chị có đang cảm thấy nhức mỏi ở vùng nào không ạ?").
+- Sau câu chào "ORIA SPA Xin Chào,", HÃY CHỦ ĐỘNG hỏi thăm tình trạng cơ thể của khách (vd: "Hôm nay anh/chị có đang cảm thấy nhức mỏi ở vùng nào không ạ?").
 
 Bước 2: Gợi ý dịch vụ (Bắt bệnh - Kê đơn)
 - Lắng nghe phản hồi của khách. Dựa vào thông tin dịch vụ bên dưới để gợi ý:
@@ -139,7 +139,7 @@ export const POST = async (request: NextRequest) => {
 
     const genAI = new GoogleGenerativeAI(apiKey);
 
-    // Khởi tạo model và nhúng Kịch bản ORIARETREAT Spa ngay tại đây
+    // Khởi tạo model và nhúng Kịch bản ORIA SPA ngay tại đây
     const model = genAI.getGenerativeModel({
       model: 'gemini-2.0-flash',
       systemInstruction: buildSystemPrompt(locale)

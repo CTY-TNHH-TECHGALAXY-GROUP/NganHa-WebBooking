@@ -19,9 +19,9 @@ export interface AIChatTexts {
 export const chatTexts: Record<Locale, AIChatTexts> = {
   vi: {
     title: 'Trợ Lý AI',
-    subtitle: 'ORIARETREAT',
+    subtitle: 'ORIA SPA',
     placeholder: 'Nhập tin nhắn...',
-    greeting: 'Xin chào! 👋 Tôi là trợ lý AI của ORIARETREAT Spa. Tôi có thể giúp bạn tìm hiểu dịch vụ, giá cả và đặt lịch. Hãy hỏi tôi bất cứ điều gì!',
+    greeting: 'Xin chào! 👋 Tôi là trợ lý AI của ORIA SPA. Tôi có thể giúp bạn tìm hiểu dịch vụ, giá cả và đặt lịch. Hãy hỏi tôi bất cứ điều gì!',
     voiceHint: 'Nhấn mic để nói',
     bookNow: 'Đặt lịch ngay',
     thinking: 'Đang suy nghĩ...',
@@ -33,9 +33,9 @@ export const chatTexts: Record<Locale, AIChatTexts> = {
   },
   en: {
     title: 'AI Assistant',
-    subtitle: 'ORIARETREAT',
+    subtitle: 'ORIA SPA',
     placeholder: 'Type a message...',
-    greeting: 'Hello! 👋 I\'m the AI assistant of ORIARETREAT Spa. I can help you explore services, pricing and make a booking. Ask me anything!',
+    greeting: 'Hello! 👋 I\'m the AI assistant of ORIA SPA. I can help you explore services, pricing and make a booking. Ask me anything!',
     voiceHint: 'Tap mic to speak',
     bookNow: 'Book Now',
     thinking: 'Thinking...',

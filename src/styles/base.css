@@ -24,11 +24,11 @@
 
   /* Logo */
   --header-logo-gap: 10px;
-  /* Khoang cach icon va chu "ORIARETREAT" */
+  /* Khoang cach icon va chu "ORIA SPA" */
   --header-logo-icon-size: 30px;
   /* Kich thuoc icon */
   --header-logo-name-size: 26px;
-  /* Kich thuoc chu "ORIARETREAT" */
+  /* Kich thuoc chu "ORIA SPA" */
   --header-logo-sub-size: 11px;
   /* Kich thuoc "let us understand you" */
 
@@ -70,7 +70,7 @@
   --hero-sub-spacing: 10px;
   /* Gian chu "HE THONG" */
   --hero-title-spacing: -0.035em;
-  /* Natural luxury serif spacing for "OriaRetreat" */
+  /* Natural luxury serif spacing for "Oria Spa" */
   --hero-sub2-spacing: 0.08em;
   /* Gentle spacing for the lower "spa" line */
 

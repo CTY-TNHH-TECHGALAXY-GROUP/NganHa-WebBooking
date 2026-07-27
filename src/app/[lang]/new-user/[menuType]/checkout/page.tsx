@@ -653,7 +653,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
         date: bookingDate,
         time: bookingTime,
         branchId: 'ngan-ha-spa',
-        branchName: 'ORIARETREAT Spa',
+        branchName: 'ORIA SPA',
         guests: 1,
         staffGender: 'any',
         lang,
@@ -685,7 +685,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
       </header>
 
       <div className={styles.brandline}>
-        <div className={styles.mark}>ORIARETREAT Spa</div>
+        <div className={styles.mark}>ORIA SPA</div>
         <div className={styles.divider} />
       </div>
 
