@@ -60,7 +60,7 @@ const BestSeller = () => {
           <h2>
             Best-seller of
             <br />
-            Oria Retreat
+            Oria Spa
           </h2>
         </div>
 
