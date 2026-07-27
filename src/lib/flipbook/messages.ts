@@ -15,6 +15,8 @@ const FLIPBOOK_MESSAGE_TYPES: ReadonlySet<string> = new Set<FlipbookMessageType>
   'flipmenu:remove-service-from-cart',
   'flipmenu:book-now',
   'flipmenu:place-order',
+  'flipmenu:drawer-opened',
+  'flipmenu:drawer-closed',
 ]);
 
 export const isFlipbookMessage = (value: unknown): value is FlipbookMessage => {

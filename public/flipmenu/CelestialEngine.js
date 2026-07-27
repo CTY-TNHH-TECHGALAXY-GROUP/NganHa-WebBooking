@@ -3341,12 +3341,14 @@ export class CelestialEngine {
       }
 
       function toGalaxyService(service) {
-        const name = serviceName(service);
+        // Normalize NFC to fix Vietnamese diacritics (decomposed -> composed)
+        const name = (serviceName(service) || "").normalize("NFC");
+        const desc = (serviceDescription(service) || "").normalize("NFC");
         const imageSrc = service.img || service.image || service.thumbnail || service.poster || "https://placehold.co/360x220?text=Ngan+Ha+Spa";
         return {
           id: service.id,
           name,
-          description: serviceDescription(service),
+          description: desc,
           duration: Number(service.timeValue || service.duration || 0),
           price: Number(service.priceVND || service.price || 0),
           image: {
@@ -3355,6 +3357,8 @@ export class CelestialEngine {
             mode: "original",
             fit: "cover",
           },
+          img: imageSrc,
+          poster: service.poster || service.thumbnail || imageSrc,
           media: serviceMediaFromSource(service, imageSrc, name),
           sourceService: service,
         };
@@ -4473,7 +4477,10 @@ export class CelestialEngine {
         `;
         const container = document.createElement("div");
         container.innerHTML = drawerHTML;
-        document.body.appendChild(container);
+        // Append INSIDE #celestial-app so drawer shares the same stacking context
+        // as the canvas/hud. This ensures z-index: 100000 is actually the highest layer.
+        const celestialApp = document.getElementById("celestial-app");
+        (celestialApp || document.body).appendChild(container);
 
         const drawer = document.getElementById("durationDrawer");
         const backdrop = document.getElementById("drawerBackdrop");
@@ -4494,10 +4501,20 @@ export class CelestialEngine {
           backdrop.classList.remove("show");
           drawer.setAttribute("aria-hidden", "true");
           document.body.classList.remove("drawer-open");
+          // Restore pointer events on 3D canvas and overlays
+          document.querySelectorAll("#cel-scene-celestial, #scene, #galaxy-canvas, .hud, #cel-sheetOverlay").forEach((el) => {
+            el.style.pointerEvents = "";
+          });
+          // Tell parent to lower iframe z-index
+          window.parent?.postMessage({ type: "flipmenu:drawer-closed" }, "*");
         }
 
-        document.getElementById("drawerClose").addEventListener("click", closeDrawer);
-        backdrop.addEventListener("click", closeDrawer);
+        document.getElementById("drawerClose").addEventListener("click", () => {
+          closeDrawer();
+        });
+        backdrop.addEventListener("click", () => {
+          closeDrawer();
+        });
 
         function updateDrawerSelection() {
           if (!currentItems || currentItems.length === 0) return;
@@ -4515,10 +4532,12 @@ export class CelestialEngine {
           currentOptionIdx = 0;
 
           const representative = items[0];
-          drawerTitle.textContent = representative.name;
-          drawerSub.textContent = representative.description || "";
-          if (representative.image) {
-            drawerThumb.style.backgroundImage = `url('${escapeAttribute(representative.image.src)}')`;
+          // Normalize NFC to fix Vietnamese diacritics rendering (decomposed -> composed)
+          drawerTitle.textContent = (representative.name || "").normalize("NFC");
+          drawerSub.textContent = (representative.description || "").normalize("NFC");
+          const thumbSrc = representative.poster || representative.thumbnail || representative.img || "";
+          if (thumbSrc) {
+            drawerThumb.style.backgroundImage = `url('${thumbSrc}')`;
             drawerThumb.style.display = "block";
           } else {
             drawerThumb.style.backgroundImage = "none";
@@ -4544,6 +4563,12 @@ export class CelestialEngine {
           backdrop.classList.add("show");
           drawer.setAttribute("aria-hidden", "false");
           document.body.classList.add("drawer-open");
+          // Disable pointer events on 3D canvas and overlays so clicks reach drawer
+          document.querySelectorAll("#cel-scene-celestial, #scene, #galaxy-canvas, .hud, #cel-sheetOverlay").forEach((el) => {
+            el.style.pointerEvents = "none";
+          });
+          // Tell parent to raise iframe z-index above header/floating buttons
+          window.parent?.postMessage({ type: "flipmenu:drawer-opened" }, "*");
         };
 
         drawerConfirm.addEventListener("click", () => {
@@ -4596,6 +4621,17 @@ export class CelestialEngine {
         const celestialApp = document.getElementById("celestial-app");
         if (celestialApp && celestialApp.style.display === "none") return;
         
+        // EARLY RETURN: If click lands on Duration Drawer or its backdrop,
+        // skip ALL 3D logic (raycaster, goBack, selectCategory) entirely.
+        if (event.target.closest('.duration-drawer') || event.target.closest('.drawer-backdrop')) {
+          return;
+        }
+        
+        // Also skip if drawer is open (body has drawer-open class)
+        if (document.body.classList.contains('drawer-open')) {
+          return;
+        }
+
         console.log("[DEBUG] Window pointerup triggered! Target:", event.target);
         
         if (event.clientX !== undefined) {

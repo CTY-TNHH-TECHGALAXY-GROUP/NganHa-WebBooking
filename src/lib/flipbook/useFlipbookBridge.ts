@@ -74,6 +74,18 @@ export const useFlipbookBridge = <TService = FlipbookServicePayload>(
       return;
     }
 
+    // Duration Drawer z-index control: raise iframe container above header/floating buttons
+    if (message.type === 'flipmenu:drawer-opened') {
+      const el = containerRef.current;
+      if (el) el.style.zIndex = '99999';
+      return;
+    }
+    if (message.type === 'flipmenu:drawer-closed') {
+      const el = containerRef.current;
+      if (el) el.style.zIndex = '';
+      return;
+    }
+
     if (message.type === 'flipmenu:add-service-to-cart') {
       if (serviceGuard(message.service)) {
         options.onAddService?.({
@@ -106,7 +118,7 @@ export const useFlipbookBridge = <TService = FlipbookServicePayload>(
     if (message.type === 'flipmenu:place-order') {
       options.onPlaceOrder?.();
     }
-  }, [closeFullscreen, enterFullscreen, options, serviceGuard]);
+  }, [closeFullscreen, containerRef, enterFullscreen, options, serviceGuard]);
 
   useEffect(() => {
     window.addEventListener('message', handleMessage);
