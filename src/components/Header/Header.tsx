@@ -50,8 +50,8 @@ const NAV_ITEMS: NavItem[] = [
     label: 'Home Spa',
     isUnclickable: true,
     children: [
-      { id: 'home_therapy', label: 'Home Therapy', href: '/#home-therapy' },
-      { id: 'home_care', label: 'Home Care', href: '/#home-care' },
+      { id: 'home_therapy', label: 'Home Therapy', href: '/#home-therapy', isComingSoon: true },
+      { id: 'home_care', label: 'Home Care', href: '/#home-care', isComingSoon: true },
     ],
   },
   {
