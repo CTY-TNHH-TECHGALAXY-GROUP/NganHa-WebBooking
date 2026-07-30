@@ -33,34 +33,53 @@ type NavItem = {
 // Navigation items matching Canva design
 const NAV_ITEMS: NavItem[] = [
   {
-    id: 'service',
-    label: 'Service',
-    href: '/#best-seller',
+    id: 'area',
+    label: 'Area',
+    isUnclickable: true,
     children: [
-      { id: 'best_seller', label: 'Best-seller', href: '/#best-seller' },
-      { id: 'service_menu', label: 'Menu', href: '/#services' },
-      { id: 'service_area', label: 'Area', href: '/?heroVideo=1#hero' },
+      { id: 'area_lobby', label: 'Lobby', href: '/#lobby' },
+      { id: 'area_l1', label: 'Level 1', href: '/#l1' },
+      { id: 'area_l2', label: 'Level 2', href: '/#l2' },
     ],
   },
-  { id: 'history', label: 'History', href: '/history' },
-  { id: 'blogs', label: 'Blogs', href: '/blog.html', target: '_blank' },
-  { id: 'academy', label: 'Academy', href: '/#academy', isComingSoon: true },
+  {
+    id: 'service',
+    label: 'Service',
+    isUnclickable: true,
+    children: [
+      { id: 'service_standard', label: 'Standard', href: '/#standard' },
+      { id: 'service_vip', label: 'VIP', href: '/#vip' },
+      { id: 'service_special', label: 'Special Treatment', href: '/#special' },
+    ],
+  },
   {
     id: 'spa_home',
     label: 'Home Spa',
     isUnclickable: true,
     children: [
-      { id: 'home_therapy', label: 'Home Therapy', href: '/#home-therapy' },
-      { id: 'home_care', label: 'Home Care', href: '/#home-care' },
+      { id: 'home_therapy_care', label: 'Therapy Care', href: '/#therapy-care' },
+      { id: 'home_care', label: 'Care', href: '/#care' },
+    ],
+  },
+  { id: 'history', label: 'History', href: '/history' },
+  { id: 'blogs', label: 'Blogs', href: '/blog.html', target: '_blank' },
+  {
+    id: 'academy',
+    label: 'Academy',
+    isUnclickable: true,
+    children: [
+      { id: 'academy_admissions', label: 'Admissions', href: '/academy/admissions' },
+      { id: 'academy_training', label: 'Training / Online', href: '/academy/training' },
+      { id: 'academy_certification', label: 'Certification', href: '/academy/certification' },
     ],
   },
   {
     id: 'oriafarm',
     label: 'OriaFarm',
-    href: '/#shop',
+    isUnclickable: true,
     children: [
-      { id: 'oriafarm_store', label: 'OriaFarm Store', href: '/#shop' },
-      { id: 'homestay', label: 'Homestay', href: '/#homestay', isComingSoon: true },
+      { id: 'oriafarm_store', label: 'Store', href: '/#shop' },
+      { id: 'oriafarm_retreat', label: 'Retreat', href: '/#retreat' },
     ],
   },
 ];
