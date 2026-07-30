@@ -34,7 +34,7 @@ type NavItem = {
 const NAV_ITEMS: NavItem[] = [
   {
     id: 'area',
-    label: 'Area',
+    label: 'Spaces',
     isUnclickable: true,
     children: [
       { id: 'area_lobby', label: 'Lobby', href: '/#lobby' },
@@ -57,7 +57,7 @@ const NAV_ITEMS: NavItem[] = [
     label: 'Home Spa',
     isUnclickable: true,
     children: [
-      { id: 'home_therapy_care', label: 'Therapy Care', href: '/#therapy-care' },
+      { id: 'home_therapy', label: 'Therapy', href: '/#therapy' },
       { id: 'home_care', label: 'Care', href: '/#care' },
     ],
   },
@@ -249,30 +249,10 @@ const Header = () => {
 
             {/* Right Section: Languages, Login, Cart */}
             <div className="header-right">
-              {/* Language Flags (Desktop only) */}
-              <div className="header-languages">
-                {LANGUAGES.map((lang) => (
-                  <button
-                    key={lang.code}
-                    className={`header-lang-btn ${currentLang.code === lang.code ? 'active' : ''}`}
-                    onClick={() => handleSelectLanguage(lang)}
-                    title={lang.label}
-                    aria-label={`Switch to ${lang.label}`}
-                  >
-                    <img
-                      src={`https://flagcdn.com/w40/${lang.countryCode}.png`}
-                      srcSet={`https://flagcdn.com/w80/${lang.countryCode}.png 2x`}
-                      alt={lang.label}
-                      className="header-lang-flag-img"
-                    />
-                  </button>
-                ))}
-              </div>
-
-              {/* Language Flag Selector (Mobile only, <= 1024px) */}
-              <div className="mobile-lang-selector" ref={langDropdownRef}>
+              {/* Language Flag Selector (Global) */}
+              <div className="lang-selector" ref={langDropdownRef}>
                 <button 
-                  className="mobile-lang-btn" 
+                  className="lang-btn" 
                   onClick={toggleLangDropdown}
                   aria-expanded={isLangDropdownOpen}
                   aria-label="Select language"
