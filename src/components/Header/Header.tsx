@@ -37,9 +37,9 @@ const NAV_ITEMS: NavItem[] = [
     label: 'Spaces',
     isUnclickable: true,
     children: [
-      { id: 'area_lobby', label: 'Lobby', href: '/#lobby' },
-      { id: 'area_l1', label: 'Level 1', href: '/#l1' },
-      { id: 'area_l2', label: 'Level 2', href: '/#l2' },
+      { id: 'area_lobby', label: 'Welcome area', href: '/#lobby' },
+      { id: 'area_l1', label: 'First Floor', href: '/#l1' },
+      { id: 'area_l2', label: 'Second Floor', href: '/#l2' },
     ],
   },
   {
