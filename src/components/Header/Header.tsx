@@ -43,13 +43,13 @@ const NAV_ITEMS: NavItem[] = [
     ],
   },
   {
-    id: 'service',
-    label: 'Service',
+    id: 'services',
+    label: 'Services',
     isUnclickable: true,
     children: [
       { id: 'service_standard', label: 'Standard', href: '/#standard' },
-      { id: 'service_vip', label: 'VIP', href: '/#vip' },
-      { id: 'service_special', label: 'Special Treatment', href: '/#special' },
+      { id: 'service_premium', label: 'Premium', href: '/#premium' },
+      { id: 'service_therapy', label: 'Therapy', href: '/#therapy-services' },
     ],
   },
   {
