@@ -33,18 +33,25 @@ type NavItem = {
 // Navigation items matching Canva design
 const NAV_ITEMS: NavItem[] = [
   {
-    id: 'service',
-    label: 'Service',
-    href: '/#best-seller',
+    id: 'area',
+    label: 'Spaces',
+    isUnclickable: true,
     children: [
-      { id: 'best_seller', label: 'Best-seller', href: '/#best-seller' },
-      { id: 'service_menu', label: 'Menu', href: '/#services' },
-      { id: 'service_area', label: 'Area', href: '/?heroVideo=1#hero' },
+      { id: 'area_lobby', label: 'Welcome area', href: '/#lobby' },
+      { id: 'area_l1', label: 'First Floor', href: '/#l1' },
+      { id: 'area_l2', label: 'Second Floor', href: '/#l2' },
     ],
   },
-  { id: 'history', label: 'History', href: '/history' },
-  { id: 'blogs', label: 'Blogs', href: '/blog.html', target: '_blank' },
-  { id: 'academy', label: 'Academy', href: '/#academy', isComingSoon: true },
+  {
+    id: 'services',
+    label: 'Services',
+    isUnclickable: true,
+    children: [
+      { id: 'service_standard', label: 'Standard', href: '/#standard' },
+      { id: 'service_premium', label: 'Premium', href: '/#premium' },
+      { id: 'service_therapy', label: 'Therapy', href: '/#therapy-services' },
+    ],
+  },
   {
     id: 'spa_home',
     label: 'Home Spa',
@@ -54,13 +61,25 @@ const NAV_ITEMS: NavItem[] = [
       { id: 'home_care', label: 'Home Care', href: '/#home-care', isComingSoon: true },
     ],
   },
+  { id: 'history', label: 'History', href: '/history' },
+  { id: 'blogs', label: 'Blogs', href: '/blog.html', target: '_blank' },
+  {
+    id: 'academy',
+    label: 'Academy',
+    isUnclickable: true,
+    children: [
+      { id: 'academy_admissions', label: 'Admissions', href: '/academy/admissions' },
+      { id: 'academy_training', label: 'Training / Online', href: '/academy/training' },
+      { id: 'academy_certification', label: 'Certification', href: '/academy/certification' },
+    ],
+  },
   {
     id: 'oriafarm',
     label: 'OriaFarm',
-    href: '/#shop',
+    isUnclickable: true,
     children: [
-      { id: 'oriafarm_store', label: 'OriaFarm Store', href: '/#shop' },
-      { id: 'homestay', label: 'Homestay', href: '/#homestay', isComingSoon: true },
+      { id: 'oriafarm_store', label: 'Store', href: '/#shop' },
+      { id: 'oriafarm_retreat', label: 'Retreat', href: '/#retreat' },
     ],
   },
 ];
@@ -230,30 +249,10 @@ const Header = () => {
 
             {/* Right Section: Languages, Login, Cart */}
             <div className="header-right">
-              {/* Language Flags (Desktop only) */}
-              <div className="header-languages">
-                {LANGUAGES.map((lang) => (
-                  <button
-                    key={lang.code}
-                    className={`header-lang-btn ${currentLang.code === lang.code ? 'active' : ''}`}
-                    onClick={() => handleSelectLanguage(lang)}
-                    title={lang.label}
-                    aria-label={`Switch to ${lang.label}`}
-                  >
-                    <img
-                      src={`https://flagcdn.com/w40/${lang.countryCode}.png`}
-                      srcSet={`https://flagcdn.com/w80/${lang.countryCode}.png 2x`}
-                      alt={lang.label}
-                      className="header-lang-flag-img"
-                    />
-                  </button>
-                ))}
-              </div>
-
-              {/* Language Flag Selector (Mobile only, <= 1024px) */}
-              <div className="mobile-lang-selector" ref={langDropdownRef}>
+              {/* Language Flag Selector (Global) */}
+              <div className="lang-selector" ref={langDropdownRef}>
                 <button 
-                  className="mobile-lang-btn" 
+                  className="lang-btn" 
                   onClick={toggleLangDropdown}
                   aria-expanded={isLangDropdownOpen}
                   aria-label="Select language"
