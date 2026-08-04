@@ -10,7 +10,17 @@ const DEFAULT_CONTENT = {
     home: '', service: '', shop: '', service_area: '', blogs: '', academy: '', spa_home: ''
   },
   hero_section: {
-    ending_soon: '', explore: '', book_now: ''
+    badge: '✦ Premium Spa & Barbershop ✦',
+    subtitle: '',
+    title: 'Oria Spa',
+    subTitle2: 'Welcome to',
+    tagline: 'SPA',
+    cta1: 'BEST-SELLER',
+    cta2: 'Đặt Lịch Ngay',
+    scrollHint: 'Cuộn xuống để khám phá',
+    ending_soon: '', 
+    explore: '', 
+    book_now: ''
   },
   about_story: {
     system: '', title: '', heading_1: '', desc_1: '', heading_2: '', desc_2: '', heading_3: '', desc_3: ''

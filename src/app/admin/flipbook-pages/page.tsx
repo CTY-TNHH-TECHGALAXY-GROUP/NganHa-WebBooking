@@ -15,7 +15,7 @@ const FlipbookPagesAdmin = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Form state
-  const [formData, setFormData] = useState({ page_number: 1, title: '', media_type: 'image' as 'image' | 'video' });
+  const [formData, setFormData] = useState({ page_number: 1, title: '', media_type: 'image' as 'image' | 'video', service_id: undefined as string | undefined });
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [services, setServices] = useState<any[]>([]);
@@ -163,16 +163,27 @@ const FlipbookPagesAdmin = () => {
 
               {/* Tiêu đề / Tên Dịch Vụ */}
               <div>
-                <label className="block text-sm font-semibold text-admin-text-dim mb-1.5">Tên Dịch Vụ (Bắt buộc - Để dễ quản lý)</label>
+                <label className="block text-sm font-semibold text-admin-text-dim mb-1.5">Liên kết Dịch Vụ (Tùy chọn)</label>
                 <div className="flex flex-col gap-2">
                   <select
-                    value={formData.title}
-                    onChange={e => setFormData({ ...formData, title: e.target.value })}
+                    value={formData.service_id || ''}
+                    onChange={e => {
+                      const selectedService = services.find(s => s.id === e.target.value);
+                      if (selectedService) {
+                        setFormData({ 
+                          ...formData, 
+                          service_id: selectedService.id, 
+                          title: selectedService.name_vi || selectedService.names?.vi || formData.title
+                        });
+                      } else {
+                        setFormData({ ...formData, service_id: undefined });
+                      }
+                    }}
                     className="w-full bg-white border border-admin-line-strong rounded-xl px-4 py-3 text-admin-text focus:border-admin-gold focus:ring-1 focus:ring-admin-gold transition-colors"
                   >
-                    <option value="">-- Chọn Dịch Vụ --</option>
+                    <option value="">-- Không liên kết --</option>
                     {services.map(s => (
-                      <option key={s.id} value={s.name_vi}>{s.name_vi}</option>
+                      <option key={s.id} value={s.id}>{s.name_vi || s.names?.vi || s.id}</option>
                     ))}
                   </select>
                   <input

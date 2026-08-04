@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { 
   LayoutDashboard, BookOpen, FileText, Wrench, Film, Search, Globe, Settings,
-  Menu, X, ChevronRight, LogOut, ImagePlus
+  Menu, X, ChevronRight, LogOut, ImagePlus, Clock
 } from 'lucide-react';
 
 // 🔧 UI CONFIGURATION
@@ -13,10 +13,13 @@ const SIDEBAR_WIDTH = '260px';
 
 const NAV_ITEMS = [
   { label: 'Tổng quan', href: '/admin', icon: LayoutDashboard },
+  { label: 'Quản lý Đặt Lịch', href: '/admin/bookings', icon: Clock },
+  { label: 'Tra Cứu Khách Hàng', href: '/admin/customers', icon: Search },
+  { label: 'Lịch sử Thương hiệu', href: '/admin/history', icon: BookOpen },
   { label: 'Video Trang chủ', href: '/admin/hero-videos', icon: Film },
   { label: 'Sách Lật (Flipbook)', href: '/admin/flipbook-pages', icon: BookOpen },
   { label: 'Bài viết (Blog)', href: '/admin/posts', icon: FileText },
-  { label: 'Dịch vụ (Media)', href: '/admin/services', icon: Wrench },
+  { label: 'Dịch vụ (Media & Giá)', href: '/admin/services', icon: Wrench },
   { label: 'Kho Media', href: '/admin/media-library', icon: ImagePlus },
   { label: 'Nội dung Đa Ngôn Ngữ', href: '/admin/content', icon: Globe },
   { label: 'Cấu hình SEO', href: '/admin/seo', icon: Search },

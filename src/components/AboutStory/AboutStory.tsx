@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent, type PointerEvent } from 'react';
 import Image from 'next/image';
 import { AnimatePresence, motion, useMotionValue, useSpring } from 'framer-motion';
+import { useSystemSettings } from '@/components/SystemSettingsProvider';
 import { useTranslation } from '@/components/TranslationProvider';
 import styles from './AboutStory.module.css';
 
@@ -25,7 +26,7 @@ type Chapter = {
   scenes: Scene[];
 };
 
-const chaptersVi: Chapter[] = [
+export const chaptersVi: Chapter[] = [
   {
     year: '2015',
     eyebrow: 'Foundation',
@@ -283,7 +284,7 @@ const chaptersVi: Chapter[] = [
   },
 ];
 
-const chaptersEn: Chapter[] = [
+export const chaptersEn: Chapter[] = [
   {
     year: '2015',
     eyebrow: 'Foundation',
@@ -543,10 +544,33 @@ const chaptersEn: Chapter[] = [
 
 const isEnglish = (lang: string) => lang === 'en';
 
-const AboutStory = () => {
+export const AboutStory = () => {
   const { currentLang } = useTranslation();
   const isEn = isEnglish(currentLang);
-  const chapters = useMemo(() => (isEn ? chaptersEn : chaptersVi), [isEn]);
+  const { brandHistory, getLocalizedText } = useSystemSettings();
+
+  const chapters = useMemo(() => {
+    const chaptersData = brandHistory?.chapters || (Array.isArray(brandHistory) ? brandHistory : null);
+    if (chaptersData && chaptersData.length > 0) {
+      return chaptersData.map((chapter: any) => ({
+        year: chapter.year || '',
+        eyebrow: getLocalizedText(chapter.eyebrow, isEn ? 'en' : 'vi', ''),
+        title: getLocalizedText(chapter.title, isEn ? 'en' : 'vi', ''),
+        body: getLocalizedText(chapter.body, isEn ? 'en' : 'vi', ''),
+        meta: chapter.meta?.[isEn ? 'en' : 'vi'] || [],
+        scenes: chapter.scenes?.map((scene: any) => ({
+          title: getLocalizedText(scene.title, isEn ? 'en' : 'vi', ''),
+          label: getLocalizedText(scene.label, isEn ? 'en' : 'vi', ''),
+          body: getLocalizedText(scene.body, isEn ? 'en' : 'vi', ''),
+          image: scene.image || '',
+          alt: getLocalizedText(scene.title, isEn ? 'en' : 'vi', ''), // Fallback alt to title
+          imageFit: scene.imageFit,
+          imagePosition: scene.imagePosition,
+        })) || []
+      }));
+    }
+    return isEn ? chaptersEn : chaptersVi;
+  }, [brandHistory, isEn, getLocalizedText]);
   const [activeChapter, setActiveChapter] = useState(0);
   const [activeScenes, setActiveScenes] = useState<Record<string, number>>({});
   const shellRef = useRef<HTMLElement | null>(null);
@@ -701,7 +725,7 @@ const AboutStory = () => {
       >
         <div className={styles.heroMedia}>
           <Image
-            src="/images/about-bg.png"
+            src={brandHistory?.hero?.image || "/images/about-bg.png"}
             alt={isEn ? 'Ngan Ha to Oria Spa historical atmosphere' : 'Không gian lịch sử Ngân Hà đến Oria Spa'}
             fill
             priority
@@ -709,14 +733,16 @@ const AboutStory = () => {
           />
         </div>
         <div className={styles.heroCopy}>
-          <span className={styles.eyebrow}>{isEn ? 'A story worth following' : 'Hành trình đáng dõi theo'}</span>
+          <span className={styles.eyebrow}>
+            {getLocalizedText(brandHistory?.hero?.eyebrow, isEn ? 'en' : 'vi', isEn ? 'A story worth following' : 'Hành trình đáng dõi theo')}
+          </span>
           <h1>
-            {isEn ? 'Our' : 'Lịch Sử'} <em>{isEn ? 'History' : 'Ngân Hà'}</em>
+            {getLocalizedText(brandHistory?.hero?.title1, isEn ? 'en' : 'vi', isEn ? 'Our' : 'Lịch Sử')} <em>{getLocalizedText(brandHistory?.hero?.title2, isEn ? 'en' : 'vi', isEn ? 'History' : 'Ngân Hà')}</em>
           </h1>
           <p>
-            {isEn
+            {getLocalizedText(brandHistory?.hero?.body, isEn ? 'en' : 'vi', isEn
               ? 'From a modest first space to a more cinematic wellness destination, each milestone carries the same quiet promise: better care, warmer hospitality, and a calmer guest experience.'
-              : 'Từ một không gian nhỏ ban đầu đến một điểm đến spa chỉn chu hơn, mỗi cột mốc đều giữ cùng một lời hứa: chăm sóc tốt hơn, đón tiếp ấm hơn và trải nghiệm bình yên hơn.'}
+              : 'Từ một không gian nhỏ ban đầu đến một điểm đến spa chỉn chu hơn, mỗi cột mốc đều giữ cùng một lời hứa: chăm sóc tốt hơn, đón tiếp ấm hơn và trải nghiệm bình yên hơn.')}
           </p>
           <a className={styles.scrollCue} href="#history-2015">
             <span />
@@ -754,7 +780,7 @@ const AboutStory = () => {
         <div className={styles.timeRibbon} aria-hidden="true" />
         <motion.div className={styles.flow} style={{ scaleY: smoothTimelineProgress }} aria-hidden="true" />
 
-        {chapters.map((chapter, chapterIndex) => {
+        {chapters.map((chapter: Chapter, chapterIndex: number) => {
           const sceneIndex = activeScenes[chapter.year] || 0;
           const scene = chapter.scenes[sceneIndex];
           const isActive = chapterIndex === activeChapter;
@@ -779,8 +805,8 @@ const AboutStory = () => {
                 <h3>{chapter.title}</h3>
                 <p>{chapter.body}</p>
                 <div className={styles.meta}>
-                  {chapter.meta.map(item => (
-                    <span key={item}>{item}</span>
+                  {chapter.meta.map((item: string, index: number) => (
+                    <span key={index}>{item}</span>
                   ))}
                 </div>
                 <div className={styles.storyInline}>
@@ -811,7 +837,7 @@ const AboutStory = () => {
                   }}
                   onKeyDown={event => handleStageKey(event, chapter, sceneIndex)}
                 >
-                  {chapter.scenes.map((item, index) => (
+                  {chapter.scenes.map((item: any, index: number) => (
                     <div key={item.title} className={`${styles.slide} ${index === sceneIndex ? styles.slideActive : ''}`}>
                       <Image
                         src={item.image}
@@ -879,7 +905,7 @@ const AboutStory = () => {
 
                 {chapter.scenes.length > 1 && (
                   <div className={styles.filmstrip} role="tablist" aria-label={isEn ? 'Scene moments' : 'Các khoảnh khắc'}>
-                    {chapter.scenes.map((item, index) => (
+                    {chapter.scenes.map((item: any, index: number) => (
                       <span
                         key={item.title}
                         role="tab"

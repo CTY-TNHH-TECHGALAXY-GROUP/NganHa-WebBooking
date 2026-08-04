@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Film, BookOpen, FileText, Wrench, ArrowRight, Globe, Settings } from 'lucide-react';
+import { Film, BookOpen, FileText, Wrench, ArrowRight, Globe, Settings, Search } from 'lucide-react';
 
 const QUICK_ACTIONS = [
   {
@@ -15,13 +15,49 @@ const QUICK_ACTIONS = [
     iconBg: 'bg-admin-purple',
   },
   {
+    title: 'Quản Lý Đặt Lịch',
+    description: 'Theo dõi, xác nhận các đơn đặt lịch hẹn mới từ khách hàng.',
+    href: '/admin/bookings',
+    icon: FileText,
+    color: 'from-admin-gold-a to-admin-gold-b',
+    borderColor: 'border-admin-line-strong',
+    iconBg: 'bg-admin-gold',
+  },
+  {
+    title: 'Tra Cứu Khách Hàng',
+    description: 'Xem lịch sử các đơn đã hoàn thành và tra cứu theo SĐT.',
+    href: '/admin/customers',
+    icon: Search,
+    color: 'from-admin-copper-a to-admin-copper-b',
+    borderColor: 'border-admin-line-strong',
+    iconBg: 'bg-admin-copper',
+  },
+  {
+    title: 'Lịch Sử Thương Hiệu',
+    description: 'Quản lý dòng thời gian và các cột mốc lịch sử của Spa.',
+    href: '/admin/history',
+    icon: BookOpen,
+    color: 'from-amber-600 to-amber-700',
+    borderColor: 'border-admin-line-strong',
+    iconBg: 'bg-amber-600',
+  },
+  {
+    title: 'Ảnh / Video & Giá Dịch Vụ',
+    description: 'Cập nhật giá, thời lượng, đa ngôn ngữ và media cho dịch vụ.',
+    href: '/admin/services',
+    icon: Wrench,
+    color: 'from-admin-blue-a to-admin-blue-b',
+    borderColor: 'border-admin-line-strong',
+    iconBg: 'bg-admin-blue',
+  },
+  {
     title: 'Sách Lật (Flipbook)',
     description: 'Thêm hoặc xóa trang ảnh/video trong cuốn sách dịch vụ.',
     href: '/admin/flipbook-pages',
     icon: BookOpen,
-    color: 'from-admin-copper-a to-admin-copper-b',
+    color: 'from-admin-purple-a to-admin-purple-b',
     borderColor: 'border-admin-line-strong',
-    iconBg: 'bg-admin-copper',
+    iconBg: 'bg-admin-purple',
   },
   {
     title: 'Bài Viết Blog',
@@ -33,22 +69,13 @@ const QUICK_ACTIONS = [
     iconBg: 'bg-admin-green',
   },
   {
-    title: 'Ảnh / Video Dịch Vụ',
-    description: 'Tải lên hình ảnh hoặc video cho từng dịch vụ (massage, ear clean...).',
-    href: '/admin/services',
-    icon: Wrench,
-    color: 'from-admin-blue-a to-admin-blue-b',
-    borderColor: 'border-admin-line-strong',
-    iconBg: 'bg-admin-blue',
-  },
-  {
     title: 'Nội Dung Đa Ngôn Ngữ',
     description: 'Chỉnh sửa văn bản và nội dung 5 ngôn ngữ hiển thị trên trang chủ.',
     href: '/admin/content',
     icon: Globe,
-    color: 'from-admin-gold-a to-admin-gold-b',
+    color: 'from-admin-green-a to-admin-green-b',
     borderColor: 'border-admin-line-strong',
-    iconBg: 'bg-admin-gold',
+    iconBg: 'bg-admin-green',
   },
   {
     title: 'Cấu Hình Hệ Thống',
