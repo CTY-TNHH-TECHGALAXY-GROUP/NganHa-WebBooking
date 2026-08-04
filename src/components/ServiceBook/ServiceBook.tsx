@@ -85,12 +85,17 @@ const ServiceBook = () => {
 
   return (
     <FlipbookFrame
-      src={`/flipmenu/index.html?lang=${lang}`}
+      src={`/flipmenu/example/book.html?lang=${lang}&shell=book&v=flipbook-restored-v64`}
       title="ORIA SPA 3D Menu"
       isFullscreen={isFullscreen}
       containerRef={containerRef}
       iframeRef={iframeRef}
       headerHeight={HEADER_HEIGHT_PX}
+      classNames={{
+        containerInline: 'min-h-[700px] lg:min-h-[850px] py-0 relative',
+        iframeBase: 'w-full border-none overflow-hidden',
+        iframeInline: 'h-[700px] lg:h-[850px] max-w-none rounded-none shadow-none',
+      }}
     />
   );
 };

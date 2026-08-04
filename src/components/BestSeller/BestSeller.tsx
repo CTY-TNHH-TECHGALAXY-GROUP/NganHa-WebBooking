@@ -34,7 +34,42 @@ const FALLBACK_SERVICES = [
     priceVND: 520000,
     img: '/images/services/facial.png',
   },
+  {
+    id: 'mock-4',
+    cat: 'Foot Care',
+    names: { en: 'Deep Foot Recovery', vi: 'Phục hồi chân chuyên sâu' },
+    descriptions: { en: 'Warm soak, exfoliation and targeted pressure-point treatment.', vi: 'Ngâm ấm, tẩy tế bào chết và bấm huyệt.' },
+    timeDisplay: '60 min',
+    priceVND: 475000,
+    img: '/images/services/foot.png',
+  },
+  {
+    id: 'mock-5',
+    cat: 'Hot Stone',
+    names: { en: 'Hot Stone Balance', vi: 'Đá nóng thư giãn' },
+    descriptions: { en: 'Heated stone therapy designed to release tension and restore balance.', vi: 'Liệu trình đá nóng giúp thả lỏng và cân bằng.' },
+    timeDisplay: '90 min',
+    priceVND: 780000,
+    img: '/images/services/hotstone.png',
+  },
+  {
+    id: 'mock-6',
+    cat: 'Ear Cleaning',
+    names: { en: 'Traditional Ear Care', vi: 'Lấy ráy tai thư giãn' },
+    descriptions: { en: 'Gentle ear care paired with a calming head and temple massage.', vi: 'Làm sạch tai nhẹ nhàng kết hợp massage thư giãn.' },
+    timeDisplay: '45 min',
+    priceVND: 370000,
+    img: '/images/services/ear-cleaning.png',
+  },
 ];
+
+const getTitle = (service: any) => service.names?.en || service.names?.vi || service.name || service.NAME || service.id;
+const getDescription = (service: any) => service.descriptions?.en || service.descriptions?.vi || service.description || service.DESCRIPTION || '';
+const getImage = (service: any) => service.img || service.media_url || service.image_url || service.image || 'https://placehold.co/640x820?text=Oria+Spa';
+const getDuration = (service: any) => service.timeDisplay || service.durationDisplay || (service.durationMinutes ? `${service.durationMinutes} min` : '60 min');
+const getPrice = (service: any) => Number(service.priceVND || service.price || service.PRICE || 0);
+const getCategory = (service: any) => service.cat || service.categoryName || service.category || service.CATEGORY || 'Oria Spa';
+const SERVICE_MENU_URL = '/#services';
 
 const BestSeller = () => {
   // Render mảng fallback lúc đầu để giữ nguyên khung giao diện
@@ -56,38 +91,61 @@ const BestSeller = () => {
   return (
     <section id="best-seller" className="best-seller-services">
       <div className="best-seller-services__inner">
-        <div className="best-seller-services__intro">
-          <h2>
-            Best-seller of
-            <br />
-            Oria Spa
-          </h2>
-        </div>
+        <div className="best-seller-services__layout">
+          <aside className="best-seller-services__intro">
+            <span className="best-seller-services__eyebrow">Most booked this month</span>
+            <h2>
+              Best-seller of
+              <br />
+              Oria Spa
+            </h2>
+            <p>Six guest-favorite treatments, arranged in a compact premium view before opening the full service menu.</p>
+            <a href={SERVICE_MENU_URL} className="best-seller-services__all-link">
+              Explore all services <span>→</span>
+            </a>
+          </aside>
 
-        <div className="best-seller-services__grid">
-          {services.map((service) => {
-            const title = service.names?.en || service.names?.vi || service.id;
-            const description = service.descriptions?.en || service.descriptions?.vi || '';
-            const img = service.img || service.media_url || 'https://placehold.co/300x200?text=No+Image';
+          <div className="best-seller-services__grid" aria-label="Best-selling Oria Spa services">
+            {services.slice(0, 6).map((service, index) => {
+              const title = getTitle(service);
+              const description = getDescription(service);
+              const img = getImage(service);
+              const price = getPrice(service);
 
-            return (
-              <article className="best-seller-card" key={service.id}>
-                <img src={img} alt={title} className="best-seller-card__image" />
-                <div className="best-seller-card__content">
-                  <span>{service.cat || 'Wellness'}</span>
-                  <h3>{title}</h3>
-                  <p>{description}</p>
-                  <div className="best-seller-card__meta">
-                    <strong>{service.timeDisplay || '60 mins'}</strong>
-                    <strong>{formatPrice(service.priceVND || 0)}</strong>
+              return (
+                <article className="best-seller-card" key={service.id}>
+                  <div className="best-seller-card__visual">
+                    <img src={img} alt={title} className="best-seller-card__image" loading="lazy" />
                   </div>
-                </div>
-                <a href="/en/new-user/standard/checkout" className="best-seller-card__action">
-                  Book now
-                </a>
-              </article>
-            );
-          })}
+                  <div className="best-seller-card__badge-row">
+                    <span className="best-seller-card__rank">#{index + 1}</span>
+                    <span className="best-seller-card__badge">Best Seller</span>
+                  </div>
+                  <div className="best-seller-card__content">
+                    <span className="best-seller-card__category">{getCategory(service)}</span>
+                    <h3>{title}</h3>
+                    <p>{description}</p>
+                    <div className="best-seller-card__meta">
+                      <span className="best-seller-card__duration">{getDuration(service)}</span>
+                      <strong>{price > 0 ? formatPrice(price) : 'Contact'}</strong>
+                    </div>
+                    <div className="best-seller-card__actions">
+                      <button className="best-seller-card__cart" aria-label={`Add ${title} to cart`} type="button">
+                        <svg fill="none" viewBox="0 0 24 24" aria-hidden="true">
+                          <path d="M3 4h2l2.2 10.2a2 2 0 0 0 2 1.6h7.9a2 2 0 0 0 2-1.6L21 7H6" />
+                          <circle cx="10" cy="20" r="1" />
+                          <circle cx="18" cy="20" r="1" />
+                        </svg>
+                      </button>
+                      <a href="/en/new-user/standard/checkout" className="best-seller-card__action">
+                        Book now
+                      </a>
+                    </div>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
         </div>
       </div>
     </section>

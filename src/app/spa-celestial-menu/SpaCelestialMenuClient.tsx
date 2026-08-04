@@ -1550,6 +1550,14 @@ function BookingNavigation({
 }) {
   const goBack = useBookingStore((state) => state.goBack);
   const resetBooking = useBookingStore((state) => state.resetBooking);
+  const handleBack = () => {
+    if (stage === 'services') {
+      goBack();
+      return;
+    }
+
+    window.location.href = '/';
+  };
   const stageLabel: Record<BookingStage, string> = {
     experience: 'TRẢI NGHIỆM',
     categories: 'DANH MỤC',
@@ -1558,7 +1566,7 @@ function BookingNavigation({
 
   return (
     <header className="celestial-nav">
-      <button type="button" className="back-pill" onClick={goBack} aria-label="Trở về">
+      <button type="button" className="back-pill" onClick={handleBack} aria-label="Trở về">
         <ArrowLeft size={18} />
         <span>TRỞ VỀ</span>
       </button>
