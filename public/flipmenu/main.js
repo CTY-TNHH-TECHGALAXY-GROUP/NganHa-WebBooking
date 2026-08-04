@@ -684,17 +684,24 @@
     const CART_DUPLICATE_MODE = "increase-quantity";
 
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const embeddedBookShell = new URLSearchParams(window.location.search).get("shell") === "book";
     const canvas = document.getElementById("scene");
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: "high-performance" });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
     renderer.setSize(window.innerWidth, window.innerHeight);
+    if (embeddedBookShell) renderer.setClearColor(0x000000, 0);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color("#01040a");
-    scene.fog = new THREE.FogExp2("#01040a", 0.027);
+    if (embeddedBookShell) {
+      scene.background = null;
+      scene.fog = new THREE.FogExp2("#120d08", 0.018);
+    } else {
+      scene.background = new THREE.Color("#01040a");
+      scene.fog = new THREE.FogExp2("#01040a", 0.027);
+    }
 
     const camera = new THREE.PerspectiveCamera(43, window.innerWidth / window.innerHeight, 0.1, 100);
     camera.position.set(0, 0.1, 8.5);

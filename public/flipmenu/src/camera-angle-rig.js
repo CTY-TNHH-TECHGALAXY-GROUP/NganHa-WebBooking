@@ -41,7 +41,7 @@ export function createCameraAngleRig(THREE, canvas, options = {}) {
     if (state.pointerId !== event.pointerId) return;
     state.dragging = false;
     state.pointerId = null;
-    if (state.dragDistance > 32) {
+    if (state.dragDistance > 8) {
       state.suppressClick = true;
       window.setTimeout(() => {
         state.suppressClick = false;

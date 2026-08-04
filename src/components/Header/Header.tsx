@@ -47,9 +47,10 @@ const NAV_ITEMS: NavItem[] = [
     label: 'Services',
     isUnclickable: true,
     children: [
-      { id: 'service_standard', label: 'Standard', href: '/#standard' },
-      { id: 'service_premium', label: 'Premium', href: '/#premium' },
-      { id: 'service_therapy', label: 'Therapy', href: '/#therapy-services' },
+      { id: 'best_seller', label: 'Best-seller', href: '/#best-seller' },
+      { id: 'service_menu', label: 'Menu', href: '/#services' },
+      { id: 'service_area', label: 'Area', href: '/?heroVideo=1#hero' },
+      { id: 'local_tour', label: 'Local tour', href: '/#local-tour' },
     ],
   },
   {
