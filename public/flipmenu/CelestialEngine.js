@@ -27,6 +27,37 @@ export class CelestialEngine {
       const urlParams = new URLSearchParams(window.location.search);
       const layoutEditorEnabled = urlParams.has("layoutEdit") || urlParams.get("mode") === "layout-edit";
       const LAYOUT_STORAGE_KEY = "nganha-celestial-layout-overrides-safe-cinematic-3d-ellipse-v56";
+      const PERFORMANCE = {
+        maxPixelRatio: 1.15,
+        targetFrameMs: 1000 / 42,
+        reducedMotionFrameMs: 1000 / 24,
+      };
+
+      function hashSeed(input) {
+        let hash = 2166136261;
+        for (let i = 0; i < input.length; i++) {
+          hash ^= input.charCodeAt(i);
+          hash = Math.imul(hash, 16777619);
+        }
+        return hash >>> 0;
+      }
+
+      function createSeededRandom(seedInput) {
+        let seed = hashSeed(seedInput) || 1;
+        return () => {
+          seed += 0x6D2B79F5;
+          let value = seed;
+          value = Math.imul(value ^ (value >>> 15), value | 1);
+          value ^= value + Math.imul(value ^ (value >>> 7), value | 61);
+          return ((value ^ (value >>> 14)) >>> 0) / 4294967296;
+        };
+      }
+
+      const random = createSeededRandom("nganha-celestial-safe-cinematic-v61");
+
+      function cappedPixelRatio() {
+        return Math.min(window.devicePixelRatio || 1, PERFORMANCE.maxPixelRatio);
+      }
 
       const GOLD = {
         shadow: new THREE.Color("#7d5422"),
@@ -45,6 +76,16 @@ export class CelestialEngine {
         nail: "standalone-celestial-menu%20(2)/public/category-icons-svg/nail-care.svg",
         heel: "standalone-celestial-menu%20(2)/public/category-icons-svg/heel-care.svg",
       };
+
+      const SERVICE_CLIP_WINDOW = { start: 10, end: 15 };
+      const serviceClip = (src, poster, alt) => ({
+        type: "video",
+        src,
+        poster,
+        alt,
+        start: SERVICE_CLIP_WINDOW.start,
+        end: SERVICE_CLIP_WINDOW.end,
+      });
 
       const categories = [
         {
@@ -274,6 +315,8 @@ export class CelestialEngine {
         cart: [],
         cartOpen: false,
         noticeTimer: null,
+        serviceVideoModalTimer: null,
+        serviceVideoObserver: null,
         focusStartedAt: 0,
         focusDuration: 1280,
         serviceRevealAt: 0,
@@ -306,22 +349,22 @@ export class CelestialEngine {
         let lastShotAt = 0;
 
         function makeGalaxyStar() {
-          const depth = Math.random();
-          const roll = Math.random();
+          const depth = random();
+          const roll = random();
           return {
-            x: Math.random() * width,
-            y: Math.random() * height,
+            x: random() * width,
+            y: random() * height,
             radius: depth * 1.5 + 0.3,
             baseAlpha: depth * 0.6 + 0.3,
-            twinkleSpeed: Math.random() * 0.02 + 0.005,
-            twinklePhase: Math.random() * Math.PI * 2,
+            twinkleSpeed: random() * 0.02 + 0.005,
+            twinklePhase: random() * Math.PI * 2,
             hue: roll < 0.18 ? 'gold' : roll < 0.28 ? 'amber' : 'white',
-            drift: (Math.random() - 0.5) * 0.02,
+            drift: (random() - 0.5) * 0.02,
           };
         }
 
         function resizeGalaxy() {
-          const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+          const dpr = cappedPixelRatio();
           width = window.innerWidth;
           height = window.innerHeight;
           galaxyCanvas.width = Math.floor(width * dpr);
@@ -329,22 +372,22 @@ export class CelestialEngine {
           galaxyCanvas.style.width = `${width}px`;
           galaxyCanvas.style.height = `${height}px`;
           ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-          const starCount = Math.max(220, Math.floor((width * height) / 2600));
+          const starCount = Math.max(140, Math.floor((width * height) / 5200));
           galaxyStars = Array.from({ length: starCount }, makeGalaxyStar);
         }
 
         function spawnShootingStar() {
-          const startX = Math.random() * width * 0.6 + width * 0.2;
-          const startY = Math.random() * height * 0.2;
-          const angle = Math.PI / 4 + (Math.random() - 0.5) * 0.3;
+          const startX = random() * width * 0.6 + width * 0.2;
+          const startY = random() * height * 0.2;
+          const angle = Math.PI / 4 + (random() - 0.5) * 0.3;
           shootingStars.push({
             x: startX,
             y: startY,
             vx: Math.cos(angle) * 9,
             vy: Math.sin(angle) * 9,
             life: 1,
-            length: Math.random() * 80 + 60,
-            gold: Math.random() < 0.5
+            length: random() * 80 + 60,
+            gold: random() < 0.5
           });
         }
 
@@ -415,7 +458,7 @@ export class CelestialEngine {
           drawGalaxyStars(time * 0.06);
           if (!prefersReducedMotion && time - lastShotAt > 3200) {
             lastShotAt = time;
-            if (Math.random() < 0.6) spawnShootingStar();
+            if (random() < 0.6) spawnShootingStar();
           }
           drawShootingStars();
           animationFrame = requestAnimationFrame(loop);
@@ -436,11 +479,11 @@ export class CelestialEngine {
       const galaxyBackground = initGalaxyBackground();
       const canvas = document.getElementById("cel-scene-celestial");
       const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: "high-performance" });
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+      renderer.setPixelRatio(cappedPixelRatio());
       renderer.setSize(window.innerWidth, window.innerHeight);
       renderer.setClearColor(0x000000, 0);
       renderer.outputColorSpace = THREE.SRGBColorSpace;
-      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.enabled = false;
       renderer.shadowMap.type = THREE.PCFSoftShadowMap;
       const cameraAngleRig = createCameraAngleRig(THREE, canvas, {
         prefersReducedMotion: () => prefersReducedMotion,
@@ -475,9 +518,13 @@ export class CelestialEngine {
       const raycaster = new THREE.Raycaster();
       const pointer = new THREE.Vector2(99, 99);
       const pointerParallax = new THREE.Vector2();
+      const lockedOverviewParallax = new THREE.Vector2(0, 0);
       const medallions = new Map();
       const clickable = [];
       const clock = new THREE.Clock();
+      let lastRenderAt = 0;
+      let resizeFrame = 0;
+      let resizeRebuildTimer = 0;
       const forceRenderWhenHidden = urlParams.has("capture") || navigator.webdriver;
       const cameraVelocity = new THREE.Vector3();
       const cameraLook = new THREE.Vector3(0, 0, 0);
@@ -573,7 +620,7 @@ export class CelestialEngine {
           for (let x = 0; x < c.width; x++) {
             const i = (y * c.width + x) * 4;
             const wave = Math.sin(x * 0.035 + y * 0.014) * 5 + Math.sin((x + y) * 0.018) * 4;
-            const grain = (Math.random() - 0.5) * 18;
+            const grain = (random() - 0.5) * 18;
             const v = Math.max(14, Math.min(42, 26 + wave + grain));
             img.data[i] = v;
             img.data[i + 1] = v + 3;
@@ -1491,22 +1538,22 @@ export class CelestialEngine {
 
       function makeStars() {
         const isMobile = responsiveKey() === "mobile";
-        const count = isMobile ? 1600 : 5200;
+        const count = isMobile ? 700 : 2200;
         const positions = new Float32Array(count * 3);
         const colors = new Float32Array(count * 3);
         for (let i = 0; i < count; i++) {
-          const layer = Math.random();
-          const depth = layer < 0.68 ? -14 - Math.random() * 22 : -3.4 - Math.random() * 10;
-          const x = (Math.random() - 0.5) * (layer < 0.68 ? 26 : 18);
-          const y = (Math.random() - 0.5) * (layer < 0.68 ? 14 : 10.5);
+          const layer = random();
+          const depth = layer < 0.68 ? -14 - random() * 22 : -3.4 - random() * 10;
+          const x = (random() - 0.5) * (layer < 0.68 ? 26 : 18);
+          const y = (random() - 0.5) * (layer < 0.68 ? 14 : 10.5);
           positions[i * 3] = x;
           positions[i * 3 + 1] = y;
           positions[i * 3 + 2] = depth;
-          const warm = Math.random() > 0.78;
+          const warm = random() > 0.78;
           const color = new THREE.Color(warm ? "#f0d29a" : "#abc9f5");
           const titleClear = Math.abs(x) < 2.55 && y > 1.0 && y < 2.1;
           const dimMask = titleClear ? 0.16 : 1;
-          const dim = (layer < 0.68 ? 0.18 + Math.random() * 0.44 : 0.34 + Math.random() * 0.86) * dimMask;
+          const dim = (layer < 0.68 ? 0.18 + random() * 0.44 : 0.34 + random() * 0.86) * dimMask;
           colors[i * 3] = color.r * dim;
           colors[i * 3 + 1] = color.g * dim;
           colors[i * 3 + 2] = color.b * dim;
@@ -1524,28 +1571,28 @@ export class CelestialEngine {
         const isMobile = responsiveKey() === "mobile";
         const group = new THREE.Group();
         const layerConfigs = [
-          { count: isMobile ? 900 : 2600, z: -19, spread: 1.0, size: isMobile ? 0.014 : 0.01, opacity: 0.54 },
-          { count: isMobile ? 520 : 1500, z: -10, spread: 0.66, size: isMobile ? 0.02 : 0.016, opacity: 0.68 },
-          { count: isMobile ? 130 : 420, z: -4.6, spread: 0.34, size: isMobile ? 0.03 : 0.024, opacity: 0.82 },
+          { count: isMobile ? 380 : 1050, z: -19, spread: 1.0, size: isMobile ? 0.014 : 0.01, opacity: 0.5 },
+          { count: isMobile ? 220 : 620, z: -10, spread: 0.66, size: isMobile ? 0.02 : 0.016, opacity: 0.62 },
+          { count: isMobile ? 60 : 160, z: -4.6, spread: 0.34, size: isMobile ? 0.03 : 0.024, opacity: 0.76 },
         ];
 
         layerConfigs.forEach((config, layerIndex) => {
           const positions = new Float32Array(config.count * 3);
           const colors = new Float32Array(config.count * 3);
           for (let i = 0; i < config.count; i++) {
-            const t = Math.random();
+            const t = random();
             const diagonalX = (t - 0.5) * 18.8;
             const bandY = 1.48 - t * 2.72 + Math.sin(t * Math.PI * 2.4) * 0.34;
-            const jitter = (Math.random() - 0.5) * config.spread;
-            const fineJitter = (Math.random() - 0.5) * config.spread * 2.1;
+            const jitter = (random() - 0.5) * config.spread;
+            const fineJitter = (random() - 0.5) * config.spread * 2.1;
             positions[i * 3] = diagonalX + fineJitter;
             positions[i * 3 + 1] = bandY + jitter;
-            positions[i * 3 + 2] = config.z - Math.random() * 5.5;
+            positions[i * 3 + 2] = config.z - random() * 5.5;
 
-            const warmDust = Math.random() > 0.38;
+            const warmDust = random() > 0.38;
             const color = new THREE.Color(warmDust ? "#e7bf78" : "#d8e5ff");
             const coreBoost = 1 - Math.min(1, Math.abs(jitter) / Math.max(0.001, config.spread));
-            const dim = 0.22 + Math.random() * 0.64 + coreBoost * 0.42;
+            const dim = 0.22 + random() * 0.64 + coreBoost * 0.42;
             colors[i * 3] = color.r * dim;
             colors[i * 3 + 1] = color.g * dim;
             colors[i * 3 + 2] = color.b * dim;
@@ -2078,7 +2125,8 @@ export class CelestialEngine {
         const padding = safePaddingFactor(key);
         const fitHeightDistance = (height * padding) / (2 * Math.tan(fov / 2));
         const fitWidthDistance = (width * padding) / (2 * Math.tan(fov / 2) * aspect);
-        const distance = Math.max(fitHeightDistance, fitWidthDistance, minOverviewDistance(key));
+        const overviewSizeBoost = key === "mobile" ? 0.96 : 0.92;
+        const distance = Math.max(fitHeightDistance, fitWidthDistance, minOverviewDistance(key)) * overviewSizeBoost;
         return {
           position: new THREE.Vector3(centerX, centerY, distance),
           look: new THREE.Vector3(centerX, centerY, 0),
@@ -2447,7 +2495,7 @@ export class CelestialEngine {
         orbitalSystem.params = { ...params, key };
         orbitalSystem.curve = curve;
 
-        const basePoints = curve.getSpacedPoints(key === "mobile" ? 120 : 180);
+        const basePoints = curve.getSpacedPoints(key === "mobile" ? 90 : 132);
         const baseGeo = new THREE.BufferGeometry().setFromPoints(basePoints);
         const baseMat = new THREE.LineBasicMaterial({
           color: "#e8c176",
@@ -2463,8 +2511,8 @@ export class CelestialEngine {
         orbitalSystem.group.add(baseLine);
 
         const trailConfigs = [
-          { phase: 0.08, length: 0.16, speed: 0.018, count: key === "mobile" ? 44 : 72, opacity: 0.8 },
-          { phase: 0.58, length: 0.12, speed: 0.012, count: key === "mobile" ? 34 : 58, opacity: 0.46 },
+          { phase: 0.08, length: 0.16, speed: 0.014, count: key === "mobile" ? 28 : 42, opacity: 0.72 },
+          { phase: 0.58, length: 0.12, speed: 0.009, count: key === "mobile" ? 20 : 32, opacity: 0.4 },
         ];
         trailConfigs.forEach((config) => {
           const positions = new Float32Array(config.count * 3);
@@ -2491,7 +2539,7 @@ export class CelestialEngine {
           orbitalSystem.group.add(points);
         });
 
-        const particleCount = key === "mobile" ? 180 : key === "tabletPortrait" || key === "tabletLandscape" ? 360 : 680;
+        const particleCount = key === "mobile" ? 72 : key === "tabletPortrait" || key === "tabletLandscape" ? 140 : 240;
         const positions = new Float32Array(particleCount * 3);
         const colors = new Float32Array(particleCount * 3);
         const sizes = new Float32Array(particleCount);
@@ -2500,19 +2548,19 @@ export class CelestialEngine {
         const particleNoise = new Float32Array(particleCount * 3);
         const emphasized = ["body-massage", "foot-care", "ear-care"].map((id) => planetLayoutConfigs[id].orbitT);
         for (let i = 0; i < particleCount; i++) {
-          const nearHero = Math.random() < 0.58;
-          const anchor = emphasized[Math.floor(Math.random() * emphasized.length)];
-          particleT[i] = nearHero ? (anchor + (Math.random() - 0.5) * 0.18 + 1) % 1 : Math.random();
-          particleNoise[i * 3] = (Math.random() - 0.5) * 0.1;
-          particleNoise[i * 3 + 1] = (Math.random() - 0.5) * 0.08;
-          particleNoise[i * 3 + 2] = (Math.random() - 0.5) * 0.18;
-          const color = new THREE.Color(Math.random() > 0.22 ? "#eeb35e" : "#fff4bb");
-          const dim = nearHero ? 0.78 + Math.random() * 0.35 : 0.32 + Math.random() * 0.42;
+          const nearHero = random() < 0.58;
+          const anchor = emphasized[Math.floor(random() * emphasized.length)];
+          particleT[i] = nearHero ? (anchor + (random() - 0.5) * 0.18 + 1) % 1 : random();
+          particleNoise[i * 3] = (random() - 0.5) * 0.1;
+          particleNoise[i * 3 + 1] = (random() - 0.5) * 0.08;
+          particleNoise[i * 3 + 2] = (random() - 0.5) * 0.18;
+          const color = new THREE.Color(random() > 0.22 ? "#eeb35e" : "#fff4bb");
+          const dim = nearHero ? 0.78 + random() * 0.35 : 0.32 + random() * 0.42;
           colors[i * 3] = color.r * dim;
           colors[i * 3 + 1] = color.g * dim;
           colors[i * 3 + 2] = color.b * dim;
-          sizes[i] = 0.006 + Math.random() * (nearHero ? 0.018 : 0.012);
-          alphas[i] = nearHero ? 0.64 + Math.random() * 0.28 : 0.24 + Math.random() * 0.34;
+          sizes[i] = 0.006 + random() * (nearHero ? 0.018 : 0.012);
+          alphas[i] = nearHero ? 0.64 + random() * 0.28 : 0.24 + random() * 0.34;
           const p = curve.getPointAt(particleT[i]);
           positions[i * 3] = p.x + particleNoise[i * 3];
           positions[i * 3 + 1] = p.y + particleNoise[i * 3 + 1];
@@ -2539,8 +2587,9 @@ export class CelestialEngine {
         if (orbitalSystem.params?.key !== key) buildOrbitalSystem();
         const curve = orbitalSystem.curve;
 
-        orbitalSystem.group.position.x = pointerParallax.x * (key === "mobile" ? 0.03 : 0.08);
-        orbitalSystem.group.position.y = pointerParallax.y * (key === "mobile" ? 0.02 : 0.05);
+        const parallax = focusMode ? pointerParallax : lockedOverviewParallax;
+        orbitalSystem.group.position.x = parallax.x * (key === "mobile" ? 0.03 : 0.08);
+        orbitalSystem.group.position.y = parallax.y * (key === "mobile" ? 0.02 : 0.05);
 
         orbitalSystem.trails.forEach((trail, trailIndex) => {
           const config = trail.userData.trailConfig;
@@ -2588,7 +2637,7 @@ export class CelestialEngine {
       }
 
       function makeMilkyWayConnection(pointA, pointB, {
-        particleCount = 260,
+        particleCount = 150,
         curveHeight = 0.35,
         colorCore = "#FFE998",
         colorDim = "#8a6d3b",
@@ -2597,10 +2646,10 @@ export class CelestialEngine {
         const mid = new THREE.Vector3()
           .addVectors(pointA, pointB)
           .multiplyScalar(0.5)
-          .add(new THREE.Vector3(0, curveHeight, (Math.random() - 0.5) * 0.4));
+          .add(new THREE.Vector3(0, curveHeight, (random() - 0.5) * 0.4));
         const curve = new THREE.QuadraticBezierCurve3(pointA.clone(), mid, pointB.clone());
 
-        const corePoints = curve.getPoints(72);
+        const corePoints = curve.getPoints(44);
         const coreGeo = new THREE.BufferGeometry().setFromPoints(corePoints);
         const coreMat = new THREE.LineBasicMaterial({
           color: colorCore,
@@ -2625,14 +2674,14 @@ export class CelestialEngine {
         const colorDimObj = new THREE.Color(colorDim);
 
         for (let i = 0; i < particleCount; i++) {
-          const u = Math.random();
-          const t = 0.5 + (u - 0.5) * (0.4 + Math.random() * 0.6);
+          const u = random();
+          const t = 0.5 + (u - 0.5) * (0.4 + random() * 0.6);
           const clampedT = THREE.MathUtils.clamp(t, 0, 1);
           const basePoint = curve.getPoint(clampedT);
           const spread = 0.09 * (1 - Math.abs(clampedT - 0.5) * 1.2);
-          const ox = (Math.random() - 0.5) * spread;
-          const oy = (Math.random() - 0.5) * spread * 0.6;
-          const oz = (Math.random() - 0.5) * spread;
+          const ox = (random() - 0.5) * spread;
+          const oy = (random() - 0.5) * spread * 0.6;
+          const oz = (random() - 0.5) * spread;
 
           positions[i * 3] = basePoint.x + ox;
           positions[i * 3 + 1] = basePoint.y + oy;
@@ -2642,11 +2691,11 @@ export class CelestialEngine {
           particleOffsets[i * 3 + 1] = oy;
           particleOffsets[i * 3 + 2] = oz;
 
-          const mixed = colorDimObj.clone().lerp(colorCoreObj, 0.34 + Math.random() * 0.66);
+          const mixed = colorDimObj.clone().lerp(colorCoreObj, 0.34 + random() * 0.66);
           colors[i * 3] = mixed.r;
           colors[i * 3 + 1] = mixed.g;
           colors[i * 3 + 2] = mixed.b;
-          sizes[i] = 0.012 + Math.random() * 0.03;
+          sizes[i] = 0.012 + random() * 0.03;
         }
 
         const geo = new THREE.BufferGeometry();
@@ -2674,7 +2723,7 @@ export class CelestialEngine {
         connectionTrails.clear();
         milkyWayStreams.length = 0;
         const key = responsiveKey();
-        const particleCount = key === "mobile" ? 90 : key === "tabletPortrait" || key === "tabletLandscape" ? 170 : 260;
+        const particleCount = key === "mobile" ? 42 : key === "tabletPortrait" || key === "tabletLandscape" ? 78 : 120;
         connectionTrailSpecs.forEach((spec, index) => {
           const stream = makeMilkyWayConnection(new THREE.Vector3(), new THREE.Vector3(0.1, 0, 0), {
             particleCount,
@@ -3155,6 +3204,228 @@ export class CelestialEngine {
         return new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND", maximumFractionDigits: 0 }).format(price);
       }
 
+      function currentLang() {
+        const lang = (document.documentElement.lang || navigator.language || "vi").slice(0, 2).toLowerCase();
+        if (lang === "zh") return "cn";
+        if (lang === "ko") return "kr";
+        if (["vi", "en", "cn", "jp", "kr"].includes(lang)) return lang;
+        return "vi";
+      }
+
+      function normalizeCategoryKey(value) {
+        return String(value || "")
+          .toLowerCase()
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .replace(/&/g, "and")
+          .replace(/[^a-z0-9]+/g, " ")
+          .trim();
+      }
+
+      const categoryAliasMap = {
+        body: "body-massage",
+        "body massage": "body-massage",
+        foot: "foot-care",
+        "foot massage": "foot-care",
+        facial: "facial-care",
+        "facial care": "facial-care",
+        "cham soc mat": "facial-care",
+        "hair wash": "hair-wash",
+        "goi dau": "hair-wash",
+        "ear clean": "ear-care",
+        "ear care": "ear-care",
+        "ray tai": "ear-care",
+        "heel skin shave": "heel-care",
+        "heel care": "heel-care",
+        "cham soc got": "heel-care",
+        "manicure and pedicure": "nail-care",
+        nails: "nail-care",
+        nail: "nail-care",
+        mong: "nail-care",
+        barber: "hair-wash",
+        premium: "body-massage",
+        additional: "body-massage",
+      };
+
+      function categoryIdForService(service) {
+        const key = normalizeCategoryKey(service.cat || service.category || service.categoryId || "");
+        if (categoryAliasMap[key]) return categoryAliasMap[key];
+
+        const byName = categories.find((category) => {
+          const categoryKeys = [
+            category.id,
+            category.name,
+            category.shortName,
+            category.subtitle,
+          ].map(normalizeCategoryKey);
+          return categoryKeys.some((categoryKey) => categoryKey && (categoryKey === key || categoryKey.includes(key) || key.includes(categoryKey)));
+        });
+        return byName?.id || null;
+      }
+
+      function serviceName(service) {
+        const lang = currentLang();
+        return service.names?.[lang] || service.names?.vi || service.names?.en || service.name || service.id;
+      }
+
+      function serviceDescription(service) {
+        const lang = currentLang();
+        return service.descriptions?.[lang] || service.descriptions?.vi || service.descriptions?.en || service.description || "";
+      }
+
+      function defaultServiceClipSrc(service) {
+        // Removed hardcoded video fallback — return null so services without
+        // uploaded media will show images instead of broken /videos/spa-bg-*.mp4
+        return null;
+      }
+
+      function serviceMediaFromSource(service, fallbackImage, alt) {
+        // Priority 1: media_url / media_type from DB (admin uploaded via /admin/services)
+        if (service.media_type === "video" && service.media_url) {
+          return {
+            type: "video",
+            src: service.media_url,
+            poster: service.img || service.poster || service.thumbnail || fallbackImage,
+            alt,
+            start: 0,
+            end: 9999,
+          };
+        }
+        if (service.media_url) {
+          return {
+            type: "image",
+            src: service.media_url,
+            poster: service.media_url,
+            alt,
+            start: 0,
+            end: 0,
+          };
+        }
+
+        // Priority 2: legacy media/video objects (for backward compat with fallback data)
+        const media = service.media && typeof service.media === "object" ? service.media : null;
+        const videoObject = service.video && typeof service.video === "object" ? service.video : null;
+        const videoSrc =
+          media?.type === "video" ? media.src :
+          videoObject?.src ||
+          (typeof service.video === "string" ? service.video : "") ||
+          service.videoSrc ||
+          service.videoUrl ||
+          service.clipSrc ||
+          service.mediaVideo ||
+          null; // No hardcoded fallback
+
+        if (!videoSrc) {
+          return {
+            type: "image",
+            src: fallbackImage,
+            poster: fallbackImage,
+            alt,
+            start: SERVICE_CLIP_WINDOW.start,
+            end: SERVICE_CLIP_WINDOW.end,
+          };
+        }
+
+        return {
+          type: "video",
+          src: videoSrc,
+          poster: media?.poster || videoObject?.poster || service.poster || service.thumbnail || service.thumb || fallbackImage,
+          alt: media?.alt || videoObject?.alt || alt,
+          start: Number.isFinite(Number(media?.start ?? videoObject?.start ?? service.clipStart))
+            ? Number(media?.start ?? videoObject?.start ?? service.clipStart)
+            : SERVICE_CLIP_WINDOW.start,
+          end: Number.isFinite(Number(media?.end ?? videoObject?.end ?? service.clipEnd))
+            ? Number(media?.end ?? videoObject?.end ?? service.clipEnd)
+            : SERVICE_CLIP_WINDOW.end,
+        };
+      }
+
+      function toGalaxyService(service) {
+        // Normalize NFC to fix Vietnamese diacritics (decomposed -> composed)
+        const name = (serviceName(service) || "").normalize("NFC");
+        const desc = (serviceDescription(service) || "").normalize("NFC");
+        const imageSrc = service.img || service.image || service.thumbnail || service.poster || "https://placehold.co/360x220?text=Ngan+Ha+Spa";
+        return {
+          id: service.id,
+          name,
+          description: desc,
+          duration: Number(service.timeValue || service.duration || 0),
+          price: Number(service.priceVND || service.price || 0),
+          image: {
+            src: imageSrc,
+            alt: name,
+            mode: "original",
+            fit: "cover",
+          },
+          img: imageSrc,
+          poster: service.poster || service.thumbnail || imageSrc,
+          media: serviceMediaFromSource(service, imageSrc, name),
+          sourceService: service,
+        };
+      }
+
+      function toBookingService(category, service) {
+        if (service.sourceService) return service.sourceService;
+        const imageSrc = service.image?.src || "https://placehold.co/360x220?text=Ngan+Ha+Spa";
+        return {
+          id: service.id,
+          cat: category.name || category.id,
+          names: { vi: service.name, en: service.name },
+          descriptions: { vi: service.description || "", en: service.description || "" },
+          img: imageSrc,
+          media: service.media || serviceMediaFromSource(service, imageSrc, service.name),
+          priceVND: Number(service.price || 0),
+          priceUSD: Math.max(1, Math.round(Number(service.price || 0) / 25000)),
+          timeValue: Number(service.duration || 0),
+          timeDisplay: `${Number(service.duration || 0)} mins`,
+          menuType: "standard",
+        };
+      }
+
+      function sourceRectFromElement(element) {
+        if (!element?.getBoundingClientRect) return null;
+        const rect = element.getBoundingClientRect();
+        return {
+          left: rect.left,
+          top: rect.top,
+          width: rect.width,
+          height: rect.height,
+        };
+      }
+
+      function postBookingAction(type, category, service, extra = {}) {
+        const payload = toBookingService(category, service);
+        window.parent?.postMessage({ type, service: payload, ...extra }, "*");
+      }
+
+      async function hydrateServicesFromApi() {
+        try {
+          const response = await fetch("/api/services", { cache: "no-store" });
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          const services = await response.json();
+          if (!Array.isArray(services) || services.length === 0) return;
+
+          const grouped = new Map();
+          services
+            .filter((service) => service && service.ACTIVE !== false && (!service.menuType || service.menuType === "standard"))
+            .forEach((service) => {
+              const categoryId = categoryIdForService(service);
+              if (!categoryId) return;
+              if (!grouped.has(categoryId)) grouped.set(categoryId, []);
+              grouped.get(categoryId).push(toGalaxyService(service));
+            });
+
+          if (grouped.size === 0) return;
+          categories.forEach((category) => {
+            const apiServices = grouped.get(category.id);
+            if (apiServices?.length) category.services = apiServices;
+          });
+          console.log("CELESTIAL: Đã đồng bộ dịch vụ từ /api/services");
+        } catch (error) {
+          console.warn("CELESTIAL: Không tải được /api/services, dùng dịch vụ mẫu.", error);
+        }
+      }
+
       function buildBookingUrl(categoryId, serviceId) {
         const params = new URLSearchParams({ experienceId: state.experienceId, categoryId, serviceId });
         return `${BOOK_NOW_CONFIG.route}?${params.toString()}`;
@@ -3178,6 +3449,10 @@ export class CelestialEngine {
         return state.cart.reduce((total, item) => total + item.price * item.quantity, 0);
       }
 
+      function serviceQuantity(serviceId) {
+        return state.cart.find((item) => item.serviceId === serviceId)?.quantity || 0;
+      }
+
       function showNotice(message) {
         const notification = document.getElementById("cel-cartNotification");
         notification.textContent = message;
@@ -3186,13 +3461,17 @@ export class CelestialEngine {
         state.noticeTimer = window.setTimeout(() => notification.classList.remove("visible"), 2400);
       }
 
-      function addToCart(category, service) {
+      function addToCart(category, service, sourceElement) {
         const existing = state.cart.find((item) => item.serviceId === service.id);
         if (existing) {
           if (CART_DUPLICATE_MODE === "prevent-duplicate") showNotice("Dịch vụ này đã có trong giỏ hàng.");
           else {
             existing.quantity += 1;
-            showNotice("Đã tăng số lượng trong giỏ hàng.");
+            showNotice(`Đã thêm dịch vụ · ${cartCount()} dịch vụ`);
+            postBookingAction("flipmenu:add-service-to-cart", category, service, {
+              sourceRect: sourceRectFromElement(sourceElement),
+              selectedCount: cartCount(),
+            });
           }
         } else {
           state.cart.push({
@@ -3204,9 +3483,47 @@ export class CelestialEngine {
             image: service.image,
             quantity: 1,
           });
-          showNotice("Đã thêm vào giỏ hàng.");
+          showNotice(`Đã thêm dịch vụ · ${cartCount()} dịch vụ`);
+          postBookingAction("flipmenu:add-service-to-cart", category, service, {
+            sourceRect: sourceRectFromElement(sourceElement),
+            selectedCount: cartCount(),
+          });
         }
         renderCart();
+        renderServices();
+      }
+
+      function removeFromCart(serviceId) {
+        const existing = state.cart.find((item) => item.serviceId === serviceId);
+        if (!existing) return;
+        existing.quantity -= 1;
+        if (existing.quantity <= 0) {
+          state.cart = state.cart.filter((item) => item.serviceId !== serviceId);
+        }
+        window.parent?.postMessage({ type: "flipmenu:remove-service-from-cart", serviceId, selectedCount: cartCount() }, "*");
+        renderCart();
+        renderServices();
+      }
+
+      function localizedCartText(key) {
+        const copy = {
+          empty: {
+            vi: "Chưa chọn dịch vụ",
+            en: "No selected service",
+            cn: "尚未选择服务",
+            jp: "サービスが選択されていません",
+            kr: "선택된 서비스가 없습니다",
+          },
+          place: {
+            vi: "Đặt lịch",
+            en: "Place order",
+            cn: "提交订单",
+            jp: "予約へ進む",
+            kr: "예약하기",
+          },
+        };
+        const lang = currentLang();
+        return copy[key]?.[lang] || copy[key]?.en || "";
       }
 
       function renderCart() {
@@ -3215,10 +3532,13 @@ export class CelestialEngine {
         const drawer = document.getElementById("cel-cartDrawer");
         const list = document.getElementById("cel-cartItems");
         const subtotal = document.getElementById("cel-cartSubtotal");
+        const placeOrder = document.getElementById("cel-placeOrderButton");
         const count = cartCount();
-        button.classList.toggle("has-items", count > 0);
-        button.setAttribute("aria-label", `Giỏ hàng, ${count} dịch vụ`);
-        badge.textContent = String(count);
+        if (button) {
+          button.classList.toggle("has-items", count > 0);
+          button.setAttribute("aria-label", `Giỏ hàng, ${count} dịch vụ`);
+        }
+        if (badge) badge.textContent = String(count);
         drawer.classList.toggle("visible", state.cartOpen);
         subtotal.textContent = formatPrice(cartSubtotal());
         list.innerHTML = state.cart.length
@@ -3231,7 +3551,225 @@ export class CelestialEngine {
                 </div>
               </article>
             `).join("")
-          : `<div class="detail-box">Giỏ hàng chưa có dịch vụ.</div>`;
+          : `<div class="detail-box">${localizedCartText("empty")}</div>`;
+        if (placeOrder) {
+          placeOrder.textContent = localizedCartText("place");
+          placeOrder.disabled = count === 0;
+          placeOrder.classList.toggle("is-disabled", count === 0);
+        }
+      }
+
+      function escapeAttribute(value) {
+        return String(value ?? "")
+          .replace(/&/g, "&amp;")
+          .replace(/"/g, "&quot;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;");
+      }
+
+      function renderServiceMedia(item) {
+        const image = item.image || {};
+        const media = item.media || serviceMediaFromSource(item, image.src, image.alt || item.name);
+        const src = media.src || image.src || "https://placehold.co/360x220?text=Ngan+Ha+Spa";
+        const poster = media.poster || image.src || src;
+        const alt = media.alt || image.alt || item.name || "ORIA SPA service";
+        if (media.type !== "video" || !src) {
+          return `<img class="service-card-media" src="${escapeAttribute(src)}" alt="${escapeAttribute(alt)}" loading="lazy" onerror="this.style.opacity=.25" />`;
+        }
+
+        const start = Number.isFinite(Number(media.start)) ? Number(media.start) : SERVICE_CLIP_WINDOW.start;
+        const end = Number.isFinite(Number(media.end)) ? Number(media.end) : SERVICE_CLIP_WINDOW.end;
+        return `
+          <video
+            class="service-card-media service-card-video"
+            src="${escapeAttribute(src)}"
+            poster="${escapeAttribute(poster)}"
+            muted
+            playsinline
+            preload="metadata"
+            data-clip-start="${escapeAttribute(start)}"
+            data-clip-end="${escapeAttribute(end)}"
+            data-full-src="${escapeAttribute(src)}"
+            data-full-poster="${escapeAttribute(poster)}"
+            data-full-label="${escapeAttribute(alt)}"
+            aria-label="${escapeAttribute(alt)}"
+          ></video>
+        `;
+      }
+
+      function resetServiceClipObserver() {
+        if (state.serviceVideoObserver) {
+          state.serviceVideoObserver.disconnect();
+          state.serviceVideoObserver = null;
+        }
+      }
+
+      function pauseServiceClipVideos(root = document) {
+        root.querySelectorAll?.(".service-card-video").forEach((video) => video.pause());
+      }
+
+      function seekVideoIntoClip(video) {
+        if (!Number.isFinite(video.duration) || video.duration <= 0) return;
+        const requestedStart = Number(video.dataset.clipStart || SERVICE_CLIP_WINDOW.start);
+        const requestedEnd = Number(video.dataset.clipEnd || SERVICE_CLIP_WINDOW.end);
+        const start = Math.min(Math.max(0, requestedStart), Math.max(0, video.duration - 0.25));
+        const end = Math.min(Math.max(start + 0.5, requestedEnd), video.duration);
+        video.dataset.clipStart = String(start);
+        video.dataset.clipEnd = String(end);
+        if (video.currentTime < start || video.currentTime >= end || Math.abs(video.currentTime - start) > 6) {
+          video.currentTime = start;
+        }
+      }
+
+      function setupServiceClipVideos(root) {
+        resetServiceClipObserver();
+        const videos = Array.from(root.querySelectorAll(".service-card-video"));
+        if (!videos.length) return;
+
+        videos.forEach((video) => {
+          const replaceBrokenVideo = () => {
+            const image = document.createElement("img");
+            image.className = "service-card-media";
+            image.src = video.poster || "https://placehold.co/360x220?text=SPA";
+            image.alt = video.getAttribute("aria-label") || "ORIA SPA service";
+            video.replaceWith(image);
+          };
+          video.addEventListener("loadedmetadata", () => seekVideoIntoClip(video), { once: true });
+          video.addEventListener("timeupdate", () => {
+            const end = Number(video.dataset.clipEnd || SERVICE_CLIP_WINDOW.end);
+            const start = Number(video.dataset.clipStart || SERVICE_CLIP_WINDOW.start);
+            if (Number.isFinite(end) && video.currentTime >= end) {
+              video.currentTime = Number.isFinite(start) ? start : 0;
+              if (!prefersReducedMotion) video.play().catch(() => undefined);
+            }
+          });
+          video.addEventListener("ended", () => {
+            seekVideoIntoClip(video);
+            if (!prefersReducedMotion) video.play().catch(() => undefined);
+          });
+          video.addEventListener("click", (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            openServiceVideoModal(video);
+          });
+          video.addEventListener("error", replaceBrokenVideo, { once: true });
+        });
+
+        if (prefersReducedMotion) {
+          pauseServiceClipVideos(root);
+          return;
+        }
+
+        if (!("IntersectionObserver" in window)) {
+          videos.forEach((video) => {
+            seekVideoIntoClip(video);
+            video.play().catch(() => undefined);
+          });
+          return;
+        }
+
+        const scrollRoot = document.getElementById("cel-serviceContent") || null;
+        state.serviceVideoObserver = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              const video = entry.target;
+              if (!(video instanceof HTMLVideoElement)) return;
+              if (entry.isIntersecting) {
+                seekVideoIntoClip(video);
+                video.play().catch(() => undefined);
+              } else {
+                video.pause();
+              }
+            });
+          },
+          { root: scrollRoot, threshold: 0.45 }
+        );
+        videos.forEach((video) => state.serviceVideoObserver.observe(video));
+      }
+
+      function ensureServiceVideoModal() {
+        let overlay = document.getElementById("cel-serviceVideoModal");
+        if (overlay) return overlay;
+
+        overlay = document.createElement("div");
+        overlay.id = "cel-serviceVideoModal";
+        overlay.className = "service-video-modal";
+        overlay.setAttribute("aria-hidden", "true");
+        overlay.innerHTML = `
+          <div class="service-video-modal__backdrop" data-video-modal-close></div>
+          <section class="service-video-modal__stage" role="dialog" aria-modal="true" aria-label="Service video">
+            <button class="service-video-modal__close" type="button" data-video-modal-close aria-label="Close video">×</button>
+            <video class="service-video-modal__video" controls playsinline preload="metadata"></video>
+          </section>
+        `;
+        document.body.appendChild(overlay);
+
+        overlay.querySelectorAll("[data-video-modal-close]").forEach((button) => {
+          button.addEventListener("click", () => closeServiceVideoModal());
+        });
+        overlay.querySelector(".service-video-modal__video").addEventListener("ended", () => {
+          window.clearTimeout(state.serviceVideoModalTimer);
+          state.serviceVideoModalTimer = window.setTimeout(() => closeServiceVideoModal(), 260);
+        });
+        document.addEventListener("keydown", (event) => {
+          if (event.key === "Escape" && overlay.classList.contains("visible")) closeServiceVideoModal();
+        });
+
+        return overlay;
+      }
+
+      function openServiceVideoModal(sourceVideo) {
+        const overlay = ensureServiceVideoModal();
+        const modalVideo = overlay.querySelector(".service-video-modal__video");
+        const src = sourceVideo.dataset.fullSrc || sourceVideo.currentSrc || sourceVideo.src;
+        if (!src) return;
+
+        window.clearTimeout(state.serviceVideoModalTimer);
+        pauseServiceClipVideos();
+        modalVideo.pause();
+        modalVideo.src = src;
+        modalVideo.poster = sourceVideo.dataset.fullPoster || sourceVideo.poster || "";
+        modalVideo.currentTime = 0;
+        modalVideo.setAttribute("aria-label", sourceVideo.dataset.fullLabel || sourceVideo.getAttribute("aria-label") || "Service video");
+        overlay.classList.remove("closing");
+        overlay.classList.add("visible");
+        overlay.setAttribute("aria-hidden", "false");
+        requestAnimationFrame(() => {
+          modalVideo.play().catch(() => undefined);
+        });
+      }
+
+      function resumeVisibleServiceClips() {
+        if (prefersReducedMotion) return;
+        document.querySelectorAll(".service-card-video").forEach((video) => {
+          if (!(video instanceof HTMLVideoElement)) return;
+          const rect = video.getBoundingClientRect();
+          const visible = rect.bottom > 0 && rect.right > 0 && rect.top < window.innerHeight && rect.left < window.innerWidth;
+          if (!visible) return;
+          seekVideoIntoClip(video);
+          video.play().catch(() => undefined);
+        });
+      }
+
+      function closeServiceVideoModal() {
+        const overlay = document.getElementById("cel-serviceVideoModal");
+        if (!overlay || !overlay.classList.contains("visible")) return;
+        const modalVideo = overlay.querySelector(".service-video-modal__video");
+        window.clearTimeout(state.serviceVideoModalTimer);
+        overlay.classList.add("closing");
+        modalVideo.pause();
+        window.setTimeout(() => {
+          overlay.classList.remove("visible", "closing");
+          overlay.setAttribute("aria-hidden", "true");
+          modalVideo.removeAttribute("src");
+          modalVideo.load();
+          resumeVisibleServiceClips();
+        }, prefersReducedMotion ? 20 : 240);
+      }
+
+      function toggleCartDrawer(forceOpen) {
+        state.cartOpen = typeof forceOpen === "boolean" ? forceOpen : !state.cartOpen;
+        renderCart();
       }
 
       function transitionPanel(nextStage, updateState) {
@@ -3253,11 +3791,13 @@ export class CelestialEngine {
 
       function renderServices() {
         try {
+          resetServiceClipObserver();
           const category = selectedCategory();
           const service = selectedService();
           const visible = activeFocusMode() && category;
           const sheet = document.getElementById("cel-serviceSheet");
           sheet.classList.toggle("visible", Boolean(visible));
+        if (!visible) pauseServiceClipVideos(sheet);
         if (!category) return;
 
         document.getElementById("cel-sheetKicker").textContent = "Danh mục";
@@ -3265,45 +3805,137 @@ export class CelestialEngine {
 
         const content = document.getElementById("cel-serviceContent");
         if (state.stage === "services") {
-          content.innerHTML = category.services.length
-            ? category.services
-                .map(
-                  (item) => `
-                    <article class="service-card">
-                      <img src="${item.image.src}" alt="${item.image.alt}" loading="lazy" onerror="this.style.opacity=.25" />
+          // Group services by name (same name, different durations)
+          const serviceGroups = [];
+          const groupMap = new Map();
+          category.services.forEach((item) => {
+            // Use sourceService.names.en for grouping (consistent key across languages)
+            const groupKey = (item.sourceService?.names?.en || item.name || item.id).trim().toLowerCase();
+            if (!groupMap.has(groupKey)) {
+              const group = { key: groupKey, items: [] };
+              groupMap.set(groupKey, group);
+              serviceGroups.push(group);
+            }
+            groupMap.get(groupKey).items.push(item);
+          });
+          // Sort items within each group by duration
+          serviceGroups.forEach((group) => group.items.sort((a, b) => a.duration - b.duration));
+
+          content.innerHTML = serviceGroups.length
+            ? serviceGroups
+                .map((group, groupIdx) => {
+                  const representative = group.items[0];
+                  const hasVariants = group.items.length > 1;
+                  // Total quantity across all variants in this group
+                  const totalQty = group.items.reduce((sum, item) => sum + serviceQuantity(item.id), 0);
+
+                  if (!hasVariants) {
+                    // Single variant — render as before (no dropdown)
+                    const item = representative;
+                    const quantity = serviceQuantity(item.id);
+                    return `
+                      <article class="service-card ${quantity > 0 ? "is-selected" : ""}">
+                        ${renderServiceMedia(item)}
+                        <div>
+                          <h3>${item.name}</h3>
+                          <p>${item.description}</p>
+                        </div>
+                        <div class="service-price">
+                          <span>${item.duration} phút</span>
+                          <strong>${formatPrice(item.price)}</strong>
+                        </div>
+                        <div class="service-actions">
+                          <button class="book-now-button" type="button" data-book-service="${item.id}">BOOK NOW</button>
+                          ${quantity > 0 ? `
+                            <div class="service-qty-control" aria-label="${item.name} đã chọn ${quantity}">
+                              <button type="button" data-cart-dec="${item.id}" aria-label="Giảm ${item.name}">−</button>
+                              <span>${quantity}</span>
+                              <button type="button" data-cart-inc="${item.id}" aria-label="Tăng ${item.name}">+</button>
+                            </div>
+                          ` : `
+                            <button class="add-cart-button" type="button" data-cart-inc="${item.id}" aria-label="Thêm ${item.name} vào giỏ hàng">
+                              <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none">
+                                <path d="M7 8h10l-.8 11H7.8L7 8Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"></path>
+                                <path d="M9 8a3 3 0 0 1 6 0" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+                                <path d="M18.5 6.5h3M20 5v3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></path>
+                              </svg>
+                            </button>
+                          `}
+                        </div>
+                      </article>
+                    `;
+                  }
+
+                  // Multiple variants — grouped card
+                  return `
+                    <article class="service-card service-card--grouped ${totalQty > 0 ? "is-selected" : ""}" data-group-idx="${groupIdx}">
+                      ${renderServiceMedia(representative)}
                       <div>
-                        <h3>${item.name}</h3>
-                        <p>${item.description}</p>
+                        <h3>${representative.name}</h3>
+                        <p>${representative.description}</p>
                       </div>
-                      <div class="service-price">
-                        <span>${item.duration} phút</span>
-                        <strong>${formatPrice(item.price)}</strong>
+                      <div class="service-meta">
+                        <div class="from">Từ</div>
+                        <div class="price">${formatPrice(group.items[0].price)}</div>
+                        <div class="duration-count">${group.items.length} thời lượng</div>
                       </div>
                       <div class="service-actions">
-                        <button class="book-now-button" type="button" data-book-service="${item.id}">BOOK NOW</button>
-                        <button class="add-cart-button" type="button" data-cart-service="${item.id}" aria-label="Thêm ${item.name} vào giỏ hàng">
-                          <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none">
+                        <button class="quick-action cart-trigger" type="button" data-cart-group="${groupIdx}" aria-label="Chọn thời lượng và thêm ${representative.name} vào giỏ">
+                          <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none">
                             <path d="M7 8h10l-.8 11H7.8L7 8Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"></path>
                             <path d="M9 8a3 3 0 0 1 6 0" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
                             <path d="M18.5 6.5h3M20 5v3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></path>
                           </svg>
                         </button>
+                        <button class="quick-action book-trigger" type="button" data-book-group="${groupIdx}">BOOK NOW</button>
                       </div>
                     </article>
-                  `
-                )
+                  `;
+                })
                 .join("")
             : `<div class="detail-box">Danh mục này chưa có dịch vụ mẫu.</div>`;
+          setupServiceClipVideos(content);
+
+          // (Dropdown event code removed since UI changed to Drawer)
+
+          // Event: BOOK NOW for single-variant services
           content.querySelectorAll("[data-book-service]").forEach((button) => {
             button.addEventListener("click", () => {
               state.serviceId = button.dataset.bookService;
-              openBookingPage(category.id, state.serviceId);
+              const serviceToBook = category.services.find((item) => item.id === state.serviceId);
+              if (serviceToBook) postBookingAction("flipmenu:book-now", category, serviceToBook);
             });
           });
-          content.querySelectorAll("[data-cart-service]").forEach((button) => {
+          // Event: BOOK NOW for grouped services (opens Drawer)
+          content.querySelectorAll("[data-book-group]").forEach((button) => {
             button.addEventListener("click", () => {
-              const serviceToAdd = category.services.find((item) => item.id === button.dataset.cartService);
-              if (serviceToAdd) addToCart(category, serviceToAdd);
+              const groupIdx = button.dataset.bookGroup;
+              const group = serviceGroups[groupIdx];
+              if (group && window.openDurationDrawer) {
+                window.openDurationDrawer(group.items, category, button, "book");
+              }
+            });
+          });
+          // Event: Add to cart for single-variant
+          content.querySelectorAll("[data-cart-inc]").forEach((button) => {
+            button.addEventListener("click", () => {
+              const serviceToAdd = category.services.find((item) => item.id === button.dataset.cartInc);
+              if (serviceToAdd) addToCart(category, serviceToAdd, button);
+            });
+          });
+          // Event: Add to cart for grouped services (opens Drawer)
+          content.querySelectorAll("[data-cart-group]").forEach((button) => {
+            button.addEventListener("click", () => {
+              const groupIdx = button.dataset.cartGroup;
+              const group = serviceGroups[groupIdx];
+              if (group && window.openDurationDrawer) {
+                window.openDurationDrawer(group.items, category, button, "cart");
+              }
+            });
+          });
+          content.querySelectorAll("[data-cart-dec]").forEach((button) => {
+            button.addEventListener("click", () => {
+              removeFromCart(button.dataset.cartDec);
             });
           });
           return;
@@ -3333,13 +3965,33 @@ export class CelestialEngine {
       }
 
       function goBack() {
-        if (state.stage === "categories") return;
+        if (state.stage === "categories") return false;
         window.clearTimeout(state.revealTimer);
+        closeServiceVideoModal();
+        resetServiceClipObserver();
+        pauseServiceClipVideos();
         state.serviceRevealAt = 0;
-        if (state.stage === "services") state.stage = "categories";
+        if (state.stage === "services") {
+          state.stage = "categories";
+          state.categoryId = null;
+          state.serviceId = null;
+          state.selectedFromId = null;
+          state.focusStartedAt = 0;
+        }
         buildUI();
         updateTargets();
+        return true;
       }
+
+      this.handleMenuBack = () => {
+        const videoModal = document.getElementById("cel-serviceVideoModal");
+        if (videoModal?.classList.contains("visible")) {
+          closeServiceVideoModal();
+          return true;
+        }
+        if (state.stage === "services") return goBack();
+        return false;
+      };
 
       function shiftMobileCategory(direction) {
         if (responsiveKey() !== "mobile" || activeFocusMode()) return;
@@ -3398,24 +4050,30 @@ export class CelestialEngine {
         return ((angles[index] ?? 0) * Math.PI) / 180;
       }
 
-      function animate() {
+      function animate(now = performance.now()) {
         requestAnimationFrame(animate);
         if (document.hidden && !forceRenderWhenHidden) return;
+        const frameMs = prefersReducedMotion ? PERFORMANCE.reducedMotionFrameMs : PERFORMANCE.targetFrameMs;
+        if (!forceRenderWhenHidden && now - lastRenderAt < frameMs) return;
+        lastRenderAt = now;
         const delta = Math.min(clock.getDelta(), 0.04);
         const elapsed = clock.elapsedTime;
         const damping = 1 - Math.pow(0.001, delta);
         const progress = easeOutCubic(focusProgress());
+        const focusMode = activeFocusMode();
+        const key = responsiveKey();
+        const parallax = focusMode ? pointerParallax : lockedOverviewParallax;
 
         if (nebula.material.uniforms) nebula.material.uniforms.uTime.value = elapsed;
         if (horizon.material.uniforms) horizon.material.uniforms.uTime.value = elapsed;
-        stars.rotation.y += prefersReducedMotion ? 0 : delta * (0.006 + progress * 0.012);
-        stars.rotation.x = pointerParallax.y * 0.018 - progress * 0.018;
+        stars.rotation.y += prefersReducedMotion ? 0 : delta * (0.004 + progress * 0.008);
+        stars.rotation.x = parallax.y * 0.018 - progress * 0.018;
         milkyWayStars.children.forEach((layer, index) => {
           const depthFactor = 0.35 + index * 0.34;
-          layer.rotation.y = pointerParallax.x * 0.018 * depthFactor + elapsed * 0.0018 * (index + 1);
-          layer.rotation.x = pointerParallax.y * 0.014 * depthFactor - progress * 0.012 * depthFactor;
-          layer.position.x = pointerParallax.x * 0.16 * depthFactor;
-          layer.position.y = pointerParallax.y * 0.1 * depthFactor;
+          layer.rotation.y = parallax.x * 0.018 * depthFactor + elapsed * 0.0012 * (index + 1);
+          layer.rotation.x = parallax.y * 0.014 * depthFactor - progress * 0.012 * depthFactor;
+          layer.position.x = parallax.x * 0.16 * depthFactor;
+          layer.position.y = parallax.y * 0.1 * depthFactor;
         });
         starGlints.children.forEach((glint) => {
           const twinkle = 0.18 + Math.max(0, Math.sin(elapsed * 0.85 + glint.userData.phase)) * 0.28;
@@ -3425,8 +4083,8 @@ export class CelestialEngine {
         foregroundDepth.children.forEach((item, index) => {
           const base = item.userData.basePosition;
           if (base) {
-            item.position.x = base.x + pointerParallax.x * (0.18 + index * 0.026);
-            item.position.y = base.y + pointerParallax.y * (0.12 + index * 0.018);
+            item.position.x = base.x + parallax.x * (0.18 + index * 0.026);
+            item.position.y = base.y + parallax.y * (0.12 + index * 0.018);
           }
           if (item.material) {
             const wave = prefersReducedMotion ? 0.4 : (Math.sin(elapsed * 0.42 + item.userData.phase) + 1) * 0.5;
@@ -3435,8 +4093,6 @@ export class CelestialEngine {
           if (!prefersReducedMotion && item.rotation) item.rotation.z += delta * (index === foregroundDepth.children.length - 1 ? 0.008 : 0.003);
         });
 
-        const focusMode = activeFocusMode();
-        const key = responsiveKey();
         const layoutLocked = layoutEditor.enabled && !focusMode;
         updateOrbitalSystem(elapsed, key, focusMode);
         const cameraOrbit = focusMode && !prefersReducedMotion ? Math.sin(progress * Math.PI) * 0.5 : 0;
@@ -3447,15 +4103,15 @@ export class CelestialEngine {
               key === "mobile" ? 5.0 : 5.28
             )
           : new THREE.Vector3(
-              overviewCamera.position.x + pointerParallax.x * (key === "mobile" ? 0.04 : 0.12),
-              overviewCamera.position.y + pointerParallax.y * (key === "mobile" ? 0.03 : 0.09),
+              overviewCamera.position.x + parallax.x * (key === "mobile" ? 0.04 : 0.12),
+              overviewCamera.position.y + parallax.y * (key === "mobile" ? 0.03 : 0.09),
               overviewCamera.position.z
             );
         let targetLook = focusMode
           ? new THREE.Vector3(key === "mobile" ? -0.34 : -1.08, key === "mobile" ? 1.18 : 1.18, 0.82)
           : new THREE.Vector3(
-              overviewCamera.look.x + pointerParallax.x * (key === "mobile" ? 0.05 : 0.16),
-              overviewCamera.look.y + pointerParallax.y * (key === "mobile" ? 0.04 : 0.12),
+              overviewCamera.look.x + parallax.x * (key === "mobile" ? 0.05 : 0.16),
+              overviewCamera.look.y + parallax.y * (key === "mobile" ? 0.04 : 0.12),
               0
             );
         cameraAngleRig.update(delta);
@@ -3498,8 +4154,8 @@ export class CelestialEngine {
           const selectedTilt = focusMode && selected ? 0.28 * progress : 0;
           const hiddenTilt = focusMode && !selected ? 0.18 * Math.sign(group.position.x || 1) * progress : 0;
           const focusPitch = focusMode && selected ? -0.16 * progress : 0;
-          const desiredX = configuredRotation[0] * 0.55 + pointerParallax.y * 0.038 + focusPitch;
-          const desiredY = configuredRotation[1] * 0.48 + pointerParallax.x * 0.052 + selectedTilt + hiddenTilt + (focusMode && selected ? Math.sin(elapsed * 0.42) * 0.022 : 0);
+          const desiredX = configuredRotation[0] * 0.55 + parallax.y * 0.038 + focusPitch;
+          const desiredY = configuredRotation[1] * 0.48 + parallax.x * 0.052 + selectedTilt + hiddenTilt + (focusMode && selected ? Math.sin(elapsed * 0.42) * 0.022 : 0);
           group.rotation.x += (desiredX - group.rotation.x) * (prefersReducedMotion ? 1 : damping * 0.22);
           group.rotation.y += (desiredY - group.rotation.y) * (prefersReducedMotion ? 1 : damping * 0.22);
           const desiredZ = configuredRotation[2] * 0.7 + (prefersReducedMotion ? 0 : Math.sin(elapsed * 0.18 + category.size) * 0.004) - (focusMode && selected ? 0.02 * progress : 0);
@@ -3713,16 +4369,38 @@ export class CelestialEngine {
         // Fake Click Guide Tracker: Project accurate 3D coordinate to 2D screen coordinate
         const fakeHand = document.getElementById("fakeClickGuide");
         if (fakeHand && medallions) {
+          const celestialApp = document.getElementById("celestial-app");
+          const celestialStyle = celestialApp ? window.getComputedStyle(celestialApp) : null;
+          const celestialVisible = Boolean(celestialApp)
+            && celestialStyle.display !== "none"
+            && celestialStyle.visibility !== "hidden"
+            && Number(celestialStyle.opacity || 0) > 0.2;
           const bodyPlanet = medallions.get("body-massage");
-          if (bodyPlanet && !focusMode && state.categoryId === null) {
+          if (celestialVisible && bodyPlanet && !focusMode && state.categoryId === null) {
             fakeHand.style.display = "block";
             const pos = new THREE.Vector3();
             bodyPlanet.getWorldPosition(pos);
             pos.project(camera);
             const x = (pos.x * 0.5 + 0.5) * window.innerWidth;
             const y = (pos.y * -0.5 + 0.5) * window.innerHeight;
-            // Đẩy bàn tay lên cao 130px so với tâm hành tinh (Vị trí khoanh đỏ)
-            fakeHand.style.transform = `translate(calc(${x}px - 50%), calc(${y}px - 100% - 130px)) rotate(180deg)`;
+            const guideSize = 56;
+            const safePad = 18;
+            const verticalOffset = Math.min(92, Math.max(46, window.innerHeight * 0.12));
+            const guideX = Math.min(
+              window.innerWidth - guideSize - safePad,
+              Math.max(safePad, x - guideSize / 2)
+            );
+            const guideY = Math.min(
+              window.innerHeight - guideSize - safePad,
+              Math.max(safePad, y - guideSize - verticalOffset)
+            );
+            const isOffscreen = pos.z < -1 || pos.z > 1
+              || x < -guideSize
+              || x > window.innerWidth + guideSize
+              || y < -guideSize
+              || y > window.innerHeight + guideSize;
+            fakeHand.style.display = isOffscreen ? "none" : "block";
+            fakeHand.style.transform = `translate(${guideX}px, ${guideY}px) rotate(180deg)`;
             fakeHand.style.marginTop = Math.sin(elapsed * 5) * 8 + "px"; // Bounce effect
             
             // Đồng bộ nhịp thở (Fade) 100% với hào quang của ngôi sao
@@ -3743,6 +4421,7 @@ export class CelestialEngine {
       async function init() {
         console.log("CELESTIAL: Bắt đầu khởi tạo không gian 3D (init)...");
         try {
+            await hydrateServicesFromApi();
             console.log("CELESTIAL: Đang tải dữ liệu mảng categories:", categories.length, "chòm sao");
             await Promise.all(categories.map(makeCategory));
             console.log("CELESTIAL: Đã tải xong kết cấu (Texture) cho tất cả chòm sao!");
@@ -3759,14 +4438,151 @@ export class CelestialEngine {
         }
       }
 
-      document.getElementById("cel-cartButton").addEventListener("click", () => {
-        state.cartOpen = !state.cartOpen;
-        renderCart();
-      });
+      document.getElementById("cel-cartButton")?.addEventListener("click", () => toggleCartDrawer());
       document.getElementById("cel-closeCart").addEventListener("click", () => {
         state.cartOpen = false;
         renderCart();
       });
+      document.getElementById("cel-placeOrderButton")?.addEventListener("click", () => {
+        if (cartCount() === 0) return;
+        window.parent?.postMessage({ type: "flipmenu:place-order" }, "*");
+      });
+      window.addEventListener("message", (event) => {
+        if (event.data?.type === "flipmenu:toggle-cart") {
+          toggleCartDrawer(event.data.open);
+        }
+      });
+      
+      // Khởi tạo Duration Drawer
+      function initDurationDrawer() {
+        if (document.getElementById("durationDrawer")) return;
+        const drawerHTML = `
+          <div class="drawer-backdrop" id="drawerBackdrop"></div>
+          <section class="duration-drawer" id="durationDrawer" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="drawerTitle">
+            <div class="drawer-handle"></div>
+            <div class="drawer-head">
+              <div class="drawer-thumb" id="drawerThumb"></div>
+              <div><h2 class="drawer-title" id="drawerTitle">Chọn thời lượng</h2><div class="drawer-sub" id="drawerSub"></div></div>
+              <button class="drawer-close" id="drawerClose" aria-label="Đóng">×</button>
+            </div>
+            <div class="drawer-body">
+              <div class="drawer-label">Chọn thời lượng phù hợp</div>
+              <div class="drawer-options" id="drawerOptions"></div>
+              <div class="drawer-footer">
+                <div class="drawer-selection">Lựa chọn của bạn<strong id="drawerSelection"></strong></div>
+                <button class="drawer-confirm" id="drawerConfirm">BOOK NOW</button>
+              </div>
+            </div>
+          </section>
+        `;
+        const container = document.createElement("div");
+        container.innerHTML = drawerHTML;
+        // Append INSIDE #celestial-app so drawer shares the same stacking context
+        // as the canvas/hud. This ensures z-index: 100000 is actually the highest layer.
+        const celestialApp = document.getElementById("celestial-app");
+        (celestialApp || document.body).appendChild(container);
+
+        const drawer = document.getElementById("durationDrawer");
+        const backdrop = document.getElementById("drawerBackdrop");
+        const drawerTitle = document.getElementById("drawerTitle");
+        const drawerSub = document.getElementById("drawerSub");
+        const drawerThumb = document.getElementById("drawerThumb");
+        const drawerOptions = document.getElementById("drawerOptions");
+        const drawerSelection = document.getElementById("drawerSelection");
+        const drawerConfirm = document.getElementById("drawerConfirm");
+
+        let currentItems = null;
+        let currentCategory = null;
+        let currentOptionIdx = 0;
+        let currentIntent = "book";
+
+        function closeDrawer() {
+          drawer.classList.remove("show");
+          backdrop.classList.remove("show");
+          drawer.setAttribute("aria-hidden", "true");
+          document.body.classList.remove("drawer-open");
+          // Restore pointer events on 3D canvas and overlays
+          document.querySelectorAll("#cel-scene-celestial, #scene, #galaxy-canvas, .hud, #cel-sheetOverlay").forEach((el) => {
+            el.style.pointerEvents = "";
+          });
+          // Tell parent to lower iframe z-index
+          window.parent?.postMessage({ type: "flipmenu:drawer-closed" }, "*");
+        }
+
+        document.getElementById("drawerClose").addEventListener("click", () => {
+          closeDrawer();
+        });
+        backdrop.addEventListener("click", () => {
+          closeDrawer();
+        });
+
+        function updateDrawerSelection() {
+          if (!currentItems || currentItems.length === 0) return;
+          const option = currentItems[currentOptionIdx];
+          drawerSelection.textContent = `${option.duration} phút · ${formatPrice(option.price)}`;
+          drawerConfirm.textContent = currentIntent === "cart" ? "ADD TO CART" : "BOOK NOW";
+          Array.from(drawerOptions.children).forEach((el, i) => el.classList.toggle("active", i === currentOptionIdx));
+        }
+
+        window.openDurationDrawer = function(items, category, btnElement, intent) {
+          if (!items || items.length === 0) return;
+          currentItems = items;
+          currentCategory = category;
+          currentIntent = intent;
+          currentOptionIdx = 0;
+
+          const representative = items[0];
+          // Normalize NFC to fix Vietnamese diacritics rendering (decomposed -> composed)
+          drawerTitle.textContent = (representative.name || "").normalize("NFC");
+          drawerSub.textContent = (representative.description || "").normalize("NFC");
+          const thumbSrc = representative.poster || representative.thumbnail || representative.img || "";
+          if (thumbSrc) {
+            drawerThumb.style.backgroundImage = `url('${thumbSrc}')`;
+            drawerThumb.style.display = "block";
+          } else {
+            drawerThumb.style.backgroundImage = "none";
+            drawerThumb.style.display = "none";
+          }
+
+          drawerOptions.innerHTML = items.map((opt, i) => `
+            <button class="drawer-option ${i === 0 ? "active" : ""}" data-index="${i}">
+              <span>${opt.duration} phút</span>
+              <strong>${formatPrice(opt.price)}</strong>
+            </button>
+          `).join("");
+
+          drawerOptions.querySelectorAll(".drawer-option").forEach((btn) => {
+            btn.addEventListener("click", () => {
+              currentOptionIdx = Number(btn.dataset.index);
+              updateDrawerSelection();
+            });
+          });
+
+          updateDrawerSelection();
+          drawer.classList.add("show");
+          backdrop.classList.add("show");
+          drawer.setAttribute("aria-hidden", "false");
+          document.body.classList.add("drawer-open");
+          // Disable pointer events on 3D canvas and overlays so clicks reach drawer
+          document.querySelectorAll("#cel-scene-celestial, #scene, #galaxy-canvas, .hud, #cel-sheetOverlay").forEach((el) => {
+            el.style.pointerEvents = "none";
+          });
+          // Tell parent to raise iframe z-index above header/floating buttons
+          window.parent?.postMessage({ type: "flipmenu:drawer-opened" }, "*");
+        };
+
+        drawerConfirm.addEventListener("click", () => {
+          const option = currentItems[currentOptionIdx];
+          if (currentIntent === "cart") {
+            addToCart(currentCategory, option, drawerConfirm);
+          } else {
+            state.serviceId = option.id;
+            postBookingAction("flipmenu:book-now", currentCategory, option);
+          }
+          closeDrawer();
+        });
+      }
+      initDurationDrawer();
       document.getElementById("cel-mobilePrev").addEventListener("click", () => shiftMobileCategory(-1));
       document.getElementById("cel-mobileNext").addEventListener("click", () => shiftMobileCategory(1));
 
@@ -3805,6 +4621,17 @@ export class CelestialEngine {
         const celestialApp = document.getElementById("celestial-app");
         if (celestialApp && celestialApp.style.display === "none") return;
         
+        // EARLY RETURN: If click lands on Duration Drawer or its backdrop,
+        // skip ALL 3D logic (raycaster, goBack, selectCategory) entirely.
+        if (event.target.closest('.duration-drawer') || event.target.closest('.drawer-backdrop')) {
+          return;
+        }
+        
+        // Also skip if drawer is open (body has drawer-open class)
+        if (document.body.classList.contains('drawer-open')) {
+          return;
+        }
+
         console.log("[DEBUG] Window pointerup triggered! Target:", event.target);
         
         if (event.clientX !== undefined) {
@@ -3843,18 +4670,29 @@ export class CelestialEngine {
 
       window.addEventListener("popstate", goBack);
 
-      window.addEventListener("resize", () => {
-        camera.aspect = window.innerWidth / window.innerHeight;
+      function applyViewportResize({ rebuild = false } = {}) {
+        const width = Math.max(1, window.innerWidth);
+        const height = Math.max(1, window.innerHeight);
+        camera.aspect = width / height;
         camera.updateProjectionMatrix();
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
-        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(cappedPixelRatio());
+        renderer.setSize(width, height, false);
         galaxyBackground.resize();
+
+        if (!rebuild) return;
         overviewTargetCache.clear();
         ellipseLayoutCache.clear();
         buildOrbitalSystem();
         buildConnectionTrails();
         updateTargets();
         syncLayoutEditorPanel();
+      }
+
+      window.addEventListener("resize", () => {
+        window.cancelAnimationFrame(resizeFrame);
+        resizeFrame = window.requestAnimationFrame(() => applyViewportResize());
+        window.clearTimeout(resizeRebuildTimer);
+        resizeRebuildTimer = window.setTimeout(() => applyViewportResize({ rebuild: true }), 220);
       });
 
       if (new URLSearchParams(window.location.search).has("debug")) {

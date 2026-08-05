@@ -1430,7 +1430,7 @@ function ExperiencePanel() {
   return (
     <motion.section className="experience-panel" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
       <p className="eyebrow">EXPERIENCE SELECTION</p>
-      <h1>Ngân Hà Signature Spa</h1>
+      <h1>ORIA SPA Signature Spa</h1>
       <p>Chọn trải nghiệm trước khi bước vào vũ trụ dịch vụ.</p>
       <button type="button" onClick={() => selectExperience('luxury-spa')}>
         Bắt đầu chọn dịch vụ
@@ -1550,6 +1550,14 @@ function BookingNavigation({
 }) {
   const goBack = useBookingStore((state) => state.goBack);
   const resetBooking = useBookingStore((state) => state.resetBooking);
+  const handleBack = () => {
+    if (stage === 'services') {
+      goBack();
+      return;
+    }
+
+    window.location.href = '/';
+  };
   const stageLabel: Record<BookingStage, string> = {
     experience: 'TRẢI NGHIỆM',
     categories: 'DANH MỤC',
@@ -1558,7 +1566,7 @@ function BookingNavigation({
 
   return (
     <header className="celestial-nav">
-      <button type="button" className="back-pill" onClick={goBack} aria-label="Trở về">
+      <button type="button" className="back-pill" onClick={handleBack} aria-label="Trở về">
         <ArrowLeft size={18} />
         <span>TRỞ VỀ</span>
       </button>

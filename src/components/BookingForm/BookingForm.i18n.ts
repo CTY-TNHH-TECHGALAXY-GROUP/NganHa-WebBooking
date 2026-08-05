@@ -140,7 +140,7 @@ export const t = {
   success: {
     badge: 'Đã xác nhận',
     title: 'Đặt lịch thành công!',
-    subtitle: 'Cảm ơn bạn đã chọn Ngân Hà Spa. Chúng tôi rất mong được phục vụ bạn.',
+    subtitle: 'Cảm ơn bạn đã chọn ORIA SPA. Chúng tôi rất mong được phục vụ bạn.',
     bookingCode: 'Mã đặt lịch',
     customerName: 'Họ tên',
     phone: 'Điện thoại',

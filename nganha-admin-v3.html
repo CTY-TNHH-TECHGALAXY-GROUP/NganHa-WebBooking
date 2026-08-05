@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ngân Hà Admin · Quản trị nội dung</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#faf6ef;
+    --bg-side:#f3ead9;
+    --panel:#ffffff;
+    --panel-2:#f6efe2;
+    --line:rgba(60,48,32,0.09);
+    --line-strong:rgba(60,48,32,0.16);
+    --text:#2c2419;
+    --text-dim:#6f6455;
+    --text-faint:#a19684;
+    --gold:#b8813a;
+    --gold-dim:rgba(184,129,58,0.13);
+    --purple-a:#ece4fa; --purple-b:#dccdf2; --purple-solid:#7a58c2;
+    --copper-a:#fbebd9; --copper-b:#f4d9b8; --copper-solid:#b46a2e;
+    --green-a:#e3f3e9; --green-b:#cdead9; --green-solid:#2f9563;
+    --blue-a:#e5eefa; --blue-b:#cfe0f5; --blue-solid:#3d6fc0;
+    --radius:14px;
+    --shadow:0 2px 10px rgba(60,48,32,0.05);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:'Be Vietnam Pro',sans-serif;
+    background:
+      radial-gradient(ellipse 800px 500px at 15% -10%, rgba(184,129,58,0.07), transparent 60%),
+      radial-gradient(ellipse 700px 500px at 100% 0%, rgba(122,88,194,0.05), transparent 55%),
+      var(--bg);
+    color:var(--text);
+    min-height:100vh;
+  }
+  .app{display:flex;min-height:100vh;}
+
+  /* SIDEBAR */
+  .sidebar{
+    width:250px;flex-shrink:0;background:var(--bg-side);
+    border-right:1px solid var(--line-strong);
+    display:flex;flex-direction:column;padding:22px 14px;
+    position:sticky;top:0;height:100vh;
+  }
+  .brand{display:flex;align-items:center;gap:9px;padding:2px 8px 20px;}
+  .brand .star{color:var(--gold);font-size:19px;}
+  .brand-text .name{font-size:15.5px;font-weight:700;}
+  .brand-text .sub{font-size:11px;color:var(--text-faint);margin-top:1px;}
+
+  nav{display:flex;flex-direction:column;gap:3px;flex:1;padding-top:6px;}
+  .nav-item{
+    display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:10px;
+    color:var(--text-dim);font-size:14px;font-weight:500;cursor:pointer;
+    transition:background .15s,color .15s;
+  }
+  .nav-item svg{width:17px;height:17px;flex-shrink:0;opacity:.8;}
+  .nav-item:hover{background:rgba(60,48,32,0.045);color:var(--text);}
+  .nav-item.active{background:var(--gold-dim);color:var(--gold);}
+  .nav-item.active svg{opacity:1;}
+  .nav-arrow{margin-left:auto;font-size:13px;opacity:.7;}
+
+  .sidebar-foot{border-top:1px solid var(--line-strong);padding-top:14px;margin-top:10px;display:flex;flex-direction:column;gap:2px;}
+  .foot-link{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:9px;font-size:13px;color:var(--text-faint);cursor:pointer;}
+  .foot-link:hover{background:rgba(60,48,32,0.045);color:var(--text-dim);}
+  .foot-link.danger:hover{color:#c85a5a;}
+
+  /* MAIN */
+  .main{flex:1;padding:40px 48px 60px;min-width:0;max-width:1180px;}
+  .view{display:none;}
+  .view.active{display:block;animation:fadein .3s ease;}
+  @keyframes fadein{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+
+  .hello{font-size:32px;font-weight:800;margin-bottom:8px;}
+  .hello-sub{font-size:15px;color:var(--text-dim);margin-bottom:30px;}
+
+  .cards-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px;}
+  .cat-card{
+    border-radius:18px;padding:26px 26px 24px;cursor:pointer;
+    border:1px solid var(--line-strong);position:relative;overflow:hidden;
+    transition:transform .18s ease, box-shadow .18s ease;
+    box-shadow:var(--shadow);
+  }
+  .cat-card:hover{transform:translateY(-2px);box-shadow:0 12px 26px rgba(60,48,32,0.10);}
+  .cat-card.purple{background:linear-gradient(135deg,var(--purple-a),var(--purple-b));}
+  .cat-card.copper{background:linear-gradient(135deg,var(--copper-a),var(--copper-b));}
+  .cat-card.green{background:linear-gradient(135deg,var(--green-a),var(--green-b));}
+  .cat-card.blue{background:linear-gradient(135deg,var(--blue-a),var(--blue-b));}
+  .cat-top{display:flex;align-items:center;gap:14px;margin-bottom:12px;}
+  .cat-icon{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 12px rgba(60,48,32,0.12);}
+  .cat-icon svg{width:22px;height:22px;color:#fff;}
+  .cat-card.purple .cat-icon{background:var(--purple-solid);}
+  .cat-card.copper .cat-icon{background:var(--copper-solid);}
+  .cat-card.green .cat-icon{background:var(--green-solid);}
+  .cat-card.blue .cat-icon{background:var(--blue-solid);}
+  .cat-title{font-size:18px;font-weight:700;color:var(--text);}
+  .cat-desc{font-size:13.5px;color:var(--text-dim);line-height:1.55;}
+
+  .guide-panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:24px 26px;box-shadow:var(--shadow);}
+  .guide-title{font-size:15px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+  .guide-step{display:flex;align-items:flex-start;gap:12px;padding:9px 0;font-size:13.5px;color:var(--text-dim);}
+  .guide-num{width:22px;height:22px;border-radius:50%;background:var(--gold-dim);color:var(--gold);font-size:11.5px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+  .guide-step b{color:var(--text);}
+
+  /* shared section header */
+  .sec-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:14px;}
+  .sec-title{font-size:22px;font-weight:700;}
+  .sec-sub{font-size:13px;color:var(--text-faint);margin-top:4px;}
+  .btn{
+    display:inline-flex;align-items:center;gap:7px;font-family:inherit;font-size:13.5px;font-weight:600;
+    padding:10px 17px;border-radius:10px;cursor:pointer;border:none;
+  }
+  .btn-gold{background:var(--gold);color:#241804;}
+  .btn-outline{background:transparent;border:1px solid var(--line-strong);color:var(--text-dim);}
+  .btn-outline:hover{color:var(--text);border-color:var(--text-faint);}
+  .btn svg{width:14px;height:14px;}
+
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);}
+
+  /* Video section */
+  .video-preview{
+    position:relative;border-radius:16px;overflow:hidden;aspect-ratio:16/7;
+    background:linear-gradient(135deg,#2a2036,#171224);border:1px solid var(--line-strong);
+    display:flex;align-items:center;justify-content:center;margin-bottom:20px;box-shadow:var(--shadow);
+  }
+  .video-preview .play{width:60px;height:60px;border-radius:50%;background:rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
+  .video-preview .play svg{width:22px;height:22px;color:#fff;margin-left:3px;}
+  .video-tag{position:absolute;top:16px;left:16px;font-size:11px;background:rgba(0,0,0,0.5);padding:5px 11px;border-radius:20px;color:var(--text-dim);}
+  .upload-box{
+    border:1.5px dashed var(--line-strong);border-radius:14px;padding:34px 20px;text-align:center;
+    color:var(--text-faint);font-size:13px;cursor:pointer;transition:border-color .15s, background .15s;
+  }
+  .upload-box:hover{border-color:var(--gold);background:rgba(224,168,63,0.03);}
+  .upload-box svg{width:26px;height:26px;color:var(--text-faint);margin-bottom:10px;}
+  .upload-box .main-txt{color:var(--text-dim);font-weight:600;font-size:13.5px;margin-bottom:3px;}
+
+  /* grid items (flipbook / media) */
+  .item-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:16px;}
+  .item-card{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--shadow);}
+  .item-thumb{aspect-ratio:3/4;background:linear-gradient(135deg,var(--panel-2),#e8dcc4);display:flex;align-items:center;justify-content:center;position:relative;}
+  .item-thumb svg{width:26px;height:26px;color:var(--text-faint);}
+  .item-thumb .page-no{position:absolute;top:9px;left:9px;font-size:10.5px;background:rgba(255,255,255,0.85);padding:2px 8px;border-radius:20px;color:var(--text-dim);box-shadow:0 1px 4px rgba(60,48,32,0.12);}
+  .item-body{padding:11px 13px 13px;}
+  .item-name{font-size:12.5px;font-weight:600;margin-bottom:8px;}
+  .item-actions{display:flex;gap:8px;}
+  .mini-btn{flex:1;text-align:center;font-size:11.5px;padding:6px;border-radius:7px;border:1px solid var(--line-strong);color:var(--text-faint);cursor:pointer;}
+  .mini-btn:hover{color:var(--text-dim);}
+  .mini-btn.del:hover{color:#e07a7a;border-color:rgba(224,122,122,0.3);}
+  .item-card.add-new{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;border-style:dashed;cursor:pointer;color:var(--text-faint);aspect-ratio:auto;min-height:100%;padding:30px 10px;}
+  .item-card.add-new:hover{border-color:var(--gold);color:var(--gold);}
+  .item-card.add-new svg{width:22px;height:22px;}
+  .item-card.add-new span{font-size:12px;}
+
+  /* blog list */
+  .post-row{display:flex;align-items:center;gap:14px;padding:14px 16px;border-bottom:1px solid var(--line);}
+  .post-row:last-child{border-bottom:none;}
+  .post-thumb{width:64px;height:48px;border-radius:8px;background:linear-gradient(135deg,var(--panel-2),#e8dcc4);flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+  .post-thumb svg{width:16px;height:16px;color:var(--text-faint);}
+  .post-info{flex:1;min-width:0;}
+  .post-title{font-size:14px;font-weight:600;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .post-meta{font-size:11.5px;color:var(--text-faint);}
+  .status-pill{font-size:11px;font-weight:600;padding:4px 11px;border-radius:20px;flex-shrink:0;}
+  .status-pill.live{background:rgba(47,149,99,0.14);color:var(--green-solid);}
+  .status-pill.draft{background:var(--gold-dim);color:var(--gold);}
+  .row-menu{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--text-faint);cursor:pointer;flex-shrink:0;}
+  .row-menu:hover{background:rgba(60,48,32,0.06);color:var(--text-dim);}
+
+  /* form (SEO / new post) */
+  .form-grid{display:flex;flex-direction:column;gap:18px;max-width:640px;}
+  .field label{display:block;font-size:12.5px;color:var(--text-dim);margin-bottom:7px;font-weight:500;}
+  .field .hint{font-size:11px;color:var(--text-faint);margin-top:6px;}
+  .field input, .field textarea{
+    width:100%;background:var(--panel);border:1px solid var(--line-strong);border-radius:10px;
+    padding:11px 13px;color:var(--text);font-family:inherit;font-size:13.5px;outline:none;
+  }
+  .field input:focus, .field textarea:focus{border-color:var(--gold);}
+  .field textarea{resize:vertical;min-height:80px;}
+  .char-count{font-size:11px;color:var(--text-faint);text-align:right;margin-top:5px;}
+
+  ::-webkit-scrollbar{width:8px;}
+  ::-webkit-scrollbar-thumb{background:rgba(60,48,32,0.15);border-radius:8px;}
+
+  @media(max-width:900px){
+    .sidebar{width:74px;padding:18px 8px;}
+    .brand-text, .nav-item span:not(.nav-arrow), .foot-link span{display:none;}
+    .nav-item{justify-content:center;}
+    .cards-grid-2{grid-template-columns:1fr;}
+    .main{padding:28px 20px 50px;}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="brand">
+      <span class="star">✦</span>
+      <div class="brand-text">
+        <div class="name">NganHa Admin</div>
+        <div class="sub">Hệ thống quản trị nội dung</div>
+      </div>
+    </div>
+    <nav id="nav">
+      <div class="nav-item active" data-view="overview">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+        <span>Tổng quan</span><span class="nav-arrow">›</span>
+      </div>
+      <div class="nav-item" data-view="video">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="14" height="14" rx="2"/><path d="M17 9.5l4-2.5v10l-4-2.5"/></svg>
+        <span>Video Trang chủ</span>
+      </div>
+      <div class="nav-item" data-view="flipbook">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5.5C6 4.3 9 4 12 5v14c-3-1-6-0.7-8 .5V5.5zM20 5.5C18 4.3 15 4 12 5v14c3-1 6-0.7 8 .5V5.5z"/></svg>
+        <span>Sách Lật (Flipbook)</span>
+      </div>
+      <div class="nav-item" data-view="blog">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 3h9l5 5v13H6V3z"/><path d="M15 3v5h5M9 12h6M9 16h6"/></svg>
+        <span>Bài viết (Blog)</span>
+      </div>
+      <div class="nav-item" data-view="media">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1.2l2-1.5-2-3.4-2.3.9a7 7 0 0 0-2-1.2L14.2 3H9.8l-.4 2.6a7 7 0 0 0-2 1.2l-2.3-.9-2 3.4 2 1.5A7 7 0 0 0 5 12c0 .4 0 .8.1 1.2l-2 1.5 2 3.4 2.3-.9c.6.5 1.3.9 2 1.2l.4 2.6h4.4l.4-2.6c.7-.3 1.4-.7 2-1.2l2.3.9 2-3.4-2-1.5c.1-.4.1-.8.1-1.2z"/></svg>
+        <span>Dịch vụ (Media)</span>
+      </div>
+      <div class="nav-item" data-view="seo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <span>Cấu hình SEO</span>
+      </div>
+    </nav>
+    <div class="sidebar-foot">
+      <div class="foot-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 12H5M12 19l-7-7 7-7"/></svg><span>Về trang chủ</span></div>
+      <div class="foot-link danger"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg><span>Đăng xuất</span></div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- OVERVIEW -->
+    <div class="view active" id="view-overview">
+      <div class="hello">Xin chào! 👋</div>
+      <div class="hello-sub">Chọn mục bên dưới để bắt đầu chỉnh sửa nội dung website Ngân Hà Spa.</div>
+
+      <div class="cards-grid-2">
+        <div class="cat-card purple" onclick="switchView('video')">
+          <div class="cat-top"><div class="cat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="14" height="14" rx="2"/><path d="M17 9.5l4-2.5v10l-4-2.5"/></svg></div><div class="cat-title">Video Trang Chủ</div></div>
+          <div class="cat-desc">Thay đổi video nền hiển thị khi khách truy cập website.</div>
+        </div>
+        <div class="cat-card copper" onclick="switchView('flipbook')">
+          <div class="cat-top"><div class="cat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5.5C6 4.3 9 4 12 5v14c-3-1-6-0.7-8 .5V5.5zM20 5.5C18 4.3 15 4 12 5v14c3-1 6-0.7 8 .5V5.5z"/></svg></div><div class="cat-title">Sách Lật (Flipbook)</div></div>
+          <div class="cat-desc">Thêm hoặc xoá trang ảnh/video trong cuốn sách dịch vụ.</div>
+        </div>
+        <div class="cat-card green" onclick="switchView('blog')">
+          <div class="cat-top"><div class="cat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 3h9l5 5v13H6V3z"/><path d="M15 3v5h5M9 12h6M9 16h6"/></svg></div><div class="cat-title">Bài Viết Blog</div></div>
+          <div class="cat-desc">Viết bài giới thiệu, chia sẻ kinh nghiệm spa cho khách đọc.</div>
+        </div>
+        <div class="cat-card blue" onclick="switchView('media')">
+          <div class="cat-top"><div class="cat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1.2l2-1.5-2-3.4-2.3.9a7 7 0 0 0-2-1.2L14.2 3H9.8l-.4 2.6a7 7 0 0 0-2 1.2l-2.3-.9-2 3.4 2 1.5A7 7 0 0 0 5 12c0 .4 0 .8.1 1.2l-2 1.5 2 3.4 2.3-.9c.6.5 1.3.9 2 1.2l.4 2.6h4.4l.4-2.6c.7-.3 1.4-.7 2-1.2l2.3.9 2-3.4-2-1.5c.1-.4.1-.8.1-1.2z"/></svg></div><div class="cat-title">Ảnh / Video Dịch Vụ</div></div>
+          <div class="cat-desc">Tải lên hình ảnh hoặc video cho từng dịch vụ (massage, gội đầu...).</div>
+        </div>
+      </div>
+
+      <div class="guide-panel">
+        <div class="guide-title">💡 Hướng dẫn nhanh</div>
+        <div class="guide-step"><div class="guide-num">1</div><div>Chọn mục muốn chỉnh sửa (ví dụ: <b>Video Trang Chủ</b>).</div></div>
+        <div class="guide-step"><div class="guide-num">2</div><div>Nhấn nút <b>"Chọn file"</b> để tải ảnh hoặc video từ máy tính lên.</div></div>
+        <div class="guide-step"><div class="guide-num">3</div><div>Nhấn <b>"Lưu"</b> — xong! Website sẽ tự cập nhật.</div></div>
+      </div>
+    </div>
+
+    <!-- VIDEO -->
+    <div class="view" id="view-video">
+      <div class="sec-head">
+        <div><div class="sec-title">Video Trang chủ</div><div class="sec-sub">Video nền hiển thị ngay khi khách vào website</div></div>
+        <button class="btn btn-gold">Lưu thay đổi</button>
+      </div>
+      <div class="video-preview">
+        <span class="video-tag">Đang hiển thị trên website</span>
+        <div class="play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>
+      </div>
+      <div class="upload-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
+        <div class="main-txt">Kéo thả video vào đây, hoặc bấm để chọn file</div>
+        <div>Hỗ trợ MP4, MOV — tối đa 100MB</div>
+      </div>
+    </div>
+
+    <!-- FLIPBOOK -->
+    <div class="view" id="view-flipbook">
+      <div class="sec-head">
+        <div><div class="sec-title">Sách Lật (Flipbook)</div><div class="sec-sub">6 trang đang có trong cuốn sách dịch vụ</div></div>
+        <button class="btn btn-outline">Xem trước sách</button>
+      </div>
+      <div class="item-grid" id="flipbook-grid"></div>
+    </div>
+
+    <!-- BLOG -->
+    <div class="view" id="view-blog">
+      <div class="sec-head">
+        <div><div class="sec-title">Bài viết (Blog)</div><div class="sec-sub">8 bài viết — 6 đã đăng, 2 bản nháp</div></div>
+        <button class="btn btn-gold">+ Bài viết mới</button>
+      </div>
+      <div class="panel" id="blog-list"></div>
+    </div>
+
+    <!-- MEDIA -->
+    <div class="view" id="view-media">
+      <div class="sec-head">
+        <div><div class="sec-title">Ảnh / Video Dịch vụ</div><div class="sec-sub">Quản lý hình ảnh minh hoạ cho từng dịch vụ spa</div></div>
+      </div>
+      <div class="item-grid" id="media-grid"></div>
+    </div>
+
+    <!-- SEO -->
+    <div class="view" id="view-seo">
+      <div class="sec-head">
+        <div><div class="sec-title">Cấu hình SEO</div><div class="sec-sub">Thông tin hiển thị trên Google &amp; khi chia sẻ mạng xã hội</div></div>
+        <button class="btn btn-gold">Lưu thay đổi</button>
+      </div>
+      <div class="panel" style="padding:26px;">
+        <div class="form-grid">
+          <div class="field">
+            <label>Tiêu đề trang (Meta title)</label>
+            <input type="text" value="Ngân Hà Spa — Không gian thư giãn giữa lòng thành phố" oninput="countChars(this,'t1',60)">
+            <div class="char-count" id="t1">54 / 60 ký tự</div>
+          </div>
+          <div class="field">
+            <label>Mô tả trang (Meta description)</label>
+            <textarea oninput="countChars(this,'t2',160)">Ngân Hà Spa mang đến trải nghiệm chăm sóc sức khoẻ và làm đẹp toàn diện với đội ngũ KTV chuyên nghiệp, không gian ấm áp và dịch vụ tận tâm.</textarea>
+            <div class="char-count" id="t2">140 / 160 ký tự</div>
+          </div>
+          <div class="field">
+            <label>Từ khoá (cách nhau bởi dấu phẩy)</label>
+            <input type="text" value="spa, massage, chăm sóc da, thư giãn, Ngân Hà Spa">
+          </div>
+          <div class="field">
+            <label>Ảnh chia sẻ mạng xã hội (OG image)</label>
+            <div class="upload-box" style="padding:22px;">
+              <div class="main-txt">Bấm để tải ảnh đại diện khi chia sẻ link</div>
+              <div>Kích thước khuyến nghị: 1200×630px</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function switchView(v){
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active', n.dataset.view===v));
+  document.querySelectorAll('.view').forEach(s=>s.classList.toggle('active', s.id==='view-'+v));
+  window.scrollTo(0,0);
+}
+document.querySelectorAll('.nav-item').forEach(n=>n.addEventListener('click', ()=>switchView(n.dataset.view)));
+
+function countChars(el,id,max){
+  document.getElementById(id).textContent = el.value.length+' / '+max+' ký tự';
+}
+
+/* Flipbook pages */
+const pageIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="9" r="1.5"/><path d="M21 15l-5-5-9 9"/></svg>`;
+const flipPages = ['Trang bìa','Massage đá nóng','Chăm sóc da mặt','Gội đầu dưỡng sinh','Tắm trắng thảo dược','Bảng giá dịch vụ'];
+document.getElementById('flipbook-grid').innerHTML = flipPages.map((p,i)=>`
+  <div class="item-card">
+    <div class="item-thumb"><span class="page-no">Trang ${i+1}</span>${pageIcon}</div>
+    <div class="item-body">
+      <div class="item-name">${p}</div>
+      <div class="item-actions"><div class="mini-btn">Thay ảnh</div><div class="mini-btn del">Xoá</div></div>
+    </div>
+  </div>`).join('') + `<div class="item-card add-new"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14M5 12h14"/></svg><span>Thêm trang</span></div>`;
+
+/* Media (services) */
+const mediaItems = ['Massage đá nóng','Chăm sóc da mặt','Gội đầu dưỡng sinh','Tắm trắng thảo dược','Xông hơi thảo mộc','Chăm sóc móng'];
+document.getElementById('media-grid').innerHTML = mediaItems.map(m=>`
+  <div class="item-card">
+    <div class="item-thumb">${pageIcon}</div>
+    <div class="item-body">
+      <div class="item-name">${m}</div>
+      <div class="item-actions"><div class="mini-btn">Tải ảnh</div><div class="mini-btn del">Xoá</div></div>
+    </div>
+  </div>`).join('');
+
+/* Blog posts */
+const posts = [
+  {title:'Hành trình khởi nghiệp: 6 tháng đầu tại Ngân Hà', date:'20/07/2026', status:'live'},
+  {title:'5 lợi ích của liệu trình đá nóng vào mùa hè', date:'15/07/2026', status:'live'},
+  {title:'Cách chọn liệu trình chăm sóc da phù hợp', date:'08/07/2026', status:'live'},
+  {title:'Bí quyết thư giãn sau một tuần làm việc căng thẳng', date:'29/06/2026', status:'live'},
+  {title:'Ưu đãi tháng 8 dành cho khách hàng thân thiết', date:'—', status:'draft'},
+  {title:'Giới thiệu KTV mới của Ngân Hà Spa', date:'—', status:'draft'},
+];
+const postIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 3h9l5 5v13H6V3z"/><path d="M15 3v5h5"/></svg>`;
+document.getElementById('blog-list').innerHTML = posts.map(p=>`
+  <div class="post-row">
+    <div class="post-thumb">${postIcon}</div>
+    <div class="post-info">
+      <div class="post-title">${p.title}</div>
+      <div class="post-meta">${p.date==='—' ? 'Chưa đăng' : 'Đăng ngày '+p.date}</div>
+    </div>
+    <span class="status-pill ${p.status}">${p.status==='live'?'Đã đăng':'Bản nháp'}</span>
+    <div class="row-menu">⋯</div>
+  </div>`).join('');
+</script>
+</body>
+</html>

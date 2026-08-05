@@ -1,59 +1,102 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
-import { Minimize2 } from 'lucide-react';
+import { useCallback, useRef } from 'react';
+import { useParams, useRouter } from 'next/navigation';
+import { CartItem, Service } from '@/components/Menu/types';
+import { appendBookingCartItem, removeOneBookingCartItem } from '@/lib/bookingCartStorage';
+import {
+  FlipbookFrame,
+  animateFlipbookFlyerToTarget,
+  showFlipbookToast,
+  useFlipbookBridge,
+  type FlipbookSourceRect,
+} from '@/lib/flipbook';
+import { useTranslation } from '@/components/TranslationProvider';
 
 // 🔧 UI CONFIGURATION
 const HEADER_HEIGHT_PX = 80;
 
+const isServicePayload = (value: unknown): value is Service => {
+  if (!value || typeof value !== 'object') return false;
+  const service = value as Partial<Service>;
+  return Boolean(service.id && service.names && service.descriptions && service.priceVND !== undefined);
+};
+
+const getServiceTitle = (service: Service) =>
+  service.names?.vi || service.names?.en || service.id;
+
 const ServiceBook = () => {
-  const [isFullscreen, setIsFullscreen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const router = useRouter();
+  const { t, currentLang: lang } = useTranslation();
 
-  const handleMessage = useCallback((event: MessageEvent) => {
-    if (!event.data || typeof event.data.type !== 'string') return;
+  const CHECKOUT_URL = `/${lang}/new-user/standard/checkout`;
+  const SELECT_MENU_URL = `/${lang}/new-user/select-menu`;
 
-    if (event.data.type === 'flipmenu:galaxy-entered') {
-      setIsFullscreen(true);
-    } else if (event.data.type === 'flipmenu:book-returned') {
-      setIsFullscreen(false);
-    }
+  const dispatchCartUpdate = useCallback((cart: CartItem[]) => {
+    window.dispatchEvent(new CustomEvent('nganha:cart-updated', { detail: { count: cart.length } }));
   }, []);
 
-  useEffect(() => {
-    window.addEventListener('message', handleMessage);
-    return () => window.removeEventListener('message', handleMessage);
-  }, [handleMessage]);
+  const showCartToast = useCallback((service: Service, count: number) => {
+    const title = t('service_book', 'service_added') || (lang === 'vi' ? 'Đã thêm dịch vụ' : 'Service Added');
+    const unit = t('service_book', 'items') || (lang === 'vi' ? 'dịch vụ' : 'items');
+    showFlipbookToast({
+      title,
+      subtitle: `${getServiceTitle(service)} · ${count} ${unit}`,
+    });
+  }, [lang, t]);
+
+  const animateFlowerToCart = useCallback((sourceRect?: FlipbookSourceRect) => {
+    animateFlipbookFlyerToTarget({
+      iframe: iframeRef.current,
+      sourceRect,
+      targetSelector: '[data-nav-cart-button]',
+    });
+  }, []);
+
+  const addServiceToCart = useCallback((service: Service) => {
+    const nextCart = appendBookingCartItem(service, 1);
+    dispatchCartUpdate(nextCart);
+    return nextCart;
+  }, [dispatchCartUpdate]);
+
+  const { isFullscreen } = useFlipbookBridge<Service>({
+    containerRef,
+    iframeRef,
+    headerHeight: HEADER_HEIGHT_PX,
+    isServicePayload,
+    onMenuBack: () => router.push(SELECT_MENU_URL),
+    onAddService: ({ service, sourceRect }) => {
+      const nextCart = addServiceToCart(service);
+      animateFlowerToCart(sourceRect);
+      showCartToast(service, nextCart.reduce((sum, item) => sum + item.qty, 0));
+    },
+    onRemoveService: ({ serviceId }) => {
+      const nextCart = removeOneBookingCartItem(serviceId);
+      dispatchCartUpdate(nextCart);
+    },
+    onBookNow: ({ service }) => {
+      if (service) addServiceToCart(service);
+      router.push(CHECKOUT_URL);
+    },
+    onPlaceOrder: () => router.push(CHECKOUT_URL),
+  });
 
   return (
-    <div
-      className={`w-full flex items-center justify-center transition-all duration-700 ${
-        isFullscreen
-          ? 'fixed left-0 right-0 bottom-0 z-[40] bg-[#0A0A0A] p-0'
-          : 'min-h-[700px] py-8 relative'
-      }`}
-      style={isFullscreen ? { top: `${HEADER_HEIGHT_PX}px` } : undefined}
-    >
-      {isFullscreen && (
-        <button
-          onClick={() => setIsFullscreen(false)}
-          className="absolute top-4 right-4 z-50 p-2 bg-white/10 hover:bg-white/20 text-white rounded-full backdrop-blur-sm transition-all"
-          title="Thu nhỏ"
-        >
-          <Minimize2 size={22} />
-        </button>
-      )}
-
-      <iframe
-        src="/flipmenu/index.html"
-        className={`w-full border-none overflow-hidden shadow-2xl transition-all duration-700 ${
-          isFullscreen
-            ? 'h-full max-w-full rounded-none'
-            : 'max-w-[1200px] h-[700px] lg:h-[850px] rounded-2xl'
-        }`}
-        title="Ngan Ha Spa 3D Menu"
-        allowFullScreen
-      />
-    </div>
+    <FlipbookFrame
+      src={`/flipmenu/example/book.html?lang=${lang}&shell=book&v=flipbook-restored-v69-unified-galaxy`}
+      title="ORIA SPA 3D Menu"
+      isFullscreen={isFullscreen}
+      containerRef={containerRef}
+      iframeRef={iframeRef}
+      headerHeight={HEADER_HEIGHT_PX}
+      classNames={{
+        containerInline: 'min-h-[700px] lg:min-h-[850px] py-0 relative',
+        iframeBase: 'w-full border-none overflow-hidden',
+        iframeInline: 'h-[700px] lg:h-[850px] max-w-none rounded-none shadow-none',
+      }}
+    />
   );
 };
 

@@ -20,6 +20,15 @@ export interface MultiLangString {
   [key: string]: string | undefined;
 }
 
+export interface ServiceMedia {
+  type: 'image' | 'video';
+  src: string;
+  poster?: string;
+  alt?: string;
+  start?: number;
+  end?: number;
+}
+
 // 2. Dữ liệu Dịch vụ (Service) chuẩn hóa
 export interface Service {
   id: string;          // VD: "NHS001"
@@ -29,6 +38,15 @@ export interface Service {
   names: MultiLangString;
   descriptions: MultiLangString;
   img: string;
+  media?: ServiceMedia;
+  video?: string | ServiceMedia;
+  videoSrc?: string;
+  videoUrl?: string;
+  clipSrc?: string;
+  poster?: string;
+  thumbnail?: string;
+  media_url?: string;
+  media_type?: string;
 
   // Giá và Thời gian
   priceVND: number;

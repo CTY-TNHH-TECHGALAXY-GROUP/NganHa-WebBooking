@@ -4,8 +4,26 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { MapPin, Clock, Navigation } from 'lucide-react';
 import { BRANCH_LIST } from '@/data/branches';
+import { useSystemSettings } from '@/components/SystemSettingsProvider';
+import { useTranslation } from '@/components/TranslationProvider';
+import { Locale } from '@/lib/constants';
 
 const BranchInfo = () => {
+  const { systemSettings, getLocalizedText } = useSystemSettings();
+  const { currentLang } = useTranslation();
+
+  // Mảng hiển thị
+  const displayBranches = BRANCH_LIST.map((branch, index) => {
+    if (index === 0) {
+      return {
+        ...branch,
+        address: systemSettings?.address ? getLocalizedText(systemSettings.address, currentLang as Locale, branch.address) : branch.address,
+        googleMaps: systemSettings?.googleMaps || branch.googleMaps,
+        hours: systemSettings?.hours || branch.hours,
+      };
+    }
+    return branch;
+  });
   return (
     <section id="branches" className="py-24 px-6 bg-[#0E0E0E] relative border-t border-[#D4AF37]/10">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(212,175,55,0.03),transparent_60%)] pointer-events-none" />
@@ -28,12 +46,12 @@ const BranchInfo = () => {
             transition={{ delay: 0.1 }}
             className="text-4xl md:text-5xl font-serif text-white tracking-wide"
           >
-            Visit <span className="italic text-[#D4AF37]">Ngan Ha</span>
+            Visit <span className="italic text-[#D4AF37]">ORIA SPA</span>
           </motion.h2>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
-          {BRANCH_LIST.map((branch, i) => (
+          {displayBranches.map((branch, i) => (
             <motion.div 
               key={branch.id}
               initial={{ opacity: 0, y: 30 }}

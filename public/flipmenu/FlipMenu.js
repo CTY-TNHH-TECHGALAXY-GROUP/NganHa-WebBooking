@@ -20,6 +20,14 @@ export class FlipMenu {
         'standalone-celestial-menu%20(2)/public/images/services/coconut-oil.png',
         'standalone-celestial-menu%20(2)/public/images/services/ear-clean.png'
       ],
+      galleryImages: [
+        'standalone-celestial-menu%20(2)/public/images/about-spa.png',
+        'standalone-celestial-menu%20(2)/public/images/about-treatment.png',
+        'standalone-celestial-menu%20(2)/public/images/body-treatment-full.png',
+        'standalone-celestial-menu%20(2)/public/images/hero-spa-bg.png',
+        'standalone-celestial-menu%20(2)/public/images/additional-premium.png',
+        'standalone-celestial-menu%20(2)/public/images/hair-wash.png'
+      ],
       pageBgImages: [
         'cover1.png', '', '', '', '', 'cover2.png'
       ],
@@ -251,6 +259,7 @@ export class FlipMenu {
 
     // --- BOOK LOGIC ---
     let bookGroup;
+    let bookHitArea;
     const leaves = [];
     let currentLeafIndex = 0;
     const PAGE_W = 6;
@@ -258,41 +267,174 @@ export class FlipMenu {
 
     const photoMeshes = [];
     let activePhotoStack = null;
+    let lightboxOpen = false;
+    let lightboxHistoryActive = false;
+    let softMenuBackActive = false;
+    let softBookCloseCameraTarget = null;
+    let softBookCloseLookTarget = null;
+    const BOOK_NAV_STATE = Object.freeze({
+      CLOSED_BOOK: "closedBook",
+      OPENING_BOOK: "openingBook",
+      OPEN_BOOK: "openBook",
+      ENTERING_GALAXY: "enteringGalaxy",
+      GALAXY: "galaxy",
+      RETURNING_TO_BOOK: "returningToBook",
+      CLOSING_BOOK: "closingBook",
+    });
+    let bookNavState = BOOK_NAV_STATE.CLOSED_BOOK;
+    let galaxyFlyTween = null;
+    let bookNavTimer = 0;
+    let bookBackTimer = 0;
 
-    function createPhotoStack(parentLeaf, imageUrls, type) {
-      const stackGroup = new THREE.Group();
-      stackGroup.position.set(PAGE_W / 2, 0.05, 0);
-      stackGroup.rotation.x = -Math.PI / 2;
+    function setBookNavState(nextState) {
+      bookNavState = nextState;
+      if (document?.body) document.body.dataset.bookNavState = nextState;
+    }
 
-      imageUrls.forEach((url, idx) => {
-        const tex = textureLoader.load(url);
+    function clearBookUiTimers() {
+      window.clearTimeout(bookNavTimer);
+      window.clearTimeout(bookBackTimer);
+      bookNavTimer = 0;
+      bookBackTimer = 0;
+    }
+
+    function cancelGalaxyFlight() {
+      if (galaxyFlyTween?.kill) galaxyFlyTween.kill();
+      galaxyFlyTween = null;
+      if (window.gsap) {
+        window.gsap.killTweensOf(camTargetPos);
+      }
+    }
+
+    function removeBookExitArtifacts({ resetOpacity = true } = {}) {
+      const app = document.getElementById("app");
+      if (!app) return;
+      app.classList.remove(
+        "fly-away",
+        "book-exit",
+        "zoom-out",
+        "scene-exit",
+        "is-leaving",
+        "is-exiting"
+      );
+      app.style.transform = "translate3d(0, 0, 0) scale(1)";
+      app.style.visibility = "visible";
+      if (resetOpacity) app.style.opacity = "1";
+    }
+
+    function resetOuterBookScene() {
+      removeBookExitArtifacts();
+      state.isFlyingThrough = false;
+      if (bookGroup) {
+        bookGroup.visible = true;
+        bookTargetPos.set(0, -0.5, 0);
+        bookTargetRot.set(BOOK_TILT, 0, 0);
+        bookGroup.position.copy(bookTargetPos);
+        bookGroup.rotation.set(BOOK_TILT, 0, 0);
+      }
+      softBookCloseCameraTarget = null;
+      softBookCloseLookTarget = null;
+    }
+
+    function cancelGalaxyLifecycle() {
+      cancelGalaxyFlight();
+      window.clearTimeout(state.revealTimer);
+      state.serviceRevealAt = 0;
+      state.cartOpen = false;
+      state.isFlyingThrough = false;
+      document.body.style.cursor = "default";
+    }
+
+    function fitTextureToCard(texture, cardAspect) {
+      const image = texture.image;
+      if (!image?.width || !image?.height) return;
+      const imageAspect = image.width / image.height;
+      texture.center.set(0.5, 0.5);
+      if (imageAspect > cardAspect) {
+        texture.repeat.set(cardAspect / imageAspect, 1);
+      } else {
+        texture.repeat.set(1, imageAspect / cardAspect);
+      }
+      texture.offset.set((1 - texture.repeat.x) / 2, (1 - texture.repeat.y) / 2);
+      texture.needsUpdate = true;
+    }
+
+    function createPhotoGrid(parentLeaf, imageUrls, type) {
+      const gridGroup = new THREE.Group();
+      gridGroup.position.set(PAGE_W / 2, 0.072, -0.16);
+      gridGroup.rotation.x = -Math.PI / 2;
+      gridGroup.userData.isGalleryGrid = true;
+
+      const cardW = 2.18;
+      const cardH = 1.48;
+      const cardAspect = cardW / cardH;
+      const columns = [-1.26, 1.26];
+      const rows = [2.18, 0, -2.18];
+      const urls = imageUrls.slice(0, 6);
+
+      urls.forEach((url, idx) => {
+        const cardGroup = new THREE.Group();
+        const col = idx % 2;
+        const row = Math.floor(idx / 2);
+        cardGroup.position.set(columns[col], rows[row], 0.018 + idx * 0.004);
+        cardGroup.userData.baseZ = cardGroup.position.z;
+        cardGroup.userData.floatPhase = idx * 0.83;
+
+        const shadow = new THREE.Mesh(
+          new THREE.PlaneGeometry(cardW + 0.08, cardH + 0.08),
+          new THREE.MeshBasicMaterial({
+            color: 0x000000,
+            transparent: true,
+            opacity: 0.13,
+            depthWrite: false,
+          })
+        );
+        shadow.position.set(0.04, -0.05, -0.012);
+        cardGroup.add(shadow);
+
+        const frame = new THREE.Mesh(
+          new THREE.PlaneGeometry(cardW + 0.08, cardH + 0.08),
+          new THREE.MeshStandardMaterial({
+            color: 0xf8edd8,
+            roughness: 0.68,
+            metalness: 0.02,
+            side: THREE.DoubleSide,
+          })
+        );
+        frame.position.z = -0.006;
+        cardGroup.add(frame);
+
+        const tex = textureLoader.load(url, (loadedTexture) => fitTextureToCard(loadedTexture, cardAspect));
         tex.colorSpace = THREE.SRGBColorSpace;
-        const imgGeo = new THREE.PlaneGeometry(3, 4);
+        tex.wrapS = THREE.ClampToEdgeWrapping;
+        tex.wrapT = THREE.ClampToEdgeWrapping;
+        const imgGeo = new THREE.PlaneGeometry(cardW, cardH);
         const imgMat = new THREE.MeshStandardMaterial({
-          map: tex, roughness: 0.2, metalness: 0.1, side: THREE.DoubleSide
+          map: tex,
+          roughness: 0.34,
+          metalness: 0.04,
+          side: THREE.DoubleSide,
         });
         const imgMesh = new THREE.Mesh(imgGeo, imgMat);
-        imgMesh.position.z = idx * 0.02;
-        imgMesh.rotation.z = (Math.random() - 0.5) * 0.2;
+        imgMesh.position.z = 0.002;
 
         imgMesh.userData = {
           isPhoto: true,
-          baseZ: idx * 0.02,
-          baseRotZ: imgMesh.rotation.z,
+          isGalleryPhoto: true,
+          cardGroup,
           type: type,
           url: url,
           idx: idx,
-          total: imageUrls.length,
-          targetPos: new THREE.Vector3(0, 0, idx * 0.02),
-          targetRotZ: imgMesh.rotation.z
+          total: urls.length,
         };
 
-        stackGroup.add(imgMesh);
+        cardGroup.add(imgMesh);
+        gridGroup.add(cardGroup);
         photoMeshes.push(imgMesh);
       });
 
-      parentLeaf.add(stackGroup);
-      parentLeaf.userData.photoStack = stackGroup;
+      parentLeaf.add(gridGroup);
+      parentLeaf.userData.photoGrid = gridGroup;
     }
 
     function scatterPhotoStack(stack) {
@@ -387,7 +529,7 @@ export class FlipMenu {
 
         if (pageIndex === 0) {
           ctx.font = 'italic 80px "Cormorant Garamond", serif';
-          ctx.fillText('Ngân Hà Spa', canvas.width / 2, 500);
+          ctx.fillText('ORIA SPA', canvas.width / 2, 500);
           ctx.font = '30px Inter, sans-serif';
           ctx.fillText('Welcome to tranquility', canvas.width / 2, 600);
 
@@ -424,11 +566,9 @@ export class FlipMenu {
           ctx.fillText("Experience our in-spa treatments.", canvas.width / 2, 450);
           ctx.fillText("Relax your mind and body.", canvas.width / 2, 500);
         } else if (pageIndex === 3) {
-          ctx.font = 'italic 50px "Cormorant Garamond", serif';
-          ctx.fillText('[ Hình ảnh phòng Spa ]', canvas.width / 2, 600);
-          ctx.font = '24px Inter, sans-serif';
-          ctx.fillStyle = '#888';
-          ctx.fillText('Placeholder for room image', canvas.width / 2, 650);
+          ctx.font = 'italic 54px "Cormorant Garamond", serif';
+          ctx.fillStyle = '#2A261F';
+          ctx.fillText('[ Hình ảnh phòng Spa ]', canvas.width / 2, 112);
         } else if (pageIndex === 4) {
           ctx.font = 'italic 70px "Cormorant Garamond", serif';
           ctx.fillText('HOMESPA', canvas.width / 2, 300);
@@ -518,8 +658,13 @@ export class FlipMenu {
       const REAL_LEAVES_MAX = middleIndex + 2;
 
       if (direction === 1 && currentLeafIndex < REAL_LEAVES_MAX) {
+        if (bookNavState === BOOK_NAV_STATE.CLOSED_BOOK) {
+          setBookNavState(BOOK_NAV_STATE.OPENING_BOOK);
+        }
         leaves[currentLeafIndex].userData.targetAngle = Math.PI;
         currentLeafIndex++;
+        setBookNavState(BOOK_NAV_STATE.OPEN_BOOK);
+        setBookBackVisible(true);
       } else if (direction === -1) {
         if (currentLeafIndex === middleIndex) {
           // Close book animation
@@ -527,6 +672,8 @@ export class FlipMenu {
             leaves[i].userData.targetAngle = 0;
           }
           currentLeafIndex = 0;
+          setBookNavState(BOOK_NAV_STATE.CLOSED_BOOK);
+          setBookBackVisible(false);
           document.getElementById('btn-prev').style.opacity = '0';
           document.getElementById('btn-next').style.opacity = '0';
           document.getElementById('btn-prev').style.pointerEvents = 'none';
@@ -534,6 +681,8 @@ export class FlipMenu {
         } else if (currentLeafIndex > middleIndex) {
           currentLeafIndex--;
           leaves[currentLeafIndex].userData.targetAngle = 0;
+          setBookNavState(BOOK_NAV_STATE.OPEN_BOOK);
+          setBookBackVisible(currentLeafIndex !== 0);
         }
       }
     }
@@ -543,6 +692,19 @@ export class FlipMenu {
       bookGroup.position.set(0, -0.5, 0);
       bookGroup.rotation.x = BOOK_TILT;
       scene.add(bookGroup);
+
+      const hitGeo = new THREE.BoxGeometry(PAGE_W * 2.18, 1.1, PAGE_H * 1.12);
+      const hitMat = new THREE.MeshBasicMaterial({
+        color: 0xffffff,
+        transparent: true,
+        opacity: 0,
+        depthWrite: false,
+      });
+      bookHitArea = new THREE.Mesh(hitGeo, hitMat);
+      bookHitArea.name = "Book full-surface click area";
+      bookHitArea.userData.isBookHitArea = true;
+      bookHitArea.renderOrder = 999;
+      bookGroup.add(bookHitArea);
 
       // Spine - realistic half-cylinder curve
       const spineGeo = new THREE.CylinderGeometry(0.3, 0.3, PAGE_H, 32, 1, false, 0, Math.PI);
@@ -607,13 +769,15 @@ export class FlipMenu {
         currentY += thickness;
         leaf.position.y = currentY;
         leaf.userData.baseY = currentY;
+        leaf.userData.leafIndex = i;
 
         if (i === MENU_CONFIG.roomImagesPage) {
-          createPhotoStack(leaf, MENU_CONFIG.roomImages, 'standard-room');
-          leaf.userData.hasPhotoStack = true;
-        } else if (i === MENU_CONFIG.toolsImagesPage) {
-          createPhotoStack(leaf, MENU_CONFIG.toolsImages, 'homespa-tools');
-          leaf.userData.hasPhotoStack = true;
+          const galleryImages = MENU_CONFIG.galleryImages || [
+            ...MENU_CONFIG.roomImages,
+            ...MENU_CONFIG.toolsImages,
+          ];
+          createPhotoGrid(leaf, galleryImages, 'spa-gallery');
+          leaf.userData.hasPhotoGrid = true;
         }
 
         leaves.push(leaf);
@@ -621,11 +785,127 @@ export class FlipMenu {
       }
     }
 
+    function updateBookHitArea() {
+      if (!bookHitArea) return;
+      const isClosed = currentLeafIndex === 0;
+      bookHitArea.visible = state.stage === -1 && !state.isFlyingThrough && Boolean(bookGroup?.visible);
+      bookHitArea.position.set(isClosed ? PAGE_W / 2 : 0, 0, 0);
+      bookHitArea.scale.set(isClosed ? 0.52 : 1, 1, 1);
+    }
+
+    function canvasRelativePoint(clientX, clientY) {
+      const rect = canvas.getBoundingClientRect();
+      return {
+        x: clientX - rect.left,
+        y: clientY - rect.top,
+        width: rect.width,
+        height: rect.height,
+      };
+    }
+
+    function projectedObjectBounds(object, padding = 32) {
+      if (!object || !object.visible) return null;
+      object.updateWorldMatrix(true, false);
+      camera.updateMatrixWorld(true);
+
+      const rect = canvas.getBoundingClientRect();
+      const box = new THREE.Box3().setFromObject(object);
+      if (box.isEmpty()) return null;
+
+      const corners = [
+        [box.min.x, box.min.y, box.min.z],
+        [box.min.x, box.min.y, box.max.z],
+        [box.min.x, box.max.y, box.min.z],
+        [box.min.x, box.max.y, box.max.z],
+        [box.max.x, box.min.y, box.min.z],
+        [box.max.x, box.min.y, box.max.z],
+        [box.max.x, box.max.y, box.min.z],
+        [box.max.x, box.max.y, box.max.z],
+      ];
+
+      let left = Infinity;
+      let right = -Infinity;
+      let top = Infinity;
+      let bottom = -Infinity;
+
+      corners.forEach(([x, y, z]) => {
+        const projected = new THREE.Vector3(x, y, z).project(camera);
+        if (!Number.isFinite(projected.x) || !Number.isFinite(projected.y)) return;
+        const px = ((projected.x + 1) / 2) * rect.width;
+        const py = ((1 - projected.y) / 2) * rect.height;
+        left = Math.min(left, px);
+        right = Math.max(right, px);
+        top = Math.min(top, py);
+        bottom = Math.max(bottom, py);
+      });
+
+      if (![left, right, top, bottom].every(Number.isFinite)) return null;
+      return {
+        left: Math.max(0, left - padding),
+        right: Math.min(rect.width, right + padding),
+        top: Math.max(0, top - padding),
+        bottom: Math.min(rect.height, bottom + padding),
+      };
+    }
+
+    function currentBookScreenBounds(padding = 32) {
+      updateBookHitArea();
+      return projectedObjectBounds(bookHitArea, padding);
+    }
+
+    function pointInsideBounds(point, bounds) {
+      return Boolean(bounds)
+        && point.x >= bounds.left
+        && point.x <= bounds.right
+        && point.y >= bounds.top
+        && point.y <= bounds.bottom;
+    }
+
+    function pointerOverBookScreenBounds() {
+      const rect = canvas.getBoundingClientRect();
+      const point = {
+        x: ((pointer.x + 1) / 2) * rect.width,
+        y: ((1 - pointer.y) / 2) * rect.height,
+      };
+      return pointInsideBounds(point, currentBookScreenBounds(34));
+    }
+
+    function eventInsideBookScreenBounds(event) {
+      if (event.clientX == null || event.clientY == null) return false;
+      return pointInsideBounds(
+        canvasRelativePoint(event.clientX, event.clientY),
+        currentBookScreenBounds(38)
+      );
+    }
+
+    function openBookToMiddle() {
+      if (bookNavState === BOOK_NAV_STATE.OPENING_BOOK || bookNavState === BOOK_NAV_STATE.OPEN_BOOK) return;
+      setBookNavState(BOOK_NAV_STATE.OPENING_BOOK);
+      removeBookExitArtifacts();
+      const middleIndex = Math.floor(FAKE_THICKNESS / 2);
+      for (let i = 0; i < middleIndex; i++) {
+        leaves[i].userData.targetAngle = Math.PI - 0.05;
+      }
+      currentLeafIndex = middleIndex;
+      setBookBackVisible(true, 420);
+      setTimeout(() => {
+        if (bookNavState !== BOOK_NAV_STATE.OPENING_BOOK) return;
+        document.getElementById('btn-prev').style.opacity = '1';
+        document.getElementById('btn-next').style.opacity = '1';
+        document.getElementById('btn-prev').style.pointerEvents = 'auto';
+        document.getElementById('btn-next').style.pointerEvents = 'auto';
+        setBookNavState(BOOK_NAV_STATE.OPEN_BOOK);
+      }, 500);
+    }
+
     function selectBookMode(mode, clickX = 3) {
       if (state.stage !== -1) return;
+      if (bookNavState !== BOOK_NAV_STATE.OPEN_BOOK) return;
       
       // Khởi động trạng thái xuyên qua sách
       if(state.isFlyingThrough) return;
+      cancelGalaxyFlight();
+      setBookNavState(BOOK_NAV_STATE.ENTERING_GALAXY);
       state.isFlyingThrough = true;
       isTransitioningBook = true;
 
@@ -634,18 +914,22 @@ export class FlipMenu {
       const btnNext = document.getElementById('btn-next');
       if(btnPrev) { btnPrev.style.pointerEvents = 'none'; btnPrev.style.opacity = '0'; }
       if(btnNext) { btnNext.style.pointerEvents = 'none'; btnNext.style.opacity = '0'; }
+      setBookBackVisible(false);
 
       // Khóa tương tác chuột
       document.body.style.pointerEvents = 'none';
 
       // Lao thẳng camera xuyên thủng giấy bằng GSAP
-      window.gsap.to(camTargetPos, { 
+      galaxyFlyTween = window.gsap.to(camTargetPos, { 
           z: -5,
           x: 0,
           y: 0,
           duration: 0.6, 
           ease: 'power2.inOut',
           onComplete: () => {
+               galaxyFlyTween = null;
+               if (bookNavState !== BOOK_NAV_STATE.ENTERING_GALAXY) return;
+               setBookNavState(BOOK_NAV_STATE.GALAXY);
                // Phát sự kiện ra ngoài (báo cho AppManager tải Celestial v56)
                if(typeof MENU_CONFIG !== 'undefined' && MENU_CONFIG.onItemSelected) {
                    MENU_CONFIG.onItemSelected("all");
@@ -1745,6 +2029,8 @@ export class FlipMenu {
     function selectCategory(id) {
         // Bắt đầu hiệu ứng bay xuyên sách
         if(state.isFlyingThrough) return;
+        cancelGalaxyFlight();
+        setBookNavState(BOOK_NAV_STATE.ENTERING_GALAXY);
         state.isFlyingThrough = true;
         
         // Disable document scrolling/interaction if needed
@@ -1752,13 +2038,17 @@ export class FlipMenu {
 
         // Camera lao tới xuyên qua sách
         // Dùng camTargetPos để vòng lặp animate() nội bộ tự động đưa camera tiến lên
-        window.gsap.to(camTargetPos, { 
+        galaxyFlyTween = window.gsap.to(camTargetPos, { 
             z: -5,  // Tiến qua mặt Z=0
             x: 0, 
             y: 0, 
             duration: 0.6, 
             ease: 'power2.inOut',
             onComplete: () => {
+                 galaxyFlyTween = null;
+                 if (bookNavState === BOOK_NAV_STATE.ENTERING_GALAXY) {
+                     setBookNavState(BOOK_NAV_STATE.GALAXY);
+                 }
                  // Phát sự kiện ra ngoài báo hiệu xong hiệu ứng xuyên
                  if(MENU_CONFIG && MENU_CONFIG.onItemSelected) {
                      MENU_CONFIG.onItemSelected(id);
@@ -1767,35 +2057,249 @@ export class FlipMenu {
         });
       }
 
+    function setBookNavVisible(isVisible, delay = 0) {
+      window.clearTimeout(bookNavTimer);
+      bookNavTimer = window.setTimeout(() => {
+        const btnPrev = document.getElementById('btn-prev');
+        const btnNext = document.getElementById('btn-next');
+        [btnPrev, btnNext].forEach((button) => {
+          if (!button) return;
+          button.style.opacity = isVisible ? '1' : '0';
+          button.style.pointerEvents = isVisible ? 'auto' : 'none';
+        });
+        bookNavTimer = 0;
+      }, delay);
+    }
+
+    function setBookBackVisible(isVisible, delay = 0) {
+      window.clearTimeout(bookBackTimer);
+      bookBackTimer = window.setTimeout(() => {
+        const button = document.getElementById('btn-menu-back');
+        if (!button) return;
+        button.classList.toggle('visible', Boolean(isVisible));
+        button.setAttribute('aria-hidden', isVisible ? 'false' : 'true');
+        button.tabIndex = isVisible ? 0 : -1;
+        bookBackTimer = 0;
+      }, delay);
+    }
+
+    function softClosedCoverView() {
+      const rk = typeof responsiveKey === 'function' ? responsiveKey() : 'desktop';
+      const viewportHeight = window.innerHeight || 720;
+      const isCompactHeight = viewportHeight < 760;
+      const desiredActualZ = rk === 'mobile'
+        ? 25.5
+        : rk === 'tabletPortrait' || rk === 'tabletLandscape'
+          ? 17.2
+          : isCompactHeight
+            ? 16.4
+            : 15.8;
+      const closedExtraZ = rk === 'mobile' ? 10 : rk === 'tabletPortrait' ? 5 : 0;
+      const actualCam = new THREE.Vector3(3, rk === 'mobile' ? 5.05 : 4.82, desiredActualZ);
+      const actualLook = new THREE.Vector3(3, -0.04, 0);
+
+      return {
+        actualCam,
+        actualLook,
+        baseCam: new THREE.Vector3(actualCam.x - 3, actualCam.y, desiredActualZ - closedExtraZ),
+        baseLook: new THREE.Vector3(actualLook.x - 3, actualLook.y, actualLook.z),
+      };
+    }
+
+    function closeBookToCover() {
+      return new Promise((resolve) => {
+        if (bookNavState === BOOK_NAV_STATE.CLOSED_BOOK) {
+          resolve();
+          return;
+        }
+        if (isTransitioningBook) {
+          window.setTimeout(resolve, prefersReducedMotion ? 40 : 220);
+          return;
+        }
+
+        cancelGalaxyLifecycle();
+        clearBookUiTimers();
+        resetOuterBookScene();
+        setBookNavState(BOOK_NAV_STATE.CLOSING_BOOK);
+        const coverView = softClosedCoverView();
+        softBookCloseCameraTarget = coverView.actualCam;
+        softBookCloseLookTarget = coverView.actualLook;
+        isTransitioningBook = true;
+        softMenuBackActive = true;
+        state.stage = -1;
+        state.isFlyingThrough = false;
+        state.cartOpen = false;
+        state.serviceRevealAt = 0;
+        window.clearTimeout(state.revealTimer);
+        document.body.style.cursor = "default";
+        document.body.style.pointerEvents = "none";
+        setBookNavVisible(false);
+        setBookBackVisible(false);
+
+        if (lightboxOpen) closeLightbox({ fromPopState: true });
+        if (activePhotoStack) {
+          resetPhotoStack(activePhotoStack);
+          activePhotoStack = null;
+        }
+        isPhotoFocusMode = false;
+
+        leaves.forEach((leaf) => {
+          leaf.userData.targetAngle = 0;
+        });
+        currentLeafIndex = 0;
+        bookGroup.visible = true;
+        bookTargetPos.set(0, -0.5, 0);
+        bookTargetRot.set(BOOK_TILT, 0, 0);
+        camTargetPos.copy(coverView.baseCam);
+        camTargetLookAt.copy(coverView.baseLook);
+        pointer.set(0, 0);
+        pointerParallax.set(0, 0);
+        updateBookHitArea();
+
+        const duration = prefersReducedMotion ? 40 : 1580;
+        window.setTimeout(() => {
+          softMenuBackActive = false;
+          softBookCloseCameraTarget = null;
+          softBookCloseLookTarget = null;
+          isTransitioningBook = false;
+          removeBookExitArtifacts();
+          setBookNavState(BOOK_NAV_STATE.CLOSED_BOOK);
+          document.body.style.pointerEvents = "auto";
+          updateBookHitArea();
+          resolve();
+        }, duration);
+      });
+    }
+
+    function playSoftMenuBack() {
+      return new Promise((resolve) => {
+        if (isTransitioningBook) {
+          window.setTimeout(resolve, prefersReducedMotion ? 40 : 220);
+          return;
+        }
+
+        isTransitioningBook = true;
+        state.isFlyingThrough = false;
+        state.stage = -1;
+        state.cartOpen = false;
+        state.serviceRevealAt = 0;
+        window.clearTimeout(state.revealTimer);
+        document.body.style.cursor = "default";
+        document.body.style.pointerEvents = "none";
+        setBookNavVisible(false);
+        setBookBackVisible(false);
+        softBookCloseCameraTarget = null;
+        softBookCloseLookTarget = null;
+        softMenuBackActive = true;
+        pointer.set(0, 0);
+        pointerParallax.set(0, 0);
+
+        if (lightboxOpen) closeLightbox({ fromPopState: true });
+        if (activePhotoStack) {
+          resetPhotoStack(activePhotoStack);
+          activePhotoStack = null;
+        }
+
+        bookGroup.visible = true;
+        updateBookHitArea();
+
+        const app = document.getElementById("app");
+        if (app) {
+          app.style.transition = "opacity 900ms ease, filter 900ms ease";
+          app.style.opacity = "0.88";
+          app.style.filter = "saturate(0.96) brightness(1.02)";
+        }
+
+        const duration = prefersReducedMotion ? 40 : 920;
+        const done = () => {
+          softMenuBackActive = false;
+          isTransitioningBook = false;
+          document.body.style.pointerEvents = "auto";
+          setBookNavVisible(currentLeafIndex !== 0);
+          setBookBackVisible(currentLeafIndex !== 0, 80);
+          resolve();
+        };
+
+        window.setTimeout(done, duration);
+      });
+    }
+
+    function prepareSoftGalaxyReturn() {
+      cancelGalaxyLifecycle();
+      clearBookUiTimers();
+      resetOuterBookScene();
+      setBookNavState(BOOK_NAV_STATE.RETURNING_TO_BOOK);
+      const middleIndex = Math.floor(FAKE_THICKNESS / 2);
+      state.stage = -1;
+      state.isFlyingThrough = false;
+      state.cartOpen = false;
+      state.serviceRevealAt = 0;
+      window.clearTimeout(state.revealTimer);
+
+      currentLeafIndex = Math.max(currentLeafIndex, middleIndex);
+      leaves.forEach((leaf, index) => {
+        const targetAngle = index < currentLeafIndex ? Math.PI - 0.05 : 0;
+        leaf.userData.targetAngle = targetAngle;
+        leaf.userData.angle = targetAngle;
+        leaf.rotation.z = targetAngle;
+        leaf.position.y = targetAngle > Math.PI / 2 ? leaf.userData.baseY : -leaf.userData.baseY;
+      });
+
+      pointer.set(0, 0);
+      pointerParallax.set(0, 0);
+      softMenuBackActive = true;
+      isTransitioningBook = true;
+      bookGroup.visible = true;
+      bookTargetPos.set(0, -0.5, 0);
+      bookGroup.position.copy(bookTargetPos);
+      bookTargetRot.set(BOOK_TILT, 0, 0);
+      bookGroup.rotation.set(BOOK_TILT, 0, 0);
+
+      const rk = typeof responsiveKey === 'function' ? responsiveKey() : 'desktop';
+      const viewY = rk === 'tabletPortrait' || rk === 'tabletLandscape' ? 4.6 : 4.35;
+      const viewZ = rk === 'mobile'
+        ? 31.5
+        : rk === 'tabletPortrait' || rk === 'tabletLandscape'
+          ? 13.6
+          : 11.4;
+      camTargetPos.set(0, viewY, viewZ);
+      camera.position.copy(camTargetPos);
+      camTargetLookAt.set(0, -0.12, 0);
+      camCurrentLookAt.copy(camTargetLookAt);
+      camera.lookAt(camCurrentLookAt);
+      updateBookHitArea();
+      setBookNavVisible(false);
+      setBookBackVisible(false);
+    }
+
+    function finishSoftGalaxyReturn() {
+      if (bookNavState === BOOK_NAV_STATE.CLOSING_BOOK || bookNavState === BOOK_NAV_STATE.CLOSED_BOOK) return;
+      softMenuBackActive = false;
+      softBookCloseCameraTarget = null;
+      softBookCloseLookTarget = null;
+      isTransitioningBook = false;
+      state.isFlyingThrough = false;
+      removeBookExitArtifacts();
+      setBookNavState(BOOK_NAV_STATE.OPEN_BOOK);
+      document.body.style.pointerEvents = "auto";
+      setBookNavVisible(currentLeafIndex !== 0, 80);
+      setBookBackVisible(currentLeafIndex !== 0, 80);
+      updateBookHitArea();
+    }
+
+    this.closeBookToCover = closeBookToCover;
+    this.isBookOpen = () => (
+      bookNavState === BOOK_NAV_STATE.OPEN_BOOK
+      || bookNavState === BOOK_NAV_STATE.RETURNING_TO_BOOK
+    ) && currentLeafIndex !== 0 && state.stage === -1 && !state.isFlyingThrough;
+    this.getBookNavState = () => bookNavState;
+    this.playSoftMenuBack = playSoftMenuBack;
+    this.prepareSoftGalaxyReturn = prepareSoftGalaxyReturn;
+    this.finishSoftGalaxyReturn = finishSoftGalaxyReturn;
+
     function goBack() {
       if (state.stage === "categories") {
-        isTransitioningBook = true;
-        document.getElementById('black-overlay').style.opacity = '1';
-        setTimeout(() => {
-          state.stage = -1;
-          bookGroup.visible = true;
-
-          camTargetPos.set(0, 5, 22);
-          camera.position.copy(camTargetPos);
-          camTargetLookAt.set(0, 0, 0);
-          camCurrentLookAt.copy(camTargetLookAt);
-          camera.lookAt(camCurrentLookAt);
-
-          bookTargetPos.set(0, -0.5, 0);
-          bookTargetRot.set(0, 0, 0);
-          bookGroup.position.copy(bookTargetPos);
-
-          document.getElementById('black-overlay').style.opacity = '0';
-          setTimeout(() => {
-            const hud = document.querySelector('#flip-app .hud');
-            if (hud) hud.style.display = 'none';
-            document.getElementById('btn-prev').style.opacity = '1';
-            document.getElementById('btn-next').style.opacity = '1';
-            document.getElementById('btn-prev').style.pointerEvents = 'auto';
-            document.getElementById('btn-next').style.pointerEvents = 'auto';
-            isTransitioningBook = false;
-          }, 500);
-        }, 1000);
+        playSoftMenuBack();
         return;
       }
       if (state.stage === -1) return;
@@ -1825,7 +2329,16 @@ export class FlipMenu {
 
     function updateHover() {
       if (state.stage === -1) {
-        document.body.style.cursor = "default";
+        updateBookHitArea();
+        raycaster.setFromCamera(pointer, camera);
+        const visiblePhotoMeshes = currentLeafIndex === 0
+          ? []
+          : photoMeshes.filter((mesh) => mesh.visible && mesh.parent?.visible !== false && mesh.parent?.parent?.visible !== false);
+        const overPhoto = raycaster.intersectObjects(visiblePhotoMeshes, false).length > 0;
+        const bookTargets = bookHitArea ? [...leaves, bookHitArea] : leaves;
+        const overBook = !isTransitioningBook
+          && (overPhoto || raycaster.intersectObjects(bookTargets, true).length > 0 || pointerOverBookScreenBounds());
+        document.body.style.cursor = overBook ? "pointer" : "default";
         return null;
       }
       raycaster.setFromCamera(pointer, camera);
@@ -1923,22 +2436,42 @@ export class FlipMenu {
         if (state.isFlyingThrough) {
             targetCam.copy(camTargetPos);
             targetLook.copy(camTargetLookAt);
+        } else if (softMenuBackActive) {
+            if (softBookCloseCameraTarget && softBookCloseLookTarget) {
+                targetCam.copy(softBookCloseCameraTarget);
+                targetLook.copy(softBookCloseLookTarget);
+            } else {
+                targetCam.copy(camera.position);
+                targetLook.copy(camCurrentLookAt);
+            }
         } else {
             let targetCenterX = 0;
             if (typeof currentLeafIndex !== 'undefined') {
                 if (currentLeafIndex === 0) targetCenterX = 3;
-                else if (currentLeafIndex === 3) targetCenterX = -3;
             }
+            const rk = typeof responsiveKey === 'function' ? responsiveKey() : 'desktop';
+            const bookIsOpen = currentLeafIndex !== 0;
+            const pointerX = softMenuBackActive ? 0 : pointer.x;
+            const pointerY = softMenuBackActive ? 0 : pointer.y;
+            if (bookIsOpen) targetCenterX = 0;
 
             targetCam.copy(camTargetPos);
-            targetCam.x += targetCenterX + pointer.x * 2;
-            targetCam.y += pointer.y * 1;
+            targetCam.x += targetCenterX + pointerX * 2;
+            targetCam.y += pointerY * 1;
 
             targetLook.copy(camTargetLookAt);
             targetLook.x += targetCenterX;
 
-            if (typeof responsiveKey === 'function') {
-                const rk = responsiveKey();
+            if (bookIsOpen) {
+                targetCam.x += pointerX * -1.15;
+                targetCam.y = (rk === 'tabletPortrait' || rk === 'tabletLandscape' ? 4.6 : 4.35) + pointerY * 0.42;
+                targetCam.z = rk === 'mobile'
+                  ? 31.5
+                  : rk === 'tabletPortrait' || rk === 'tabletLandscape'
+                    ? 13.6
+                    : 11.4;
+                targetLook.y = -0.12;
+            } else if (typeof responsiveKey === 'function') {
                 if (rk === 'mobile') targetCam.z += 10;
                 else if (rk === 'tabletPortrait') targetCam.z += 5;
             }
@@ -1946,7 +2479,8 @@ export class FlipMenu {
     }
       // --- MOVED BOOK ANIMATION LOGIC ---
       if (state.stage === -1 || isTransitioningBook) {
-        if (!state.cartOpen) {
+        updateBookHitArea();
+        if (!state.cartOpen && !softMenuBackActive) {
           bookTargetRot.y = pointer.x * 0.15;
           bookTargetRot.x = BOOK_TILT + pointer.y * 0.15;
         }
@@ -1970,7 +2504,8 @@ export class FlipMenu {
           const isFlipped = currentAngle > Math.PI / 2;
           leaf.position.y = isFlipped ? ud.baseY : -ud.baseY;
 
-          if (ud.hasPhotoStack && ud.photoStack) {
+          if ((ud.hasPhotoGrid && ud.photoGrid) || (ud.hasPhotoStack && ud.photoStack)) {
+            const photoGroup = ud.photoGrid || ud.photoStack;
             const isTopRight = (currentLeafIndex === ud.leafIndex);
             const isTopLeft = (currentLeafIndex - 1 === ud.leafIndex);
             
@@ -1980,8 +2515,8 @@ export class FlipMenu {
             // Nếu trang nằm bên trái (đã lật) và là trang trên cùng bên trái
             if (isFlipped && isTopLeft) isVisible = true;
             
-            ud.photoStack.visible = isVisible;
-            ud.photoStack.children.forEach(c => c.visible = isVisible);
+            photoGroup.visible = isVisible;
+            photoGroup.traverse(c => { c.visible = isVisible; });
           }
 
           const isFlipping = currentAngle > 0.01 && currentAngle < (Math.PI - 0.01);
@@ -2146,7 +2681,11 @@ export class FlipMenu {
       updateHover();
 
       photoMeshes.forEach(mesh => {
-        if (mesh.userData.targetPos) {
+        if (mesh.userData.isGalleryPhoto && mesh.userData.cardGroup) {
+          const card = mesh.userData.cardGroup;
+          const float = prefersReducedMotion ? 0 : Math.sin(elapsed * 1.4 + card.userData.floatPhase) * 0.018;
+          card.position.z = card.userData.baseZ + float;
+        } else if (mesh.userData.targetPos) {
           mesh.position.lerp(mesh.userData.targetPos, 0.12);
           mesh.rotation.z += (mesh.userData.targetRotZ - mesh.rotation.z) * 0.12;
         }
@@ -2195,21 +2734,22 @@ export class FlipMenu {
 
     document.getElementById('btn-prev').addEventListener('click', () => turnPage(-1));
     document.getElementById('btn-next').addEventListener('click', () => turnPage(1));
-    document.getElementById('btn-back-book').addEventListener('click', () => {
+    document.getElementById('btn-back-book').addEventListener('click', async () => {
       document.getElementById('btn-back-book').style.display = 'none';
       document.getElementById('btn-back-book').style.opacity = '0';
-      goBack();
+      await closeBookToCover();
       // Notify parent window (Next.js) to shrink iframe back
       try { window.parent.postMessage({ type: 'flipmenu:book-returned' }, '*'); } catch(e) {}
-      setTimeout(() => {
-        document.getElementById('btn-prev').style.opacity = '1';
-        document.getElementById('btn-next').style.opacity = '1';
-        document.getElementById('btn-prev').style.pointerEvents = 'auto';
-        document.getElementById('btn-next').style.pointerEvents = 'auto';
-      }, 500);
     });
     window.addEventListener("keydown", (event) => {
-      if (event.key === "Escape") goBack();
+      if (event.key === "Escape") {
+        if (lightboxOpen) {
+          closeLightbox();
+          event.preventDefault();
+          return;
+        }
+        goBack();
+      }
       if (event.key === "ArrowLeft") shiftMobileCategory(-1);
       if (event.key === "ArrowRight") shiftMobileCategory(1);
     });
@@ -2239,6 +2779,11 @@ export class FlipMenu {
 
     function showLightbox(url) {
       if (!url) return;
+      if (!lightboxOpen) {
+        window.history.pushState({ flipmenuLightbox: true }, '', window.location.href);
+        lightboxHistoryActive = true;
+      }
+      lightboxOpen = true;
       lightboxImg.src = url;
       lightbox.style.display = 'flex';
       setTimeout(() => {
@@ -2246,7 +2791,16 @@ export class FlipMenu {
       }, 10);
     }
 
-    function closeLightbox() {
+    function closeLightbox({ fromPopState = false } = {}) {
+      if (!lightboxOpen) return;
+      if (!fromPopState && lightboxHistoryActive) {
+        lightboxHistoryActive = false;
+        window.history.back();
+        return;
+      }
+
+      lightboxOpen = false;
+      lightboxHistoryActive = false;
       lightbox.classList.remove('visible');
       setTimeout(() => {
         lightbox.style.display = 'none';
@@ -2254,35 +2808,48 @@ export class FlipMenu {
       }, 400);
     }
 
-    lightboxClose.addEventListener('click', closeLightbox);
+    lightboxClose.addEventListener('click', () => closeLightbox());
     lightbox.addEventListener('click', (e) => {
       if (e.target === lightbox) {
         closeLightbox();
       }
     });
 
-    canvas.addEventListener("click", () => {
+    window.addEventListener("popstate", (event) => {
+      if (!lightboxOpen) return;
+      event.stopImmediatePropagation();
+      closeLightbox({ fromPopState: true });
+    }, true);
+
+    function updatePointerFromEvent(event) {
+      if (event.clientX == null || event.clientY == null) return;
+      const point = canvasRelativePoint(event.clientX, event.clientY);
+      pointer.x = (point.x / point.width) * 2 - 1;
+      pointer.y = -(point.y / point.height) * 2 + 1;
+    }
+
+    canvas.addEventListener("click", (event) => {
+      updatePointerFromEvent(event);
       if (state.stage === -1 && !isTransitioningBook) {
         raycaster.setFromCamera(pointer, camera);
 
-        const photoIntersects = raycaster.intersectObjects(photoMeshes, false);
+        const visiblePhotoMeshes = currentLeafIndex === 0
+          ? []
+          : photoMeshes.filter((mesh) => mesh.visible && mesh.parent?.visible !== false && mesh.parent?.parent?.visible !== false);
+        const photoIntersects = raycaster.intersectObjects(visiblePhotoMeshes, false);
         if (photoIntersects.length > 0) {
           const clickedPhoto = photoIntersects[0].object;
-          const stack = clickedPhoto.parent;
-
-          if (!stack.userData.isScattered) {
-            scatterPhotoStack(stack);
-            tiltCameraForPhotos();
-          } else {
-            showLightbox(clickedPhoto.userData.url);
-          }
+          showLightbox(clickedPhoto.userData.url);
           return;
         }
 
-        const intersects = raycaster.intersectObjects(leaves, true);
-        if (intersects.length > 0) {
-          const clickX = intersects[0].point.x;
-          const middleIndex = Math.floor(FAKE_THICKNESS / 2);
+        updateBookHitArea();
+        const bookTargets = bookHitArea ? [...leaves, bookHitArea] : leaves;
+        const intersects = raycaster.intersectObjects(bookTargets, true);
+        const clickedBook = intersects.length > 0 || eventInsideBookScreenBounds(event);
+        if (clickedBook) {
+          const point = canvasRelativePoint(event.clientX, event.clientY);
+          const clickX = intersects[0]?.point?.x ?? (point.x < point.width / 2 ? -1 : 1);
 
           if (activePhotoStack) {
             resetPhotoStack(activePhotoStack);
@@ -2291,29 +2858,9 @@ export class FlipMenu {
           }
 
           if (currentLeafIndex === 0) {
-            // Open book animation
-            for (let i = 0; i < middleIndex; i++) {
-              leaves[i].userData.targetAngle = Math.PI - 0.05; // Slightly arched open
-            }
-            currentLeafIndex = middleIndex;
-            setTimeout(() => {
-              document.getElementById('btn-prev').style.opacity = '1';
-              document.getElementById('btn-next').style.opacity = '1';
-              document.getElementById('btn-prev').style.pointerEvents = 'auto';
-              document.getElementById('btn-next').style.pointerEvents = 'auto';
-            }, 500);
-          } else if (clickX < 0 && Math.abs(currentLeafIndex - middleIndex) <= 2) {
-            // Clicked on a left page (likely the menu)
+            openBookToMiddle();
+          } else {
             selectBookMode('menu', clickX);
-          } else if (clickX > 0 && Math.abs(currentLeafIndex - middleIndex) <= 2) {
-            // Empty right page click (if didn't hit photos, but hit page)
-            if (intersects[0].object.parent.userData.photoStack) {
-              const stack = intersects[0].object.parent.userData.photoStack;
-              if (!stack.userData.isScattered) {
-                scatterPhotoStack(stack);
-                tiltCameraForPhotos();
-              }
-            }
           }
         }
         return;

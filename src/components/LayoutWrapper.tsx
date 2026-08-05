@@ -10,7 +10,7 @@ import FloatingWidgets from '@/components/FloatingWidgets/FloatingWidgets';
 
 const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
-  const isBookingPage = pathname === '/booking' || pathname.includes('/new-user/');
+  const isBookingPage = pathname === '/booking' || pathname.includes('/new-user/') || pathname.startsWith('/admin');
 
   return (
     <>

@@ -5,7 +5,7 @@
 
 import { NextResponse } from 'next/server';
 import { getSupabaseAdmin } from '@/lib/supabase-server';
-import { Service } from '@/components/Menu/types';
+import type { Service } from '@/components/Menu/types';
 
 export const dynamic = 'force-dynamic';
 
@@ -18,6 +18,11 @@ const getMenuTypeFromId = (id: string): 'standard' | 'vip' => {
 
 export const GET = async () => {
   try {
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+      console.warn('[API /services] Missing Supabase env vars, returning empty service list for fallback UI.');
+      return NextResponse.json([]);
+    }
+
     const supabase = getSupabaseAdmin();
     const { data, error } = await supabase
       .from('Services')
@@ -63,6 +68,8 @@ export const GET = async () => {
       ACTIVE: item.isActive,
       BEST_SELLER: item.isBestSeller,
       BEST_CHOICE: item.isBestChoice,
+      media_url: item.media_url,
+      media_type: item.media_type,
     }));
 
     // Return Service[] directly (same as wrb-noi-bo-dev)

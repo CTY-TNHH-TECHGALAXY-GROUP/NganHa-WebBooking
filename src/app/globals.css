@@ -2,6 +2,34 @@
 @import "tailwindcss";
 @source "../";
 
+/* ADMIN V3 THEME */
+@theme {
+  --color-admin-bg: #faf6ef;
+  --color-admin-side: #f3ead9;
+  --color-admin-panel: #ffffff;
+  --color-admin-panel-2: #f6efe2;
+  --color-admin-line: rgba(60, 48, 32, 0.09);
+  --color-admin-line-strong: rgba(60, 48, 32, 0.16);
+  --color-admin-text: #2c2419;
+  --color-admin-text-dim: #6f6455;
+  --color-admin-text-faint: #a19684;
+  --color-admin-gold: #b8813a;
+  --color-admin-gold-dim: rgba(184, 129, 58, 0.13);
+  --color-admin-purple: #7a58c2;
+  --color-admin-purple-a: #ece4fa;
+  --color-admin-purple-b: #dccdf2;
+  --color-admin-green: #2f9563;
+  --color-admin-green-a: #e3f3e9;
+  --color-admin-green-b: #cdead9;
+  --color-admin-blue: #3d6fc0;
+  --color-admin-blue-a: #e5eefa;
+  --color-admin-blue-b: #cfe0f5;
+  --color-admin-copper: #b46a2e;
+  --color-admin-copper-a: #fbebd9;
+  --color-admin-copper-b: #f4d9b8;
+}
+
+
 /* --- 0. ENVIRONMENT VARIABLES CONFIGURATION (NEW - IMPORTANT FOR MOBILE) --- */
 :root {
   /* Automatically get notch height, fallback to 20px if on Desktop where env() = 0px */
@@ -22,7 +50,8 @@ body,
   color: white;
 
   /* Mobile optimizations from HTML */
-  overscroll-behavior: none;
+  overscroll-behavior-x: none;
+  overscroll-behavior-y: auto;
   -webkit-text-size-adjust: 100%;
 }
 
@@ -40,7 +69,7 @@ body,
 }
 
 /* ═══════════════════════════════════════════════ */
-/*  Ngân Hà Spa — Component CSS Imports           */
+/*  ORIA SPA — Component CSS Imports           */
 /*  Mỗi file tương ứng 1 component/section        */
 /*  File gốc: src/styles/*.css                     */
 /* ═══════════════════════════════════════════════ */

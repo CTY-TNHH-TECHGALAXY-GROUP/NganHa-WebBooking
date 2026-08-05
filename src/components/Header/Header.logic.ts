@@ -2,6 +2,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { useTranslation } from '@/components/TranslationProvider';
 
 // Cấu hình danh sách ngôn ngữ dùng chung
 export const LANGUAGES = [
@@ -15,7 +16,11 @@ export const LANGUAGES = [
 export const useHeaderLogic = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [currentLang, setCurrentLang] = useState(LANGUAGES[0]);
+  const { currentLang: currentLangCode, setCurrentLang: setGlobalLang, t } = useTranslation();
+  
+  // Find full language object from LANGUAGES array based on currentLangCode
+  const currentLang = LANGUAGES.find(l => l.code === currentLangCode) || LANGUAGES[0];
+  
   const [isLangDropdownOpen, setIsLangDropdownOpen] = useState(false);
   const langDropdownRef = useRef<HTMLDivElement>(null);
 
@@ -53,7 +58,7 @@ export const useHeaderLogic = () => {
   const closeLangDropdown = () => setIsLangDropdownOpen(false);
   
   const handleSelectLanguage = (lang: typeof LANGUAGES[0]) => {
-    setCurrentLang(lang);
+    setGlobalLang(lang.code);
     closeLangDropdown();
   };
 
@@ -66,6 +71,7 @@ export const useHeaderLogic = () => {
     toggleLangDropdown,
     closeLangDropdown,
     handleSelectLanguage,
-    langDropdownRef
+    langDropdownRef,
+    t
   };
 };

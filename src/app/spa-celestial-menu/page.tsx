@@ -1,27 +1,7 @@
-'use client';
+import { redirect } from 'next/navigation';
 
-import dynamic from 'next/dynamic';
-
-const SpaCelestialMenuClient = dynamic(() => import('./SpaCelestialMenuClient'), {
-  ssr: false,
-  loading: () => (
-    <main
-      style={{
-        minHeight: '100vh',
-        display: 'grid',
-        placeItems: 'center',
-        background: '#020712',
-        color: '#f5dea2',
-        fontFamily: 'serif',
-        letterSpacing: '0.08em',
-        textTransform: 'uppercase',
-      }}
-    >
-      Loading celestial menu
-    </main>
-  ),
-});
+const SERVICE_MENU_URL = '/#services';
 
 export default function SpaCelestialMenuPage() {
-  return <SpaCelestialMenuClient />;
+  redirect(SERVICE_MENU_URL);
 }

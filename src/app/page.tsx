@@ -1,17 +1,18 @@
 'use client';
 
 import Hero from '@/components/Hero/Hero';
-import AboutStory from '@/components/AboutStory/AboutStory';
+import BestSeller from '@/components/BestSeller/BestSeller';
 import ServiceBook from '@/components/ServiceBook/ServiceBook';
 
 const HomePage = () => {
+  // Bỏ toàn bộ logic khóa cuộn để trình duyệt tự do xử lý lăn chuột
+
   return (
     <main>
       {/* Hero Section - Fullscreen with video/image background */}
       <Hero />
 
-      {/* Our Story - About Section */}
-      <AboutStory />
+      <BestSeller />
 
       {/* Service Menu - Book flip */}
       <section id="services" className="section-services">
@@ -32,7 +33,7 @@ const HomePage = () => {
             <p className="section-services__hint-text">
               Bạn có thể nhấp vào nút dưới đây để tiếp tục.
             </p>
-            <a href="/en/new-user/select-menu" className="section-services__cta">
+            <a href="/vi/new-user/standard/checkout" className="section-services__cta">
               Đi tới bước đặt lịch
             </a>
           </div>

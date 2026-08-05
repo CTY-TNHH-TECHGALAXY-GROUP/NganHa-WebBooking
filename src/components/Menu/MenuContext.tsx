@@ -12,6 +12,7 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { Service, ServiceOptions, CartItem, Category } from '@/components/Menu/types';
 import { getServices } from '@/components/Menu/getServices';
+import { readBookingCart, serviceToCartItem, writeBookingCart } from '@/lib/bookingCartStorage';
 
 interface MenuContextType {
     services: Service[];
@@ -41,6 +42,7 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
 
     // Cart State
     const [cart, setCart] = useState<CartItem[]>([]);
+    const [cartHydrated, setCartHydrated] = useState(false);
 
     const fetchData = async () => {
         try {
@@ -60,21 +62,25 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
         fetchData();
     }, []);
 
+    useEffect(() => {
+        setCart(readBookingCart());
+        setCartHydrated(true);
+    }, []);
+
+    useEffect(() => {
+        if (!cartHydrated) return;
+        writeBookingCart(cart);
+    }, [cart, cartHydrated]);
+
     // --- CART FUNCTIONS ---
 
     // 1. Thêm món (Tạo cartId mới hoặc cộng dồn nếu option giống hệt - tạm thời cứ tạo mới để dễ custom)
     const addToCart = (service: Service, qty: number, options?: ServiceOptions) => {
-        const cartId = `${service.id}-${Date.now()}-${Math.random()}`;
+        const newItem = serviceToCartItem(service, qty, options);
         setCart(prev => {
-            const newItem: CartItem = {
-                ...service,
-                cartId,
-                qty,
-                options: options || {}
-            };
             return [...prev, newItem];
         });
-        return cartId;
+        return newItem.cartId;
     };
 
     // Cập nhật số lượng
