@@ -73,6 +73,11 @@ export default function BrandHistoryPage() {
       title2: { vi: 'Ngân Hà', en: 'History' },
       body: { vi: 'Từ một không gian nhỏ ban đầu đến một điểm đến spa chỉn chu hơn, mỗi cột mốc đều giữ cùng một lời hứa: chăm sóc tốt hơn, đón tiếp ấm hơn và trải nghiệm bình yên hơn.', en: 'From a humble beginning to a refined spa destination, every milestone carries the same promise: better care, warmer hospitality, and a more peaceful experience.' }
     },
+    finale: {
+      eyebrow: { vi: 'Câu chuyện còn tiếp tục', en: 'The story continues' },
+      title: { vi: 'Ít cảm giác giao diện hơn. Nhiều cảm xúc hơn.', en: 'Less interface. More feeling.' },
+      body: { vi: 'Lịch sử trở thành một hành trình điện ảnh nhẹ nhàng qua thương hiệu, con người và những không gian đã tạo nên Ngân Hà.', en: 'History becomes a quiet cinematic journey through the brand, its people, and its spaces.' }
+    },
     chapters: []
   });
   const [loading, setLoading] = useState(true);
@@ -425,6 +430,33 @@ export default function BrandHistoryPage() {
       >
         <Plus size={20} /> Thêm Cột Mốc Năm Mới
       </button>
+
+      {/* FINALE CONFIGURATION */}
+      <div className="bg-admin-panel border border-admin-line rounded-2xl p-6 shadow-sm mt-12 mb-8">
+        <h2 className="text-xl font-bold text-admin-text mb-6 flex items-center gap-2">
+          <Edit3 className="text-admin-gold" />
+          Phần Kết (Finale)
+        </h2>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <MultiLangInput
+            label="Tiêu đề phụ (Eyebrow)"
+            value={config.finale?.eyebrow}
+            onChange={val => setConfig({ ...config, finale: { ...config.finale, eyebrow: val } })}
+          />
+          <MultiLangInput
+            label="Tiêu đề chính (Title)"
+            value={config.finale?.title}
+            onChange={val => setConfig({ ...config, finale: { ...config.finale, title: val } })}
+          />
+        </div>
+        <MultiLangInput
+          label="Mô tả kết (Body)"
+          value={config.finale?.body}
+          multiline
+          onChange={val => setConfig({ ...config, finale: { ...config.finale, body: val } })}
+        />
+      </div>
     </div>
   );
 }

@@ -22,6 +22,7 @@ const NAV_ITEMS = [
   { label: 'Dịch vụ (Media & Giá)', href: '/admin/services', icon: Wrench },
   { label: 'Kho Media', href: '/admin/media-library', icon: ImagePlus },
   { label: 'Nội dung Đa Ngôn Ngữ', href: '/admin/content', icon: Globe },
+  { label: 'Cấu hình Giao diện', href: '/admin/homepage-styling', icon: LayoutDashboard },
   { label: 'Cấu hình SEO', href: '/admin/seo', icon: Search },
   { label: 'Cấu hình hệ thống', href: '/admin/system-settings', icon: Settings },
 ];
