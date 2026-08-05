@@ -1,5 +1,9 @@
     import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
 
+    function random() {
+      return Math.random();
+    }
+
     // GLOBAL ERROR CATCHER FOR DEBUGGING
     window.addEventListener('error', function(e) {
       const errorDiv = document.createElement('div');
@@ -86,6 +90,15 @@
       highlight: new THREE.Color("#f1dfb0"),
       bright: new THREE.Color("#fff0bd"),
     };
+
+    function configureCanvasTexture(texture) {
+      texture.flipY = false;
+      texture.premultiplyAlpha = false;
+      texture.repeat.y = -1;
+      texture.offset.y = 1;
+      texture.colorSpace = THREE.SRGBColorSpace;
+      return texture;
+    }
 
     const categoryIcons = {
       body: "data:image/png;base64,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",
@@ -360,6 +373,50 @@
     let pageTextures = [];
     let isTransitioningBook = false;
     let camCurrentLookAt = new THREE.Vector3(0, 0, 0);
+    let softMenuBackActive = false;
+    let softBookCloseCameraTarget = null;
+    let softBookCloseLookTarget = null;
+    let bookNavTimer = 0;
+    let bookBackTimer = 0;
+    const BOOK_NAV_STATE = Object.freeze({
+      CLOSED_BOOK: "closedBook",
+      OPENING_BOOK: "openingBook",
+      OPEN_BOOK: "openBook",
+      ENTERING_GALAXY: "enteringGalaxy",
+      GALAXY: "galaxy",
+      RETURNING_TO_BOOK: "returningToBook",
+      CLOSING_BOOK: "closingBook",
+    });
+    let bookNavState = BOOK_NAV_STATE.CLOSED_BOOK;
+
+    function setBookNavState(nextState) {
+      bookNavState = nextState;
+      document.body.dataset.bookNavState = nextState;
+    }
+
+    function clearBookUiTimers() {
+      window.clearTimeout(bookNavTimer);
+      window.clearTimeout(bookBackTimer);
+      bookNavTimer = 0;
+      bookBackTimer = 0;
+    }
+
+    function removeBookExitArtifacts({ resetOpacity = true } = {}) {
+      const app = document.getElementById("app");
+      if (!app) return;
+      app.classList.remove(
+        "fly-away",
+        "book-exit",
+        "zoom-out",
+        "scene-exit",
+        "is-leaving",
+        "is-exiting"
+      );
+      app.style.transform = "translate3d(0, 0, 0) scale(1)";
+      app.style.visibility = "visible";
+      app.style.filter = "";
+      if (resetOpacity) app.style.opacity = "1";
+    }
 
     function drawLotus(ctx, x, y, scale, color) {
       ctx.save();
@@ -456,7 +513,7 @@
             ctx.drawImage(img, canvas.width / 2 - size / 2, 180, size, size);
             if (canvas.textureRef) canvas.textureRef.needsUpdate = true; // Báo sách lật cập nhật lại mực in
           };
-          img.src = 'standalone-celestial-menu (2)/public/images/about-spa.png';
+          img.src = '/flipmenu/public/images/about-spa.png';
 
         } else if (pageIndex === 4) {
           ctx.font = 'italic 70px "Cormorant Garamond", serif';
@@ -476,7 +533,7 @@
             ctx.drawImage(img, canvas.width / 2 - size / 2, 220, size, size);
             if (canvas.textureRef) canvas.textureRef.needsUpdate = true; // Báo sách lật cập nhật lại mực in
           };
-          img.src = 'standalone-celestial-menu (2)/public/images/services/hotstone.png';
+          img.src = '/flipmenu/public/images/services/hotstone.png';
         }
       }
 
@@ -490,9 +547,8 @@
 
       // Images removed to keep the canvas styling
 
-      const tex = new THREE.CanvasTexture(canvas);
+      const tex = configureCanvasTexture(new THREE.CanvasTexture(canvas));
       canvas.textureRef = tex;
-      tex.colorSpace = THREE.SRGBColorSpace;
       tex.anisotropy = 16;
       return tex;
     }
@@ -553,8 +609,14 @@
       const REAL_LEAVES_MAX = middleIndex + 2;
 
       if (direction === 1 && currentLeafIndex < REAL_LEAVES_MAX) {
+        if (bookNavState === BOOK_NAV_STATE.CLOSED_BOOK) {
+          setBookNavState(BOOK_NAV_STATE.OPENING_BOOK);
+        }
         leaves[currentLeafIndex].userData.targetAngle = Math.PI;
         currentLeafIndex++;
+        setBookNavState(BOOK_NAV_STATE.OPEN_BOOK);
+        setBookNavVisible(true);
+        setBookBackVisible(true);
       } else if (direction === -1) {
         if (currentLeafIndex === middleIndex) {
           // Close book animation
@@ -562,13 +624,14 @@
             leaves[i].userData.targetAngle = 0;
           }
           currentLeafIndex = 0;
-          document.getElementById('btn-prev').style.opacity = '0';
-          document.getElementById('btn-next').style.opacity = '0';
-          document.getElementById('btn-prev').style.pointerEvents = 'none';
-          document.getElementById('btn-next').style.pointerEvents = 'none';
+          setBookNavState(BOOK_NAV_STATE.CLOSED_BOOK);
+          setBookNavVisible(false);
+          setBookBackVisible(false);
         } else if (currentLeafIndex > middleIndex) {
           currentLeafIndex--;
           leaves[currentLeafIndex].userData.targetAngle = 0;
+          setBookNavState(BOOK_NAV_STATE.OPEN_BOOK);
+          setBookBackVisible(true);
         }
       }
     }
@@ -656,39 +719,232 @@
       }
     }
 
+    function setBookNavVisible(isVisible, delay = 0) {
+      window.clearTimeout(bookNavTimer);
+      bookNavTimer = window.setTimeout(() => {
+        const btnPrev = document.getElementById('btn-prev');
+        const btnNext = document.getElementById('btn-next');
+        [btnPrev, btnNext].forEach((button) => {
+          if (!button) return;
+          button.style.opacity = isVisible ? '1' : '0';
+          button.style.pointerEvents = isVisible ? 'auto' : 'none';
+        });
+        bookNavTimer = 0;
+      }, delay);
+    }
+
+    function setBookBackVisible(isVisible, delay = 0) {
+      window.clearTimeout(bookBackTimer);
+      bookBackTimer = window.setTimeout(() => {
+        const button = document.getElementById('btn-back-book');
+        if (!button) return;
+        button.style.display = isVisible ? 'block' : 'none';
+        button.style.opacity = isVisible ? '1' : '0';
+        button.style.pointerEvents = isVisible ? 'auto' : 'none';
+        button.setAttribute('aria-hidden', isVisible ? 'false' : 'true');
+        button.tabIndex = isVisible ? 0 : -1;
+        bookBackTimer = 0;
+      }, delay);
+    }
+
+    function resetOuterBookScene() {
+      removeBookExitArtifacts();
+      state.isFlyingThrough = false;
+      softBookCloseCameraTarget = null;
+      softBookCloseLookTarget = null;
+      if (!bookGroup) return;
+      bookGroup.visible = true;
+      bookTargetPos.set(0, -0.5, 0);
+      bookTargetRot.set(BOOK_TILT, 0, 0);
+      bookGroup.position.copy(bookTargetPos);
+      bookGroup.rotation.set(BOOK_TILT, 0, 0);
+    }
+
+    function cancelGalaxyLifecycle() {
+      window.clearTimeout(state.revealTimer);
+      state.serviceRevealAt = 0;
+      state.cartOpen = false;
+      state.isFlyingThrough = false;
+      document.body.style.cursor = "default";
+    }
+
+    function openBookToMiddle() {
+      if (bookNavState === BOOK_NAV_STATE.OPENING_BOOK || bookNavState === BOOK_NAV_STATE.OPEN_BOOK) return;
+      setBookNavState(BOOK_NAV_STATE.OPENING_BOOK);
+      removeBookExitArtifacts();
+      const middleIndex = Math.floor(FAKE_THICKNESS / 2);
+      for (let i = 0; i < middleIndex; i++) {
+        leaves[i].userData.targetAngle = Math.PI - 0.05;
+      }
+      currentLeafIndex = middleIndex;
+      setBookBackVisible(true, 420);
+      setTimeout(() => {
+        if (bookNavState !== BOOK_NAV_STATE.OPENING_BOOK) return;
+        setBookNavVisible(true);
+        setBookNavState(BOOK_NAV_STATE.OPEN_BOOK);
+      }, 500);
+    }
+
+    function bookAppearsOpen() {
+      const middleIndex = Math.floor(FAKE_THICKNESS / 2);
+      return bookNavState === BOOK_NAV_STATE.OPEN_BOOK
+        || currentLeafIndex >= middleIndex
+        || leaves.some((leaf) => (leaf.userData.angle || leaf.userData.targetAngle || 0) > 0.5);
+    }
+
+    function softOpenBookView() {
+      const rk = typeof responsiveKey === 'function' ? responsiveKey() : 'desktop';
+      return {
+        cam: new THREE.Vector3(0, rk === 'mobile' ? 4.9 : 4.35, rk === 'mobile' ? 21.5 : 11.4),
+        look: new THREE.Vector3(0, -0.12, 0),
+      };
+    }
+
+    function softClosedCoverView() {
+      const rk = typeof responsiveKey === 'function' ? responsiveKey() : 'desktop';
+      const viewportHeight = window.innerHeight || 720;
+      const isCompactHeight = viewportHeight < 760;
+      const desiredZ = rk === 'mobile'
+        ? 25.5
+        : rk === 'tabletPortrait'
+          ? 17.2
+          : isCompactHeight
+            ? 16.4
+            : 15.8;
+      const extraZ = rk === 'mobile' ? 10 : rk === 'tabletPortrait' ? 5 : 0;
+      return {
+        actualCam: new THREE.Vector3(3, rk === 'mobile' ? 5.05 : 4.82, desiredZ),
+        actualLook: new THREE.Vector3(3, -0.04, 0),
+        baseCam: new THREE.Vector3(0, rk === 'mobile' ? 5.05 : 4.82, desiredZ - extraZ),
+        baseLook: new THREE.Vector3(0, -0.04, 0),
+      };
+    }
+
+    function prepareSoftGalaxyReturn() {
+      cancelGalaxyLifecycle();
+      clearBookUiTimers();
+      resetOuterBookScene();
+      setBookNavState(BOOK_NAV_STATE.RETURNING_TO_BOOK);
+      const middleIndex = Math.floor(FAKE_THICKNESS / 2);
+      currentLeafIndex = Math.max(currentLeafIndex, middleIndex);
+      leaves.forEach((leaf, index) => {
+        const targetAngle = index < currentLeafIndex ? Math.PI - 0.05 : 0;
+        leaf.userData.targetAngle = targetAngle;
+        leaf.userData.angle = targetAngle;
+        leaf.rotation.z = targetAngle;
+        leaf.position.y = targetAngle > Math.PI / 2 ? leaf.userData.baseY : -leaf.userData.baseY;
+      });
+      state.stage = -1;
+      pointer.set(0, 0);
+      pointerParallax.set(0, 0);
+      const view = softOpenBookView();
+      camTargetPos.copy(view.cam);
+      camera.position.copy(view.cam);
+      camTargetLookAt.copy(view.look);
+      camCurrentLookAt.copy(view.look);
+      camera.lookAt(camCurrentLookAt);
+      isTransitioningBook = true;
+      softMenuBackActive = true;
+      setBookNavVisible(false);
+      setBookBackVisible(false);
+    }
+
+    function finishSoftGalaxyReturn() {
+      if (bookNavState === BOOK_NAV_STATE.CLOSING_BOOK || bookNavState === BOOK_NAV_STATE.CLOSED_BOOK) return;
+      softMenuBackActive = false;
+      softBookCloseCameraTarget = null;
+      softBookCloseLookTarget = null;
+      isTransitioningBook = false;
+      state.isFlyingThrough = false;
+      removeBookExitArtifacts();
+      setBookNavState(BOOK_NAV_STATE.OPEN_BOOK);
+      document.body.style.pointerEvents = "auto";
+      setBookNavVisible(currentLeafIndex !== 0, 80);
+      setBookBackVisible(currentLeafIndex !== 0, 80);
+    }
+
+    function closeBookToCover() {
+      return new Promise((resolve) => {
+        if (bookNavState === BOOK_NAV_STATE.CLOSED_BOOK) {
+          resolve();
+          return;
+        }
+        if (isTransitioningBook) {
+          window.setTimeout(resolve, prefersReducedMotion ? 40 : 220);
+          return;
+        }
+
+        cancelGalaxyLifecycle();
+        clearBookUiTimers();
+        resetOuterBookScene();
+        setBookNavState(BOOK_NAV_STATE.CLOSING_BOOK);
+        const coverView = softClosedCoverView();
+        softBookCloseCameraTarget = coverView.actualCam;
+        softBookCloseLookTarget = coverView.actualLook;
+        isTransitioningBook = true;
+        softMenuBackActive = true;
+        state.stage = -1;
+        document.body.style.pointerEvents = "none";
+        setBookNavVisible(false);
+        setBookBackVisible(false);
+
+        if (activePhotoStack) {
+          resetPhotoStack(activePhotoStack);
+          activePhotoStack = null;
+        }
+        isPhotoFocusMode = false;
+
+        leaves.forEach((leaf) => {
+          leaf.userData.targetAngle = 0;
+        });
+        currentLeafIndex = 0;
+        bookGroup.visible = true;
+        bookTargetPos.set(0, -0.5, 0);
+        bookTargetRot.set(BOOK_TILT, 0, 0);
+        camTargetPos.copy(coverView.baseCam);
+        camTargetLookAt.copy(coverView.baseLook);
+        pointer.set(0, 0);
+        pointerParallax.set(0, 0);
+
+        window.setTimeout(() => {
+          softMenuBackActive = false;
+          softBookCloseCameraTarget = null;
+          softBookCloseLookTarget = null;
+          isTransitioningBook = false;
+          removeBookExitArtifacts();
+          setBookNavState(BOOK_NAV_STATE.CLOSED_BOOK);
+          document.body.style.pointerEvents = "auto";
+          resolve();
+        }, prefersReducedMotion ? 40 : 1580);
+      });
+    }
+
     function selectBookMode(mode, clickX = 3) {
       if (state.stage !== -1) return;
+      setBookNavState(BOOK_NAV_STATE.ENTERING_GALAXY);
       isTransitioningBook = true;
-      document.getElementById('btn-prev').style.pointerEvents = 'none';
-      document.getElementById('btn-next').style.pointerEvents = 'none';
-      document.getElementById('btn-prev').style.opacity = '0';
-      document.getElementById('btn-next').style.opacity = '0';
+      setBookNavVisible(false);
 
       const targetX = clickX > 0 ? 3 : -3;
-      // Fly deep through the page
-      camTargetPos.set(targetX, -0.5, -4);
-      camTargetLookAt.set(targetX, -0.5, -15);
+      camTargetPos.set(targetX, 0.65, 5.8);
+      camTargetLookAt.set(targetX * 0.36, -0.1, 0);
 
       setTimeout(() => {
         bookGroup.visible = false;
 
-        // Smoothly transition to category overview
         camTargetPos.set(0, 5, 20);
         camTargetLookAt.set(0, 0, 0);
 
-        // Start fading in categories after the book is hidden
         state.stage = "categories";
+        setBookNavState(BOOK_NAV_STATE.GALAXY);
         updateTargets();
 
         isTransitioningBook = false;
         document.querySelector('.hud').style.display = 'block';
-        document.getElementById('btn-back-book').style.display = 'block';
-        setTimeout(() => {
-          document.getElementById('btn-back-book').style.opacity = '1';
-        }, 50);
+        setBookBackVisible(true, 50);
 
         updateHover();
-      }, 1000);
+      }, prefersReducedMotion ? 80 : 760);
     }
 
     const state = {
@@ -748,6 +1004,7 @@
     const raycaster = new THREE.Raycaster();
     const pointer = new THREE.Vector2(99, 99);
     const pointerParallax = new THREE.Vector2();
+    const lockedOverviewParallax = new THREE.Vector2(0, 0);
     const medallions = new Map();
     const clickable = [];
     const clock = new THREE.Clock();
@@ -760,6 +1017,33 @@
     };
     const scratchTarget = new THREE.Vector3();
     const hiddenTarget = new THREE.Vector3(0, -8, -6);
+    const overviewTargetCache = new Map();
+    const ellipseLayoutCache = new Map();
+    const connectionTrails = new THREE.Group();
+    connectionTrails.visible = false;
+    connectionTrails.renderOrder = 0;
+    root.add(connectionTrails);
+    const milkyWayStreams = [];
+    const orbitalSystem = {
+      group: new THREE.Group(),
+      curve: null,
+      params: null,
+      baseLine: null,
+      trails: [],
+      particles: null,
+    };
+    orbitalSystem.group.visible = false;
+    orbitalSystem.group.renderOrder = -1;
+    root.add(orbitalSystem.group);
+    const connectionTrailSpecs = [
+      { from: "body-massage", to: "ear-care", arc: 0.46, depth: -0.22, opacity: 0.2 },
+      { from: "ear-care", to: "hair-wash", arc: 0.28, depth: -0.28, opacity: 0.18 },
+      { from: "ear-care", to: "facial-care", arc: -0.34, depth: -0.12, opacity: 0.2 },
+      { from: "body-massage", to: "foot-care", arc: -0.42, depth: -0.1, opacity: 0.18 },
+      { from: "foot-care", to: "facial-care", arc: 0.2, depth: -0.16, opacity: 0.22 },
+      { from: "facial-care", to: "relaxation-package", arc: -0.2, depth: -0.18, opacity: 0.18 },
+      { from: "body-massage", to: "relaxation-package", arc: 0.18, depth: -0.12, opacity: 0.15 },
+    ];
 
     const ambient = new THREE.AmbientLight("#b7a37d", 0.5);
     scene.add(ambient);
@@ -816,8 +1100,7 @@
       vignette.addColorStop(1, "rgba(0,0,0,0.34)");
       ctx.fillStyle = vignette;
       ctx.fillRect(0, 0, 512, 512);
-      const texture = new THREE.CanvasTexture(c);
-      texture.colorSpace = THREE.SRGBColorSpace;
+      const texture = configureCanvasTexture(new THREE.CanvasTexture(c));
       texture.wrapS = THREE.RepeatWrapping;
       texture.wrapT = THREE.RepeatWrapping;
       texture.anisotropy = 4;
@@ -875,8 +1158,7 @@
       ctx.fillStyle = "rgba(214,192,146,.58)";
       ctx.textAlign = "center";
       ctx.fillText(label.slice(0, 10), 128, 226);
-      const texture = new THREE.CanvasTexture(c);
-      texture.colorSpace = THREE.SRGBColorSpace;
+      const texture = configureCanvasTexture(new THREE.CanvasTexture(c));
       return texture;
     }
 
@@ -988,8 +1270,7 @@
         ctx.font = `400 ${Math.round(fontSize * 0.46)}px Abramo, "EB Garamond", Georgia, serif`;
         ctx.fillText(options.count, c.width / 2, start + arr.length * lineHeight + 24);
       }
-      const texture = new THREE.CanvasTexture(c);
-      texture.colorSpace = THREE.SRGBColorSpace;
+      const texture = configureCanvasTexture(new THREE.CanvasTexture(c));
       return texture;
     }
 
@@ -1405,8 +1686,51 @@
       return Math.min(1, Math.max(0, (now - state.focusStartedAt) / state.focusDuration));
     }
 
+    function safeWorldBounds(key) {
+      const bounds = {
+        largeDesktop: { minX: -4.2, maxX: 4.2, minY: -2.95, maxY: 2.75 },
+        desktop: { minX: -3.95, maxX: 3.95, minY: -2.72, maxY: 2.54 },
+        laptop: { minX: -3.35, maxX: 3.35, minY: -2.38, maxY: 2.24 },
+        tabletLandscape: { minX: -2.62, maxX: 2.62, minY: -1.9, maxY: 1.82 },
+        tabletPortrait: { minX: -2.15, maxX: 2.15, minY: -1.78, maxY: 1.72 },
+        mobile: { minX: -2.32, maxX: 2.32, minY: -1.72, maxY: 1.72 },
+      };
+      return bounds[key] || bounds.desktop;
+    }
+
+<<<<<<< HEAD
+    function clampLayoutToSafeZone(layout, key) {
+      const bounds = safeWorldBounds(key);
+      return {
+        ...layout,
+        x: THREE.MathUtils.clamp(layout.x, bounds.minX, bounds.maxX),
+        y: THREE.MathUtils.clamp(layout.y, bounds.minY, bounds.maxY),
+      };
+    }
+
+    function addPlanetBreathingRoom(layout, key) {
+      const spacing = {
+        largeDesktop: { x: 1.06, y: 1.04 },
+        desktop: { x: 1.05, y: 1.035 },
+        laptop: { x: 1.04, y: 1.03 },
+        tabletLandscape: { x: 1.03, y: 1.025 },
+        tabletPortrait: { x: 1.04, y: 1.04 },
+        mobile: { x: 1, y: 1 },
+      }[key] || { x: 1.04, y: 1.03 };
+      return {
+        ...layout,
+        x: layout.x * spacing.x,
+        y: layout.y * spacing.y,
+      };
+    }
+
+    function rawLayoutFor(category, key) {
+      const base = category.position[key] || category.position.desktop || category.position.largeDesktop;
+      return addPlanetBreathingRoom(base, key);
+    }
+
     function layoutFor(category, key) {
-      return category.position[key] || category.position.desktop || category.position.largeDesktop;
+      return clampLayoutToSafeZone(rawLayoutFor(category, key), key);
     }
 
     function worldRadiusFor(category, layout) {
@@ -1431,15 +1755,185 @@
       return 4.3;
     }
 
-    function calculateCategoryUniverseBounds(key = responsiveKey()) {
-      if (key === "mobile") {
-        const active = categories[state.mobileIndex] || categories[0];
-        const layout = layoutFor(active, key);
-        const radius = active.size * layout.scale * 0.72;
-        return { minX: -radius * 1.95, maxX: radius * 1.95, minY: -radius * 1.18, maxY: radius * 1.36 };
-      }
+    function overviewCacheKey(key) {
+      return `${key}:${Math.round(window.innerWidth)}x${Math.round(window.innerHeight)}`;
+    }
 
+    function categoryLabelWorldSize(category) {
+      return {
+        width: category.size * Math.min(1.92, 1.02 + category.name.length * 0.052),
+        height: category.size * 0.76,
+        offsetY: -(category.size / 2) * 1.15,
+      };
+    }
+
+    const planetLayoutConfigs = {
+      "body-massage": {
+        orbitT: 0.515,
+        positionOffset: [0.46, 0.12, 0.28],
+        scale: 1.2,
+        rotation: [-0.1, 0.34, -0.06],
+        ringTilt: [-0.36, 0.08, -0.22],
+        visualPriority: "primary",
+      },
+      "foot-care": {
+        orbitT: 0.724,
+        positionOffset: [0.16, 0.52, -0.34],
+        scale: 0.98,
+        rotation: [0.06, 0.16, 0.03],
+        ringTilt: [0.18, -0.2, 0.18],
+        visualPriority: "secondary",
+      },
+      "ear-care": {
+        orbitT: 0.232,
+        positionOffset: [0.26, -0.36, 0.86],
+        scale: 0.88,
+        rotation: [0.02, -0.08, 0.01],
+        ringTilt: [-0.2, 0.18, 0.08],
+        visualPriority: "secondary",
+      },
+      "hair-wash": {
+        orbitT: 0.115,
+        positionOffset: [0.34, -0.14, 0.1],
+        scale: 0.74,
+        rotation: [-0.1, -0.32, 0.05],
+        ringTilt: [-0.45, -0.2, 0.26],
+        visualPriority: "supporting",
+      },
+      "facial-care": {
+        orbitT: 0.992,
+        positionOffset: [-1.18, 0.22, -0.5],
+        scale: 0.72,
+        rotation: [0.06, -0.04, -0.02],
+        ringTilt: [0.12, 0.28, -0.16],
+        visualPriority: "supporting",
+      },
+      "relaxation-package": {
+        orbitT: 0.92,
+        positionOffset: [0.04, -0.08, -1.22],
+        scale: 0.62,
+        rotation: [-0.04, -0.12, -0.02],
+        ringTilt: [-0.1, -0.34, 0.2],
+        visualPriority: "supporting",
+      },
+    };
+
+    function ellipseOptionsForKey(key) {
+      if (key === "mobile") {
+        return { centerX: -0.04, centerY: -0.1, radiusX: 1.9, radiusY: 1.2, depthAmplitude: 0.72, depthPhase: 0.74, scaleMultiplier: 0.56 };
+      }
+      if (key === "tabletPortrait") {
+        return { centerX: -0.06, centerY: -0.12, radiusX: 2.24, radiusY: 1.4, depthAmplitude: 0.9, depthPhase: 0.74, scaleMultiplier: 0.66 };
+      }
+      if (key === "tabletLandscape") {
+        return { centerX: -0.06, centerY: -0.18, radiusX: 2.86, radiusY: 1.72, depthAmplitude: 1.14, depthPhase: 0.76, scaleMultiplier: 0.78 };
+      }
+      if (key === "laptop") {
+        return { centerX: -0.08, centerY: -0.2, radiusX: 3.36, radiusY: 1.96, depthAmplitude: 1.34, depthPhase: 0.78, scaleMultiplier: 0.88 };
+      }
+      return { centerX: -0.08, centerY: -0.2, radiusX: 3.56, radiusY: 2.04, depthAmplitude: 1.5, depthPhase: 0.78, scaleMultiplier: key === "largeDesktop" ? 1.08 : 1.0 };
+    }
+
+    function createCinematicEllipseCurve({
+      centerX = 0,
+      centerY = 0,
+      radiusX = 4.3,
+      radiusY = 2.5,
+      depthAmplitude = 1.5,
+      depthPhase = 0.78,
+    } = {}) {
+      const points = [];
+      const count = 168;
+      for (let i = 0; i < count; i++) {
+        const t = (i / count) * Math.PI * 2;
+        const wobble = 1 + Math.sin(t * 3.0 + 0.54) * 0.035 + Math.cos(t * 5.0 - 0.2) * 0.018;
+        const x = centerX + Math.cos(t) * radiusX * wobble;
+        const y = centerY + Math.sin(t) * radiusY * (1 + Math.cos(t * 2.0) * 0.035);
+        const z = -Math.sin(t + depthPhase) * depthAmplitude + Math.sin(t * 2.0 - 0.35) * 0.16;
+        points.push(new THREE.Vector3(x, y, z));
+      }
+      return new THREE.CatmullRomCurve3(points, true, "catmullrom", 0.42);
+    }
+
+    function planetLayoutConfigFor(category, key) {
+      const base = planetLayoutConfigs[category.id] || {
+        orbitT: 0,
+        positionOffset: [0, 0, 0],
+        scale: 0.66,
+        rotation: [0, 0, 0],
+        ringTilt: [0, 0, 0],
+        visualPriority: "supporting",
+      };
+      const compact = key === "mobile" || key === "tabletPortrait";
+      const offsetMultiplier = compact ? (key === "mobile" ? 0.44 : 0.58) : key === "tabletLandscape" ? 0.72 : key === "laptop" ? 0.84 : 1;
+      return {
+        ...base,
+        positionOffset: base.positionOffset.map((value) => value * offsetMultiplier),
+      };
+    }
+
+    function layoutCategoriesOnEllipse(categoryGroups, options = {}) {
+      const groups = categoryGroups.filter(Boolean);
+      if (!groups.length) return new Map();
+      const key = responsiveKey();
+      const curve = createCinematicEllipseCurve(options);
+      const resolved = new Map();
+      groups.forEach((group) => {
+        const category = group.userData.category;
+        const config = planetLayoutConfigFor(category, key);
+        const p = curve.getPointAt(config.orbitT);
+        const [offsetX, offsetY, offsetZ] = config.positionOffset;
+        const scale = config.scale * (options.scaleMultiplier || 1);
+        const target = new THREE.Vector3(p.x + offsetX, p.y + offsetY, p.z + offsetZ);
+        group.userData.layoutConfig = config;
+        group.userData.ellipseTarget = new THREE.Vector3(p.x, p.y, p.z);
+        group.userData.ellipseScale = scale;
+        resolved.set(category.id, { position: target, scale, config });
+      });
+      resolved.ellipseParams = options;
+      resolved.curve = curve;
+      return resolved;
+    }
+
+    function ellipseLayoutForKey(key) {
+      const cacheKey = `${key}:${Math.round(window.innerWidth)}x${Math.round(window.innerHeight)}`;
+      if (ellipseLayoutCache.has(cacheKey)) return ellipseLayoutCache.get(cacheKey);
+      const groups = categories.map((category) => medallions.get(category.id)).filter(Boolean);
+      const resolved = layoutCategoriesOnEllipse(groups, ellipseOptionsForKey(key));
+      ellipseLayoutCache.set(cacheKey, resolved);
+      return resolved;
+    }
+
+    function initialOverviewTargets(key) {
+      const ellipseLayout = ellipseLayoutForKey(key);
+      return categories.map((category) => {
+        const base = layoutFor(category, key);
+        const ellipse = ellipseLayout.get(category.id);
+        const position = ellipse?.position || new THREE.Vector3(base.x * 0.96, base.y * 0.98 - 0.02, base.z);
+        const scale = ellipse?.scale || base.scale * 0.94;
+        return {
+          category,
+          layout: base,
+          position: position.clone(),
+          scale,
+          config: ellipse?.config || planetLayoutConfigFor(category, key),
+        };
+      });
+    }
+
+    function boundsFromOverviewItems(items) {
       const bounds = { minX: Infinity, maxX: -Infinity, minY: Infinity, maxY: -Infinity };
+<<<<<<< HEAD
+      items.forEach((item) => {
+        const r = worldRadiusFor(item.category, { ...item.layout, scale: item.scale });
+        const label = categoryLabelWorldSize(item.category);
+        const labelHalfWidth = (label.width * item.scale) / 2;
+        const labelBottom = item.position.y + label.offsetY * item.scale - (label.height * item.scale) / 2;
+        bounds.minX = Math.min(bounds.minX, item.position.x - Math.max(r, labelHalfWidth));
+        bounds.maxX = Math.max(bounds.maxX, item.position.x + Math.max(r, labelHalfWidth));
+        bounds.minY = Math.min(bounds.minY, labelBottom, item.position.y - r * 0.92);
+        bounds.maxY = Math.max(bounds.maxY, item.position.y + r * 0.92);
+=======
       categories.forEach((category) => {
         const layout = layoutFor(category, key);
         const r = worldRadiusFor(category, layout);
@@ -1447,11 +1941,21 @@
         bounds.maxX = Math.max(bounds.maxX, layout.x + r);
         bounds.minY = Math.min(bounds.minY, layout.y - r * 0.92);
         bounds.maxY = Math.max(bounds.maxY, layout.y + r * 0.92);
+>>>>>>> github-linked/master
       });
       return bounds;
     }
 
-    function fitPerspectiveCameraToBounds(bounds, key = responsiveKey()) {
+    function boundsFromEllipse(params, paddingFactor = 1.25) {
+      return {
+        minX: params.centerX - params.radiusX * paddingFactor,
+        maxX: params.centerX + params.radiusX * paddingFactor,
+        minY: params.centerY - params.radiusY * paddingFactor,
+        maxY: params.centerY + params.radiusY * paddingFactor,
+      };
+    }
+
+    function perspectiveCameraStateForBounds(bounds, key = responsiveKey()) {
       const width = Math.max(0.1, bounds.maxX - bounds.minX);
       const height = Math.max(0.1, bounds.maxY - bounds.minY);
       const centerX = (bounds.minX + bounds.maxX) / 2;
@@ -1461,9 +1965,46 @@
       const padding = safePaddingFactor(key);
       const fitHeightDistance = (height * padding) / (2 * Math.tan(fov / 2));
       const fitWidthDistance = (width * padding) / (2 * Math.tan(fov / 2) * aspect);
-      const distance = Math.max(fitHeightDistance, fitWidthDistance, minOverviewDistance(key));
-      overviewCamera.position.set(centerX, centerY, distance);
-      overviewCamera.look.set(centerX, centerY, 0);
+<<<<<<< HEAD
+      const overviewSizeBoost = key === "mobile" ? 0.96 : 0.92;
+      const distance = Math.max(fitHeightDistance, fitWidthDistance, minOverviewDistance(key)) * overviewSizeBoost;
+      return {
+        position: new THREE.Vector3(centerX, centerY, distance),
+        look: new THREE.Vector3(centerX, centerY, 0),
+      };
+    }
+
+    function resolveOverviewTargets(key) {
+      const cacheKey = overviewCacheKey(key);
+      if (overviewTargetCache.has(cacheKey)) return overviewTargetCache.get(cacheKey);
+      const items = initialOverviewTargets(key);
+      const resolved = new Map(items.map((item) => [item.category.id, item]));
+      overviewTargetCache.set(cacheKey, resolved);
+      return resolved;
+    }
+
+    function calculateCategoryUniverseBounds(key = responsiveKey()) {
+      if (!activeFocusMode()) {
+        const ellipseLayout = ellipseLayoutForKey(key);
+        if (ellipseLayout.ellipseParams) {
+          const padding = key === "mobile" ? 1.22 : key === "tabletPortrait" ? 1.16 : key === "tabletLandscape" ? 1.16 : key === "laptop" ? 1.18 : 1.2;
+          const ellipseBounds = boundsFromEllipse(ellipseLayout.ellipseParams, padding);
+          const itemBounds = boundsFromOverviewItems(Array.from(resolveOverviewTargets(key).values()));
+          return {
+            minX: Math.min(ellipseBounds.minX, itemBounds.minX),
+            maxX: Math.max(ellipseBounds.maxX, itemBounds.maxX),
+            minY: Math.min(ellipseBounds.minY, itemBounds.minY),
+            maxY: Math.max(ellipseBounds.maxY, itemBounds.maxY),
+          };
+        }
+      }
+      return boundsFromOverviewItems(Array.from(resolveOverviewTargets(key).values()));
+    }
+
+    function fitPerspectiveCameraToBounds(bounds, key = responsiveKey()) {
+      const next = perspectiveCameraStateForBounds(bounds, key);
+      overviewCamera.position.copy(next.position);
+      overviewCamera.look.copy(next.look);
     }
 
     function keyAllowsSatellites(key) {
@@ -1473,8 +2014,9 @@
     function satelliteLimit() {
       const key = responsiveKey();
       if (key === "mobile") return 0;
-      if (key === "laptop" || window.innerHeight < 760) return 2;
-      return 3;
+      if (key === "tabletPortrait") return 1;
+      if (key === "laptop" || window.innerHeight < 760) return 1;
+      return 2;
     }
 
     function servicePanelReady() {
@@ -1513,6 +2055,7 @@
       const selectedId = state.categoryId;
       const focusMode = activeFocusMode();
       const focusNav = categories.filter((category) => category.id !== selectedId);
+      const overviewTargets = !focusMode ? resolveOverviewTargets(key) : null;
       fitPerspectiveCameraToBounds(calculateCategoryUniverseBounds(key), key);
       categories.forEach((category) => {
         const group = medallions.get(category.id);
@@ -1528,27 +2071,24 @@
         let opacity = matches ? 1 : 0.22;
         if (state.stage === -1) opacity = 0;
 
-        if (key === "mobile" && !focusMode) {
-          const index = categories.findIndex((item) => item.id === category.id);
-          const total = categories.length;
-          const rawOffset = ((index - state.mobileIndex + total + Math.floor(total / 2)) % total) - Math.floor(total / 2);
-          if (Math.abs(rawOffset) <= 1) {
-            x = rawOffset * 1.24;
-            y = 0.06;
-            z = rawOffset === 0 ? 0.22 : -0.28;
-            scale = rawOffset === 0 ? 0.66 : 0.46;
-            opacity = rawOffset === 0 ? 1 : 0.34;
-          } else {
-            hiddenTarget.set(rawOffset < 0 ? -2.8 : 2.8, -0.1, -3.8);
-            x = hiddenTarget.x;
-            y = hiddenTarget.y;
-            z = hiddenTarget.z;
-            scale = 0.34;
-            opacity = 0;
+        if (overviewTargets) {
+          const overview = overviewTargets.get(category.id);
+          if (overview) {
+            x = overview.position.x;
+            y = overview.position.y;
+            z = overview.position.z;
+            scale = overview.scale;
+            group.userData.layoutConfig = overview.config;
+            group.userData.targetRotation = overview.config.rotation;
+            group.userData.targetRingTilt = overview.config.ringTilt;
+            group.userData.visualPriority = overview.config.visualPriority;
           }
         }
 
         if (focusMode) {
+          group.userData.targetRotation = [base.rx || 0, base.ry || 0, base.rz || 0];
+          group.userData.targetRingTilt = null;
+          group.userData.visualPriority = selected ? "primary" : "supporting";
           if (selected) {
             if (key === "mobile") {
               x = -0.62;
@@ -1581,6 +2121,415 @@
         group.userData.targetScale = scale;
         group.userData.targetOpacity = opacity;
       });
+    }
+
+    function quadraticPoint(start, control, end, t, target) {
+      const inv = 1 - t;
+      target.copy(start).multiplyScalar(inv * inv);
+      target.addScaledVector(control, 2 * inv * t);
+      target.addScaledVector(end, t * t);
+      return target;
+    }
+
+    function makeMilkyWayParticleMaterial() {
+      return new THREE.ShaderMaterial({
+        transparent: true,
+        depthWrite: false,
+        depthTest: true,
+        blending: THREE.AdditiveBlending,
+        uniforms: {
+          uOpacity: { value: 0.86 },
+          uPixelRatio: { value: Math.min(window.devicePixelRatio || 1, 1.5) },
+        },
+        vertexShader: `
+          uniform float uPixelRatio;
+          attribute float size;
+          attribute vec3 color;
+          varying vec3 vColor;
+          varying float vAlpha;
+          void main() {
+            vColor = color;
+            vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+            float perspective = clamp(5.2 / max(0.5, -mvPosition.z), 0.55, 2.2);
+            gl_PointSize = size * uPixelRatio * 220.0 * perspective;
+            gl_Position = projectionMatrix * mvPosition;
+            vAlpha = clamp(perspective, 0.42, 1.0);
+          }
+        `,
+        fragmentShader: `
+          uniform float uOpacity;
+          varying vec3 vColor;
+          varying float vAlpha;
+          void main() {
+            vec2 p = gl_PointCoord - vec2(0.5);
+            float d = length(p);
+            float alpha = smoothstep(0.5, 0.08, d) * uOpacity * vAlpha;
+            gl_FragColor = vec4(vColor, alpha);
+          }
+        `,
+      });
+    }
+
+    function makeOrbitParticleMaterial(baseOpacity = 0.76) {
+      return new THREE.ShaderMaterial({
+        transparent: true,
+        depthWrite: false,
+        depthTest: true,
+        blending: THREE.AdditiveBlending,
+        uniforms: {
+          uOpacity: { value: baseOpacity },
+          uPixelRatio: { value: Math.min(window.devicePixelRatio || 1, 1.5) },
+        },
+        vertexShader: `
+          uniform float uPixelRatio;
+          attribute float size;
+          attribute float alpha;
+          attribute vec3 color;
+          varying vec3 vColor;
+          varying float vAlpha;
+          void main() {
+            vColor = color;
+            vAlpha = alpha;
+            vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+            float perspective = clamp(5.4 / max(0.6, -mvPosition.z), 0.42, 2.1);
+            gl_PointSize = size * uPixelRatio * 210.0 * perspective;
+            gl_Position = projectionMatrix * mvPosition;
+          }
+        `,
+        fragmentShader: `
+          uniform float uOpacity;
+          varying vec3 vColor;
+          varying float vAlpha;
+          void main() {
+            vec2 p = gl_PointCoord - vec2(0.5);
+            float d = length(p);
+            float sparkle = smoothstep(0.5, 0.04, d);
+            gl_FragColor = vec4(vColor, sparkle * vAlpha * uOpacity);
+          }
+        `,
+      });
+    }
+
+    function buildOrbitalSystem() {
+      orbitalSystem.group.clear();
+      orbitalSystem.trails.length = 0;
+      orbitalSystem.particles = null;
+      const key = responsiveKey();
+      const params = ellipseOptionsForKey(key);
+      const curve = createCinematicEllipseCurve(params);
+      orbitalSystem.params = { ...params, key };
+      orbitalSystem.curve = curve;
+
+      const basePoints = curve.getSpacedPoints(key === "mobile" ? 90 : 132);
+      const baseGeo = new THREE.BufferGeometry().setFromPoints(basePoints);
+      const baseMat = new THREE.LineBasicMaterial({
+        color: "#e8c176",
+        transparent: true,
+        opacity: key === "mobile" ? 0.14 : 0.2,
+        depthWrite: false,
+        depthTest: true,
+        blending: THREE.AdditiveBlending,
+      });
+      const baseLine = new THREE.LineLoop(baseGeo, baseMat);
+      baseLine.frustumCulled = false;
+      orbitalSystem.baseLine = baseLine;
+      orbitalSystem.group.add(baseLine);
+
+      const trailConfigs = [
+        { phase: 0.08, length: 0.16, speed: 0.014, count: key === "mobile" ? 28 : 42, opacity: 0.72 },
+        { phase: 0.58, length: 0.12, speed: 0.009, count: key === "mobile" ? 20 : 32, opacity: 0.4 },
+      ];
+      trailConfigs.forEach((config) => {
+        const positions = new Float32Array(config.count * 3);
+        const colors = new Float32Array(config.count * 3);
+        const sizes = new Float32Array(config.count);
+        const alphas = new Float32Array(config.count);
+        for (let i = 0; i < config.count; i++) {
+          const warm = new THREE.Color(i < 4 ? "#fff4bb" : "#eeb35e");
+          colors[i * 3] = warm.r;
+          colors[i * 3 + 1] = warm.g;
+          colors[i * 3 + 2] = warm.b;
+          sizes[i] = 0.014;
+          alphas[i] = 0;
+        }
+        const geo = new THREE.BufferGeometry();
+        geo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+        geo.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+        geo.setAttribute("size", new THREE.BufferAttribute(sizes, 1));
+        geo.setAttribute("alpha", new THREE.BufferAttribute(alphas, 1));
+        const points = new THREE.Points(geo, makeOrbitParticleMaterial(config.opacity));
+        points.frustumCulled = false;
+        points.userData.trailConfig = config;
+        orbitalSystem.trails.push(points);
+        orbitalSystem.group.add(points);
+      });
+
+      const particleCount = key === "mobile" ? 72 : key === "tabletPortrait" || key === "tabletLandscape" ? 140 : 240;
+      const positions = new Float32Array(particleCount * 3);
+      const colors = new Float32Array(particleCount * 3);
+      const sizes = new Float32Array(particleCount);
+      const alphas = new Float32Array(particleCount);
+      const particleT = new Float32Array(particleCount);
+      const particleNoise = new Float32Array(particleCount * 3);
+      const emphasized = ["body-massage", "foot-care", "ear-care"].map((id) => planetLayoutConfigs[id].orbitT);
+      for (let i = 0; i < particleCount; i++) {
+        const nearHero = random() < 0.58;
+        const anchor = emphasized[Math.floor(random() * emphasized.length)];
+        particleT[i] = nearHero ? (anchor + (random() - 0.5) * 0.18 + 1) % 1 : random();
+        particleNoise[i * 3] = (random() - 0.5) * 0.1;
+        particleNoise[i * 3 + 1] = (random() - 0.5) * 0.08;
+        particleNoise[i * 3 + 2] = (random() - 0.5) * 0.18;
+        const color = new THREE.Color(random() > 0.22 ? "#eeb35e" : "#fff4bb");
+        const dim = nearHero ? 0.78 + random() * 0.35 : 0.32 + random() * 0.42;
+        colors[i * 3] = color.r * dim;
+        colors[i * 3 + 1] = color.g * dim;
+        colors[i * 3 + 2] = color.b * dim;
+        sizes[i] = 0.006 + random() * (nearHero ? 0.018 : 0.012);
+        alphas[i] = nearHero ? 0.64 + random() * 0.28 : 0.24 + random() * 0.34;
+        const p = curve.getPointAt(particleT[i]);
+        positions[i * 3] = p.x + particleNoise[i * 3];
+        positions[i * 3 + 1] = p.y + particleNoise[i * 3 + 1];
+        positions[i * 3 + 2] = p.z + particleNoise[i * 3 + 2];
+      }
+      const geo = new THREE.BufferGeometry();
+      geo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+      geo.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+      geo.setAttribute("size", new THREE.BufferAttribute(sizes, 1));
+      geo.setAttribute("alpha", new THREE.BufferAttribute(alphas, 1));
+      const particles = new THREE.Points(geo, makeOrbitParticleMaterial(key === "mobile" ? 0.5 : 0.72));
+      particles.frustumCulled = false;
+      particles.userData.particleT = particleT;
+      particles.userData.particleNoise = particleNoise;
+      particles.userData.baseSizes = sizes.slice();
+      orbitalSystem.particles = particles;
+      orbitalSystem.group.add(particles);
+    }
+
+    function updateOrbitalSystem(elapsed, key, focusMode) {
+      const visible = !focusMode && state.stage !== -1;
+      orbitalSystem.group.visible = visible;
+      if (!visible) return;
+      if (orbitalSystem.params?.key !== key) buildOrbitalSystem();
+      if (!orbitalSystem.curve) return;
+      const curve = orbitalSystem.curve;
+
+      const parallax = focusMode ? pointerParallax : lockedOverviewParallax;
+      orbitalSystem.group.position.x = parallax.x * (key === "mobile" ? 0.03 : 0.08);
+      orbitalSystem.group.position.y = parallax.y * (key === "mobile" ? 0.02 : 0.05);
+
+      orbitalSystem.trails.forEach((trail, trailIndex) => {
+        const config = trail.userData.trailConfig;
+        const positionAttr = trail.geometry.attributes.position;
+        const sizeAttr = trail.geometry.attributes.size;
+        const alphaAttr = trail.geometry.attributes.alpha;
+        const head = (config.phase + elapsed * config.speed) % 1;
+        for (let i = 0; i < positionAttr.count; i++) {
+          const age = i / Math.max(1, positionAttr.count - 1);
+          const t = (head - age * config.length + 1) % 1;
+          const p = curve.getPointAt(t);
+          const drift = Math.sin(elapsed * 0.32 + i * 0.57 + trailIndex) * 0.018;
+          positionAttr.setXYZ(i, p.x, p.y + drift, p.z + Math.cos(i * 1.9) * 0.012);
+          const fade = Math.pow(1 - age, 1.65);
+          sizeAttr.array[i] = (0.01 + fade * 0.038) * (i < 3 ? 1.25 : 1);
+          alphaAttr.array[i] = fade;
+        }
+        positionAttr.needsUpdate = true;
+        sizeAttr.needsUpdate = true;
+        alphaAttr.needsUpdate = true;
+      });
+
+      if (orbitalSystem.particles) {
+        const positionAttr = orbitalSystem.particles.geometry.attributes.position;
+        const sizeAttr = orbitalSystem.particles.geometry.attributes.size;
+        const particleT = orbitalSystem.particles.userData.particleT;
+        const noise = orbitalSystem.particles.userData.particleNoise;
+        const baseSizes = orbitalSystem.particles.userData.baseSizes;
+        const flow = prefersReducedMotion ? 0 : elapsed * 0.0035;
+        for (let i = 0; i < positionAttr.count; i++) {
+          const t = (particleT[i] + flow * (0.72 + (i % 7) * 0.035)) % 1;
+          const p = curve.getPointAt(t);
+          const shimmer = prefersReducedMotion ? 1 : 0.78 + Math.sin(elapsed * 1.5 + i * 0.91) * 0.22;
+          positionAttr.setXYZ(
+            i,
+            p.x + noise[i * 3],
+            p.y + noise[i * 3 + 1] + Math.sin(elapsed * 0.27 + i) * 0.008,
+            p.z + noise[i * 3 + 2]
+          );
+          sizeAttr.array[i] = baseSizes[i] * shimmer;
+        }
+        positionAttr.needsUpdate = true;
+        sizeAttr.needsUpdate = true;
+      }
+    }
+
+    function makeMilkyWayConnection(pointA, pointB, {
+      particleCount = 150,
+      curveHeight = 0.35,
+      colorCore = "#FFE998",
+      colorDim = "#8a6d3b",
+    } = {}) {
+      const group = new THREE.Group();
+      const mid = new THREE.Vector3()
+        .addVectors(pointA, pointB)
+        .multiplyScalar(0.5)
+        .add(new THREE.Vector3(0, curveHeight, (random() - 0.5) * 0.4));
+      const curve = new THREE.QuadraticBezierCurve3(pointA.clone(), mid, pointB.clone());
+
+      const corePoints = curve.getPoints(44);
+      const coreGeo = new THREE.BufferGeometry().setFromPoints(corePoints);
+      const coreMat = new THREE.LineBasicMaterial({
+        color: colorCore,
+        transparent: true,
+        opacity: 0.12,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false,
+        depthTest: true,
+      });
+      coreMat.userData.baseOpacity = 0.12;
+      const coreLine = new THREE.Line(coreGeo, coreMat);
+      coreLine.frustumCulled = false;
+      coreLine.renderOrder = 1;
+      group.add(coreLine);
+
+      const positions = new Float32Array(particleCount * 3);
+      const colors = new Float32Array(particleCount * 3);
+      const sizes = new Float32Array(particleCount);
+      const particleT = new Float32Array(particleCount);
+      const particleOffsets = new Float32Array(particleCount * 3);
+      const colorCoreObj = new THREE.Color(colorCore);
+      const colorDimObj = new THREE.Color(colorDim);
+
+      for (let i = 0; i < particleCount; i++) {
+        const u = random();
+        const t = 0.5 + (u - 0.5) * (0.4 + random() * 0.6);
+        const clampedT = THREE.MathUtils.clamp(t, 0, 1);
+        const basePoint = curve.getPoint(clampedT);
+        const spread = 0.09 * (1 - Math.abs(clampedT - 0.5) * 1.2);
+        const ox = (random() - 0.5) * spread;
+        const oy = (random() - 0.5) * spread * 0.6;
+        const oz = (random() - 0.5) * spread;
+        positions[i * 3] = basePoint.x + ox;
+        positions[i * 3 + 1] = basePoint.y + oy;
+        positions[i * 3 + 2] = basePoint.z + oz;
+        particleT[i] = clampedT;
+        particleOffsets[i * 3] = ox;
+        particleOffsets[i * 3 + 1] = oy;
+        particleOffsets[i * 3 + 2] = oz;
+        const mixed = colorDimObj.clone().lerp(colorCoreObj, 0.34 + random() * 0.66);
+        colors[i * 3] = mixed.r;
+        colors[i * 3 + 1] = mixed.g;
+        colors[i * 3 + 2] = mixed.b;
+        sizes[i] = 0.012 + random() * 0.03;
+      }
+
+      const geo = new THREE.BufferGeometry();
+      geo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+      geo.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+      geo.setAttribute("size", new THREE.BufferAttribute(sizes, 1));
+      const points = new THREE.Points(geo, makeMilkyWayParticleMaterial());
+      points.userData.isMilkyWayStream = true;
+      points.frustumCulled = false;
+      points.renderOrder = 2;
+      group.add(points);
+
+      group.userData.coreLine = coreLine;
+      group.userData.points = points;
+      group.userData.particleGeo = geo;
+      group.userData.baseSizes = sizes.slice();
+      group.userData.particleT = particleT;
+      group.userData.particleOffsets = particleOffsets;
+      group.userData.curveHeight = curveHeight;
+      return group;
+    }
+
+    function buildConnectionTrails() {
+      connectionTrails.clear();
+      milkyWayStreams.length = 0;
+      const key = responsiveKey();
+      const particleCount = key === "mobile" ? 42 : key === "tabletPortrait" || key === "tabletLandscape" ? 78 : 120;
+      connectionTrailSpecs.forEach((spec, index) => {
+        const stream = makeMilkyWayConnection(new THREE.Vector3(), new THREE.Vector3(0.1, 0, 0), {
+          particleCount,
+          curveHeight: spec.arc,
+          colorCore: "#FFE998",
+          colorDim: index % 2 ? "#8a6d3b" : "#b18444",
+        });
+        stream.userData.spec = spec;
+        stream.userData.phase = index * 0.73;
+        connectionTrails.add(stream);
+        milkyWayStreams.push(stream);
+      });
+    }
+
+    function updateMilkyWayStreamGeometry(stream, elapsed) {
+      const spec = stream.userData.spec;
+      const a = medallions.get(spec.from);
+      const b = medallions.get(spec.to);
+      if (!a || !b) {
+        stream.visible = false;
+        return;
+      }
+      stream.visible = a.userData.opacity > 0.12 && b.userData.opacity > 0.12;
+      if (!stream.visible) return;
+
+      const start = new THREE.Vector3();
+      const end = new THREE.Vector3();
+      const control = new THREE.Vector3();
+      const point = new THREE.Vector3();
+      const dir = new THREE.Vector3();
+      const normal = new THREE.Vector3();
+
+      const aRadius = (a.userData.category.size * a.scale.x) * 0.44;
+      const bRadius = (b.userData.category.size * b.scale.x) * 0.44;
+      dir.copy(b.position).sub(a.position);
+      const len = Math.max(0.001, dir.length());
+      dir.divideScalar(len);
+      start.copy(a.position).addScaledVector(dir, aRadius);
+      end.copy(b.position).addScaledVector(dir, -bRadius);
+      normal.set(-dir.y, dir.x, 0).normalize();
+      control.copy(start).lerp(end, 0.5)
+        .addScaledVector(normal, stream.userData.curveHeight || spec.arc || 0.24)
+        .add(new THREE.Vector3(0, 0, spec.depth || 0));
+
+      const coreAttr = stream.userData.coreLine.geometry.attributes.position;
+      for (let i = 0; i < coreAttr.count; i++) {
+        const t = i / Math.max(1, coreAttr.count - 1);
+        quadraticPoint(start, control, end, t, point);
+        const wave = Math.sin(t * Math.PI * 2 + elapsed * 0.38 + stream.userData.phase) * 0.01;
+        coreAttr.setXYZ(i, point.x, point.y + wave, point.z - 0.006);
+      }
+      coreAttr.needsUpdate = true;
+      stream.userData.coreLine.material.opacity = stream.userData.coreLine.material.userData.baseOpacity * (0.78 + Math.sin(elapsed * 0.72 + stream.userData.phase) * 0.18);
+
+      const pointAttr = stream.userData.particleGeo.attributes.position;
+      const sizeAttr = stream.userData.particleGeo.attributes.size;
+      const baseSizes = stream.userData.baseSizes;
+      const particleT = stream.userData.particleT;
+      const offsets = stream.userData.particleOffsets;
+      for (let i = 0; i < pointAttr.count; i++) {
+        const flow = prefersReducedMotion ? 0 : elapsed * 0.014;
+        const t = (particleT[i] + flow + stream.userData.phase * 0.01) % 1;
+        const density = 1 - Math.abs(t - 0.5) * 1.18;
+        quadraticPoint(start, control, end, t, point);
+        const drift = prefersReducedMotion ? 0 : Math.sin(elapsed * 0.7 + i * 0.37) * 0.012;
+        pointAttr.setXYZ(
+          i,
+          point.x + offsets[i * 3] * (0.64 + density) + normal.x * drift,
+          point.y + offsets[i * 3 + 1] * (0.64 + density) + normal.y * drift,
+          point.z + offsets[i * 3 + 2] * (0.64 + density)
+        );
+        const twinkle = prefersReducedMotion ? 1 : 0.7 + Math.sin(elapsed * 2 + i * 12.9898) * 0.3;
+        sizeAttr.array[i] = baseSizes[i] * twinkle;
+      }
+      pointAttr.needsUpdate = true;
+      sizeAttr.needsUpdate = true;
+    }
+
+    function updateConnectionTrails(elapsed, key, focusMode) {
+      const visible = !focusMode && state.stage !== -1;
+      connectionTrails.visible = visible;
+      if (!visible) return;
+      milkyWayStreams.forEach((stream) => updateMilkyWayStreamGeometry(stream, elapsed));
     }
 
     function applyOpacity(group, opacity) {
@@ -1632,6 +2581,47 @@
       return `${BOOK_NOW_CONFIG.route}?${params.toString()}`;
     }
 
+    function toBookingService(category, service) {
+      const imageSrc = service.image?.src || "https://placehold.co/360x220?text=Ngan+Ha+Spa";
+      return {
+        id: service.id,
+        cat: category.name || category.id,
+        categoryId: category.id,
+        names: { vi: service.name, en: service.name, cn: service.name, jp: service.name, kr: service.name },
+        descriptions: {
+          vi: service.description || "",
+          en: service.description || "",
+          cn: service.description || "",
+          jp: service.description || "",
+          kr: service.description || "",
+        },
+        img: imageSrc,
+        media: { type: "image", url: imageSrc, alt: service.image?.alt || service.name },
+        priceVND: Number(service.price || 0),
+        priceUSD: Math.max(1, Math.round(Number(service.price || 0) / 25000)),
+        timeValue: Number(service.duration || 0),
+        timeDisplay: `${Number(service.duration || 0)} mins`,
+        menuType: "standard",
+      };
+    }
+
+    function sourceRectFromElement(element) {
+      if (!element?.getBoundingClientRect) return null;
+      const rect = element.getBoundingClientRect();
+      return {
+        left: rect.left,
+        top: rect.top,
+        width: rect.width,
+        height: rect.height,
+      };
+    }
+
+    function postBookingAction(type, category, service, extra = {}) {
+      if (!(window.parent && window.parent !== window)) return false;
+      window.parent.postMessage({ type, service: toBookingService(category, service), ...extra }, "*");
+      return true;
+    }
+
     function openBookingPage(categoryId, serviceId) {
       const url = buildBookingUrl(categoryId, serviceId);
       if (BOOK_NOW_CONFIG.openMode === "new-window") {
@@ -1650,21 +2640,27 @@
       return state.cart.reduce((total, item) => total + item.price * item.quantity, 0);
     }
 
+    function serviceQuantity(serviceId) {
+      return state.cart.find((item) => item.serviceId === serviceId)?.quantity || 0;
+    }
+
     function showNotice(message) {
+      if (embeddedBookShell || (window.parent && window.parent !== window)) return;
       const notification = document.getElementById("cartNotification");
+      if (!notification) return;
       notification.textContent = message;
       notification.classList.add("visible");
       window.clearTimeout(state.noticeTimer);
       state.noticeTimer = window.setTimeout(() => notification.classList.remove("visible"), 2400);
     }
 
-    function addToCart(category, service) {
+    function addToCart(category, service, sourceElement) {
       const existing = state.cart.find((item) => item.serviceId === service.id);
       if (existing) {
         if (CART_DUPLICATE_MODE === "prevent-duplicate") showNotice("Dịch vụ này đã có trong giỏ hàng.");
         else {
           existing.quantity += 1;
-          showNotice("Đã tăng số lượng trong giỏ hàng.");
+          showNotice(`Đã thêm dịch vụ · ${cartCount()} dịch vụ`);
         }
       } else {
         state.cart.push({
@@ -1676,9 +2672,26 @@
           image: service.image,
           quantity: 1,
         });
-        showNotice("Đã thêm vào giỏ hàng.");
+        showNotice(`Đã thêm dịch vụ · ${cartCount()} dịch vụ`);
       }
+      postBookingAction("flipmenu:add-service-to-cart", category, service, {
+        sourceRect: sourceRectFromElement(sourceElement),
+        selectedCount: cartCount(),
+      });
       renderCart();
+      renderServices();
+    }
+
+    function removeFromCart(serviceId) {
+      const existing = state.cart.find((item) => item.serviceId === serviceId);
+      if (!existing) return;
+      existing.quantity -= 1;
+      if (existing.quantity <= 0) {
+        state.cart = state.cart.filter((item) => item.serviceId !== serviceId);
+      }
+      window.parent?.postMessage({ type: "flipmenu:remove-service-from-cart", serviceId, selectedCount: cartCount() }, "*");
+      renderCart();
+      renderServices();
     }
 
     function renderCart() {
@@ -1701,9 +2714,13 @@
                   <strong>${item.name}</strong>
                   <p>${item.duration} phút · ${formatPrice(item.price)} · SL ${item.quantity}</p>
                 </div>
+                <button class="cart-remove-button" type="button" data-cart-remove="${item.serviceId}" aria-label="Xóa ${item.name} khỏi giỏ hàng">×</button>
               </article>
             `).join("")
         : `<div class="detail-box">Giỏ hàng chưa có dịch vụ.</div>`;
+      list.querySelectorAll("[data-cart-remove]").forEach((button) => {
+        button.addEventListener("click", () => removeFromCart(button.dataset.cartRemove));
+      });
     }
 
     function transitionPanel(nextStage, updateState) {
@@ -1739,8 +2756,10 @@
         content.innerHTML = category.services.length
           ? category.services
             .map(
-              (item) => `
-                    <article class="service-card">
+              (item) => {
+                const quantity = serviceQuantity(item.id);
+                return `
+                    <article class="service-card ${quantity > 0 ? "is-selected" : ""}">
                       <img src="${item.image.src}" alt="${item.image.alt}" loading="lazy" onerror="this.style.opacity=.25" />
                       <div>
                         <h3>${item.name}</h3>
@@ -1752,29 +2771,48 @@
                         </div>
                         <div class="service-actions">
                           <button class="book-now-button" type="button" data-book-service="${item.id}">BOOK NOW</button>
-                          <button class="add-cart-button" type="button" data-cart-service="${item.id}" aria-label="Thêm ${item.name} vào giỏ hàng">
+                          ${quantity > 0 ? `
+                            <div class="service-qty-control" aria-label="${item.name} đã chọn ${quantity}">
+                              <button type="button" data-cart-dec="${item.id}" aria-label="Giảm ${item.name}">−</button>
+                              <span>${quantity}</span>
+                              <button type="button" data-cart-service="${item.id}" aria-label="Tăng ${item.name}">+</button>
+                            </div>
+                          ` : `
+                            <button class="add-cart-button" type="button" data-cart-service="${item.id}" aria-label="Thêm ${item.name} vào giỏ hàng">
                             <svg aria-hidden="true" width="19" height="19" viewBox="0 0 24 24" fill="none">
                               <path d="M7 8h10l-.8 11H7.8L7 8Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path>
                               <path d="M9 8a3 3 0 0 1 6 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
                             </svg>
                           </button>
+                          `}
                         </div>
                       </div>
                     </article>
-                  `
+                  `;
+              }
             )
             .join("")
           : `<div class="detail-box">Danh mục này chưa có dịch vụ mẫu.</div>`;
         content.querySelectorAll("[data-book-service]").forEach((button) => {
           button.addEventListener("click", () => {
             state.serviceId = button.dataset.bookService;
-            openBookingPage(category.id, state.serviceId);
+            const serviceToBook = category.services.find((item) => item.id === state.serviceId);
+            if (!serviceToBook) return;
+            const posted = postBookingAction("flipmenu:book-now", category, serviceToBook, {
+              sourceRect: sourceRectFromElement(button),
+            });
+            if (!posted) openBookingPage(category.id, state.serviceId);
           });
         });
         content.querySelectorAll("[data-cart-service]").forEach((button) => {
           button.addEventListener("click", () => {
             const serviceToAdd = category.services.find((item) => item.id === button.dataset.cartService);
-            if (serviceToAdd) addToCart(category, serviceToAdd);
+            if (serviceToAdd) addToCart(category, serviceToAdd, button);
+          });
+        });
+        content.querySelectorAll("[data-cart-dec]").forEach((button) => {
+          button.addEventListener("click", () => {
+            removeFromCart(button.dataset.cartDec);
           });
         });
         return;
@@ -1802,32 +2840,11 @@
 
     function goBack() {
       if (state.stage === "categories") {
-        isTransitioningBook = true;
-        document.getElementById('black-overlay').style.opacity = '1';
-        setTimeout(() => {
-          state.stage = -1;
-          bookGroup.visible = true;
-
-          camTargetPos.set(0, 5, 22);
-          camera.position.copy(camTargetPos);
-          camTargetLookAt.set(0, 0, 0);
-          camCurrentLookAt.copy(camTargetLookAt);
-          camera.lookAt(camCurrentLookAt);
-
-          bookTargetPos.set(0, -0.5, 0);
-          bookTargetRot.set(0, 0, 0);
-          bookGroup.position.copy(bookTargetPos);
-
-          document.getElementById('black-overlay').style.opacity = '0';
-          setTimeout(() => {
-            document.querySelector('.hud').style.display = 'none';
-            document.getElementById('btn-prev').style.opacity = '1';
-            document.getElementById('btn-next').style.opacity = '1';
-            document.getElementById('btn-prev').style.pointerEvents = 'auto';
-            document.getElementById('btn-next').style.pointerEvents = 'auto';
-            isTransitioningBook = false;
-          }, 500);
-        }, 1000);
+        prepareSoftGalaxyReturn();
+        window.setTimeout(() => {
+          document.querySelector('.hud').style.display = 'none';
+          finishSoftGalaxyReturn();
+        }, prefersReducedMotion ? 40 : 920);
         return;
       }
       if (state.stage === -1) return;
@@ -1930,6 +2947,8 @@
 
       const focusMode = activeFocusMode();
       const key = responsiveKey();
+      updateOrbitalSystem(elapsed, key, focusMode);
+      updateConnectionTrails(elapsed, key, focusMode);
       const cameraOrbit = focusMode && !prefersReducedMotion ? Math.sin(progress * Math.PI) * 0.5 : 0;
       const targetCam = focusMode
         ? new THREE.Vector3(
@@ -1958,12 +2977,19 @@
           else if (currentLeafIndex === 3) targetCenterX = -3;
         }
 
-        targetCam.copy(camTargetPos);
-        targetCam.x += targetCenterX + pointer.x * 2;
-        targetCam.y += pointer.y * 1;
+        if (softBookCloseCameraTarget && softBookCloseLookTarget) {
+          targetCam.copy(softBookCloseCameraTarget);
+          targetLook.copy(softBookCloseLookTarget);
+        } else {
+          const pointerX = softMenuBackActive ? 0 : pointer.x;
+          const pointerY = softMenuBackActive ? 0 : pointer.y;
+          targetCam.copy(camTargetPos);
+          targetCam.x += targetCenterX + pointerX * 2;
+          targetCam.y += pointerY * 1;
 
-        targetLook.copy(camTargetLookAt);
-        targetLook.x += targetCenterX;
+          targetLook.copy(camTargetLookAt);
+          targetLook.x += targetCenterX;
+        }
 
         if (typeof responsiveKey === 'function') {
           const rk = responsiveKey();
@@ -1973,7 +2999,7 @@
       }
       // --- MOVED BOOK ANIMATION LOGIC ---
       if (state.stage === -1 || isTransitioningBook) {
-        if (!state.cartOpen) {
+        if (!state.cartOpen && !softMenuBackActive) {
           bookTargetRot.y = pointer.x * 0.15;
           bookTargetRot.x = BOOK_TILT + pointer.y * 0.15;
         }
@@ -2074,14 +3100,15 @@
         group.scale.setScalar(Math.max(0.01, nextScale));
 
         const baseRot = layoutFor(category, key);
+        const configuredRotation = group.userData.targetRotation || [baseRot.rx || 0, baseRot.ry || 0, baseRot.rz || 0];
         const selectedTilt = focusMode && selected ? 0.28 * progress : 0;
         const hiddenTilt = focusMode && !selected ? 0.18 * Math.sign(group.position.x || 1) * progress : 0;
         const focusPitch = focusMode && selected ? -0.16 * progress : 0;
-        const desiredX = (baseRot.rx || 0) * 0.48 + pointerParallax.y * 0.018 + focusPitch;
-        const desiredY = (baseRot.ry || 0) * 0.36 + pointerParallax.x * 0.024 + selectedTilt + hiddenTilt + (focusMode && selected ? Math.sin(elapsed * 0.42) * 0.018 : 0);
+        const desiredX = configuredRotation[0] * 0.55 + pointerParallax.y * 0.038 + focusPitch;
+        const desiredY = configuredRotation[1] * 0.48 + pointerParallax.x * 0.052 + selectedTilt + hiddenTilt + (focusMode && selected ? Math.sin(elapsed * 0.42) * 0.022 : 0);
         group.rotation.x += (desiredX - group.rotation.x) * (prefersReducedMotion ? 1 : damping * 0.22);
         group.rotation.y += (desiredY - group.rotation.y) * (prefersReducedMotion ? 1 : damping * 0.22);
-        const desiredZ = (baseRot.rz || 0) * 0.7 + (prefersReducedMotion ? 0 : Math.sin(elapsed * 0.18 + category.size) * 0.004) - (focusMode && selected ? 0.02 * progress : 0);
+        const desiredZ = configuredRotation[2] * 0.7 + (prefersReducedMotion ? 0 : Math.sin(elapsed * 0.18 + category.size) * 0.004) - (focusMode && selected ? 0.02 * progress : 0);
         group.rotation.z += (desiredZ - group.rotation.z) * (prefersReducedMotion ? 1 : damping * 0.2);
         group.traverse((child) => {
           if (child.userData?.isRimGlint) {
@@ -2129,7 +3156,7 @@
         });
 
         group.userData.satellites.forEach((satGroup, index) => {
-          const showSatellite = keyAllowsSatellites(key) && index < satelliteLimit() && (!focusMode || selected);
+          const showSatellite = keyAllowsSatellites(key) && index < satelliteLimit() && focusMode && selected;
           satGroup.visible = showSatellite;
           if (satGroup.userData.connection) satGroup.userData.connection.visible = showSatellite;
           if (!showSatellite) return;
@@ -2184,6 +3211,8 @@
 
     async function init() {
       await Promise.all(categories.map(makeCategory));
+      buildOrbitalSystem();
+      buildConnectionTrails();
       buildBook();
       bookGroup.visible = true;
       bookTargetPos.set(0, -0.5, 0);
@@ -2213,16 +3242,18 @@
 
     document.getElementById('btn-prev').addEventListener('click', () => turnPage(-1));
     document.getElementById('btn-next').addEventListener('click', () => turnPage(1));
-    document.getElementById('btn-back-book').addEventListener('click', () => {
-      document.getElementById('btn-back-book').style.display = 'none';
-      document.getElementById('btn-back-book').style.opacity = '0';
-      goBack();
-      setTimeout(() => {
-        document.getElementById('btn-prev').style.opacity = '1';
-        document.getElementById('btn-next').style.opacity = '1';
-        document.getElementById('btn-prev').style.pointerEvents = 'auto';
-        document.getElementById('btn-next').style.pointerEvents = 'auto';
-      }, 500);
+    document.getElementById('btn-back-book').addEventListener('click', async () => {
+      if (state.stage === "categories") {
+        goBack();
+        return;
+      }
+      if (state.stage !== -1) {
+        goBack();
+        return;
+      }
+      setBookBackVisible(false);
+      await closeBookToCover();
+      try { window.parent.postMessage({ type: 'flipmenu:book-returned' }, '*'); } catch(e) {}
     });
     window.addEventListener("keydown", (event) => {
       if (event.key === "Escape") goBack();
@@ -2277,60 +3308,40 @@
       }
     });
 
-    canvas.addEventListener("click", () => {
+    window.addEventListener("pointerup", (event) => {
+      const app = document.getElementById("app");
+      if (app && app.style.display === "none") return;
+
+      if (event.clientX !== undefined) {
+        pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+        pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
+      }
+
+      const targetElement = event.target instanceof Element ? event.target : null;
+      const isCanvasClick = !targetElement || targetElement.id === "scene";
+      if (targetElement && !isCanvasClick && targetElement.closest(".hud, #lightbox")) return;
+      if (!isCanvasClick) return;
+
       if (state.stage === -1 && !isTransitioningBook) {
         raycaster.setFromCamera(pointer, camera);
-
-        const photoIntersects = raycaster.intersectObjects(photoMeshes, false);
-        if (photoIntersects.length > 0) {
-          const clickedPhoto = photoIntersects[0].object;
-          const stack = clickedPhoto.parent;
-
-          if (!stack.userData.isScattered) {
-            scatterPhotoStack(stack);
-            tiltCameraForPhotos();
-          } else {
-            showLightbox(clickedPhoto.userData.url);
-          }
-          return;
-        }
 
         const intersects = raycaster.intersectObjects(leaves, true);
         if (intersects.length > 0) {
           const clickX = intersects[0].point.x;
-          const middleIndex = Math.floor(FAKE_THICKNESS / 2);
 
           if (activePhotoStack) {
             resetPhotoStack(activePhotoStack);
             resetCameraFromPhotos();
-            return;
           }
 
-          if (currentLeafIndex === 0) {
-            // Open book animation
-            for (let i = 0; i < middleIndex; i++) {
-              leaves[i].userData.targetAngle = Math.PI;
-            }
-            currentLeafIndex = middleIndex;
-            setTimeout(() => {
-              document.getElementById('btn-prev').style.opacity = '1';
-              document.getElementById('btn-next').style.opacity = '1';
-              document.getElementById('btn-prev').style.pointerEvents = 'auto';
-              document.getElementById('btn-next').style.pointerEvents = 'auto';
-            }, 500);
-          } else if (clickX < 0 && Math.abs(currentLeafIndex - middleIndex) <= 2) {
-            // Clicked on a left page (likely the menu)
+          const bookIsOpen = bookAppearsOpen();
+          if (!bookIsOpen) {
+            openBookToMiddle();
+          } else {
             selectBookMode('menu', clickX);
-          } else if (clickX > 0 && Math.abs(currentLeafIndex - middleIndex) <= 2) {
-            // Empty right page click (if didn't hit photos, but hit page)
-            if (intersects[0].object.parent.userData.photoStack) {
-              const stack = intersects[0].object.parent.userData.photoStack;
-              if (!stack.userData.isScattered) {
-                scatterPhotoStack(stack);
-                tiltCameraForPhotos();
-              }
-            }
           }
+        } else if (bookAppearsOpen()) {
+          selectBookMode('menu', pointer.x >= 0 ? 3 : -3);
         }
         return;
       }
@@ -2339,7 +3350,7 @@
         selectCategory(hitId);
         return;
       }
-      if (activeFocusMode()) goBack();
+      if (activeFocusMode() && isCanvasClick) goBack();
     });
 
     window.addEventListener("popstate", goBack);
@@ -2349,6 +3360,10 @@
       camera.updateProjectionMatrix();
       renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
       renderer.setSize(window.innerWidth, window.innerHeight);
+      overviewTargetCache.clear();
+      ellipseLayoutCache.clear();
+      buildOrbitalSystem();
+      buildConnectionTrails();
       updateTargets();
     });
 

@@ -69,7 +69,7 @@ const NAV_ITEMS: NavItem[] = [
     label: 'Academy',
     isUnclickable: true,
     children: [
-      { id: 'academy_admissions', label: 'Admissions', href: '/academy/admissions' },
+      { id: 'academy_admissions', label: 'Recruitment/Admission', href: '/academy/admissions' },
       { id: 'academy_training', label: 'Training / Online', href: '/academy/training' },
       { id: 'academy_certification', label: 'Certification', href: '/academy/certification' },
     ],
