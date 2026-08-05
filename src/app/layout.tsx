@@ -96,16 +96,18 @@ const RootLayout = async ({
   // Fetch System Settings & About Story Media
   let systemSettings = {};
   let aboutStoryContent = {};
+  let brandHistory: any = null;
   try {
     const supabase = getSupabaseAdmin();
     const { data } = await supabase.from('SystemConfigs')
       .select('key, value')
-      .in('key', ['system_settings', 'about_story_content']);
+      .in('key', ['system_settings', 'about_story_content', 'brand_history']);
       
     if (data) {
       data.forEach(item => {
         if (item.key === 'system_settings') systemSettings = item.value;
         if (item.key === 'about_story_content') aboutStoryContent = item.value;
+        if (item.key === 'brand_history') brandHistory = item.value;
       });
     }
   } catch (e) {
@@ -115,7 +117,7 @@ const RootLayout = async ({
   return (
     <html lang="vi" className={`${playfair.variable} ${inter.variable}`}>
       <body className="w-full min-h-full antialiased font-sans" suppressHydrationWarning>
-        <SystemSettingsProvider systemSettings={systemSettings} aboutStoryContent={aboutStoryContent}>
+        <SystemSettingsProvider systemSettings={systemSettings} aboutStoryContent={aboutStoryContent} brandHistory={brandHistory}>
           <TranslationProvider initialTranslations={translations}>
             <LayoutWrapper>{children}</LayoutWrapper>
           </TranslationProvider>

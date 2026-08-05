@@ -20,7 +20,7 @@ ALTER TABLE public."MarketingMedia" ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Cho phép tất cả đọc MarketingMedia" 
 ON public."MarketingMedia" 
 FOR SELECT 
-USING (true);
+USING (true); 
 
 -- Cho phép sửa/xóa với Service Role (Admin)
 CREATE POLICY "Cho phép admin sửa MarketingMedia" 

@@ -86,7 +86,7 @@ const Hero = () => {
               .sort((a: any, b: any) => (a.sort_order || 0) - (b.sort_order || 0))
           : [];
 
-        if (json.success && remoteVideos.length >= DEFAULT_HOMEPAGE_VIDEOS.length) {
+        if (json.success && remoteVideos.length > 0) {
           setHomepageVideos(remoteVideos);
           const params = new URLSearchParams(window.location.search);
           const requestedVideo = Number(params.get('heroVideo'));
@@ -225,34 +225,34 @@ const Hero = () => {
       >
 
 
-        {HERO_TEXT.subtitle ? (
+        {t('hero_section', 'subtitle') || HERO_TEXT.subtitle ? (
           <motion.span className="hero-cinematic-sub" variants={fadeInUp}>
-            {HERO_TEXT.subtitle}
+            {t('hero_section', 'subtitle') || HERO_TEXT.subtitle}
           </motion.span>
         ) : null}
 
         <motion.span className="hero-cinematic-sub2" variants={fadeInUp}>
-          {HERO_TEXT.subTitle2}
+          {t('hero_section', 'subTitle2') || HERO_TEXT.subTitle2}
         </motion.span>
 
         {/* Main Title */}
         <motion.h1 className="hero-cinematic-title" variants={heroTitle}>
-          {HERO_TEXT.title}
+          {t('hero_section', 'title') || HERO_TEXT.title}
         </motion.h1>
 
         <motion.div className="hero-cinematic-divider" variants={scaleIn} />
 
         <motion.p className="hero-cinematic-tagline" variants={fadeInUp}>
-          {HERO_TEXT.tagline}
+          {t('hero_section', 'tagline') || HERO_TEXT.tagline}
         </motion.p>
 
         {/* CTA Buttons */}
         <motion.div className="hero-ctas" variants={fadeInUp}>
           <a href="#best-seller" className="hero-cta-btn hero-cta-primary hero-cta--pill">
-            {HERO_TEXT.cta1}
+            {t('hero_section', 'cta1') || HERO_TEXT.cta1}
           </a>
           <a href={`/${currentLang}/new-user/standard/checkout`} className="hero-cta-btn hero-cta-secondary hero-cta--pill">
-            {t('hero_section', 'book_now') || HERO_TEXT.cta2}
+            {t('hero_section', 'cta2') || HERO_TEXT.cta2}
           </a>
         </motion.div>
 
@@ -298,7 +298,7 @@ const Hero = () => {
         {/* Scroll Hint */}
         <motion.div className="hero-scroll-hint" variants={fadeInUp}>
           <ChevronDown size={20} className="hero-scroll-icon" />
-          <span className="hero-scroll-text">{HERO_TEXT.scrollHint}</span>
+          <span className="hero-scroll-text">{t('hero_section', 'scrollHint') || HERO_TEXT.scrollHint}</span>
         </motion.div>
       </motion.div>
 

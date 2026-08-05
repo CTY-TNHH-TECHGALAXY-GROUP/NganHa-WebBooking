@@ -8,6 +8,7 @@ export interface FlipbookPage {
   media_url: string;
   media_type: 'image' | 'video';
   is_active: boolean;
+  service_id?: string;
   created_at: string;
 }
 

@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { ArrowLeft, Image as ImageIcon, Video, Upload, CheckCircle, ChevronDown, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase';
+import { ServiceEditModal } from './ServiceEditModal';
 
 const ServicesAdminPage = () => {
   const [services, setServices] = useState<any[]>([]);
@@ -12,6 +13,7 @@ const ServicesAdminPage = () => {
   const [successId, setSuccessId] = useState<string | null>(null);
   const [mediaLibrary, setMediaLibrary] = useState<any[]>([]);
   const [expandedCats, setExpandedCats] = useState<Record<string, boolean>>({});
+  const [editingService, setEditingService] = useState<any | null>(null);
 
   const toggleCat = (cat: string) => {
     setExpandedCats(prev => ({
@@ -302,6 +304,14 @@ const ServicesAdminPage = () => {
                       }}
                     />
                   </label>
+
+                  {/* Edit Service Info */}
+                  <button
+                    onClick={() => setEditingService(service)}
+                    className="w-full mt-2 flex items-center justify-center gap-2 py-2.5 rounded-xl cursor-pointer font-semibold text-[13.5px] transition-all duration-200 border border-admin-line-strong bg-transparent hover:border-admin-blue hover:bg-admin-blue/10 text-admin-text-dim hover:text-admin-blue"
+                  >
+                    Chỉnh sửa thông tin
+                  </button>
                 </div>
               </div>
             </div>
@@ -313,6 +323,16 @@ const ServicesAdminPage = () => {
         })
         )}
       </div>
+
+      {editingService && (
+        <ServiceEditModal
+          service={editingService}
+          onClose={() => setEditingService(null)}
+          onSave={() => {
+            fetchServices();
+          }}
+        />
+      )}
     </div>
   );
 };

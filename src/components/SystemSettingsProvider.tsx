@@ -37,15 +37,49 @@ export interface AboutStoryContent {
   gallery?: AboutStoryGalleryItem[];
 }
 
+export interface BrandHistoryScene {
+  id: string;
+  title: Record<string, string>;
+  label: Record<string, string>;
+  body: Record<string, string>;
+  image: string;
+  alt: Record<string, string>;
+  imageFit?: any;
+  imagePosition?: any;
+}
+
+export interface BrandHistoryChapter {
+  id: string;
+  year: string;
+  eyebrow: Record<string, string>;
+  title: Record<string, string>;
+  body: Record<string, string>;
+  meta: Record<string, string[]>;
+  scenes: BrandHistoryScene[];
+}
+
+export interface BrandHistoryConfig {
+  hero?: {
+    image: string;
+    eyebrow: Record<string, string>;
+    title1: Record<string, string>;
+    title2: Record<string, string>;
+    body: Record<string, string>;
+  };
+  chapters: BrandHistoryChapter[];
+}
+
 interface SystemSettingsContextType {
   systemSettings: SystemSettings;
   aboutStoryContent: AboutStoryContent;
+  brandHistory: BrandHistoryConfig | null;
   getLocalizedText: (textObj: Record<string, string> | undefined, locale: Locale, fallback?: string) => string;
 }
 
 const SystemSettingsContext = createContext<SystemSettingsContextType>({
   systemSettings: {},
   aboutStoryContent: {},
+  brandHistory: null,
   getLocalizedText: () => '',
 });
 
@@ -55,10 +89,12 @@ export const SystemSettingsProvider = ({
   children,
   systemSettings = {},
   aboutStoryContent = {},
+  brandHistory = null,
 }: {
   children: React.ReactNode;
   systemSettings?: any;
   aboutStoryContent?: any;
+  brandHistory?: any;
 }) => {
   
   const getLocalizedText = (textObj: Record<string, string> | undefined, locale: Locale, fallback = '') => {
@@ -71,6 +107,7 @@ export const SystemSettingsProvider = ({
       value={{
         systemSettings,
         aboutStoryContent,
+        brandHistory,
         getLocalizedText
       }}
     >

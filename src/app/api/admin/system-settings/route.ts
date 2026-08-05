@@ -5,11 +5,11 @@ export async function GET() {
   try {
     const supabase = getSupabaseAdmin();
     
-    // Fetch system_settings and about_story_content
+    // Fetch system_settings, about_story_content, brand_history
     const { data, error } = await supabase
       .from('SystemConfigs')
       .select('key, value')
-      .in('key', ['system_settings', 'about_story_content']);
+      .in('key', ['system_settings', 'about_story_content', 'brand_history']);
 
     if (error) {
       console.error('Error fetching system settings:', error);
@@ -18,13 +18,15 @@ export async function GET() {
 
     const result = {
       system_settings: {},
-      about_story_content: {}
+      about_story_content: {},
+      brand_history: []
     };
 
     if (data) {
       data.forEach(item => {
         if (item.key === 'system_settings') result.system_settings = item.value;
         if (item.key === 'about_story_content') result.about_story_content = item.value;
+        if (item.key === 'brand_history') result.brand_history = item.value;
       });
     }
 
@@ -37,7 +39,7 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    const { system_settings, about_story_content } = await request.json();
+    const { system_settings, about_story_content, brand_history } = await request.json();
     const supabase = getSupabaseAdmin();
 
     const upsertData = [];
@@ -54,6 +56,14 @@ export async function POST(request: Request) {
       upsertData.push({
         key: 'about_story_content',
         value: about_story_content,
+        updated_at: new Date().toISOString()
+      });
+    }
+
+    if (brand_history !== undefined) {
+      upsertData.push({
+        key: 'brand_history',
+        value: brand_history,
         updated_at: new Date().toISOString()
       });
     }
