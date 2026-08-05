@@ -1696,10 +1696,9 @@
         mobile: { minX: -2.32, maxX: 2.32, minY: -1.72, maxY: 1.72 },
       };
       return bounds[key] || bounds.desktop;
-    }
+      }
 
-<<<<<<< HEAD
-    function clampLayoutToSafeZone(layout, key) {
+      function clampLayoutToSafeZone(layout, key) {
       const bounds = safeWorldBounds(key);
       return {
         ...layout,
@@ -1923,7 +1922,6 @@
 
     function boundsFromOverviewItems(items) {
       const bounds = { minX: Infinity, maxX: -Infinity, minY: Infinity, maxY: -Infinity };
-<<<<<<< HEAD
       items.forEach((item) => {
         const r = worldRadiusFor(item.category, { ...item.layout, scale: item.scale });
         const label = categoryLabelWorldSize(item.category);
@@ -1933,15 +1931,6 @@
         bounds.maxX = Math.max(bounds.maxX, item.position.x + Math.max(r, labelHalfWidth));
         bounds.minY = Math.min(bounds.minY, labelBottom, item.position.y - r * 0.92);
         bounds.maxY = Math.max(bounds.maxY, item.position.y + r * 0.92);
-=======
-      categories.forEach((category) => {
-        const layout = layoutFor(category, key);
-        const r = worldRadiusFor(category, layout);
-        bounds.minX = Math.min(bounds.minX, layout.x - r);
-        bounds.maxX = Math.max(bounds.maxX, layout.x + r);
-        bounds.minY = Math.min(bounds.minY, layout.y - r * 0.92);
-        bounds.maxY = Math.max(bounds.maxY, layout.y + r * 0.92);
->>>>>>> github-linked/master
       });
       return bounds;
     }
@@ -1965,8 +1954,7 @@
       const padding = safePaddingFactor(key);
       const fitHeightDistance = (height * padding) / (2 * Math.tan(fov / 2));
       const fitWidthDistance = (width * padding) / (2 * Math.tan(fov / 2) * aspect);
-<<<<<<< HEAD
-      const overviewSizeBoost = key === "mobile" ? 0.96 : 0.92;
+  const overviewSizeBoost = key === "mobile" ? 0.96 : 0.92;
       const distance = Math.max(fitHeightDistance, fitWidthDistance, minOverviewDistance(key)) * overviewSizeBoost;
       return {
         position: new THREE.Vector3(centerX, centerY, distance),
