@@ -20,9 +20,10 @@ const MAX_INPUT_LENGTH = 500;
 
 interface AIChatBotProps {
   locale?: Locale;
+  hideTrigger?: boolean;
 }
 
-const AIChatBot = ({ locale = 'vi' }: AIChatBotProps) => {
+const AIChatBot = ({ locale = 'vi', hideTrigger = false }: AIChatBotProps) => {
   const {
     messages,
     inputText,
@@ -65,7 +66,7 @@ const AIChatBot = ({ locale = 'vi' }: AIChatBotProps) => {
         variants={triggerPulseVariants}
         animate={isOpen ? 'idle' : 'pulse'}
         whileTap={{ scale: 0.9 }}
-        style={{ width: TRIGGER_SIZE, height: TRIGGER_SIZE }}
+        style={{ width: TRIGGER_SIZE, height: TRIGGER_SIZE, display: hideTrigger ? 'none' : 'flex' }}
         aria-label="AI Chat"
         id="ai-chat-trigger"
       >
@@ -110,7 +111,7 @@ const AIChatBot = ({ locale = 'vi' }: AIChatBotProps) => {
 
             {/* Chat window */}
             <motion.div
-              className="ai-chat-popup"
+              className="ai-chat-popup border-[3px] border-white"
               variants={popupVariants}
               initial="hidden"
               animate="visible"
@@ -121,7 +122,7 @@ const AIChatBot = ({ locale = 'vi' }: AIChatBotProps) => {
               <div className="ai-chat-header">
                 <div className="ai-chat-header-info">
                   <div className="ai-chat-avatar">
-                    <Sparkles size={18} />
+                    <Sparkles size={18} className="text-white" />
                   </div>
                   <div>
                     <h3 className="ai-chat-header-title">{t.title}</h3>
@@ -133,7 +134,7 @@ const AIChatBot = ({ locale = 'vi' }: AIChatBotProps) => {
                   onClick={closeChat}
                   aria-label="Close chat"
                 >
-                  <X size={18} />
+                  <X size={18} className="text-white" />
                 </button>
               </div>
 
@@ -148,7 +149,7 @@ const AIChatBot = ({ locale = 'vi' }: AIChatBotProps) => {
                     animate="visible"
                   >
                     <div className="ai-chat-bubble-icon">
-                      {msg.role === 'assistant' ? <Bot size={16} /> : <User size={16} />}
+                      {msg.role === 'assistant' ? <Bot size={16} className="text-white" /> : <User size={16} className="text-white" />}
                     </div>
                     <div className="ai-chat-bubble-content">
                       <p>{msg.content}</p>
@@ -158,7 +159,7 @@ const AIChatBot = ({ locale = 'vi' }: AIChatBotProps) => {
                           className="ai-chat-book-btn"
                           onClick={scrollToBooking}
                         >
-                          <ArrowRight size={14} />
+                          <ArrowRight size={14} className="text-white" />
                           {t.bookNow}
                         </button>
                       )}
@@ -175,7 +176,7 @@ const AIChatBot = ({ locale = 'vi' }: AIChatBotProps) => {
                     animate="visible"
                   >
                     <div className="ai-chat-bubble-icon">
-                      <Bot size={16} />
+                      <Bot size={16} className="text-white" />
                     </div>
                     <div className="ai-chat-typing">
                       {[0, 1, 2].map((i) => (
@@ -203,7 +204,7 @@ const AIChatBot = ({ locale = 'vi' }: AIChatBotProps) => {
                     aria-label={isListening ? 'Stop voice' : 'Start voice'}
                     title={isListening ? t.voiceListening : t.voiceHint}
                   >
-                    {isListening ? <MicOff size={18} /> : <Mic size={18} />}
+                    {isListening ? <MicOff size={18} className="text-white" /> : <Mic size={18} className="text-white" />}
                   </button>
                 )}
 
@@ -227,7 +228,7 @@ const AIChatBot = ({ locale = 'vi' }: AIChatBotProps) => {
                   disabled={!inputText.trim() || isLoading}
                   aria-label={t.send}
                 >
-                  <Send size={16} />
+                  <Send size={16} className="text-white" />
                 </button>
               </div>
 

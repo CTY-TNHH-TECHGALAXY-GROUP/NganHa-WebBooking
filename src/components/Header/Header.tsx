@@ -3,7 +3,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, User, ChevronDown } from 'lucide-react';
+import { Menu, X, MapPin, ChevronUp, ChevronDown, ShoppingCart } from 'lucide-react';
 import type { CartItem } from '@/components/Menu/types';
 import { formatCurrency } from '@/components/Menu/utils';
 import { readBookingCart, removeBookingCartItemByCartId } from '@/lib/bookingCartStorage';
@@ -74,15 +74,6 @@ const NAV_ITEMS: NavItem[] = [
       { id: 'academy_certification', label: 'Certification', href: '/academy/certification' },
     ],
   },
-  {
-    id: 'oriafarm',
-    label: 'OriaFarm',
-    isUnclickable: true,
-    children: [
-      { id: 'oriafarm_store', label: 'Store', href: '/#shop' },
-      { id: 'oriafarm_retreat', label: 'Retreat', href: '/#retreat' },
-    ],
-  },
 ];
 
 const CART_COPY = {
@@ -111,6 +102,22 @@ const Header = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [cartSnapshot, setCartSnapshot] = useState<CartItem[]>([]);
   const [cartCount, setCartCount] = useState(0);
+  const [activeBrandIndex, setActiveBrandIndex] = useState(0);
+
+  const BRANDS = useMemo(() => [
+    { name: 'Oria Spa' },
+    { name: 'Oria Farm', sub: 'Store' },
+    { name: 'Oria Farm', sub: 'Retreat' }
+  ], []);
+
+  const nextBrand = () => {
+    setActiveBrandIndex((prev) => (prev + 1) % BRANDS.length);
+  };
+  
+  const prevBrand = () => {
+    setActiveBrandIndex((prev) => (prev - 1 + BRANDS.length) % BRANDS.length);
+  };
+
   const { 
     isMobileMenuOpen, 
     isScrolled, 
@@ -175,79 +182,44 @@ const Header = () => {
         <div className="header-inner-container">
           {/* Top Row: Mobile Toggle, Logo, Right Controls, Desktop Navigation */}
           <div className="header-top-row">
-            {/* Logo & Mobile Toggle on the left */}
+            {/* Mobile Toggle (now used for all screens) on the left */}
             <div className="header-top-left">
               <button
-                className="header-mobile-toggle"
+                className="header-mobile-toggle !flex text-white"
                 onClick={toggleMobileMenu}
                 aria-label="Toggle menu"
               >
-                {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
+                {isMobileMenuOpen ? <X size={28} className="text-white" /> : <Menu size={28} className="text-white" />}
               </button>
-
-              <a href="/" className="header-logo">
-                <div className="header-logo-text">
-                  <span className="header-logo-name">Oria Spa</span>
-                </div>
-              </a>
             </div>
 
-            {/* Desktop Navigation Centered */}
-            <nav className="header-nav-desktop">
-              {NAV_ITEMS.map((item) => {
-                const label = item.id ? t('header_menu', item.id) || item.label : item.label;
-
-                return (
-                <div key={item.id || item.href} className={`header-nav-item ${item.children ? 'has-subnav' : ''}`}>
-                  {item.isUnclickable ? (
-                    <button type="button" className="header-nav-link header-nav-link--button">
-                      {label}
-                      {item.children && <ChevronDown size={13} className="header-nav-chevron" />}
-                    </button>
-                  ) : (
-                    <a
-                      href={item.href}
-                      target={item.target || undefined}
-                      className={`header-nav-link ${item.isComingSoon ? 'dimmed' : ''}`}
-                    >
-                      {item.isComingSoon ? (
-                        <span className="nav-item-coming-soon">
-                          <span className="nav-text-primary">{label}</span>
-                          <span className="nav-text-secondary">Coming Soon</span>
-                        </span>
-                      ) : (
-                        <>
-                          {label}
-                          {item.children && <ChevronDown size={13} className="header-nav-chevron" />}
-                        </>
-                      )}
-                    </a>
-                  )}
-                  {item.children && (
-                    <div className="header-subnav" aria-label={`${label} submenu`}>
-                      {item.children.map((child) => {
-                        const childLabel = child.id ? t('header_menu', child.id) || child.label : child.label;
-
-                        return (
-                          <a
-                            key={child.href}
-                            href={child.href}
-                            className={`header-subnav__link ${child.isComingSoon ? 'is-coming-soon' : ''}`}
-                            aria-disabled={child.isComingSoon ? 'true' : undefined}
-                          >
-                            {childLabel}
-                            {child.isComingSoon && <span>Coming Soon</span>}
-                          </a>
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
-              )})}
-            </nav>
+            {/* Desktop Navigation removed as per request, using Mobile Menu Drawer instead */}
 
             {/* Right Section: Languages, Login, Cart */}
             <div className="header-right">
+              {/* Book Button */}
+              <a 
+                href={`/${currentLang.code}/new-user/standard/checkout`}
+                className="text-white hover:text-white/80 active:opacity-50 font-bold text-sm uppercase tracking-wider mr-4 lg:mr-6 transition-all duration-300"
+              >
+                Book
+              </a>
+
+              {/* Cart Button */}
+              <button 
+                type="button"
+                className="relative text-white hover:text-[#D4AF37] mr-4 lg:mr-6 transition-colors duration-300 flex items-center"
+                onClick={handleCartClick}
+                aria-label={`Cart, ${cartCount} services selected`}
+              >
+                <ShoppingCart size={20} />
+                {cartCount > 0 && (
+                  <span className="absolute -top-2 -right-2 w-4 h-4 bg-white text-black text-[10px] font-bold rounded-full flex items-center justify-center">
+                    {cartCount}
+                  </span>
+                )}
+              </button>
+
               {/* Language Flag Selector (Global) */}
               <div className="lang-selector" ref={langDropdownRef}>
                 <button 
@@ -262,7 +234,7 @@ const Header = () => {
                     alt={currentLang.label}
                     className="header-lang-flag-img"
                   />
-                  <ChevronDown size={14} className={`lang-chevron ${isLangDropdownOpen ? 'rotate' : ''}`} />
+                  <ChevronDown size={14} className={`lang-chevron text-white ${isLangDropdownOpen ? 'rotate' : ''}`} />
                 </button>
                 
                 {/* Dropdown Menu */}
@@ -284,67 +256,144 @@ const Header = () => {
                 </div>
               </div>
 
-              {/* Login & Cart */}
-              <a href="#login" className="header-icon-btn" aria-label="Log in">
-                <User size={20} />
+              <a href="https://maps.app.goo.gl/8XBkjsJicXqdNsZk7" target="_blank" rel="noopener noreferrer" className="header-icon-btn text-white" aria-label="Location">
+                <MapPin size={20} className="text-white" />
               </a>
-              <button type="button" className="header-icon-btn header-cart-btn" data-nav-cart-button aria-label={`Cart, ${cartCount} services selected`} onClick={handleCartClick}>
-                <img src="/icons/shopping-cart.png" alt="Cart" className="w-5 h-5 object-contain brightness-0 invert" />
-                {cartCount > 0 && <span className="header-cart-badge">{cartCount}</span>}
-              </button>
             </div>
           </div>
         </div>
 
-        {/* Mobile Menu Drawer */}
+        {/* Full-screen Menu Overlay */}
         <AnimatePresence>
           {isMobileMenuOpen && (
             <motion.nav
-              className="header-mobile-menu"
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
+              className="nav-fullscreen-overlay"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
               transition={{ duration: MOBILE_MENU_DURATION }}
             >
-              {NAV_ITEMS.map((item) => {
-                const label = item.id ? t('header_menu', item.id) || item.label : item.label;
+              <div className="nav-fullscreen-inner">
+                {/* Close Button (Top Left) */}
+                <button 
+                  className="nav-fullscreen-close" 
+                  onClick={toggleMobileMenu}
+                  aria-label="Close menu"
+                >
+                  <X size={40} strokeWidth={1.5} />
+                </button>
 
-                return (
-                <div key={item.id || item.href} className="mobile-nav-link-wrapper">
-                  {item.isUnclickable ? (
-                    <button type="button" className="mobile-nav-link mobile-nav-link--button">
-                      {label}
-                    </button>
-                  ) : (
-                    <a
-                      href={item.href}
-                      target={item.target || undefined}
-                      className={`mobile-nav-link ${item.isComingSoon ? 'dimmed' : ''}`}
-                      onClick={toggleMobileMenu}
-                    >
-                      {label}
-                    </a>
-                  )}
-                  {item.isComingSoon && (
-                    <span className="coming-soon-badge">Coming Soon</span>
-                  )}
-                  {item.children && (
-                    <div className="mobile-subnav">
-                      {item.children.map((child) => (
-                        <a
-                          key={child.href}
-                          href={child.href}
-                          className={`mobile-subnav__link ${child.isComingSoon ? 'is-coming-soon' : ''}`}
-                          onClick={toggleMobileMenu}
-                        >
-                          {child.id ? t('header_menu', child.id) || child.label : child.label}
-                          {child.isComingSoon && <span>Coming Soon</span>}
-                        </a>
-                      ))}
+                {/* Left Panel: Navigation Links */}
+                <div className="nav-panel-left">
+                  <div className="nav-links-grid">
+                    {/* Left Column (Even Indexes) */}
+                    <div className="nav-links-col">
+                      {NAV_ITEMS.filter((_, i) => i % 2 === 0).map((item) => {
+                        const label = item.id ? t('header_menu', item.id) || item.label : item.label;
+                        return (
+                          <div key={item.id || item.href} className="nav-category-group">
+                            <h3 className="nav-category-title">
+                              {item.href && !item.children ? (
+                                <a href={item.href} target={item.target || undefined} onClick={toggleMobileMenu} className="hover:text-white transition-colors">{label}</a>
+                              ) : label}
+                            </h3>
+                            {item.children && (
+                              <div className="nav-category-children">
+                                {item.children.map((child) => (
+                                  <a
+                                    key={child.href}
+                                    href={child.href}
+                                    target={child.target || undefined}
+                                    className="nav-child-link"
+                                    onClick={toggleMobileMenu}
+                                  >
+                                    {child.id ? t('header_menu', child.id) || child.label : child.label}
+                                  </a>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
                     </div>
-                  )}
+
+                    {/* Right Column (Odd Indexes) */}
+                    <div className="nav-links-col">
+                      {NAV_ITEMS.filter((_, i) => i % 2 === 1).map((item) => {
+                        const label = item.id ? t('header_menu', item.id) || item.label : item.label;
+                        return (
+                          <div key={item.id || item.href} className="nav-category-group">
+                            <h3 className="nav-category-title">
+                              {item.href && !item.children ? (
+                                <a href={item.href} target={item.target || undefined} onClick={toggleMobileMenu} className="hover:text-white transition-colors">{label}</a>
+                              ) : label}
+                            </h3>
+                            {item.children && (
+                              <div className="nav-category-children">
+                                {item.children.map((child) => (
+                                  <a
+                                    key={child.href}
+                                    href={child.href}
+                                    target={child.target || undefined}
+                                    className="nav-child-link"
+                                    onClick={toggleMobileMenu}
+                                  >
+                                    {child.id ? t('header_menu', child.id) || child.label : child.label}
+                                  </a>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
                 </div>
-              )})}
+
+                {/* Right Panel: Sub-brands Card */}
+                <div className="nav-panel-right">
+                  <div className="nav-panel-card">
+                    <div className="nav-card-header">
+                      <img src="/images/logo/logo-oriaspa.png" alt="Oria Spa Logo" className="nav-card-logo" />
+                      <h3 className="nav-card-title">TechGalaxy Group</h3>
+                      <div className="nav-card-divider"></div>
+                    </div>
+                    
+                    <div className="nav-card-brands">
+                      {/* First Brand - Clear */}
+                      <div className="nav-brand-item">
+                        <p className="nav-brand-subtitle">Our Brands</p>
+                        <h4 className="nav-brand-name">
+                          {BRANDS[activeBrandIndex].name}
+                          {BRANDS[activeBrandIndex].sub && <><br/>{BRANDS[activeBrandIndex].sub}</>}
+                        </h4>
+                      </div>
+
+                      {/* Second Brand - Dim/Blurred Bottom */}
+                      <div className="nav-brand-item relative">
+                        <p className="nav-brand-subtitle">Our Brands</p>
+                        <h4 className="nav-brand-name">
+                          {BRANDS[(activeBrandIndex + 1) % BRANDS.length].name}
+                          {BRANDS[(activeBrandIndex + 1) % BRANDS.length].sub && <><br/>{BRANDS[(activeBrandIndex + 1) % BRANDS.length].sub}</>}
+                        </h4>
+                        
+                        {/* Dim & Blur Overlay */}
+                        <div className="nav-brand-blur-overlay"></div>
+                      </div>
+
+                      {/* Carousel Arrows */}
+                      <div className="flex items-center justify-center gap-6 mt-2">
+                        <button onClick={prevBrand} className="text-white hover:text-[#D4AF37] transition-colors p-2" aria-label="Previous Brand">
+                          <ChevronUp size={28} strokeWidth={1} />
+                        </button>
+                        <button onClick={nextBrand} className="text-white hover:text-[#D4AF37] transition-colors p-2" aria-label="Next Brand">
+                          <ChevronDown size={28} strokeWidth={1} />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </motion.nav>
           )}
         </AnimatePresence>
@@ -372,7 +421,7 @@ const Header = () => {
               exit={{ opacity: 0, y: -8, scale: 0.98 }}
               transition={{ duration: 0.22, ease: 'easeOut' }}
             >
-              <header className="nav-cart-drawer__header">
+              <header className="nav-cart-drawer__header font-sans uppercase tracking-widest text-sm font-bold">
                 <h2>{cartText('title', currentLang.code)}</h2>
                 <button type="button" className="nav-cart-drawer__close" onClick={() => setIsCartOpen(false)} aria-label="Close cart">
                   <X size={30} />
@@ -388,9 +437,9 @@ const Header = () => {
                       ) : (
                         <span className="nav-cart-drawer__thumb" aria-hidden="true" />
                       )}
-                      <div>
-                        <strong>{itemName(item, currentLang.code)}</strong>
-                        <p>{item.timeValue} mins · {formatCurrency(item.priceVND)} đ · SL {item.qty}</p>
+                      <div className="font-sans">
+                        <strong className="text-sm tracking-wide">{itemName(item, currentLang.code)}</strong>
+                        <p className="text-xs text-gray-400 mt-1">{item.timeValue} mins · {formatCurrency(item.priceVND)} đ · SL {item.qty}</p>
                       </div>
                       <button
                         type="button"
@@ -403,17 +452,17 @@ const Header = () => {
                     </article>
                   ))
                 ) : (
-                  <p className="nav-cart-drawer__empty">{cartText('empty', currentLang.code)}</p>
+                  <p className="nav-cart-drawer__empty font-sans uppercase tracking-widest text-sm text-center">{cartText('empty', currentLang.code)}</p>
                 )}
               </div>
 
-              <footer className="nav-cart-drawer__footer">
-                <div className="nav-cart-drawer__subtotal">
+              <footer className="nav-cart-drawer__footer font-sans uppercase tracking-widest text-sm">
+                <div className="nav-cart-drawer__subtotal flex justify-between items-center mb-4">
                   <span>{cartText('subtotal', currentLang.code)}</span>
-                  <strong>{formatCurrency(cartSubtotal)} đ</strong>
+                  <strong className="text-lg">{formatCurrency(cartSubtotal)} đ</strong>
                 </div>
                 {cartSnapshot.length > 0 && (
-                  <button type="button" className="nav-cart-drawer__place" onClick={handlePlaceOrder}>
+                  <button type="button" className="nav-cart-drawer__place w-full bg-[#D4AF37] text-black py-3 rounded-md font-bold transition-colors hover:bg-white" onClick={handlePlaceOrder}>
                     {cartText('placeOrder', currentLang.code)}
                   </button>
                 )}
@@ -422,6 +471,8 @@ const Header = () => {
           </>
         )}
       </AnimatePresence>
+
+
     </>
   );
 };

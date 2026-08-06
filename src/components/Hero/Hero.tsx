@@ -87,7 +87,8 @@ const Hero = () => {
           : [];
 
         if (json.success && remoteVideos.length > 0) {
-          setHomepageVideos(remoteVideos);
+          // Limit to 1 video on the frontend, even if admin adds more
+          setHomepageVideos(remoteVideos.slice(0, 1));
           const params = new URLSearchParams(window.location.search);
           const requestedVideo = Number(params.get('heroVideo'));
           const nextIndex = Number.isInteger(requestedVideo) && requestedVideo >= 0 && requestedVideo < remoteVideos.length
@@ -231,14 +232,15 @@ const Hero = () => {
           </motion.span>
         ) : null}
 
-        <motion.span className="hero-cinematic-sub2" variants={fadeInUp}>
-          {t('hero_section', 'subTitle2') || HERO_TEXT.subTitle2}
-        </motion.span>
-
-        {/* Main Title */}
+        {/* Main Title (Oria Spa) */}
         <motion.h1 className="hero-cinematic-title" variants={heroTitle}>
           {t('hero_section', 'title') || HERO_TEXT.title}
         </motion.h1>
+
+        {/* TechGalaxy Group */}
+        <motion.span className="font-sans uppercase tracking-widest font-medium mt-6" style={{ letterSpacing: '8px', fontSize: '2.5rem' }} variants={fadeInUp}>
+          TechGalaxy Group
+        </motion.span>
 
         <motion.div className="hero-cinematic-divider" variants={scaleIn} />
 
@@ -248,15 +250,7 @@ const Hero = () => {
           </motion.p>
         ) : null}
 
-        {/* CTA Buttons */}
-        <motion.div className="hero-ctas" variants={fadeInUp}>
-          <a href="#best-seller" className="hero-cta-btn hero-cta-primary hero-cta--pill">
-            {t('hero_section', 'cta1') || HERO_TEXT.cta1}
-          </a>
-          <a href={`/${currentLang}/new-user/standard/checkout`} className="hero-cta-btn hero-cta-secondary hero-cta--pill">
-            {t('hero_section', 'cta2') || HERO_TEXT.cta2}
-          </a>
-        </motion.div>
+
 
         {/* Chevrons Navigation for Desktop */}
         {homepageVideos.length > 1 && (
@@ -297,46 +291,9 @@ const Hero = () => {
           </div>
         )}
 
-        {/* Scroll Hint */}
-        <motion.div className="hero-scroll-hint" variants={fadeInUp}>
-          <ChevronDown size={20} className="hero-scroll-icon" />
-          <span className="hero-scroll-text">{t('hero_section', 'scrollHint') || HERO_TEXT.scrollHint}</span>
-        </motion.div>
+
       </motion.div>
 
-      {/* Branch Cards — kept below hero content */}
-      <motion.div
-        id="branches"
-        className="hero-branches"
-        variants={branchEntrance}
-        initial="hidden"
-        animate="visible"
-      >
-        {displayBranches.map((branch) => (
-          <a
-            key={branch.id}
-            href={branch.googleMaps}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="branch-card"
-          >
-            <div className="branch-card-info">
-              <div className="branch-card-row">
-                <MapPin size={18} />
-                <span>{branch.address}</span>
-              </div>
-              <div className="branch-card-row">
-                <Clock size={18} />
-                <span>Open {branch.hours}</span>
-              </div>
-              <div className="branch-card-row">
-                <Clock size={18} />
-                <span className="branch-last-order">Last order: 11:30pm</span>
-              </div>
-            </div>
-          </a>
-        ))}
-      </motion.div>
     </section>
   );
 };
