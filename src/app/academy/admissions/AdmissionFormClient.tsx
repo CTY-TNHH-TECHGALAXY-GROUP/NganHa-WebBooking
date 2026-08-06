@@ -34,6 +34,7 @@ export default function AdmissionFormClient() {
   const [employmentStatus, setEmploymentStatus] = useState('');
   const [canSubmit, setCanSubmit] = useState(false);
   const [statusMessage, setStatusMessage] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const updateSubmitState = (form: HTMLFormElement | null) => {
     if (!form) return;
@@ -106,7 +107,7 @@ export default function AdmissionFormClient() {
     updateSubmitState(event.currentTarget);
   };
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const form = event.currentTarget;
 
@@ -116,11 +117,37 @@ export default function AdmissionFormClient() {
       return;
     }
 
-    const data = new FormData(form);
-    const fullName = String(data.get('fullName') || '').trim() || 'ứng viên';
-    setStatusMessage(
-      `Cảm ơn ${fullName}. Đơn ứng tuyển của bạn đã được ghi nhận trong bản mẫu. Hãy kết nối biểu mẫu với cơ sở dữ liệu, dịch vụ email hoặc hệ thống nhân sự để sử dụng thực tế.`,
-    );
+    setIsSubmitting(true);
+    setStatusMessage('Đang xử lý hồ sơ của bạn, vui lòng đợi...');
+
+    try {
+      const data = new FormData(form);
+      
+      const response = await fetch('/api/recruitment', {
+        method: 'POST',
+        body: data,
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        const fullName = String(data.get('fullName') || '').trim() || 'ứng viên';
+        setStatusMessage(
+          `Cảm ơn ${fullName}. Đơn ứng tuyển của bạn đã được gửi thành công. Bộ phận tuyển dụng sẽ sớm liên hệ với bạn.`
+        );
+        form.reset();
+        setPhotoPreview('');
+        setCertificatePreview('');
+        setCanSubmit(false);
+      } else {
+        setStatusMessage(`Lỗi: ${result.error || 'Đã có lỗi xảy ra khi gửi form.'}`);
+      }
+    } catch (err) {
+      console.error('Submit form error:', err);
+      setStatusMessage('Lỗi kết nối. Vui lòng thử lại sau.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const isWorking = employmentStatus === 'working';
@@ -514,8 +541,8 @@ export default function AdmissionFormClient() {
               ) : null}
 
               <div className={styles.formActions}>
-                <button className={styles.submit} type="submit" disabled={!canSubmit}>
-                  Gửi đơn ứng tuyển
+                <button className={styles.submit} type="submit" disabled={!canSubmit || isSubmitting}>
+                  {isSubmitting ? 'Đang gửi...' : 'Gửi đơn ứng tuyển'}
                 </button>
               </div>
             </div>
