@@ -330,7 +330,8 @@
 }
 
 .field label span,
-.sectionLabel span {
+.sectionLabel span,
+.requiredBadge {
   display: inline-flex;
   min-height: 25px;
   align-items: center;

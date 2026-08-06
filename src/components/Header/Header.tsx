@@ -186,10 +186,8 @@ const Header = () => {
               </button>
 
               <a href="/" className="header-logo">
-                <span className="header-logo-icon">✦</span>
                 <div className="header-logo-text">
                   <span className="header-logo-name">Oria Spa</span>
-                  <span className="header-logo-sub">spa</span>
                 </div>
               </a>
             </div>

@@ -130,13 +130,13 @@ export default function AdmissionFormClient() {
       <div className={styles.noise} aria-hidden="true" />
       <section className={styles.hero}>
         <div>
-          <p className={styles.eyebrow}>Gia nhập đội ngũ Oria Spa Academy</p>
-          <h1>{applicationMode === 'recruitment' ? 'Recruitment' : 'Admission'}</h1>
-          <p className={styles.heroCopy}>
-            {applicationMode === 'recruitment'
-              ? 'Apply for a professional role at Oria Spa Academy. Complete your personal details, employment background, physical information, and preferred position. Our recruitment team will review your application and contact shortlisted candidates.'
-              : 'The admission application for Oria Spa Academy courses is being prepared. You can switch back to recruitment now, or return soon when the admission form opens.'}
-          </p>
+          <p className={styles.eyebrow}>GIA NHẬP ĐỘI NGŨ ORIA</p>
+          <h1>{applicationMode === 'recruitment' ? 'MÔI TRƯỜNG LÀM VIỆC ĐÁNG MƠ ƯỚC' : 'Admission'}</h1>
+          {applicationMode !== 'recruitment' && (
+            <p className={styles.heroCopy}>
+              The admission application for Oria Spa Academy courses is being prepared. You can switch back to recruitment now, or return soon when the admission form opens.
+            </p>
+          )}
 
           <div className={styles.modeSwitch} aria-label="Choose application type">
             <button
@@ -206,6 +206,9 @@ export default function AdmissionFormClient() {
                   <div className={styles.uploadContent}>
                     <div className={styles.uploadIcon}>+</div>
                     <strong>Tải ảnh toàn thân của bạn</strong>
+                    <div style={{ marginBottom: 12 }}>
+                      <span className={styles.requiredBadge}>BẮT BUỘC</span>
+                    </div>
                     <span>
                       JPG hoặc PNG · Tối đa 5 MB
                       <br />
@@ -226,6 +229,7 @@ export default function AdmissionFormClient() {
                   name="certificatePhoto"
                   type="file"
                   accept="image/*"
+                  required
                   onChange={handleCertificateChange}
                 />
                 {certificatePreview ? (
@@ -238,8 +242,11 @@ export default function AdmissionFormClient() {
                   <div className={styles.uploadContent}>
                     <div className={styles.uploadIcon}>+</div>
                     <strong>Thêm ảnh chứng chỉ</strong>
+                    <div style={{ marginBottom: 12 }}>
+                      <span className={styles.requiredBadge}>BẮT BUỘC</span>
+                    </div>
                     <span>
-                      Nếu có · JPG hoặc PNG
+                      JPG hoặc PNG
                       <br />
                       Tối đa 5 MB
                     </span>
