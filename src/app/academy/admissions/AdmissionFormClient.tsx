@@ -454,7 +454,7 @@ export default function AdmissionFormClient() {
                   <textarea
                     id="previousDuties"
                     name="previousDuties"
-                    placeholder="Mô tả kỹ năng, dịch vụ, kỹ thuật, ưu điểm hoặc thế mạnh chuyên môn của bạn."
+                    placeholder="Ví dụ: xoa bóp trị liệu toàn thân 2 năm, ráy tai 3 năm, kĩ năng đánh máy 1 năm.."
                     required
                   />
                 </div>
