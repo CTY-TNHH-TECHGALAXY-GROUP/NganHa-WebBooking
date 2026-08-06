@@ -17,6 +17,7 @@ type NavChildItem = {
   id?: string;
   label: string;
   href: string;
+  target?: string;
   isComingSoon?: boolean;
 };
 
