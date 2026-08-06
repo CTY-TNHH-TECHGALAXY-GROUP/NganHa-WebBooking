@@ -97,25 +97,60 @@ const RootLayout = async ({
   let systemSettings = {};
   let aboutStoryContent = {};
   let brandHistory: any = null;
+  let homepageStyling: any = null;
   try {
     const supabase = getSupabaseAdmin();
     const { data } = await supabase.from('SystemConfigs')
       .select('key, value')
-      .in('key', ['system_settings', 'about_story_content', 'brand_history']);
+      .in('key', ['system_settings', 'about_story_content', 'brand_history', 'homepage_styling']);
       
     if (data) {
       data.forEach(item => {
         if (item.key === 'system_settings') systemSettings = item.value;
         if (item.key === 'about_story_content') aboutStoryContent = item.value;
         if (item.key === 'brand_history') brandHistory = item.value;
+        if (item.key === 'homepage_styling') homepageStyling = item.value;
       });
     }
   } catch (e) {
     console.error('Error fetching system settings', e);
   }
 
+  const headingFont = homepageStyling?.headingFont || 'Playfair Display';
+  const bodyFont = homepageStyling?.bodyFont || 'Inter';
+  const baseFontSize = homepageStyling?.baseFontSize || '16px';
+  const heroHeadingSize = homepageStyling?.heroHeadingSize || '5rem';
+  const headingWeight = homepageStyling?.headingWeight || '600';
+
+  // Construct Google Fonts URL
+  const gFontUrl = `https://fonts.googleapis.com/css2?family=${headingFont.replace(/ /g, '+')}:ital,wght@0,400;0,${headingWeight};1,400&family=${bodyFont.replace(/ /g, '+')}:wght@300;400;500;600&display=swap`;
+
   return (
     <html lang="vi" className={`${playfair.variable} ${inter.variable}`}>
+      <head>
+        {homepageStyling && <link href={gFontUrl} rel="stylesheet" />}
+        {homepageStyling && (
+          <style dangerouslySetInnerHTML={{
+            __html: `
+              :root {
+                --font-heading: '${headingFont}', ${playfair.style.fontFamily}, serif;
+                --font-body: '${bodyFont}', ${inter.style.fontFamily}, sans-serif;
+                font-size: ${baseFontSize};
+              }
+              .hero-title, h1, h2, h3, h4, h5, h6 {
+                font-family: var(--font-heading);
+                font-weight: ${headingWeight};
+              }
+              .hero-title {
+                font-size: ${heroHeadingSize} !important;
+              }
+              body {
+                font-family: var(--font-body);
+              }
+            `
+          }} />
+        )}
+      </head>
       <body className="w-full min-h-full antialiased font-sans" suppressHydrationWarning>
         <SystemSettingsProvider systemSettings={systemSettings} aboutStoryContent={aboutStoryContent} brandHistory={brandHistory}>
           <TranslationProvider initialTranslations={translations}>

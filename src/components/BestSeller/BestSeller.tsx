@@ -41,7 +41,7 @@ const FALLBACK_SERVICES = [
     descriptions: { en: 'Warm soak, exfoliation and targeted pressure-point treatment.', vi: 'Ngâm ấm, tẩy tế bào chết và bấm huyệt.' },
     timeDisplay: '60 min',
     priceVND: 475000,
-    img: '/images/services/foot.png',
+    img: '/images/services/foot-massage.png',
   },
   {
     id: 'mock-5',
@@ -59,7 +59,7 @@ const FALLBACK_SERVICES = [
     descriptions: { en: 'Gentle ear care paired with a calming head and temple massage.', vi: 'Làm sạch tai nhẹ nhàng kết hợp massage thư giãn.' },
     timeDisplay: '45 min',
     priceVND: 370000,
-    img: '/images/services/ear-cleaning.png',
+    img: '/images/services/ear-clean.png',
   },
 ];
 

@@ -58,7 +58,7 @@
       height: 16px;
     }
 
-    @import url("https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap");
+    @import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@400;500;600&display=swap&subset=vietnamese");
 
     @font-face {
       font-family: "Abramo";
@@ -76,7 +76,7 @@
       --gold-3: #f1dfb0;
       --text: #f1dfb0;
       --muted: #bca87e;
-      --word-font: "EB Garamond", "Abramo", Georgia, "Times New Roman", serif;
+      --word-font: "Playfair Display", "Abramo", Georgia, "Times New Roman", serif;
       --ui-font: Inter, system-ui, sans-serif;
       --safe-top: max(env(safe-area-inset-top), 18px);
       --safe-bottom: max(env(safe-area-inset-bottom), 18px);

@@ -3,7 +3,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, ShoppingBag, User, ChevronDown } from 'lucide-react';
+import { Menu, X, User, ChevronDown } from 'lucide-react';
 import type { CartItem } from '@/components/Menu/types';
 import { formatCurrency } from '@/components/Menu/utils';
 import { readBookingCart, removeBookingCartItemByCartId } from '@/lib/bookingCartStorage';
@@ -291,7 +291,7 @@ const Header = () => {
                 <User size={20} />
               </a>
               <button type="button" className="header-icon-btn header-cart-btn" data-nav-cart-button aria-label={`Cart, ${cartCount} services selected`} onClick={handleCartClick}>
-                <ShoppingBag size={20} />
+                <img src="/icons/shopping-cart.png" alt="Cart" className="w-5 h-5 object-contain brightness-0 invert" />
                 {cartCount > 0 && <span className="header-cart-badge">{cartCount}</span>}
               </button>
             </div>

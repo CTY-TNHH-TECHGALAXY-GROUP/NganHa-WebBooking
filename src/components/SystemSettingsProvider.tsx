@@ -66,6 +66,11 @@ export interface BrandHistoryConfig {
     title2: Record<string, string>;
     body: Record<string, string>;
   };
+  finale?: {
+    eyebrow: Record<string, string>;
+    title: Record<string, string>;
+    body: Record<string, string>;
+  };
   chapters: BrandHistoryChapter[];
 }
 

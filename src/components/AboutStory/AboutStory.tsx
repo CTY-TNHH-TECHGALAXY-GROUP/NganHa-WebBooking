@@ -953,13 +953,17 @@ export const AboutStory = () => {
         ))}
       </nav>
 
-      <footer className={styles.finale}>
-        <span className={styles.eyebrow}>{isEn ? 'The story continues' : 'Câu chuyện còn tiếp tục'}</span>
-        <h2>{isEn ? 'Less interface. More feeling.' : 'Ít cảm giác giao diện hơn. Nhiều cảm xúc hơn.'}</h2>
+            <footer className={styles.finale}>
+        <span className={styles.eyebrow}>
+          {getLocalizedText(brandHistory?.finale?.eyebrow, isEn ? 'en' : 'vi', isEn ? 'The story continues' : 'C�u chuy?n c�n ti?p t?c')}
+        </span>
+        <h2>
+          {getLocalizedText(brandHistory?.finale?.title, isEn ? 'en' : 'vi', isEn ? 'Less interface. More feeling.' : '�t c?m gi�c giao di?n hon. Nhi?u c?m x�c hon.')}
+        </h2>
         <p>
-          {isEn
+          {getLocalizedText(brandHistory?.finale?.body, isEn ? 'en' : 'vi', isEn
             ? 'History becomes a quiet cinematic journey through the brand, its people, and its spaces.'
-            : 'Lịch sử trở thành một hành trình điện ảnh nhẹ nhàng qua thương hiệu, con người và những không gian đã tạo nên Ngân Hà.'}
+            : 'L?ch s? tr? th�nh m?t h�nh tr�nh di?n ?nh nh? nh�ng qua thuong hi?u, con ngu?i v� nh?ng kh�ng gian d� t?o n�n Ng�n H�.')}
         </p>
       </footer>
     </section>

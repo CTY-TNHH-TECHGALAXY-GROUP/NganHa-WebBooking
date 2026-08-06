@@ -1718,6 +1718,38 @@ function WebGLFallback() {
 }
 
 function CelestialMenu() {
+  const [activeCategories, setActiveCategories] = useState<ServiceCategory[]>(serviceCategories);
+
+  useEffect(() => {
+    fetch('/api/services')
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.services) {
+          const apiServices = data.services;
+          const merged = serviceCategories.map(cat => {
+            const apiCat = apiServices.find((c: any) => c.id === cat.id);
+            if (apiCat) {
+              return {
+                ...cat,
+                name: apiCat.name || cat.name,
+                subtitle: apiCat.description || cat.subtitle,
+                services: apiCat.items?.map((item: any) => ({
+                  id: item.id,
+                  name: item.name,
+                  description: item.description,
+                  durationMinutes: item.durationMinutes,
+                  price: item.price,
+                  image: cat.services[0]?.image || { src: '', alt: '' }
+                })) || cat.services
+              };
+            }
+            return cat;
+          });
+          setActiveCategories(merged);
+        }
+      })
+      .catch(err => console.error('Error fetching services for celestial menu:', err));
+  }, []);
   const profile = useResponsiveQuality();
   const reducedMotion = useReducedMotion();
   const [activeFilter, setActiveFilter] = useState('all');
@@ -1727,9 +1759,9 @@ function CelestialMenu() {
   const categoryId = useBookingStore((state) => state.categoryId);
   const selectCategory = useBookingStore((state) => state.selectCategory);
   const goBack = useBookingStore((state) => state.goBack);
-  const selectedCategory = serviceCategories.find((category) => category.id === categoryId);
+  const selectedCategory = activeCategories.find((category) => category.id === categoryId);
   const normalizedSearch = search.trim().toLocaleLowerCase('vi-VN');
-  const hasMatches = serviceCategories.some((category) => {
+  const hasMatches = activeCategories.some((category) => {
     const matchesFilter = activeFilter === 'all' || category.tags.includes(activeFilter);
     const matchesSearch =
       !normalizedSearch ||
@@ -1781,7 +1813,7 @@ function CelestialMenu() {
         search={search}
         setSearch={setSearch}
       />
-      <AccessibleCategoryFallback categories={serviceCategories} onSelectCategory={handleSelectCategory} />
+      <AccessibleCategoryFallback categories={activeCategories} onSelectCategory={handleSelectCategory} />
       {stage === 'categories' && !categoryId && hasMatches && (
         <div className="category-guidance" aria-live="polite">
           Chọn một chòm sao để khám phá dịch vụ
@@ -1803,7 +1835,7 @@ function CelestialMenu() {
         <color attach="background" args={['#020814']} />
         <Suspense fallback={<WebGLFallback />}>
           <CategoryUniverse
-            categories={serviceCategories}
+            categories={activeCategories}
             profile={profile}
             selectedCategoryId={categoryId}
             onSelectCategory={handleSelectCategory}

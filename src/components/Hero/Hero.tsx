@@ -21,7 +21,7 @@ const HERO_TEXT = {
   subtitle: '',
   title: 'Oria Spa',
   subTitle2: 'Welcome to',
-  tagline: 'SPA',
+  tagline: '',
   cta1: 'BEST-SELLER',
   cta2: 'Đặt Lịch Ngay',
   scrollHint: 'Cuộn xuống để khám phá',
@@ -242,9 +242,11 @@ const Hero = () => {
 
         <motion.div className="hero-cinematic-divider" variants={scaleIn} />
 
-        <motion.p className="hero-cinematic-tagline" variants={fadeInUp}>
-          {t('hero_section', 'tagline') || HERO_TEXT.tagline}
-        </motion.p>
+        {(t('hero_section', 'tagline') || HERO_TEXT.tagline) && (t('hero_section', 'tagline') !== 'SPA' || HERO_TEXT.tagline !== '') ? (
+          <motion.p className="hero-cinematic-tagline" variants={fadeInUp}>
+            {t('hero_section', 'tagline') === 'SPA' && HERO_TEXT.tagline === '' ? '' : (t('hero_section', 'tagline') || HERO_TEXT.tagline)}
+          </motion.p>
+        ) : null}
 
         {/* CTA Buttons */}
         <motion.div className="hero-ctas" variants={fadeInUp}>

@@ -26,7 +26,7 @@ export class CelestialEngine {
 
       const urlParams = new URLSearchParams(window.location.search);
       const layoutEditorEnabled = urlParams.has("layoutEdit") || urlParams.get("mode") === "layout-edit";
-      const LAYOUT_STORAGE_KEY = "nganha-celestial-layout-overrides-safe-cinematic-3d-ellipse-v56";
+      const LAYOUT_STORAGE_KEY = "nganha-celestial-v61-standalone";
       const PERFORMANCE = {
         maxPixelRatio: 1.15,
         targetFrameMs: 1000 / 42,
@@ -97,11 +97,11 @@ export class CelestialEngine {
           tags: ["body-care", "relaxation", "therapy"],
           size: 2.06,
           position: {
-            largeDesktop: { x: -1.5, y: 0.1, z: 1.2, scale: 0.96, rx: -0.08, ry: 0.24, rz: -0.04 },
-            desktop: { x: -1.36, y: 0.08, z: 1.0, scale: 0.9, rx: -0.07, ry: 0.2, rz: -0.035 },
-            laptop: { x: -1.1, y: 0.06, z: 0.8, scale: 0.8, rx: -0.06, ry: 0.16, rz: -0.028 },
-            tabletLandscape: { x: -0.86, y: 0.04, z: 0.6, scale: 0.7, rx: -0.05, ry: 0.12, rz: -0.02 },
-            tabletPortrait: { x: -0.5, y: 0.7, z: 0.36, scale: 0.62, rx: -0.04, ry: 0.1, rz: -0.014 },
+            largeDesktop: { x: -1.64, y: -0.1, z: 1.34, scale: 0.98, rx: -0.1, ry: 0.32, rz: -0.052 },
+            desktop: { x: -1.5, y: -0.12, z: 1.18, scale: 0.92, rx: -0.096, ry: 0.28, rz: -0.046 },
+            laptop: { x: -1.26, y: -0.16, z: 0.92, scale: 0.82, rx: -0.082, ry: 0.22, rz: -0.034 },
+            tabletLandscape: { x: -1.0, y: -0.18, z: 0.72, scale: 0.72, rx: -0.068, ry: 0.16, rz: -0.024 },
+            tabletPortrait: { x: -0.58, y: 0.74, z: 0.38, scale: 0.62, rx: -0.052, ry: 0.12, rz: -0.016 },
             mobile: { x: 0, y: 0.06, z: 0.2, scale: 0.62, ry: 0 },
           },
           satellites: [
@@ -122,11 +122,11 @@ export class CelestialEngine {
           tags: ["relaxation", "therapy"],
           size: 1.9,
           position: {
-            largeDesktop: { x: 0.7, y: 0.92, z: 0.3, scale: 0.66, rx: 0.03, ry: -0.06, rz: 0.014 },
-            desktop: { x: 0.6, y: 0.84, z: 0.24, scale: 0.62, rx: 0.028, ry: -0.055, rz: 0.012 },
-            laptop: { x: 0.46, y: 0.72, z: 0.16, scale: 0.56, rx: 0.024, ry: -0.045, rz: 0.01 },
-            tabletLandscape: { x: 0.36, y: 0.62, z: 0.06, scale: 0.5, rx: 0.02, ry: -0.035, rz: 0.008 },
-            tabletPortrait: { x: 0.56, y: 0.68, z: -0.24, scale: 0.52, rx: 0.018, ry: -0.025, rz: 0.008 },
+            largeDesktop: { x: 0.12, y: 0.58, z: 0.36, scale: 0.72, rx: 0.04, ry: -0.08, rz: 0.018 },
+            desktop: { x: 0.08, y: 0.52, z: 0.3, scale: 0.68, rx: 0.036, ry: -0.07, rz: 0.016 },
+            laptop: { x: 0.02, y: 0.46, z: 0.2, scale: 0.62, rx: 0.032, ry: -0.055, rz: 0.014 },
+            tabletLandscape: { x: -0.04, y: 0.42, z: 0.08, scale: 0.56, rx: 0.028, ry: -0.04, rz: 0.012 },
+            tabletPortrait: { x: 0.6, y: 0.68, z: -0.28, scale: 0.54, rx: 0.025, ry: -0.025, rz: 0.012 },
             mobile: { x: 0, y: 0.06, z: 0.2, scale: 0.62, ry: 0 },
           },
           satellites: [
@@ -145,11 +145,11 @@ export class CelestialEngine {
           tags: ["hair-care", "relaxation"],
           size: 1.98,
           position: {
-            largeDesktop: { x: 1.56, y: 0.36, z: -0.16, scale: 0.68, rx: -0.06, ry: -0.24, rz: 0.04 },
-            desktop: { x: 1.4, y: 0.32, z: -0.18, scale: 0.64, rx: -0.055, ry: -0.2, rz: 0.035 },
-            laptop: { x: 1.14, y: 0.28, z: -0.18, scale: 0.56, rx: -0.045, ry: -0.16, rz: 0.028 },
-            tabletLandscape: { x: 0.9, y: 0.24, z: -0.14, scale: 0.5, rx: -0.038, ry: -0.12, rz: 0.02 },
-            tabletPortrait: { x: -0.56, y: 0.04, z: 0.18, scale: 0.54, rx: -0.03, ry: -0.08, rz: 0.012 },
+            largeDesktop: { x: 1.42, y: 0.52, z: -0.22, scale: 0.72, rx: -0.1, ry: -0.32, rz: 0.06 },
+            desktop: { x: 1.3, y: 0.48, z: -0.24, scale: 0.66, rx: -0.09, ry: -0.28, rz: 0.052 },
+            laptop: { x: 1.08, y: 0.44, z: -0.24, scale: 0.6, rx: -0.07, ry: -0.22, rz: 0.038 },
+            tabletLandscape: { x: 0.9, y: 0.42, z: -0.18, scale: 0.54, rx: -0.052, ry: -0.16, rz: 0.026 },
+            tabletPortrait: { x: -0.58, y: 0.04, z: 0.2, scale: 0.58, rx: -0.038, ry: -0.09, rz: 0.014 },
             mobile: { x: 0, y: 0.06, z: 0.2, scale: 0.62, ry: 0 },
           },
           satellites: [
@@ -170,11 +170,11 @@ export class CelestialEngine {
           tags: ["body-care", "therapy"],
           size: 1.96,
           position: {
-            largeDesktop: { x: -0.7, y: -0.86, z: 0.7, scale: 0.78, rx: 0.04, ry: 0.08, rz: 0.02 },
-            desktop: { x: -0.6, y: -0.78, z: 0.6, scale: 0.72, rx: 0.036, ry: 0.07, rz: 0.018 },
-            laptop: { x: -0.48, y: -0.68, z: 0.46, scale: 0.64, rx: 0.03, ry: 0.06, rz: 0.014 },
-            tabletLandscape: { x: -0.36, y: -0.58, z: 0.34, scale: 0.56, rx: 0.025, ry: 0.05, rz: 0.01 },
-            tabletPortrait: { x: 0.52, y: 0.02, z: -0.1, scale: 0.56, rx: 0.022, ry: 0.06, rz: 0.01 },
+            largeDesktop: { x: -0.56, y: -1.04, z: 0.78, scale: 0.86, rx: 0.05, ry: 0.1, rz: 0.03 },
+            desktop: { x: -0.48, y: -0.94, z: 0.7, scale: 0.8, rx: 0.046, ry: 0.09, rz: 0.024 },
+            laptop: { x: -0.38, y: -0.82, z: 0.56, scale: 0.7, rx: 0.038, ry: 0.075, rz: 0.018 },
+            tabletLandscape: { x: -0.28, y: -0.72, z: 0.42, scale: 0.62, rx: 0.032, ry: 0.06, rz: 0.012 },
+            tabletPortrait: { x: 0.54, y: 0.02, z: -0.12, scale: 0.6, rx: 0.028, ry: 0.075, rz: 0.012 },
             mobile: { x: 0, y: 0.06, z: 0.2, scale: 0.62, ry: 0 },
           },
           satellites: [
@@ -194,11 +194,11 @@ export class CelestialEngine {
           tags: ["skin-care", "relaxation"],
           size: 2.0,
           position: {
-            largeDesktop: { x: 0.5, y: -0.6, z: 0.18, scale: 0.68, rx: 0.04, ry: -0.03, rz: -0.01 },
-            desktop: { x: 0.44, y: -0.54, z: 0.14, scale: 0.62, rx: 0.036, ry: -0.028, rz: -0.008 },
-            laptop: { x: 0.34, y: -0.48, z: 0.06, scale: 0.56, rx: 0.03, ry: -0.022, rz: -0.006 },
-            tabletLandscape: { x: 0.26, y: -0.42, z: 0.0, scale: 0.5, rx: 0.026, ry: -0.018, rz: -0.004 },
-            tabletPortrait: { x: -0.52, y: -0.48, z: 0.32, scale: 0.58, rx: 0.03, ry: -0.015, rz: -0.004 },
+            largeDesktop: { x: 0.62, y: -0.74, z: 0.12, scale: 0.7, rx: 0.06, ry: -0.04, rz: -0.012 },
+            desktop: { x: 0.54, y: -0.68, z: 0.08, scale: 0.66, rx: 0.056, ry: -0.038, rz: -0.01 },
+            laptop: { x: 0.42, y: -0.6, z: 0.0, scale: 0.58, rx: 0.048, ry: -0.03, rz: -0.008 },
+            tabletLandscape: { x: 0.32, y: -0.54, z: -0.04, scale: 0.52, rx: 0.04, ry: -0.026, rz: -0.006 },
+            tabletPortrait: { x: -0.54, y: -0.5, z: 0.36, scale: 0.62, rx: 0.038, ry: -0.018, rz: -0.006 },
             mobile: { x: 0, y: 0.06, z: 0.2, scale: 0.62, ry: 0 },
           },
           satellites: [
@@ -218,11 +218,11 @@ export class CelestialEngine {
           tags: ["body-care", "therapy"],
           size: 1.44,
           position: {
-            largeDesktop: { x: -0.04, y: -1.06, z: -0.06, scale: 0.52, rx: 0.025, ry: -0.07, rz: -0.03 },
-            desktop: { x: -0.02, y: -0.94, z: -0.08, scale: 0.48, rx: 0.022, ry: -0.06, rz: -0.025 },
-            laptop: { x: 0.0, y: -0.8, z: -0.08, scale: 0.44, rx: 0.02, ry: -0.05, rz: -0.02 },
-            tabletLandscape: { x: 0.0, y: -0.68, z: -0.06, scale: 0.42, rx: 0.016, ry: -0.035, rz: -0.012 },
-            tabletPortrait: { x: -0.54, y: -0.88, z: -0.08, scale: 0.5, rx: 0.016, ry: -0.04, rz: -0.008 },
+            largeDesktop: { x: 0.16, y: -1.24, z: -0.1, scale: 0.54, rx: 0.03, ry: -0.09, rz: -0.04 },
+            desktop: { x: 0.12, y: -1.1, z: -0.12, scale: 0.5, rx: 0.028, ry: -0.08, rz: -0.032 },
+            laptop: { x: 0.06, y: -0.94, z: -0.12, scale: 0.46, rx: 0.024, ry: -0.06, rz: -0.024 },
+            tabletLandscape: { x: 0.02, y: -0.78, z: -0.1, scale: 0.44, rx: 0.02, ry: -0.04, rz: -0.014 },
+            tabletPortrait: { x: -0.56, y: -0.92, z: -0.1, scale: 0.54, rx: 0.02, ry: -0.045, rz: -0.008 },
             mobile: { x: 0, y: 0.06, z: 0.2, scale: 0.62, ry: 0 },
           },
           satellites: [
@@ -242,11 +242,11 @@ export class CelestialEngine {
           tags: ["body-care", "therapy"],
           size: 1.94,
           position: {
-            largeDesktop: { x: 1.42, y: -0.34, z: -0.18, scale: 0.54, rx: -0.03, ry: -0.1, rz: -0.016 },
-            desktop: { x: 1.3, y: -0.32, z: -0.18, scale: 0.5, rx: -0.028, ry: -0.088, rz: -0.014 },
-            laptop: { x: 1.06, y: -0.3, z: -0.16, scale: 0.46, rx: -0.024, ry: -0.074, rz: -0.012 },
-            tabletLandscape: { x: 0.82, y: -0.28, z: -0.12, scale: 0.42, rx: -0.02, ry: -0.06, rz: -0.01 },
-            tabletPortrait: { x: 0.54, y: -0.5, z: -0.18, scale: 0.5, rx: -0.018, ry: -0.06, rz: -0.01 },
+            largeDesktop: { x: 1.46, y: -0.46, z: -0.24, scale: 0.58, rx: -0.04, ry: -0.12, rz: -0.02 },
+            desktop: { x: 1.36, y: -0.44, z: -0.24, scale: 0.54, rx: -0.036, ry: -0.105, rz: -0.018 },
+            laptop: { x: 1.14, y: -0.42, z: -0.22, scale: 0.5, rx: -0.032, ry: -0.09, rz: -0.016 },
+            tabletLandscape: { x: 0.86, y: -0.4, z: -0.16, scale: 0.46, rx: -0.028, ry: -0.07, rz: -0.012 },
+            tabletPortrait: { x: 0.56, y: -0.52, z: -0.22, scale: 0.54, rx: -0.024, ry: -0.075, rz: -0.012 },
             mobile: { x: 0, y: 0.06, z: 0.2, scale: 0.62, ry: 0 },
           },
           satellites: [
