@@ -4,6 +4,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, MapPin, ChevronUp, ChevronDown, ShoppingCart } from 'lucide-react';
+import SmartLogo from '@/components/SmartLogo';
 import type { CartItem } from '@/components/Menu/types';
 import { formatCurrency } from '@/components/Menu/utils';
 import { readBookingCart, removeBookingCartItemByCartId } from '@/lib/bookingCartStorage';
@@ -55,17 +56,6 @@ const NAV_ITEMS: NavItem[] = [
     ],
   },
   {
-    id: 'spa_home',
-    label: 'Home Spa',
-    isUnclickable: true,
-    children: [
-      { id: 'home_therapy', label: 'Home Therapy', href: '/#home-therapy', isComingSoon: true },
-      { id: 'home_care', label: 'Home Care', href: '/#home-care', isComingSoon: true },
-    ],
-  },
-  { id: 'history', label: 'History', href: '/history' },
-  { id: 'blogs', label: 'Blogs', href: '/blog.html', target: '_blank' },
-  {
     id: 'academy',
     label: 'Academy',
     isUnclickable: true,
@@ -75,6 +65,9 @@ const NAV_ITEMS: NavItem[] = [
       { id: 'academy_certification', label: 'Certification', href: '/academy/certification' },
     ],
   },
+  { id: 'history', label: 'History', href: '/history' },
+  { id: 'privileges', label: 'Your privileges', href: '/privileges' },
+  { id: 'blogs', label: 'Blogs', href: '/blog.html', target: '_blank' },
 ];
 
 const CART_COPY = {
@@ -87,7 +80,11 @@ const CART_COPY = {
     kr: '선택된 서비스가 없습니다',
   },
   subtotal: { vi: 'Tạm tính', en: 'Subtotal', cn: '小计', jp: '小計', kr: '소계' },
-  placeOrder: { vi: 'Đặt lịch', en: 'Place order', cn: '提交订单', jp: '予約へ進む', kr: '예약하기' },
+  placeOrder: { vi: 'Tiến hành đặt lịch', en: 'Place order', cn: '提交订单', jp: '予約へ進む', kr: '예약하기' },
+  taxNote: { vi: 'Thuế và ưu đãi được áp dụng ở bước thanh toán.', en: 'Taxes and discounts calculated at checkout.', cn: '税费和优惠在结账时计算。', jp: '税金と割引は会計時に計算されます。', kr: '세금 및 할인은 결제 시 계산됩니다.' },
+  explore: { vi: 'Khám phá dịch vụ', en: 'Explore our services', cn: '探索我们的服务', jp: 'サービスを見る', kr: '서비스 살펴보기' },
+  mins: { vi: 'phút', en: 'mins', cn: '分钟', jp: '分', kr: '분' },
+  vipRoom: { vi: 'Phòng VIP', en: 'VIP Room', cn: '贵宾室', jp: 'VIPルーム', kr: 'VIP 룸' },
 };
 
 const cartText = (key: keyof typeof CART_COPY, lang: string) =>
@@ -107,6 +104,7 @@ const Header = () => {
 
   const BRANDS = useMemo(() => [
     { name: 'Oria Spa' },
+    { name: 'Oria Home' },
     { name: 'Oria Farm', sub: 'Store' },
     { name: 'Oria Farm', sub: 'Retreat' }
   ], []);
@@ -118,6 +116,13 @@ const Header = () => {
   const prevBrand = () => {
     setActiveBrandIndex((prev) => (prev - 1 + BRANDS.length) % BRANDS.length);
   };
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActiveBrandIndex((prev) => (prev + 1) % BRANDS.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, [BRANDS.length]);
 
   const { 
     isMobileMenuOpen, 
@@ -186,11 +191,11 @@ const Header = () => {
             {/* Mobile Toggle (now used for all screens) on the left */}
             <div className="header-top-left">
               <button
-                className="header-mobile-toggle !flex text-white"
+                className="header-mobile-toggle !flex text-[#f7ebc7]"
                 onClick={toggleMobileMenu}
                 aria-label="Toggle menu"
               >
-                {isMobileMenuOpen ? <X size={28} className="text-white" /> : <Menu size={28} className="text-white" />}
+                {isMobileMenuOpen ? <X size={28} className="text-[#f7ebc7]" /> : <Menu size={28} className="text-[#f7ebc7]" />}
               </button>
             </div>
 
@@ -201,7 +206,7 @@ const Header = () => {
               {/* Book Button */}
               <a 
                 href={`/${currentLang.code}/new-user/standard/checkout`}
-                className="text-white hover:text-white/80 active:opacity-50 font-bold text-sm uppercase tracking-wider mr-4 lg:mr-6 transition-all duration-300"
+                className="text-[#f7ebc7] hover:text-[#f7ebc7]/80 active:opacity-50 font-bold text-sm uppercase tracking-wider mr-4 lg:mr-6 transition-all duration-300"
               >
                 Book
               </a>
@@ -209,13 +214,26 @@ const Header = () => {
               {/* Cart Button */}
               <button 
                 type="button"
-                className="relative text-white hover:text-[#D4AF37] mr-4 lg:mr-6 transition-colors duration-300 flex items-center"
+                className="relative text-[#f7ebc7] hover:text-[#D4AF37] mr-4 lg:mr-6 transition-colors duration-300 flex items-center"
                 onClick={handleCartClick}
                 aria-label={`Cart, ${cartCount} services selected`}
               >
-                <ShoppingCart size={20} />
+                <div 
+                  className="w-7 h-7 bg-[#f7ebc7]" 
+                  style={{
+                    maskImage: 'url(/icons/shopping-cart.png)',
+                    WebkitMaskImage: 'url(/icons/shopping-cart.png)',
+                    maskSize: 'contain',
+                    WebkitMaskSize: 'contain',
+                    maskRepeat: 'no-repeat',
+                    WebkitMaskRepeat: 'no-repeat',
+                    maskPosition: 'center',
+                    WebkitMaskPosition: 'center'
+                  }}
+                  aria-hidden="true"
+                />
                 {cartCount > 0 && (
-                  <span className="absolute -top-2 -right-2 w-4 h-4 bg-white text-black text-[10px] font-bold rounded-full flex items-center justify-center">
+                  <span className="absolute -top-1 -right-2 w-5 h-5 bg-[#e1272d] text-white text-[11px] font-bold rounded-full flex items-center justify-center shadow-md">
                     {cartCount}
                   </span>
                 )}
@@ -235,7 +253,7 @@ const Header = () => {
                     alt={currentLang.label}
                     className="header-lang-flag-img"
                   />
-                  <ChevronDown size={14} className={`lang-chevron text-white ${isLangDropdownOpen ? 'rotate' : ''}`} />
+                  <ChevronDown size={14} className={`lang-chevron text-[#f7ebc7] ${isLangDropdownOpen ? 'rotate' : ''}`} />
                 </button>
                 
                 {/* Dropdown Menu */}
@@ -257,8 +275,8 @@ const Header = () => {
                 </div>
               </div>
 
-              <a href="https://maps.app.goo.gl/8XBkjsJicXqdNsZk7" target="_blank" rel="noopener noreferrer" className="header-icon-btn text-white" aria-label="Location">
-                <MapPin size={20} className="text-white" />
+              <a href="https://maps.app.goo.gl/8XBkjsJicXqdNsZk7" target="_blank" rel="noopener noreferrer" className="header-icon-btn text-[#f7ebc7]" aria-label="Location">
+                <MapPin size={20} className="text-[#f7ebc7]" />
               </a>
             </div>
           </div>
@@ -295,7 +313,7 @@ const Header = () => {
                           <div key={item.id || item.href} className="nav-category-group">
                             <h3 className="nav-category-title">
                               {item.href && !item.children ? (
-                                <a href={item.href} target={item.target || undefined} onClick={toggleMobileMenu} className="hover:text-white transition-colors">{label}</a>
+                                <a href={item.href} target={item.target || undefined} onClick={toggleMobileMenu} className="hover:text-[#f7ebc7] transition-colors">{label}</a>
                               ) : label}
                             </h3>
                             {item.children && (
@@ -326,7 +344,7 @@ const Header = () => {
                           <div key={item.id || item.href} className="nav-category-group">
                             <h3 className="nav-category-title">
                               {item.href && !item.children ? (
-                                <a href={item.href} target={item.target || undefined} onClick={toggleMobileMenu} className="hover:text-white transition-colors">{label}</a>
+                                <a href={item.href} target={item.target || undefined} onClick={toggleMobileMenu} className="hover:text-[#f7ebc7] transition-colors">{label}</a>
                               ) : label}
                             </h3>
                             {item.children && (
@@ -355,7 +373,7 @@ const Header = () => {
                 <div className="nav-panel-right">
                   <div className="nav-panel-card">
                     <div className="nav-card-header">
-                      <img src="/images/logo/logo-oriaspa.png" alt="Oria Spa Logo" className="nav-card-logo" />
+                      <SmartLogo theme="dark" className="nav-card-logo object-contain" />
                       <h3 className="nav-card-title">TechGalaxy Group</h3>
                       <div className="nav-card-divider"></div>
                     </div>
@@ -383,11 +401,8 @@ const Header = () => {
                       </div>
 
                       {/* Carousel Arrows */}
-                      <div className="flex items-center justify-center gap-6 mt-2">
-                        <button onClick={prevBrand} className="text-white hover:text-[#D4AF37] transition-colors p-2" aria-label="Previous Brand">
-                          <ChevronUp size={28} strokeWidth={1} />
-                        </button>
-                        <button onClick={nextBrand} className="text-white hover:text-[#D4AF37] transition-colors p-2" aria-label="Next Brand">
+                      <div className="flex items-center justify-center mt-2">
+                        <button onClick={nextBrand} className="text-[#f7ebc7] hover:text-[#D4AF37] transition-colors p-2" aria-label="Next Brand">
                           <ChevronDown size={28} strokeWidth={1} />
                         </button>
                       </div>
@@ -405,7 +420,7 @@ const Header = () => {
           <>
             <motion.button
               type="button"
-              className="nav-cart-backdrop"
+              className="nav-cart-backdrop fixed inset-0 bg-[#3a3528]/80 backdrop-blur-sm z-[10000]"
               aria-label="Close cart"
               onClick={() => setIsCartOpen(false)}
               initial={{ opacity: 0 }}
@@ -413,59 +428,86 @@ const Header = () => {
               exit={{ opacity: 0 }}
             />
             <motion.aside
-              className="nav-cart-drawer"
+              className="nav-cart-drawer fixed top-0 right-0 bg-[#F4F1EB] z-[10001] flex flex-col px-6"
+              style={{ width: '100%', maxWidth: '340px', maxHeight: '100vh', boxShadow: '-6px 0 24px rgba(0,0,0,0.16)' }}
               role="dialog"
               aria-modal="true"
               aria-label={cartText('title', currentLang.code)}
-              initial={{ opacity: 0, y: -8, scale: 0.98 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -8, scale: 0.98 }}
-              transition={{ duration: 0.22, ease: 'easeOut' }}
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ duration: 0.35, ease: 'easeOut' }}
             >
-              <header className="nav-cart-drawer__header font-sans uppercase tracking-widest text-sm font-bold">
-                <h2>{cartText('title', currentLang.code)}</h2>
-                <button type="button" className="nav-cart-drawer__close" onClick={() => setIsCartOpen(false)} aria-label="Close cart">
-                  <X size={30} />
+              <header className="relative pt-6 pb-4 mb-2 flex-shrink-0">
+                <span className="font-sans text-[10px] tracking-[0.2em] uppercase text-gray-500 mb-2 block">Oria Spa</span>
+                <h2 className="font-sans text-3xl text-[#1a1a1a] pb-4 border-b border-[#D4AF37] w-fit pr-10">
+                  {cartText('title', currentLang.code)}
+                </h2>
+                <button type="button" className="absolute top-6 right-0 w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center text-gray-500 hover:text-black transition-colors" onClick={() => setIsCartOpen(false)} aria-label="Close cart">
+                  <X size={16} />
                 </button>
               </header>
 
-              <div className="nav-cart-drawer__body">
+              <div className="flex-1 overflow-y-auto py-4 no-scrollbar">
                 {cartSnapshot.length ? (
                   cartSnapshot.map((item) => (
-                    <article className="nav-cart-drawer__item" key={item.cartId}>
+                    <article className="py-6 border-b border-gray-200 grid grid-cols-[72px_1fr] gap-5" key={item.cartId}>
                       {item.img ? (
-                        <img src={item.img} alt={itemName(item, currentLang.code)} />
+                        <img src={item.img} alt={itemName(item, currentLang.code)} className="w-[72px] h-[72px] object-cover bg-[#E5DFD3]" />
                       ) : (
-                        <span className="nav-cart-drawer__thumb" aria-hidden="true" />
+                        <span className="w-[72px] h-[72px] bg-[#E5DFD3] block" aria-hidden="true" />
                       )}
-                      <div className="font-sans">
-                        <strong className="text-sm tracking-wide">{itemName(item, currentLang.code)}</strong>
-                        <p className="text-xs text-gray-400 mt-1">{item.timeValue} mins · {formatCurrency(item.priceVND)} đ · SL {item.qty}</p>
+                      <div className="flex flex-col justify-between">
+                        <div className="flex justify-between items-start gap-4">
+                          <div>
+                            <strong className="font-sans text-[16px] font-normal text-[#1a1a1a] block leading-snug">{itemName(item, currentLang.code)}</strong>
+                            <p className="font-sans text-[11px] text-gray-500 mt-2 uppercase tracking-wider">{item.timeValue} {cartText('mins', currentLang.code)} · {cartText('vipRoom', currentLang.code)} 2</p>
+                          </div>
+                        </div>
+                        <div className="flex justify-between items-end mt-5">
+                          <div className="flex items-center border border-gray-300 text-gray-600 text-[12px] font-sans px-2 py-1">
+                            <button className="px-2 hover:text-black" aria-label="Decrease quantity">-</button>
+                            <span className="px-3">{item.qty}</span>
+                            <button className="px-2 hover:text-black" aria-label="Increase quantity">+</button>
+                          </div>
+                          <div className="text-right">
+                            <div className="font-sans text-[15px] font-medium text-[#1a1a1a] mb-2">{formatCurrency(item.priceVND)} đ</div>
+                            <button
+                              type="button"
+                              className="font-sans text-[10px] uppercase tracking-widest text-gray-400 hover:text-black transition-colors"
+                              onClick={() => handleRemoveCartItem(item.cartId)}
+                              aria-label={`Remove ${itemName(item, currentLang.code)} from cart`}
+                            >
+                              XÓA
+                            </button>
+                          </div>
+                        </div>
                       </div>
-                      <button
-                        type="button"
-                        className="nav-cart-drawer__remove"
-                        onClick={() => handleRemoveCartItem(item.cartId)}
-                        aria-label={`Remove ${itemName(item, currentLang.code)} from cart`}
-                      >
-                        <X size={14} />
-                      </button>
                     </article>
                   ))
                 ) : (
-                  <p className="nav-cart-drawer__empty font-sans uppercase tracking-widest text-sm text-center">{cartText('empty', currentLang.code)}</p>
+                  <div className="py-12 flex flex-col items-center text-center">
+                    <p className="font-sans text-[12px] uppercase tracking-widest text-gray-500 mb-6">{cartText('empty', currentLang.code)}</p>
+                    <a href="/#services" className="font-sans text-[11px] uppercase tracking-[0.2em] border-b border-[#D4AF37] pb-1 text-[#1a1a1a] hover:text-[#D4AF37] transition-colors" onClick={() => setIsCartOpen(false)}>
+                      {cartText('explore', currentLang.code)}
+                    </a>
+                  </div>
                 )}
               </div>
 
-              <footer className="nav-cart-drawer__footer font-sans uppercase tracking-widest text-sm">
-                <div className="nav-cart-drawer__subtotal flex justify-between items-center mb-4">
-                  <span>{cartText('subtotal', currentLang.code)}</span>
-                  <strong className="text-lg">{formatCurrency(cartSubtotal)} đ</strong>
+              <footer className="pt-4 pb-6 bg-[#F4F1EB] sticky bottom-0 border-t border-gray-200 flex-shrink-0">
+                <div className="flex justify-between items-baseline mb-3">
+                  <span className="font-sans text-[11px] uppercase tracking-widest text-gray-500">{cartText('subtotal', currentLang.code)}</span>
+                  <strong className="font-sans text-[18px] font-medium text-[#1a1a1a]">{formatCurrency(cartSubtotal)} đ</strong>
                 </div>
+                <p className="font-sans text-[11px] text-gray-500 mb-8">{cartText('taxNote', currentLang.code)}</p>
                 {cartSnapshot.length > 0 && (
-                  <button type="button" className="nav-cart-drawer__place w-full bg-[#D4AF37] text-black py-3 rounded-md font-bold transition-colors hover:bg-white" onClick={handlePlaceOrder}>
-                    {cartText('placeOrder', currentLang.code)}
-                  </button>
+                  <div className="text-center">
+                    <button type="button" className="font-sans w-full bg-[#222222] text-[#f7ebc7] py-4 text-[11px] uppercase tracking-[0.2em] hover:bg-black transition-colors" onClick={handlePlaceOrder}>
+                      {cartText('placeOrder', currentLang.code)}
+                    </button>
+                    <div className="w-8 h-[1px] bg-[#D4AF37] mx-auto mt-6"></div>
+                  </div>
                 )}
               </footer>
             </motion.aside>

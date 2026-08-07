@@ -202,7 +202,7 @@
      -webkit-text-fill-color: transparent;
   */
   
-  color: white;
+  color: #f7ebc7;
   line-height: 0.92;
   letter-spacing: -0.045em;
   text-shadow: 0 20px 44px rgba(0, 0, 0, 0.48);
@@ -389,7 +389,7 @@
   max-width: 400px;
   flex: 1;
   text-decoration: none;
-  color: white;
+  color: #f7ebc7;
   transition: all 0.3s ease;
   display: flex;
   flex-direction: column;

@@ -7,6 +7,7 @@ import { MapPin, Clock, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-re
 import { useTranslation } from '@/components/TranslationProvider';
 import { useSystemSettings } from '@/components/SystemSettingsProvider';
 import { BRANCH_LIST } from '@/data/branches';
+import SmartLogo from '@/components/SmartLogo';
 import { Locale } from '@/lib/constants';
 import {
   heroStagger, fadeInUp, heroTitle, scaleIn, branchEntrance,
@@ -32,13 +33,7 @@ const HERO_TEXT = {
 // ═══════════════════════════════════════════
 
 const DEFAULT_HOMEPAGE_VIDEOS = [
-  { id: 'foot-massage', url: '/videos/video1.mp4', poster: 'https://i.ibb.co/fs2MBD4/hero-spa-bg.jpg' },
-  { id: 'space-v1', url: '/videos/space/v1-2.mp4', poster: 'https://i.ibb.co/fs2MBD4/hero-spa-bg.jpg' },
-  { id: 'space-v3', url: '/videos/space/v3.mp4', poster: 'https://i.ibb.co/fs2MBD4/hero-spa-bg.jpg' },
-  { id: 'space-v4', url: '/videos/space/v4-r.mp4', poster: 'https://i.ibb.co/fs2MBD4/hero-spa-bg.jpg' },
-  { id: 'space-stair', url: '/videos/space/stair-resize.mp4', poster: 'https://i.ibb.co/fs2MBD4/hero-spa-bg.jpg' },
-  { id: 'space-toilet', url: '/videos/space/toilet-resize.mp4', poster: 'https://i.ibb.co/fs2MBD4/hero-spa-bg.jpg' },
-  { id: 'space-yumi', url: '/videos/space/yumi.mp4', poster: 'https://i.ibb.co/fs2MBD4/hero-spa-bg.jpg' },
+  { id: 'foot-massage', url: '/videos/0807.mp4', poster: 'https://i.ibb.co/fs2MBD4/hero-spa-bg.jpg' }
 ];
 
 const Hero = () => {
@@ -232,17 +227,22 @@ const Hero = () => {
           </motion.span>
         ) : null}
 
-        {/* Main Title (Oria Spa) */}
-        <motion.h1 className="hero-cinematic-title" variants={heroTitle}>
-          {t('hero_section', 'title') || HERO_TEXT.title}
-        </motion.h1>
+        {/* Main Block: Logo + Slogan + Company Name */}
+        <div className="flex flex-col items-center justify-center -translate-y-12 md:-translate-y-24 gap-4 md:gap-6 z-10 relative">
+          {/* Main Title (Oria Spa Logo) */}
+          <motion.div className="flex justify-center items-center" variants={heroTitle}>
+            <SmartLogo theme="dark" className="w-[300px] md:w-[450px] lg:w-[550px] h-auto object-contain drop-shadow-2xl" />
+          </motion.div>
 
-        {/* TechGalaxy Group */}
-        <motion.span className="font-sans uppercase tracking-widest font-medium mt-6" style={{ letterSpacing: '8px', fontSize: '2.5rem' }} variants={fadeInUp}>
-          TechGalaxy Group
-        </motion.span>
+          {/* TechGalaxy Group */}
+          <motion.span 
+            className="font-sans uppercase tracking-[6px] md:tracking-[8px] font-medium text-xl md:text-3xl lg:text-[2.5rem] mt-2 md:mt-4" 
+            variants={fadeInUp}
+          >
+            TechGalaxy Group
+          </motion.span>
+        </div>
 
-        <motion.div className="hero-cinematic-divider" variants={scaleIn} />
 
         {(t('hero_section', 'tagline') || HERO_TEXT.tagline) && (t('hero_section', 'tagline') !== 'SPA' || HERO_TEXT.tagline !== '') ? (
           <motion.p className="hero-cinematic-tagline" variants={fadeInUp}>

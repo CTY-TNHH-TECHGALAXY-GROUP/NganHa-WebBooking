@@ -1,6 +1,5 @@
 'use client';
 
-import { ChevronUp } from 'lucide-react';
 import React from 'react';
 
 const GoogleReviewWidget = () => {
@@ -25,10 +24,6 @@ const GoogleReviewWidget = () => {
         <span className="text-xs text-gray-700 leading-tight">720 reviews</span>
       </div>
 
-      {/* Chevron Icon */}
-      <div className="ml-2">
-        <ChevronUp size={18} className="text-black" />
-      </div>
     </a>
   );
 };
