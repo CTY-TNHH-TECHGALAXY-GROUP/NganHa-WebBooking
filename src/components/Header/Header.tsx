@@ -49,10 +49,9 @@ const NAV_ITEMS: NavItem[] = [
     label: 'Services',
     isUnclickable: true,
     children: [
-      { id: 'best_seller', label: 'Best-seller', href: '/#best-seller' },
-      { id: 'service_menu', label: 'Menu', href: '/#services' },
-      { id: 'service_area', label: 'Area', href: '/?heroVideo=1#hero' },
-      { id: 'local_tour', label: 'Local tour', href: '/#local-tour' },
+      { id: 'pure_relaxation', label: 'Pure relaxation', href: '/#services' },
+      { id: 'design_journey', label: 'Design Your Journey', href: '/#design-journey' },
+      { id: 'therapy', label: 'Therapy', href: '/#therapy' },
     ],
   },
   {
@@ -65,6 +64,7 @@ const NAV_ITEMS: NavItem[] = [
       { id: 'academy_certification', label: 'Certification', href: '/academy/certification' },
     ],
   },
+  { id: 'local_tour', label: 'Local tour', href: '/#local-tour' },
   { id: 'history', label: 'History', href: '/history' },
   { id: 'privileges', label: 'Your privileges', href: '/privileges' },
   { id: 'blogs', label: 'Blogs', href: '/blog.html', target: '_blank' },
@@ -103,10 +103,10 @@ const Header = () => {
   const [activeBrandIndex, setActiveBrandIndex] = useState(0);
 
   const BRANDS = useMemo(() => [
-    { name: 'Oria Spa' },
-    { name: 'Oria Home' },
-    { name: 'Oria Farm', sub: 'Store' },
-    { name: 'Oria Farm', sub: 'Retreat' }
+    { name: 'Oria Spa', location: 'Ho Chi Minh' },
+    { name: 'Oria Home', location: 'Ho Chi Minh' },
+    { name: 'Oria Farm', sub: 'Store', location: 'Ho Chi Minh' },
+    { name: 'Oria Farm', sub: 'Retreat', location: 'Dong Nai' }
   ], []);
 
   const nextBrand = () => {
@@ -117,12 +117,7 @@ const Header = () => {
     setActiveBrandIndex((prev) => (prev - 1 + BRANDS.length) % BRANDS.length);
   };
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setActiveBrandIndex((prev) => (prev + 1) % BRANDS.length);
-    }, 4000);
-    return () => clearInterval(timer);
-  }, [BRANDS.length]);
+
 
   const { 
     isMobileMenuOpen, 
@@ -378,32 +373,33 @@ const Header = () => {
                       <div className="nav-card-divider"></div>
                     </div>
                     
-                    <div className="nav-card-brands">
-                      {/* First Brand - Clear */}
-                      <div className="nav-brand-item">
-                        <p className="nav-brand-subtitle">Our Brands</p>
-                        <h4 className="nav-brand-name">
-                          {BRANDS[activeBrandIndex].name}
-                          {BRANDS[activeBrandIndex].sub && <><br/>{BRANDS[activeBrandIndex].sub}</>}
-                        </h4>
-                      </div>
+                    <div className="nav-card-brands flex flex-col gap-5">
+                      {[0, 1, 2, 3].map((offset) => {
+                        const index = (activeBrandIndex + offset) % BRANDS.length;
+                        const brand = BRANDS[index];
+                        const isFaded = offset === 3;
+                        return (
+                          <div 
+                            className="nav-brand-item" 
+                            key={`${brand.name}-${index}`}
+                            style={{ opacity: isFaded ? 0.35 : 1, transition: 'opacity 0.3s' }}
+                          >
+                            <h4 className="nav-brand-name">
+                              {brand.name}
+                              {brand.sub && <><br/>{brand.sub}</>}
+                            </h4>
+                            <p className="text-[#f7ebc7]/60 text-xs tracking-[0.15em] uppercase mt-2 font-light">{brand.location}</p>
+                          </div>
+                        );
+                      })}
 
-                      {/* Second Brand - Dim/Blurred Bottom */}
-                      <div className="nav-brand-item relative">
-                        <p className="nav-brand-subtitle">Our Brands</p>
-                        <h4 className="nav-brand-name">
-                          {BRANDS[(activeBrandIndex + 1) % BRANDS.length].name}
-                          {BRANDS[(activeBrandIndex + 1) % BRANDS.length].sub && <><br/>{BRANDS[(activeBrandIndex + 1) % BRANDS.length].sub}</>}
-                        </h4>
-                        
-                        {/* Dim & Blur Overlay */}
-                        <div className="nav-brand-blur-overlay"></div>
-                      </div>
-
-                      {/* Carousel Arrows */}
-                      <div className="flex items-center justify-center mt-2">
-                        <button onClick={nextBrand} className="text-[#f7ebc7] hover:text-[#D4AF37] transition-colors p-2" aria-label="Next Brand">
-                          <ChevronDown size={28} strokeWidth={1} />
+                      {/* Side-by-side Arrows */}
+                      <div className="flex justify-center gap-6 mt-4">
+                        <button onClick={prevBrand} className="text-[#f7ebc7] hover:text-[#D4AF37] active:text-[#b89529] active:scale-95 transition-all" aria-label="Previous Brand">
+                          <ChevronUp size={28} strokeWidth={1.5} />
+                        </button>
+                        <button onClick={nextBrand} className="text-[#f7ebc7] hover:text-[#D4AF37] active:text-[#b89529] active:scale-95 transition-all" aria-label="Next Brand">
+                          <ChevronDown size={28} strokeWidth={1.5} />
                         </button>
                       </div>
                     </div>

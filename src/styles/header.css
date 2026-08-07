@@ -891,7 +891,7 @@
   position: relative;
   z-index: 2;
   background-color: rgba(40, 27, 21, 0.95);
-  padding: 4rem 3rem;
+  padding: 2.5rem 4rem;
   width: 100%;
   max-width: 450px;
   box-shadow: 0 20px 40px rgba(0,0,0,0.5);
@@ -919,7 +919,7 @@
   width: 30px;
   height: 1px;
   background-color: rgba(212, 175, 55, 0.5);
-  margin: 2rem auto;
+  margin: 1.25rem auto;
 }
 
 .nav-card-brands {
@@ -944,7 +944,7 @@
 
 .nav-brand-name {
   color: white;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   font-family: var(--font-sans, sans-serif);
   font-weight: 400;
   line-height: 1.3;
