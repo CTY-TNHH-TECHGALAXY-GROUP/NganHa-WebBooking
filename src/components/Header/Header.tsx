@@ -51,8 +51,8 @@ const DEFAULT_NAV_ITEMS: NavItem[] = [
     label: 'Services',
     isUnclickable: true,
     children: [
-      { id: 'pure_relaxation', label: 'Pure relaxation', href: '/#services' },
       { id: 'design_journey', label: 'Design Your Journey', href: '/#design-journey' },
+      { id: 'pure_relaxation', label: 'Pure relaxation', href: '/#services' },
       { id: 'therapy', label: 'Therapy', href: '/#therapy' },
     ],
   },
@@ -154,8 +154,8 @@ const Header = () => {
         label: getLocalizedText(hpNav?.services, lang, 'Services'),
         isUnclickable: true,
         children: [
-          { id: 'pure_relaxation', label: getLocalizedText(hpNav?.pureRelaxation, lang, 'Pure relaxation'), href: '/#services' },
           { id: 'design_journey', label: getLocalizedText(hpNav?.designJourney, lang, 'Design Your Journey'), href: '/#design-journey' },
+          { id: 'pure_relaxation', label: getLocalizedText(hpNav?.pureRelaxation, lang, 'Pure relaxation'), href: '/#services' },
           { id: 'therapy', label: getLocalizedText(hpNav?.therapy, lang, 'Therapy'), href: '/#therapy' },
         ],
       },
@@ -169,10 +169,10 @@ const Header = () => {
           { id: 'academy_certification', label: getLocalizedText(hpNav?.certification, lang, 'Certification'), href: '/academy/certification' },
         ],
       },
-      { id: 'local_tour', label: getLocalizedText(hpNav?.localTour, lang, 'Local tour'), href: '/#local-tour' },
       { id: 'history', label: getLocalizedText(hpNav?.history, lang, 'History'), href: '/history' },
-      { id: 'privileges', label: getLocalizedText(hpNav?.privileges, lang, 'Your privileges'), href: '/privileges' },
+      { id: 'local_tour', label: getLocalizedText(hpNav?.localTour, lang, 'Local tour'), href: '/#local-tour' },
       { id: 'blogs', label: getLocalizedText(hpNav?.blogs, lang, 'Blogs'), href: '/blog.html', target: '_blank' },
+      { id: 'privileges', label: getLocalizedText(hpNav?.privileges, lang, 'Your privileges'), href: '/privileges' },
     ] as NavItem[];
   }, [hpNav, lang, getLocalizedText]);
 
