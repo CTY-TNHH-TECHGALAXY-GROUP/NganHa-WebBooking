@@ -574,6 +574,8 @@ export const AboutStory = () => {
   const [activeChapter, setActiveChapter] = useState(0);
   const [activeScenes, setActiveScenes] = useState<Record<string, number>>({});
   const shellRef = useRef<HTMLElement | null>(null);
+  const timelineRef = useRef<HTMLDivElement | null>(null);
+  const [isNavVisible, setIsNavVisible] = useState(false);
   const timersRef = useRef<Record<string, ReturnType<typeof setInterval>>>({});
   const timelineProgress = useMotionValue(0);
   const smoothTimelineProgress = useSpring(timelineProgress, {
@@ -621,6 +623,12 @@ export const AboutStory = () => {
       });
 
       setActiveChapter(prev => (prev === nearestIndex ? prev : nearestIndex));
+
+      if (timelineRef.current) {
+        const tRect = timelineRef.current.getBoundingClientRect();
+        // Visible when the timeline enters the viewport, leaving a bit of margin
+        setIsNavVisible(tRect.top < window.innerHeight * 0.8 && tRect.bottom > window.innerHeight * 0.2);
+      }
     };
 
     const requestUpdate = () => {
@@ -776,7 +784,7 @@ export const AboutStory = () => {
         </div>
       </div>
 
-      <div className={styles.timeline}>
+      <div className={styles.timeline} ref={timelineRef}>
         <div className={styles.timeRibbon} aria-hidden="true" />
         <motion.div className={styles.flow} style={{ scaleY: smoothTimelineProgress }} aria-hidden="true" />
 
@@ -938,7 +946,15 @@ export const AboutStory = () => {
         })}
       </div>
 
-      <nav className={styles.yearNav} aria-label={isEn ? 'History years' : 'Các năm lịch sử'}>
+      <nav 
+        className={styles.yearNav} 
+        aria-label={isEn ? 'History years' : 'Các năm lịch sử'}
+        style={{ 
+          opacity: isNavVisible ? 1 : 0, 
+          visibility: isNavVisible ? 'visible' : 'hidden',
+          transition: 'opacity 0.6s ease, visibility 0.6s ease' 
+        }}
+      >
         {chapters.map((chapter, index) => (
           <span
             key={chapter.year}
@@ -953,19 +969,6 @@ export const AboutStory = () => {
         ))}
       </nav>
 
-            <footer className={styles.finale}>
-        <span className={styles.eyebrow}>
-          {getLocalizedText(brandHistory?.finale?.eyebrow, isEn ? 'en' : 'vi', isEn ? 'The story continues' : 'C�u chuy?n c�n ti?p t?c')}
-        </span>
-        <h2>
-          {getLocalizedText(brandHistory?.finale?.title, isEn ? 'en' : 'vi', isEn ? 'Less interface. More feeling.' : '�t c?m gi�c giao di?n hon. Nhi?u c?m x�c hon.')}
-        </h2>
-        <p>
-          {getLocalizedText(brandHistory?.finale?.body, isEn ? 'en' : 'vi', isEn
-            ? 'History becomes a quiet cinematic journey through the brand, its people, and its spaces.'
-            : 'L?ch s? tr? th�nh m?t h�nh tr�nh di?n ?nh nh? nh�ng qua thuong hi?u, con ngu?i v� nh?ng kh�ng gian d� t?o n�n Ng�n H�.')}
-        </p>
-      </footer>
     </section>
   );
 };
