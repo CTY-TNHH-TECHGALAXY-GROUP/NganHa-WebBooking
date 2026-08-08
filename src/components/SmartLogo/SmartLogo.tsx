@@ -10,37 +10,26 @@ interface SmartLogoProps {
 
 const SmartLogo: React.FC<SmartLogoProps> = ({ theme = 'dark', className = '', alt = 'Oria Spa Logo' }) => {
   return (
-    <>
-      <svg width="0" height="0" className="hidden absolute">
-        <filter id="cream-filter">
-          {/* Maps Black to deeper Cream (#e8d08b) and White to pale Cream (#f7ebc7).
-              Deeper Cream RGB: 232/255 = 0.910, 208/255 = 0.816, 139/255 = 0.545
-              Pale Cream RGB: 247/255 = 0.968, 235/255 = 0.921, 199/255 = 0.780
-              R' = R * (0.968 - 0.910) + 0.910 = R * 0.058 + 0.910
-              G' = G * (0.921 - 0.816) + 0.816 = G * 0.105 + 0.816
-              B' = B * (0.780 - 0.545) + 0.545 = B * 0.235 + 0.545
-          */}
-          <feColorMatrix
-            type="matrix"
-            values="
-              0 0 0 0 0.910
-              0 0 0 0 0.816
-              0 0 0 0 0.545
-              -0.333 -0.333 -0.333 0 1
-            "
-          />
-        </filter>
-      </svg>
-      <img
-        src="/images/logo_fixed_slogan.png"
-        alt={alt}
-        className={className}
-        style={{ 
-          filter: theme === 'dark' ? 'url(#cream-filter)' : 'none',
-          clipPath: 'inset(2px)'
-        }}
-      />
-    </>
+    <img
+      src="/images/logo_fixed_slogan.png"
+      alt={alt}
+      className={className}
+      style={{
+        // For dark theme:
+        // 1. invert(1): Black logo -> White, White background -> Black
+        // 2. brightness(0.6) + sepia(1): Tint the white logo to brown, black background stays black
+        // 3. saturate(1.5) + hue-rotate(-5deg) + brightness(1.25): Adjust brown to cream
+        // 4. mixBlendMode: 'screen': Black background becomes transparent
+        // For light theme:
+        // mixBlendMode: 'multiply': White background becomes transparent, Black logo stays black
+        filter: theme === 'dark' 
+          ? 'invert(1) brightness(0.6) sepia(1) saturate(1.5) hue-rotate(-5deg) brightness(1.25)' 
+          : 'none',
+        mixBlendMode: theme === 'dark' ? 'screen' : 'multiply',
+        clipPath: 'inset(2px)', // Crops any faint borders in the original image
+        pointerEvents: 'none'
+      }}
+    />
   );
 };
 
