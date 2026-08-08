@@ -8,7 +8,7 @@ import { SOCIAL_LINKS, BRANCHES } from '@/lib/constants';
 import AIChatBot from '@/components/AIChatBot/AIChatBot';
 import { useSystemSettings } from '@/components/SystemSettingsProvider';
 import GoogleReviewWidget from '@/components/GoogleReviewWidget/GoogleReviewWidget';
-import { useParams } from 'next/navigation';
+import { useTranslation } from '@/components/TranslationProvider';
 
 const WIDGET_SIZE = 50; 
 
@@ -21,9 +21,11 @@ const GREETING_TEXT: Record<string, string> = {
 };
 
 const FloatingWidgets = () => {
-  const params = useParams();
-  const lang = (params?.lang as string) || 'vi';
-  const { systemSettings } = useSystemSettings();
+  const { currentLang } = useTranslation();
+  const lang = currentLang || 'vi';
+  const { systemSettings, getLocalizedText } = useSystemSettings();
+  
+  const chatGreeting = getLocalizedText(systemSettings?.homepage_content?.chat?.greeting, lang as any, GREETING_TEXT[lang] || GREETING_TEXT.vi);
   const hotlineUrl = systemSettings?.phone ? `tel:${systemSettings.phone}` : SOCIAL_LINKS.HOTLINE;
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -63,7 +65,7 @@ const FloatingWidgets = () => {
               className="relative mb-3 mr-1 bg-[#f7ebc7] text-[#1a1a1a] p-4 rounded-2xl shadow-xl max-w-[350px] cursor-pointer after:absolute after:content-[''] after:-bottom-3 after:right-8 after:border-[7px] after:border-transparent after:border-t-[#f7ebc7]"
               onClick={() => setIsMenuOpen(true)}
             >
-              <p className="text-[14px] leading-relaxed font-medium whitespace-pre-line">{GREETING_TEXT[lang] || GREETING_TEXT['en']}</p>
+              <p className="text-[14px] leading-relaxed font-medium whitespace-pre-line">{chatGreeting}</p>
             </motion.div>
           )}
         </AnimatePresence>

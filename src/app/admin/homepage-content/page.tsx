@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Save, AlertCircle, CheckCircle2, Globe, LayoutTemplate } from 'lucide-react';
+import { Save, AlertCircle, CheckCircle2, Globe, LayoutTemplate, MessageCircle } from 'lucide-react';
 
 const LANGUAGES = [
   { code: 'vi', label: 'Tiếng Việt', flag: '🇻🇳' },
@@ -51,6 +51,15 @@ const DEFAULT_CONTENT = {
     blogs: { vi: 'Bài viết', en: 'Blogs', kr: '블로그', jp: 'ブログ', cn: '博客' },
     
     bgImage: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?q=80&w=2940&auto=format&fit=crop'
+  },
+  chat: {
+    greeting: {
+      vi: 'Oria Xin Chào. Đội ngũ của chúng\ntôi sẵn sàng trả lời bạn ngay bây giờ ✨',
+      en: 'Hello from Oria. Our team is available to answer you now ✨',
+      kr: 'Oria 안녕하세요. 저희 팀이 지금 답변해 드릴 수 있습니다 ✨',
+      jp: 'Oriaからこんにちは。スタッフがすぐにお答えします ✨',
+      cn: 'Oria 您好。我们的团队随时为您解答 ✨'
+    }
   }
 };
 
@@ -73,6 +82,7 @@ export default function HomepageContentPage() {
             bestSeller: { ...DEFAULT_CONTENT.bestSeller, ...(data.homepage_content.bestSeller || {}) },
             services: { ...DEFAULT_CONTENT.services, ...(data.homepage_content.services || {}) },
             navigation: { ...DEFAULT_CONTENT.navigation, ...(data.homepage_content.navigation || {}) },
+            chat: { ...DEFAULT_CONTENT.chat, ...(data.homepage_content.chat || {}) },
           });
         }
         setLoading(false);
@@ -423,6 +433,27 @@ export default function HomepageContentPage() {
             )}
           </div>
         </div>
+
+        {/* Phần 5: Chatbot */}
+        <div className="mt-12 bg-admin-card p-6 rounded-xl border border-admin-line">
+          <h2 className="text-lg font-bold text-admin-gold mb-6 flex items-center gap-2">
+            <MessageCircle size={20} />
+            5. Cấu Hình Chatbot
+          </h2>
+          
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-admin-text mb-2">Câu chào hiển thị (Tự động xuống dòng khi text dài)</label>
+              <textarea 
+                value={content.chat?.greeting?.[activeLang] || ''} 
+                onChange={(e) => handleInputChange('chat', 'greeting', e.target.value)} 
+                className="w-full bg-admin-background border border-admin-line rounded-lg px-3 py-2 text-sm text-admin-text min-h-[100px]"
+                placeholder="VD: Oria Xin Chào..."
+              />
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   );
