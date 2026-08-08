@@ -35,7 +35,10 @@ const SmartLogo: React.FC<SmartLogoProps> = ({ theme = 'dark', className = '', a
         src="/images/logo_fixed_slogan.png"
         alt={alt}
         className={className}
-        style={{ filter: theme === 'dark' ? 'url(#cream-filter)' : 'none' }}
+        style={{ 
+          filter: theme === 'dark' ? 'url(#cream-filter)' : 'none',
+          clipPath: 'inset(2px)'
+        }}
       />
     </>
   );

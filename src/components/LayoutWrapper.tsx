@@ -7,6 +7,7 @@
 import { usePathname } from 'next/navigation';
 import Header from '@/components/Header/Header';
 import FloatingWidgets from '@/components/FloatingWidgets/FloatingWidgets';
+import Footer from '@/components/Footer/Footer';
 
 const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
@@ -16,6 +17,7 @@ const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
     <>
       {!isBookingPage && <Header />}
       {children}
+      {!isBookingPage && <Footer />}
       {!isBookingPage && <FloatingWidgets />}
     </>
   );

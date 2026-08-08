@@ -22,6 +22,7 @@ type NavChildItem = {
   href: string;
   target?: string;
   isComingSoon?: boolean;
+  badge?: string;
 };
 
 type NavItem = {
@@ -31,6 +32,7 @@ type NavItem = {
   target?: string;
   isUnclickable?: boolean;
   isComingSoon?: boolean;
+  col?: 'left' | 'right';
   children?: NavChildItem[];
 };
 
@@ -39,6 +41,7 @@ const DEFAULT_NAV_ITEMS: NavItem[] = [
   {
     id: 'area',
     label: 'Spaces',
+    col: 'left',
     isUnclickable: true,
     children: [
       { id: 'area_lobby', label: 'Welcome area', href: '/#lobby' },
@@ -49,16 +52,18 @@ const DEFAULT_NAV_ITEMS: NavItem[] = [
   {
     id: 'services',
     label: 'Services',
+    col: 'right',
     isUnclickable: true,
     children: [
-      { id: 'design_journey', label: 'Design Your Journey', href: '/#design-journey' },
-      { id: 'pure_relaxation', label: 'Pure relaxation', href: '/#services' },
-      { id: 'therapy', label: 'Therapy', href: '/#therapy' },
+      { id: 'design_journey', label: 'Design Your Journey', href: '/#design-journey', badge: '50%' },
+      { id: 'pure_relaxation', label: 'Pure relaxation', href: '/#services', badge: '30%' },
+      { id: 'therapy', label: 'Therapy', href: '/#therapy', badge: '20%' },
     ],
   },
   {
     id: 'academy',
     label: 'Academy',
+    col: 'left',
     isUnclickable: true,
     children: [
       { id: 'academy_admissions', label: 'Recruitment/Admission', href: '/academy/admissions' },
@@ -66,10 +71,10 @@ const DEFAULT_NAV_ITEMS: NavItem[] = [
       { id: 'academy_certification', label: 'Certification', href: '/academy/certification' },
     ],
   },
-  { id: 'history', label: 'History', href: '/history' },
-  { id: 'local_tour', label: 'Local tour', href: '/#local-tour' },
-  { id: 'blogs', label: 'Blogs', href: '/blog.html', target: '_blank' },
-  { id: 'privileges', label: 'Your privileges', href: '/privileges' },
+  { id: 'local_tour', label: 'Local tour', href: '/#local-tour', col: 'right' },
+  { id: 'history', label: 'History', href: '/history', col: 'right' },
+  { id: 'privileges', label: 'Your privileges', href: '/privileges', col: 'left' },
+  { id: 'blogs', label: 'Blogs', href: '/blog.html', target: '_blank', col: 'right' },
 ];
 
 const CART_COPY = {
@@ -142,6 +147,7 @@ const Header = () => {
       {
         id: 'area',
         label: getLocalizedText(hpNav?.spaces, lang, 'Spaces'),
+        col: 'left',
         isUnclickable: true,
         children: [
           { id: 'area_lobby', label: getLocalizedText(hpNav?.welcomeArea, lang, 'Welcome area'), href: '/#lobby' },
@@ -152,16 +158,18 @@ const Header = () => {
       {
         id: 'services',
         label: getLocalizedText(hpNav?.services, lang, 'Services'),
+        col: 'right',
         isUnclickable: true,
         children: [
-          { id: 'design_journey', label: getLocalizedText(hpNav?.designJourney, lang, 'Design Your Journey'), href: '/#design-journey' },
-          { id: 'pure_relaxation', label: getLocalizedText(hpNav?.pureRelaxation, lang, 'Pure relaxation'), href: '/#services' },
-          { id: 'therapy', label: getLocalizedText(hpNav?.therapy, lang, 'Therapy'), href: '/#therapy' },
+          { id: 'design_journey', label: getLocalizedText(hpNav?.designJourney, lang, 'Design Your Journey'), href: '/#design-journey', badge: '50%' },
+          { id: 'pure_relaxation', label: getLocalizedText(hpNav?.pureRelaxation, lang, 'Pure relaxation'), href: '/#services', badge: '30%' },
+          { id: 'therapy', label: getLocalizedText(hpNav?.therapy, lang, 'Therapy'), href: '/#therapy', badge: '20%' },
         ],
       },
       {
         id: 'academy',
         label: getLocalizedText(hpNav?.academy, lang, 'Academy'),
+        col: 'left',
         isUnclickable: true,
         children: [
           { id: 'academy_admissions', label: getLocalizedText(hpNav?.admissions, lang, 'Recruitment/Admission'), href: '/academy/admissions' },
@@ -169,10 +177,10 @@ const Header = () => {
           { id: 'academy_certification', label: getLocalizedText(hpNav?.certification, lang, 'Certification'), href: '/academy/certification' },
         ],
       },
-      { id: 'history', label: getLocalizedText(hpNav?.history, lang, 'History'), href: '/history' },
-      { id: 'local_tour', label: getLocalizedText(hpNav?.localTour, lang, 'Local tour'), href: '/#local-tour' },
-      { id: 'blogs', label: getLocalizedText(hpNav?.blogs, lang, 'Blogs'), href: '/blog.html', target: '_blank' },
-      { id: 'privileges', label: getLocalizedText(hpNav?.privileges, lang, 'Your privileges'), href: '/privileges' },
+      { id: 'local_tour', label: getLocalizedText(hpNav?.localTour, lang, 'Local tour'), href: '/#local-tour', col: 'right' },
+      { id: 'history', label: getLocalizedText(hpNav?.history, lang, 'History'), href: '/history', col: 'right' },
+      { id: 'privileges', label: getLocalizedText(hpNav?.privileges, lang, 'Your privileges'), href: '/privileges', col: 'left' },
+      { id: 'blogs', label: getLocalizedText(hpNav?.blogs, lang, 'Blogs'), href: '/blog.html', target: '_blank', col: 'right' },
     ] as NavItem[];
   }, [hpNav, lang, getLocalizedText]);
 
@@ -347,7 +355,7 @@ const Header = () => {
                   <div className="nav-links-grid">
                     {/* Left Column (Even Indexes) */}
                     <div className="nav-links-col">
-                      {NAV_ITEMS.filter((_, i) => i % 2 === 0).map((item) => {
+                      {NAV_ITEMS.filter((item, i) => item.col === 'left' || (!item.col && i % 2 === 0)).map((item) => {
                         const label = item.id ? t('header_menu', item.id) || item.label : item.label;
                         return (
                           <div key={item.id || item.href} className="nav-category-group">
@@ -366,7 +374,8 @@ const Header = () => {
                                     className="nav-child-link"
                                     onClick={toggleMobileMenu}
                                   >
-                                    {child.id ? t('header_menu', child.id) || child.label : child.label}
+                                    <span>{child.id ? t('header_menu', child.id) || child.label : child.label}</span>
+                                    {child.badge && <span className="text-[#41b8a6] ml-2 font-light">{child.badge}</span>}
                                   </a>
                                 ))}
                               </div>
@@ -378,7 +387,7 @@ const Header = () => {
 
                     {/* Right Column (Odd Indexes) */}
                     <div className="nav-links-col">
-                      {NAV_ITEMS.filter((_, i) => i % 2 === 1).map((item) => {
+                      {NAV_ITEMS.filter((item, i) => item.col === 'right' || (!item.col && i % 2 === 1)).map((item) => {
                         const label = item.id ? t('header_menu', item.id) || item.label : item.label;
                         return (
                           <div key={item.id || item.href} className="nav-category-group">
@@ -397,7 +406,8 @@ const Header = () => {
                                     className="nav-child-link"
                                     onClick={toggleMobileMenu}
                                   >
-                                    {child.id ? t('header_menu', child.id) || child.label : child.label}
+                                    <span>{child.id ? t('header_menu', child.id) || child.label : child.label}</span>
+                                    {child.badge && <span className="text-[#41b8a6] ml-2 font-light">{child.badge}</span>}
                                   </a>
                                 ))}
                               </div>
