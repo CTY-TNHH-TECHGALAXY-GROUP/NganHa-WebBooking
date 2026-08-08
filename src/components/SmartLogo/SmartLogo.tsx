@@ -10,26 +10,41 @@ interface SmartLogoProps {
 
 const SmartLogo: React.FC<SmartLogoProps> = ({ theme = 'dark', className = '', alt = 'Oria Spa Logo' }) => {
   return (
-    <img
-      src="/images/logo_fixed_slogan.png"
-      alt={alt}
-      className={className}
-      style={{
-        // For dark theme:
-        // 1. invert(1): Black logo -> White, White background -> Black
-        // 2. brightness(0.6) + sepia(1): Tint the white logo to brown, black background stays black
-        // 3. saturate(1.5) + hue-rotate(-5deg) + brightness(1.25): Adjust brown to cream
-        // 4. mixBlendMode: 'screen': Black background becomes transparent
-        // For light theme:
-        // mixBlendMode: 'multiply': White background becomes transparent, Black logo stays black
-        filter: theme === 'dark' 
-          ? 'invert(1) brightness(0.6) sepia(1) saturate(1.5) hue-rotate(-5deg) brightness(1.25)' 
-          : 'none',
-        mixBlendMode: theme === 'dark' ? 'screen' : 'multiply',
-        clipPath: 'inset(2px)', // Crops any faint borders in the original image
-        pointerEvents: 'none'
-      }}
-    />
+    <div className={className} style={{ display: 'inline-block', position: 'relative' }} aria-label={alt}>
+      <svg 
+        viewBox="0 0 1248 832" 
+        width="100%" 
+        height="100%" 
+        preserveAspectRatio="xMidYMid meet"
+        style={{ display: 'block', clipPath: 'inset(2px)' }}
+      >
+        <defs>
+          <filter id="invert-logo-mask">
+            {/* Invert colors: White background becomes Black (transparent in mask), Black logo becomes White (opaque in mask) */}
+            <feColorMatrix type="matrix" values="
+              -1  0  0  0  1
+               0 -1  0  0  1
+               0  0 -1  0  1
+               0  0  0  1  0" />
+          </filter>
+          <mask id="logo-mask">
+            <image 
+              href="/images/logo_fixed_slogan.png" 
+              width="1248" 
+              height="832" 
+              filter="url(#invert-logo-mask)" 
+            />
+          </mask>
+        </defs>
+        {/* Draw a solid rectangle filled with the desired logo color, and apply the mask to cut out the background */}
+        <rect 
+          width="1248" 
+          height="832" 
+          fill={theme === 'dark' ? '#f7ebc7' : '#281b15'} 
+          mask="url(#logo-mask)" 
+        />
+      </svg>
+    </div>
   );
 };
 
