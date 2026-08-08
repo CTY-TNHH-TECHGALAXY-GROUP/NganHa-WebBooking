@@ -102,14 +102,17 @@ const RootLayout = async ({
     const supabase = getSupabaseAdmin();
     const { data } = await supabase.from('SystemConfigs')
       .select('key, value')
-      .in('key', ['system_settings', 'about_story_content', 'brand_history', 'homepage_styling']);
+      .in('key', ['system_settings', 'about_story_content', 'brand_history', 'homepage_styling', 'homepage_content']);
       
     if (data) {
       data.forEach(item => {
-        if (item.key === 'system_settings') systemSettings = item.value;
+        if (item.key === 'system_settings') systemSettings = item.value || {};
         if (item.key === 'about_story_content') aboutStoryContent = item.value;
         if (item.key === 'brand_history') brandHistory = item.value;
         if (item.key === 'homepage_styling') homepageStyling = item.value;
+        if (item.key === 'homepage_content') {
+           (systemSettings as any).homepage_content = item.value;
+        }
       });
     }
   } catch (e) {

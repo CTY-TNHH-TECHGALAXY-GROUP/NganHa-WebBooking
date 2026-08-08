@@ -11,6 +11,7 @@ export interface SystemSettings {
   phone?: string;
   zalo?: string;
   facebook?: string;
+  homepage_content?: any;
 }
 
 export interface AboutStoryGalleryItem {

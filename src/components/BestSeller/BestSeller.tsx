@@ -1,6 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useSystemSettings } from '@/components/SystemSettingsProvider';
+import { useTranslation } from '@/components/TranslationProvider';
+import { Locale } from '@/lib/constants';
 
 const formatPrice = (price: number) => new Intl.NumberFormat('vi-VN').format(price) + ' đ';
 
@@ -72,6 +75,11 @@ const getCategory = (service: any) => service.cat || service.categoryName || ser
 const SERVICE_MENU_URL = '/#services';
 
 const BestSeller = () => {
+  const { systemSettings, getLocalizedText } = useSystemSettings();
+  const { currentLang } = useTranslation();
+  const lang = currentLang as Locale;
+  const hpContent = systemSettings?.homepage_content?.bestSeller;
+
   // Render mảng fallback lúc đầu để giữ nguyên khung giao diện
   const [services, setServices] = useState<any[]>(FALLBACK_SERVICES);
 
@@ -93,11 +101,11 @@ const BestSeller = () => {
       <div className="best-seller-services__inner">
         <div className="best-seller-services__layout">
           <aside className="best-seller-services__intro">
-            <span className="best-seller-services__eyebrow">Most booked this month</span>
+            <span className="best-seller-services__eyebrow">{getLocalizedText(hpContent?.eyebrow, lang, 'Most booked this month')}</span>
             <h2>
-              Best-seller of
+              {getLocalizedText(hpContent?.title1, lang, 'Best-seller of')}
               <br />
-              Oria Spa
+              {getLocalizedText(hpContent?.title2, lang, 'Oria Spa')}
             </h2>
             <p>Six guest-favorite treatments, arranged in a compact premium view before opening the full service menu.</p>
             <a href={SERVICE_MENU_URL} className="best-seller-services__all-link">

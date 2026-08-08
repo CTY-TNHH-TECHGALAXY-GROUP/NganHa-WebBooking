@@ -5,11 +5,11 @@ export async function GET() {
   try {
     const supabase = getSupabaseAdmin();
     
-    // Fetch system_settings, about_story_content, brand_history
+    // Fetch system_settings, about_story_content, brand_history, homepage_content
     const { data, error } = await supabase
       .from('SystemConfigs')
       .select('key, value')
-      .in('key', ['system_settings', 'about_story_content', 'brand_history']);
+      .in('key', ['system_settings', 'about_story_content', 'brand_history', 'homepage_content']);
 
     if (error) {
       console.error('Error fetching system settings:', error);
@@ -19,7 +19,8 @@ export async function GET() {
     const result = {
       system_settings: {},
       about_story_content: {},
-      brand_history: []
+      brand_history: [],
+      homepage_content: {}
     };
 
     if (data) {
@@ -27,6 +28,7 @@ export async function GET() {
         if (item.key === 'system_settings') result.system_settings = item.value;
         if (item.key === 'about_story_content') result.about_story_content = item.value;
         if (item.key === 'brand_history') result.brand_history = item.value;
+        if (item.key === 'homepage_content') result.homepage_content = item.value;
       });
     }
 
@@ -39,7 +41,7 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    const { system_settings, about_story_content, brand_history } = await request.json();
+    const { system_settings, about_story_content, brand_history, homepage_content } = await request.json();
     const supabase = getSupabaseAdmin();
 
     const upsertData = [];
@@ -67,6 +69,14 @@ export async function POST(request: Request) {
         updated_at: new Date().toISOString()
       });
     }
+    
+    if (homepage_content !== undefined) {
+      upsertData.push({
+        key: 'homepage_content',
+        value: homepage_content,
+        updated_at: new Date().toISOString()
+      });
+    }
 
     if (upsertData.length > 0) {
       const { error } = await supabase
@@ -77,6 +87,13 @@ export async function POST(request: Request) {
         console.error('Error updating system settings:', error);
         return NextResponse.json({ error: 'Failed to update system settings' }, { status: 500 });
       }
+    }
+
+    try {
+      const { revalidatePath } = require('next/cache');
+      revalidatePath('/', 'layout');
+    } catch (e) {
+      console.error('Revalidation error:', e);
     }
 
     return NextResponse.json({ success: true });

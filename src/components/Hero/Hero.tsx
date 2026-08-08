@@ -16,18 +16,6 @@ import {
 // 🔧 UI CONFIGURATION
 const HERO_PARTICLE_COUNT = 30;
 
-// 🔧 TEXT CONTENT
-const HERO_TEXT = {
-  badge: '✦ Premium Spa & Barbershop ✦',
-  subtitle: '',
-  title: 'Oria Spa',
-  subTitle2: 'Welcome to',
-  tagline: '',
-  cta1: 'BEST-SELLER',
-  cta2: 'Đặt Lịch Ngay',
-  scrollHint: 'Cuộn xuống để khám phá',
-};
-
 // ═══════════════════════════════════════════
 // HERO COMPONENT
 // ═══════════════════════════════════════════
@@ -221,9 +209,9 @@ const Hero = () => {
       >
 
 
-        {t('hero_section', 'subtitle') || HERO_TEXT.subtitle ? (
+        {getLocalizedText(systemSettings?.homepage_content?.hero?.subtitle, currentLang as Locale, '') ? (
           <motion.span className="hero-cinematic-sub" variants={fadeInUp}>
-            {t('hero_section', 'subtitle') || HERO_TEXT.subtitle}
+            {getLocalizedText(systemSettings?.homepage_content?.hero?.subtitle, currentLang as Locale, '')}
           </motion.span>
         ) : null}
 
@@ -239,14 +227,14 @@ const Hero = () => {
             className="font-sans uppercase tracking-[6px] md:tracking-[8px] font-medium text-xl md:text-3xl lg:text-[2.5rem] mt-2 md:mt-4" 
             variants={fadeInUp}
           >
-            TechGalaxy Group
+            {getLocalizedText(systemSettings?.homepage_content?.hero?.companyName, currentLang as Locale, 'TechGalaxy Group')}
           </motion.span>
         </div>
 
 
-        {(t('hero_section', 'tagline') || HERO_TEXT.tagline) && (t('hero_section', 'tagline') !== 'SPA' || HERO_TEXT.tagline !== '') ? (
+        {getLocalizedText(systemSettings?.homepage_content?.hero?.tagline, currentLang as Locale, '') ? (
           <motion.p className="hero-cinematic-tagline" variants={fadeInUp}>
-            {t('hero_section', 'tagline') === 'SPA' && HERO_TEXT.tagline === '' ? '' : (t('hero_section', 'tagline') || HERO_TEXT.tagline)}
+            {getLocalizedText(systemSettings?.homepage_content?.hero?.tagline, currentLang as Locale, '')}
           </motion.p>
         ) : null}
 

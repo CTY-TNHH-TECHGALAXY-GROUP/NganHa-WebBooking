@@ -9,6 +9,8 @@ import type { CartItem } from '@/components/Menu/types';
 import { formatCurrency } from '@/components/Menu/utils';
 import { readBookingCart, removeBookingCartItemByCartId } from '@/lib/bookingCartStorage';
 import { useHeaderLogic, LANGUAGES } from './Header.logic';
+import { useSystemSettings } from '@/components/SystemSettingsProvider';
+import { Locale } from '@/lib/constants';
 
 // 🔧 UI CONFIGURATION
 const HEADER_TRANSITION_DURATION = 0.3;
@@ -33,7 +35,7 @@ type NavItem = {
 };
 
 // Navigation items matching Canva design
-const NAV_ITEMS: NavItem[] = [
+const DEFAULT_NAV_ITEMS: NavItem[] = [
   {
     id: 'area',
     label: 'Spaces',
@@ -130,6 +132,49 @@ const Header = () => {
     langDropdownRef,
     t
   } = useHeaderLogic();
+  
+  const { systemSettings, getLocalizedText } = useSystemSettings();
+  const hpNav = systemSettings?.homepage_content?.navigation;
+  const lang = currentLang.code as Locale;
+
+  const NAV_ITEMS = useMemo(() => {
+    return [
+      {
+        id: 'area',
+        label: getLocalizedText(hpNav?.spaces, lang, 'Spaces'),
+        isUnclickable: true,
+        children: [
+          { id: 'area_lobby', label: getLocalizedText(hpNav?.welcomeArea, lang, 'Welcome area'), href: '/#lobby' },
+          { id: 'area_l1', label: getLocalizedText(hpNav?.firstFloor, lang, 'First Floor'), href: '/#l1' },
+          { id: 'area_l2', label: getLocalizedText(hpNav?.secondFloor, lang, 'Second Floor'), href: '/#l2' },
+        ],
+      },
+      {
+        id: 'services',
+        label: getLocalizedText(hpNav?.services, lang, 'Services'),
+        isUnclickable: true,
+        children: [
+          { id: 'pure_relaxation', label: getLocalizedText(hpNav?.pureRelaxation, lang, 'Pure relaxation'), href: '/#services' },
+          { id: 'design_journey', label: getLocalizedText(hpNav?.designJourney, lang, 'Design Your Journey'), href: '/#design-journey' },
+          { id: 'therapy', label: getLocalizedText(hpNav?.therapy, lang, 'Therapy'), href: '/#therapy' },
+        ],
+      },
+      {
+        id: 'academy',
+        label: getLocalizedText(hpNav?.academy, lang, 'Academy'),
+        isUnclickable: true,
+        children: [
+          { id: 'academy_admissions', label: getLocalizedText(hpNav?.admissions, lang, 'Recruitment/Admission'), href: '/academy/admissions' },
+          { id: 'academy_training', label: getLocalizedText(hpNav?.training, lang, 'Training / Online'), href: '/academy/training' },
+          { id: 'academy_certification', label: getLocalizedText(hpNav?.certification, lang, 'Certification'), href: '/academy/certification' },
+        ],
+      },
+      { id: 'local_tour', label: getLocalizedText(hpNav?.localTour, lang, 'Local tour'), href: '/#local-tour' },
+      { id: 'history', label: getLocalizedText(hpNav?.history, lang, 'History'), href: '/history' },
+      { id: 'privileges', label: getLocalizedText(hpNav?.privileges, lang, 'Your privileges'), href: '/privileges' },
+      { id: 'blogs', label: getLocalizedText(hpNav?.blogs, lang, 'Blogs'), href: '/blog.html', target: '_blank' },
+    ] as NavItem[];
+  }, [hpNav, lang, getLocalizedText]);
 
   const cartSubtotal = useMemo(
     () => cartSnapshot.reduce((sum, item) => sum + item.priceVND * item.qty, 0),
@@ -365,7 +410,10 @@ const Header = () => {
                 </div>
 
                 {/* Right Panel: Sub-brands Card */}
-                <div className="nav-panel-right">
+                <div 
+                  className="nav-panel-right"
+                  style={hpNav?.bgImage ? { backgroundImage: `url('${hpNav.bgImage}')` } : undefined}
+                >
                   <div className="nav-panel-card">
                     <div className="nav-card-header">
                       <SmartLogo theme="dark" className="nav-card-logo object-contain" />
