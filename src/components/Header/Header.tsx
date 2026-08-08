@@ -64,10 +64,10 @@ const NAV_ITEMS: NavItem[] = [
       { id: 'academy_certification', label: 'Certification', href: '/academy/certification' },
     ],
   },
-  { id: 'local_tour', label: 'Local tour', href: '/#local-tour' },
   { id: 'history', label: 'History', href: '/history' },
-  { id: 'privileges', label: 'Your privileges', href: '/privileges' },
+  { id: 'local_tour', label: 'Local tour', href: '/#local-tour' },
   { id: 'blogs', label: 'Blogs', href: '/blog.html', target: '_blank' },
+  { id: 'privileges', label: 'Your privileges', href: '/privileges' },
 ];
 
 const CART_COPY = {
