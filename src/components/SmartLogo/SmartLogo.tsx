@@ -23,10 +23,10 @@ const SmartLogo: React.FC<SmartLogoProps> = ({ theme = 'dark', className = '', a
           <feColorMatrix
             type="matrix"
             values="
-              0.058 0 0 0 0.910
-              0 0.105 0 0 0.816
-              0 0 0.235 0 0.545
-              0 0 0 1 0
+              0 0 0 0 0.910
+              0 0 0 0 0.816
+              0 0 0 0 0.545
+              -0.333 -0.333 -0.333 0 1
             "
           />
         </filter>
