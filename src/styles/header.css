@@ -850,12 +850,73 @@
   font-size: 1.1rem;
   font-weight: 300;
   text-decoration: none;
-  transition: color 0.3s ease;
   font-family: var(--font-sans, sans-serif);
+  
+  /* Editorial hover animation */
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  opacity: 0.7;
+  transform: translateX(0);
+  transition: transform 0.25s cubic-bezier(0.21, 0.6, 0.35, 1), opacity 0.25s ease, color 0.25s ease;
+}
+
+.nav-child-link::before {
+  content: '';
+  position: absolute;
+  left: -14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 1px;
+  background-color: #D4AF37;
+  transition: width 0.25s cubic-bezier(0.21, 0.6, 0.35, 1);
+  pointer-events: none;
 }
 
 .nav-child-link:hover {
   color: #D4AF37;
+  opacity: 1;
+  transform: translateX(14px);
+}
+
+.nav-child-link:hover::before {
+  width: 10px;
+}
+
+/* Apply the same interaction to category title links (like History, Blogs) */
+.nav-category-title a {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  opacity: 0.7;
+  color: #D4AF37;
+  text-decoration: none;
+  transform: translateX(0);
+  transition: transform 0.25s cubic-bezier(0.21, 0.6, 0.35, 1), opacity 0.25s ease, color 0.25s ease;
+}
+
+.nav-category-title a::before {
+  content: '';
+  position: absolute;
+  left: -14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 1px;
+  background-color: #f7ebc7;
+  transition: width 0.25s cubic-bezier(0.21, 0.6, 0.35, 1);
+  pointer-events: none;
+}
+
+.nav-category-title a:hover {
+  color: #f7ebc7;
+  opacity: 1;
+  transform: translateX(14px);
+}
+
+.nav-category-title a:hover::before {
+  width: 10px;
 }
 
 .nav-panel-right {
