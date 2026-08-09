@@ -1,8 +1,9 @@
 'use client';
 
 import { useCallback, useRef } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { CartItem, Service } from '@/components/Menu/types';
+import MenuIntroGate from '@/components/MenuIntro/MenuIntroGate';
 import { appendBookingCartItem, removeOneBookingCartItem } from '@/lib/bookingCartStorage';
 import {
   FlipbookFrame,
@@ -84,19 +85,21 @@ const ServiceBook = () => {
   });
 
   return (
-    <FlipbookFrame
-      src={`/flipmenu/example/book.html?lang=${lang}&shell=book&v=flipbook-restored-v69-unified-galaxy`}
-      title="ORIA SPA 3D Menu"
-      isFullscreen={isFullscreen}
-      containerRef={containerRef}
-      iframeRef={iframeRef}
-      headerHeight={HEADER_HEIGHT_PX}
-      classNames={{
-        containerInline: 'min-h-[700px] lg:min-h-[850px] py-0 relative',
-        iframeBase: 'w-full border-none overflow-hidden',
-        iframeInline: 'h-[700px] lg:h-[850px] max-w-none rounded-none shadow-none',
-      }}
-    />
+    <MenuIntroGate>
+      <FlipbookFrame
+        src={`/flipmenu/example/book.html?lang=${lang}&shell=book&v=flipbook-restored-v69-unified-galaxy`}
+        title="ORIA SPA 3D Menu"
+        isFullscreen={isFullscreen}
+        containerRef={containerRef}
+        iframeRef={iframeRef}
+        headerHeight={HEADER_HEIGHT_PX}
+        classNames={{
+          containerInline: 'min-h-[700px] lg:min-h-[850px] py-0 relative',
+          iframeBase: 'w-full border-none overflow-hidden',
+          iframeInline: 'h-[700px] lg:h-[850px] max-w-none rounded-none shadow-none',
+        }}
+      />
+    </MenuIntroGate>
   );
 };
 
