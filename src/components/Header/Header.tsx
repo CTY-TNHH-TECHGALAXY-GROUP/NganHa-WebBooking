@@ -7,7 +7,7 @@ import { Menu, X, MapPin, ChevronUp, ChevronDown, ShoppingCart } from 'lucide-re
 import SmartLogo from '@/components/SmartLogo';
 import type { CartItem } from '@/components/Menu/types';
 import { formatCurrency } from '@/components/Menu/utils';
-import { readBookingCart, removeBookingCartItemByCartId } from '@/lib/bookingCartStorage';
+import { readBookingCart, removeBookingCartItemByCartId, updateBookingCartItemQuantity, updateBookingCartItemNote } from '@/lib/bookingCartStorage';
 import { useHeaderLogic, LANGUAGES } from './Header.logic';
 import { useSystemSettings } from '@/components/SystemSettingsProvider';
 import { Locale } from '@/lib/constants';
@@ -222,6 +222,19 @@ const Header = () => {
     const nextCart = removeBookingCartItemByCartId(cartId);
     setCartSnapshot(nextCart);
     setCartCount(countCartItems(nextCart));
+    window.dispatchEvent(new CustomEvent('nganha:cart-updated', { detail: { cart: nextCart } }));
+  };
+
+  const handleQuantityChange = (cartId: string, delta: number) => {
+    const nextCart = updateBookingCartItemQuantity(cartId, delta);
+    setCartSnapshot(nextCart);
+    setCartCount(countCartItems(nextCart));
+    window.dispatchEvent(new CustomEvent('nganha:cart-updated', { detail: { cart: nextCart } }));
+  };
+
+  const handleNoteChange = (cartId: string, note: string) => {
+    const nextCart = updateBookingCartItemNote(cartId, note);
+    setCartSnapshot(nextCart);
     window.dispatchEvent(new CustomEvent('nganha:cart-updated', { detail: { cart: nextCart } }));
   };
 
@@ -518,11 +531,20 @@ const Header = () => {
                             <p className="font-sans text-[11px] text-gray-500 mt-2 uppercase tracking-wider">{item.timeValue} {cartText('mins', currentLang.code)} · {cartText('vipRoom', currentLang.code)} 2</p>
                           </div>
                         </div>
+                        <div className="mt-3">
+                          <input 
+                            type="text" 
+                            placeholder={currentLang.code === 'vi' ? 'Ghi chú cho dịch vụ này...' : 'Add a note...'} 
+                            className="w-full text-[12px] p-2 border border-gray-200 bg-white font-sans text-[#1a1a1a] outline-none focus:border-[#D4AF37] transition-colors placeholder-gray-400 rounded-none"
+                            value={item.options?.notes?.content || ''}
+                            onChange={(e) => handleNoteChange(item.cartId, e.target.value)}
+                          />
+                        </div>
                         <div className="flex justify-between items-end mt-5">
                           <div className="flex items-center border border-gray-300 text-gray-600 text-[12px] font-sans px-2 py-1">
-                            <button className="px-2 hover:text-black" aria-label="Decrease quantity">-</button>
-                            <span className="px-3">{item.qty}</span>
-                            <button className="px-2 hover:text-black" aria-label="Increase quantity">+</button>
+                            <button type="button" className="px-2 hover:text-black" aria-label="Decrease quantity" onClick={() => handleQuantityChange(item.cartId, -1)}>-</button>
+                            <span className="px-3">{item.qty || 1}</span>
+                            <button type="button" className="px-2 hover:text-black" aria-label="Increase quantity" onClick={() => handleQuantityChange(item.cartId, 1)}>+</button>
                           </div>
                           <div className="text-right">
                             <div className="font-sans text-[15px] font-medium text-[#1a1a1a] mb-2">{formatCurrency(item.priceVND)} đ</div>

@@ -71,3 +71,40 @@ export const removeBookingCartItemByCartId = (cartId: string) => {
   writeBookingCart(next);
   return next;
 };
+
+export const updateBookingCartItemQuantity = (cartId: string, delta: number) => {
+  const current = readBookingCart();
+  const index = current.findIndex((item) => item.cartId === cartId);
+  if (index < 0) return current;
+
+  const nextQty = (current[index].qty || 1) + delta;
+  if (nextQty <= 0) {
+    return removeBookingCartItemByCartId(cartId);
+  }
+
+  const next = [...current];
+  next[index] = { ...next[index], qty: nextQty };
+  writeBookingCart(next);
+  return next;
+};
+
+export const updateBookingCartItemNote = (cartId: string, content: string) => {
+  const current = readBookingCart();
+  const index = current.findIndex((item) => item.cartId === cartId);
+  if (index < 0) return current;
+
+  const next = [...current];
+  const item = next[index];
+  next[index] = {
+    ...item,
+    options: {
+      ...item.options,
+      notes: {
+        ...(item.options?.notes || { tag0: false, tag1: false, content: '' }),
+        content,
+      },
+    },
+  };
+  writeBookingCart(next);
+  return next;
+};
