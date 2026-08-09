@@ -19,7 +19,7 @@ const Footer = () => {
   const { systemSettings } = useSystemSettings();
   const { currentLang } = useTranslation();
 
-  const phone = systemSettings?.phone || '+84 999 999 999';
+  const phone = systemSettings?.phone || '+84964090277';
   const facebook = systemSettings?.facebook || 'https://facebook.com';
   const zalo = systemSettings?.zalo || 'https://zalo.me';
   const addressText = systemSettings?.address?.[currentLang] || '11 Ngô Đức Kế, Q.1, TP.HCM & 6B Thi Sách, Q.1, TP.HCM';
