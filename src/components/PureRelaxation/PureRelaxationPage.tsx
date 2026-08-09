@@ -1,0 +1,398 @@
+'use client';
+
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { useRouter } from 'next/navigation';
+import { DoorOpen, ShoppingBag, Timer, UserRound } from 'lucide-react';
+import { useTranslation } from '@/components/TranslationProvider';
+import type { CartItem, Service } from '@/components/Menu/types';
+import {
+  appendBookingCartItem,
+  readBookingCart,
+  removeOneBookingCartItem,
+} from '@/lib/bookingCartStorage';
+import { pureRelaxationSections } from './pureRelaxationData';
+import type {
+  PureRelaxationDuration,
+  PureRelaxationMedia,
+  PureRelaxationPrivilege,
+  PureRelaxationSection,
+  PureRelaxationService,
+  PureRelaxationVariant,
+} from './pureRelaxationData';
+import styles from './PureRelaxationPage.module.css';
+
+type ActiveItem = {
+  name: string;
+  subtitle: string;
+  media: PureRelaxationMedia;
+  durations: PureRelaxationDuration[];
+  privilege: PureRelaxationPrivilege;
+};
+
+const formatVnd = (value: number) =>
+  new Intl.NumberFormat('vi-VN', { maximumFractionDigits: 0 }).format(value) + ' đ';
+
+const slugify = (value: string) =>
+  value
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+
+const hasVariants = (service: PureRelaxationService): service is PureRelaxationService & { variants: PureRelaxationVariant[] } =>
+  Array.isArray(service.variants) && service.variants.length > 0;
+
+const getActiveItem = (service: PureRelaxationService, variantIndex: number): ActiveItem => {
+  if (hasVariants(service)) {
+    const variant = service.variants[Math.min(variantIndex, service.variants.length - 1)];
+    return {
+      name: variant.name,
+      subtitle: variant.subtitle,
+      media: variant.media,
+      durations: variant.durations,
+      privilege: variant.privilege,
+    };
+  }
+
+  return {
+    name: service.name,
+    subtitle: service.description,
+    media: service.media!,
+    durations: service.durations!,
+    privilege: service.privilege!,
+  };
+};
+
+const MediaPreview = ({ media, label }: { media: PureRelaxationMedia; label: string }) => {
+  return (
+    <div className={styles.mediaFrame}>
+      <div className={styles.mediaFade} key={media.src}>
+        {media.type === 'video' ? (
+          <video
+            className={styles.media}
+            src={media.src}
+            poster={media.poster}
+            muted
+            autoPlay
+            loop
+            playsInline
+            preload="metadata"
+          />
+        ) : (
+          <img className={styles.media} src={media.src} alt={label} loading="lazy" />
+        )}
+      </div>
+      <div className={styles.mediaOverlay} />
+      <span className={styles.mediaCaption}>{media.tag}</span>
+    </div>
+  );
+};
+
+const PreferenceNote = ({ icon, title, copy }: { icon: ReactNode; title: string; copy: string }) => (
+  <div className={styles.preferenceNote} aria-label={`${title}: ${copy}`}>
+    <span className={styles.preferenceIcon}>{icon}</span>
+    <span>
+      <strong>{title}</strong>
+      <small>{copy}</small>
+    </span>
+  </div>
+);
+
+const ServiceSection = ({ section }: { section: PureRelaxationSection }) => {
+  const [serviceIndex, setServiceIndex] = useState(0);
+  const [variantIndex, setVariantIndex] = useState(0);
+  const [durationIndex, setDurationIndex] = useState(0);
+  const [notice, setNotice] = useState('');
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const router = useRouter();
+  const { currentLang } = useTranslation();
+
+  const selectedService = section.services[serviceIndex];
+  const active = useMemo(() => getActiveItem(selectedService, variantIndex), [selectedService, variantIndex]);
+  const activeDuration = active.durations[Math.min(durationIndex, active.durations.length - 1)];
+  const selectedCartServiceId = useMemo(
+    () => `pure-relaxation-${section.id}-${slugify(active.name)}-${slugify(activeDuration.label)}`,
+    [active.name, activeDuration.label, section.id]
+  );
+  const selectedCartQuantity = useMemo(
+    () =>
+      cartItems
+        .filter((item) => item.id === selectedCartServiceId)
+        .reduce((total, item) => total + (item.qty || 1), 0),
+    [cartItems, selectedCartServiceId]
+  );
+
+  const syncCart = useCallback((cart?: CartItem[]) => {
+    const next = cart ?? readBookingCart();
+    setCartItems(next);
+    window.dispatchEvent(new CustomEvent('nganha:cart-updated', { detail: { count: next.length } }));
+    return next;
+  }, []);
+
+  useEffect(() => {
+    setVariantIndex(0);
+    setDurationIndex(0);
+    setNotice('');
+  }, [serviceIndex]);
+
+  useEffect(() => {
+    setDurationIndex(0);
+    setNotice('');
+  }, [variantIndex]);
+
+  useEffect(() => {
+    setCartItems(readBookingCart());
+
+    const handleCartUpdate = () => setCartItems(readBookingCart());
+    window.addEventListener('nganha:cart-updated', handleCartUpdate);
+    window.addEventListener('storage', handleCartUpdate);
+
+    return () => {
+      window.removeEventListener('nganha:cart-updated', handleCartUpdate);
+      window.removeEventListener('storage', handleCartUpdate);
+    };
+  }, []);
+
+  const buildServicePayload = useCallback((): Service => {
+    const minutes = Number(activeDuration.label.replace(/\D/g, '')) || 0;
+    return {
+      id: selectedCartServiceId,
+      cat: `Pure Relaxation · ${section.title}`,
+      names: {
+        vi: active.name,
+        en: active.name,
+        cn: active.name,
+        jp: active.name,
+        kr: active.name,
+      },
+      descriptions: {
+        vi: active.subtitle,
+        en: active.subtitle,
+        cn: active.subtitle,
+        jp: active.subtitle,
+        kr: active.subtitle,
+      },
+      img: active.media.type === 'image' ? active.media.src : active.media.poster || active.media.src,
+      priceVND: activeDuration.price,
+      priceUSD: 0,
+      timeValue: minutes,
+      timeDisplay: activeDuration.label,
+      menuType: 'standard',
+    };
+  }, [active, activeDuration, section.title, selectedCartServiceId]);
+
+  const addToCart = useCallback(() => {
+    const cart = appendBookingCartItem(buildServicePayload(), 1);
+    syncCart(cart);
+    setNotice('Added to cart');
+    window.setTimeout(() => setNotice(''), 2200);
+    return cart;
+  }, [buildServicePayload, syncCart]);
+
+  const decreaseQuantity = useCallback(() => {
+    const cart = removeOneBookingCartItem(selectedCartServiceId);
+    syncCart(cart);
+    setNotice(cart.some((item) => item.id === selectedCartServiceId) ? 'Updated cart' : 'Removed from cart');
+    window.setTimeout(() => setNotice(''), 2200);
+    return cart;
+  }, [selectedCartServiceId, syncCart]);
+
+  const bookNow = useCallback(() => {
+    addToCart();
+    router.push(`/${currentLang || 'en'}/new-user/standard/checkout`);
+  }, [addToCart, currentLang, router]);
+
+  return (
+    <section className={styles.serviceSection} id={section.id}>
+      <div className={styles.sectionGrid}>
+        <div className={styles.mediaPane}>
+          <MediaPreview media={active.media} label={active.name} />
+        </div>
+
+        <div className={styles.sectionContent}>
+          <h2>{section.title}</h2>
+
+          <div className={styles.choiceBlock}>
+            <div className={styles.choiceLabel}>Choose service</div>
+            <div className={styles.pillGrid}>
+              {section.services.map((service, index) => (
+                <button
+                  className={`${styles.pill} ${serviceIndex === index ? styles.pillActive : ''}`}
+                  key={service.name}
+                  type="button"
+                  onClick={() => setServiceIndex(index)}
+                >
+                  {service.name}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {hasVariants(selectedService) && (
+            <div className={styles.choiceBlock}>
+              <div className={styles.choiceLabel}>Choose package</div>
+              <div className={styles.variantStack}>
+                {selectedService.variants.map((variant, index) => (
+                  <button
+                    className={`${styles.variantButton} ${variantIndex === index ? styles.variantActive : ''}`}
+                    key={variant.name}
+                    type="button"
+                    onClick={() => setVariantIndex(index)}
+                  >
+                    <span>{variant.name}</span>
+                    <small>{variant.subtitle}</small>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <div className={styles.selectedPanel}>
+            <span>{selectedService.name}</span>
+            <h3>{active.name}</h3>
+            <p>{active.subtitle}</p>
+          </div>
+
+          <div className={styles.choiceBlock}>
+            <div className={styles.choiceLabel}>Choose duration</div>
+            <div className={styles.durationGrid}>
+              {active.durations.map((duration, index) => (
+                <button
+                  className={`${styles.durationButton} ${durationIndex === index ? styles.durationActive : ''}`}
+                  key={duration.label}
+                  type="button"
+                  onClick={() => setDurationIndex(index)}
+                >
+                  <span>{duration.label}</span>
+                  <small>{formatVnd(duration.price)}</small>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className={styles.purchaseRow}>
+            <div>
+              <span className={styles.priceLabel}>Selected price</span>
+              <strong>{formatVnd(activeDuration.price)}</strong>
+            </div>
+            <div className={styles.actions}>
+              {selectedCartQuantity > 0 ? (
+                <div className={styles.quantityStepper} aria-label={`${active.name} quantity in cart`}>
+                  <button type="button" onClick={decreaseQuantity} aria-label="Decrease quantity">
+                    -
+                  </button>
+                  <span>{selectedCartQuantity}</span>
+                  <button type="button" onClick={addToCart} aria-label="Increase quantity">
+                    +
+                  </button>
+                </div>
+              ) : (
+                <button className={styles.secondaryButton} type="button" onClick={addToCart}>
+                  <ShoppingBag size={17} />
+                  Add to cart
+                </button>
+              )}
+              <button className={styles.primaryButton} type="button" onClick={bookNow}>
+                Book now
+              </button>
+            </div>
+          </div>
+
+          {notice && <p className={styles.notice}>{notice}</p>}
+
+          <div className={styles.privilegeCard}>
+            <img src={active.privilege.image} alt={active.privilege.title} loading="lazy" />
+            <div>
+              <span className={styles.choiceLabel}>Privilege Included</span>
+              <h4>{active.privilege.title}</h4>
+              <p>{active.privilege.copy}</p>
+              <small>
+                <Timer size={14} />
+                {active.privilege.time}
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const PureRelaxationPage = () => {
+  const navRef = useRef<HTMLDivElement>(null);
+  const [activeSection, setActiveSection] = useState(pureRelaxationSections[0].id);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (visible?.target.id) setActiveSection(visible.target.id);
+      },
+      { rootMargin: '-35% 0px -45% 0px', threshold: [0.15, 0.35, 0.55] },
+    );
+
+    pureRelaxationSections.forEach((section) => {
+      const element = document.getElementById(section.id);
+      if (element) observer.observe(element);
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const nav = navRef.current;
+    const activeButton = nav?.querySelector<HTMLButtonElement>(`[data-section="${activeSection}"]`);
+    if (!nav || !activeButton) return;
+
+    const targetLeft = activeButton.offsetLeft - (nav.clientWidth - activeButton.clientWidth) / 2;
+    nav.scrollTo({ left: Math.max(0, targetLeft), behavior: 'smooth' });
+  }, [activeSection]);
+
+  const scrollToSection = (id: string) => {
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
+  return (
+    <main className={styles.page}>
+      <header className={styles.hero}>
+        <p className={styles.eyebrow}>Pure Relaxation</p>
+        <h1>Pure Relaxation</h1>
+        <p className={styles.intro}>
+          A quieter way to browse Oria Spa rituals: choose a service, compare only the relevant durations, and book without a crowded menu wall.
+        </p>
+
+        <div className={styles.preferenceWrap}>
+          <PreferenceNote icon={<DoorOpen size={18} />} title="Random Room" copy="Assigned by the spa team for the smoothest flow." />
+          <PreferenceNote icon={<UserRound size={18} />} title="Random Staff" copy="A suitable therapist will be arranged for your chosen ritual." />
+        </div>
+      </header>
+
+      <nav className={styles.sectionNavShell} aria-label="Pure Relaxation categories">
+        <div className={styles.sectionNav} ref={navRef}>
+          {pureRelaxationSections.map((section) => (
+            <button
+              className={`${styles.navButton} ${activeSection === section.id ? styles.navActive : ''}`}
+              data-section={section.id}
+              key={section.id}
+              type="button"
+              onClick={() => scrollToSection(section.id)}
+            >
+              {section.title}
+            </button>
+          ))}
+        </div>
+      </nav>
+
+      <div className={styles.sectionsWrap}>
+        {pureRelaxationSections.map((section) => (
+          <ServiceSection key={section.id} section={section} />
+        ))}
+      </div>
+    </main>
+  );
+};
+
+export default PureRelaxationPage;

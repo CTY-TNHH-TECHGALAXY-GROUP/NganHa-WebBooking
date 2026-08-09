@@ -1,0 +1,644 @@
+.page {
+  --pure-bg: #f6f2ea;
+  --pure-surface: #fbf8f2;
+  --pure-surface-soft: #efe6d8;
+  --pure-ink: #1f201f;
+  --pure-muted: #73716d;
+  --pure-line: rgba(31, 32, 31, 0.14);
+  --pure-line-strong: rgba(31, 32, 31, 0.28);
+  --pure-accent: #8e7557;
+  --pure-accent-soft: #b49c83;
+  background:
+    radial-gradient(circle at 18% 8%, rgba(180, 156, 131, 0.22), transparent 34rem),
+    linear-gradient(180deg, #fbf8f2 0%, var(--pure-bg) 38%, #eee6d9 100%);
+  color: var(--pure-ink);
+  min-height: 100dvh;
+  overflow-x: clip;
+  overflow-y: visible;
+  padding-bottom: 7rem;
+}
+
+.hero {
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 9rem 4rem 3.5rem;
+}
+
+.eyebrow,
+.choiceLabel,
+.priceLabel {
+  color: var(--pure-accent);
+  font-family: var(--font-inter), Inter, Arial, sans-serif;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.hero h1 {
+  max-width: 1080px;
+  margin: 0.85rem 0 1.4rem;
+  color: var(--pure-ink);
+  font-family: var(--font-playfair), Georgia, serif;
+  font-size: 8.75rem;
+  font-weight: 500;
+  line-height: 0.85;
+  letter-spacing: 0;
+}
+
+.intro {
+  max-width: 730px;
+  color: var(--pure-muted);
+  font-family: var(--font-inter), Inter, Arial, sans-serif;
+  font-size: 1.08rem;
+  line-height: 1.75;
+}
+
+.preferenceWrap {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.2rem;
+  max-width: 780px;
+  margin-top: 2.7rem;
+}
+
+.preferenceNote {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  min-height: 6rem;
+  padding: 0;
+  background: transparent;
+  cursor: default;
+}
+
+.preferenceIcon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 2.65rem;
+  width: 2.65rem;
+  height: 2.65rem;
+  color: var(--pure-accent);
+  border: 1px solid var(--pure-line);
+  border-radius: 50%;
+}
+
+.preferenceNote strong {
+  display: block;
+  margin-bottom: 0.28rem;
+  font-family: var(--font-playfair), Georgia, serif;
+  font-size: 1.18rem;
+  font-weight: 500;
+}
+
+.preferenceNote small {
+  color: var(--pure-muted);
+  font-family: var(--font-inter), Inter, Arial, sans-serif;
+  font-size: 0.86rem;
+  line-height: 1.45;
+}
+
+.sectionNavShell {
+  position: sticky;
+  top: 5.25rem;
+  z-index: 20;
+  padding: 0 4rem;
+  border-block: 1px solid var(--pure-line);
+  background: rgba(246, 242, 234, 0.84);
+  backdrop-filter: blur(18px);
+}
+
+.sectionNav {
+  display: flex;
+  gap: 2.4rem;
+  align-items: center;
+  max-width: 1500px;
+  margin: 0 auto;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scrollbar-width: none;
+}
+
+.sectionNav::-webkit-scrollbar {
+  display: none;
+}
+
+.navButton {
+  position: relative;
+  flex: 0 0 auto;
+  padding: 1.18rem 0;
+  color: rgba(31, 32, 31, 0.58);
+  font-family: var(--font-inter), Inter, Arial, sans-serif;
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+
+.navButton::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: 0.72rem;
+  left: 0;
+  height: 1px;
+  transform: scaleX(0);
+  transform-origin: left;
+  background: var(--pure-accent);
+  transition: transform 260ms ease;
+}
+
+.navActive {
+  color: var(--pure-ink);
+}
+
+.navActive::after {
+  transform: scaleX(1);
+}
+
+.sectionsWrap {
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 0 4rem;
+}
+
+.serviceSection {
+  scroll-margin-top: 9.5rem;
+  padding: 5.5rem 0;
+  border-bottom: 1px solid var(--pure-line);
+}
+
+.sectionGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+  gap: clamp(2rem, 4vw, 3.6rem);
+  align-items: start;
+}
+
+.mediaPane {
+  position: sticky;
+  top: 10.5rem;
+}
+
+.mediaFrame {
+  position: relative;
+  min-height: 560px;
+  height: 72vh;
+  max-height: 760px;
+  overflow: hidden;
+  background: #211f1d;
+  border-radius: 3px;
+  box-shadow: 0 26px 70px rgba(44, 34, 24, 0.11);
+}
+
+.mediaFade {
+  position: absolute;
+  inset: 0;
+  animation: mediaIn 360ms ease both;
+}
+
+.media {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mediaOverlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.04), rgba(0, 0, 0, 0.3)),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.22), transparent 45%);
+  pointer-events: none;
+}
+
+.mediaCaption {
+  position: absolute;
+  left: 1.35rem;
+  bottom: 1.25rem;
+  color: #fff6e4;
+  font-family: var(--font-inter), Inter, Arial, sans-serif;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.sectionContent {
+  min-width: 0;
+  padding: 0.15rem 0 0.8rem;
+}
+
+.kicker {
+  color: var(--pure-accent);
+  font-family: var(--font-inter), Inter, Arial, sans-serif;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+}
+
+.sectionContent h2 {
+  margin: 0 0 0.85rem;
+  font-family: var(--font-playfair), Georgia, serif;
+  font-size: clamp(2.8rem, 4vw, 3.55rem);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0;
+}
+
+.sectionDescription {
+  max-width: 42rem;
+  color: var(--pure-muted);
+  font-family: var(--font-inter), Inter, Arial, sans-serif;
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.choiceBlock {
+  margin-top: 1.35rem;
+}
+
+.pillGrid,
+.durationGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.6rem;
+}
+
+.pill,
+.durationButton,
+.secondaryButton,
+.primaryButton,
+.variantButton {
+  font-family: var(--font-inter), Inter, Arial, sans-serif;
+}
+
+.pill {
+  padding: 0.64rem 0.86rem;
+  font-size: 0.92rem;
+  color: rgba(31, 32, 31, 0.7);
+  background: rgba(255, 255, 255, 0.34);
+  border: 1px solid var(--pure-line);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: border-color 220ms ease, color 220ms ease, background 220ms ease;
+}
+
+.pill:hover,
+.pillActive {
+  color: var(--pure-ink);
+  border-color: var(--pure-line-strong);
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.variantStack {
+  display: grid;
+  gap: 0.55rem;
+  margin-top: 0.6rem;
+}
+
+.variantButton {
+  display: grid;
+  gap: 0.18rem;
+  width: 100%;
+  padding: 0.78rem 0.95rem;
+  text-align: left;
+  color: var(--pure-ink);
+  background: rgba(255, 255, 255, 0.32);
+  border: 1px solid var(--pure-line);
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background 220ms ease, border-color 220ms ease;
+}
+
+.variantButton span {
+  font-weight: 700;
+}
+
+.variantButton small {
+  color: var(--pure-muted);
+  font-size: 0.9rem;
+  line-height: 1.35;
+}
+
+.variantActive {
+  background: rgba(255, 255, 255, 0.72);
+  border-color: var(--pure-line-strong);
+}
+
+.selectedPanel {
+  margin-top: 1.35rem;
+  padding-top: 1.05rem;
+  border-top: 1px solid var(--pure-line);
+}
+
+.selectedPanel span {
+  color: var(--pure-accent);
+  font-family: var(--font-inter), Inter, Arial, sans-serif;
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.selectedPanel h3 {
+  margin: 0.35rem 0 0.38rem;
+  font-family: var(--font-playfair), Georgia, serif;
+  font-size: clamp(1.8rem, 2.6vw, 2.08rem);
+  font-weight: 500;
+  line-height: 1.1;
+}
+
+.selectedPanel p {
+  color: var(--pure-muted);
+  font-size: 0.94rem;
+  line-height: 1.42;
+}
+
+.durationButton {
+  min-width: 6.6rem;
+  padding: 0.66rem 0.76rem;
+  text-align: left;
+  color: var(--pure-ink);
+  background: rgba(255, 255, 255, 0.34);
+  border: 1px solid var(--pure-line);
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.durationButton span,
+.durationButton small {
+  display: block;
+}
+
+.durationButton span {
+  font-weight: 800;
+}
+
+.durationButton small {
+  margin-top: 0.2rem;
+  color: var(--pure-muted);
+}
+
+.durationActive {
+  background: var(--pure-ink);
+  color: #fff7ea;
+}
+
+.durationActive small {
+  color: rgba(255, 247, 234, 0.72);
+}
+
+.purchaseRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+  margin-top: 1.45rem;
+  padding-block: 0.9rem;
+  border-block: 1px solid var(--pure-line);
+}
+
+.purchaseRow strong {
+  display: block;
+  margin-top: 0.22rem;
+  font-family: var(--font-playfair), Georgia, serif;
+  font-size: 1.72rem;
+  font-weight: 500;
+}
+
+.actions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.secondaryButton,
+.primaryButton {
+  display: inline-flex;
+  gap: 0.45rem;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.9rem;
+  padding: 0 1.1rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.secondaryButton {
+  color: var(--pure-ink);
+  background: transparent;
+  border: 1px solid var(--pure-line-strong);
+}
+
+.primaryButton {
+  color: #fffaf0;
+  background: var(--pure-ink);
+  border: 1px solid var(--pure-ink);
+}
+
+.quantityStepper {
+  display: inline-flex;
+  gap: 0.7rem;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.9rem;
+  padding: 0.22rem 0.55rem;
+  color: var(--pure-ink);
+  background: rgba(255, 255, 255, 0.42);
+  border: 1px solid var(--pure-line-strong);
+  border-radius: 999px;
+}
+
+.quantityStepper button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  color: var(--pure-ink);
+  background: rgba(255, 255, 255, 0.54);
+  border: 1px solid var(--pure-line);
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 1.25rem;
+  line-height: 1;
+  transition: background 180ms ease, border-color 180ms ease, transform 180ms ease;
+}
+
+.quantityStepper button:hover {
+  background: rgba(255, 255, 255, 0.82);
+  border-color: var(--pure-line-strong);
+  transform: translateY(-1px);
+}
+
+.quantityStepper span {
+  min-width: 2ch;
+  text-align: center;
+  font-family: var(--font-playfair), Georgia, serif;
+  font-size: 1.18rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.notice {
+  margin-top: 0.9rem;
+  color: var(--pure-accent);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.privilegeCard {
+  display: grid;
+  grid-template-columns: 8.25rem minmax(0, 1fr);
+  gap: 0.9rem;
+  margin-top: 1.3rem;
+  padding: 0.82rem;
+  background: rgba(251, 248, 242, 0.62);
+  border: 1px solid var(--pure-line);
+}
+
+.privilegeCard img {
+  width: 100%;
+  aspect-ratio: 1.25;
+  object-fit: cover;
+}
+
+.privilegeCard h4 {
+  margin: 0.35rem 0 0.28rem;
+  font-family: var(--font-playfair), Georgia, serif;
+  font-size: 1.38rem;
+  font-weight: 500;
+}
+
+.privilegeCard p {
+  color: var(--pure-muted);
+  font-size: 0.92rem;
+  line-height: 1.4;
+}
+
+.privilegeCard small {
+  display: inline-flex;
+  gap: 0.4rem;
+  align-items: center;
+  margin-top: 0.75rem;
+  color: var(--pure-accent);
+  font-weight: 800;
+}
+
+@keyframes mediaIn {
+  from {
+    opacity: 0;
+    transform: scale(1.025);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (max-width: 1180px) {
+  .hero,
+  .sectionsWrap,
+  .sectionNavShell {
+    padding-inline: 2rem;
+  }
+
+  .hero h1 {
+    font-size: 6.5rem;
+  }
+
+  .sectionGrid {
+    gap: 3rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .hero {
+    padding-top: 7rem;
+  }
+
+  .hero h1 {
+    font-size: 4.9rem;
+  }
+
+  .preferenceWrap,
+  .sectionGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .sectionNavShell {
+    top: 4.6rem;
+  }
+
+  .mediaPane {
+    position: relative;
+    top: auto;
+  }
+
+  .mediaFrame {
+    height: 28rem;
+    min-height: 28rem;
+  }
+
+  .sectionContent h2 {
+    font-size: 3.25rem;
+  }
+}
+
+@media (max-width: 620px) {
+  .hero,
+  .sectionsWrap,
+  .sectionNavShell {
+    padding-inline: 1rem;
+  }
+
+  .hero {
+    padding-top: 6.3rem;
+  }
+
+  .hero h1 {
+    font-size: 3.75rem;
+  }
+
+  .intro {
+    font-size: 1rem;
+  }
+
+  .preferenceNote,
+  .purchaseRow,
+  .actions {
+    align-items: stretch;
+  }
+
+  .purchaseRow,
+  .actions {
+    flex-direction: column;
+  }
+
+  .secondaryButton,
+  .primaryButton,
+  .quantityStepper {
+    width: 100%;
+  }
+
+  .privilegeCard {
+    grid-template-columns: 1fr;
+  }
+
+  .privilegeCard img {
+    aspect-ratio: 1.8;
+  }
+
+  .mediaFrame {
+    height: 22.5rem;
+    min-height: 22.5rem;
+  }
+}
