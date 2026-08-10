@@ -306,7 +306,7 @@ export const pureRelaxationSections: PureRelaxationSection[] = [
   {
     id: 'adds-on',
     index: '06 / 06',
-    title: 'Adds on',
+    title: 'Add on',
     icon: '/category-icons-svg/adds-on.svg',
     mediaLabel: 'Add on',
     description: 'Enhance your experience with these additional services.',

@@ -141,6 +141,38 @@ const ServiceSection = ({ section }: { section: PureRelaxationSection }) => {
     setNotice('');
   }, [variantIndex]);
 
+  // Fetch dynamic services from admin panel
+  const [dbServices, setDbServices] = useState<any[]>([]);
+  useEffect(() => {
+    fetch('/api/services')
+      .then(res => res.json())
+      .then(data => setDbServices(Array.isArray(data) ? data : []))
+      .catch(console.error);
+  }, []);
+
+  // Override media with admin video/image if available
+  const displayMedia = useMemo(() => {
+    const defaultMedia = active.media;
+    if (!defaultMedia) return null;
+    
+    // Find matching service by name (en or vi)
+    const dbService = dbServices.find(
+      s => (s.names?.en?.toLowerCase() === active.name.toLowerCase()) || 
+           (s.names?.vi?.toLowerCase() === active.name.toLowerCase()) ||
+           (s.names?.en?.toLowerCase() === selectedService.name.toLowerCase()) ||
+           (s.names?.vi?.toLowerCase() === selectedService.name.toLowerCase())
+    );
+
+    if (dbService && dbService.media_url) {
+      return {
+        ...defaultMedia,
+        type: dbService.media_type === 'video' ? 'video' : 'image',
+        src: dbService.media_url,
+      };
+    }
+    return defaultMedia;
+  }, [active.media, active.name, selectedService.name, dbServices]);
+
   useEffect(() => {
     setCartItems(readBookingCart());
 
@@ -173,7 +205,7 @@ const ServiceSection = ({ section }: { section: PureRelaxationSection }) => {
         jp: active.subtitle,
         kr: active.subtitle,
       },
-      img: active.media.type === 'image' ? active.media.src : active.media.poster || active.media.src,
+      img: displayMedia?.type === 'image' ? displayMedia.src : displayMedia?.poster || displayMedia?.src || '',
       priceVND: activeDuration.price,
       priceUSD: 0,
       timeValue: minutes,
@@ -207,7 +239,7 @@ const ServiceSection = ({ section }: { section: PureRelaxationSection }) => {
     <section className={styles.serviceSection} id={section.id}>
       <div className={styles.sectionGrid}>
         <div className={styles.mediaPane}>
-          <MediaPreview media={active.media} label={active.name} />
+          {displayMedia && <MediaPreview media={displayMedia} label={active.name} />}
         </div>
 
         <div className={styles.sectionContent}>
@@ -301,18 +333,20 @@ const ServiceSection = ({ section }: { section: PureRelaxationSection }) => {
 
           {notice && <p className={styles.notice}>{notice}</p>}
 
-          <div className={styles.privilegeCard}>
-            <img src={active.privilege.image} alt={active.privilege.title} loading="lazy" />
-            <div>
-              <span className={styles.choiceLabel}>Privilege Included</span>
-              <h4>{active.privilege.title}</h4>
-              <p>{active.privilege.copy}</p>
-              <small>
-                <Timer size={14} />
-                {active.privilege.time}
-              </small>
+          {active.privilege && (
+            <div className={styles.privilegeCard}>
+              <img src={active.privilege.image} alt={active.privilege.title} loading="lazy" />
+              <div>
+                <span className={styles.choiceLabel}>Privilege Included</span>
+                <h4>{active.privilege.title}</h4>
+                <p>{active.privilege.copy}</p>
+                <small>
+                  <Timer size={14} />
+                  {active.privilege.time}
+                </small>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </section>
@@ -321,13 +355,14 @@ const ServiceSection = ({ section }: { section: PureRelaxationSection }) => {
 
 const bgImages = [
   '/images/services/aroma-oil.png',
+  '/images/services/barber.JPG',
   '/images/services/coconut-oil.png',
-  '/images/services/ear-clean.png',
+  '/images/services/earclean.png',
   '/images/services/facial.png',
   '/images/services/foot-massage.png',
-  '/images/services/four-hand.png',
-  '/images/services/hair-wash.png',
+  '/images/services/hairwash.png',
   '/images/services/hotstone.png',
+  '/images/services/shave.png',
   '/images/services/shiatsu.png',
   '/images/services/thai.png'
 ];
@@ -340,7 +375,7 @@ const PureRelaxationPage = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setBgIndex((prev) => (prev + 1) % bgImages.length);
-    }, 4500);
+    }, 6000);
     return () => clearInterval(interval);
   }, []);
 
