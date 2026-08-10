@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { Save, Plus, Trash2, Edit3, Image as ImageIcon, ArrowLeft, ChevronDown, ChevronRight, Download } from 'lucide-react';
 import Link from 'next/link';
-import { chaptersVi, chaptersEn } from '@/components/AboutStory/AboutStory';
+import { chaptersVi, chaptersEn } from '@/components/History/History';
 
 // Helper component for multi-language input
 const MultiLangInput = ({ 

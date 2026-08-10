@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { AnimatePresence, motion, useMotionValue, useSpring } from 'framer-motion';
 import { useSystemSettings } from '@/components/SystemSettingsProvider';
 import { useTranslation } from '@/components/TranslationProvider';
-import styles from './AboutStory.module.css';
+import styles from './History.module.css';
 
 type Scene = {
   title: string;
@@ -544,7 +544,7 @@ export const chaptersEn: Chapter[] = [
 
 const isEnglish = (lang: string) => lang === 'en';
 
-export const AboutStory = () => {
+export const History = () => {
   const { currentLang } = useTranslation();
   const isEn = isEnglish(currentLang);
   const { brandHistory, getLocalizedText } = useSystemSettings();
@@ -973,4 +973,4 @@ export const AboutStory = () => {
   );
 };
 
-export default AboutStory;
+export default History;

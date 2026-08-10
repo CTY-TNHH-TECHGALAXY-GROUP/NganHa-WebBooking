@@ -188,9 +188,9 @@ export default function ContentAdminPage() {
           </div>
         </section>
 
-        {/* Section: About Story */}
+        {/* Section: History */}
         <section className="bg-admin-panel border border-admin-line rounded-2xl p-6 shadow-sm">
-          <h2 className="text-lg font-bold text-admin-text mb-4 border-b border-admin-line-strong pb-2">About Our Story</h2>
+          <h2 className="text-lg font-bold text-admin-text mb-4 border-b border-admin-line-strong pb-2">About History</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             {['system', 'title'].map(field => (
               <div key={field}>

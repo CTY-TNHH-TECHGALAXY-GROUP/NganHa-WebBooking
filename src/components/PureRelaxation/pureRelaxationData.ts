@@ -38,6 +38,7 @@ export type PureRelaxationSection = {
   id: string;
   index: string;
   title: string;
+  icon: string;
   description: string;
   mediaLabel: string;
   services: PureRelaxationService[];
@@ -113,8 +114,9 @@ const signatureTea: PureRelaxationPrivilege = {
 export const pureRelaxationSections: PureRelaxationSection[] = [
   {
     id: 'body-care',
-    index: '01 / 05',
+    index: '01 / 06',
     title: 'Body Care',
+    icon: '/category-icons-svg/body-massage.svg',
     mediaLabel: 'Body care',
     description: 'Four direct body rituals with clear duration choices, calm pricing, and a privilege included in each booking.',
     services: [
@@ -165,8 +167,9 @@ export const pureRelaxationSections: PureRelaxationSection[] = [
   },
   {
     id: 'foot-care',
-    index: '02 / 05',
+    index: '02 / 06',
     title: 'Foot Care',
+    icon: '/category-icons-svg/foot-massage.svg',
     mediaLabel: 'Foot care',
     description: 'Compact foot care choices with duration only where the guest needs it.',
     services: [
@@ -191,8 +194,9 @@ export const pureRelaxationSections: PureRelaxationSection[] = [
   },
   {
     id: 'ear-clean',
-    index: '03 / 05',
+    index: '03 / 06',
     title: 'Ear Clean',
+    icon: '/category-icons-svg/ear-clean.svg',
     mediaLabel: 'Ear clean',
     description: 'Ear-cleaning services are grouped by the real combinations guests choose most often.',
     services: [
@@ -247,8 +251,9 @@ export const pureRelaxationSections: PureRelaxationSection[] = [
   },
   {
     id: 'barber',
-    index: '04 / 05',
+    index: '04 / 06',
     title: 'Barber',
+    icon: '/category-icons-svg/haircut.svg',
     mediaLabel: 'Barber',
     description: 'A minimal grooming section with direct selections and no crowded menu wall.',
     services: [
@@ -262,8 +267,9 @@ export const pureRelaxationSections: PureRelaxationSection[] = [
   },
   {
     id: 'package',
-    index: '05 / 05',
+    index: '05 / 06',
     title: 'Package',
+    icon: '/category-icons-svg/package.svg',
     mediaLabel: 'Package',
     description: 'Choose a package family first, then the specific ritual and duration.',
     services: [
@@ -297,4 +303,56 @@ export const pureRelaxationSections: PureRelaxationSection[] = [
       },
     ],
   },
+  {
+    id: 'adds-on',
+    index: '06 / 06',
+    title: 'Adds on',
+    icon: '/category-icons-svg/adds-on.svg',
+    mediaLabel: 'Add on',
+    description: 'Enhance your experience with these additional services.',
+    services: [
+      {
+        name: 'Private room',
+        description: 'Enjoy your treatment in a private setting.',
+        media: { type: 'image', src: fallbackImg, tag: 'Add on' },
+        durations: [{ label: 'Per session', price: 0 }]
+      },
+      {
+        name: 'Hairwash',
+        description: 'Refreshing hair wash and scalp care.',
+        media: { type: 'image', src: fallbackImg, tag: 'Add on' },
+        durations: [{ label: "30'", price: 0 }]
+      },
+      {
+        name: 'Facial',
+        description: 'Basic facial care.',
+        media: { type: 'image', src: fallbackImg, tag: 'Add on' },
+        durations: [{ label: "30'", price: 0 }]
+      },
+      {
+        name: 'Heel',
+        description: 'Heel care and scrub.',
+        media: { type: 'image', src: fallbackImg, tag: 'Add on' },
+        durations: [{ label: "30'", price: 0 }]
+      },
+      {
+        name: 'Nailcut',
+        description: 'Basic nail trimming and shaping.',
+        media: { type: 'image', src: fallbackImg, tag: 'Add on' },
+        durations: [{ label: "30'", price: 0 }]
+      },
+      {
+        name: 'Head, Neck, Shoulder, Arm',
+        description: 'Targeted relaxation for upper body.',
+        media: { type: 'image', src: fallbackImg, tag: 'Add on' },
+        durations: [{ label: "30'", price: 0 }]
+      },
+      {
+        name: 'Back',
+        description: 'Targeted back massage.',
+        media: { type: 'image', src: fallbackImg, tag: 'Add on' },
+        durations: [{ label: "30'", price: 0 }]
+      }
+    ]
+  }
 ];

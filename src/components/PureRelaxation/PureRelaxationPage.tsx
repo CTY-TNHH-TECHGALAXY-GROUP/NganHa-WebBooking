@@ -319,30 +319,33 @@ const ServiceSection = ({ section }: { section: PureRelaxationSection }) => {
   );
 };
 
+const bgImages = [
+  '/images/services/aroma-oil.png',
+  '/images/services/coconut-oil.png',
+  '/images/services/ear-clean.png',
+  '/images/services/facial.png',
+  '/images/services/foot-massage.png',
+  '/images/services/four-hand.png',
+  '/images/services/hair-wash.png',
+  '/images/services/hotstone.png',
+  '/images/services/shiatsu.png',
+  '/images/services/thai.png'
+];
+
 const PureRelaxationPage = () => {
   const navRef = useRef<HTMLDivElement>(null);
   const [activeSection, setActiveSection] = useState(pureRelaxationSections[0].id);
+  const [bgIndex, setBgIndex] = useState(0);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-        if (visible?.target.id) setActiveSection(visible.target.id);
-      },
-      { rootMargin: '-35% 0px -45% 0px', threshold: [0.15, 0.35, 0.55] },
-    );
-
-    pureRelaxationSections.forEach((section) => {
-      const element = document.getElementById(section.id);
-      if (element) observer.observe(element);
-    });
-
-    return () => observer.disconnect();
+    const interval = setInterval(() => {
+      setBgIndex((prev) => (prev + 1) % bgImages.length);
+    }, 4500);
+    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
+    // Scroll nav to center active item on mobile
     const nav = navRef.current;
     const activeButton = nav?.querySelector<HTMLButtonElement>(`[data-section="${activeSection}"]`);
     if (!nav || !activeButton) return;
@@ -352,44 +355,74 @@ const PureRelaxationPage = () => {
   }, [activeSection]);
 
   const scrollToSection = (id: string) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    setActiveSection(id);
+    if (navRef.current) {
+      const navTop = navRef.current.getBoundingClientRect().top + window.scrollY;
+      if (window.scrollY > navTop - 100) {
+        window.scrollTo({ top: navTop - 100, behavior: 'smooth' });
+      }
+    }
   };
 
   return (
     <main className={styles.page}>
-      <header className={styles.hero}>
-        <p className={styles.eyebrow}>Pure Relaxation</p>
-        <h1>Pure Relaxation</h1>
-        <p className={styles.intro}>
-          A quieter way to browse Oria Spa rituals: choose a service, compare only the relevant durations, and book without a crowded menu wall.
-        </p>
+      {/* Fixed Background Image Slideshow for Parallax */}
+      {bgImages.map((src, i) => (
+        <div
+          key={src}
+          className={`${styles.fixedBackground} ${i === bgIndex ? styles.activeBg : ''}`}
+          style={{ backgroundImage: `url(${src})` }}
+        />
+      ))}
 
-        <div className={styles.preferenceWrap}>
-          <PreferenceNote icon={<DoorOpen size={18} />} title="Random Room" copy="Assigned by the spa team for the smoothest flow." />
-          <PreferenceNote icon={<UserRound size={18} />} title="Random Staff" copy="A suitable therapist will be arranged for your chosen ritual." />
+      <div className={styles.topPanel}>
+        <div className={styles.heroContent}>
+          <h1>Pure Relaxation</h1>
+
+          <div className={styles.preferenceWrap}>
+            <PreferenceNote icon={<DoorOpen size={18} />} title="Random Room" copy="Assigned by the spa team for the smoothest flow." />
+            <PreferenceNote icon={<UserRound size={18} />} title="Random Staff" copy="A suitable therapist will be arranged for your chosen ritual." />
+          </div>
         </div>
-      </header>
+      </div>
+
+      <div className={styles.imageSpacer} />
+
+      {/* Solid background wrapper for the rest of the content to scroll over the fixed image */}
+      <div className={styles.contentWrapper}>
 
       <nav className={styles.sectionNavShell} aria-label="Pure Relaxation categories">
         <div className={styles.sectionNav} ref={navRef}>
-          {pureRelaxationSections.map((section) => (
+          {pureRelaxationSections.map((section, idx) => (
             <button
               className={`${styles.navButton} ${activeSection === section.id ? styles.navActive : ''}`}
               data-section={section.id}
               key={section.id}
               type="button"
               onClick={() => scrollToSection(section.id)}
+              style={{ animationDelay: `${idx * 0.15}s` }}
             >
-              {section.title}
+              <div
+                className={styles.categoryIcon}
+                style={{
+                  maskImage: `url(${section.icon})`,
+                  WebkitMaskImage: `url(${section.icon})`
+                }}
+                aria-hidden="true"
+              />
+              <span className={styles.categoryTitle}>{section.title}</span>
             </button>
           ))}
         </div>
       </nav>
 
       <div className={styles.sectionsWrap}>
-        {pureRelaxationSections.map((section) => (
-          <ServiceSection key={section.id} section={section} />
-        ))}
+        {pureRelaxationSections
+          .filter((section) => section.id === activeSection)
+          .map((section) => (
+            <ServiceSection key={section.id} section={section} />
+          ))}
+      </div>
       </div>
     </main>
   );

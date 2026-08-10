@@ -107,7 +107,7 @@ export default function SystemSettingsPage() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 tracking-tight">Cấu Hình Hệ Thống</h1>
-          <p className="text-gray-500 mt-1">Quản lý thông tin chung và hình ảnh Our Story</p>
+          <p className="text-gray-500 mt-1">Quản lý thông tin chung và hình ảnh History</p>
         </div>
         
         <div className="flex items-center gap-4">
@@ -145,7 +145,7 @@ export default function SystemSettingsPage() {
           }`}
         >
           <ImageIcon size={18} />
-          Nội Dung Our Story
+          Nội Dung History
         </button>
       </div>
 
@@ -220,7 +220,7 @@ export default function SystemSettingsPage() {
           </div>
         )}
 
-        {/* TAB 2: ABOUT STORY MEDIA */}
+        {/* TAB 2: HISTORY MEDIA */}
         {activeTab === 'about' && (
           <div className="space-y-6">
             {/* SECTION 1 */}

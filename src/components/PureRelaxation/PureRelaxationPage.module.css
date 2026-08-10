@@ -8,9 +8,7 @@
   --pure-line-strong: rgba(40, 27, 21, 0.28);
   --pure-accent: #8e7557;
   --pure-accent-soft: #b49c83;
-  background:
-    radial-gradient(circle at 18% 8%, rgba(180, 156, 131, 0.22), transparent 34rem),
-    linear-gradient(180deg, #fbf8f2 0%, var(--pure-bg) 38%, #eee6d9 100%);
+  /* Background moved to .contentWrapper */
   color: var(--pure-ink);
   min-height: 100dvh;
   overflow-x: clip;
@@ -18,10 +16,60 @@
   padding-bottom: 7rem;
 }
 
-.hero {
-  max-width: 1500px;
-  margin: 0 auto;
-  padding: 9rem 4rem 3.5rem;
+.fixedBackground {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  background-image: url('/images/body-treatment-full.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0;
+  transition: opacity 2s ease-in-out;
+}
+
+.activeBg {
+  opacity: 1;
+}
+
+.topPanel {
+  position: relative;
+  z-index: 10;
+  background-color: var(--pure-surface);
+  padding: 6rem 2rem 3rem;
+  display: flex;
+  justify-content: center;
+  box-shadow: 0 10px 30px rgba(40, 27, 21, 0.05);
+}
+
+.imageSpacer {
+  position: relative;
+  height: 60vh;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.heroContent {
+  /* No background here, just centered text */
+  text-align: center;
+  max-width: 860px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.contentWrapper {
+  background:
+    radial-gradient(circle at 18% 8%, rgba(180, 156, 131, 0.22), transparent 34rem),
+    linear-gradient(180deg, #fbf8f2 0%, var(--pure-bg) 38%, #eee6d9 100%);
+  position: relative;
+  z-index: 10;
+  padding-top: 2rem;
+  box-shadow: 0 -10px 30px rgba(40, 27, 21, 0.05);
 }
 
 .eyebrow,
@@ -35,15 +83,15 @@
   text-transform: uppercase;
 }
 
-.hero h1 {
+.topPanel h1 {
   max-width: 1080px;
   margin: 0.85rem 0 1.4rem;
   color: var(--pure-ink);
-  font-family: var(--font-playfair), Georgia, serif;
-  font-size: 6rem;
-  font-weight: 500;
-  line-height: 0.85;
-  letter-spacing: 0;
+  font-family: var(--font-heading, 'Cormorant Garamond', serif);
+  font-size: 5rem;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0.03em;
 }
 
 .intro {
@@ -110,6 +158,7 @@
 
 .sectionNav {
   display: flex;
+  justify-content: center;
   gap: 2.4rem;
   align-items: center;
   max-width: 1500px;
@@ -126,29 +175,65 @@
 .navButton {
   position: relative;
   flex: 0 0 auto;
-  padding: 1.18rem 0;
+  padding: 1.2rem 0 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
   color: rgba(40, 27, 21, 0.58);
   font-family: var(--font-inter), Inter, Arial, sans-serif;
-  font-size: 0.92rem;
+  font-size: 0.85rem;
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   background: transparent;
   border: 0;
   cursor: pointer;
+  transition: color 0.3s ease;
+  animation: gentleFloat 2.5s ease-in-out infinite;
+}
+
+@keyframes gentleFloat {
+  0% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-12px) scale(1.08); }
+  100% { transform: translateY(0) scale(1); }
+}
+
+.categoryIcon {
+  width: 4rem;
+  height: 4rem;
+  background-color: var(--pure-accent);
+  mask-size: contain;
+  mask-position: center;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  -webkit-mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  transition: all 0.3s ease;
+  opacity: 0.8;
+}
+
+.navActive .categoryIcon {
+  background-color: var(--pure-accent);
+  transform: scale(1.18);
+  opacity: 1;
+}
+
+.navActive {
+  color: var(--pure-ink);
 }
 
 .navButton::after {
   content: '';
   position: absolute;
-  right: 0;
-  bottom: 0.72rem;
-  left: 0;
-  height: 1px;
+  right: -0.5rem;
+  bottom: 0.2rem;
+  left: -0.5rem;
+  height: 2px;
   transform: scaleX(0);
-  transform-origin: left;
+  transform-origin: center;
   background: var(--pure-accent);
-  transition: transform 260ms ease;
+  transition: transform 300ms ease;
 }
 
 .navActive {
@@ -555,8 +640,8 @@
     padding-inline: 2rem;
   }
 
-  .hero h1 {
-    font-size: 4.8rem;
+  .topPanel h1 {
+    font-size: 4.5rem;
   }
 
   .sectionGrid {
@@ -569,8 +654,8 @@
     padding-top: 7rem;
   }
 
-  .hero h1 {
-    font-size: 3.6rem;
+  .topPanel h1 {
+    font-size: 4rem;
   }
 
   .preferenceWrap,
@@ -608,8 +693,8 @@
     padding-top: 6.3rem;
   }
 
-  .hero h1 {
-    font-size: 2.8rem;
+  .topPanel h1 {
+    font-size: 3.5rem;
   }
 
   .intro {

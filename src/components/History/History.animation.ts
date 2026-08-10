@@ -1,4 +1,4 @@
-// AboutStory.animation.ts - Scroll-reveal animation variants
+// History.animation.ts - Scroll-reveal animation variants
 import { Variants } from 'framer-motion';
 
 export const sectionVariants: Variants = {

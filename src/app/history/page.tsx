@@ -1,9 +1,9 @@
-import AboutStory from '@/components/AboutStory/AboutStory';
+import History from '@/components/History/History';
 
 const HistoryPage = () => {
   return (
     <main>
-      <AboutStory />
+      <History />
     </main>
   );
 };

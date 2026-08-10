@@ -1,9 +1,9 @@
-// AboutStory.i18n.ts - Text dictionary for About/Our Story section
+// History.i18n.ts - Text dictionary for About/History section
 export const aboutTexts = {
   vi: {
-    sectionLabel: 'Về Chúng Tôi',
+    sectionLabel: 'Lịch Sử',
     titleTop: 'Our',
-    titleBottom: 'Story',
+    titleBottom: 'History',
     intro:
       'Tọa lạc ngay bên sông Sài Gòn, khu vực đường Ngô Đức Kế, Quận 1 là một trong những tuyến phố có vị trí đắc địa và mang tính biểu tượng cao tại trung tâm Thành phố Hồ Chí Minh.',
     blocks: [
@@ -33,9 +33,9 @@ export const aboutTexts = {
     },
   },
   en: {
-    sectionLabel: 'About Us',
+    sectionLabel: 'History',
     titleTop: 'Our',
-    titleBottom: 'Story',
+    titleBottom: 'History',
     intro:
       'Located right by the Saigon River, the Ngo Duc Ke Street area in District 1 is one of the most iconic and prime locations in the heart of Ho Chi Minh City.',
     blocks: [

@@ -1,7 +1,7 @@
 'use client';
 
 import Hero from '@/components/Hero/Hero';
-import AboutStory from '@/components/AboutStory/AboutStory';
+import History from '@/components/History/History';
 
 const HomePage = () => {
   return (
@@ -10,7 +10,7 @@ const HomePage = () => {
       <Hero />
 
       {/* History / About Story Section */}
-      <AboutStory />
+      <History />
     </main>
   );
 };
