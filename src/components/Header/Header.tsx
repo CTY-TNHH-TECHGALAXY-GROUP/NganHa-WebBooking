@@ -73,7 +73,7 @@ const DEFAULT_NAV_ITEMS: NavItem[] = [
     ],
   },
   { id: 'local_tour', label: 'Local tour', href: '/#local-tour', col: 'right' },
-  { id: 'history', label: 'History', href: '/history', col: 'right' },
+  { id: 'history', label: 'History', href: '/#history', col: 'right' },
   { id: 'privileges', label: 'Your privileges', href: '/privileges', col: 'left' },
   { id: 'blogs', label: 'Blogs', href: '/blog.html', target: '_blank', col: 'right' },
 ];
@@ -179,7 +179,7 @@ const Header = () => {
         ],
       },
       { id: 'local_tour', label: getLocalizedText(hpNav?.localTour, lang, 'Local tour'), href: '/#local-tour', col: 'right' },
-      { id: 'history', label: getLocalizedText(hpNav?.history, lang, 'History'), href: '/history', col: 'right' },
+      { id: 'history', label: getLocalizedText(hpNav?.history, lang, 'History'), href: '/#history', col: 'right' },
       { id: 'privileges', label: getLocalizedText(hpNav?.privileges, lang, 'Your privileges'), href: '/privileges', col: 'left' },
       { id: 'blogs', label: getLocalizedText(hpNav?.blogs, lang, 'Blogs'), href: '/blog.html', target: '_blank', col: 'right' },
     ] as NavItem[];
@@ -255,7 +255,7 @@ const Header = () => {
           {/* Top Row: Mobile Toggle, Logo, Right Controls, Desktop Navigation */}
           <div className="header-top-row">
             {/* Mobile Toggle (now used for all screens) on the left */}
-            <div className="header-top-left">
+            <div className="header-top-left relative z-10">
               <button
                 className="header-mobile-toggle !flex text-[#f7ebc7]"
                 onClick={toggleMobileMenu}
@@ -266,7 +266,7 @@ const Header = () => {
             </div>
 
             {/* Center Logo */}
-            <div className={`absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transition-opacity duration-300 ${showLogo ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+            <div className={`absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transition-opacity duration-300 z-0 ${showLogo ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
               <a href="/" className="block mt-2 md:mt-3">
                 <SmartLogo theme="dark" className="h-14 md:h-[68px] w-auto object-contain cursor-pointer scale-125" />
               </a>
@@ -275,7 +275,7 @@ const Header = () => {
             {/* Desktop Navigation removed as per request, using Mobile Menu Drawer instead */}
 
             {/* Right Section: Languages, Login, Cart */}
-            <div className="header-right">
+            <div className="header-right relative z-10">
               {/* Book Button */}
               <a 
                 href={`/${currentLang.code}/new-user/standard/checkout`}
