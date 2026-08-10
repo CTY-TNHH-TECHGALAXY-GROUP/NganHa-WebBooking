@@ -2,6 +2,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, MapPin, ChevronUp, ChevronDown, ShoppingCart } from 'lucide-react';
 import SmartLogo from '@/components/SmartLogo';
@@ -238,6 +239,10 @@ const Header = () => {
     window.dispatchEvent(new CustomEvent('nganha:cart-updated', { detail: { cart: nextCart } }));
   };
 
+  const pathname = usePathname();
+  const isHomepage = pathname === '/' || pathname === '/vi' || pathname === '/en';
+  const showLogo = !isHomepage || isScrolled;
+
   return (
     <>
       <motion.header
@@ -258,6 +263,13 @@ const Header = () => {
               >
                 {isMobileMenuOpen ? <X size={28} className="text-[#f7ebc7]" /> : <Menu size={28} className="text-[#f7ebc7]" />}
               </button>
+            </div>
+
+            {/* Center Logo */}
+            <div className={`absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transition-opacity duration-300 ${showLogo ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+              <a href="/" className="block mt-2 md:mt-3">
+                <SmartLogo theme="dark" className="h-14 md:h-[68px] w-auto object-contain cursor-pointer scale-125" />
+              </a>
             </div>
 
             {/* Desktop Navigation removed as per request, using Mobile Menu Drawer instead */}
