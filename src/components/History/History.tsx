@@ -528,8 +528,14 @@ export const History = () => {
   const [cacheBuster, setCacheBuster] = useState('');
   
   useEffect(() => {
-    setCacheBuster(`?v=${Date.now()}`);
+    setCacheBuster(`v=${Date.now()}`);
   }, []);
+
+  const getBustedUrl = useCallback((url: string) => {
+    if (!url) return '';
+    if (!cacheBuster) return url;
+    return url.includes('?') ? `${url}&${cacheBuster}` : `${url}?${cacheBuster}`;
+  }, [cacheBuster]);
 
   const shellRef = useRef<HTMLElement | null>(null);
   const timelineRef = useRef<HTMLDivElement | null>(null);
@@ -691,7 +697,7 @@ export const History = () => {
       >
         <div className={styles.heroMedia}>
           <Image
-            src={`${brandHistory?.hero?.image || "/images/about-bg.png"}${cacheBuster}`}
+            src={getBustedUrl(brandHistory?.hero?.image || "/images/about-bg.png")}
             alt={isEn ? 'Ngan Ha to Oria Spa historical atmosphere' : 'Không gian lịch sử Ngân Hà đến Oria Spa'}
             fill
             unoptimized
@@ -807,7 +813,7 @@ export const History = () => {
                   {chapter.scenes.map((item: any, index: number) => (
                     <div key={item.title} className={`${styles.slide} ${index === sceneIndex ? styles.slideActive : ''}`}>
                       <Image
-                        src={`${item.image}${cacheBuster}`}
+                        src={getBustedUrl(item.image)}
                         alt={item.alt}
                         fill
                         unoptimized
@@ -885,7 +891,7 @@ export const History = () => {
                         aria-label={`${isEn ? 'View image' : 'Xem ảnh'} ${index + 1}: ${item.label}`}
                       >
                         <span className={styles.sceneThumb}>
-                          <Image src={`${item.image}${cacheBuster}`} alt="" fill sizes="96px" unoptimized />
+                          <Image src={getBustedUrl(item.image)} alt="" fill sizes="96px" unoptimized />
                         </span>
                         <span className={styles.sceneText}>
                           <small>{String(index + 1).padStart(2, '0')}</small>
