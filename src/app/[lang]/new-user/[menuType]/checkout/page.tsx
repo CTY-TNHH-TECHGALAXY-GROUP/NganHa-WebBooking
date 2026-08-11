@@ -999,7 +999,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                            />
                            <button 
                              onClick={() => {
-                               replaceCartItemService(item.cartId, currentEditService, { ...item.options, notes: { ...item.options?.notes, content: editNote } });
+                               replaceCartItemService(item.cartId, currentEditService, { ...item.options, notes: { tag0: item.options?.notes?.tag0 ?? false, tag1: item.options?.notes?.tag1 ?? false, content: editNote } });
                                setEditingCartId(null);
                                setEditServiceId(null);
                                setEditBaseName(null);
