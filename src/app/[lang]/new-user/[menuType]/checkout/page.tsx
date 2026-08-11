@@ -886,6 +886,18 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                     <span>{t('time', lang)}</span>
                     <strong>{bookingTime}</strong>
                   </div>
+                  {(item.options?.notes?.content || item.options?.notes?.tag0 || item.options?.notes?.tag1) && (
+                    <div className={styles.detail}>
+                      <span>{t('note', lang)}</span>
+                      <strong style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '60%', textAlign: 'right' }}>
+                        {[
+                          item.options?.notes?.tag0 ? (dict.tags?.pregnant || 'Pregnant') : null,
+                          item.options?.notes?.tag1 ? (dict.tags?.allergy || 'Allergy') : null,
+                          item.options?.notes?.content
+                        ].filter(Boolean).join(', ')}
+                      </strong>
+                    </div>
+                  )}
                 </article>
               ))
             ) : (

@@ -238,12 +238,21 @@ const BookingCheckout = ({ lang, onBack }: BookingCheckoutProps) => {
 
           {/* Summary */}
           <div className="text-left bg-white/5 rounded-xl p-4 space-y-2 mb-6">
-            {cart.map((item, idx) => (
-              <div key={item.cartId} className="flex justify-between text-sm">
-                <span className="text-gray-300">{idx + 1}. {item.names?.[lang] || item.names?.en}</span>
+            {cart.map((item, idx) => {
+              const tags = [
+                item.options?.notes?.tag0 ? 'Pregnant' : null,
+                item.options?.notes?.tag1 ? 'Allergy' : null,
+                item.options?.notes?.content
+              ].filter(Boolean).join(', ');
+              return (
+              <div key={item.cartId} className="flex justify-between text-sm mb-2">
+                <div className="flex-1 pr-2">
+                  <span className="text-gray-300">{idx + 1}. {item.names?.[lang] || item.names?.en}</span>
+                  {tags && <p className="text-[#C9A96E] text-xs italic mt-0.5">{tags}</p>}
+                </div>
                 <span className="text-[#D4AF37] font-bold">{formatCurrency(item.priceVND * item.qty)}</span>
               </div>
-            ))}
+            )})}
             <div className="border-t border-white/10 pt-2 flex justify-between">
               <span className="text-white font-bold">{t('total')}</span>
               <span className="text-[#D4AF37] font-bold text-lg">{formatCurrency(summary.totalVND)} VND</span>
@@ -439,18 +448,25 @@ const BookingCheckout = ({ lang, onBack }: BookingCheckoutProps) => {
             <div>
               <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">{t('order_summary')}</h3>
               <div className="bg-[#111] rounded-2xl p-4 space-y-3 border border-gray-800">
-                {cart.map((item, idx) => (
-                  <div key={item.cartId} className="flex justify-between items-start">
+                {cart.map((item, idx) => {
+                  const tags = [
+                    item.options?.notes?.tag0 ? 'Pregnant' : null,
+                    item.options?.notes?.tag1 ? 'Allergy' : null,
+                    item.options?.notes?.content
+                  ].filter(Boolean).join(', ');
+                  return (
+                  <div key={item.cartId} className="flex justify-between items-start mb-2">
                     <div className="min-w-0 pr-3">
                       <p className="text-white text-sm font-medium">{idx + 1}. {item.names?.[lang] || item.names?.en}</p>
                       <p className="text-gray-500 text-xs mt-0.5">{item.timeValue} {t('mins')} × {item.qty}</p>
+                      {tags && <p className="text-[#C9A96E] text-xs italic mt-0.5">{tags}</p>}
                     </div>
                     <div className="text-right shrink-0">
                       <p className="text-[#D4AF37] text-sm font-bold">{formatCurrency(item.priceVND * item.qty)}</p>
                       <p className="text-red-500 text-[10px] font-bold">{item.priceUSD * item.qty} USD</p>
                     </div>
                   </div>
-                ))}
+                )})}
 
                 <div className="border-t border-gray-800 pt-3 space-y-1">
                   <div className="flex justify-between text-sm">

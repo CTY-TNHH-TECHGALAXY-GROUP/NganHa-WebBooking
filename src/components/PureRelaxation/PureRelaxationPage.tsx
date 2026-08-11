@@ -166,7 +166,7 @@ const ServiceSection = ({ section }: { section: PureRelaxationSection }) => {
     if (dbService && dbService.media_url) {
       return {
         ...defaultMedia,
-        type: dbService.media_type === 'video' ? 'video' : 'image',
+        type: (dbService.media_type === 'video' ? 'video' : 'image') as 'image' | 'video',
         src: dbService.media_url,
       };
     }

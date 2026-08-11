@@ -114,7 +114,7 @@ const signatureTea: PureRelaxationPrivilege = {
 export const pureRelaxationSections: PureRelaxationSection[] = [
   {
     id: 'body-care',
-    index: '01 / 06',
+    index: '01 / 07',
     title: 'Body Care',
     icon: '/category-icons-svg/body-massage.svg',
     mediaLabel: 'Body care',
@@ -167,7 +167,7 @@ export const pureRelaxationSections: PureRelaxationSection[] = [
   },
   {
     id: 'foot-care',
-    index: '02 / 06',
+    index: '02 / 07',
     title: 'Foot Care',
     icon: '/category-icons-svg/foot-massage.svg',
     mediaLabel: 'Foot care',
@@ -194,7 +194,7 @@ export const pureRelaxationSections: PureRelaxationSection[] = [
   },
   {
     id: 'ear-clean',
-    index: '03 / 06',
+    index: '03 / 07',
     title: 'Ear Clean',
     icon: '/category-icons-svg/ear-clean.svg',
     mediaLabel: 'Ear clean',
@@ -251,7 +251,7 @@ export const pureRelaxationSections: PureRelaxationSection[] = [
   },
   {
     id: 'barber',
-    index: '04 / 06',
+    index: '04 / 07',
     title: 'Barber',
     icon: '/category-icons-svg/haircut.svg',
     mediaLabel: 'Barber',
@@ -267,7 +267,7 @@ export const pureRelaxationSections: PureRelaxationSection[] = [
   },
   {
     id: 'package',
-    index: '05 / 06',
+    index: '05 / 07',
     title: 'Package',
     icon: '/category-icons-svg/package.svg',
     mediaLabel: 'Package',
@@ -305,7 +305,7 @@ export const pureRelaxationSections: PureRelaxationSection[] = [
   },
   {
     id: 'adds-on',
-    index: '06 / 06',
+    index: '06 / 07',
     title: 'Add on',
     icon: '/category-icons-svg/adds-on.svg',
     mediaLabel: 'Add on',
@@ -352,6 +352,25 @@ export const pureRelaxationSections: PureRelaxationSection[] = [
         description: 'Targeted back massage.',
         media: { type: 'image', src: fallbackImg, tag: 'Add on' },
         durations: [{ label: "30'", price: 0 }]
+      }
+    ]
+  },
+  {
+    id: 'vip-package',
+    index: '07 / 07',
+    title: 'VIP Package',
+    icon: '/category-icons-svg/combo-king.svg',
+    mediaLabel: 'VIP Package',
+    description: 'Exclusive and premium VIP experiences tailored for ultimate relaxation.',
+    services: [
+      {
+        name: 'VIP Experience',
+        description: 'Premium massage and care in a private VIP setting.',
+        media: { type: 'image', src: fallbackImg, tag: 'VIP' },
+        durations: [
+          { label: "90'", price: 1000000 },
+          { label: "120'", price: 1300000 }
+        ]
       }
     ]
   }
