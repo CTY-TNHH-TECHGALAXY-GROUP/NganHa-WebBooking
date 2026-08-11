@@ -230,8 +230,8 @@
 }
 
 .phoneCountry option {
-  color: #141414;
-  background: #f5f0df;
+  color: inherit;
+  background: rgba(26, 26, 26, 0.95);
 }
 
 .phoneDivider {
@@ -1325,4 +1325,26 @@
     width: 94vw;
     border-radius: 16px;
   }
+}
+
+.phoneGroup {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
+.phoneCountryField {
+  flex: 0 0 auto;
+  width: 100px;
+  padding: 15px 10px;
+  background: transparent !important;
+}
+.phoneCountrySelect {
+  width: 100%;
+  border: none;
+  background: transparent;
+  outline: none;
+  color: var(--gold-soft);
+  font-weight: 700;
+  cursor: pointer;
+  appearance: none;
 }

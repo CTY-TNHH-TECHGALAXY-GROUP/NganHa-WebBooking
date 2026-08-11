@@ -1,8 +1,9 @@
 'use client';
 
 import React, { use, useEffect, useMemo, useState } from 'react';
-import { ChevronDown, ChevronLeft, Plus, X } from 'lucide-react';
+import { ChevronDown, ChevronLeft, Plus, X, Edit2, Trash2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import SmartLogo from '@/components/SmartLogo';
 import AlertModal from '@/components/Shared/AlertModal';
 import OrderConfirmModal from '@/components/Checkout/OrderConfirmModal';
 import PaymentModal from '@/components/Checkout/PaymentModal';
@@ -462,8 +463,10 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
   const lang = langKey(rawLang);
   const menuType = rawMenuType === 'vip' ? 'vip' : 'standard';
   const dict = getDictionary(lang);
-  const { services, cart, addToCart } = useMenuData();
+  const { services, cart, addToCart, removeFromCart, updateCartItemOptions } = useMenuData();
 
+  const [editingCartId, setEditingCartId] = useState<string | null>(null);
+  const [editNote, setEditNote] = useState('');
   const [contactMethod, setContactMethod] = useState<ContactMethod>('email');
   const [customerInfo, setCustomerInfo] = useState({ name: '', email: '', phone: '', gender: t('male', lang) });
   const [phoneCountry, setPhoneCountry] = useState(() => phoneCountryForLang(lang));
@@ -677,7 +680,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
       <div className={styles.stars} />
 
       <header className={styles.topbar}>
-        <button className={styles.back} type="button" onClick={() => router.push('/#services')}>
+        <button className={styles.back} type="button" onClick={() => router.back()}>
           <ChevronLeft size={18} />
           <span>{t('menu', lang)}</span>
         </button>
@@ -685,7 +688,9 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
       </header>
 
       <div className={styles.brandline}>
-        <div className={styles.mark}>ORIA SPA</div>
+        <div className={styles.mark}>
+          <SmartLogo theme="dark" className="h-14 md:h-16 lg:h-20 w-auto mx-auto object-contain" />
+        </div>
         <div className={styles.divider} />
       </div>
 
@@ -753,30 +758,33 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
               </div>
 
               {contactMethod === 'phone' ? (
-                <label className={`${styles.field} ${styles.phoneField}`}>
-                  <select
-                    className={styles.phoneCountry}
-                    value={phoneCountry.code}
-                    onChange={(event) => {
-                      const nextCountry = PHONE_COUNTRIES.find((country) => country.code === event.target.value);
-                      if (nextCountry) setPhoneCountry(nextCountry);
-                    }}
-                    aria-label="Phone country code"
-                  >
-                    {PHONE_COUNTRIES.map((country) => (
-                      <option key={country.code} value={country.code}>
-                        {country.flag} {country.code}
-                      </option>
-                    ))}
-                  </select>
-                  <span className={styles.phoneDivider} aria-hidden="true" />
-                  <input
-                    type="tel"
-                    value={customerInfo.phone}
-                    onChange={(event) => updateContact(event.target.value)}
-                    placeholder={t('phone', lang)}
-                  />
-                </label>
+                <div className={styles.phoneGroup}>
+                  <label className={`${styles.field} ${styles.phoneCountryField}`}>
+                    <select
+                      className={styles.phoneCountrySelect}
+                      value={phoneCountry.code}
+                      onChange={(event) => {
+                        const nextCountry = PHONE_COUNTRIES.find((country) => country.code === event.target.value);
+                        if (nextCountry) setPhoneCountry(nextCountry);
+                      }}
+                      aria-label="Phone country code"
+                    >
+                      {PHONE_COUNTRIES.map((country) => (
+                        <option key={country.code} value={country.code}>
+                          {country.flag} {country.code}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <label className={styles.field}>
+                    <input
+                      type="tel"
+                      value={customerInfo.phone}
+                      onChange={(event) => updateContact(event.target.value)}
+                      placeholder={t('phone', lang)}
+                    />
+                  </label>
+                </div>
               ) : (
                 <label className={styles.field}>
                   <input
@@ -807,7 +815,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                         onClick={() => setBookingDate(iso)}
                       >
                         <span className={styles.dow}>
-                          {index === 0 ? (lang === 'vi' ? 'Hôm nay' : 'Today') : date.toLocaleDateString(lang === 'vi' ? 'vi-VN' : 'en-US', { weekday: 'short' })}
+                          {index === 0 ? (lang === 'vi' ? 'Hôm nay' : 'Today') : (lang === 'vi' ? ['CN', 'Th 2', 'Th 3', 'Th 4', 'Th 5', 'Th 6', 'Th 7'][date.getDay()] : ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][date.getDay()])}
                         </span>
                         <span className={styles.day}>{date.getDate()}</span>
                         <span className={styles.month}>{lang === 'vi' ? `Tháng ${date.getMonth() + 1}` : date.getMonth() + 1}</span>
@@ -872,7 +880,11 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                 <article key={item.cartId} className={styles.invoiceItem}>
                   <div className={styles.invoiceRow1}>
                     <span>{index + 1}. {serviceName(item, lang)}</span>
-                    <span>{formatCurrency(item.priceVND * item.qty)} VNĐ</span>
+                    <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                      <span>{formatCurrency(item.priceVND * item.qty)} VNĐ</span>
+                      <button onClick={() => { setEditingCartId(item.cartId); setEditNote(item.options?.notes?.content || ''); }} className="text-[#c9a96e] hover:text-white transition-colors" title={t('edit', lang) || 'Edit'}><Edit2 size={16} /></button>
+                      <button onClick={() => removeFromCart(item.cartId)} className="text-[#c9a96e] hover:text-red-500 transition-colors" title={t('remove', lang) || 'Remove'}><Trash2 size={16} /></button>
+                    </div>
                   </div>
                   <div className={styles.detail}>
                     <span>{t('duration', lang)}</span>
@@ -886,17 +898,38 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                     <span>{t('time', lang)}</span>
                     <strong>{bookingTime}</strong>
                   </div>
-                  {(item.options?.notes?.content || item.options?.notes?.tag0 || item.options?.notes?.tag1) && (
-                    <div className={styles.detail}>
-                      <span>{t('note', lang)}</span>
-                      <strong style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '60%', textAlign: 'right' }}>
-                        {[
-                          item.options?.notes?.tag0 ? (dict.tags?.pregnant || 'Pregnant') : null,
-                          item.options?.notes?.tag1 ? (dict.tags?.allergy || 'Allergy') : null,
-                          item.options?.notes?.content
-                        ].filter(Boolean).join(', ')}
-                      </strong>
+                  
+                  {editingCartId === item.cartId ? (
+                    <div style={{ marginTop: '12px', display: 'flex', gap: '8px', alignItems: 'center' }}>
+                      <input 
+                        value={editNote}
+                        onChange={(e) => setEditNote(e.target.value)}
+                        placeholder="Ghi chú..."
+                        style={{ padding: '8px 12px', flex: 1, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: 'white', outline: 'none', fontSize: '14px' }}
+                      />
+                      <button 
+                        onClick={() => {
+                          updateCartItemOptions(item.cartId, { ...item.options, notes: { ...item.options?.notes, content: editNote }});
+                          setEditingCartId(null);
+                        }}
+                        style={{ padding: '8px 16px', background: 'var(--gold-soft)', color: '#000', borderRadius: '8px', fontWeight: 'bold', fontSize: '13px' }}
+                      >
+                        Lưu
+                      </button>
                     </div>
+                  ) : (
+                    (item.options?.notes?.content || item.options?.notes?.tag0 || item.options?.notes?.tag1) && (
+                      <div className={styles.detail}>
+                        <span>{t('note', lang)}</span>
+                        <strong style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '60%', textAlign: 'right' }}>
+                          {[
+                            item.options?.notes?.tag0 ? (dict.tags?.pregnant || 'Pregnant') : null,
+                            item.options?.notes?.tag1 ? (dict.tags?.allergy || 'Allergy') : null,
+                            item.options?.notes?.content
+                          ].filter(Boolean).join(', ')}
+                        </strong>
+                      </div>
+                    )
                   )}
                 </article>
               ))

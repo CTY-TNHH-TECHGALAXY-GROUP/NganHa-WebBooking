@@ -1,6 +1,7 @@
 // Header.tsx - Sticky Navigation with transparent-to-solid effect
 'use client';
 
+import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -277,12 +278,12 @@ const Header = () => {
             {/* Right Section: Languages, Login, Cart */}
             <div className="header-right relative z-10">
               {/* Book Button */}
-              <a 
+              <Link 
                 href={`/${currentLang.code}/new-user/standard/checkout`}
                 className="text-[#f7ebc7] hover:text-[#f7ebc7]/80 active:opacity-50 font-bold text-sm uppercase tracking-wider mr-4 lg:mr-6 transition-all duration-300"
               >
                 Book
-              </a>
+              </Link>
 
               {/* Cart Button */}
               <button 
@@ -386,13 +387,13 @@ const Header = () => {
                           <div key={item.id || item.href} className="nav-category-group">
                             <h3 className="nav-category-title">
                               {item.href && !item.children ? (
-                                <a href={item.href} target={item.target || undefined} onClick={toggleMobileMenu} className="hover:text-[#f7ebc7] transition-colors">{label}</a>
+                                <Link href={item.href} target={item.target || undefined} onClick={toggleMobileMenu} className="hover:text-[#f7ebc7] transition-colors">{label}</Link>
                               ) : label}
                             </h3>
                             {item.children && (
                               <div className="nav-category-children">
                                 {item.children.map((child) => (
-                                  <a
+                                  <Link
                                     key={child.href}
                                     href={child.href}
                                     target={child.target || undefined}
@@ -401,7 +402,7 @@ const Header = () => {
                                   >
                                     <span>{child.id ? t('header_menu', child.id) || child.label : child.label}</span>
                                     {child.badge && <span className="text-[#41b8a6] ml-2 font-light">{child.badge}</span>}
-                                  </a>
+                                  </Link>
                                 ))}
                               </div>
                             )}
@@ -418,13 +419,13 @@ const Header = () => {
                           <div key={item.id || item.href} className="nav-category-group">
                             <h3 className="nav-category-title">
                               {item.href && !item.children ? (
-                                <a href={item.href} target={item.target || undefined} onClick={toggleMobileMenu} className="hover:text-[#f7ebc7] transition-colors">{label}</a>
+                                <Link href={item.href} target={item.target || undefined} onClick={toggleMobileMenu} className="hover:text-[#f7ebc7] transition-colors">{label}</Link>
                               ) : label}
                             </h3>
                             {item.children && (
                               <div className="nav-category-children">
                                 {item.children.map((child) => (
-                                  <a
+                                  <Link
                                     key={child.href}
                                     href={child.href}
                                     target={child.target || undefined}
@@ -433,7 +434,7 @@ const Header = () => {
                                   >
                                     <span>{child.id ? t('header_menu', child.id) || child.label : child.label}</span>
                                     {child.badge && <span className="text-[#41b8a6] ml-2 font-light">{child.badge}</span>}
-                                  </a>
+                                  </Link>
                                 ))}
                               </div>
                             )}
