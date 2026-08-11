@@ -108,12 +108,34 @@ const ServiceSection = ({ section }: { section: PureRelaxationSection }) => {
   const router = useRouter();
   const { currentLang } = useTranslation();
 
+  // Fetch dynamic services from admin panel
+  const [dbServices, setDbServices] = useState<any[]>([]);
+  useEffect(() => {
+    fetch('/api/services')
+      .then(res => res.json())
+      .then(data => setDbServices(Array.isArray(data) ? data : []))
+      .catch(console.error);
+  }, []);
+
   const selectedService = section.services[serviceIndex];
   const active = useMemo(() => getActiveItem(selectedService, variantIndex), [selectedService, variantIndex]);
-  const activeDuration = active.durations[Math.min(durationIndex, active.durations.length - 1)];
+  
+  const displayDurations = useMemo(() => {
+    return active.durations.map(duration => {
+      const dbService = dbServices.find(s => s.id === duration.id);
+      return {
+        ...duration,
+        price: dbService ? dbService.priceVND : duration.price,
+        priceUSD: dbService ? dbService.priceUSD : 0
+      };
+    });
+  }, [active.durations, dbServices]);
+
+  const activeDuration = displayDurations[Math.min(durationIndex, displayDurations.length - 1)];
+
   const selectedCartServiceId = useMemo(
-    () => `pure-relaxation-${section.id}-${slugify(active.name)}-${slugify(activeDuration.label)}`,
-    [active.name, activeDuration.label, section.id]
+    () => activeDuration.id || `pure-relaxation-${section.id}-${slugify(active.name)}-${slugify(activeDuration.label)}`,
+    [active.name, activeDuration.label, section.id, activeDuration.id]
   );
   const selectedCartQuantity = useMemo(
     () =>
@@ -140,15 +162,6 @@ const ServiceSection = ({ section }: { section: PureRelaxationSection }) => {
     setDurationIndex(0);
     setNotice('');
   }, [variantIndex]);
-
-  // Fetch dynamic services from admin panel
-  const [dbServices, setDbServices] = useState<any[]>([]);
-  useEffect(() => {
-    fetch('/api/services')
-      .then(res => res.json())
-      .then(data => setDbServices(Array.isArray(data) ? data : []))
-      .catch(console.error);
-  }, []);
 
   // Override media with admin video/image if available
   const displayMedia = useMemo(() => {
@@ -207,12 +220,12 @@ const ServiceSection = ({ section }: { section: PureRelaxationSection }) => {
       },
       img: displayMedia?.type === 'image' ? displayMedia.src : displayMedia?.poster || displayMedia?.src || '',
       priceVND: activeDuration.price,
-      priceUSD: 0,
+      priceUSD: activeDuration.priceUSD || 0,
       timeValue: minutes,
       timeDisplay: activeDuration.label,
       menuType: 'standard',
     };
-  }, [active, activeDuration, section.title, selectedCartServiceId]);
+  }, [active, activeDuration, section.title, selectedCartServiceId, displayMedia]);
 
   const addToCart = useCallback(() => {
     const cart = appendBookingCartItem(buildServicePayload(), 1);
@@ -362,7 +375,7 @@ const bgImages = [
   '/images/services/foot-massage.png',
   '/images/services/hairwash.png',
   '/images/services/hotstone.png',
-  '/images/services/shave.png',
+  '/images/services/shave.JPG',
   '/images/services/shiatsu.png',
   '/images/services/thai.png'
 ];
