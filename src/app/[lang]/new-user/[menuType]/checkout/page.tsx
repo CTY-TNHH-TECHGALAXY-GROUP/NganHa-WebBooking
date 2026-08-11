@@ -17,13 +17,7 @@ import styles from './checkout-demo.module.css';
 type PageParams = Promise<{ lang: string; menuType: string }>;
 type ContactMethod = 'email' | 'phone';
 
-const PHONE_COUNTRIES = [
-  { lang: 'vi', code: '+84', flag: '🇻🇳', label: 'Vietnam' },
-  { lang: 'en', code: '+1', flag: '🇺🇸', label: 'United States' },
-  { lang: 'cn', code: '+86', flag: '🇨🇳', label: 'China' },
-  { lang: 'jp', code: '+81', flag: '🇯🇵', label: 'Japan' },
-  { lang: 'kr', code: '+82', flag: '🇰🇷', label: 'Korea' },
-];
+import { PHONE_COUNTRIES } from '@/lib/countryCodes';
 
 const phoneCountryForLang = (lang: SupportedLanguage) =>
   PHONE_COUNTRIES.find((country) => country.lang === lang) || PHONE_COUNTRIES[0];
@@ -58,6 +52,8 @@ const COPY = {
   total: { vi: 'Tổng cộng', en: 'Total Bill', cn: '总计', jp: '合計', kr: '총액' },
   vat: { vi: '*Giá đã bao gồm VAT', en: '*Price includes VAT', cn: '*价格含VAT', jp: '*税込価格', kr: '*VAT 포함' },
   confirm: { vi: 'Xác nhận đặt lịch', en: 'Confirm order', cn: '确认预约', jp: '予約を確定', kr: '예약 확정' },
+  edit: { vi: 'Sửa', en: 'Edit', cn: '编辑', jp: '編集', kr: '편집' },
+  remove: { vi: 'Xóa', en: 'Remove', cn: '删除', jp: '削除', kr: '삭제' },
   selectService: { vi: 'Vui lòng chọn ít nhất 1 dịch vụ.', en: 'Please select at least 1 service.', cn: '请至少选择1项服务。', jp: 'サービスを1つ以上選択してください。', kr: '서비스를 1개 이상 선택해 주세요.' },
   showMoreTimes: { vi: 'Xem thêm', en: 'More', cn: '更多', jp: 'もっと見る', kr: '더 보기' },
   showLessTimes: { vi: 'Thu gọn', en: 'Less', cn: '收起', jp: '閉じる', kr: '접기' },
@@ -463,9 +459,11 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
   const lang = langKey(rawLang);
   const menuType = rawMenuType === 'vip' ? 'vip' : 'standard';
   const dict = getDictionary(lang);
-  const { services, cart, addToCart, removeFromCart, updateCartItemOptions } = useMenuData();
+  const { services, cart, addToCart, removeFromCart, updateCartItemOptions, replaceCartItemService } = useMenuData();
 
   const [editingCartId, setEditingCartId] = useState<string | null>(null);
+  const [editServiceId, setEditServiceId] = useState<string | null>(null);
+  const [editBaseName, setEditBaseName] = useState<string | null>(null);
   const [editNote, setEditNote] = useState('');
   const [contactMethod, setContactMethod] = useState<ContactMethod>('email');
   const [customerInfo, setCustomerInfo] = useState({ name: '', email: '', phone: '', gender: t('male', lang) });
@@ -555,7 +553,9 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
   const groupedVisibleServices = useMemo(() => {
     return Object.values(
       visibleServices.reduce((acc, service) => {
-        const baseNameEn = service.names?.en?.trim().toLowerCase() || service.id;
+        const rawNameEn = service.names?.en?.trim().toLowerCase() || service.id;
+        // Strip duration identifiers like 60', 90 mins, etc. to group base services together
+        const baseNameEn = rawNameEn.replace(/\s*\d+\s*(mins?|'|phút).*$/i, '').trim();
         if (!acc[baseNameEn]) acc[baseNameEn] = [];
         acc[baseNameEn].push(service);
         return acc;
@@ -679,20 +679,24 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
       <div className={styles.nebula} />
       <div className={styles.stars} />
 
-      <header className={styles.topbar}>
-        <button className={styles.back} type="button" onClick={() => router.back()}>
+      <header className="relative z-10 flex flex-col items-center pt-8 md:pt-12 pb-6 mb-6">
+        <button 
+          className="absolute left-4 md:left-8 top-10 md:top-14 flex items-center gap-2 text-[#c9a96e] hover:text-white transition-colors z-20" 
+          type="button" 
+          onClick={() => router.back()}
+        >
           <ChevronLeft size={18} />
-          <span>{t('menu', lang)}</span>
+          <span className="text-sm font-semibold uppercase tracking-[0.15em] hidden sm:block">{t('menu', lang)}</span>
         </button>
-        <h1>{t('title', lang)}</h1>
+        
+        <SmartLogo theme="dark" className="h-20 md:h-28 lg:h-32 w-auto object-contain mb-5 drop-shadow-xl" />
+        
+        <h1 className="text-2xl md:text-[28px] font-serif text-[#f1e9dc] tracking-wide">
+          {t('title', lang)}
+        </h1>
+        
+        <div className="w-32 h-[1px] bg-gradient-to-r from-transparent via-[#c9a96e]/40 to-transparent mt-5" />
       </header>
-
-      <div className={styles.brandline}>
-        <div className={styles.mark}>
-          <SmartLogo theme="dark" className="h-14 md:h-16 lg:h-20 w-auto mx-auto object-contain" />
-        </div>
-        <div className={styles.divider} />
-      </div>
 
       <main className={styles.stage}>
         <div className={styles.grid}>
@@ -882,7 +886,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                     <span>{index + 1}. {serviceName(item, lang)}</span>
                     <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
                       <span>{formatCurrency(item.priceVND * item.qty)} VNĐ</span>
-                      <button onClick={() => { setEditingCartId(item.cartId); setEditNote(item.options?.notes?.content || ''); }} className="text-[#c9a96e] hover:text-white transition-colors" title={t('edit', lang) || 'Edit'}><Edit2 size={16} /></button>
+                      <button onClick={() => { setEditingCartId(item.cartId); setEditServiceId(item.id); setEditBaseName(null); setEditNote(item.options?.notes?.content || ''); }} className="text-[#c9a96e] hover:text-white transition-colors" title={t('edit', lang) || 'Edit'}><Edit2 size={16} /></button>
                       <button onClick={() => removeFromCart(item.cartId)} className="text-[#c9a96e] hover:text-red-500 transition-colors" title={t('remove', lang) || 'Remove'}><Trash2 size={16} /></button>
                     </div>
                   </div>
@@ -899,25 +903,115 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                     <strong>{bookingTime}</strong>
                   </div>
                   
-                  {editingCartId === item.cartId ? (
-                    <div style={{ marginTop: '12px', display: 'flex', gap: '8px', alignItems: 'center' }}>
-                      <input 
-                        value={editNote}
-                        onChange={(e) => setEditNote(e.target.value)}
-                        placeholder="Ghi chú..."
-                        style={{ padding: '8px 12px', flex: 1, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: 'white', outline: 'none', fontSize: '14px' }}
-                      />
-                      <button 
-                        onClick={() => {
-                          updateCartItemOptions(item.cartId, { ...item.options, notes: { ...item.options?.notes, content: editNote }});
-                          setEditingCartId(null);
-                        }}
-                        style={{ padding: '8px 16px', background: 'var(--gold-soft)', color: '#000', borderRadius: '8px', fontWeight: 'bold', fontSize: '13px' }}
-                      >
-                        Lưu
-                      </button>
-                    </div>
-                  ) : (
+                  {editingCartId === item.cartId ? (() => {
+                    const rawOriginalName = item.names?.en?.trim().toLowerCase() || item.id;
+                    const originalBaseNameEn = rawOriginalName.replace(/\s*\d+\s*(mins?|'|phút).*$/i, '').trim();
+                    const activeBaseNameEn = editBaseName || originalBaseNameEn;
+                    
+                    const group = groupedVisibleServices.find(g => {
+                      const first = g[0];
+                      const firstRawName = first.names?.en?.trim().toLowerCase() || first.id;
+                      const firstBaseName = firstRawName.replace(/\s*\d+\s*(mins?|'|phút).*$/i, '').trim();
+                      return firstBaseName === activeBaseNameEn;
+                    }) || [item];
+                    
+                    const sortedGroup = [...group].sort((a, b) => a.timeValue - b.timeValue);
+                    const currentEditService = sortedGroup.find(s => s.id === editServiceId) || sortedGroup[0] || item;
+
+                    return (
+                      <div style={{ marginTop: '14px', borderRadius: '18px', background: 'linear-gradient(180deg, rgba(20,19,38,0.98), rgba(14,14,29,0.98))', border: '1px solid rgba(226,190,111,0.28)', overflow: 'hidden', boxShadow: '0 24px 60px rgba(0,0,0,0.35)' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '18px 20px', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+                          <strong style={{ fontSize: '16px', color: '#f2d58d' }}>Edit service</strong>
+                          <button onClick={() => { setEditingCartId(null); setEditServiceId(null); setEditBaseName(null); }} style={{ width: '34px', height: '34px', border: 0, background: 'transparent', color: '#e2be6f', cursor: 'pointer', fontSize: '18px', borderRadius: '9px', display: 'flex', alignItems: 'center', justifyContent: 'center' }} className="hover:bg-[#e2be6f]/10">×</button>
+                        </div>
+                        
+                        <div style={{ padding: '20px' }}>
+                          <div style={{ fontSize: '11px', letterSpacing: '0.14em', textTransform: 'uppercase', color: '#8e8b9a', marginBottom: '8px', fontWeight: 750 }}>Service</div>
+                          <div style={{ position: 'relative', marginBottom: '16px' }}>
+                            <select 
+                              value={activeBaseNameEn}
+                              onChange={(e) => {
+                                const newBaseName = e.target.value;
+                                setEditBaseName(newBaseName);
+                                const newGroup = groupedVisibleServices.find(g => {
+                                  const first = g[0];
+                                  const firstRaw = first.names?.en?.trim().toLowerCase() || first.id;
+                                  return firstRaw.replace(/\s*\d+\s*(mins?|'|phút).*$/i, '').trim() === newBaseName;
+                                });
+                                if (newGroup && newGroup.length > 0) {
+                                  const sortedNewGroup = [...newGroup].sort((a, b) => a.timeValue - b.timeValue);
+                                  setEditServiceId(sortedNewGroup[0].id);
+                                }
+                              }}
+                              style={{ width: '100%', height: '48px', borderRadius: '12px', background: '#111226', border: '1px solid rgba(255,255,255,0.07)', padding: '0 14px', color: '#efeadf', appearance: 'none', outline: 'none' }}
+                            >
+                              {groupedVisibleServices.map(g => {
+                                 const f = g[0];
+                                 const raw = f.names?.en?.trim().toLowerCase() || f.id;
+                                 const name = raw.replace(/\s*\d+\s*(mins?|'|phút).*$/i, '').trim();
+                                 const displayName = lang === 'vi' 
+                                    ? (f.names?.vi?.replace(/\s*\d+\s*(mins?|'|phút).*$/i, '').trim() || name) 
+                                    : (f.names?.en?.replace(/\s*\d+\s*(mins?|'|phút).*$/i, '').trim() || name);
+                                 return <option key={name} value={name} style={{ background: '#111226', color: 'white' }}>{displayName}</option>
+                              })}
+                            </select>
+                            <ChevronDown size={14} style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', color: '#8e8b9a', pointerEvents: 'none' }} />
+                          </div>
+
+                          <div style={{ fontSize: '11px', letterSpacing: '0.14em', textTransform: 'uppercase', color: '#8e8b9a', marginBottom: '8px', fontWeight: 750 }}>Duration</div>
+                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '18px' }}>
+                            {sortedGroup.map(svc => {
+                              const isActive = editServiceId === svc.id || currentEditService.id === svc.id;
+                              return (
+                                <button
+                                  key={svc.id}
+                                  onClick={() => setEditServiceId(svc.id)}
+                                  style={{
+                                    border: isActive ? '1px solid rgba(226,190,111,0.45)' : '1px solid rgba(255,255,255,0.08)',
+                                    background: isActive ? 'rgba(226,190,111,0.13)' : '#111226',
+                                    color: isActive ? '#f2d58d' : '#9b99a7',
+                                    padding: '9px 13px',
+                                    borderRadius: '999px',
+                                    cursor: 'pointer',
+                                    fontSize: '13px'
+                                  }}
+                                >
+                                  {svc.timeValue} min
+                                </button>
+                              );
+                            })}
+                          </div>
+
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '18px', paddingTop: '16px', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+                            <span style={{ color: '#858391' }}>Updated price</span>
+                            <strong style={{ fontFamily: 'Georgia, serif', color: '#f2d58d', fontSize: '25px' }}>
+                              {formatCurrency(currentEditService.priceVND)} VNĐ
+                            </strong>
+                          </div>
+                        </div>
+
+                        <div className="flex flex-col sm:flex-row gap-3 px-4 pb-4 sm:px-5 sm:pb-5">
+                           <input 
+                              value={editNote}
+                              onChange={(e) => setEditNote(e.target.value)}
+                              placeholder={lang === 'vi' ? 'Ghi chú thêm...' : 'Additional notes...'}
+                              className="h-[48px] flex-1 w-full rounded-[14px] bg-transparent border border-white/10 text-[#a3a1ad] px-4 outline-none focus:border-[#c9a96e]/50 text-sm"
+                           />
+                           <button 
+                             onClick={() => {
+                               replaceCartItemService(item.cartId, currentEditService, { ...item.options, notes: { ...item.options?.notes, content: editNote } });
+                               setEditingCartId(null);
+                               setEditServiceId(null);
+                               setEditBaseName(null);
+                             }}
+                             className="h-[48px] px-6 rounded-[14px] font-bold text-[13px] bg-gradient-to-r from-[#ecd38f] to-[#c6a55f] text-[#2c2416] whitespace-nowrap shrink-0 w-full sm:w-auto"
+                           >
+                             {lang === 'vi' ? 'Lưu' : 'Save'}
+                           </button>
+                        </div>
+                      </div>
+                    );
+                  })() : (
                     (item.options?.notes?.content || item.options?.notes?.tag0 || item.options?.notes?.tag1) && (
                       <div className={styles.detail}>
                         <span>{t('note', lang)}</span>

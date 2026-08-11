@@ -27,6 +27,7 @@ interface MenuContextType {
     updateCartItem: (cartId: string, qty: number) => void;
     updateCartItemOptions: (cartId: string, options: ServiceOptions) => void;
     updateAllCartItemOptions: (options: ServiceOptions) => void;
+    replaceCartItemService: (cartId: string, newService: Service, options?: ServiceOptions) => void;
     removeFromCart: (cartId: string) => void;
     clearCart: () => void;
     getQty: (serviceId: string) => number; // Helper lấy tổng số lượng của 1 service ID
@@ -103,6 +104,21 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
         setCart(prev => prev.map(item => ({ ...item, options: { ...item.options, ...options } })));
     };
 
+    // [NEW] Thay thế Service của một item trong giỏ hàng (giữ nguyên cartId và số lượng, update options)
+    const replaceCartItemService = (cartId: string, newService: Service, options?: ServiceOptions) => {
+        setCart(prev => prev.map(item => {
+            if (item.cartId === cartId) {
+                return {
+                    ...newService, // Spread the new service first (replaces id, price, names, timeValue, etc.)
+                    cartId: item.cartId, // Preserve the old cartId so it doesn't move
+                    qty: item.qty, // Preserve the old quantity
+                    options: { ...item.options, ...options } // Merge the options
+                };
+            }
+            return item;
+        }));
+    };
+
     // 3. Xóa
     const removeFromCart = (cartId: string) => updateCartItem(cartId, 0);
 
@@ -117,7 +133,7 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
     return (
         <MenuContext.Provider value={{
             services, categories, loading, error, refreshData: fetchData,
-            cart, addToCart, updateCartItem, updateCartItemOptions, updateAllCartItemOptions, removeFromCart, clearCart, getQty
+            cart, addToCart, updateCartItem, updateCartItemOptions, updateAllCartItemOptions, replaceCartItemService, removeFromCart, clearCart, getQty
         }}>
             {children}
         </MenuContext.Provider>

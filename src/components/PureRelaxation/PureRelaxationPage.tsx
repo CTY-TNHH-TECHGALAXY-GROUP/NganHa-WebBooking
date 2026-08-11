@@ -256,7 +256,6 @@ const ServiceSection = ({ section }: { section: PureRelaxationSection }) => {
         </div>
 
         <div className={styles.sectionContent}>
-          <h2>{section.title}</h2>
 
           <div className={styles.choiceBlock}>
             <div className={styles.choiceLabel}>Choose service</div>
@@ -294,7 +293,6 @@ const ServiceSection = ({ section }: { section: PureRelaxationSection }) => {
           )}
 
           <div className={styles.selectedPanel}>
-            <span>{selectedService.name}</span>
             <h3>{active.name}</h3>
             <p>{active.subtitle}</p>
           </div>
@@ -320,6 +318,15 @@ const ServiceSection = ({ section }: { section: PureRelaxationSection }) => {
             <div>
               <span className={styles.priceLabel}>Selected price</span>
               <strong>{formatVnd(activeDuration.price)}</strong>
+              <div style={{ fontSize: '12px', color: '#7a705e', marginTop: '4px', fontStyle: 'italic', letterSpacing: '0.02em' }}>
+                *{{
+                  vi: 'Giá đã bao gồm VAT',
+                  en: 'Price includes VAT',
+                  cn: '价格已含增值税',
+                  jp: '付加価値税込み',
+                  kr: 'VAT 포함 가격'
+                }[currentLang as 'vi'|'en'|'cn'|'jp'|'kr'] || 'Price includes VAT'}
+              </div>
             </div>
             <div className={styles.actions}>
               {selectedCartQuantity > 0 ? (
