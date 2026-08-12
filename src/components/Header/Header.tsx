@@ -147,15 +147,14 @@ const Header = () => {
   const NAV_ITEMS = useMemo(() => {
     return [
       {
-        id: 'area',
+        id: 'spaces',
         label: getLocalizedText(hpNav?.spaces, lang, 'Spaces'),
-        col: 'left',
-        isUnclickable: true,
+        href: '/space',
         children: [
-          { id: 'area_lobby', label: getLocalizedText(hpNav?.welcomeArea, lang, 'Welcome area'), href: '/#lobby' },
-          { id: 'area_l1', label: getLocalizedText(hpNav?.firstFloor, lang, 'First Floor'), href: '/#l1' },
-          { id: 'area_l2', label: getLocalizedText(hpNav?.secondFloor, lang, 'Second Floor'), href: '/#l2' },
-        ],
+          { id: 'area_lobby', label: getLocalizedText(hpNav?.welcomeArea, lang, 'Welcome area'), href: '/space#welcome' },
+          { id: 'area_l1', label: getLocalizedText(hpNav?.firstFloor, lang, 'First Floor'), href: '/space#floor1' },
+          { id: 'area_l2', label: getLocalizedText(hpNav?.secondFloor, lang, 'Second Floor'), href: '/space#floor2' }
+        ]
       },
       {
         id: 'services',
@@ -386,7 +385,7 @@ const Header = () => {
                         return (
                           <div key={item.id || item.href} className="nav-category-group">
                             <h3 className="nav-category-title">
-                              {item.href && !item.children ? (
+                              {item.href ? (
                                 <Link href={item.href} target={item.target || undefined} onClick={toggleMobileMenu} className="hover:text-[#f7ebc7] transition-colors">{label}</Link>
                               ) : label}
                             </h3>
@@ -418,7 +417,7 @@ const Header = () => {
                         return (
                           <div key={item.id || item.href} className="nav-category-group">
                             <h3 className="nav-category-title">
-                              {item.href && !item.children ? (
+                              {item.href ? (
                                 <Link href={item.href} target={item.target || undefined} onClick={toggleMobileMenu} className="hover:text-[#f7ebc7] transition-colors">{label}</Link>
                               ) : label}
                             </h3>

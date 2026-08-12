@@ -50,9 +50,11 @@ const FloatingWidgets = () => {
         )}
       </AnimatePresence>
 
-      <div className="fixed bottom-24 md:bottom-6 right-4 md:right-6 z-[990] flex flex-col items-end justify-end" suppressHydrationWarning={true}>
+      <div className="fixed bottom-24 md:bottom-6 right-4 md:right-6 z-[990] flex flex-col items-end justify-end pointer-events-none" suppressHydrationWarning={true}>
         {/* Hidden original ChatBot trigger */}
-        <AIChatBot hideTrigger={true} />
+        <div className="pointer-events-auto">
+          <AIChatBot hideTrigger={true} />
+        </div>
 
         {/* Floating Greeting Bubble (Visible when menu is closed) */}
         <AnimatePresence>
@@ -62,7 +64,7 @@ const FloatingWidgets = () => {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 10, scale: 0.95 }}
               transition={{ delay: 1, duration: 0.4 }}
-              className="relative mb-3 mr-1 bg-[#f7ebc7] text-[#1a1a1a] p-4 rounded-2xl shadow-xl max-w-[350px] cursor-pointer after:absolute after:content-[''] after:-bottom-3 after:right-8 after:border-[7px] after:border-transparent after:border-t-[#f7ebc7]"
+              className="relative mb-3 mr-1 bg-[#f7ebc7] text-[#1a1a1a] p-4 rounded-2xl shadow-xl max-w-[350px] cursor-pointer pointer-events-auto after:absolute after:content-[''] after:-bottom-3 after:right-8 after:border-[7px] after:border-transparent after:border-t-[#f7ebc7]"
               onClick={() => setIsMenuOpen(true)}
             >
               <p className="text-[14px] leading-relaxed font-medium whitespace-pre-line">{chatGreeting}</p>
@@ -78,7 +80,7 @@ const FloatingWidgets = () => {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 20, scale: 0.95 }}
               transition={{ duration: 0.3, type: "spring", bounce: 0.3 }}
-              className="flex flex-col gap-4 mb-4 items-end"
+              className="flex flex-col gap-4 mb-4 items-end pointer-events-auto"
             >
               {/* User Choices */}
               <div className="flex flex-col gap-3 items-end w-full mr-1">
@@ -107,7 +109,7 @@ const FloatingWidgets = () => {
         {/* Main Trigger Button */}
         <button
           onClick={() => setIsMenuOpen(!isMenuOpen)}
-          className={`rounded-full flex items-center justify-center shadow-2xl hover:scale-105 transition-transform mt-2 overflow-hidden border-[3px] border-white ${isMenuOpen ? 'bg-black text-white' : 'bg-white'}`}
+          className={`rounded-full flex items-center justify-center shadow-2xl hover:scale-105 transition-transform mt-2 overflow-hidden border-[3px] border-white pointer-events-auto ${isMenuOpen ? 'bg-black text-white' : 'bg-white'}`}
           style={{ width: WIDGET_SIZE + 10, height: WIDGET_SIZE + 10 }}
           aria-label="Contact Us"
         >

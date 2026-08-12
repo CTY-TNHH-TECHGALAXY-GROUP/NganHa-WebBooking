@@ -108,12 +108,20 @@ const ServiceSection = ({ section }: { section: PureRelaxationSection }) => {
   const router = useRouter();
   const { currentLang } = useTranslation();
 
-  // Fetch dynamic services from admin panel
+  // Fetch dynamic services and content from admin panel
   const [dbServices, setDbServices] = useState<any[]>([]);
+  const [contentMedia, setContentMedia] = useState<Record<string, any>>({});
   useEffect(() => {
     fetch('/api/services')
       .then(res => res.json())
       .then(data => setDbServices(Array.isArray(data) ? data : []))
+      .catch(console.error);
+
+    fetch('/api/admin/content')
+      .then(res => res.json())
+      .then(json => {
+        if (json.success) setContentMedia(json.data.pure_relaxation_media || {});
+      })
       .catch(console.error);
   }, []);
 
@@ -168,23 +176,18 @@ const ServiceSection = ({ section }: { section: PureRelaxationSection }) => {
     const defaultMedia = active.media;
     if (!defaultMedia) return null;
     
-    // Find matching service by name (en or vi)
-    const dbService = dbServices.find(
-      s => (s.names?.en?.toLowerCase() === active.name.toLowerCase()) || 
-           (s.names?.vi?.toLowerCase() === active.name.toLowerCase()) ||
-           (s.names?.en?.toLowerCase() === selectedService.name.toLowerCase()) ||
-           (s.names?.vi?.toLowerCase() === selectedService.name.toLowerCase())
-    );
+    // Find matching media from contentMedia
+    const adminMedia = contentMedia[active.name];
 
-    if (dbService && dbService.media_url) {
+    if (adminMedia && adminMedia.src) {
       return {
         ...defaultMedia,
-        type: (dbService.media_type === 'video' ? 'video' : 'image') as 'image' | 'video',
-        src: dbService.media_url,
+        type: adminMedia.type as 'image' | 'video',
+        src: adminMedia.src,
       };
     }
     return defaultMedia;
-  }, [active.media, active.name, selectedService.name, dbServices]);
+  }, [active.media, active.name, contentMedia]);
 
   useEffect(() => {
     setCartItems(readBookingCart());

@@ -79,6 +79,7 @@ interface SystemSettingsContextType {
   systemSettings: SystemSettings;
   aboutStoryContent: AboutStoryContent;
   brandHistory: BrandHistoryConfig | null;
+  footerContent: any;
   getLocalizedText: (textObj: Record<string, string> | undefined, locale: Locale, fallback?: string) => string;
 }
 
@@ -86,6 +87,7 @@ const SystemSettingsContext = createContext<SystemSettingsContextType>({
   systemSettings: {},
   aboutStoryContent: {},
   brandHistory: null,
+  footerContent: {},
   getLocalizedText: () => '',
 });
 
@@ -96,11 +98,13 @@ export const SystemSettingsProvider = ({
   systemSettings = {},
   aboutStoryContent = {},
   brandHistory = null,
+  footerContent = {},
 }: {
   children: React.ReactNode;
   systemSettings?: any;
   aboutStoryContent?: any;
   brandHistory?: any;
+  footerContent?: any;
 }) => {
   
   const getLocalizedText = (textObj: Record<string, string> | undefined, locale: Locale, fallback = '') => {
@@ -114,6 +118,7 @@ export const SystemSettingsProvider = ({
         systemSettings,
         aboutStoryContent,
         brandHistory,
+        footerContent,
         getLocalizedText
       }}
     >

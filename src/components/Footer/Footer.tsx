@@ -16,14 +16,22 @@ const CORE_VALUES = [
 ];
 
 const Footer = () => {
-  const { systemSettings } = useSystemSettings();
+  const { systemSettings, footerContent, getLocalizedText } = useSystemSettings();
   const { currentLang } = useTranslation();
 
   const phone = systemSettings?.phone || '+84964090277';
   const facebook = systemSettings?.facebook || 'https://facebook.com';
   const zalo = systemSettings?.zalo || 'https://zalo.me';
   const addressText = systemSettings?.address?.[currentLang] || '11 Ngô Đức Kế, Q.1, TP.HCM & 6B Thi Sách, Q.1, TP.HCM';
+
+  const descText = getLocalizedText(footerContent?.description, currentLang as any, currentLang === 'vi' 
+    ? 'Trải nghiệm dịch vụ chăm sóc sức khoẻ và làm đẹp đẳng cấp tại trung tâm Quận 1, TP.HCM.'
+    : 'Experience premium wellness and beauty services in the heart of District 1, HCMC.');
   
+  const locationsTitle = getLocalizedText(footerContent?.locationsTitle, currentLang as any, currentLang === 'vi' ? 'Chi nhánh' : 'Locations');
+  const contactTitle = getLocalizedText(footerContent?.contactTitle, currentLang as any, currentLang === 'vi' ? 'Liên hệ' : 'Contact');
+  const copyrightText = footerContent?.copyright || `© ${new Date().getFullYear()} TECHGALAXY GROUP. All rights reserved.`;
+
   return (
     <footer id="footer" className="bg-[rgba(40,27,21,1)] text-[#f7ebc7] relative z-10">
       {/* Core Values Section */}
@@ -56,17 +64,15 @@ const Footer = () => {
           {/* Logo & Description */}
           <div className="flex flex-col gap-8 items-start">
             <SmartLogo theme="dark" className="w-[220px] h-auto object-contain" />
-            <p className="text-[15px] text-[#f7ebc7]/60 leading-relaxed font-light">
-              {currentLang === 'vi' 
-                ? 'Trải nghiệm dịch vụ chăm sóc sức khoẻ và làm đẹp đẳng cấp tại trung tâm Quận 1, TP.HCM.'
-                : 'Experience premium wellness and beauty services in the heart of District 1, HCMC.'}
+            <p className="text-[15px] text-[#f7ebc7]/60 leading-relaxed font-light whitespace-pre-line">
+              {descText}
             </p>
           </div>
           
           {/* Locations */}
           <div className="flex flex-col gap-6">
             <h4 className="font-serif text-[#D4AF37] text-xl tracking-wider uppercase">
-              {currentLang === 'vi' ? 'Chi nhánh' : 'Locations'}
+              {locationsTitle}
             </h4>
             <div className="w-12 h-[1px] bg-[rgba(212,175,55,0.3)] mb-2"></div>
             <ul className="text-[15px] text-[#f7ebc7]/70 space-y-4 leading-relaxed font-light">
@@ -79,7 +85,7 @@ const Footer = () => {
           {/* Contact */}
           <div className="flex flex-col gap-6">
             <h4 className="font-serif text-[#D4AF37] text-xl tracking-wider uppercase">
-              {currentLang === 'vi' ? 'Liên hệ' : 'Contact'}
+              {contactTitle}
             </h4>
             <div className="w-12 h-[1px] bg-[rgba(212,175,55,0.3)] mb-2"></div>
             <ul className="text-[15px] text-[#f7ebc7]/70 space-y-4 font-light">
@@ -93,7 +99,7 @@ const Footer = () => {
         {/* Copyright */}
         <div className="max-w-6xl mx-auto mt-20 pt-8 border-t border-[rgba(212,175,55,0.15)] text-center">
           <p className="text-xs text-[#f7ebc7]/40 tracking-[0.2em] uppercase">
-            &copy; {new Date().getFullYear()} TECHGALAXY GROUP. All rights reserved.
+            {copyrightText}
           </p>
         </div>
       </div>
