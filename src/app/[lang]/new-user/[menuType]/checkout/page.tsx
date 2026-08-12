@@ -469,6 +469,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
   const [customerInfo, setCustomerInfo] = useState({ name: '', email: '', phone: '', gender: t('male', lang) });
   const [phoneCountry, setPhoneCountry] = useState(() => phoneCountryForLang(lang));
   const [isGenderOpen, setIsGenderOpen] = useState(false);
+  const [isPhoneCountryOpen, setIsPhoneCountryOpen] = useState(false);
   const [isTimeExpanded, setIsTimeExpanded] = useState(false);
   const [bookingDate, setBookingDate] = useState(() => localISODate(new Date()));
   const [bookingTime, setBookingTime] = useState('');
@@ -763,23 +764,50 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
 
               {contactMethod === 'phone' ? (
                 <div className={styles.phoneGroup}>
-                  <label className={`${styles.field} ${styles.phoneCountryField}`}>
-                    <select
-                      className={styles.phoneCountrySelect}
-                      value={phoneCountry.code}
-                      onChange={(event) => {
-                        const nextCountry = PHONE_COUNTRIES.find((country) => country.code === event.target.value);
-                        if (nextCountry) setPhoneCountry(nextCountry);
-                      }}
-                      aria-label="Phone country code"
+                  <div className={`${styles.field} ${styles.phoneCountryField}`} style={{ position: 'relative' }}>
+                    <div 
+                      className={styles.phoneCountrySelect} 
+                      onClick={() => setIsPhoneCountryOpen(!isPhoneCountryOpen)}
+                      style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}
                     >
-                      {PHONE_COUNTRIES.map((country) => (
-                        <option key={country.code} value={country.code}>
-                          {country.flag} {country.code}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
+                      {phoneCountry.flag} {phoneCountry.code}
+                    </div>
+                    
+                    {isPhoneCountryOpen && (
+                      <div style={{ position: 'absolute', top: 'calc(100% + 4px)', left: 0, width: 'max-content', minWidth: '120px', background: '#17162b', border: '1px solid rgba(226,190,111,0.15)', borderRadius: '12px', zIndex: 100, maxHeight: '250px', overflowY: 'auto', boxShadow: '0 10px 30px rgba(0,0,0,0.5)' }}>
+                        {PHONE_COUNTRIES.map((country, idx) => {
+                           const isSelected = phoneCountry.iso === country.iso;
+                           return (
+                             <div 
+                               key={`${country.iso}-${idx}`}
+                               onClick={() => {
+                                 setPhoneCountry(country);
+                                 setIsPhoneCountryOpen(false);
+                               }}
+                               style={{ 
+                                 padding: '10px 14px', 
+                                 color: isSelected ? '#e2be6f' : '#efeadf', 
+                                 background: isSelected ? 'rgba(226,190,111,0.05)' : 'transparent',
+                                 cursor: 'pointer',
+                                 borderBottom: '1px solid rgba(255,255,255,0.03)',
+                                 fontSize: '14px',
+                                 display: 'flex',
+                                 alignItems: 'center',
+                                 gap: '8px',
+                                 transition: 'background 0.2s'
+                               }}
+                               onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; }}
+                               onMouseLeave={(e) => { e.currentTarget.style.background = isSelected ? 'rgba(226,190,111,0.05)' : 'transparent'; }}
+                             >
+                               <span>{country.flag}</span>
+                               <span style={{ opacity: 0.7, fontSize: '12px' }}>{country.code}</span>
+                               <span style={{ marginLeft: '4px', fontSize: '13px' }}>{country.label}</span>
+                             </div>
+                           );
+                        })}
+                      </div>
+                    )}
+                  </div>
                   <label className={styles.field}>
                     <input
                       type="tel"
