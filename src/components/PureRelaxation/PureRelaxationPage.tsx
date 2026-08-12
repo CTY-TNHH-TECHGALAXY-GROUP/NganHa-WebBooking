@@ -10,7 +10,7 @@ import {
   readBookingCart,
   removeOneBookingCartItem,
 } from '@/lib/bookingCartStorage';
-import { pureRelaxationSections } from './pureRelaxationData';
+import { getPureRelaxationSections } from './pureRelaxationData';
 import type {
   PureRelaxationDuration,
   PureRelaxationMedia,
@@ -99,7 +99,7 @@ const PreferenceNote = ({ icon, title, copy }: { icon: ReactNode; title: string;
   </div>
 );
 
-const ServiceSection = ({ section }: { section: PureRelaxationSection }) => {
+const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSection, contentMedia: any }) => {
   const [serviceIndex, setServiceIndex] = useState(0);
   const [variantIndex, setVariantIndex] = useState(0);
   const [durationIndex, setDurationIndex] = useState(0);
@@ -110,18 +110,10 @@ const ServiceSection = ({ section }: { section: PureRelaxationSection }) => {
 
   // Fetch dynamic services and content from admin panel
   const [dbServices, setDbServices] = useState<any[]>([]);
-  const [contentMedia, setContentMedia] = useState<Record<string, any>>({});
   useEffect(() => {
     fetch('/api/services')
       .then(res => res.json())
       .then(data => setDbServices(Array.isArray(data) ? data : []))
-      .catch(console.error);
-
-    fetch('/api/admin/content')
-      .then(res => res.json())
-      .then(json => {
-        if (json.success) setContentMedia(json.data.pure_relaxation_media || {});
-      })
       .catch(console.error);
   }, []);
 
@@ -392,15 +384,31 @@ const bgImages = [
 
 const PureRelaxationPage = () => {
   const navRef = useRef<HTMLDivElement>(null);
-  const [activeSection, setActiveSection] = useState(pureRelaxationSections[0].id);
   const [bgIndex, setBgIndex] = useState(0);
+
+  const [contentMedia, setContentMedia] = useState<any>({});
+  
+  useEffect(() => {
+    fetch('/api/admin/content')
+      .then(res => res.json())
+      .then(json => {
+        if (json.success) setContentMedia(json.data.pure_relaxation_media || {});
+      })
+      .catch(console.error);
+  }, []);
+
+  const pureRelaxationSections = useMemo(() => getPureRelaxationSections(contentMedia), [contentMedia]);
+  
+  const [activeSection, setActiveSection] = useState(pureRelaxationSections[0]?.id || 'body-care');
+
+  const displayBgImages = contentMedia.slideshow && contentMedia.slideshow.length > 0 ? contentMedia.slideshow : bgImages;
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setBgIndex((prev) => (prev + 1) % bgImages.length);
+      setBgIndex((prev) => (prev + 1) % displayBgImages.length);
     }, 6000);
     return () => clearInterval(interval);
-  }, []);
+  }, [displayBgImages.length]);
 
   useEffect(() => {
     // Scroll nav to center active item on mobile
@@ -425,9 +433,9 @@ const PureRelaxationPage = () => {
   return (
     <main className={styles.page}>
       {/* Fixed Background Image Slideshow for Parallax */}
-      {bgImages.map((src, i) => (
+      {displayBgImages.map((src: string, i: number) => (
         <div
-          key={src}
+          key={src + i}
           className={`${styles.fixedBackground} ${i === bgIndex ? styles.activeBg : ''}`}
           style={{ backgroundImage: `url(${src})` }}
         />
@@ -478,7 +486,7 @@ const PureRelaxationPage = () => {
         {pureRelaxationSections
           .filter((section) => section.id === activeSection)
           .map((section) => (
-            <ServiceSection key={section.id} section={section} />
+            <ServiceSection key={section.id} section={section} contentMedia={contentMedia} />
           ))}
       </div>
       </div>

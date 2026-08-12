@@ -62,7 +62,22 @@ export default function SpacePage() {
       if (!val) break;
       val = val[p];
     }
-    return val || fallback;
+    
+    if (val && typeof val === 'object' && val.src) {
+      return { src: val.src, type: val.type || 'image' };
+    }
+    
+    // For legacy or fallback string URLs
+    const actualVal = val || fallback;
+    const isVideo = actualVal.endsWith('.mp4') || actualVal.endsWith('.webm');
+    return { src: actualVal, type: isVideo ? 'video' : 'image' };
+  };
+
+  const MediaRenderer = ({ mediaObj, className, alt }: { mediaObj: {src: string, type: string}, className?: string, alt?: string }) => {
+    if (mediaObj.type === 'video') {
+      return <video src={mediaObj.src} className={className} autoPlay muted loop playsInline />;
+    }
+    return <img src={mediaObj.src} alt={alt || ""} className={className} loading="lazy" />;
   };
 
   useEffect(() => {
@@ -133,7 +148,7 @@ export default function SpacePage() {
       </div>
 
       <section className={styles.hero} id="hero">
-        <img src={getMedia('hero', defaultMedia.hero)} alt="Oria Spa" />
+        <MediaRenderer mediaObj={getMedia('hero', defaultMedia.hero)} alt="Oria Spa"  />
         <div className={styles.heroCopy}>
           <h1>Space,<br/><em>felt slowly.</em></h1>
           <div className={styles.heroSide}>
@@ -151,11 +166,7 @@ export default function SpacePage() {
         </div>
 
         <div className={`${styles.videoFrame} ${styles.reveal}`}>
-          <img 
-            src={getMedia(`welcome.${welcomeTab}`, defaultMedia.welcome[welcomeTab])} 
-            alt="Welcome area"
-            className={welcomeFading ? styles.fadeOut : ''} 
-          />
+          <MediaRenderer mediaObj={getMedia(`welcome.${welcomeTab}`, defaultMedia.welcome[welcomeTab])} alt="Welcome area" className={welcomeFading ? styles.fadeOut : ''} />
           <div className={styles.videoUi}>
             <div className={styles.videoLabel}>Welcome Area / Film 01</div>
             <div className={styles.videoControl}><span>Play film</span><div className={styles.playBtn}></div></div>
@@ -188,11 +199,7 @@ export default function SpacePage() {
         </div>
 
         <div className={`${styles.videoFrame} ${styles.reveal}`}>
-          <img 
-            src={getMedia(`floor1.${floor1Tab}`, defaultMedia.floor1[floor1Tab])} 
-            alt="First floor" 
-            className={floor1Fading ? styles.fadeOut : ''}
-          />
+          <MediaRenderer mediaObj={getMedia(`floor1.${floor1Tab}`, defaultMedia.floor1[floor1Tab])} alt="First floor" className={floor1Fading ? styles.fadeOut : ''} />
           <div className={styles.videoUi}>
             <div className={styles.videoLabel}>First Floor / Film 02</div>
             <div className={styles.videoControl}><span>Play film</span><div className={styles.playBtn}></div></div>
@@ -217,11 +224,7 @@ export default function SpacePage() {
         </div>
 
         <div className={`${styles.videoFrame} ${styles.reveal}`}>
-          <img 
-            src={getMedia(`floor2.${floor2Tab}`, defaultMedia.floor2[floor2Tab])} 
-            alt="Second floor" 
-            className={floor2Fading ? styles.fadeOut : ''}
-          />
+          <MediaRenderer mediaObj={getMedia(`floor2.${floor2Tab}`, defaultMedia.floor2[floor2Tab])} alt="Second floor" className={floor2Fading ? styles.fadeOut : ''} />
           <div className={styles.videoUi}>
             <div className={styles.videoLabel}>Second Floor / Film 03</div>
             <div className={styles.videoControl}><span>Play film</span><div className={styles.playBtn}></div></div>
@@ -246,17 +249,17 @@ export default function SpacePage() {
 
         <div className={`${styles.galleryRow} ${styles.reveal}`}>
           <div className={styles.galleryMain}>
-            <img src={getMedia('gallery.main', defaultMedia.gallery.main)} alt="Massage detail" />
+            <MediaRenderer mediaObj={getMedia('gallery.main', defaultMedia.gallery.main)} alt="Massage detail"  />
           </div>
           <div className={styles.gallerySide}>
-            <div><img src={getMedia('gallery.sideTop', defaultMedia.gallery.sideTop)} alt="Treatment" /></div>
-            <div><img src={getMedia('gallery.sideBottom', defaultMedia.gallery.sideBottom)} alt="Spa room" /></div>
+            <div><MediaRenderer mediaObj={getMedia('gallery.sideTop', defaultMedia.gallery.sideTop)} alt="Treatment"  /></div>
+            <div><MediaRenderer mediaObj={getMedia('gallery.sideBottom', defaultMedia.gallery.sideBottom)} alt="Spa room"  /></div>
           </div>
         </div>
       </section>
 
       <section className={styles.cta}>
-        <img src={getMedia('cta', defaultMedia.cta)} alt="Oria Spa" />
+        <MediaRenderer mediaObj={getMedia('cta', defaultMedia.cta)} alt="Oria Spa"  />
         <div className={`${styles.ctaCopy} ${styles.reveal}`}>
           <h2>Come feel<br/>it yourself.</h2>
           <div className={styles.ctaSide}>
