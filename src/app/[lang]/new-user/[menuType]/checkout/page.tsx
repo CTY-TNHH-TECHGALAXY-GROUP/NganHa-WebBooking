@@ -928,23 +928,34 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                         <div style={{ padding: '20px' }}>
                           <div style={{ fontSize: '11px', letterSpacing: '0.14em', textTransform: 'uppercase', color: '#8e8b9a', marginBottom: '8px', fontWeight: 750 }}>Service</div>
                           <div style={{ position: 'relative', marginBottom: '16px' }}>
-                            <select 
-                              value={activeBaseNameEn}
-                              onChange={(e) => {
-                                const newBaseName = e.target.value;
-                                setEditBaseName(newBaseName);
-                                const newGroup = groupedVisibleServices.find(g => {
-                                  const first = g[0];
-                                  const firstRaw = first.names?.en?.trim().toLowerCase() || first.id;
-                                  return firstRaw.replace(/\s*\d+\s*(mins?|'|phút).*$/i, '').trim() === newBaseName;
-                                });
-                                if (newGroup && newGroup.length > 0) {
-                                  const sortedNewGroup = [...newGroup].sort((a, b) => a.timeValue - b.timeValue);
-                                  setEditServiceId(sortedNewGroup[0].id);
+                            <div 
+                              onClick={() => {
+                                const el = document.getElementById('custom-dropdown-options');
+                                if (el) {
+                                  el.style.display = el.style.display === 'none' ? 'block' : 'none';
                                 }
                               }}
-                              style={{ width: '100%', height: '48px', borderRadius: '12px', background: '#111226', border: '1px solid rgba(255,255,255,0.07)', padding: '0 14px', color: '#efeadf', appearance: 'none', outline: 'none' }}
+                              style={{ width: '100%', height: '48px', borderRadius: '12px', background: '#111226', border: '1px solid rgba(255,255,255,0.07)', padding: '0 14px', color: '#efeadf', display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer' }}
                             >
+                              <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                {(() => {
+                                  const group = groupedVisibleServices.find(g => {
+                                    const first = g[0];
+                                    const firstRawName = first.names?.en?.trim().toLowerCase() || first.id;
+                                    const firstBaseName = firstRawName.replace(/\s*\d+\s*(mins?|'|phút).*$/i, '').trim();
+                                    return firstBaseName === activeBaseNameEn;
+                                  });
+                                  if (!group) return activeBaseNameEn;
+                                  const f = group[0];
+                                  const raw = f.names?.en?.trim().toLowerCase() || f.id;
+                                  const name = raw.replace(/\s*\d+\s*(mins?|'|phút).*$/i, '').trim();
+                                  return lang === 'vi' ? (f.names?.vi?.replace(/\s*\d+\s*(mins?|'|phút).*$/i, '').trim() || name) : (f.names?.en?.replace(/\s*\d+\s*(mins?|'|phút).*$/i, '').trim() || name);
+                                })()}
+                              </span>
+                              <ChevronDown size={14} style={{ color: '#8e8b9a' }} />
+                            </div>
+                            
+                            <div id="custom-dropdown-options" style={{ display: 'none', position: 'absolute', top: 'calc(100% + 4px)', left: 0, right: 0, background: '#17162b', border: '1px solid rgba(226,190,111,0.15)', borderRadius: '12px', zIndex: 100, maxHeight: '200px', overflowY: 'auto', boxShadow: '0 10px 30px rgba(0,0,0,0.5)' }}>
                               {groupedVisibleServices.map(g => {
                                  const f = g[0];
                                  const raw = f.names?.en?.trim().toLowerCase() || f.id;
@@ -952,10 +963,42 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                                  const displayName = lang === 'vi' 
                                     ? (f.names?.vi?.replace(/\s*\d+\s*(mins?|'|phút).*$/i, '').trim() || name) 
                                     : (f.names?.en?.replace(/\s*\d+\s*(mins?|'|phút).*$/i, '').trim() || name);
-                                 return <option key={name} value={name} style={{ background: '#111226', color: 'white' }}>{displayName}</option>
+                                 const isSelected = activeBaseNameEn === name;
+                                 
+                                 return (
+                                   <div 
+                                     key={name}
+                                     onClick={() => {
+                                       setEditBaseName(name);
+                                       const newGroup = groupedVisibleServices.find(grp => {
+                                         const first = grp[0];
+                                         const firstRaw = first.names?.en?.trim().toLowerCase() || first.id;
+                                         return firstRaw.replace(/\s*\d+\s*(mins?|'|phút).*$/i, '').trim() === name;
+                                       });
+                                       if (newGroup && newGroup.length > 0) {
+                                         const sortedNewGroup = [...newGroup].sort((a, b) => a.timeValue - b.timeValue);
+                                         setEditServiceId(sortedNewGroup[0].id);
+                                       }
+                                       const el = document.getElementById('custom-dropdown-options');
+                                       if (el) el.style.display = 'none';
+                                     }}
+                                     style={{ 
+                                       padding: '12px 14px', 
+                                       color: isSelected ? '#e2be6f' : '#efeadf', 
+                                       background: isSelected ? 'rgba(226,190,111,0.05)' : 'transparent',
+                                       cursor: 'pointer',
+                                       borderBottom: '1px solid rgba(255,255,255,0.03)',
+                                       fontSize: '14px',
+                                       transition: 'background 0.2s'
+                                     }}
+                                     onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; }}
+                                     onMouseLeave={(e) => { e.currentTarget.style.background = isSelected ? 'rgba(226,190,111,0.05)' : 'transparent'; }}
+                                   >
+                                     {displayName}
+                                   </div>
+                                 );
                               })}
-                            </select>
-                            <ChevronDown size={14} style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', color: '#8e8b9a', pointerEvents: 'none' }} />
+                            </div>
                           </div>
 
                           <div style={{ fontSize: '11px', letterSpacing: '0.14em', textTransform: 'uppercase', color: '#8e8b9a', marginBottom: '8px', fontWeight: 750 }}>Duration</div>
