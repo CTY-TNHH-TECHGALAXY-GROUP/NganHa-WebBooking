@@ -43,13 +43,13 @@
 .hero img, .hero video {
   position: absolute;
   inset: 0;
-  filter: brightness(.48) saturate(.72);
-  transform: scale(1.025);
+  filter: brightness(0.85);
+  transform: scale(1.01);
   animation: heroMove 16s ease-in-out infinite alternate;
 }
 
 @keyframes heroMove {
-  to { transform: scale(1.08); }
+  to { transform: scale(1.03); }
 }
 
 .hero:after {
