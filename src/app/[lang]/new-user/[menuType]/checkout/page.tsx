@@ -763,8 +763,8 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
               </div>
 
               {contactMethod === 'phone' ? (
-                <div className={styles.phoneGroup}>
-                  <div className={`${styles.field} ${styles.phoneCountryField}`} style={{ position: 'relative' }}>
+                <div className={styles.phoneGroup} style={{ position: isPhoneCountryOpen ? 'relative' : 'static', zIndex: isPhoneCountryOpen ? 9999 : 'auto' }}>
+                  <div className={`${styles.field} ${styles.phoneCountryField}`} style={{ position: 'relative', zIndex: isPhoneCountryOpen ? 50 : 1 }}>
                     <div 
                       className={styles.phoneCountrySelect} 
                       onClick={() => setIsPhoneCountryOpen(!isPhoneCountryOpen)}
