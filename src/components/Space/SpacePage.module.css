@@ -40,22 +40,21 @@
   overflow: hidden;
 }
 
-.hero img {
-  position: absolute;
-  inset: 0;
-  filter: brightness(0.85);
-  transform: scale(1.01);
-  animation: heroMove 16s ease-in-out infinite alternate;
-}
-
-.hero video {
+.heroMedia {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  /* No filters or animations for video to preserve HD quality in Safari */
 }
+
+img.heroMedia {
+  filter: brightness(0.85);
+  transform: scale(1.01);
+  animation: heroMove 16s ease-in-out infinite alternate;
+}
+
+/* No filter or animation on video.heroMedia to preserve native quality on Safari */
 
 @keyframes heroMove {
   to { transform: scale(1.03); }

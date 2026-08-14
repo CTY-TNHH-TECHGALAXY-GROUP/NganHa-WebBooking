@@ -75,9 +75,19 @@ export default function SpacePage() {
 
   const MediaRenderer = ({ mediaObj, className, alt }: { mediaObj: {src: string, type: string}, className?: string, alt?: string }) => {
     if (mediaObj.type === 'video') {
-      return <video src={mediaObj.src} className={className} autoPlay muted loop playsInline />;
+      return (
+        <video 
+          src={mediaObj.src} 
+          className={className} 
+          autoPlay 
+          muted 
+          loop 
+          playsInline 
+          style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+        />
+      );
     }
-    return <img src={mediaObj.src} alt={alt || ""} className={className} loading="lazy" />;
+    return <img src={mediaObj.src} alt={alt || ""} className={className} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />;
   };
 
   useEffect(() => {
@@ -148,7 +158,7 @@ export default function SpacePage() {
       </div>
 
       <section className={styles.hero} id="hero">
-        <MediaRenderer mediaObj={getMedia('hero', defaultMedia.hero)} alt="Oria Spa"  />
+        <MediaRenderer mediaObj={getMedia('hero', defaultMedia.hero)} alt="Oria Spa" className={styles.heroMedia} />
         <div className={styles.heroCopy}>
           <h1>Space,<br/><em>felt slowly.</em></h1>
           <div className={styles.heroSide}>
