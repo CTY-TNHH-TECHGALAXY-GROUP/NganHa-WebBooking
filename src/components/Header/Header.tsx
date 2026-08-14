@@ -73,10 +73,10 @@ const DEFAULT_NAV_ITEMS: NavItem[] = [
       { id: 'academy_certification', label: 'Certification', href: '/academy/certification' },
     ],
   },
-  { id: 'local_tour', label: 'Local tour', href: '/#local-tour', col: 'right' },
+  { id: 'local_tour', label: 'Local tour', href: '/local-tour', col: 'right' },
   { id: 'history', label: 'History', href: '/#history', col: 'right' },
   { id: 'privileges', label: 'Your privileges', href: '/privileges', col: 'left' },
-  { id: 'blogs', label: 'Blogs', href: '/blog.html', target: '_blank', col: 'right' },
+  { id: 'blogs', label: 'Blogs', href: '/blogs', target: '_blank', col: 'right' },
 ];
 
 const CART_COPY = {
@@ -112,10 +112,10 @@ const Header = () => {
   const [activeBrandIndex, setActiveBrandIndex] = useState(0);
 
   const BRANDS = useMemo(() => [
-    { name: 'Oria Spa', location: 'Ho Chi Minh' },
-    { name: 'Oria Home', location: 'Ho Chi Minh' },
-    { name: 'Oria Farm', sub: 'Store', location: 'Ho Chi Minh' },
-    { name: 'Oria Farm', sub: 'Retreat', location: 'Dong Nai' }
+    { name: 'Oria Spa', location: 'Ho Chi Minh', href: '/' },
+    { name: 'Oria Home', location: 'Ho Chi Minh', href: '/oriahome' },
+    { name: 'Oria Farm', sub: 'Store', location: 'Ho Chi Minh', href: '/oriafarm-store' },
+    { name: 'Oria Farm', sub: 'Retreat', location: 'Dong Nai', href: '/oriafarm-retreat' }
   ], []);
 
   const nextBrand = () => {
@@ -178,10 +178,10 @@ const Header = () => {
           { id: 'academy_certification', label: getLocalizedText(hpNav?.certification, lang, 'Certification'), href: '/academy/certification' },
         ],
       },
-      { id: 'local_tour', label: getLocalizedText(hpNav?.localTour, lang, 'Local tour'), href: '/#local-tour', col: 'right' },
+      { id: 'local_tour', label: getLocalizedText(hpNav?.localTour, lang, 'Local tour'), href: '/local-tour', col: 'right' },
       { id: 'history', label: getLocalizedText(hpNav?.history, lang, 'History'), href: '/#history', col: 'right' },
       { id: 'privileges', label: getLocalizedText(hpNav?.privileges, lang, 'Your privileges'), href: '/privileges', col: 'left' },
-      { id: 'blogs', label: getLocalizedText(hpNav?.blogs, lang, 'Blogs'), href: '/blog.html', target: '_blank', col: 'right' },
+      { id: 'blogs', label: getLocalizedText(hpNav?.blogs, lang, 'Blogs'), href: '/blogs', target: '_blank', col: 'right' },
     ] as NavItem[];
   }, [hpNav, lang, getLocalizedText]);
 
@@ -462,17 +462,19 @@ const Header = () => {
                         const brand = BRANDS[index];
                         const isFaded = offset === 3;
                         return (
-                          <div 
-                            className="nav-brand-item" 
+                          <Link 
+                            href={brand.href}
+                            className="nav-brand-item block cursor-pointer" 
                             key={`${brand.name}-${index}`}
                             style={{ opacity: isFaded ? 0.35 : 1, transition: 'opacity 0.3s' }}
+                            onClick={() => { if(isMobileMenuOpen) toggleMobileMenu(); }}
                           >
-                            <h4 className="nav-brand-name">
+                            <h4 className="nav-brand-name hover:text-[#D4AF37] transition-colors">
                               {brand.name}
                               {brand.sub && <><br/>{brand.sub}</>}
                             </h4>
                             <p className="text-[#f7ebc7]/60 text-xs tracking-[0.15em] uppercase mt-2 font-light">{brand.location}</p>
-                          </div>
+                          </Link>
                         );
                       })}
 
