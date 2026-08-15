@@ -151,7 +151,9 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
     body2: 'Trong lúc đôi chân được massage, một túi chườm thảo dược ấm được đặt nhẹ tại vùng cổ – vai. Hơi ấm từ túi chườm lan dần quanh vùng cổ, tạo cảm giác được bao bọc và thư giãn đồng thời ở cả hai đầu cơ thể: đôi chân phía dưới được chăm sóc bằng thảo dược và đôi tay người thợ, trong khi vùng cổ – vai phía trên được giữ ấm nhẹ nhàng.',
     body3: 'Từ ngâm chân thảo mộc, tẩy tế bào chết bằng nguyên liệu kết hợp thảo dược, túi chườm cổ ấm đến từng thao tác massage thủ công, mỗi bước đều được kết nối để tạo nên một trải nghiệm chăm sóc trọn vẹn hơn cho đôi chân và toàn bộ cơ thể.',
     chips: [] as string[],
-    closing: 'Bắt đầu từ làn nước thảo mộc ấm, tiếp nối bằng sự chăm sóc trên từng vùng da, lan lên hơi ấm nơi cổ – vai và hoàn thiện bằng đôi tay người thợ.'
+    closing: 'Bắt đầu từ làn nước thảo mộc ấm, tiếp nối bằng sự chăm sóc trên từng vùng da, lan lên hơi ấm nơi cổ – vai và hoàn thiện bằng đôi tay người thợ.',
+    panelTitle: '',
+    points: [] as any[]
   } : {
     eyebrow: 'Foot Massage Perspective',
     headline: 'Foot Massage – Relaxation begins at the feet',
@@ -161,7 +163,9 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
     body2: 'While the feet are being massaged, a warm herbal pack is gently placed on the neck and shoulders. The warmth spreads around the neck, creating a sense of being enveloped and relaxed at both ends of the body: the feet below are cared for with herbs and therapist’s hands, while the neck and shoulders above are gently kept warm.',
     body3: 'From the herbal foot soak, exfoliation with herbal ingredients, and warm neck pack to each manual massage technique, every step is connected to create a more complete care experience for the feet and the whole body.',
     chips: [] as string[],
-    closing: 'Starting with warm herbal water, followed by care for each skin area, spreading warmth to the neck and shoulders, and completed by the therapist’s hands.'
+    closing: 'Starting with warm herbal water, followed by care for each skin area, spreading warmth to the neck and shoulders, and completed by the therapist’s hands.',
+    panelTitle: '',
+    points: [] as any[]
   };
 
   const earCleanContent = currentLang === 'vi' ? {
@@ -173,7 +177,9 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
     body2: 'Mỗi thao tác đều tạo nên một trải nghiệm riêng, đủ nhẹ nhàng để cơ thể thả lỏng nhưng cũng đủ đặc biệt để khách cảm thấy thích thú và muốn khám phá từng cảm giác đang diễn ra.',
     body3: 'Nhiều khách hàng đến với Oria Spa mà không thực sự biết bên trong tai mình đang ở trạng thái như thế nào. Chỉ khi trải nghiệm ráy tai và từng phần được làm sạch một cách nhẹ nhàng, khách mới bắt đầu cảm nhận rõ sự khác biệt.',
     chips: [] as string[],
-    closing: 'Sau khi liệu trình kết thúc, cảm giác còn lại không chỉ là đôi tai sạch sẽ và thông thoáng hơn, mà còn là sự nhẹ nhõm, dễ chịu và thoải mái rất đặc trưng như vừa giải phóng một cảm giác nặng nề nhỏ mà trước đó chính mình cũng không nhận ra.'
+    closing: 'Sau khi liệu trình kết thúc, cảm giác còn lại không chỉ là đôi tai sạch sẽ và thông thoáng hơn, mà còn là sự nhẹ nhõm, dễ chịu và thoải mái rất đặc trưng như vừa giải phóng một cảm giác nặng nề nhỏ mà trước đó chính mình cũng không nhận ra.',
+    panelTitle: '',
+    points: [] as any[]
   } : {
     eyebrow: 'Ear Clean Perspective',
     headline: 'Ear Cleaning at Oria Spa – Relaxing, interesting, and full of novel sensations',
@@ -183,7 +189,9 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
     body2: 'Each technique creates its own experience, gentle enough for the body to relax but special enough for guests to feel intrigued and want to explore every unfolding sensation.',
     body3: 'Many guests come to Oria Spa without truly knowing the condition inside their ears. Only when experiencing ear cleaning and having each part gently cleansed do they begin to clearly feel the difference.',
     chips: [] as string[],
-    closing: 'After the treatment concludes, the lingering feeling is not just of cleaner, clearer ears, but a very distinct lightness, ease, and comfort—like releasing a small, heavy burden that they hadn\'t even realized was there.'
+    closing: 'After the treatment concludes, the lingering feeling is not just of cleaner, clearer ears, but a very distinct lightness, ease, and comfort—like releasing a small, heavy burden that they hadn\'t even realized was there.',
+    panelTitle: '',
+    points: [] as any[]
   };
 
   const barberContent = currentLang === 'vi' ? {
@@ -195,7 +203,9 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
     body2: 'Các dịch vụ được sắp xếp theo hướng thực tế và tiện lợi, tập trung vào những điều nam giới thường cần trong cuộc sống hằng ngày từ mái tóc gọn gàng, khuôn mặt sạch sẽ, diện mạo chỉn chu đến những phút thư giãn sau công việc.',
     body3: 'Thay vì phải lựa chọn từng dịch vụ riêng lẻ, khách có thể chọn một gói phù hợp để chăm sóc diện mạo và thư giãn trong cùng một khoảng thời gian.',
     chips: [] as string[],
-    closing: ''
+    closing: '',
+    panelTitle: '',
+    points: [] as any[]
   } : {
     eyebrow: 'Barber Perspective',
     headline: 'Barber – Exclusive care for gentlemen',
@@ -205,7 +215,9 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
     body2: 'These services are arranged for practicality and convenience, focusing on what men often need in their daily lives—from neat hair and a clean face to a polished appearance and moments of relaxation after work.',
     body3: 'Instead of selecting individual services, guests can choose a suitable package to care for their appearance and unwind all at the same time.',
     chips: [] as string[],
-    closing: ''
+    closing: '',
+    panelTitle: '',
+    points: [] as any[]
   };
 
   const packagesContent = currentLang === 'vi' ? {
@@ -217,7 +229,9 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
     body2: 'Các dịch vụ trong từng package được sắp xếp theo trình tự phù hợp để cảm giác thư giãn được tiếp nối từ bước này sang bước khác. Từ việc làm dịu cơ thể, chăm sóc những vùng thường xuyên chịu áp lực đến những khoảng thời gian nhẹ nhàng dành cho da, tóc và giác quan, mỗi phần đều góp vào một trải nghiệm hoàn chỉnh hơn.',
     body3: 'Thay vì chỉ tập trung vào một nhu cầu, Packages hướng đến việc chăm sóc nhiều khía cạnh của cơ thể và cảm xúc trong cùng một khoảng thời gian — phù hợp cho những ngày khách muốn nghỉ ngơi lâu hơn, muốn trải nghiệm nhiều dịch vụ hơn hoặc đơn giản là dành cho mình một khoảng thời gian trọn vẹn.',
     chips: [] as string[],
-    closing: ''
+    closing: '',
+    panelTitle: '',
+    points: [] as any[]
   } : {
     eyebrow: 'Packages Perspective',
     headline: 'Packages – Multiple experiences in one journey of care',
@@ -227,7 +241,9 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
     body2: 'The services within each package are arranged in a suitable sequence so that the feeling of relaxation flows seamlessly from one step to the next. From soothing the body and tending to areas under frequent pressure, to gentle moments dedicated to the skin, hair, and senses—each part contributes to a more complete experience.',
     body3: 'Instead of focusing on just one need, Packages aim to care for multiple aspects of the body and emotions simultaneously—ideal for days when guests want to rest longer, experience more services, or simply dedicate uninterrupted time to themselves.',
     chips: [] as string[],
-    closing: ''
+    closing: '',
+    panelTitle: '',
+    points: [] as any[]
   };
 
   const sectionContent = section.id === 'foot-care' ? footCareContent : 
