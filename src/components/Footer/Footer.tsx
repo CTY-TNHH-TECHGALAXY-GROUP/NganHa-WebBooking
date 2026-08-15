@@ -4,15 +4,15 @@ import React from 'react';
 import { useSystemSettings } from '@/components/SystemSettingsProvider';
 import { useTranslation } from '@/components/TranslationProvider';
 import SmartLogo from '@/components/SmartLogo';
-import { Lightbulb, Star, Rocket, ThumbsUp, Handshake, Users } from 'lucide-react';
+import { HeartHandshake, Leaf, HeartPulse, Sparkles, Globe, ShieldCheck } from 'lucide-react';
 
 const CORE_VALUES = [
-  { icon: Lightbulb, title: 'Innovation And Creativity' },
-  { icon: Star, title: 'Guest-Centric Excellence' },
-  { icon: Rocket, title: 'Adaptability And Flexibility' },
-  { icon: ThumbsUp, title: 'Authenticity And Transparency' },
-  { icon: Handshake, title: 'Collaborative Family Spirit' },
-  { icon: Users, title: 'Inclusivity And Diversity' },
+  { icon: HeartHandshake, titleVi: 'TẬN TÂM PHỤNG SỰ', titleEn: 'Guest-Centric Excellence' },
+  { icon: Leaf, titleVi: 'THUẦN THIÊN NHIÊN', titleEn: 'Natural Authenticity' },
+  { icon: HeartPulse, titleVi: 'LẮNG NGHE & THẤU HIỂU', titleEn: 'Empathetic Understanding' },
+  { icon: Sparkles, titleVi: 'BÀN TAY NGHỆ NHÂN', titleEn: "Artisan's Touch" },
+  { icon: Globe, titleVi: 'HỘI NHẬP & SÁNG TẠO', titleEn: 'Global Essence & Creative Fusion' },
+  { icon: ShieldCheck, titleVi: 'SẠCH KHỎE ĐỒNG HÀNH', titleEn: 'Hygiene & Health Priority' },
 ];
 
 const Footer = () => {
@@ -35,22 +35,27 @@ const Footer = () => {
   return (
     <footer id="footer" className="bg-[rgba(40,27,21,1)] text-[#f7ebc7] relative z-10">
       {/* Core Values Section */}
-      <div className="py-24 px-6 border-b border-[rgba(212,175,55,0.15)] bg-[#1e140f]">
+      <div className="py-24 px-6 border-b border-[rgba(244,235,225,0.1)] bg-[#4A3B32]">
         <div className="max-w-6xl mx-auto">
-          <h2 className="font-serif text-3xl md:text-4xl text-center text-[#D4AF37] mb-16 tracking-widest uppercase">
-            Our Core Values
+          <h2 className="font-serif text-3xl md:text-4xl text-center text-[#F4EBE1] mb-16 tracking-wide">
+            Giá Trị Cốt Lõi Của Oria Spa | Oria Spa Core Values
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-16 gap-x-8 text-center">
             {CORE_VALUES.map((value, index) => {
               const Icon = value.icon;
               return (
-                <div key={index} className="flex flex-col items-center gap-6">
-                  <div className="w-24 h-24 rounded-full border border-[rgba(212,175,55,0.3)] flex items-center justify-center bg-[rgba(212,175,55,0.02)] hover:bg-[rgba(212,175,55,0.1)] transition-colors duration-300">
-                    <Icon size={44} className="text-[#D4AF37]" strokeWidth={1.2} />
+                <div key={index} className="flex flex-col items-center gap-5">
+                  <div className="w-24 h-24 rounded-full flex items-center justify-center transition-transform hover:scale-105 duration-300">
+                    <Icon size={56} className="text-[#F4EBE1]" strokeWidth={1.2} />
                   </div>
-                  <h3 className="font-sans text-lg tracking-wider text-[#f7ebc7] font-light uppercase max-w-[200px]">
-                    {value.title}
-                  </h3>
+                  <div className="flex flex-col gap-1">
+                    <h3 className="font-sans text-lg md:text-xl font-medium tracking-wide text-[#F4EBE1] uppercase">
+                      {value.titleVi}
+                    </h3>
+                    <p className="font-serif text-base text-[#E5DFD3] italic opacity-90">
+                      {value.titleEn}
+                    </p>
+                  </div>
                 </div>
               );
             })}
