@@ -115,6 +115,7 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
     quote: '“Máy móc có thể tạo ra chuyển động. Đôi tay con người tạo nên sự cảm nhận.”',
     body1: 'Body Massage thủ công mang đến trải nghiệm thư giãn theo cách nguyên bản nhất — bằng chính đôi tay của người thợ. Qua từng vùng cơ căng cứng, từng phản ứng nhỏ và mức độ chịu lực khác nhau, lực ấn, tốc độ và nhịp điệu được điều chỉnh liên tục để phù hợp với từng cơ thể tại từng thời điểm.',
     body2: 'Vì thế, massage thủ công không chỉ là một chuỗi động tác. Đó là sự tương tác giữa con người với con người — nơi kỹ thuật, kinh nghiệm và sự cảm nhận cùng tạo nên một trải nghiệm mang tính cá nhân mà máy móc khó có thể thay thế hoàn toàn.',
+    body3: '',
     chips: ['Human sensing', 'Adaptive pressure', 'Personal rhythm', 'Emotional relief'],
     closing: 'Một đôi tay. Một khoảng lặng. Một hành trình để cơ thể và tâm trí trở về trạng thái cân bằng.',
     panelTitle: 'Why it feels special',
@@ -130,6 +131,7 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
     quote: '“Machines create motion. Human hands create sensation.”',
     body1: 'Manual body massage offers relaxation in its most authentic form—through the hands of a therapist. Through every tight muscle, every small reaction, and varying levels of pressure tolerance, the applied force, speed, and rhythm are continuously adjusted to suit each unique body at any given moment.',
     body2: 'Therefore, a manual massage is more than just a sequence of movements. It is a human-to-human interaction—where technique, experience, and feeling combine to create a deeply personal experience that machines can hardly replace.',
+    body3: '',
     chips: ['Human sensing', 'Adaptive pressure', 'Personal rhythm', 'Emotional relief'],
     closing: 'A pair of hands. A moment of silence. A journey for the body and mind to return to balance.',
     panelTitle: 'Why it feels special',
@@ -139,6 +141,42 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
       { title: 'The connection of care and relaxation', desc: 'Beyond physical relief, manual massage provides a sense of being cared for, bringing deeper emotional ease and comfort.' },
     ]
   };
+
+  const footCareContent = currentLang === 'vi' ? {
+    eyebrow: 'Foot Massage Perspective',
+    headline: 'Foot Massage – Thư giãn bắt đầu từ đôi chân',
+    lead: 'Trải nghiệm Foot Massage tại OriaSpa được mở đầu bằng làn nước ấm hòa cùng hơn 12 loại thảo dược do chính OriaSpa trồng, chăm sóc và thu hoạch. Khi được hòa vào nước nóng, hơi ấm và hương thảo mộc nhẹ nhàng bao lấy đôi chân, giúp cơ thể dần thả lỏng ngay từ những phút đầu tiên.',
+    quote: '',
+    body1: 'Sau khi đôi chân được làm ấm, thảo dược tiếp tục được kết hợp trong bước làm sạch và tẩy tế bào chết bàn chân. Sự hòa quyện giữa nguyên liệu thảo mộc và thao tác chăm sóc bằng tay giúp bề mặt da trở nên mềm mại, sạch thoáng và dễ chịu hơn, đồng thời giữ lại cảm giác tự nhiên đặc trưng của liệu trình OriaSpa.',
+    body2: 'Trong lúc đôi chân được massage, một túi chườm thảo dược ấm được đặt nhẹ tại vùng cổ – vai. Hơi ấm từ túi chườm lan dần quanh vùng cổ, tạo cảm giác được bao bọc và thư giãn đồng thời ở cả hai đầu cơ thể: đôi chân phía dưới được chăm sóc bằng thảo dược và đôi tay người thợ, trong khi vùng cổ – vai phía trên được giữ ấm nhẹ nhàng.',
+    body3: 'Từ ngâm chân thảo mộc, tẩy tế bào chết bằng nguyên liệu kết hợp thảo dược, túi chườm cổ ấm đến từng thao tác massage thủ công, mỗi bước đều được kết nối để tạo nên một trải nghiệm chăm sóc trọn vẹn hơn cho đôi chân và toàn bộ cơ thể.',
+    chips: [] as string[],
+    closing: 'Bắt đầu từ làn nước thảo mộc ấm, tiếp nối bằng sự chăm sóc trên từng vùng da, lan lên hơi ấm nơi cổ – vai và hoàn thiện bằng đôi tay người thợ.',
+    panelTitle: 'OUR CORE VALUE',
+    points: [
+      { title: 'Guest-Centric Excellence', desc: 'Every ritual is arranged around the guest’s comfort, pace and preference.' },
+      { title: 'Natural Authenticity', desc: 'Wellness is expressed through grounded techniques, atmosphere and sensory care.' },
+      { title: 'Empathetic Understanding', desc: 'Thoughtful details create a deeper feeling of calm, comfort and emotional ease.' },
+    ]
+  } : {
+    eyebrow: 'Foot Massage Perspective',
+    headline: 'Foot Massage – Relaxation begins at the feet',
+    lead: 'The Foot Massage experience at OriaSpa begins with warm water blended with over 12 types of herbs grown, cared for, and harvested by OriaSpa. When mixed with hot water, the warmth and gentle herbal aroma wrap around your feet, helping the body gradually relax from the very first moments.',
+    quote: '',
+    body1: 'After warming the feet, herbs continue to be used in the cleansing and exfoliating step. The combination of herbal ingredients and manual care helps the skin surface become soft, clean, and comfortable, while maintaining the natural feel characteristic of OriaSpa treatments.',
+    body2: 'While the feet are being massaged, a warm herbal pack is gently placed on the neck and shoulders. The warmth spreads around the neck, creating a sense of being enveloped and relaxed at both ends of the body: the feet below are cared for with herbs and therapist’s hands, while the neck and shoulders above are gently kept warm.',
+    body3: 'From the herbal foot soak, exfoliation with herbal ingredients, and warm neck pack to each manual massage technique, every step is connected to create a more complete care experience for the feet and the whole body.',
+    chips: [] as string[],
+    closing: 'Starting with warm herbal water, followed by care for each skin area, spreading warmth to the neck and shoulders, and completed by the therapist’s hands.',
+    panelTitle: 'OUR CORE VALUE',
+    points: [
+      { title: 'Guest-Centric Excellence', desc: 'Every ritual is arranged around the guest’s comfort, pace and preference.' },
+      { title: 'Natural Authenticity', desc: 'Wellness is expressed through grounded techniques, atmosphere and sensory care.' },
+      { title: 'Empathetic Understanding', desc: 'Thoughtful details create a deeper feeling of calm, comfort and emotional ease.' },
+    ]
+  };
+
+  const sectionContent = section.id === 'foot-care' ? footCareContent : humanTouchContent;
 
   // Fetch dynamic services and content from admin panel
   const [dbServices, setDbServices] = useState<any[]>([]);
@@ -397,33 +435,38 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
         </div>
       </div>
 
-      {section.id === 'body-care' && (
+      {(section.id === 'body-care' || section.id === 'foot-care') && (
         <div className={styles.humanTouchSection}>
           <div className={styles.humanInner}>
             <div>
-              <span className={styles.humanEyebrow}>{humanTouchContent.eyebrow}</span>
-              <h2 className={styles.humanHeadline}>{humanTouchContent.headline}</h2>
-              <p className={styles.humanLead}>{humanTouchContent.lead}</p>
+              <span className={styles.humanEyebrow}>{sectionContent.eyebrow}</span>
+              <h2 className={styles.humanHeadline}>{sectionContent.headline}</h2>
+              <p className={styles.humanLead}>{sectionContent.lead}</p>
               
-              <div className={styles.humanQuote}>
-                {humanTouchContent.quote}
-              </div>
+              {sectionContent.quote && (
+                <div className={styles.humanQuote}>
+                  {sectionContent.quote}
+                </div>
+              )}
 
-              <p className={styles.humanBodyCopy}>{humanTouchContent.body1}</p>
-              <p className={styles.humanBodyCopy}>{humanTouchContent.body2}</p>
+              {sectionContent.body1 && <p className={styles.humanBodyCopy}>{sectionContent.body1}</p>}
+              {sectionContent.body2 && <p className={styles.humanBodyCopy}>{sectionContent.body2}</p>}
+              {sectionContent.body3 && <p className={styles.humanBodyCopy}>{sectionContent.body3}</p>}
 
-              <div className={styles.chipRow}>
-                {humanTouchContent.chips.map((chip, i) => (
-                  <span key={i} className={styles.chip}>{chip}</span>
-                ))}
-              </div>
+              {sectionContent.chips && sectionContent.chips.length > 0 && (
+                <div className={styles.chipRow}>
+                  {sectionContent.chips.map((chip, i) => (
+                    <span key={i} className={styles.chip}>{chip}</span>
+                  ))}
+                </div>
+              )}
 
-              <div className={styles.humanClosing}>{humanTouchContent.closing}</div>
+              <div className={styles.humanClosing}>{sectionContent.closing}</div>
             </div>
 
             <aside className={styles.insightPanel}>
-              <div className={styles.panelTitle}>{humanTouchContent.panelTitle}</div>
-              {humanTouchContent.points.map((point, i) => (
+              <div className={styles.panelTitle}>{sectionContent.panelTitle}</div>
+              {sectionContent.points.map((point, i) => (
                 <div key={i} className={styles.insightPoint}>
                   <h4>{point.title}</h4>
                   <p>{point.desc}</p>
