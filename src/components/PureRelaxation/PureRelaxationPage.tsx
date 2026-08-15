@@ -108,6 +108,38 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
   const router = useRouter();
   const { currentLang } = useTranslation();
 
+  const humanTouchContent = currentLang === 'vi' ? {
+    eyebrow: 'Body Massage Perspective',
+    headline: 'Khi đôi tay tạo nên sự khác biệt',
+    lead: 'Giữa nhịp sống hiện đại với công việc, màn hình và áp lực nối tiếp, đôi khi điều cơ thể cần không phải thêm một thiết bị, mà là một khoảng thời gian được chăm sóc bằng sự hiện diện thật sự của con người.',
+    quote: '“Máy móc có thể tạo ra chuyển động. Đôi tay con người tạo nên sự cảm nhận.”',
+    body1: 'Body Massage thủ công mang đến trải nghiệm thư giãn theo cách nguyên bản nhất — bằng chính đôi tay của người thợ. Qua từng vùng cơ căng cứng, từng phản ứng nhỏ và mức độ chịu lực khác nhau, lực ấn, tốc độ và nhịp điệu được điều chỉnh liên tục để phù hợp với từng cơ thể tại từng thời điểm.',
+    body2: 'Vì thế, massage thủ công không chỉ là một chuỗi động tác. Đó là sự tương tác giữa con người với con người — nơi kỹ thuật, kinh nghiệm và sự cảm nhận cùng tạo nên một trải nghiệm mang tính cá nhân mà máy móc khó có thể thay thế hoàn toàn.',
+    chips: ['Human sensing', 'Adaptive pressure', 'Personal rhythm', 'Emotional relief'],
+    closing: 'Một đôi tay. Một khoảng lặng. Một hành trình để cơ thể và tâm trí trở về trạng thái cân bằng.',
+    panelTitle: 'Why it feels special',
+    points: [
+      { title: 'Cảm nhận cơ thể', desc: 'Người thợ có thể nhận biết vùng cơ đang giữ áp lực và phản ứng theo thời gian thực để thay đổi thao tác phù hợp.' },
+      { title: 'Điều chỉnh theo từng người', desc: 'Cùng một bài massage nhưng cảm nhận của mỗi khách là khác nhau, nên trải nghiệm được cá nhân hóa nhiều hơn.' },
+      { title: 'Kết nối giữa chăm sóc và thư giãn', desc: 'Không chỉ tác động lên cơ thể, massage bằng tay còn tạo cảm giác được quan tâm, an tâm và thả lỏng sâu hơn.' },
+    ]
+  } : {
+    eyebrow: 'Body Massage Perspective',
+    headline: 'When human hands make a difference',
+    lead: 'In a modern life filled with screens, work, and endless pressure, sometimes what the body needs is not another device, but a moment cared for by a true human presence.',
+    quote: '“Machines create motion. Human hands create sensation.”',
+    body1: 'Manual body massage offers relaxation in its most authentic form—through the hands of a therapist. Through every tight muscle, every small reaction, and varying levels of pressure tolerance, the applied force, speed, and rhythm are continuously adjusted to suit each unique body at any given moment.',
+    body2: 'Therefore, a manual massage is more than just a sequence of movements. It is a human-to-human interaction—where technique, experience, and feeling combine to create a deeply personal experience that machines can hardly replace.',
+    chips: ['Human sensing', 'Adaptive pressure', 'Personal rhythm', 'Emotional relief'],
+    closing: 'A pair of hands. A moment of silence. A journey for the body and mind to return to balance.',
+    panelTitle: 'Why it feels special',
+    points: [
+      { title: 'Body sensing', desc: 'The therapist can detect which muscles are holding tension and react in real time to adjust their technique accordingly.' },
+      { title: 'Personalized adjustment', desc: "Even with the same massage routine, each guest's experience is different, making the treatment highly personalized." },
+      { title: 'The connection of care and relaxation', desc: 'Beyond physical relief, manual massage provides a sense of being cared for, bringing deeper emotional ease and comfort.' },
+    ]
+  };
+
   // Fetch dynamic services and content from admin panel
   const [dbServices, setDbServices] = useState<any[]>([]);
   useEffect(() => {
@@ -364,6 +396,43 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
           )}
         </div>
       </div>
+
+      {section.id === 'body-care' && (
+        <div className={styles.humanTouchSection}>
+          <div className={styles.humanInner}>
+            <div>
+              <span className={styles.humanEyebrow}>{humanTouchContent.eyebrow}</span>
+              <h2 className={styles.humanHeadline}>{humanTouchContent.headline}</h2>
+              <p className={styles.humanLead}>{humanTouchContent.lead}</p>
+              
+              <div className={styles.humanQuote}>
+                {humanTouchContent.quote}
+              </div>
+
+              <p className={styles.humanBodyCopy}>{humanTouchContent.body1}</p>
+              <p className={styles.humanBodyCopy}>{humanTouchContent.body2}</p>
+
+              <div className={styles.chipRow}>
+                {humanTouchContent.chips.map((chip, i) => (
+                  <span key={i} className={styles.chip}>{chip}</span>
+                ))}
+              </div>
+
+              <div className={styles.humanClosing}>{humanTouchContent.closing}</div>
+            </div>
+
+            <aside className={styles.insightPanel}>
+              <div className={styles.panelTitle}>{humanTouchContent.panelTitle}</div>
+              {humanTouchContent.points.map((point, i) => (
+                <div key={i} className={styles.insightPoint}>
+                  <h4>{point.title}</h4>
+                  <p>{point.desc}</p>
+                </div>
+              ))}
+            </aside>
+          </div>
+        </div>
+      )}
     </section>
   );
 };

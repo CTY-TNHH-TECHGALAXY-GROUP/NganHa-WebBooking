@@ -732,3 +732,151 @@
     min-height: 22.5rem;
   }
 }
+
+/* Human Touch Section */
+.humanTouchSection {
+  background: #efe9de;
+  border-top: 1px solid #e5dbce;
+  border-bottom: 1px solid #d9cebe;
+  margin-top: 2.2rem;
+  padding: 4rem 3rem;
+}
+
+.humanInner {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 3.5rem;
+  align-items: start;
+}
+
+.humanEyebrow {
+  display: inline-block;
+  font-family: var(--font-inter), Inter, sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #8c7354;
+  margin-bottom: 1rem;
+}
+
+.humanHeadline {
+  font-family: var(--font-playfair), Georgia, serif;
+  font-size: 2.8rem;
+  line-height: 1.1;
+  margin: 0 0 1.2rem;
+  color: #23160f;
+  font-weight: 500;
+}
+
+.humanLead {
+  font-family: var(--font-inter), Inter, sans-serif;
+  font-size: 1.125rem;
+  line-height: 1.8;
+  color: #4e443b;
+  margin: 0 0 1.5rem;
+}
+
+.humanQuote {
+  margin: 2rem 0 1.8rem;
+  padding-left: 1.5rem;
+  border-left: 2px solid #b89463;
+  font-family: var(--font-playfair), Georgia, serif;
+  font-size: 1.7rem;
+  line-height: 1.45;
+  color: #342318;
+  font-style: italic;
+}
+
+.humanBodyCopy {
+  font-family: var(--font-inter), Inter, sans-serif;
+  color: #655b52;
+  font-size: 1rem;
+  line-height: 1.85;
+  margin: 0 0 1rem;
+}
+
+.humanClosing {
+  font-family: var(--font-inter), Inter, sans-serif;
+  font-weight: 700;
+  font-size: 1.125rem;
+  line-height: 1.7;
+  margin-top: 1.8rem;
+  color: #21150f;
+}
+
+.insightPanel {
+  background: transparent;
+  padding: 0.5rem 0 0;
+}
+
+.panelTitle {
+  font-family: var(--font-inter), Inter, sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #8b7252;
+  margin-bottom: 1.2rem;
+}
+
+.insightPoint {
+  padding: 1.2rem 0 1.2rem;
+  border-top: 1px solid #ddd1c1;
+}
+.insightPoint:first-of-type {
+  border-top: none;
+  padding-top: 0.2rem;
+}
+
+.insightPoint h4 {
+  margin: 0 0 0.5rem;
+  font-size: 1.35rem;
+  font-family: var(--font-playfair), Georgia, serif;
+  font-weight: 500;
+  color: #23160f;
+}
+
+.insightPoint p {
+  margin: 0;
+  color: #6b6157;
+  line-height: 1.7;
+  font-size: 0.95rem;
+  font-family: var(--font-inter), Inter, sans-serif;
+}
+
+.chipRow {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin-top: 1.5rem;
+}
+
+.chip {
+  border: 1px solid #d8cbb8;
+  background: #fbf7f1;
+  color: #5f5348;
+  padding: 0.6rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 980px) {
+  .humanInner {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+  .humanTouchSection {
+    padding: 2.5rem 1.5rem;
+  }
+  .humanHeadline {
+    font-size: 2.2rem;
+  }
+  .humanQuote {
+    font-size: 1.4rem;
+  }
+}
+
