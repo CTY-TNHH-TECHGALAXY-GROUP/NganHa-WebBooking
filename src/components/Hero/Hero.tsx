@@ -181,6 +181,11 @@ const Hero = () => {
                   playsInline
                   loop={videoCount === 1}
                   onEnded={videoCount > 1 ? handleNextVideo : undefined}
+                  onError={() => {
+                    if (videoCount > 1) {
+                      setTimeout(handleNextVideo, 3000); // Wait 3s before skipping so it's not instant loop if all are broken
+                    }
+                  }}
                   style={{
                     width: '100%',
                     height: '100%',
