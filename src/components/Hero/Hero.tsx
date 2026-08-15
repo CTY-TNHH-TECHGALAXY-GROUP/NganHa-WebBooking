@@ -70,8 +70,7 @@ const Hero = () => {
           : [];
 
         if (json.success && remoteVideos.length > 0) {
-          // Limit to 1 video on the frontend, even if admin adds more
-          setHomepageVideos(remoteVideos.slice(0, 1));
+          setHomepageVideos(remoteVideos);
           const params = new URLSearchParams(window.location.search);
           const requestedVideo = Number(params.get('heroVideo'));
           const nextIndex = Number.isInteger(requestedVideo) && requestedVideo >= 0 && requestedVideo < remoteVideos.length
