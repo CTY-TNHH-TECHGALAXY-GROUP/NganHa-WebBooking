@@ -56,24 +56,31 @@ const HeroVideosAdmin = () => {
 
     setUploading(true);
     try {
-      const form = new FormData();
-      form.append('file', selectedFile);
-      form.append('folder', 'hero-videos');
+      const fileExt = selectedFile.name.split('.').pop();
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+      const filePath = `hero-videos/${fileName}`;
+      
+      const { createClient } = await import('@/lib/supabase');
+      const supabase = createClient();
+      
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('media-uploads')
+        .upload(filePath, selectedFile, { cacheControl: '3600', upsert: true });
 
-      const uploadRes = await fetch('/api/admin/media', { method: 'POST', body: form });
-      const uploadJson = await uploadRes.json();
-
-      if (!uploadJson.success) {
-        alert('Lỗi tải lên: ' + (uploadJson.error?.message || 'Không rõ'));
+      if (uploadError) {
+        alert('Lỗi tải lên (Supabase): ' + uploadError.message);
+        setUploading(false);
         return;
       }
+
+      const { data: { publicUrl } } = supabase.storage.from('media-uploads').getPublicUrl(uploadData.path);
 
       // Save video record
       const res = await fetch('/api/admin/hero-videos', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          url: uploadJson.data.url,
+          url: publicUrl,
           sort_order: videos.length + 1,
         }),
       });
