@@ -28,7 +28,7 @@ async function saveHeroVideos(data: any) {
   }
 }
 
-export const DELETE = withAuth(async (req, ctx, { params }) => {
+export const DELETE = withAuth(async (req, ctx, params) => {
   const { id } = await params;
   const current = await getHeroVideos();
   
