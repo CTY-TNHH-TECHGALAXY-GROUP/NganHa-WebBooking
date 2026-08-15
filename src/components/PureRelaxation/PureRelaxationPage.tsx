@@ -118,12 +118,8 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
     body3: 'Giữa một cuộc sống ngày càng phụ thuộc vào thiết bị và máy móc, Oria Spa lựa chọn giữ lại giá trị nguyên bản của massage sự chăm sóc trực tiếp giữa con người với con người',
     chips: [] as string[],
     closing: '100% đôi bàn tay. 100% sự cảm nhận.\nMột nghệ thuật được tạo nên từ kỹ thuật, hơi ấm và sự tinh tế của người nghệ nhân.',
-    panelTitle: 'OUR CORE VALUE',
-    points: [
-      { title: 'Guest-Centric Excellence', desc: 'Every ritual is arranged around the guest’s comfort, pace and preference.' },
-      { title: 'Natural Authenticity', desc: 'Wellness is expressed through grounded techniques, atmosphere and sensory care.' },
-      { title: 'Empathetic Understanding', desc: 'Thoughtful details create a deeper feeling of calm, comfort and emotional ease.' },
-    ]
+    panelTitle: '',
+    points: [] as any[]
   } : {
     eyebrow: 'Body Massage Perspective',
     headline: 'Body Massage – The Art of Manual Therapy at Oria Spa',
@@ -134,12 +130,8 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
     body3: 'In a world increasingly dependent on devices and machines, Oria Spa chooses to preserve the original value of massage: direct human-to-human care.',
     chips: [] as string[],
     closing: '100% human hands. 100% sensation.\nAn art created from technique, warmth, and the finesse of the artisan.',
-    panelTitle: 'OUR CORE VALUE',
-    points: [
-      { title: 'Guest-Centric Excellence', desc: 'Every ritual is arranged around the guest’s comfort, pace and preference.' },
-      { title: 'Natural Authenticity', desc: 'Wellness is expressed through grounded techniques, atmosphere and sensory care.' },
-      { title: 'Empathetic Understanding', desc: 'Thoughtful details create a deeper feeling of calm, comfort and emotional ease.' },
-    ]
+    panelTitle: '',
+    points: [] as any[]
   };
 
   const footCareContent = currentLang === 'vi' ? {
