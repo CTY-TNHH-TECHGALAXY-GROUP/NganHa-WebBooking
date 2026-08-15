@@ -45,9 +45,8 @@ const Footer = () => {
       {/* Core Values Section */}
       <div className="py-24 px-6 border-b border-[rgba(247,235,199,0.15)] bg-transparent">
         <div className="max-w-6xl mx-auto flex flex-col items-center">
-          <SmartLogo theme="dark" className="w-[160px] md:w-[180px] h-auto object-contain mb-4" />
           <h2 className="font-serif text-3xl md:text-4xl text-center text-[#f7ebc7] mb-16 tracking-wide uppercase">
-            {currentLang === 'vi' ? 'Giá Trị Cốt Lõi Của Oria Spa' : 'Oria Spa Core Values'}
+            {currentLang === 'vi' ? 'Giá Trị Cốt Lõi' : 'Our Core Value'}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-16 gap-x-8 text-center w-full">
             {CORE_VALUES.map((value, index) => {
