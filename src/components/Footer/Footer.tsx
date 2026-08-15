@@ -4,13 +4,21 @@ import React from 'react';
 import { useSystemSettings } from '@/components/SystemSettingsProvider';
 import { useTranslation } from '@/components/TranslationProvider';
 import SmartLogo from '@/components/SmartLogo';
-import { HeartHandshake, Leaf, HeartPulse, Sparkles, Globe, ShieldCheck } from 'lucide-react';
+import { HeartHandshake, Leaf, HeartPulse, Globe, ShieldCheck } from 'lucide-react';
+
+const ArtisanIcon = ({ size = 56, className = "", strokeWidth = 1.2 }: any) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <path d="M12 3C12 9 15 12 21 12C15 12 12 15 12 21C12 15 9 12 3 12C9 12 12 9 12 3Z" />
+    <circle cx="6.5" cy="17.5" r="1.5" />
+    <path d="M18 5v4M16 7h4" />
+  </svg>
+);
 
 const CORE_VALUES = [
   { icon: HeartHandshake, titleVi: 'TẬN TÂM PHỤNG SỰ', titleEn: 'Guest-Centric Excellence' },
   { icon: Leaf, titleVi: 'THUẦN THIÊN NHIÊN', titleEn: 'Natural Authenticity' },
   { icon: HeartPulse, titleVi: 'LẮNG NGHE & THẤU HIỂU', titleEn: 'Empathetic Understanding' },
-  { icon: Sparkles, titleVi: 'BÀN TAY NGHỆ NHÂN', titleEn: "Artisan's Touch" },
+  { icon: ArtisanIcon, titleVi: 'BÀN TAY NGHỆ NHÂN', titleEn: "Artisan's Touch" },
   { icon: Globe, titleVi: 'HỘI NHẬP & SÁNG TẠO', titleEn: 'Global Essence & Creative Fusion' },
   { icon: ShieldCheck, titleVi: 'SẠCH KHỎE ĐỒNG HÀNH', titleEn: 'Hygiene & Health Priority' },
 ];
@@ -35,11 +43,11 @@ const Footer = () => {
   return (
     <footer id="footer" className="bg-[rgba(40,27,21,1)] text-[#f7ebc7] relative z-10">
       {/* Core Values Section */}
-      <div className="py-24 px-6 border-b border-[rgba(247,235,199,0.15)] bg-[#4A3B32]">
+      <div className="py-24 px-6 border-b border-[rgba(247,235,199,0.15)] bg-transparent">
         <div className="max-w-6xl mx-auto flex flex-col items-center">
           <SmartLogo theme="dark" className="w-[160px] md:w-[180px] h-auto object-contain mb-4" />
-          <h2 className="font-serif text-3xl md:text-4xl text-center text-[#f7ebc7] mb-16 tracking-wide">
-            Giá Trị Cốt Lõi Của Oria Spa | Oria Spa Core Values
+          <h2 className="font-serif text-3xl md:text-4xl text-center text-[#f7ebc7] mb-16 tracking-wide uppercase">
+            {currentLang === 'vi' ? 'Giá Trị Cốt Lõi Của Oria Spa' : 'Oria Spa Core Values'}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-16 gap-x-8 text-center w-full">
             {CORE_VALUES.map((value, index) => {
@@ -49,14 +57,9 @@ const Footer = () => {
                   <div className="w-24 h-24 rounded-full flex items-center justify-center transition-transform hover:scale-105 duration-300">
                     <Icon size={56} className="text-[#f7ebc7]" strokeWidth={1.2} />
                   </div>
-                  <div className="flex flex-col gap-1">
-                    <h3 className="font-sans text-lg md:text-xl font-medium tracking-wide text-[#f7ebc7] uppercase">
-                      {value.titleVi}
-                    </h3>
-                    <p className="font-serif text-base text-[#f7ebc7] italic opacity-80">
-                      {value.titleEn}
-                    </p>
-                  </div>
+                  <h3 className="font-sans text-lg md:text-xl font-medium tracking-wide text-[#f7ebc7] uppercase">
+                    {currentLang === 'vi' ? value.titleVi : value.titleEn}
+                  </h3>
                 </div>
               );
             })}
