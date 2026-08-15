@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { ArrowLeft, Upload, Trash2, Video, Play, CheckCircle } from 'lucide-react';
+import { ArrowLeft, Upload, Trash2, Video, Play, CheckCircle, Link as LinkIcon } from 'lucide-react';
 import Link from 'next/link';
 
 // 🔧 UI CONFIGURATION
@@ -12,9 +12,16 @@ const HeroVideosAdmin = () => {
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
+  
+  const [activeTab, setActiveTab] = useState<'upload' | 'link'>('upload');
+  
+  // Upload State
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  // Link State
+  const [linkUrl, setLinkUrl] = useState('');
 
   useEffect(() => {
     fetchVideos();
@@ -26,7 +33,6 @@ const HeroVideosAdmin = () => {
       const json = await res.json();
       if (json.success) setVideos(json.data || []);
     } catch {
-      // API might not exist yet - that's OK, we show empty state
       setVideos([]);
     } finally {
       setLoading(false);
@@ -51,36 +57,13 @@ const HeroVideosAdmin = () => {
     setPreviewUrl(URL.createObjectURL(file));
   };
 
-  const handleUpload = async () => {
-    if (!selectedFile) return;
-
-    setUploading(true);
+  const handleAddVideo = async (urlToSave: string) => {
     try {
-      const fileExt = selectedFile.name.split('.').pop();
-      const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
-      const filePath = `hero-videos/${fileName}`;
-      
-      const { createClient } = await import('@/lib/supabase');
-      const supabase = createClient();
-      
-      const { data: uploadData, error: uploadError } = await supabase.storage
-        .from('media-uploads')
-        .upload(filePath, selectedFile, { cacheControl: '3600', upsert: true });
-
-      if (uploadError) {
-        alert('Lỗi tải lên (Supabase): ' + uploadError.message);
-        setUploading(false);
-        return;
-      }
-
-      const { data: { publicUrl } } = supabase.storage.from('media-uploads').getPublicUrl(uploadData.path);
-
-      // Save video record
       const res = await fetch('/api/admin/hero-videos', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          url: publicUrl,
+          url: urlToSave,
           sort_order: videos.length + 1,
         }),
       });
@@ -88,13 +71,53 @@ const HeroVideosAdmin = () => {
       if (res.ok) {
         setSelectedFile(null);
         setPreviewUrl(null);
+        setLinkUrl('');
         setSuccessMessage('✅ Đã thêm video trang chủ thành công!');
         setTimeout(() => setSuccessMessage(''), 4000);
         fetchVideos();
       }
     } catch {
-      alert('Lỗi hệ thống');
-    } finally {
+      alert('Lỗi hệ thống khi lưu data');
+    }
+  };
+
+  const handleUpload = async () => {
+    if (activeTab === 'upload') {
+      if (!selectedFile) return;
+
+      setUploading(true);
+      try {
+        const fileExt = selectedFile.name.split('.').pop();
+        const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+        const filePath = `hero-videos/${fileName}`;
+        
+        const { createClient } = await import('@/lib/supabase');
+        const supabase = createClient();
+        
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from('media-uploads')
+          .upload(filePath, selectedFile, { cacheControl: '3600', upsert: true });
+
+        if (uploadError) {
+          alert('Lỗi tải lên (Supabase): ' + uploadError.message);
+          setUploading(false);
+          return;
+        }
+
+        const { data: { publicUrl } } = supabase.storage.from('media-uploads').getPublicUrl(uploadData.path);
+        await handleAddVideo(publicUrl);
+      } catch {
+        alert('Lỗi hệ thống');
+      } finally {
+        setUploading(false);
+      }
+    } else {
+      if (!linkUrl.trim()) {
+        alert('Vui lòng nhập đường link video!');
+        return;
+      }
+      setUploading(true);
+      await handleAddVideo(linkUrl.trim());
       setUploading(false);
     }
   };
@@ -130,52 +153,99 @@ const HeroVideosAdmin = () => {
 
       {/* Upload Area */}
       <div className="bg-admin-panel border border-admin-line rounded-2xl p-6 mb-8 shadow-[var(--shadow)]">
-        <h2 className="text-lg font-semibold text-admin-text mb-4 flex items-center gap-2">
-          <Upload size={18} className="text-admin-gold" /> Tải lên video mới
-        </h2>
-
-        <div
-          onClick={() => fileInputRef.current?.click()}
-          className={`
-            cursor-pointer border-2 border-dashed rounded-2xl
-            flex flex-col items-center justify-center min-h-[200px]
-            transition-all duration-200
-            ${previewUrl
-              ? 'border-admin-gold bg-admin-gold-dim p-4'
-              : 'border-admin-line-strong bg-admin-panel-2 hover:border-admin-gold hover:bg-admin-gold-dim p-8 text-admin-text-dim'
-            }
-          `}
-        >
-          {previewUrl ? (
-            <div className="w-full">
-              <video src={previewUrl} controls className="w-full max-h-[300px] rounded-xl mx-auto" />
-              <p className="text-center text-xs text-admin-text-dim mt-3">Nhấn để chọn video khác</p>
-            </div>
-          ) : (
-            <>
-              <Video size={40} className="text-admin-text-faint mb-4" />
-              <p className="text-base text-admin-text-dim text-center">
-                <strong className="text-admin-text">Nhấn vào đây</strong> để chọn video
-              </p>
-              <p className="text-[12px] text-admin-text-faint mt-2">MP4, MOV — tối đa {MAX_VIDEO_SIZE_MB}MB</p>
-              <p className="text-[12px] text-admin-text-faint mt-1">Nên dùng video ngang (16:9) cho đẹp nhất</p>
-            </>
-          )}
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="video/*"
-            onChange={handleFileSelect}
-            className="hidden"
-          />
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4 border-b border-admin-line pb-4">
+          <h2 className="text-lg font-semibold text-admin-text">Thêm video mới</h2>
+          
+          <div className="flex bg-admin-panel-2 p-1 rounded-xl border border-admin-line">
+            <button
+              onClick={() => setActiveTab('upload')}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                activeTab === 'upload' 
+                  ? 'bg-admin-gold text-[#241804] shadow-sm' 
+                  : 'text-admin-text-dim hover:text-admin-text'
+              }`}
+            >
+              <Upload size={16} /> Tải lên từ máy
+            </button>
+            <button
+              onClick={() => setActiveTab('link')}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                activeTab === 'link' 
+                  ? 'bg-admin-gold text-[#241804] shadow-sm' 
+                  : 'text-admin-text-dim hover:text-admin-text'
+              }`}
+            >
+              <LinkIcon size={16} /> Nhập link có sẵn
+            </button>
+          </div>
         </div>
 
-        {selectedFile && (
+        {activeTab === 'upload' ? (
+          <div
+            onClick={() => fileInputRef.current?.click()}
+            className={`
+              cursor-pointer border-2 border-dashed rounded-2xl
+              flex flex-col items-center justify-center min-h-[200px]
+              transition-all duration-200
+              ${previewUrl
+                ? 'border-admin-gold bg-admin-gold-dim p-4'
+                : 'border-admin-line-strong bg-admin-panel-2 hover:border-admin-gold hover:bg-admin-gold-dim p-8 text-admin-text-dim'
+              }
+            `}
+          >
+            {previewUrl ? (
+              <div className="w-full">
+                <video src={previewUrl} controls className="w-full max-h-[300px] rounded-xl mx-auto" />
+                <p className="text-center text-xs text-admin-text-dim mt-3">Nhấn để chọn video khác</p>
+              </div>
+            ) : (
+              <>
+                <Video size={40} className="text-admin-text-faint mb-4" />
+                <p className="text-base text-admin-text-dim text-center">
+                  <strong className="text-admin-text">Nhấn vào đây</strong> để chọn video
+                </p>
+                <p className="text-[12px] text-admin-text-faint mt-2">MP4, MOV — tối đa {MAX_VIDEO_SIZE_MB}MB</p>
+                <p className="text-[12px] text-admin-text-faint mt-1">Nên dùng video ngang (16:9) cho đẹp nhất</p>
+              </>
+            )}
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="video/*"
+              onChange={handleFileSelect}
+              className="hidden"
+            />
+          </div>
+        ) : (
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-semibold text-admin-text mb-2">Đường link video (URL)</label>
+              <input
+                type="text"
+                placeholder="VD: https://vd-zndz.supabase.co/storage/v1/object/public/media-uploads/hero.mp4"
+                value={linkUrl}
+                onChange={(e) => setLinkUrl(e.target.value)}
+                className="w-full px-4 py-3 bg-admin-panel-2 border border-admin-line rounded-xl text-admin-text focus:border-admin-gold focus:ring-1 focus:ring-admin-gold outline-none transition-all"
+              />
+              <p className="text-xs text-admin-text-dim mt-2">
+                Dán đường link public từ kho Supabase, Google Drive (nhớ mở quyền truy cập), hoặc một kho chứa bất kỳ. Link cần có đuôi .mp4
+              </p>
+            </div>
+            
+            {linkUrl && (
+              <div className="mt-4 p-4 rounded-xl border border-admin-line bg-black/5 flex justify-center">
+                <video src={linkUrl} controls className="max-h-[300px] rounded-lg shadow-sm" />
+              </div>
+            )}
+          </div>
+        )}
+
+        {(selectedFile || linkUrl) && (
           <button
             onClick={handleUpload}
             disabled={uploading}
             className={`
-              w-full mt-4 py-3.5 rounded-xl font-semibold text-base
+              w-full mt-6 py-3.5 rounded-xl font-semibold text-base
               transition-all duration-200 shadow-sm
               ${uploading
                 ? 'bg-admin-line text-admin-text-faint cursor-wait border border-admin-line-strong'
@@ -183,7 +253,7 @@ const HeroVideosAdmin = () => {
               }
             `}
           >
-            {uploading ? '⏳ Đang tải lên... (có thể mất vài phút)' : '✅ Tải video lên trang chủ'}
+            {uploading ? '⏳ Đang xử lý...' : '✅ Thêm video lên trang chủ'}
           </button>
         )}
       </div>
@@ -201,7 +271,7 @@ const HeroVideosAdmin = () => {
             <Video size={40} className="mx-auto mb-3 text-admin-text-faint" />
             <p className="text-admin-text-dim mb-1 font-semibold">Chưa có video nào.</p>
             <p className="text-admin-text-faint text-sm">Website đang dùng video mặc định trong code.</p>
-            <p className="text-admin-text-faint text-sm">Tải lên video ở trên để thay thế.</p>
+            <p className="text-admin-text-faint text-sm">Thêm video ở trên để thay thế.</p>
           </div>
         ) : (
           <div className="space-y-4">
