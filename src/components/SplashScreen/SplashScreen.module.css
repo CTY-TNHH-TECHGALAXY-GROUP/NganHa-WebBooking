@@ -27,8 +27,6 @@
   height: auto;
   object-fit: contain;
   margin-bottom: 24px;
-  /* Invert white bg to black, black text to white, then add sepia for creamy tint */
-  filter: invert(1) sepia(0.25) hue-rotate(350deg) brightness(0.95);
 }
 
 @keyframes pulseLogo {

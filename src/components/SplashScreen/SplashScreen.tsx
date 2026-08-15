@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import styles from './SplashScreen.module.css';
+import SmartLogo from '@/components/SmartLogo';
 
 const SplashScreen = () => {
   const [isVisible, setIsVisible] = useState(true);
@@ -34,10 +35,8 @@ const SplashScreen = () => {
   return (
     <div className={`${styles.splashContainer} ${isFadingOut ? styles.fadeOut : ''}`}>
       <div className={styles.logoWrapper}>
-        {/* We'll use the existing logo in images directory */}
-        <img 
-          src="/images/logo_fixed_slogan.png" 
-          alt="Oria Spa Logo" 
+        <SmartLogo 
+          theme="dark" 
           className={styles.logo}
         />
       </div>
