@@ -12,18 +12,18 @@ export async function GET() {
   try {
     const supabase = getSupabaseAdmin();
     const { data, error } = await supabase
-      .from('hero_videos')
-      .select('*')
-      .eq('is_active', true)
-      .order('sort_order', { ascending: true });
+      .from('SystemConfigs')
+      .select('value')
+      .eq('key', 'hero_videos')
+      .single();
 
-    if (error) throw error;
+    if (error && error.code !== 'PGRST116') throw error; // PGRST116 is not found
 
-    if (!data || data.length === 0) {
+    if (!data || !data.value || data.value.length === 0) {
       return apiResponse.success(DEFAULT_VIDEOS);
     }
 
-    return apiResponse.success(data);
+    return apiResponse.success(data.value);
   } catch (error: any) {
     console.error('Error fetching hero videos:', error);
     // Fallback to default if DB fails
