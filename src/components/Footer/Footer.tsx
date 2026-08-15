@@ -15,11 +15,11 @@ const ArtisanIcon = ({ size = 56, className = "", strokeWidth = 1.2 }: any) => (
 );
 
 const CORE_VALUES = [
-  { icon: HeartHandshake, titleVi: 'TẬN TÂM PHỤNG SỰ', titleEn: 'Guest-Centric Excellence' },
-  { icon: Leaf, titleVi: 'THUẦN THIÊN NHIÊN', titleEn: 'Natural Authenticity' },
+  { icon: null, imgSrc: '/images/core-values/guest-centric.png', titleVi: 'TẬN TÂM PHỤNG SỰ', titleEn: 'Guest-Centric Excellence' },
+  { icon: null, imgSrc: '/images/core-values/natural-authenticity.png', titleVi: 'THUẦN THIÊN NHIÊN', titleEn: 'Natural Authenticity' },
   { icon: HeartPulse, titleVi: 'LẮNG NGHE & THẤU HIỂU', titleEn: 'Empathetic Understanding' },
-  { icon: ArtisanIcon, titleVi: 'BÀN TAY NGHỆ NHÂN', titleEn: "Artisan's Touch" },
-  { icon: Globe, titleVi: 'HỘI NHẬP & SÁNG TẠO', titleEn: 'Global Essence & Creative Fusion' },
+  { icon: null, imgSrc: '/images/core-values/artisans-touch.png', titleVi: 'BÀN TAY NGHỆ NHÂN', titleEn: "Artisan's Touch" },
+  { icon: null, imgSrc: '/images/core-values/global-essence.png', titleVi: 'HỘI NHẬP & SÁNG TẠO', titleEn: 'Global Essence & Creative Fusion' },
   { icon: ShieldCheck, titleVi: 'SẠCH KHỎE ĐỒNG HÀNH', titleEn: 'Hygiene & Health Priority' },
 ];
 
@@ -55,7 +55,19 @@ const Footer = () => {
               return (
                 <div key={index} className="flex flex-col items-center gap-5">
                   <div className="w-24 h-24 rounded-full flex items-center justify-center transition-transform hover:scale-105 duration-300">
-                    <Icon size={56} className="text-[#f7ebc7]" strokeWidth={1.2} />
+                    {value.imgSrc ? (
+                      <img 
+                        src={value.imgSrc} 
+                        alt={value.titleEn} 
+                        className="w-16 h-16 md:w-20 md:h-20 object-contain"
+                        style={{
+                          filter: 'invert(93%) sepia(21%) saturate(579%) hue-rotate(334deg) brightness(101%) contrast(97%)',
+                          mixBlendMode: 'screen'
+                        }}
+                      />
+                    ) : (
+                      Icon && <Icon size={56} className="text-[#f7ebc7]" strokeWidth={1.2} />
+                    )}
                   </div>
                   <h3 className="font-sans text-lg md:text-xl font-medium tracking-wide text-[#f7ebc7] uppercase">
                     {currentLang === 'vi' ? value.titleVi : value.titleEn}
