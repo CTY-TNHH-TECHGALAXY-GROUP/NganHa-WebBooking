@@ -183,11 +183,58 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
     body2: 'Each technique creates its own experience, gentle enough for the body to relax but special enough for guests to feel intrigued and want to explore every unfolding sensation.',
     body3: 'Many guests come to Oria Spa without truly knowing the condition inside their ears. Only when experiencing ear cleaning and having each part gently cleansed do they begin to clearly feel the difference.',
     chips: [] as string[],
+    chips: [] as string[],
     closing: 'After the treatment concludes, the lingering feeling is not just of cleaner, clearer ears, but a very distinct lightness, ease, and comfort—like releasing a small, heavy burden that they hadn\'t even realized was there.'
+  };
+
+  const barberContent = currentLang === 'vi' ? {
+    eyebrow: 'Barber Perspective',
+    headline: 'Barber – Chăm sóc dành riêng cho quý ông',
+    lead: 'Barber tại Oria Spa được thiết kế dành riêng cho nam giới, với cắt tóc là một lựa chọn riêng biệt dành cho những khách hàng muốn chỉnh sửa kiểu tóc, làm mới diện mạo hoặc đơn giản là giữ mái tóc luôn gọn gàng và chỉn chu.',
+    quote: 'Một lần ghé. Nhiều nhu cầu được chăm sóc. Gọn gàng, chỉn chu và tiện lợi đúng với nhịp sống của quý ông hiện đại.',
+    body1: 'Bên cạnh đó, Oria Spa xây dựng các gói chăm sóc kết hợp gồm nhiều dịch vụ như cạo râu, ráy tai, cắt móng, đắp mặt nạ, gội đầu và giãn cơ, giúp quý ông hoàn thiện nhiều bước chăm sóc trong cùng một lần trải nghiệm.',
+    body2: 'Các dịch vụ được sắp xếp theo hướng thực tế và tiện lợi, tập trung vào những điều nam giới thường cần trong cuộc sống hằng ngày từ mái tóc gọn gàng, khuôn mặt sạch sẽ, diện mạo chỉn chu đến những phút thư giãn sau công việc.',
+    body3: 'Thay vì phải lựa chọn từng dịch vụ riêng lẻ, khách có thể chọn một gói phù hợp để chăm sóc diện mạo và thư giãn trong cùng một khoảng thời gian.',
+    chips: [] as string[],
+    closing: ''
+  } : {
+    eyebrow: 'Barber Perspective',
+    headline: 'Barber – Exclusive care for gentlemen',
+    lead: 'Barber at Oria Spa is designed specifically for men, offering haircuts as a distinct choice for guests wanting to touch up their style, refresh their look, or simply keep their hair neat and well-groomed.',
+    quote: 'One visit. Many needs met. Neat, well-groomed, and convenient—perfectly suited for the modern gentleman’s lifestyle.',
+    body1: 'Additionally, Oria Spa has created combination packages featuring services like shaving, ear cleaning, nail trimming, facial masks, hair washing, and muscle stretching, allowing gentlemen to complete multiple grooming steps in a single experience.',
+    body2: 'These services are arranged for practicality and convenience, focusing on what men often need in their daily lives—from neat hair and a clean face to a polished appearance and moments of relaxation after work.',
+    body3: 'Instead of selecting individual services, guests can choose a suitable package to care for their appearance and unwind all at the same time.',
+    chips: [] as string[],
+    closing: ''
+  };
+
+  const packagesContent = currentLang === 'vi' ? {
+    eyebrow: 'Packages Perspective',
+    headline: 'Packages – Nhiều trải nghiệm trong một hành trình chăm sóc',
+    lead: 'Packages tại OriaSpa được xây dựng dành cho những khách hàng muốn kết hợp nhiều dịch vụ trong cùng một lần trải nghiệm, thay vì lựa chọn từng dịch vụ riêng lẻ.',
+    quote: 'Nhiều trải nghiệm trong một hành trình chăm sóc.',
+    body1: 'Mỗi package là sự kết hợp có chủ đích giữa các bước chăm sóc như massage cơ thể, massage chân, chăm sóc da mặt, gội đầu, ráy tai hoặc những dịch vụ thư giãn khác, giúp khách có thêm thời gian dành cho bản thân và trải nghiệm nhiều hình thức chăm sóc trong cùng một hành trình.',
+    body2: 'Các dịch vụ trong từng package được sắp xếp theo trình tự phù hợp để cảm giác thư giãn được tiếp nối từ bước này sang bước khác. Từ việc làm dịu cơ thể, chăm sóc những vùng thường xuyên chịu áp lực đến những khoảng thời gian nhẹ nhàng dành cho da, tóc và giác quan, mỗi phần đều góp vào một trải nghiệm hoàn chỉnh hơn.',
+    body3: 'Thay vì chỉ tập trung vào một nhu cầu, Packages hướng đến việc chăm sóc nhiều khía cạnh của cơ thể và cảm xúc trong cùng một khoảng thời gian — phù hợp cho những ngày khách muốn nghỉ ngơi lâu hơn, muốn trải nghiệm nhiều dịch vụ hơn hoặc đơn giản là dành cho mình một khoảng thời gian trọn vẹn.',
+    chips: [] as string[],
+    closing: ''
+  } : {
+    eyebrow: 'Packages Perspective',
+    headline: 'Packages – Multiple experiences in one journey of care',
+    lead: 'Packages at OriaSpa are designed for guests who wish to combine multiple services into a single experience, rather than selecting individual treatments.',
+    quote: 'Multiple experiences in one journey of care.',
+    body1: 'Each package is a purposeful combination of care steps such as body massage, foot massage, facial care, hair washing, ear cleaning, or other relaxing services, giving guests more time for themselves to experience various forms of care in one continuous journey.',
+    body2: 'The services within each package are arranged in a suitable sequence so that the feeling of relaxation flows seamlessly from one step to the next. From soothing the body and tending to areas under frequent pressure, to gentle moments dedicated to the skin, hair, and senses—each part contributes to a more complete experience.',
+    body3: 'Instead of focusing on just one need, Packages aim to care for multiple aspects of the body and emotions simultaneously—ideal for days when guests want to rest longer, experience more services, or simply dedicate uninterrupted time to themselves.',
+    chips: [] as string[],
+    closing: ''
   };
 
   const sectionContent = section.id === 'foot-care' ? footCareContent : 
                          section.id === 'ear-clean' ? earCleanContent : 
+                         section.id === 'barber' ? barberContent :
+                         (section.id === 'packages' || section.id === 'package') ? packagesContent :
                          humanTouchContent;
 
   // Fetch dynamic services and content from admin panel
@@ -447,7 +494,7 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
         </div>
       </div>
 
-      {(section.id === 'body-care' || section.id === 'foot-care' || section.id === 'ear-clean') && (
+      {(section.id === 'body-care' || section.id === 'foot-care' || section.id === 'ear-clean' || section.id === 'barber' || section.id === 'packages' || section.id === 'package') && (
         <div className={styles.humanTouchSection}>
           <div className={styles.humanInner}>
             <div>
