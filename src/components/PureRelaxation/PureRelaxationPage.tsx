@@ -183,7 +183,6 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
     body2: 'Each technique creates its own experience, gentle enough for the body to relax but special enough for guests to feel intrigued and want to explore every unfolding sensation.',
     body3: 'Many guests come to Oria Spa without truly knowing the condition inside their ears. Only when experiencing ear cleaning and having each part gently cleansed do they begin to clearly feel the difference.',
     chips: [] as string[],
-    chips: [] as string[],
     closing: 'After the treatment concludes, the lingering feeling is not just of cleaner, clearer ears, but a very distinct lightness, ease, and comfort—like releasing a small, heavy burden that they hadn\'t even realized was there.'
   };
 
