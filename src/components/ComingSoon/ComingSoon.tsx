@@ -27,8 +27,8 @@ const COMING_SOON_COPY = {
 
 const leafIcon = (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M12 2C12 2 12 11 19 11C19 11 12 11 12 20C12 20 12 11 5 11C5 11 12 11 12 2Z" fill="transparent" stroke="#D4AF37" strokeWidth="1.5"/>
-    <path d="M12 2C12 2 15 5 15 11C15 11 12 11 12 2Z" fill="#D4AF37"/>
+    <path d="M12 2C12 2 12 11 19 11C19 11 12 11 12 20C12 20 12 11 5 11C5 11 12 11 12 2Z" fill="transparent" stroke="#C5A880" strokeWidth="1.5"/>
+    <path d="M12 2C12 2 15 5 15 11C15 11 12 11 12 2Z" fill="#C5A880"/>
   </svg>
 );
 
