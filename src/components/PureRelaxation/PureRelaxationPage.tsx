@@ -151,13 +151,7 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
     body2: 'Trong lúc đôi chân được massage, một túi chườm thảo dược ấm được đặt nhẹ tại vùng cổ – vai. Hơi ấm từ túi chườm lan dần quanh vùng cổ, tạo cảm giác được bao bọc và thư giãn đồng thời ở cả hai đầu cơ thể: đôi chân phía dưới được chăm sóc bằng thảo dược và đôi tay người thợ, trong khi vùng cổ – vai phía trên được giữ ấm nhẹ nhàng.',
     body3: 'Từ ngâm chân thảo mộc, tẩy tế bào chết bằng nguyên liệu kết hợp thảo dược, túi chườm cổ ấm đến từng thao tác massage thủ công, mỗi bước đều được kết nối để tạo nên một trải nghiệm chăm sóc trọn vẹn hơn cho đôi chân và toàn bộ cơ thể.',
     chips: [] as string[],
-    closing: 'Bắt đầu từ làn nước thảo mộc ấm, tiếp nối bằng sự chăm sóc trên từng vùng da, lan lên hơi ấm nơi cổ – vai và hoàn thiện bằng đôi tay người thợ.',
-    panelTitle: 'OUR CORE VALUE',
-    points: [
-      { title: 'Guest-Centric Excellence', desc: 'Every ritual is arranged around the guest’s comfort, pace and preference.' },
-      { title: 'Natural Authenticity', desc: 'Wellness is expressed through grounded techniques, atmosphere and sensory care.' },
-      { title: 'Empathetic Understanding', desc: 'Thoughtful details create a deeper feeling of calm, comfort and emotional ease.' },
-    ]
+    closing: 'Bắt đầu từ làn nước thảo mộc ấm, tiếp nối bằng sự chăm sóc trên từng vùng da, lan lên hơi ấm nơi cổ – vai và hoàn thiện bằng đôi tay người thợ.'
   } : {
     eyebrow: 'Foot Massage Perspective',
     headline: 'Foot Massage – Relaxation begins at the feet',
@@ -167,13 +161,7 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
     body2: 'While the feet are being massaged, a warm herbal pack is gently placed on the neck and shoulders. The warmth spreads around the neck, creating a sense of being enveloped and relaxed at both ends of the body: the feet below are cared for with herbs and therapist’s hands, while the neck and shoulders above are gently kept warm.',
     body3: 'From the herbal foot soak, exfoliation with herbal ingredients, and warm neck pack to each manual massage technique, every step is connected to create a more complete care experience for the feet and the whole body.',
     chips: [] as string[],
-    closing: 'Starting with warm herbal water, followed by care for each skin area, spreading warmth to the neck and shoulders, and completed by the therapist’s hands.',
-    panelTitle: 'OUR CORE VALUE',
-    points: [
-      { title: 'Guest-Centric Excellence', desc: 'Every ritual is arranged around the guest’s comfort, pace and preference.' },
-      { title: 'Natural Authenticity', desc: 'Wellness is expressed through grounded techniques, atmosphere and sensory care.' },
-      { title: 'Empathetic Understanding', desc: 'Thoughtful details create a deeper feeling of calm, comfort and emotional ease.' },
-    ]
+    closing: 'Starting with warm herbal water, followed by care for each skin area, spreading warmth to the neck and shoulders, and completed by the therapist’s hands.'
   };
 
   const earCleanContent = currentLang === 'vi' ? {
@@ -185,13 +173,7 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
     body2: 'Mỗi thao tác đều tạo nên một trải nghiệm riêng, đủ nhẹ nhàng để cơ thể thả lỏng nhưng cũng đủ đặc biệt để khách cảm thấy thích thú và muốn khám phá từng cảm giác đang diễn ra.',
     body3: 'Nhiều khách hàng đến với Oria Spa mà không thực sự biết bên trong tai mình đang ở trạng thái như thế nào. Chỉ khi trải nghiệm ráy tai và từng phần được làm sạch một cách nhẹ nhàng, khách mới bắt đầu cảm nhận rõ sự khác biệt.',
     chips: [] as string[],
-    closing: 'Sau khi liệu trình kết thúc, cảm giác còn lại không chỉ là đôi tai sạch sẽ và thông thoáng hơn, mà còn là sự nhẹ nhõm, dễ chịu và thoải mái rất đặc trưng như vừa giải phóng một cảm giác nặng nề nhỏ mà trước đó chính mình cũng không nhận ra.',
-    panelTitle: 'OUR CORE VALUE',
-    points: [
-      { title: 'Guest-Centric Excellence', desc: 'Every ritual is arranged around the guest’s comfort, pace and preference.' },
-      { title: 'Natural Authenticity', desc: 'Wellness is expressed through grounded techniques, atmosphere and sensory care.' },
-      { title: 'Empathetic Understanding', desc: 'Thoughtful details create a deeper feeling of calm, comfort and emotional ease.' },
-    ]
+    closing: 'Sau khi liệu trình kết thúc, cảm giác còn lại không chỉ là đôi tai sạch sẽ và thông thoáng hơn, mà còn là sự nhẹ nhõm, dễ chịu và thoải mái rất đặc trưng như vừa giải phóng một cảm giác nặng nề nhỏ mà trước đó chính mình cũng không nhận ra.'
   } : {
     eyebrow: 'Ear Clean Perspective',
     headline: 'Ear Cleaning at Oria Spa – Relaxing, interesting, and full of novel sensations',
@@ -201,13 +183,7 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
     body2: 'Each technique creates its own experience, gentle enough for the body to relax but special enough for guests to feel intrigued and want to explore every unfolding sensation.',
     body3: 'Many guests come to Oria Spa without truly knowing the condition inside their ears. Only when experiencing ear cleaning and having each part gently cleansed do they begin to clearly feel the difference.',
     chips: [] as string[],
-    closing: 'After the treatment concludes, the lingering feeling is not just of cleaner, clearer ears, but a very distinct lightness, ease, and comfort—like releasing a small, heavy burden that they hadn\'t even realized was there.',
-    panelTitle: 'OUR CORE VALUE',
-    points: [
-      { title: 'Guest-Centric Excellence', desc: 'Every ritual is arranged around the guest’s comfort, pace and preference.' },
-      { title: 'Natural Authenticity', desc: 'Wellness is expressed through grounded techniques, atmosphere and sensory care.' },
-      { title: 'Empathetic Understanding', desc: 'Thoughtful details create a deeper feeling of calm, comfort and emotional ease.' },
-    ]
+    closing: 'After the treatment concludes, the lingering feeling is not just of cleaner, clearer ears, but a very distinct lightness, ease, and comfort—like releasing a small, heavy burden that they hadn\'t even realized was there.'
   };
 
   const sectionContent = section.id === 'foot-care' ? footCareContent : 
@@ -500,15 +476,17 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
               <div className={styles.humanClosing}>{sectionContent.closing}</div>
             </div>
 
-            <aside className={styles.insightPanel}>
-              <div className={styles.panelTitle}>{sectionContent.panelTitle}</div>
-              {sectionContent.points.map((point, i) => (
-                <div key={i} className={styles.insightPoint}>
-                  <h4>{point.title}</h4>
-                  <p>{point.desc}</p>
-                </div>
-              ))}
-            </aside>
+            {sectionContent.points && sectionContent.points.length > 0 && (
+              <aside className={styles.insightPanel}>
+                <div className={styles.panelTitle}>{sectionContent.panelTitle}</div>
+                {sectionContent.points.map((point, i) => (
+                  <div key={i} className={styles.insightPoint}>
+                    <h4>{point.title}</h4>
+                    <p>{point.desc}</p>
+                  </div>
+                ))}
+              </aside>
+            )}
           </div>
         </div>
       )}

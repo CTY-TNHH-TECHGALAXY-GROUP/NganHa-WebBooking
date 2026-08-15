@@ -743,10 +743,8 @@
 }
 
 .humanInner {
-  display: grid;
-  grid-template-columns: 1.1fr 0.9fr;
-  gap: 3.5rem;
-  align-items: start;
+  max-width: 960px;
+  margin: 0 auto;
 }
 
 .humanEyebrow {
@@ -808,26 +806,33 @@
 
 .insightPanel {
   background: transparent;
-  padding: 0.5rem 0 0;
+  padding: 3rem 0 0;
+  margin-top: 3.5rem;
+  border-top: 1px solid #d9cebe;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
 }
 
 .panelTitle {
+  grid-column: 1 / -1;
+  text-align: center;
   font-family: var(--font-inter), Inter, sans-serif;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   font-weight: 700;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   color: #8b7252;
-  margin-bottom: 1.2rem;
+  margin-bottom: 0.5rem;
 }
 
 .insightPoint {
-  padding: 1.2rem 0 1.2rem;
-  border-top: 1px solid #ddd1c1;
+  padding: 0;
+  border-top: none;
+  text-align: center;
 }
 .insightPoint:first-of-type {
-  border-top: none;
-  padding-top: 0.2rem;
+  padding-top: 0;
 }
 
 .insightPoint h4 {
@@ -866,9 +871,12 @@
 }
 
 @media (max-width: 980px) {
-  .humanInner {
+  .insightPanel {
     grid-template-columns: 1fr;
-    gap: 2.5rem;
+    gap: 2rem;
+  }
+  .humanInner {
+    max-width: 100%;
   }
   .humanTouchSection {
     padding: 2.5rem 1.5rem;
