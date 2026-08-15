@@ -1,17 +1,17 @@
 .history {
-  --history-bg: #090705;
-  --history-gold: #d7a64d;
-  --history-gold-soft: #f4dab0;
-  --history-text: #f4ede2;
-  --history-muted: rgba(244, 237, 226, 0.68);
+  --history-bg: #0B0B0C;
+  --history-gold: #C5A880;
+  --history-gold-soft: #E5DFD3;
+  --history-text: #F4F4F4;
+  --history-muted: rgba(244, 244, 244, 0.68);
   position: relative;
   min-height: 100vh;
   overflow: hidden;
   padding-bottom: 96px;
   background:
-    radial-gradient(circle at var(--mx, 52%) var(--my, 24%), rgba(215, 166, 77, 0.11), transparent 24rem),
-    radial-gradient(circle at 12% 0%, rgba(215, 166, 77, 0.08), transparent 22rem),
-    linear-gradient(180deg, #130d08 0%, var(--history-bg) 32%, #070504 100%);
+    radial-gradient(circle at var(--mx, 52%) var(--my, 24%), rgba(197, 168, 128, 0.11), transparent 24rem),
+    radial-gradient(circle at 12% 0%, rgba(197, 168, 128, 0.08), transparent 22rem),
+    linear-gradient(180deg, #111112 0%, var(--history-bg) 32%, #080809 100%);
   color: var(--history-text);
 }
 
@@ -27,8 +27,8 @@
   z-index: 1;
   opacity: 0.16;
   background-image:
-    radial-gradient(circle at 18% 28%, rgba(255, 245, 210, 0.72) 0 1px, transparent 1.4px),
-    radial-gradient(circle at 82% 18%, rgba(215, 166, 77, 0.7) 0 1px, transparent 1.4px),
+    radial-gradient(circle at 18% 28%, rgba(229, 223, 211, 0.72) 0 1px, transparent 1.4px),
+    radial-gradient(circle at 82% 18%, rgba(197, 168, 128, 0.7) 0 1px, transparent 1.4px),
     radial-gradient(circle at 64% 72%, rgba(255, 255, 255, 0.52) 0 1px, transparent 1.3px);
   background-size: 120px 120px, 170px 170px, 220px 220px;
   mask-image: linear-gradient(180deg, transparent, #000 12%, #000 88%, transparent);
@@ -37,15 +37,15 @@
 .ambientA {
   z-index: 0;
   background:
-    radial-gradient(ellipse at 72% 28%, rgba(215, 166, 77, 0.08), transparent 34rem),
-    radial-gradient(ellipse at 18% 72%, rgba(74, 46, 25, 0.32), transparent 38rem);
+    radial-gradient(ellipse at 72% 28%, rgba(197, 168, 128, 0.08), transparent 34rem),
+    radial-gradient(ellipse at 18% 72%, rgba(40, 40, 45, 0.32), transparent 38rem);
   filter: blur(8px);
 }
 
 .ambientB {
   z-index: 0;
   opacity: 0.7;
-  background: linear-gradient(115deg, transparent 10%, rgba(246, 216, 140, 0.05) 48%, transparent 62%);
+  background: linear-gradient(115deg, transparent 10%, rgba(197, 168, 128, 0.05) 48%, transparent 62%);
   transform: translate3d(-8%, 0, 0);
 }
 
@@ -86,8 +86,8 @@
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(90deg, rgba(7, 5, 3, 0.95), rgba(7, 5, 3, 0.76) 46%, rgba(7, 5, 3, 0.3)),
-    radial-gradient(circle at 58% 24%, transparent 0 18rem, rgba(7, 5, 3, 0.72) 42rem);
+    linear-gradient(90deg, rgba(10, 10, 12, 0.95), rgba(10, 10, 12, 0.76) 46%, rgba(10, 10, 12, 0.3)),
+    radial-gradient(circle at 58% 24%, transparent 0 18rem, rgba(10, 10, 12, 0.72) 42rem);
 }
 
 .heroCopy {
@@ -1038,8 +1038,8 @@
 
   .heroMedia::after {
     background:
-      linear-gradient(180deg, rgba(7, 5, 3, 0.44), rgba(7, 5, 3, 0.9) 62%, rgba(7, 5, 3, 0.98)),
-      radial-gradient(circle at 50% 22%, transparent 0 12rem, rgba(7, 5, 3, 0.78) 28rem);
+      linear-gradient(180deg, rgba(10, 10, 12, 0.44), rgba(10, 10, 12, 0.9) 62%, rgba(10, 10, 12, 0.98)),
+      radial-gradient(circle at 50% 22%, transparent 0 12rem, rgba(10, 10, 12, 0.78) 28rem);
   }
 
   .heroCopy h1 {
