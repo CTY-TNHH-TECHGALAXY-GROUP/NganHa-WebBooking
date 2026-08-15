@@ -35,24 +35,25 @@ const Footer = () => {
   return (
     <footer id="footer" className="bg-[rgba(40,27,21,1)] text-[#f7ebc7] relative z-10">
       {/* Core Values Section */}
-      <div className="py-24 px-6 border-b border-[rgba(244,235,225,0.1)] bg-[#4A3B32]">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="font-serif text-3xl md:text-4xl text-center text-[#F4EBE1] mb-16 tracking-wide">
+      <div className="py-24 px-6 border-b border-[rgba(247,235,199,0.15)] bg-[#4A3B32]">
+        <div className="max-w-6xl mx-auto flex flex-col items-center">
+          <SmartLogo theme="dark" className="w-[160px] md:w-[180px] h-auto object-contain mb-4" />
+          <h2 className="font-serif text-3xl md:text-4xl text-center text-[#f7ebc7] mb-16 tracking-wide">
             Giá Trị Cốt Lõi Của Oria Spa | Oria Spa Core Values
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-16 gap-x-8 text-center">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-16 gap-x-8 text-center w-full">
             {CORE_VALUES.map((value, index) => {
               const Icon = value.icon;
               return (
                 <div key={index} className="flex flex-col items-center gap-5">
                   <div className="w-24 h-24 rounded-full flex items-center justify-center transition-transform hover:scale-105 duration-300">
-                    <Icon size={56} className="text-[#F4EBE1]" strokeWidth={1.2} />
+                    <Icon size={56} className="text-[#f7ebc7]" strokeWidth={1.2} />
                   </div>
                   <div className="flex flex-col gap-1">
-                    <h3 className="font-sans text-lg md:text-xl font-medium tracking-wide text-[#F4EBE1] uppercase">
+                    <h3 className="font-sans text-lg md:text-xl font-medium tracking-wide text-[#f7ebc7] uppercase">
                       {value.titleVi}
                     </h3>
-                    <p className="font-serif text-base text-[#E5DFD3] italic opacity-90">
+                    <p className="font-serif text-base text-[#f7ebc7] italic opacity-80">
                       {value.titleEn}
                     </p>
                   </div>
