@@ -34,7 +34,7 @@ const leafIcon = (
 
 const ComingSoon = () => {
   const { currentLang } = useTranslation();
-  const lang = (currentLang?.code as 'vi' | 'en' | 'kr') || 'vi';
+  const lang = (currentLang as 'vi' | 'en' | 'kr') || 'vi';
   
   const [timeLeft, setTimeLeft] = useState({ days: 28, hours: 14, minutes: 36, seconds: 52 });
   const [email, setEmail] = useState('');
