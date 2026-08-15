@@ -55,22 +55,26 @@ export default function SpacePage() {
       .catch(console.error);
   }, []);
 
-  const getMedia = (path: string, fallback: string) => {
-    const parts = path.split('.');
+  const getMedia = (keyPath: string, fallback: string) => {
+    const parts = keyPath.split('.');
     let val = contentMedia;
     for (const p of parts) {
       if (!val) break;
       val = val[p];
     }
-    
-    if (val && typeof val === 'object' && val.src) {
-      return { src: val.src, type: val.type || 'image' };
+    const actualVal = val?.src || val || fallback;
+    const isVideo = typeof actualVal === 'string' && (actualVal.endsWith('.mp4') || actualVal.endsWith('.webm'));
+    return { src: actualVal, type: val?.type || (isVideo ? 'video' : 'image') };
+  };
+
+  const getMediaTitle = (keyPath: string, defaultTitle: string) => {
+    const parts = keyPath.split('.');
+    let val = contentMedia;
+    for (const p of parts) {
+      if (!val) break;
+      val = val[p];
     }
-    
-    // For legacy or fallback string URLs
-    const actualVal = val || fallback;
-    const isVideo = actualVal.endsWith('.mp4') || actualVal.endsWith('.webm');
-    return { src: actualVal, type: isVideo ? 'video' : 'image' };
+    return val?.title || defaultTitle;
   };
 
   const MediaRenderer = ({ mediaObj, className, alt }: { mediaObj: {src: string, type: string}, className?: string, alt?: string }) => {
@@ -186,9 +190,9 @@ export default function SpacePage() {
         <div className={`${styles.microNav} ${styles.reveal}`}>
           <div className={styles.microLeft}>Explore within this space</div>
           <div className={styles.microList}>
-            <button className={welcomeTab === 'reception' ? styles.active : ''} onClick={() => handleTabChange('welcome', 'reception')}>Reception</button>
-            <button className={welcomeTab === 'lounge' ? styles.active : ''} onClick={() => handleTabChange('welcome', 'lounge')}>Lounge</button>
-            <button className={welcomeTab === 'ritual' ? styles.active : ''} onClick={() => handleTabChange('welcome', 'ritual')}>Welcome Ritual</button>
+            <button className={welcomeTab === 'reception' ? styles.active : ''} onClick={() => handleTabChange('welcome', 'reception')}>{getMediaTitle('welcome.reception', 'Reception')}</button>
+            <button className={welcomeTab === 'lounge' ? styles.active : ''} onClick={() => handleTabChange('welcome', 'lounge')}>{getMediaTitle('welcome.lounge', 'Lounge')}</button>
+            <button className={welcomeTab === 'ritual' ? styles.active : ''} onClick={() => handleTabChange('welcome', 'ritual')}>{getMediaTitle('welcome.ritual', 'Welcome Ritual')}</button>
           </div>
         </div>
       </section>
@@ -219,9 +223,9 @@ export default function SpacePage() {
         <div className={`${styles.microNav} ${styles.reveal}`}>
           <div className={styles.microLeft}>Explore within this floor</div>
           <div className={styles.microList}>
-            <button className={floor1Tab === 'body' ? styles.active : ''} onClick={() => handleTabChange('floor1', 'body')}>Body Therapy</button>
-            <button className={floor1Tab === 'foot' ? styles.active : ''} onClick={() => handleTabChange('floor1', 'foot')}>Foot Care</button>
-            <button className={floor1Tab === 'private' ? styles.active : ''} onClick={() => handleTabChange('floor1', 'private')}>Private Room</button>
+            <button className={floor1Tab === 'body' ? styles.active : ''} onClick={() => handleTabChange('floor1', 'body')}>{getMediaTitle('floor1.body', 'Body Therapy')}</button>
+            <button className={floor1Tab === 'foot' ? styles.active : ''} onClick={() => handleTabChange('floor1', 'foot')}>{getMediaTitle('floor1.foot', 'Foot Care')}</button>
+            <button className={floor1Tab === 'private' ? styles.active : ''} onClick={() => handleTabChange('floor1', 'private')}>{getMediaTitle('floor1.private', 'Private Room')}</button>
           </div>
         </div>
       </section>
@@ -244,9 +248,9 @@ export default function SpacePage() {
         <div className={`${styles.microNav} ${styles.reveal}`}>
           <div className={styles.microLeft}>Explore within this floor</div>
           <div className={styles.microList}>
-            <button className={floor2Tab === 'suite' ? styles.active : ''} onClick={() => handleTabChange('floor2', 'suite')}>Private Suite</button>
-            <button className={floor2Tab === 'headSpa' ? styles.active : ''} onClick={() => handleTabChange('floor2', 'headSpa')}>Head Spa</button>
-            <button className={floor2Tab === 'quiet' ? styles.active : ''} onClick={() => handleTabChange('floor2', 'quiet')}>Quiet Corner</button>
+            <button className={floor2Tab === 'suite' ? styles.active : ''} onClick={() => handleTabChange('floor2', 'suite')}>{getMediaTitle('floor2.suite', 'Private Suite')}</button>
+            <button className={floor2Tab === 'headSpa' ? styles.active : ''} onClick={() => handleTabChange('floor2', 'headSpa')}>{getMediaTitle('floor2.headSpa', 'Head Spa')}</button>
+            <button className={floor2Tab === 'quiet' ? styles.active : ''} onClick={() => handleTabChange('floor2', 'quiet')}>{getMediaTitle('floor2.quiet', 'Quiet Corner')}</button>
           </div>
         </div>
       </section>

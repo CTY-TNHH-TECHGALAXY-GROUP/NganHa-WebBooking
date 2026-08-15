@@ -208,7 +208,34 @@ const SpaceAdminPage = () => {
         </div>
 
         <div className="p-5 flex flex-col flex-1">
-          <h3 className="text-base font-bold text-admin-text mb-4 uppercase tracking-wider text-[11px]">{keyPath.replace('.', ' / ')}</h3>
+          <h3 className="text-base font-bold text-admin-text mb-2 uppercase tracking-wider text-[11px]">{keyPath.replace('.', ' / ')}</h3>
+          
+          <div className="mb-4">
+            <label className="text-[11px] text-admin-text-faint uppercase tracking-wider mb-1 block">Tên hiển thị trên Web</label>
+            <input
+              type="text"
+              placeholder="VD: Lễ tân, Sảnh chờ..."
+              defaultValue={currentMedia?.title || ''}
+              onBlur={async (e) => {
+                const newTitle = e.target.value;
+                if (newTitle === (currentMedia?.title || '')) return;
+                setUploadingId(keyPath);
+                try {
+                  const updatedMedia = { ...(currentMedia || { type: 'image', src: '' }), title: newTitle };
+                  const newMediaData = setNestedValue(contentData, keyPath, updatedMedia);
+                  setContentData(newMediaData);
+                  await saveContent(newMediaData);
+                  setSuccessId(keyPath);
+                  setTimeout(() => setSuccessId(null), 3000);
+                } catch (err) {
+                  console.error(err);
+                } finally {
+                  setUploadingId(null);
+                }
+              }}
+              className="w-full bg-admin-panel-2 border border-admin-line-strong text-admin-text text-sm rounded-lg px-3 py-2 outline-none focus:border-admin-gold transition-colors"
+            />
+          </div>
 
           <div className="mt-auto space-y-2">
             <div className="relative">
