@@ -803,6 +803,7 @@
   line-height: 1.7;
   margin-top: 1.8rem;
   color: #21150f;
+  white-space: pre-line;
 }
 
 .insightPanel {
