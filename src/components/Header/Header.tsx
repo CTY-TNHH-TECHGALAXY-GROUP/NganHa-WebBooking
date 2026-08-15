@@ -268,7 +268,7 @@ const Header = () => {
             {/* Center Logo */}
             <div className={`absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transition-opacity duration-300 z-0 ${showLogo ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
               <a href="/" className="block mt-2 md:mt-3">
-                <SmartLogo theme="dark" className="h-14 md:h-[68px] w-auto object-contain cursor-pointer scale-125" />
+                <SmartLogo theme="dark" className="h-14 md:h-[68px] w-auto object-contain cursor-pointer scale-100 md:scale-125" />
               </a>
             </div>
 
@@ -279,7 +279,7 @@ const Header = () => {
               {/* Book Button */}
               <Link 
                 href={`/${currentLang.code}/new-user/standard/checkout`}
-                className="text-[#f7ebc7] hover:text-[#f7ebc7]/80 active:opacity-50 font-bold text-sm uppercase tracking-wider mr-4 lg:mr-6 transition-all duration-300"
+                className="hidden sm:block text-[#f7ebc7] hover:text-[#f7ebc7]/80 active:opacity-50 font-bold text-sm uppercase tracking-wider mr-4 lg:mr-6 transition-all duration-300"
               >
                 Book
               </Link>
