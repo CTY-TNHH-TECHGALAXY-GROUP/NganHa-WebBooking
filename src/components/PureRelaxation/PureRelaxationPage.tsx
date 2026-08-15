@@ -176,7 +176,43 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
     ]
   };
 
-  const sectionContent = section.id === 'foot-care' ? footCareContent : humanTouchContent;
+  const earCleanContent = currentLang === 'vi' ? {
+    eyebrow: 'Ear Clean Perspective',
+    headline: 'Ráy tai tại Oria Spa – Thư giãn, thú vị và đầy cảm giác mới lạ',
+    lead: 'Ráy tai tại OriaSpa nổi bật với trải nghiệm ráy tai thư giãn, nhưng bên cạnh sự nhẹ nhàng còn là một cảm giác rất riêng: thú vị, đặc trưng và có chút lạ lẫm.',
+    quote: 'Chính sự đan xen giữa thư giãn và cảm giác mới lạ khiến ráy tai tại Oria Spa không chỉ dừng lại ở việc làm sạch.',
+    body1: 'Từng chuyển động nhỏ quanh vùng tai tạo nên những cảm nhận mà khách hiếm khi chú ý trong đời sống thường ngày. Có lúc êm dịu, có lúc hơi nhột, có lúc lại mang đến sự tò mò khi những âm thanh rất nhỏ và sự tiếp xúc tinh tế diễn ra ngay sát bên tai.',
+    body2: 'Mỗi thao tác đều tạo nên một trải nghiệm riêng, đủ nhẹ nhàng để cơ thể thả lỏng nhưng cũng đủ đặc biệt để khách cảm thấy thích thú và muốn khám phá từng cảm giác đang diễn ra.',
+    body3: 'Nhiều khách hàng đến với Oria Spa mà không thực sự biết bên trong tai mình đang ở trạng thái như thế nào. Chỉ khi trải nghiệm ráy tai và từng phần được làm sạch một cách nhẹ nhàng, khách mới bắt đầu cảm nhận rõ sự khác biệt.',
+    chips: [] as string[],
+    closing: 'Sau khi liệu trình kết thúc, cảm giác còn lại không chỉ là đôi tai sạch sẽ và thông thoáng hơn, mà còn là sự nhẹ nhõm, dễ chịu và thoải mái rất đặc trưng như vừa giải phóng một cảm giác nặng nề nhỏ mà trước đó chính mình cũng không nhận ra.',
+    panelTitle: 'OUR CORE VALUE',
+    points: [
+      { title: 'Guest-Centric Excellence', desc: 'Every ritual is arranged around the guest’s comfort, pace and preference.' },
+      { title: 'Natural Authenticity', desc: 'Wellness is expressed through grounded techniques, atmosphere and sensory care.' },
+      { title: 'Empathetic Understanding', desc: 'Thoughtful details create a deeper feeling of calm, comfort and emotional ease.' },
+    ]
+  } : {
+    eyebrow: 'Ear Clean Perspective',
+    headline: 'Ear Cleaning at Oria Spa – Relaxing, interesting, and full of novel sensations',
+    lead: 'Ear cleaning at OriaSpa stands out as a relaxing experience, but alongside the gentleness is a very distinct feeling: interesting, characteristic, and slightly unfamiliar.',
+    quote: 'It is this blend of relaxation and novel sensation that makes ear cleaning at Oria Spa more than just a cleansing process.',
+    body1: 'Every small movement around the ear creates sensations that guests rarely notice in daily life. At times soothing, at times slightly ticklish, and at times sparking curiosity as tiny sounds and delicate touches occur right next to the ear.',
+    body2: 'Each technique creates its own experience, gentle enough for the body to relax but special enough for guests to feel intrigued and want to explore every unfolding sensation.',
+    body3: 'Many guests come to Oria Spa without truly knowing the condition inside their ears. Only when experiencing ear cleaning and having each part gently cleansed do they begin to clearly feel the difference.',
+    chips: [] as string[],
+    closing: 'After the treatment concludes, the lingering feeling is not just of cleaner, clearer ears, but a very distinct lightness, ease, and comfort—like releasing a small, heavy burden that they hadn\'t even realized was there.',
+    panelTitle: 'OUR CORE VALUE',
+    points: [
+      { title: 'Guest-Centric Excellence', desc: 'Every ritual is arranged around the guest’s comfort, pace and preference.' },
+      { title: 'Natural Authenticity', desc: 'Wellness is expressed through grounded techniques, atmosphere and sensory care.' },
+      { title: 'Empathetic Understanding', desc: 'Thoughtful details create a deeper feeling of calm, comfort and emotional ease.' },
+    ]
+  };
+
+  const sectionContent = section.id === 'foot-care' ? footCareContent : 
+                         section.id === 'ear-clean' ? earCleanContent : 
+                         humanTouchContent;
 
   // Fetch dynamic services and content from admin panel
   const [dbServices, setDbServices] = useState<any[]>([]);
@@ -435,7 +471,7 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
         </div>
       </div>
 
-      {(section.id === 'body-care' || section.id === 'foot-care') && (
+      {(section.id === 'body-care' || section.id === 'foot-care' || section.id === 'ear-clean') && (
         <div className={styles.humanTouchSection}>
           <div className={styles.humanInner}>
             <div>
