@@ -19,15 +19,23 @@ const defaultBgImages = [
   '/images/services/thai.png'
 ];
 
+const LANGUAGES = [
+  { id: 'vi', label: 'VI' },
+  { id: 'en', label: 'EN' },
+  { id: 'cn', label: 'CN' },
+  { id: 'jp', label: 'JP' },
+  { id: 'kr', label: 'KR' },
+];
+
 const PureAdminPage = () => {
   const [contentData, setContentData] = useState<any>({});
   const [loading, setLoading] = useState(true);
   const [uploadingId, setUploadingId] = useState<string | null>(null);
   const [successId, setSuccessId] = useState<string | null>(null);
-  const [expandedCats, setExpandedCats] = useState<Record<string, boolean>>({ slideshow: true, categories: true });
+  const [expandedCats, setExpandedCats] = useState<Record<string, boolean>>({ slideshow: true, narratives: true, categories: true });
 
-  // Add local override state to avoid constant saving on every keystroke
   const [localTextOverrides, setLocalTextOverrides] = useState<any>({});
+  const [localNarrativeOverrides, setLocalNarrativeOverrides] = useState<any>({});
 
   const toggleCat = (catId: string) => {
     setExpandedCats(prev => ({
@@ -128,14 +136,17 @@ const PureAdminPage = () => {
     await saveContent(newMediaData);
   };
 
-  const handleTextChange = (serviceName: string, field: string, value: string, subField?: string) => {
+  // --- SERVICE EDITING ---
+  const handleTextChange = (serviceName: string, lang: string, field: string, value: string, subField?: string) => {
     setLocalTextOverrides((prev: any) => {
       const s = prev[serviceName] || contentData[serviceName] || {};
       const newS = { ...s };
+      newS[lang] = newS[lang] || {};
+
       if (subField) {
-        newS[field] = { ...(newS[field] || {}), [subField]: value };
+        newS[lang][field] = { ...(newS[lang][field] || {}), [subField]: value };
       } else {
-        newS[field] = value;
+        newS[lang][field] = value;
       }
       return { ...prev, [serviceName]: newS };
     });
@@ -157,6 +168,7 @@ const PureAdminPage = () => {
   };
 
   const ServiceEditCard = ({ service }: { service: any }) => {
+    const [activeLang, setActiveLang] = useState('vi');
     const serviceName = service.name;
     const isUploading = uploadingId === serviceName;
     const isSuccessMedia = successId === serviceName;
@@ -169,11 +181,12 @@ const PureAdminPage = () => {
     const mediaType = cData.type || service.media?.type || 'image';
     const mediaSrc = cData.src || service.media?.src;
 
-    const desc = cData.description !== undefined ? cData.description : service.description || '';
-    
-    const privTitle = cData.privilege?.title !== undefined ? cData.privilege.title : service.privilege?.title || '';
-    const privCopy = cData.privilege?.copy !== undefined ? cData.privilege.copy : service.privilege?.copy || '';
-    const privTime = cData.privilege?.time !== undefined ? cData.privilege.time : service.privilege?.time || '';
+    const langData = cData[activeLang] || {};
+
+    const desc = langData.description !== undefined ? langData.description : '';
+    const privTitle = langData.privilege?.title !== undefined ? langData.privilege.title : '';
+    const privCopy = langData.privilege?.copy !== undefined ? langData.privilege.copy : '';
+    const privTime = langData.privilege?.time !== undefined ? langData.privilege.time : '';
 
     const hasChanges = !!localTextOverrides[serviceName];
 
@@ -244,37 +257,49 @@ const PureAdminPage = () => {
 
         {/* Text Fields */}
         <div className="flex flex-col gap-3">
+          <div className="flex gap-1 border-b border-admin-line pb-2">
+            {LANGUAGES.map(lang => (
+              <button
+                key={lang.id}
+                onClick={() => setActiveLang(lang.id)}
+                className={`px-3 py-1 rounded-md text-[10px] font-bold transition-colors ${activeLang === lang.id ? 'bg-admin-gold text-[#241804]' : 'bg-admin-panel text-admin-text-dim hover:text-admin-gold'}`}
+              >
+                {lang.label}
+              </button>
+            ))}
+          </div>
+
           <div>
-            <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Mô tả dịch vụ</label>
+            <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Mô tả dịch vụ ({activeLang})</label>
             <textarea 
               className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none min-h-[60px]"
               value={desc}
-              onChange={(e) => handleTextChange(serviceName, 'description', e.target.value)}
-              placeholder="Mô tả..."
+              onChange={(e) => handleTextChange(serviceName, activeLang, 'description', e.target.value)}
+              placeholder={`Mô tả (${activeLang.toUpperCase()})...`}
             />
           </div>
 
           <div className="border-t border-admin-line pt-2 mt-1">
-            <label className="text-[10px] uppercase font-bold text-admin-gold mb-2 block">Đặc Quyền (Privilege)</label>
+            <label className="text-[10px] uppercase font-bold text-admin-gold mb-2 block">Đặc Quyền (Privilege) - {activeLang}</label>
             <div className="space-y-2">
               <input 
                 type="text"
                 className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none"
                 value={privTitle}
-                onChange={(e) => handleTextChange(serviceName, 'privilege', e.target.value, 'title')}
+                onChange={(e) => handleTextChange(serviceName, activeLang, 'privilege', e.target.value, 'title')}
                 placeholder="Tiêu đề đặc quyền..."
               />
               <textarea 
                 className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none min-h-[50px]"
                 value={privCopy}
-                onChange={(e) => handleTextChange(serviceName, 'privilege', e.target.value, 'copy')}
+                onChange={(e) => handleTextChange(serviceName, activeLang, 'privilege', e.target.value, 'copy')}
                 placeholder="Mô tả đặc quyền..."
               />
               <input 
                 type="text"
                 className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none"
                 value={privTime}
-                onChange={(e) => handleTextChange(serviceName, 'privilege', e.target.value, 'time')}
+                onChange={(e) => handleTextChange(serviceName, activeLang, 'privilege', e.target.value, 'time')}
                 placeholder="Thời gian (VD: 5-10 mins)..."
               />
             </div>
@@ -293,6 +318,169 @@ const PureAdminPage = () => {
     );
   };
 
+  // --- NARRATIVE EDITING ---
+  const handleNarrativeChange = (sectionId: string, lang: string, field: string, value: any) => {
+    setLocalNarrativeOverrides((prev: any) => {
+      const existingNarratives = contentData.narratives || {};
+      const s = prev[sectionId] || existingNarratives[sectionId] || {};
+      const newS = { ...s };
+      newS[lang] = newS[lang] || {};
+      newS[lang][field] = value;
+      return { ...prev, [sectionId]: newS };
+    });
+  };
+
+  const saveNarrativeChanges = async (sectionId: string) => {
+    if (!localNarrativeOverrides[sectionId]) return;
+    const existingNarratives = contentData.narratives || {};
+    const newMediaData = {
+      ...contentData,
+      narratives: {
+        ...existingNarratives,
+        [sectionId]: {
+          ...(existingNarratives[sectionId] || {}),
+          ...localNarrativeOverrides[sectionId]
+        }
+      }
+    };
+    setContentData(newMediaData);
+    setSuccessId(`narrative-${sectionId}`);
+    await saveContent(newMediaData);
+    setTimeout(() => setSuccessId(null), 3000);
+  };
+
+  const NarrativeEditCard = ({ section }: { section: any }) => {
+    const [activeLang, setActiveLang] = useState('vi');
+    const sectionId = section.id;
+    const isSuccessText = successId === `narrative-${sectionId}`;
+
+    const existingNarratives = contentData.narratives || {};
+    const nData = localNarrativeOverrides[sectionId] !== undefined 
+      ? localNarrativeOverrides[sectionId] 
+      : (existingNarratives[sectionId] || {});
+
+    const langData = nData[activeLang] || {};
+    const hasChanges = !!localNarrativeOverrides[sectionId];
+
+    const isVip = sectionId === 'vip-package';
+
+    return (
+      <div className="bg-admin-bg p-5 rounded-xl border border-admin-line flex flex-col gap-4">
+        <div className="flex gap-1 border-b border-admin-line pb-3">
+          {LANGUAGES.map(lang => (
+            <button
+              key={lang.id}
+              onClick={() => setActiveLang(lang.id)}
+              className={`px-4 py-1.5 rounded-md text-xs font-bold transition-colors ${activeLang === lang.id ? 'bg-admin-gold text-[#241804]' : 'bg-admin-panel text-admin-text-dim hover:text-admin-gold'}`}
+            >
+              {lang.label}
+            </button>
+          ))}
+        </div>
+
+        <div className="space-y-3">
+          {!isVip && (
+            <>
+              <div>
+                <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Eyebrow (Tiêu đề nhỏ)</label>
+                <input 
+                  className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none"
+                  value={langData.eyebrow || ''}
+                  onChange={(e) => handleNarrativeChange(sectionId, activeLang, 'eyebrow', e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Quote (Trích dẫn)</label>
+                <textarea 
+                  className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none min-h-[50px]"
+                  value={langData.quote || ''}
+                  onChange={(e) => handleNarrativeChange(sectionId, activeLang, 'quote', e.target.value)}
+                />
+              </div>
+            </>
+          )}
+
+          <div>
+            <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Headline (Tiêu đề chính)</label>
+            <input 
+              className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none"
+              value={langData.headline || ''}
+              onChange={(e) => handleNarrativeChange(sectionId, activeLang, 'headline', e.target.value)}
+            />
+          </div>
+          <div>
+            <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Lead (Đoạn mở đầu)</label>
+            <textarea 
+              className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none min-h-[60px]"
+              value={langData.lead || ''}
+              onChange={(e) => handleNarrativeChange(sectionId, activeLang, 'lead', e.target.value)}
+            />
+          </div>
+
+          {!isVip && (
+            <>
+              <div>
+                <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Body 1</label>
+                <textarea 
+                  className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none min-h-[60px]"
+                  value={langData.body1 || ''}
+                  onChange={(e) => handleNarrativeChange(sectionId, activeLang, 'body1', e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Body 2</label>
+                <textarea 
+                  className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none min-h-[60px]"
+                  value={langData.body2 || ''}
+                  onChange={(e) => handleNarrativeChange(sectionId, activeLang, 'body2', e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Body 3</label>
+                <textarea 
+                  className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none min-h-[60px]"
+                  value={langData.body3 || ''}
+                  onChange={(e) => handleNarrativeChange(sectionId, activeLang, 'body3', e.target.value)}
+                />
+              </div>
+            </>
+          )}
+
+          {isVip && (
+            <>
+              <div>
+                <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Paragraphs (Nội dung đoạn văn - Tách bằng dấu Enter)</label>
+                <textarea 
+                  className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none min-h-[100px]"
+                  value={Array.isArray(langData.paragraphs) ? langData.paragraphs.join('\n') : langData.paragraphs || ''}
+                  onChange={(e) => handleNarrativeChange(sectionId, activeLang, 'paragraphs', e.target.value.split('\n'))}
+                />
+              </div>
+              <div>
+                <label className="text-[10px] uppercase font-bold text-admin-gold mb-1 block">Special Text</label>
+                <textarea 
+                  className="w-full bg-admin-panel border border-admin-gold/50 rounded-lg p-2 text-sm text-admin-gold focus:border-admin-gold focus:outline-none min-h-[60px]"
+                  value={langData.specialText || ''}
+                  onChange={(e) => handleNarrativeChange(sectionId, activeLang, 'specialText', e.target.value)}
+                />
+              </div>
+            </>
+          )}
+        </div>
+
+        <button 
+          onClick={() => saveNarrativeChanges(sectionId)}
+          disabled={!hasChanges}
+          className={`mt-2 flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-bold transition-colors ${hasChanges ? 'bg-admin-gold text-[#241804] hover:bg-[#a67433]' : 'bg-admin-line text-admin-text-dim cursor-not-allowed'}`}
+        >
+          {isSuccessText ? <CheckCircle size={16} /> : <Save size={16} />}
+          {isSuccessText ? 'Đã lưu' : 'Lưu Narrative'}
+        </button>
+      </div>
+    );
+  };
+
+
   if (loading) return <div className="p-8 text-center text-admin-text-dim">Đang tải cấu hình...</div>;
 
   const currentSlideshow = contentData.slideshow || defaultBgImages;
@@ -302,7 +490,7 @@ const PureAdminPage = () => {
     <div className="p-6 lg:p-10 max-w-7xl mx-auto">
       <div className="mb-8">
         <h1 className="text-2xl lg:text-3xl font-bold text-admin-text">✨ Quản Lý Pure Relaxation</h1>
-        <p className="text-admin-text-dim mt-2">Cấu hình slideshow ảnh nền chuyển động và ảnh/video, mô tả của từng dịch vụ.</p>
+        <p className="text-admin-text-dim mt-2">Cấu hình nội dung đa ngôn ngữ: slideshow ảnh nền, bài viết giới thiệu (narrative) và ảnh/video các danh mục.</p>
       </div>
 
       <div className="space-y-6 pb-20">
@@ -355,7 +543,34 @@ const PureAdminPage = () => {
                   )}
                 </label>
               </div>
-              <p className="text-xs text-admin-text-dim">Ghi chú: Nên sử dụng ảnh chất lượng cao (khuyên dùng định dạng ngang, kích thước tối thiểu 1920x1080).</p>
+            </div>
+          )}
+        </div>
+
+        {/* Dynamic Narrative Management */}
+        <div className="bg-admin-panel border border-admin-line rounded-2xl overflow-hidden shadow-sm">
+          <button 
+            onClick={() => toggleCat('narratives')}
+            className="w-full px-6 py-4 flex items-center justify-between bg-admin-panel hover:bg-admin-bg transition-colors"
+          >
+            <div className="flex items-center gap-3">
+              <span className="flex items-center justify-center w-6 h-6 rounded-full bg-admin-gold/20 text-admin-gold text-xs font-bold">2</span>
+              <h2 className="text-lg font-bold text-admin-text">Category Narratives (Bài viết Danh mục)</h2>
+            </div>
+            {expandedCats['narratives'] ? <ChevronDown size={20} className="text-admin-text-dim" /> : <ChevronRight size={20} className="text-admin-text-dim" />}
+          </button>
+          
+          {expandedCats['narratives'] && (
+            <div className="p-6 pt-2 border-t border-admin-line-strong flex flex-col gap-6 bg-admin-panel/50">
+              {sections.map(section => (
+                <div key={section.id}>
+                  <h3 className="text-md font-bold text-admin-gold mb-3 flex items-center gap-2">
+                    <img src={section.icon} className="w-5 h-5 filter invert opacity-80" alt="" />
+                    {section.title}
+                  </h3>
+                  <NarrativeEditCard section={section} />
+                </div>
+              ))}
             </div>
           )}
         </div>
@@ -367,7 +582,7 @@ const PureAdminPage = () => {
             className="w-full px-6 py-4 flex items-center justify-between bg-admin-panel hover:bg-admin-bg transition-colors"
           >
             <div className="flex items-center gap-3">
-              <span className="flex items-center justify-center w-6 h-6 rounded-full bg-admin-gold/20 text-admin-gold text-xs font-bold">2</span>
+              <span className="flex items-center justify-center w-6 h-6 rounded-full bg-admin-gold/20 text-admin-gold text-xs font-bold">3</span>
               <h2 className="text-lg font-bold text-admin-text">Tùy chỉnh Dịch vụ & Đặc quyền</h2>
             </div>
             {expandedCats['categories'] ? <ChevronDown size={20} className="text-admin-text-dim" /> : <ChevronRight size={20} className="text-admin-text-dim" />}
@@ -381,9 +596,8 @@ const PureAdminPage = () => {
                     <img src={section.icon} className="w-8 h-8 filter invert opacity-80" alt="" />
                     {section.title}
                   </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                  <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
                     {section.services.map(service => {
-                       // Render all services and their variants if they exist
                        const items = service.variants ? service.variants.map(v => ({...v, name: v.name, description: v.subtitle})) : [service];
                        return items.map((item, idx) => (
                          <ServiceEditCard key={`${service.name}-${idx}`} service={item} />

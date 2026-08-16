@@ -43,7 +43,7 @@ const slugify = (value: string) =>
 const hasVariants = (service: PureRelaxationService): service is PureRelaxationService & { variants: PureRelaxationVariant[] } =>
   Array.isArray(service.variants) && service.variants.length > 0;
 
-const getActiveItem = (service: PureRelaxationService, variantIndex: number, contentMedia: any = {}): ActiveItem => {
+const getActiveItem = (service: PureRelaxationService, variantIndex: number, contentMedia: any = {}, currentLang: string = 'vi'): ActiveItem => {
   let active: ActiveItem;
   if (hasVariants(service)) {
     const variant = service.variants[Math.min(variantIndex, service.variants.length - 1)];
@@ -67,15 +67,18 @@ const getActiveItem = (service: PureRelaxationService, variantIndex: number, con
   // Apply admin overrides
   const override = contentMedia[active.name];
   if (override) {
-    if (override.description) active.subtitle = override.description;
-    if (override.privilege) {
-      active.privilege = { ...active.privilege, ...override.privilege };
+    const langData = override[currentLang] || {};
+    if (langData.description) active.subtitle = langData.description;
+    if (langData.privilege) {
+      active.privilege = { ...active.privilege, ...langData.privilege };
     }
-    if (override.src) {
+    const mediaSrc = langData.src || override.src;
+    const mediaType = langData.type || override.type;
+    if (mediaSrc) {
       active.media = {
         ...active.media,
-        type: override.type as 'image' | 'video',
-        src: override.src,
+        type: mediaType as 'image' | 'video',
+        src: mediaSrc,
       };
     }
   }
@@ -288,6 +291,12 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
                          section.id === 'vip-package' ? vipPackagesContent : 
                          humanTouchContent;
 
+  const adminNarrative = contentMedia?.narratives?.[section.id]?.[currentLang || 'vi'];
+  const finalSectionContent = {
+    ...sectionContent,
+    ...adminNarrative
+  };
+
   // Fetch dynamic services and content from admin panel
   const [dbServices, setDbServices] = useState<any[]>([]);
   useEffect(() => {
@@ -298,7 +307,7 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
   }, []);
 
   const selectedService = section.services[serviceIndex];
-  const active = useMemo(() => getActiveItem(selectedService, variantIndex, contentMedia), [selectedService, variantIndex, contentMedia]);
+  const active = useMemo(() => getActiveItem(selectedService, variantIndex, contentMedia, currentLang), [selectedService, variantIndex, contentMedia, currentLang]);
   
   const displayDurations = useMemo(() => {
     return active.durations.map(duration => {
@@ -589,13 +598,13 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
         <div className={styles.humanTouchSection} style={{ padding: 0, border: 'none', background: 'transparent' }}>
           <div className={styles.vipStory}>
             <div className={styles.vipStoryInner}>
-              <h2 className={styles.vipHeadline}>{(sectionContent as any).headline}</h2>
-              <p className={styles.vipLead}>{(sectionContent as any).lead}</p>
-              {(sectionContent as any).paragraphs?.map((p: string, i: number) => (
+              <h2 className={styles.vipHeadline}>{(finalSectionContent as any).headline}</h2>
+              <p className={styles.vipLead}>{(finalSectionContent as any).lead}</p>
+              {(finalSectionContent as any).paragraphs?.map((p: string, i: number) => (
                 <p key={i} className={styles.vipCopy}>{p}</p>
               ))}
-              {(sectionContent as any).specialText && (
-                <div className={styles.vipSpecialText}>{(sectionContent as any).specialText}</div>
+              {(finalSectionContent as any).specialText && (
+                <div className={styles.vipSpecialText}>{(finalSectionContent as any).specialText}</div>
               )}
             </div>
           </div>
@@ -604,35 +613,35 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
         <div className={styles.humanTouchSection}>
           <div className={styles.humanInner}>
             <div>
-              <span className={styles.humanEyebrow}>{(sectionContent as any).eyebrow}</span>
-              <h2 className={styles.humanHeadline}>{(sectionContent as any).headline}</h2>
-              <p className={styles.humanLead}>{(sectionContent as any).lead}</p>
+              <span className={styles.humanEyebrow}>{(finalSectionContent as any).eyebrow}</span>
+              <h2 className={styles.humanHeadline}>{(finalSectionContent as any).headline}</h2>
+              <p className={styles.humanLead}>{(finalSectionContent as any).lead}</p>
               
-              {(sectionContent as any).quote && (
+              {(finalSectionContent as any).quote && (
                 <div className={styles.humanQuote}>
-                  {(sectionContent as any).quote}
+                  {(finalSectionContent as any).quote}
                 </div>
               )}
 
-              {(sectionContent as any).body1 && <p className={styles.humanBodyCopy}>{(sectionContent as any).body1}</p>}
-              {(sectionContent as any).body2 && <p className={styles.humanBodyCopy}>{(sectionContent as any).body2}</p>}
-              {(sectionContent as any).body3 && <p className={styles.humanBodyCopy}>{(sectionContent as any).body3}</p>}
+              {(finalSectionContent as any).body1 && <p className={styles.humanBodyCopy}>{(finalSectionContent as any).body1}</p>}
+              {(finalSectionContent as any).body2 && <p className={styles.humanBodyCopy}>{(finalSectionContent as any).body2}</p>}
+              {(finalSectionContent as any).body3 && <p className={styles.humanBodyCopy}>{(finalSectionContent as any).body3}</p>}
 
-              {(sectionContent as any).chips && (sectionContent as any).chips.length > 0 && (
+              {(finalSectionContent as any).chips && (finalSectionContent as any).chips.length > 0 && (
                 <div className={styles.chipRow}>
-                  {(sectionContent as any).chips.map((chip: string, i: number) => (
+                  {(finalSectionContent as any).chips.map((chip: string, i: number) => (
                     <span key={i} className={styles.chip}>{chip}</span>
                   ))}
                 </div>
               )}
 
-              <div className={styles.humanClosing}>{(sectionContent as any).closing}</div>
+              <div className={styles.humanClosing}>{(finalSectionContent as any).closing}</div>
             </div>
 
-            {(sectionContent as any).points && (sectionContent as any).points.length > 0 && (
+            {(finalSectionContent as any).points && (finalSectionContent as any).points.length > 0 && (
               <aside className={styles.insightPanel}>
-                <div className={styles.panelTitle}>{(sectionContent as any).panelTitle}</div>
-                {(sectionContent as any).points.map((point: any, i: number) => (
+                <div className={styles.panelTitle}>{(finalSectionContent as any).panelTitle}</div>
+                {(finalSectionContent as any).points.map((point: any, i: number) => (
                   <div key={i} className={styles.insightPoint}>
                     <h4>{point.title}</h4>
                     <p>{point.desc}</p>
