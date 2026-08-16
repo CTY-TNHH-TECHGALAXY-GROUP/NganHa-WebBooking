@@ -215,6 +215,32 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
   };
 
   const packagesContent = currentLang === 'vi' ? {
+    eyebrow: 'Packages Perspective',
+    headline: 'Packages – Nhiều trải nghiệm trong một hành trình chăm sóc',
+    lead: 'Packages tại OriaSpa được xây dựng dành cho những khách hàng muốn kết hợp nhiều dịch vụ trong cùng một lần trải nghiệm, thay vì lựa chọn từng dịch vụ riêng lẻ.',
+    quote: 'Nhiều trải nghiệm trong một hành trình chăm sóc.',
+    body1: 'Mỗi package là sự kết hợp có chủ đích giữa các bước chăm sóc như massage cơ thể, massage chân, chăm sóc da mặt, gội đầu, ráy tai hoặc những dịch vụ thư giãn khác, giúp khách có thêm thời gian dành cho bản thân và trải nghiệm nhiều hình thức chăm sóc trong cùng một hành trình.',
+    body2: 'Các dịch vụ trong từng package được sắp xếp theo trình tự phù hợp để cảm giác thư giãn được tiếp nối từ bước này sang bước khác. Từ việc làm dịu cơ thể, chăm sóc những vùng thường xuyên chịu áp lực đến những khoảng thời gian nhẹ nhàng dành cho da, tóc và giác quan, mỗi phần đều góp vào một trải nghiệm hoàn chỉnh hơn.',
+    body3: 'Thay vì chỉ tập trung vào một nhu cầu, Packages hướng đến việc chăm sóc nhiều khía cạnh của cơ thể và cảm xúc trong cùng một khoảng thời gian — phù hợp cho những ngày khách muốn nghỉ ngơi lâu hơn, muốn trải nghiệm nhiều dịch vụ hơn hoặc đơn giản là dành cho mình một khoảng thời gian trọn vẹn.',
+    chips: [] as string[],
+    closing: '',
+    panelTitle: '',
+    points: [] as any[]
+  } : {
+    eyebrow: 'Packages Perspective',
+    headline: 'Packages – Multiple experiences in one journey of care',
+    lead: 'Packages at OriaSpa are designed for guests who wish to combine multiple services into a single experience, rather than selecting individual treatments.',
+    quote: 'Multiple experiences in one journey of care.',
+    body1: 'Each package is a purposeful combination of care steps such as body massage, foot massage, facial care, hair washing, ear cleaning, or other relaxing services, giving guests more time for themselves to experience various forms of care in one continuous journey.',
+    body2: 'The services within each package are arranged in a suitable sequence so that the feeling of relaxation flows seamlessly from one step to the next. From soothing the body and tending to areas under frequent pressure, to gentle moments dedicated to the skin, hair, and senses—each part contributes to a more complete experience.',
+    body3: 'Instead of focusing on just one need, Packages aim to care for multiple aspects of the body and emotions simultaneously—ideal for days when guests want to rest longer, experience more services, or simply dedicate uninterrupted time to themselves.',
+    chips: [] as string[],
+    closing: '',
+    panelTitle: '',
+    points: [] as any[]
+  };
+
+  const vipPackagesContent = currentLang === 'vi' ? {
     headline: <>VIP Packages<br/><span className={styles.vipTitleAccent}>Dành trọn thời gian cho chính mình</span></>,
     lead: 'VIP Packages tại OriaSpa được tạo nên cho những lúc khách muốn tạm rời khỏi công việc, lịch trình và những áp lực thường ngày để dành trọn một khoảng thời gian cho chính mình.',
     paragraphs: [
@@ -239,7 +265,8 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
   const sectionContent = section.id === 'foot-care' ? footCareContent : 
                          section.id === 'ear-clean' ? earCleanContent : 
                          section.id === 'barber' ? barberContent : 
-                         section.id === 'vip-package' ? packagesContent : 
+                         section.id === 'package' ? packagesContent : 
+                         section.id === 'vip-package' ? vipPackagesContent : 
                          humanTouchContent;
 
   // Fetch dynamic services and content from admin panel
@@ -554,7 +581,7 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
             </div>
           </div>
         </div>
-      ) : (section.id === 'foot-care' || section.id === 'ear-clean' || section.id === 'barber') ? (
+      ) : (section.id === 'foot-care' || section.id === 'ear-clean' || section.id === 'barber' || section.id === 'package') ? (
         <div className={styles.humanTouchSection}>
           <div className={styles.humanInner}>
             <div>
