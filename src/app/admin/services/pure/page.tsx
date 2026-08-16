@@ -547,62 +547,45 @@ const PureAdminPage = () => {
           )}
         </div>
 
-        {/* Dynamic Narrative Management */}
-        <div className="bg-admin-panel border border-admin-line rounded-2xl overflow-hidden shadow-sm">
-          <button 
-            onClick={() => toggleCat('narratives')}
-            className="w-full px-6 py-4 flex items-center justify-between bg-admin-panel hover:bg-admin-bg transition-colors"
-          >
-            <div className="flex items-center gap-3">
-              <span className="flex items-center justify-center w-6 h-6 rounded-full bg-admin-gold/20 text-admin-gold text-xs font-bold">2</span>
-              <h2 className="text-lg font-bold text-admin-text">Category Narratives (Bài viết Danh mục)</h2>
-            </div>
-            {expandedCats['narratives'] ? <ChevronDown size={20} className="text-admin-text-dim" /> : <ChevronRight size={20} className="text-admin-text-dim" />}
-          </button>
-          
-          {expandedCats['narratives'] && (
-            <div className="p-6 pt-2 border-t border-admin-line-strong flex flex-col gap-6 bg-admin-panel/50">
-              {sections.map(section => (
-                <div key={section.id}>
-                  <h3 className="text-md font-bold text-admin-gold mb-3 flex items-center gap-2">
-                    <img src={section.icon} className="w-5 h-5 filter invert opacity-80" alt="" />
-                    {section.title}
-                  </h3>
-                  <NarrativeEditCard section={section} />
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Dynamic Category Management */}
+        {/* Dynamic Category Management (Narratives + Services) */}
         <div className="bg-admin-panel border border-admin-line rounded-2xl overflow-hidden shadow-sm">
           <button 
             onClick={() => toggleCat('categories')}
             className="w-full px-6 py-4 flex items-center justify-between bg-admin-panel hover:bg-admin-bg transition-colors"
           >
             <div className="flex items-center gap-3">
-              <span className="flex items-center justify-center w-6 h-6 rounded-full bg-admin-gold/20 text-admin-gold text-xs font-bold">3</span>
-              <h2 className="text-lg font-bold text-admin-text">Tùy chỉnh Dịch vụ & Đặc quyền</h2>
+              <span className="flex items-center justify-center w-6 h-6 rounded-full bg-admin-gold/20 text-admin-gold text-xs font-bold">2</span>
+              <h2 className="text-lg font-bold text-admin-text">Tùy chỉnh Bài viết Danh mục & Các Dịch vụ</h2>
             </div>
             {expandedCats['categories'] ? <ChevronDown size={20} className="text-admin-text-dim" /> : <ChevronRight size={20} className="text-admin-text-dim" />}
           </button>
           
           {expandedCats['categories'] && (
-            <div className="p-6 pt-2 border-t border-admin-line-strong flex flex-col gap-8 bg-admin-panel/50">
+            <div className="p-6 pt-2 border-t border-admin-line-strong flex flex-col gap-10 bg-admin-panel/50">
               {sections.map(section => (
-                <div key={section.id} className="border border-admin-line-strong rounded-xl p-5 bg-admin-bg/50">
-                  <h3 className="text-xl font-bold text-admin-gold mb-4 flex items-center gap-3 border-b border-admin-line pb-3">
+                <div key={section.id} className="border border-admin-line-strong rounded-2xl p-6 bg-admin-bg/50">
+                  <h3 className="text-2xl font-bold text-admin-gold mb-6 flex items-center gap-3 border-b border-admin-line pb-4">
                     <img src={section.icon} className="w-8 h-8 filter invert opacity-80" alt="" />
                     {section.title}
                   </h3>
-                  <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-                    {section.services.map(service => {
-                       const items = service.variants ? service.variants.map(v => ({...v, name: v.name, description: v.subtitle})) : [service];
-                       return items.map((item, idx) => (
-                         <ServiceEditCard key={`${service.name}-${idx}`} service={item} />
-                       ));
-                    })}
+
+                  {/* 1. Category Narrative Editor */}
+                  <div className="mb-8">
+                    <h4 className="text-xs font-bold text-admin-text-dim mb-3 uppercase tracking-widest">I. Bài viết giới thiệu danh mục (Perspective)</h4>
+                    <NarrativeEditCard section={section} />
+                  </div>
+
+                  {/* 2. Services Editor */}
+                  <div>
+                    <h4 className="text-xs font-bold text-admin-text-dim mb-3 uppercase tracking-widest">II. Các dịch vụ thuộc danh mục</h4>
+                    <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+                      {section.services.map(service => {
+                         const items = service.variants ? service.variants.map(v => ({...v, name: v.name, description: v.subtitle})) : [service];
+                         return items.map((item, idx) => (
+                           <ServiceEditCard key={`${service.name}-${idx}`} service={item} />
+                         ));
+                      })}
+                    </div>
                   </div>
                 </div>
               ))}
