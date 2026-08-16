@@ -48,8 +48,8 @@ const getActiveItem = (service: PureRelaxationService, variantIndex: number, con
   if (hasVariants(service)) {
     const variant = service.variants[Math.min(variantIndex, service.variants.length - 1)];
     active = {
-      name: variant.name,
-      subtitle: variant.subtitle,
+      name: currentLang === 'vi' ? (variant.subtitle || variant.name) : variant.name,
+      subtitle: '',
       media: variant.media,
       durations: variant.durations,
       privilege: variant.privilege,
@@ -468,8 +468,7 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
                     type="button"
                     onClick={() => setVariantIndex(index)}
                   >
-                    <span>{variant.name}</span>
-                    <small>{variant.subtitle}</small>
+                    <span>{currentLang === 'vi' ? (variant.subtitle || variant.name) : variant.name}</span>
                   </button>
                 ))}
               </div>
