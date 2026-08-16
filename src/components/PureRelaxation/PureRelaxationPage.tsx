@@ -238,8 +238,8 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
 
   const sectionContent = section.id === 'foot-care' ? footCareContent : 
                          section.id === 'ear-clean' ? earCleanContent : 
-                         section.id === 'barber' ? barberContent :
-                         (section.id === 'packages' || section.id === 'package') ? packagesContent :
+                         section.id === 'barber' ? barberContent : 
+                         section.id === 'vip-package' ? packagesContent : 
                          humanTouchContent;
 
   // Fetch dynamic services and content from admin panel
@@ -539,7 +539,7 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
             )}
           </div>
         </div>
-      ) : (section.id === 'packages' || section.id === 'package') ? (
+      ) : section.id === 'vip-package' ? (
         <div className={styles.humanTouchSection} style={{ padding: 0, border: 'none', background: 'transparent' }}>
           <div className={styles.vipStory}>
             <div className={styles.vipStoryInner}>
