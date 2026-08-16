@@ -57,16 +57,6 @@ const BlogsPage = () => {
   return (
     <div className={styles.blogContainer}>
       <div className={styles.progress} style={{ width: `${scrollProgress}%` }}></div>
-      <nav className={styles.nav}>
-        <div className={styles.brand}><b>ORIA</b><span>Knowledge</span></div>
-        <div className={styles.navlinks}>
-          <a className={styles.active} href="#discover">Discover</a>
-          <a href="#field">Field Notes</a>
-          <a href="#city">City Guide</a>
-          <a href="#">VI / EN</a>
-          <a className={styles.book} href="#">Book</a>
-        </div>
-      </nav>
 
       <header className={styles.hero}>
         <div>
