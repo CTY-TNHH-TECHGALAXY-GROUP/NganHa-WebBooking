@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Image as ImageIcon, Video, Upload, CheckCircle, ChevronDown, ChevronRight, X, Plus, Save } from 'lucide-react';
 import { createClient } from '@/lib/supabase';
 import { getPureRelaxationSections } from '@/components/PureRelaxation/pureRelaxationData';
+import { PURE_RELAXATION_DEFAULTS } from '@/components/PureRelaxation/pureRelaxationDefaults';
 
 const defaultBgImages = [
   '/images/services/aroma-oil.png',
@@ -360,7 +361,12 @@ const PureAdminPage = () => {
       : (existingNarratives[sectionId] || {});
 
     const langData = nData[activeLang] || {};
+    const defaults = PURE_RELAXATION_DEFAULTS[sectionId]?.[activeLang] || {};
     const hasChanges = !!localNarrativeOverrides[sectionId];
+
+    const getValue = (field: string) => {
+      return langData[field] !== undefined ? langData[field] : (defaults[field] || '');
+    };
 
     const isVip = sectionId === 'vip-package';
 
@@ -386,7 +392,7 @@ const PureAdminPage = () => {
                   <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Eyebrow (Tiêu đề nhỏ)</label>
                   <input 
                     className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none"
-                    value={langData.eyebrow || ''}
+                    value={getValue('eyebrow')}
                     onChange={(e) => handleNarrativeChange(sectionId, activeLang, 'eyebrow', e.target.value)}
                   />
                 </div>
@@ -394,7 +400,7 @@ const PureAdminPage = () => {
                   <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Quote (Trích dẫn)</label>
                   <textarea 
                     className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none min-h-[50px]"
-                    value={langData.quote || ''}
+                    value={getValue('quote')}
                     onChange={(e) => handleNarrativeChange(sectionId, activeLang, 'quote', e.target.value)}
                   />
                 </div>
@@ -405,7 +411,7 @@ const PureAdminPage = () => {
               <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Headline (Tiêu đề chính)</label>
               <input 
                 className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none"
-                value={langData.headline || ''}
+                value={getValue('headline')}
                 onChange={(e) => handleNarrativeChange(sectionId, activeLang, 'headline', e.target.value)}
               />
             </div>
@@ -413,7 +419,7 @@ const PureAdminPage = () => {
               <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Lead (Đoạn mở đầu)</label>
               <textarea 
                 className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none min-h-[60px]"
-                value={langData.lead || ''}
+                value={getValue('lead')}
                 onChange={(e) => handleNarrativeChange(sectionId, activeLang, 'lead', e.target.value)}
               />
             </div>
@@ -424,7 +430,7 @@ const PureAdminPage = () => {
                   <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Body 1</label>
                   <textarea 
                     className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none min-h-[60px]"
-                    value={langData.body1 || ''}
+                    value={getValue('body1')}
                     onChange={(e) => handleNarrativeChange(sectionId, activeLang, 'body1', e.target.value)}
                   />
                 </div>
@@ -432,7 +438,7 @@ const PureAdminPage = () => {
                   <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Body 2</label>
                   <textarea 
                     className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none min-h-[60px]"
-                    value={langData.body2 || ''}
+                    value={getValue('body2')}
                     onChange={(e) => handleNarrativeChange(sectionId, activeLang, 'body2', e.target.value)}
                   />
                 </div>
@@ -440,7 +446,7 @@ const PureAdminPage = () => {
                   <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Body 3</label>
                   <textarea 
                     className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none min-h-[60px]"
-                    value={langData.body3 || ''}
+                    value={getValue('body3')}
                     onChange={(e) => handleNarrativeChange(sectionId, activeLang, 'body3', e.target.value)}
                   />
                 </div>
@@ -453,7 +459,7 @@ const PureAdminPage = () => {
                   <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Paragraphs (Nội dung đoạn văn - Tách bằng dấu Enter)</label>
                   <textarea 
                     className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none min-h-[100px]"
-                    value={Array.isArray(langData.paragraphs) ? langData.paragraphs.join('\n') : langData.paragraphs || ''}
+                    value={Array.isArray(langData.paragraphs) ? langData.paragraphs.join('\n') : getValue('paragraphs')}
                     onChange={(e) => handleNarrativeChange(sectionId, activeLang, 'paragraphs', e.target.value.split('\n'))}
                   />
                 </div>
@@ -461,7 +467,7 @@ const PureAdminPage = () => {
                   <label className="text-[10px] uppercase font-bold text-admin-gold mb-1 block">Special Text</label>
                   <textarea 
                     className="w-full bg-admin-panel border border-admin-gold/50 rounded-lg p-2 text-sm text-admin-gold focus:border-admin-gold focus:outline-none min-h-[60px]"
-                    value={langData.specialText || ''}
+                    value={getValue('specialText')}
                     onChange={(e) => handleNarrativeChange(sectionId, activeLang, 'specialText', e.target.value)}
                   />
                 </div>
