@@ -378,94 +378,126 @@ const PureAdminPage = () => {
           ))}
         </div>
 
-        <div className="space-y-3">
-          {!isVip && (
-            <>
-              <div>
-                <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Eyebrow (Tiêu đề nhỏ)</label>
-                <input 
-                  className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none"
-                  value={langData.eyebrow || ''}
-                  onChange={(e) => handleNarrativeChange(sectionId, activeLang, 'eyebrow', e.target.value)}
-                />
-              </div>
-              <div>
-                <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Quote (Trích dẫn)</label>
-                <textarea 
-                  className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none min-h-[50px]"
-                  value={langData.quote || ''}
-                  onChange={(e) => handleNarrativeChange(sectionId, activeLang, 'quote', e.target.value)}
-                />
-              </div>
-            </>
-          )}
+        <div className="flex flex-col xl:flex-row gap-6">
+          <div className="flex-1 space-y-3">
+            {!isVip && (
+              <>
+                <div>
+                  <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Eyebrow (Tiêu đề nhỏ)</label>
+                  <input 
+                    className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none"
+                    value={langData.eyebrow || ''}
+                    onChange={(e) => handleNarrativeChange(sectionId, activeLang, 'eyebrow', e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Quote (Trích dẫn)</label>
+                  <textarea 
+                    className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none min-h-[50px]"
+                    value={langData.quote || ''}
+                    onChange={(e) => handleNarrativeChange(sectionId, activeLang, 'quote', e.target.value)}
+                  />
+                </div>
+              </>
+            )}
 
-          <div>
-            <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Headline (Tiêu đề chính)</label>
-            <input 
-              className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none"
-              value={langData.headline || ''}
-              onChange={(e) => handleNarrativeChange(sectionId, activeLang, 'headline', e.target.value)}
-            />
+            <div>
+              <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Headline (Tiêu đề chính)</label>
+              <input 
+                className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none"
+                value={langData.headline || ''}
+                onChange={(e) => handleNarrativeChange(sectionId, activeLang, 'headline', e.target.value)}
+              />
+            </div>
+            <div>
+              <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Lead (Đoạn mở đầu)</label>
+              <textarea 
+                className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none min-h-[60px]"
+                value={langData.lead || ''}
+                onChange={(e) => handleNarrativeChange(sectionId, activeLang, 'lead', e.target.value)}
+              />
+            </div>
+
+            {!isVip && (
+              <>
+                <div>
+                  <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Body 1</label>
+                  <textarea 
+                    className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none min-h-[60px]"
+                    value={langData.body1 || ''}
+                    onChange={(e) => handleNarrativeChange(sectionId, activeLang, 'body1', e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Body 2</label>
+                  <textarea 
+                    className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none min-h-[60px]"
+                    value={langData.body2 || ''}
+                    onChange={(e) => handleNarrativeChange(sectionId, activeLang, 'body2', e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Body 3</label>
+                  <textarea 
+                    className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none min-h-[60px]"
+                    value={langData.body3 || ''}
+                    onChange={(e) => handleNarrativeChange(sectionId, activeLang, 'body3', e.target.value)}
+                  />
+                </div>
+              </>
+            )}
+
+            {isVip && (
+              <>
+                <div>
+                  <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Paragraphs (Nội dung đoạn văn - Tách bằng dấu Enter)</label>
+                  <textarea 
+                    className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none min-h-[100px]"
+                    value={Array.isArray(langData.paragraphs) ? langData.paragraphs.join('\n') : langData.paragraphs || ''}
+                    onChange={(e) => handleNarrativeChange(sectionId, activeLang, 'paragraphs', e.target.value.split('\n'))}
+                  />
+                </div>
+                <div>
+                  <label className="text-[10px] uppercase font-bold text-admin-gold mb-1 block">Special Text</label>
+                  <textarea 
+                    className="w-full bg-admin-panel border border-admin-gold/50 rounded-lg p-2 text-sm text-admin-gold focus:border-admin-gold focus:outline-none min-h-[60px]"
+                    value={langData.specialText || ''}
+                    onChange={(e) => handleNarrativeChange(sectionId, activeLang, 'specialText', e.target.value)}
+                  />
+                </div>
+              </>
+            )}
           </div>
-          <div>
-            <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Lead (Đoạn mở đầu)</label>
-            <textarea 
-              className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none min-h-[60px]"
-              value={langData.lead || ''}
-              onChange={(e) => handleNarrativeChange(sectionId, activeLang, 'lead', e.target.value)}
-            />
+          
+          <div className="w-full xl:w-[280px] shrink-0">
+             <div className="bg-[#f5f1ea] text-[#241804] p-5 rounded-xl border border-admin-line shadow-inner text-[10px] font-sans sticky top-6">
+                <div className="text-center font-bold mb-4 border-b border-[#241804]/10 pb-2 uppercase tracking-widest text-[#a67433]">
+                   Vị trí trên Template
+                </div>
+                {!isVip ? (
+                  <div className="space-y-2 text-center">
+                    <div className="text-[#a67433] tracking-widest uppercase font-bold text-[8px] border border-dashed border-[#a67433] p-1 bg-[#a67433]/10">[Eyebrow]</div>
+                    <div className="text-xl font-serif border border-dashed border-gray-400 p-1 bg-white">[Headline]</div>
+                    <div className="font-medium text-[10px] leading-relaxed border border-dashed border-gray-400 p-1 bg-white">[Lead]</div>
+                    <div className="italic border-l-2 border-[#a67433] pl-2 text-left text-[10px] bg-white p-1 border-dashed border border-gray-400">[Quote]</div>
+                    <div className="text-left text-gray-500 border border-dashed border-gray-400 p-1 bg-white">[Body 1]</div>
+                    <div className="text-left text-gray-500 border border-dashed border-gray-400 p-1 bg-white">[Body 2]</div>
+                    <div className="text-left text-gray-500 border border-dashed border-gray-400 p-1 bg-white">[Body 3]</div>
+                  </div>
+                ) : (
+                  <div className="space-y-3 text-center">
+                    <div className="text-xl font-serif border border-dashed border-gray-400 p-1 bg-white text-[#241804]">[Headline]</div>
+                    <div className="font-medium text-[10px] leading-relaxed border border-dashed border-gray-400 p-1 bg-white">[Lead]</div>
+                    <div className="text-left text-gray-500 border border-dashed border-gray-400 p-2 bg-white flex flex-col gap-1.5">
+                       <div>[Paragraphs - dòng 1]</div>
+                       <div>[Paragraphs - dòng 2]</div>
+                       <div>[Paragraphs - dòng 3]</div>
+                    </div>
+                    <div className="text-[#a67433] italic text-lg font-serif border border-dashed border-[#a67433] p-2 bg-[#a67433]/10">[Special Text]</div>
+                  </div>
+                )}
+             </div>
           </div>
-
-          {!isVip && (
-            <>
-              <div>
-                <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Body 1</label>
-                <textarea 
-                  className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none min-h-[60px]"
-                  value={langData.body1 || ''}
-                  onChange={(e) => handleNarrativeChange(sectionId, activeLang, 'body1', e.target.value)}
-                />
-              </div>
-              <div>
-                <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Body 2</label>
-                <textarea 
-                  className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none min-h-[60px]"
-                  value={langData.body2 || ''}
-                  onChange={(e) => handleNarrativeChange(sectionId, activeLang, 'body2', e.target.value)}
-                />
-              </div>
-              <div>
-                <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Body 3</label>
-                <textarea 
-                  className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none min-h-[60px]"
-                  value={langData.body3 || ''}
-                  onChange={(e) => handleNarrativeChange(sectionId, activeLang, 'body3', e.target.value)}
-                />
-              </div>
-            </>
-          )}
-
-          {isVip && (
-            <>
-              <div>
-                <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Paragraphs (Nội dung đoạn văn - Tách bằng dấu Enter)</label>
-                <textarea 
-                  className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none min-h-[100px]"
-                  value={Array.isArray(langData.paragraphs) ? langData.paragraphs.join('\n') : langData.paragraphs || ''}
-                  onChange={(e) => handleNarrativeChange(sectionId, activeLang, 'paragraphs', e.target.value.split('\n'))}
-                />
-              </div>
-              <div>
-                <label className="text-[10px] uppercase font-bold text-admin-gold mb-1 block">Special Text</label>
-                <textarea 
-                  className="w-full bg-admin-panel border border-admin-gold/50 rounded-lg p-2 text-sm text-admin-gold focus:border-admin-gold focus:outline-none min-h-[60px]"
-                  value={langData.specialText || ''}
-                  onChange={(e) => handleNarrativeChange(sectionId, activeLang, 'specialText', e.target.value)}
-                />
-              </div>
-            </>
-          )}
         </div>
 
         <button 
