@@ -502,19 +502,19 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
       {section.id === 'body-care' ? (
         <div className={styles.humanTouchSection} style={{ padding: 0, border: 'none', background: 'transparent' }}>
           <div className={styles.narrativeHero}>
-            <div className={styles.narrativeKicker}>{sectionContent.eyebrow}</div>
-            <h2 className={styles.narrativeHeadline}>{sectionContent.headline}</h2>
-            <p className={styles.narrativeIntro}>{sectionContent.lead}</p>
-            {sectionContent.signature && sectionContent.signature.length > 0 && (
+            <div className={styles.narrativeKicker}>{(sectionContent as any).eyebrow}</div>
+            <h2 className={styles.narrativeHeadline}>{(sectionContent as any).headline}</h2>
+            <p className={styles.narrativeIntro}>{(sectionContent as any).lead}</p>
+            {(sectionContent as any).signature && (sectionContent as any).signature.length > 0 && (
               <div className={styles.narrativeSignature}>
-                {sectionContent.signature.map((item: string, i: number) => (
+                {(sectionContent as any).signature.map((item: string, i: number) => (
                   <span key={i}>{item}</span>
                 ))}
               </div>
             )}
           </div>
           <div className={styles.narrativeStory}>
-            {sectionContent.rows?.map((row: any, i: number) => (
+            {(sectionContent as any).rows?.map((row: any, i: number) => (
               <div key={i} className={styles.narrativeRow}>
                 <div className={styles.narrativeIndex}>{row.index}</div>
                 <div className={styles.narrativeContent}>
@@ -524,17 +524,17 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
               </div>
             ))}
             
-            {sectionContent.pullQuote && (
+            {(sectionContent as any).pullQuote && (
               <div className={styles.narrativePull}>
-                <div className={styles.narrativePullQuote}>{sectionContent.pullQuote}</div>
-                {sectionContent.pullSign && <div className={styles.narrativePullSign}>{sectionContent.pullSign}</div>}
+                <div className={styles.narrativePullQuote}>{(sectionContent as any).pullQuote}</div>
+                {(sectionContent as any).pullSign && <div className={styles.narrativePullSign}>{(sectionContent as any).pullSign}</div>}
               </div>
             )}
 
-            {sectionContent.finalBig && (
+            {(sectionContent as any).finalBig && (
               <div className={styles.narrativeFinal}>
-                <div className={styles.narrativeFinalBig}>{sectionContent.finalBig}</div>
-                <div className={styles.narrativeFinalSmall}>{sectionContent.finalSmall}</div>
+                <div className={styles.narrativeFinalBig}>{(sectionContent as any).finalBig}</div>
+                <div className={styles.narrativeFinalSmall}>{(sectionContent as any).finalSmall}</div>
               </div>
             )}
           </div>
@@ -543,13 +543,13 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
         <div className={styles.humanTouchSection} style={{ padding: 0, border: 'none', background: 'transparent' }}>
           <div className={styles.vipStory}>
             <div className={styles.vipStoryInner}>
-              <h2 className={styles.vipHeadline}>{sectionContent.headline}</h2>
-              <p className={styles.vipLead}>{sectionContent.lead}</p>
-              {sectionContent.paragraphs?.map((p: string, i: number) => (
+              <h2 className={styles.vipHeadline}>{(sectionContent as any).headline}</h2>
+              <p className={styles.vipLead}>{(sectionContent as any).lead}</p>
+              {(sectionContent as any).paragraphs?.map((p: string, i: number) => (
                 <p key={i} className={styles.vipCopy}>{p}</p>
               ))}
-              {sectionContent.specialText && (
-                <div className={styles.vipSpecialText}>{sectionContent.specialText}</div>
+              {(sectionContent as any).specialText && (
+                <div className={styles.vipSpecialText}>{(sectionContent as any).specialText}</div>
               )}
             </div>
           </div>
@@ -558,35 +558,35 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
         <div className={styles.humanTouchSection}>
           <div className={styles.humanInner}>
             <div>
-              <span className={styles.humanEyebrow}>{sectionContent.eyebrow}</span>
-              <h2 className={styles.humanHeadline}>{sectionContent.headline}</h2>
-              <p className={styles.humanLead}>{sectionContent.lead}</p>
+              <span className={styles.humanEyebrow}>{(sectionContent as any).eyebrow}</span>
+              <h2 className={styles.humanHeadline}>{(sectionContent as any).headline}</h2>
+              <p className={styles.humanLead}>{(sectionContent as any).lead}</p>
               
-              {sectionContent.quote && (
+              {(sectionContent as any).quote && (
                 <div className={styles.humanQuote}>
-                  {sectionContent.quote}
+                  {(sectionContent as any).quote}
                 </div>
               )}
 
-              {sectionContent.body1 && <p className={styles.humanBodyCopy}>{sectionContent.body1}</p>}
-              {sectionContent.body2 && <p className={styles.humanBodyCopy}>{sectionContent.body2}</p>}
-              {sectionContent.body3 && <p className={styles.humanBodyCopy}>{sectionContent.body3}</p>}
+              {(sectionContent as any).body1 && <p className={styles.humanBodyCopy}>{(sectionContent as any).body1}</p>}
+              {(sectionContent as any).body2 && <p className={styles.humanBodyCopy}>{(sectionContent as any).body2}</p>}
+              {(sectionContent as any).body3 && <p className={styles.humanBodyCopy}>{(sectionContent as any).body3}</p>}
 
-              {sectionContent.chips && sectionContent.chips.length > 0 && (
+              {(sectionContent as any).chips && (sectionContent as any).chips.length > 0 && (
                 <div className={styles.chipRow}>
-                  {sectionContent.chips.map((chip: string, i: number) => (
+                  {(sectionContent as any).chips.map((chip: string, i: number) => (
                     <span key={i} className={styles.chip}>{chip}</span>
                   ))}
                 </div>
               )}
 
-              <div className={styles.humanClosing}>{sectionContent.closing}</div>
+              <div className={styles.humanClosing}>{(sectionContent as any).closing}</div>
             </div>
 
-            {sectionContent.points && sectionContent.points.length > 0 && (
+            {(sectionContent as any).points && (sectionContent as any).points.length > 0 && (
               <aside className={styles.insightPanel}>
-                <div className={styles.panelTitle}>{sectionContent.panelTitle}</div>
-                {sectionContent.points.map((point: any, i: number) => (
+                <div className={styles.panelTitle}>{(sectionContent as any).panelTitle}</div>
+                {(sectionContent as any).points.map((point: any, i: number) => (
                   <div key={i} className={styles.insightPoint}>
                     <h4>{point.title}</h4>
                     <p>{point.desc}</p>
