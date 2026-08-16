@@ -110,28 +110,30 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
 
   const humanTouchContent = currentLang === 'vi' ? {
     eyebrow: 'Body Massage Perspective',
-    headline: 'Body Massage Nghệ thuật xoa bóp thủ công tại Oria Spa',
+    headline: <>Body Massage<br/>Nghệ thuật xoa bóp thủ công tại Oria Spa</>,
     lead: 'Body Massage tại Oria Spa là nghệ thuật xoa bóp 100% thủ công bằng đôi bàn tay của người nghệ nhân. Mỗi chuyển động không chỉ được thực hiện theo kỹ thuật, mà còn dựa trên kinh nghiệm, sự tinh tế và khả năng cảm nhận cơ thể của từng khách hàng.',
-    quote: '',
-    body1: 'Hơi ấm tự nhiên từ đôi bàn tay khi tiếp xúc với cơ thể tạo nên một cảm giác rất riêng gần gũi, dễ chịu và khó có thể thay thế bằng máy móc. Qua từng vùng cơ căng cứng, từng phản ứng nhỏ và mức độ chịu lực khác nhau, người nghệ nhân liên tục điều chỉnh lực ấn, nhịp điệu và kỹ thuật để phù hợp với trạng thái thực tế của cơ thể.',
-    body2: 'Chính vì vậy, mỗi liệu trình Body Massage tại Oria Spa không phải là một chuỗi động tác được lặp lại giống nhau. Đó là một trải nghiệm mang tính cá nhân, được hình thành từ đôi bàn tay, kinh nghiệm và sự cảm nhận của người nghệ nhân trong chính thời điểm đó',
-    body3: 'Giữa một cuộc sống ngày càng phụ thuộc vào thiết bị và máy móc, Oria Spa lựa chọn giữ lại giá trị nguyên bản của massage sự chăm sóc trực tiếp giữa con người với con người',
-    chips: [] as string[],
-    closing: '100% đôi bàn tay. 100% sự cảm nhận.\nMột nghệ thuật được tạo nên từ kỹ thuật, hơi ấm và sự tinh tế của người nghệ nhân.',
-    panelTitle: '',
-    points: [] as any[]
+    signature: ['100% thủ công', 'Hơi ấm con người', 'Lực ấn linh hoạt', 'Trải nghiệm cá nhân hóa'],
+    rows: [
+      { index: '01', title: 'Hơi ấm mà máy móc không thể thay thế', text: 'Hơi ấm tự nhiên từ đôi bàn tay khi tiếp xúc với cơ thể tạo nên một cảm giác rất riêng gần gũi, dễ chịu và khó có thể thay thế bằng máy móc. Qua từng vùng cơ căng cứng, từng phản ứng nhỏ và mức độ chịu lực khác nhau, người nghệ nhân liên tục điều chỉnh lực ấn, nhịp điệu và kỹ thuật để phù hợp với trạng thái thực tế của cơ thể.' },
+      { index: '02', title: 'Một liệu trình thay đổi theo từng vị khách', text: 'Chính vì vậy, mỗi liệu trình Body Massage tại Oria Spa không phải là một chuỗi động tác được lặp lại giống nhau. Đó là một trải nghiệm mang tính cá nhân, được hình thành từ đôi bàn tay, kinh nghiệm và sự cảm nhận của người nghệ nhân trong chính thời điểm đó.' }
+    ],
+    pullQuote: 'Giữa một cuộc sống ngày càng phụ thuộc vào thiết bị và máy móc, Oria Spa lựa chọn giữ lại giá trị nguyên bản của massage sự chăm sóc trực tiếp giữa con người với con người',
+    pullSign: 'Triết lý Oria Spa',
+    finalBig: <>100% đôi bàn tay.<br/>100% sự cảm nhận.</>,
+    finalSmall: 'Một nghệ thuật được tạo nên từ kỹ thuật, hơi ấm và sự tinh tế của người nghệ nhân.'
   } : {
     eyebrow: 'Body Massage Perspective',
-    headline: 'Body Massage – The Art of Manual Therapy at Oria Spa',
+    headline: <>Body Massage<br/>The Art of Manual Therapy at Oria Spa</>,
     lead: 'Body Massage at Oria Spa is a 100% manual art performed by the hands of our artisans. Every movement is not just executed by technique, but relies on experience, finesse, and the ability to sense each guest’s body.',
-    quote: '',
-    body1: 'The natural warmth from the hands touching the body creates a uniquely intimate and comforting feeling that machines can hardly replace. Through every tight muscle, every small reaction, and varying levels of pressure tolerance, the artisan continuously adjusts the applied force, rhythm, and technique to suit the actual state of the body.',
-    body2: 'Because of this, every Body Massage treatment at Oria Spa is not a repetitive sequence of movements. It is a highly personalized experience, shaped by the hands, experience, and feeling of the artisan in that exact moment.',
-    body3: 'In a world increasingly dependent on devices and machines, Oria Spa chooses to preserve the original value of massage: direct human-to-human care.',
-    chips: [] as string[],
-    closing: '100% human hands. 100% sensation.\nAn art created from technique, warmth, and the finesse of the artisan.',
-    panelTitle: '',
-    points: [] as any[]
+    signature: ['100% manual', 'Human warmth', 'Adaptive pressure', 'Personalized experience'],
+    rows: [
+      { index: '01', title: 'Warmth that machines cannot replicate', text: 'The natural warmth from the hands touching the body creates a uniquely intimate and comforting feeling that machines can hardly replace. Through every tight muscle, every small reaction, and varying levels of pressure tolerance, the artisan continuously adjusts the applied force, rhythm, and technique to suit the actual state of the body.' },
+      { index: '02', title: 'A treatment that changes with every guest', text: 'Because of this, every Body Massage treatment at Oria Spa is not a repetitive sequence of movements. It is a highly personalized experience, shaped by the hands, experience, and feeling of the artisan in that exact moment.' }
+    ],
+    pullQuote: 'In a world increasingly dependent on devices and machines, Oria Spa chooses to preserve the original value of massage: direct human-to-human care.',
+    pullSign: 'Oria Spa Philosophy',
+    finalBig: <>100% human hands.<br/>100% sensation.</>,
+    finalSmall: 'An art created from technique, warmth, and the finesse of the artisan.'
   };
 
   const footCareContent = currentLang === 'vi' ? {
@@ -213,29 +215,25 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
   };
 
   const packagesContent = currentLang === 'vi' ? {
-    eyebrow: 'Packages Perspective',
-    headline: 'Packages – Nhiều trải nghiệm trong một hành trình chăm sóc',
-    lead: 'Packages tại OriaSpa được xây dựng dành cho những khách hàng muốn kết hợp nhiều dịch vụ trong cùng một lần trải nghiệm, thay vì lựa chọn từng dịch vụ riêng lẻ.',
-    quote: 'Nhiều trải nghiệm trong một hành trình chăm sóc.',
-    body1: 'Mỗi package là sự kết hợp có chủ đích giữa các bước chăm sóc như massage cơ thể, massage chân, chăm sóc da mặt, gội đầu, ráy tai hoặc những dịch vụ thư giãn khác, giúp khách có thêm thời gian dành cho bản thân và trải nghiệm nhiều hình thức chăm sóc trong cùng một hành trình.',
-    body2: 'Các dịch vụ trong từng package được sắp xếp theo trình tự phù hợp để cảm giác thư giãn được tiếp nối từ bước này sang bước khác. Từ việc làm dịu cơ thể, chăm sóc những vùng thường xuyên chịu áp lực đến những khoảng thời gian nhẹ nhàng dành cho da, tóc và giác quan, mỗi phần đều góp vào một trải nghiệm hoàn chỉnh hơn.',
-    body3: 'Thay vì chỉ tập trung vào một nhu cầu, Packages hướng đến việc chăm sóc nhiều khía cạnh của cơ thể và cảm xúc trong cùng một khoảng thời gian — phù hợp cho những ngày khách muốn nghỉ ngơi lâu hơn, muốn trải nghiệm nhiều dịch vụ hơn hoặc đơn giản là dành cho mình một khoảng thời gian trọn vẹn.',
-    chips: [] as string[],
-    closing: '',
-    panelTitle: '',
-    points: [] as any[]
+    headline: <>VIP Packages<br/><span className={styles.vipTitleAccent}>Dành trọn thời gian cho chính mình</span></>,
+    lead: 'VIP Packages tại OriaSpa được tạo nên cho những lúc khách muốn tạm rời khỏi công việc, lịch trình và những áp lực thường ngày để dành trọn một khoảng thời gian cho chính mình.',
+    paragraphs: [
+      'Hành trình kết hợp cạo râu bằng dao, Facial, ráy tai thư giãn, Body Massage 4 Hands và gội đầu — mỗi dịch vụ mang đến một cảm giác khác nhau, nhưng cùng hướng đến một điều duy nhất: giúp cơ thể chậm lại và tâm trí được nghỉ ngơi.',
+      'Từ những chuyển động chậm rãi khi cạo râu, cảm giác dịu nhẹ trong Facial, sự thú vị và thư giãn đặc trưng của ráy tai, đến Body Massage 4 Hands với hai người thợ cùng chăm sóc cơ thể trong một nhịp điệu đồng thời. Nhiều điểm chạm xuất hiện cùng lúc khiến cơ thể dần buông lỏng, tâm trí không còn tập trung vào một chuyển động riêng biệt mà được cuốn vào dòng cảm giác liên tục và sâu hơn.',
+      'Sau cùng, gội đầu trở thành khoảng thư giãn nhẹ nhàng để khép lại hành trình — khi khách không cần làm gì, không cần nghĩ đến điều gì, chỉ đơn giản là nằm xuống và để bản thân được chăm sóc.',
+      'VIP Packages không hướng đến việc làm thật nhiều dịch vụ trong một lần. Giá trị nằm ở khoảng thời gian đủ dài để khách thật sự ngắt kết nối với bên ngoài, trải qua nhiều tầng cảm giác và trở về với trạng thái nhẹ nhàng hơn cả về cơ thể lẫn tâm trí.'
+    ],
+    specialText: 'Không cần vội. Không cần nghĩ đến công việc tiếp theo.\nChỉ là một khoảng thời gian được dành hoàn toàn cho chính mình.'
   } : {
-    eyebrow: 'Packages Perspective',
-    headline: 'Packages – Multiple experiences in one journey of care',
-    lead: 'Packages at OriaSpa are designed for guests who wish to combine multiple services into a single experience, rather than selecting individual treatments.',
-    quote: 'Multiple experiences in one journey of care.',
-    body1: 'Each package is a purposeful combination of care steps such as body massage, foot massage, facial care, hair washing, ear cleaning, or other relaxing services, giving guests more time for themselves to experience various forms of care in one continuous journey.',
-    body2: 'The services within each package are arranged in a suitable sequence so that the feeling of relaxation flows seamlessly from one step to the next. From soothing the body and tending to areas under frequent pressure, to gentle moments dedicated to the skin, hair, and senses—each part contributes to a more complete experience.',
-    body3: 'Instead of focusing on just one need, Packages aim to care for multiple aspects of the body and emotions simultaneously—ideal for days when guests want to rest longer, experience more services, or simply dedicate uninterrupted time to themselves.',
-    chips: [] as string[],
-    closing: '',
-    panelTitle: '',
-    points: [] as any[]
+    headline: <>VIP Packages<br/><span className={styles.vipTitleAccent}>Dedicating time to yourself</span></>,
+    lead: 'VIP Packages at OriaSpa are created for those moments when guests want to step away from work, schedules, and daily pressures to dedicate an uninterrupted period entirely to themselves.',
+    paragraphs: [
+      'A journey combining straight razor shaving, facial care, relaxing ear cleaning, 4-Hands Body Massage, and hair washing—each service offers a distinct sensation, yet all point toward a single goal: helping the body slow down and the mind to rest.',
+      'From the slow movements of the shave, the soothing touch of the facial, the unique intrigue of ear cleaning, to the 4-Hands Body Massage where two artisans care for the body in a synchronized rhythm. Multiple touchpoints occurring simultaneously cause the body to gradually loosen, allowing the mind to drift into a continuous, deeper flow of sensation.',
+      'Finally, hair washing becomes a gentle interlude to close the journey—when the guest doesn\'t need to do anything, think about anything, but simply lie down and be cared for.',
+      'VIP Packages are not about cramming many services into one visit. The value lies in a duration long enough for guests to truly disconnect from the outside world, experience multiple layers of sensation, and return to a lighter state in both body and mind.'
+    ],
+    specialText: 'No need to rush. No need to think about the next task.\nJust a moment dedicated completely to yourself.'
   };
 
   const sectionContent = section.id === 'foot-care' ? footCareContent : 
@@ -501,7 +499,62 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
         </div>
       </div>
 
-      {(section.id === 'body-care' || section.id === 'foot-care' || section.id === 'ear-clean' || section.id === 'barber' || section.id === 'packages' || section.id === 'package') && (
+      {section.id === 'body-care' ? (
+        <div className={styles.humanTouchSection} style={{ padding: 0, border: 'none', background: 'transparent' }}>
+          <div className={styles.narrativeHero}>
+            <div className={styles.narrativeKicker}>{sectionContent.eyebrow}</div>
+            <h2 className={styles.narrativeHeadline}>{sectionContent.headline}</h2>
+            <p className={styles.narrativeIntro}>{sectionContent.lead}</p>
+            {sectionContent.signature && sectionContent.signature.length > 0 && (
+              <div className={styles.narrativeSignature}>
+                {sectionContent.signature.map((item: string, i: number) => (
+                  <span key={i}>{item}</span>
+                ))}
+              </div>
+            )}
+          </div>
+          <div className={styles.narrativeStory}>
+            {sectionContent.rows?.map((row: any, i: number) => (
+              <div key={i} className={styles.narrativeRow}>
+                <div className={styles.narrativeIndex}>{row.index}</div>
+                <div className={styles.narrativeContent}>
+                  <h2>{row.title}</h2>
+                  <p>{row.text}</p>
+                </div>
+              </div>
+            ))}
+            
+            {sectionContent.pullQuote && (
+              <div className={styles.narrativePull}>
+                <div className={styles.narrativePullQuote}>{sectionContent.pullQuote}</div>
+                {sectionContent.pullSign && <div className={styles.narrativePullSign}>{sectionContent.pullSign}</div>}
+              </div>
+            )}
+
+            {sectionContent.finalBig && (
+              <div className={styles.narrativeFinal}>
+                <div className={styles.narrativeFinalBig}>{sectionContent.finalBig}</div>
+                <div className={styles.narrativeFinalSmall}>{sectionContent.finalSmall}</div>
+              </div>
+            )}
+          </div>
+        </div>
+      ) : (section.id === 'packages' || section.id === 'package') ? (
+        <div className={styles.humanTouchSection} style={{ padding: 0, border: 'none', background: 'transparent' }}>
+          <div className={styles.vipStory}>
+            <div className={styles.vipStoryInner}>
+              <h2 className={styles.vipHeadline}>{sectionContent.headline}</h2>
+              <p className={styles.vipLead}>{sectionContent.lead}</p>
+              {sectionContent.paragraphs?.map((p: string, i: number) => (
+                <p key={i} className={styles.vipCopy}>{p}</p>
+              ))}
+              {sectionContent.specialText && (
+                <div className={styles.vipSpecialText}>{sectionContent.specialText}</div>
+              )}
+            </div>
+          </div>
+        </div>
+      ) : (section.id === 'foot-care' || section.id === 'ear-clean' || section.id === 'barber') ? (
         <div className={styles.humanTouchSection}>
           <div className={styles.humanInner}>
             <div>
@@ -521,7 +574,7 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
 
               {sectionContent.chips && sectionContent.chips.length > 0 && (
                 <div className={styles.chipRow}>
-                  {sectionContent.chips.map((chip, i) => (
+                  {sectionContent.chips.map((chip: string, i: number) => (
                     <span key={i} className={styles.chip}>{chip}</span>
                   ))}
                 </div>
@@ -533,7 +586,7 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
             {sectionContent.points && sectionContent.points.length > 0 && (
               <aside className={styles.insightPanel}>
                 <div className={styles.panelTitle}>{sectionContent.panelTitle}</div>
-                {sectionContent.points.map((point, i) => (
+                {sectionContent.points.map((point: any, i: number) => (
                   <div key={i} className={styles.insightPoint}>
                     <h4>{point.title}</h4>
                     <p>{point.desc}</p>
@@ -543,7 +596,7 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
             )}
           </div>
         </div>
-      )}
+      ) : null}
     </section>
   );
 };
