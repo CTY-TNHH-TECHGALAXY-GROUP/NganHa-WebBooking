@@ -1,9 +1,9 @@
-:root {
+.blogContainer {
   --ink:#151515; --paper:#f3eee5; --paper2:#e9e1d4; --muted:#777064;
   --line:rgba(21,21,21,.16); --accent:#b79f7b; --white:#fffdf8;
+  scroll-behavior: smooth;
 }
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
+.blogContainer * { box-sizing:border-box; }
 .blogContainer {margin:0;background:var(--paper);color:var(--ink);font-family:Inter, ui-sans-serif, -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overflow-x:hidden}
 .blogContainer a {color:inherit;text-decoration:none}
 .blogContainer button, .blogContainer input {font:inherit}
