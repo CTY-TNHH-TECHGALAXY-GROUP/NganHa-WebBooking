@@ -43,25 +43,44 @@ const slugify = (value: string) =>
 const hasVariants = (service: PureRelaxationService): service is PureRelaxationService & { variants: PureRelaxationVariant[] } =>
   Array.isArray(service.variants) && service.variants.length > 0;
 
-const getActiveItem = (service: PureRelaxationService, variantIndex: number): ActiveItem => {
+const getActiveItem = (service: PureRelaxationService, variantIndex: number, contentMedia: any = {}): ActiveItem => {
+  let active: ActiveItem;
   if (hasVariants(service)) {
     const variant = service.variants[Math.min(variantIndex, service.variants.length - 1)];
-    return {
+    active = {
       name: variant.name,
       subtitle: variant.subtitle,
       media: variant.media,
       durations: variant.durations,
       privilege: variant.privilege,
     };
+  } else {
+    active = {
+      name: service.name,
+      subtitle: service.description,
+      media: service.media!,
+      durations: service.durations!,
+      privilege: service.privilege!,
+    };
   }
 
-  return {
-    name: service.name,
-    subtitle: service.description,
-    media: service.media!,
-    durations: service.durations!,
-    privilege: service.privilege!,
-  };
+  // Apply admin overrides
+  const override = contentMedia[active.name];
+  if (override) {
+    if (override.description) active.subtitle = override.description;
+    if (override.privilege) {
+      active.privilege = { ...active.privilege, ...override.privilege };
+    }
+    if (override.src) {
+      active.media = {
+        ...active.media,
+        type: override.type as 'image' | 'video',
+        src: override.src,
+      };
+    }
+  }
+
+  return active;
 };
 
 const MediaPreview = ({ media, label }: { media: PureRelaxationMedia; label: string }) => {
@@ -279,7 +298,7 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
   }, []);
 
   const selectedService = section.services[serviceIndex];
-  const active = useMemo(() => getActiveItem(selectedService, variantIndex), [selectedService, variantIndex]);
+  const active = useMemo(() => getActiveItem(selectedService, variantIndex, contentMedia), [selectedService, variantIndex, contentMedia]);
   
   const displayDurations = useMemo(() => {
     return active.durations.map(duration => {
@@ -408,7 +427,7 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
     <section className={styles.serviceSection} id={section.id}>
       <div className={styles.sectionGrid}>
         <div className={styles.mediaPane}>
-          {displayMedia && <MediaPreview media={displayMedia} label={active.name} />}
+          {active.media && <MediaPreview media={active.media} label={active.name} />}
         </div>
 
         <div className={styles.sectionContent}>
