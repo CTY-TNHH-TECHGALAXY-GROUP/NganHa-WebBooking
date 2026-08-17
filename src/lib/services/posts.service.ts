@@ -23,7 +23,7 @@ export class PostsService {
   async getPosts() {
     const { data, error } = await this.supabase
       .from('content_posts')
-      .select('*')
+      .select('id, slug, title, excerpt, cover_image, category, status, author, read_time, seo_metadata, created_at, updated_at')
       .order('created_at', { ascending: false });
 
     if (error) {

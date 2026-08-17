@@ -7,7 +7,8 @@ import { NextResponse } from 'next/server';
 import { getSupabaseAdmin } from '@/lib/supabase-server';
 import type { Service } from '@/components/Menu/types';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60; // Cache for 60 seconds to save Egress
+// export const dynamic = 'force-dynamic';
 
 /** Determine menuType from service ID prefix */
 const getMenuTypeFromId = (id: string): 'standard' | 'vip' => {
@@ -26,7 +27,7 @@ export const GET = async () => {
     const supabase = getSupabaseAdmin();
     const { data, error } = await supabase
       .from('Services')
-      .select('*')
+      .select('id, category, nameEN, nameVN, nameCN, nameJP, nameKR, description, imageUrl, priceVND, priceUSD, duration, tags, focusConfig, showPreferences, HINT, showCustomForYou, showNotes, isActive, isBestSeller, isBestChoice, media_url, media_type')
       .order('id', { ascending: true });
 
     if (error) {
