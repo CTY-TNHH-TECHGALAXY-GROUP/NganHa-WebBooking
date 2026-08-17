@@ -221,7 +221,10 @@ const PureAdminPage = () => {
       
       // Since Google Drive uc?id links don't have .mp4 extensions, we might need to rely on what the user says or just guess.
       // But typically we can still check the original url.
-      const isVideo = url.match(/\.(mp4|mov|webm)$/i);
+      let isVideo = !!url.match(/\.(mp4|mov|webm)$/i);
+      if (!isVideo && url.includes('drive.google.com')) {
+        isVideo = window.confirm('Link Google Drive này là VIDEO phải không?\n(Nhấn OK nếu là Video, Cancel nếu là Hình ảnh)');
+      }
       const type = isVideo ? 'video' : 'image';
       
       let newMediaData = { ...contentData };

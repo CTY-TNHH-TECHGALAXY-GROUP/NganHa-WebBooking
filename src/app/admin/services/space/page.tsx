@@ -179,7 +179,10 @@ const SpaceAdminPage = () => {
     
     const finalUrl = processGoogleDriveLink(url.trim());
     
-    const isVideo = url.match(/\.(mp4|mov|webm)$/i);
+    let isVideo = !!url.match(/\.(mp4|mov|webm)$/i);
+    if (!isVideo && url.includes('drive.google.com')) {
+      isVideo = window.confirm('Link Google Drive này là VIDEO phải không?\n(Nhấn OK nếu là Video, Cancel nếu là Hình ảnh)');
+    }
     const type = isVideo ? 'video' : 'image';
     
     setUploadingId(keyPath);
