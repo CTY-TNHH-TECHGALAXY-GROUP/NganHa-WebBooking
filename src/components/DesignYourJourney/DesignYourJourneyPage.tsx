@@ -221,14 +221,14 @@ const T = {
 
 export default function DesignYourJourneyPage() {
   const router = useRouter();
-  const { currentLang, setLang } = useTranslation();
+  const { currentLang, setCurrentLang } = useTranslation();
   
   const getLoc = (key: keyof typeof T) => {
     return T[key][currentLang as keyof typeof T[key]] || T[key]['en'];
   };
 
   const handleLangChange = (langCode: string) => {
-    setLang(langCode);
+    setCurrentLang(langCode);
   };
 
   return (
