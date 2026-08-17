@@ -137,6 +137,18 @@ const PureAdminPage = () => {
     await saveContent(newMediaData);
   };
 
+  const handleLinkInputArray = async (keyPath: string) => {
+    const url = window.prompt('Nhập đường link (URL) ảnh:');
+    if (!url || !url.trim()) return;
+    
+    let newMediaData = { ...contentData };
+    const arr = newMediaData[keyPath] || defaultBgImages;
+    newMediaData[keyPath] = [...arr, url.trim()];
+    
+    setContentData(newMediaData);
+    await saveContent(newMediaData);
+  };
+
   // --- SERVICE EDITING ---
   const handleTextChange = (serviceName: string, lang: string, field: string, value: string, subField?: string) => {
     setLocalTextOverrides((prev: any) => {
@@ -191,6 +203,23 @@ const PureAdminPage = () => {
 
     const hasChanges = !!localTextOverrides[serviceName];
 
+    const handleServiceLink = async () => {
+      const url = window.prompt('Nhập đường link (URL) ảnh hoặc video:');
+      if (!url || !url.trim()) return;
+      
+      const isVideo = url.match(/\.(mp4|mov|webm)$/i);
+      const type = isVideo ? 'video' : 'image';
+      
+      let newMediaData = { ...contentData };
+      const existing = newMediaData[serviceName] || {};
+      newMediaData[serviceName] = { ...existing, type, src: url.trim() };
+      
+      setContentData(newMediaData);
+      await saveContent(newMediaData);
+      setSuccessId(serviceName);
+      setTimeout(() => setSuccessId(null), 3000);
+    };
+
     return (
       <div className="bg-admin-bg p-4 rounded-xl border border-admin-line flex flex-col gap-4">
         <h4 className="font-bold text-admin-text border-b border-admin-line pb-2">{serviceName}</h4>
@@ -210,7 +239,7 @@ const PureAdminPage = () => {
                 {mediaType === 'video' ? 'VIDEO' : 'IMAGE'}
               </div>
               
-              <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+              <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col gap-2 items-center justify-center">
                 <label className="cursor-pointer bg-admin-gold text-[#241804] px-4 py-2 rounded-lg text-xs font-bold hover:bg-[#a67433] transition-colors shadow-lg">
                   Đổi ảnh/video
                   <input
@@ -223,23 +252,37 @@ const PureAdminPage = () => {
                     }}
                   />
                 </label>
+                <button
+                  onClick={handleServiceLink}
+                  className="bg-admin-panel text-admin-text px-4 py-2 rounded-lg text-xs font-bold hover:bg-admin-line transition-colors shadow-lg"
+                >
+                  🔗 Nhập link
+                </button>
               </div>
             </div>
           ) : (
             <div className="w-full h-40 flex flex-col items-center justify-center gap-2 hover:border-admin-gold transition-colors bg-admin-panel">
               <Upload size={24} className="text-admin-text-dim" />
-              <label className="cursor-pointer bg-admin-gold text-[#241804] px-4 py-1.5 rounded-lg text-xs font-bold hover:bg-[#a67433] mt-1 shadow-sm transition-transform active:scale-95">
-                Tải lên media
-                <input
-                  type="file"
-                  accept="image/*,video/*"
-                  className="hidden"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) handleFileUpload(serviceName, file, false);
-                  }}
-                />
-              </label>
+              <div className="flex gap-2 mt-1">
+                <label className="cursor-pointer bg-admin-gold text-[#241804] px-4 py-1.5 rounded-lg text-xs font-bold hover:bg-[#a67433] shadow-sm transition-transform active:scale-95">
+                  Tải lên media
+                  <input
+                    type="file"
+                    accept="image/*,video/*"
+                    className="hidden"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) handleFileUpload(serviceName, file, false);
+                    }}
+                  />
+                </label>
+                <button
+                  onClick={handleServiceLink}
+                  className="bg-admin-bg border border-admin-line text-admin-text px-4 py-1.5 rounded-lg text-xs font-bold hover:bg-admin-line shadow-sm transition-transform active:scale-95"
+                >
+                  🔗 Dán link
+                </button>
+              </div>
             </div>
           )}
 
@@ -562,24 +605,32 @@ const PureAdminPage = () => {
                   </div>
                 ))}
                 
-                <label className="cursor-pointer border-2 border-dashed border-admin-line-strong hover:border-admin-gold rounded-xl flex flex-col items-center justify-center aspect-video text-admin-text-dim hover:text-admin-gold transition-colors relative">
-                  <Plus size={24} className="mb-2" />
-                  <span className="text-xs font-bold">Thêm ảnh</span>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) handleFileUpload('slideshow', file, true);
-                    }}
-                  />
-                  {uploadingId === 'slideshow' && (
-                    <div className="absolute inset-0 bg-black/60 flex items-center justify-center rounded-xl z-10 backdrop-blur-sm">
-                      <div className="animate-spin w-6 h-6 border-2 border-admin-gold border-t-transparent rounded-full"></div>
-                    </div>
-                  )}
-                </label>
+                <div className="flex flex-col gap-2">
+                  <label className="cursor-pointer border-2 border-dashed border-admin-line-strong hover:border-admin-gold rounded-xl flex flex-col items-center justify-center aspect-video text-admin-text-dim hover:text-admin-gold transition-colors relative">
+                    <Plus size={24} className="mb-2" />
+                    <span className="text-xs font-bold">Thêm ảnh</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) handleFileUpload('slideshow', file, true);
+                      }}
+                    />
+                    {uploadingId === 'slideshow' && (
+                      <div className="absolute inset-0 bg-black/60 flex items-center justify-center rounded-xl z-10 backdrop-blur-sm">
+                        <div className="animate-spin w-6 h-6 border-2 border-admin-gold border-t-transparent rounded-full"></div>
+                      </div>
+                    )}
+                  </label>
+                  <button
+                    onClick={() => handleLinkInputArray('slideshow')}
+                    className="w-full bg-admin-panel border border-admin-line text-admin-text py-2 rounded-lg text-xs font-bold hover:bg-admin-line transition-colors shadow-sm"
+                  >
+                    🔗 Hoặc nhập link
+                  </button>
+                </div>
               </div>
             </div>
           )}

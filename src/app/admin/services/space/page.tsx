@@ -165,6 +165,29 @@ const SpaceAdminPage = () => {
     }
   };
 
+  const handleLinkInput = async (keyPath: string) => {
+    const url = window.prompt('Nhập đường link (URL) ảnh/video:');
+    if (!url || !url.trim()) return;
+    
+    const isVideo = url.match(/\.(mp4|mov|webm)$/i);
+    const type = isVideo ? 'video' : 'image';
+    
+    setUploadingId(keyPath);
+    setSuccessId(null);
+    try {
+      const newMediaData = setNestedValue(contentData, keyPath, { type, src: url.trim() });
+      setContentData(newMediaData);
+      await saveContent(newMediaData);
+      setSuccessId(keyPath);
+      setTimeout(() => setSuccessId(null), 3000);
+    } catch (err) {
+      console.error(err);
+      alert('Lỗi hệ thống');
+    } finally {
+      setUploadingId(null);
+    }
+  };
+
   const RenderMediaCard = ({ keyPath }: { keyPath: string }) => {
     const currentMedia = getNestedValue(contentData, keyPath);
     
@@ -258,28 +281,39 @@ const SpaceAdminPage = () => {
               </select>
             </div>
 
-            <label className={`
-              flex items-center justify-center gap-2 py-2.5 rounded-xl cursor-pointer
-              font-semibold text-[13.5px] transition-all duration-200 border border-admin-line-strong
-              ${uploadingId === keyPath
-                ? 'bg-admin-line text-admin-text-faint cursor-wait'
-                : 'bg-transparent hover:border-admin-gold hover:bg-admin-gold-dim text-admin-text-dim hover:text-admin-gold'
-              }
-            `}>
-              <Upload size={16} />
-              Tải lên file mới
-              <input
-                type="file"
-                accept="image/*, video/*, .mp4, .mov, .webm"
-                className="hidden"
+            <div className="flex gap-2">
+              <label className={`
+                flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl cursor-pointer
+                font-semibold text-[13.5px] transition-all duration-200 border border-admin-line-strong
+                ${uploadingId === keyPath
+                  ? 'bg-admin-line text-admin-text-faint cursor-wait'
+                  : 'bg-transparent hover:border-admin-gold hover:bg-admin-gold-dim text-admin-text-dim hover:text-admin-gold'
+                }
+              `}>
+                <Upload size={16} />
+                Tải lên
+                <input
+                  type="file"
+                  accept="image/*, video/*, .mp4, .mov, .webm"
+                  className="hidden"
+                  disabled={uploadingId === keyPath}
+                  onChange={e => {
+                    const file = e.target.files?.[0];
+                    if (file) handleFileUpload(keyPath, file);
+                    e.target.value = '';
+                  }}
+                />
+              </label>
+              
+              <button
+                onClick={() => handleLinkInput(keyPath)}
                 disabled={uploadingId === keyPath}
-                onChange={e => {
-                  const file = e.target.files?.[0];
-                  if (file) handleFileUpload(keyPath, file);
-                  e.target.value = '';
-                }}
-              />
-            </label>
+                className="flex items-center justify-center gap-1.5 px-3 rounded-xl border border-admin-line-strong bg-admin-panel-2 text-admin-text-dim hover:border-admin-gold hover:text-admin-gold font-semibold text-[13.5px] transition-colors shadow-sm disabled:opacity-50"
+                title="Nhập link trực tiếp"
+              >
+                🔗 Link
+              </button>
+            </div>
           </div>
         </div>
       </div>
