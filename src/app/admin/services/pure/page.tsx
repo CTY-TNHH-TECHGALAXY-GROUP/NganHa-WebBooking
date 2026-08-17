@@ -137,13 +137,23 @@ const PureAdminPage = () => {
     await saveContent(newMediaData);
   };
 
+  const processGoogleDriveLink = (url: string) => {
+    const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+    if (match && match[1]) {
+      return `https://drive.google.com/uc?id=${match[1]}`;
+    }
+    return url;
+  };
+
   const handleLinkInputArray = async (keyPath: string) => {
     const url = window.prompt('Nhập đường link (URL) ảnh:');
     if (!url || !url.trim()) return;
     
+    const finalUrl = processGoogleDriveLink(url.trim());
+    
     let newMediaData = { ...contentData };
     const arr = newMediaData[keyPath] || defaultBgImages;
-    newMediaData[keyPath] = [...arr, url.trim()];
+    newMediaData[keyPath] = [...arr, finalUrl];
     
     setContentData(newMediaData);
     await saveContent(newMediaData);
@@ -207,12 +217,16 @@ const PureAdminPage = () => {
       const url = window.prompt('Nhập đường link (URL) ảnh hoặc video:');
       if (!url || !url.trim()) return;
       
+      const finalUrl = processGoogleDriveLink(url.trim());
+      
+      // Since Google Drive uc?id links don't have .mp4 extensions, we might need to rely on what the user says or just guess.
+      // But typically we can still check the original url.
       const isVideo = url.match(/\.(mp4|mov|webm)$/i);
       const type = isVideo ? 'video' : 'image';
       
       let newMediaData = { ...contentData };
       const existing = newMediaData[serviceName] || {};
-      newMediaData[serviceName] = { ...existing, type, src: url.trim() };
+      newMediaData[serviceName] = { ...existing, type, src: finalUrl };
       
       setContentData(newMediaData);
       await saveContent(newMediaData);

@@ -165,9 +165,19 @@ const SpaceAdminPage = () => {
     }
   };
 
+  const processGoogleDriveLink = (url: string) => {
+    const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+    if (match && match[1]) {
+      return `https://drive.google.com/uc?id=${match[1]}`;
+    }
+    return url;
+  };
+
   const handleLinkInput = async (keyPath: string) => {
     const url = window.prompt('Nhập đường link (URL) ảnh/video:');
     if (!url || !url.trim()) return;
+    
+    const finalUrl = processGoogleDriveLink(url.trim());
     
     const isVideo = url.match(/\.(mp4|mov|webm)$/i);
     const type = isVideo ? 'video' : 'image';
@@ -175,7 +185,7 @@ const SpaceAdminPage = () => {
     setUploadingId(keyPath);
     setSuccessId(null);
     try {
-      const newMediaData = setNestedValue(contentData, keyPath, { type, src: url.trim() });
+      const newMediaData = setNestedValue(contentData, keyPath, { type, src: finalUrl });
       setContentData(newMediaData);
       await saveContent(newMediaData);
       setSuccessId(keyPath);
