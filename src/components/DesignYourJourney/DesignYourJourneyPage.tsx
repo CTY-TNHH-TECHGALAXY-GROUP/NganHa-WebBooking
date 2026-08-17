@@ -224,7 +224,8 @@ export default function DesignYourJourneyPage() {
   const { currentLang, setCurrentLang } = useTranslation();
   
   const getLoc = (key: keyof typeof T) => {
-    return T[key][currentLang as keyof typeof T[key]] || T[key]['en'];
+    const entry = T[key] as Record<string, string>;
+    return entry[currentLang] || entry['en'];
   };
 
   const handleLangChange = (langCode: string) => {
