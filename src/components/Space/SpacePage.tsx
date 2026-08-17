@@ -77,22 +77,35 @@ export default function SpacePage() {
     return val?.title || defaultTitle;
   };
 
-  const MediaRenderer = ({ mediaObj, className, alt }: { mediaObj: {src: string, type: string}, className?: string, alt?: string }) => {
-    if (mediaObj.type === 'video') {
-      return (
-        <video 
-          src={mediaObj.src} 
-          className={className} 
-          autoPlay 
-          muted 
-          loop 
-          playsInline 
-          style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-        />
-      );
+// Move MediaRenderer outside to prevent remounts on every SpacePage render
+const MediaRenderer = ({ mediaObj, className, alt, onEnded }: { mediaObj: {src: string, type: string}, className?: string, alt?: string, onEnded?: () => void }) => {
+  useEffect(() => {
+    if (mediaObj.type !== 'video' && onEnded) {
+      const timer = setTimeout(() => {
+        onEnded();
+      }, 6000);
+      return () => clearTimeout(timer);
     }
-    return <img src={mediaObj.src} alt={alt || ""} className={className} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />;
-  };
+  }, [mediaObj.src, mediaObj.type, onEnded]);
+
+  if (mediaObj.type === 'video') {
+    return (
+      <video 
+        key={mediaObj.src} // Ensure video element updates properly when src changes
+        src={mediaObj.src} 
+        className={className} 
+        autoPlay 
+        muted 
+        loop={!onEnded} 
+        playsInline 
+        onEnded={onEnded}
+        preload="auto"
+        style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+      />
+    );
+  }
+  return <img key={mediaObj.src} src={mediaObj.src} alt={alt || ""} className={className} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />;
+};
 
   useEffect(() => {
     const revealObs = new IntersectionObserver((entries) => {
@@ -147,6 +160,24 @@ export default function SpacePage() {
     }
   };
 
+  const handleWelcomeEnded = () => {
+    const tabs: Array<'reception' | 'lounge' | 'ritual'> = ['reception', 'lounge', 'ritual'];
+    const nextIdx = (tabs.indexOf(welcomeTab) + 1) % tabs.length;
+    handleTabChange('welcome', tabs[nextIdx]);
+  };
+
+  const handleFloor1Ended = () => {
+    const tabs: Array<'body' | 'foot' | 'private'> = ['body', 'foot', 'private'];
+    const nextIdx = (tabs.indexOf(floor1Tab) + 1) % tabs.length;
+    handleTabChange('floor1', tabs[nextIdx]);
+  };
+
+  const handleFloor2Ended = () => {
+    const tabs: Array<'suite' | 'headSpa' | 'quiet'> = ['suite', 'headSpa', 'quiet'];
+    const nextIdx = (tabs.indexOf(floor2Tab) + 1) % tabs.length;
+    handleTabChange('floor2', tabs[nextIdx]);
+  };
+
   const scrollTo = (id: string) => {
     const el = document.getElementById(id);
     if (el) el.scrollIntoView({ behavior: 'smooth' });
@@ -180,7 +211,7 @@ export default function SpacePage() {
         </div>
 
         <div className={`${styles.videoFrame} ${styles.reveal}`}>
-          <MediaRenderer mediaObj={getMedia(`welcome.${welcomeTab}`, defaultMedia.welcome[welcomeTab])} alt="Welcome area" className={welcomeFading ? styles.fadeOut : ''} />
+          <MediaRenderer mediaObj={getMedia(`welcome.${welcomeTab}`, defaultMedia.welcome[welcomeTab])} alt="Welcome area" className={welcomeFading ? styles.fadeOut : ''} onEnded={handleWelcomeEnded} />
           <div className={styles.videoUi}>
             <div className={styles.videoLabel}>Welcome Area / Film 01</div>
             <div className={styles.videoControl}><span>Play film</span><div className={styles.playBtn}></div></div>
@@ -201,7 +232,6 @@ export default function SpacePage() {
         <div className={`${styles.interludeInner} ${styles.reveal}`}>
           <small>From arrival to treatment</small>
           <h2>Nothing should interrupt<br/>the feeling of the space.</h2>
-          <p>This is why the interface stays minimal. The video carries the emotion; the UI only guides the guest to the next chapter.</p>
         </div>
       </section>
 
@@ -213,7 +243,7 @@ export default function SpacePage() {
         </div>
 
         <div className={`${styles.videoFrame} ${styles.reveal}`}>
-          <MediaRenderer mediaObj={getMedia(`floor1.${floor1Tab}`, defaultMedia.floor1[floor1Tab])} alt="First floor" className={floor1Fading ? styles.fadeOut : ''} />
+          <MediaRenderer mediaObj={getMedia(`floor1.${floor1Tab}`, defaultMedia.floor1[floor1Tab])} alt="First floor" className={floor1Fading ? styles.fadeOut : ''} onEnded={handleFloor1Ended} />
           <div className={styles.videoUi}>
             <div className={styles.videoLabel}>First Floor / Film 02</div>
             <div className={styles.videoControl}><span>Play film</span><div className={styles.playBtn}></div></div>
@@ -238,7 +268,7 @@ export default function SpacePage() {
         </div>
 
         <div className={`${styles.videoFrame} ${styles.reveal}`}>
-          <MediaRenderer mediaObj={getMedia(`floor2.${floor2Tab}`, defaultMedia.floor2[floor2Tab])} alt="Second floor" className={floor2Fading ? styles.fadeOut : ''} />
+          <MediaRenderer mediaObj={getMedia(`floor2.${floor2Tab}`, defaultMedia.floor2[floor2Tab])} alt="Second floor" className={floor2Fading ? styles.fadeOut : ''} onEnded={handleFloor2Ended} />
           <div className={styles.videoUi}>
             <div className={styles.videoLabel}>Second Floor / Film 03</div>
             <div className={styles.videoControl}><span>Play film</span><div className={styles.playBtn}></div></div>

@@ -180,6 +180,7 @@ const Hero = () => {
                   muted
                   playsInline
                   loop={videoCount === 1}
+                  preload="auto"
                   onEnded={videoCount > 1 ? handleNextVideo : undefined}
                   onError={() => {
                     if (videoCount > 1) {

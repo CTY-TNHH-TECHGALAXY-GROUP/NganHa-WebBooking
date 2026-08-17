@@ -57,7 +57,7 @@ const DEFAULT_NAV_ITEMS: NavItem[] = [
     col: 'right',
     isUnclickable: true,
     children: [
-      { id: 'design_journey', label: 'Design Your Journey', href: '/#design-journey', badge: '50%' },
+      { id: 'design_journey', label: 'Design Your Journey', href: '/design-your-journey', badge: '50%' },
       { id: 'pure_relaxation', label: 'Pure relaxation', href: '/pure-relaxation', badge: '30%' },
       { id: 'therapy', label: 'Therapy', href: '/therapy', badge: '20%' },
     ],
@@ -162,7 +162,7 @@ const Header = () => {
         col: 'right',
         isUnclickable: true,
         children: [
-          { id: 'design_journey', label: getLocalizedText(hpNav?.designJourney, lang, 'Design Your Journey'), href: '/#design-journey', badge: '50%' },
+          { id: 'design_journey', label: getLocalizedText(hpNav?.designJourney, lang, 'Design Your Journey'), href: '/design-your-journey', badge: '50%' },
           { id: 'pure_relaxation', label: getLocalizedText(hpNav?.pureRelaxation, lang, 'Pure relaxation'), href: '/pure-relaxation', badge: '30%' },
           { id: 'therapy', label: getLocalizedText(hpNav?.therapy, lang, 'Therapy'), href: '/therapy', badge: '20%' },
         ],
