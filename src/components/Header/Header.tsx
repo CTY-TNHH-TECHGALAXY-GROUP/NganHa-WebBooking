@@ -76,7 +76,7 @@ const DEFAULT_NAV_ITEMS: NavItem[] = [
   { id: 'local_tour', label: 'Local tour', href: '/local-tour', col: 'right' },
   { id: 'history', label: 'History', href: '/#history', col: 'right' },
   { id: 'privileges', label: 'Your privileges', href: '/privileges', col: 'left' },
-  { id: 'blogs', label: 'Blogs', href: '/blogs', target: '_blank', col: 'right' },
+  { id: 'blogs', label: 'Blogs', href: '/blogs', col: 'right' },
 ];
 
 const CART_COPY = {
@@ -181,7 +181,7 @@ const Header = () => {
       { id: 'local_tour', label: getLocalizedText(hpNav?.localTour, lang, 'Local tour'), href: '/local-tour', col: 'right' },
       { id: 'history', label: getLocalizedText(hpNav?.history, lang, 'History'), href: '/#history', col: 'right' },
       { id: 'privileges', label: getLocalizedText(hpNav?.privileges, lang, 'Your privileges'), href: '/privileges', col: 'left' },
-      { id: 'blogs', label: getLocalizedText(hpNav?.blogs, lang, 'Blogs'), href: '/blogs', target: '_blank', col: 'right' },
+      { id: 'blogs', label: getLocalizedText(hpNav?.blogs, lang, 'Blogs'), href: '/blogs', col: 'right' },
     ] as NavItem[];
   }, [hpNav, lang, getLocalizedText]);
 
