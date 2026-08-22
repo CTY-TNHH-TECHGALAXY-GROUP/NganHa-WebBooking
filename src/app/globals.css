@@ -64,6 +64,7 @@ body,
   overscroll-behavior-x: none;
   overscroll-behavior-y: auto;
   -webkit-text-size-adjust: 100%;
+  padding-bottom: max(env(safe-area-inset-bottom), 120px) !important;
 }
 
 *, *::before, *::after {
@@ -133,7 +134,31 @@ body,
   scrollbar-width: none;
 }
 
-/* Custom Scrollbar */
+/* Global Auto-hide Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+  background: transparent;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 10px;
+}
+/* Show thumb only when hovering over the scrollable container */
+*:hover::-webkit-scrollbar-thumb {
+  background: rgba(139, 113, 84, 0.3);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(139, 113, 84, 0.7);
+}
+::-webkit-scrollbar-thumb:active {
+  background: rgba(139, 113, 84, 0.9);
+}
+
+/* Explicit hide utilities */
 .custom-scrollbar::-webkit-scrollbar {
   width: 4px;
 }
@@ -144,7 +169,6 @@ body,
   background-color: #e2e8f0;
   border-radius: 20px;
 }
-
 /* ═══ ANIMATIONS ═══ */
 @keyframes fade-in-up {
   from { opacity: 0; transform: translateY(20px); }
@@ -214,4 +238,22 @@ body,
 }
 .animate-out.zoom-out-95 {
   animation: zoomOut 0.2s ease-in forwards;
+}
+
+.media-watermark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 50%;
+  height: 50%;
+  background-image: url('/images/logo_fixed_slogan.png');
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: invert(1);
+  mix-blend-mode: screen;
+  opacity: 0.15;
+  z-index: 10;
+  pointer-events: none;
 }

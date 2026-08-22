@@ -41,6 +41,7 @@ const ServiceGallery = () => {
               <div className="overflow-hidden relative border border-zinc-200 w-[240px] h-[300px]">
                 <img src={img.src} alt={img.alt} className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700" />
                 <div className="absolute inset-0 bg-gradient-to-t from-[rgba(212,175,55,0.3)] to-transparent mix-blend-overlay pointer-events-none" />
+                <div className="media-watermark" />
               </div>
               <div className="absolute bottom-4 left-0 right-0 text-center font-serif text-zinc-800 text-lg font-bold uppercase tracking-wider">
                 {img.alt}

@@ -106,6 +106,7 @@ const MediaPreview = ({ media, label }: { media: PureRelaxationMedia; label: str
         )}
       </div>
       <div className={styles.mediaOverlay} />
+      <div className="media-watermark" />
       <span className={styles.mediaCaption}>{media.tag}</span>
     </div>
   );

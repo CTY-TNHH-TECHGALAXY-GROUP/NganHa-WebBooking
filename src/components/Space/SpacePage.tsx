@@ -185,6 +185,7 @@ const MediaRenderer = ({ mediaObj, className, alt, onEnded }: { mediaObj: {src: 
 
   return (
     <div className={styles.container}>
+
       <div className={`${styles.stickyIndex} ${isDarkNav ? styles.dark : ''}`}>
         <button className={activeSection === 'hero' ? styles.active : ''} onClick={() => scrollTo('hero')} aria-label="Hero"></button>
         <button className={activeSection === 'welcome' ? styles.active : ''} onClick={() => scrollTo('welcome')} aria-label="Welcome Area"></button>
@@ -194,6 +195,7 @@ const MediaRenderer = ({ mediaObj, className, alt, onEnded }: { mediaObj: {src: 
 
       <section className={styles.hero} id="hero">
         <MediaRenderer mediaObj={getMedia('hero', defaultMedia.hero)} alt="Oria Spa" className={styles.heroMedia} />
+        <div className={styles['media-watermark']}></div>
         <div className={styles.heroCopy}>
           <h1>Space,<br/><em>felt slowly.</em></h1>
           <div className={styles.heroSide}>
@@ -212,6 +214,7 @@ const MediaRenderer = ({ mediaObj, className, alt, onEnded }: { mediaObj: {src: 
 
         <div className={`${styles.videoFrame} ${styles.reveal}`}>
           <MediaRenderer mediaObj={getMedia(`welcome.${welcomeTab}`, defaultMedia.welcome[welcomeTab])} alt="Welcome area" className={welcomeFading ? styles.fadeOut : ''} onEnded={handleWelcomeEnded} />
+          <div className={styles['media-watermark']}></div>
           <div className={styles.videoUi}>
             <div className={styles.videoLabel}>Welcome Area / Film 01</div>
             <div className={styles.videoControl}><span>Play film</span><div className={styles.playBtn}></div></div>
@@ -244,6 +247,7 @@ const MediaRenderer = ({ mediaObj, className, alt, onEnded }: { mediaObj: {src: 
 
         <div className={`${styles.videoFrame} ${styles.reveal}`}>
           <MediaRenderer mediaObj={getMedia(`floor1.${floor1Tab}`, defaultMedia.floor1[floor1Tab])} alt="First floor" className={floor1Fading ? styles.fadeOut : ''} onEnded={handleFloor1Ended} />
+          <div className={styles['media-watermark']}></div>
           <div className={styles.videoUi}>
             <div className={styles.videoLabel}>First Floor / Film 02</div>
             <div className={styles.videoControl}><span>Play film</span><div className={styles.playBtn}></div></div>
@@ -269,6 +273,7 @@ const MediaRenderer = ({ mediaObj, className, alt, onEnded }: { mediaObj: {src: 
 
         <div className={`${styles.videoFrame} ${styles.reveal}`}>
           <MediaRenderer mediaObj={getMedia(`floor2.${floor2Tab}`, defaultMedia.floor2[floor2Tab])} alt="Second floor" className={floor2Fading ? styles.fadeOut : ''} onEnded={handleFloor2Ended} />
+          <div className={styles['media-watermark']}></div>
           <div className={styles.videoUi}>
             <div className={styles.videoLabel}>Second Floor / Film 03</div>
             <div className={styles.videoControl}><span>Play film</span><div className={styles.playBtn}></div></div>
@@ -294,16 +299,24 @@ const MediaRenderer = ({ mediaObj, className, alt, onEnded }: { mediaObj: {src: 
         <div className={`${styles.galleryRow} ${styles.reveal}`}>
           <div className={styles.galleryMain}>
             <MediaRenderer mediaObj={getMedia('gallery.main', defaultMedia.gallery.main)} alt="Massage detail"  />
+            <div className={styles['media-watermark']}></div>
           </div>
           <div className={styles.gallerySide}>
-            <div><MediaRenderer mediaObj={getMedia('gallery.sideTop', defaultMedia.gallery.sideTop)} alt="Treatment"  /></div>
-            <div><MediaRenderer mediaObj={getMedia('gallery.sideBottom', defaultMedia.gallery.sideBottom)} alt="Spa room"  /></div>
+            <div className={styles.gallerySideImg}>
+              <MediaRenderer mediaObj={getMedia('gallery.sideTop', defaultMedia.gallery.sideTop)} alt="Treatment"  />
+              <div className={styles['media-watermark']}></div>
+            </div>
+            <div className={styles.gallerySideImg}>
+              <MediaRenderer mediaObj={getMedia('gallery.sideBottom', defaultMedia.gallery.sideBottom)} alt="Spa room"  />
+              <div className={styles['media-watermark']}></div>
+            </div>
           </div>
         </div>
       </section>
 
       <section className={styles.cta}>
         <MediaRenderer mediaObj={getMedia('cta', defaultMedia.cta)} alt="Oria Spa"  />
+        <div className={styles['media-watermark']}></div>
         <div className={`${styles.ctaCopy} ${styles.reveal}`}>
           <h2>Come feel<br/>it yourself.</h2>
           <div className={styles.ctaSide}>

@@ -1,5 +1,6 @@
 import React from 'react';
 import { ChevronLeft } from 'lucide-react';
+import SmartLogo from '@/components/SmartLogo/SmartLogo';
 
 interface CheckoutHeaderProps {
     title: string;
@@ -31,12 +32,9 @@ export default function CheckoutHeader({ title, backLabel = "Menu", onBack }: Ch
                     ORIA SPA
                 </h2>
                 {/* Logo Placeholder */}
-                <img
-                    src="/assets/logos/logo-gold.webp"
-                    alt="ORIA SPA Logo"
-                    className="w-12 h-12 object-contain opacity-90"
-                    onError={(e) => { e.currentTarget.src = '/assets/logos/spaden.png' }}
-                />
+                <div className="w-12 h-12 opacity-90 flex items-center justify-center">
+                    <SmartLogo theme="light" className="w-full h-full object-contain" alt="ORIA SPA Logo" />
+                </div>
             </div>
         </div>
     );

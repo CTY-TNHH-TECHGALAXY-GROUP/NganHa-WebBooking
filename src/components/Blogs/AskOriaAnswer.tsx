@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styles from './AskOriaAnswer.module.css';
+import SmartLogo from '@/components/SmartLogo/SmartLogo';
 
 interface Place {
   name: string;
@@ -172,6 +173,7 @@ export default function AskOriaAnswer({ topic, onBack }: { topic: string, onBack
 
   return (
     <section className={styles.answer} ref={containerRef}>
+
       <button className={styles.backButton} onClick={onBack}>
         ← Trở lại danh sách
       </button>
@@ -188,6 +190,7 @@ export default function AskOriaAnswer({ topic, onBack }: { topic: string, onBack
             {/* Image Placeholder */}
             <div className={styles.imagePlaceholder}>
               {place.image ? <img src={place.image} alt={place.name} /> : 'Image Placeholder (16:9)'}
+              <div className={styles['media-watermark']}></div>
             </div>
 
             <div className={styles.placeMeta}>

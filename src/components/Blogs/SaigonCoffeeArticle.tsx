@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from '@/components/TranslationProvider';
 import styles from './SaigonCoffeeArticle.module.css';
+import SmartLogo from '@/components/SmartLogo/SmartLogo';
 
 interface SaigonCoffeeArticleProps {
   onBack: () => void;
@@ -208,6 +209,7 @@ export default function SaigonCoffeeArticle({ onBack }: SaigonCoffeeArticleProps
 
       <main className={styles.page}>
         <article className={styles.article}>
+
           <section className={styles.introGrid}>
             <p className={styles.lede}>{c.lede}</p>
 
@@ -229,6 +231,7 @@ export default function SaigonCoffeeArticle({ onBack }: SaigonCoffeeArticleProps
               alt="Saigon coffee"
               className={styles.featureImgElement}
             />
+            <div className={styles['media-watermark']}></div>
             <div className={styles.featureCaption}>{c.featureCaption}</div>
           </div>
 

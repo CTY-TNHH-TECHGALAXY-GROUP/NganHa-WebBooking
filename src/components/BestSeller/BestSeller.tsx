@@ -122,8 +122,9 @@ const BestSeller = () => {
 
               return (
                 <article className="best-seller-card" key={service.id}>
-                  <div className="best-seller-card__visual">
+                  <div className="best-seller-card__visual" style={{ position: 'relative' }}>
                     <img src={img} alt={title} className="best-seller-card__image" loading="lazy" />
+                    <div className="media-watermark" />
                   </div>
                   <div className="best-seller-card__badge-row">
                     <span className="best-seller-card__rank">#{index + 1}</span>

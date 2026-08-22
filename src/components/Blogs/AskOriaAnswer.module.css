@@ -3,6 +3,24 @@
   background: #f3eee5;
   color: #1f1d1a;
   animation: fadeIn 0.4s ease;
+  position: relative;
+}
+.media-watermark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 50%;
+  height: 50%;
+  background-image: url('/images/logo_fixed_slogan.png');
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: invert(1);
+  mix-blend-mode: screen;
+  opacity: 0.15;
+  z-index: 1;
+  pointer-events: none;
 }
 
 @keyframes fadeIn {
@@ -87,6 +105,7 @@
   letter-spacing: 0.1em;
   text-transform: uppercase;
   overflow: hidden;
+  position: relative;
 }
 
 .imagePlaceholder img {
@@ -259,6 +278,7 @@
   opacity: 1;
   transform: translateX(4px);
 }
+
 
 .horizontalPick {
   min-height: 590px;

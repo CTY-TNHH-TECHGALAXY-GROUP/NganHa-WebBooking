@@ -60,6 +60,7 @@ const BlogSection = () => {
             >
               <div className="h-48 overflow-hidden relative">
                 <img src={post.image} alt={post.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                <div className="media-watermark" />
                 <div className="absolute top-4 left-4 bg-black/70 backdrop-blur-md px-3 py-1 rounded-full text-xs text-[#D4AF37] uppercase tracking-wider border border-[#D4AF37]/30">
                   {post.category}
                 </div>

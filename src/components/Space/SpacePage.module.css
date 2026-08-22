@@ -9,8 +9,25 @@
   color: var(--ink);
   font-family: "DM Sans", sans-serif;
   overflow-x: hidden;
+  position: relative;
 }
-
+.media-watermark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 50%;
+  height: 50%;
+  background-image: url('/images/logo_fixed_slogan.png');
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: invert(1);
+  mix-blend-mode: screen;
+  opacity: 0.15;
+  z-index: 1;
+  pointer-events: none;
+}
 .container img, .container video {
   display: block;
   width: 100%;
@@ -443,6 +460,7 @@ img.heroMedia {
 .galleryMain {
   height: 64vh;
   min-height: 520px;
+  position: relative;
 }
 
 .gallerySide {
@@ -453,8 +471,9 @@ img.heroMedia {
   gap: 16px;
 }
 
-.gallerySide div {
+.gallerySideImg {
   overflow: hidden;
+  position: relative;
 }
 
 .galleryRow img {

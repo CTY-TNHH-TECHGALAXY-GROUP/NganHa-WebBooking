@@ -1,0 +1,314 @@
+{
+  "I need a place to eat": {
+    "eyebrow": "DISCOVERY · FOOD",
+    "title": "I need a place to eat.",
+    "image": "/images/discovery/eat.jpg",
+    "intro": "Choose the meal by the moment you are actually in — not by a universal ranking.",
+    "lede": "The useful question is not “Where do locals eat?” It is “How do people here choose where to eat?”",
+    "sections": [
+      {
+        "label": "START HERE",
+        "heading": "What kind of meal do you need right now?",
+        "bodyHTML": "<p>Not every good meal needs to become a destination. Sometimes you need twenty minutes. Sometimes you want to sit for two hours. Sometimes you want something unmistakably Vietnamese. Sometimes you just want dinner without making another decision.</p><p>Instead of asking <b>“What is the best restaurant in Saigon?”</b>, start with what kind of evening you actually want.</p>",
+        "cards": []
+      },
+      {
+        "label": "BY MOMENT",
+        "heading": "Eat by the moment",
+        "bodyHTML": "<p>Saigon rewards specificity. A place that repeats one dish hundreds of times may reveal more than a menu trying to represent the whole country.</p>",
+        "cards": [
+          {
+            "title": "I have 30 minutes: Phở Việt Nam",
+            "description": "Look for focused everyday dishes. Phở Việt Nam serves an incredibly flavorful, authentic bowl of Phở in an impeccably clean and welcoming space.",
+            "map_url": "https://www.google.com/maps/search/?api=1&query=Pho+Viet+Nam+Ho+Chi+Minh+City"
+          },
+          {
+            "title": "Local, but comfortable: Quán Bụi",
+            "description": "Local does not mean uncomfortable. Quán Bụi offers authentic Vietnamese family-style dining in a beautifully designed, air-conditioned space.",
+            "map_url": "https://www.google.com/maps/search/?api=1&query=Quan+Bui+Ho+Chi+Minh+City"
+          },
+          {
+            "title": "Eating alone: Bánh Mì Huỳnh Hoa",
+            "description": "The most famous, heavily-stuffed Bánh Mì in the city. Perfect for a quick, legendary solo bite.",
+            "map_url": "https://www.google.com/maps/search/?api=1&query=Banh+Mi+Huynh+Hoa"
+          },
+          {
+            "title": "The noisy version: Ốc Đào",
+            "description": "Choose somewhere where dinner shares space with the street. Ốc Đào is famous for its vibrant seafood culture and bustling local energy.",
+            "map_url": "https://www.google.com/maps/search/?api=1&query=Oc+Dao+Nguyen+Trai"
+          }
+        ]
+      },
+      {
+        "label": "READ THE PLACE",
+        "heading": "Three signals Oria looks for",
+        "bodyHTML": "<p><b>A menu with a point of view.</b> It should be clear what the place believes it does well.</p><p><b>Customers who use the place naturally.</b> Busy does not automatically mean touristy; hidden does not automatically mean local.</p><p><b>A relationship with its neighbourhood.</b> Does the place feel like it belongs where it is?</p>",
+        "cards": []
+      }
+    ],
+    "quote": {
+      "text": "Authenticity is not a decoration. It is the relationship between a place and the people who actually use it.",
+      "small": "Oria thought"
+    }
+  },
+  "I want to sit somewhere quiet": {
+    "eyebrow": "DISCOVERY · QUIET",
+    "title": "I want to sit somewhere quiet.",
+    "image": "/images/discovery/quiet.jpg",
+    "intro": "Quiet is not one category. In Saigon it can mean distance, shade, height, water, ritual or simply permission to stop.",
+    "lede": "In Saigon, finding quiet does not always mean leaving the city. Sometimes it means finding the right layer of it.",
+    "sections": [
+      {
+        "label": "START HERE",
+        "heading": "Quiet in Saigon rarely means silence.",
+        "bodyHTML": "<p>It can mean sitting above the traffic instead of inside it. A shaded park. A temple courtyard. A café hidden upstairs. A table beside water.</p><p>The city does not always become quiet. Sometimes you simply find a different distance from its noise.</p>",
+        "cards": []
+      },
+      {
+        "label": "CHOOSE YOUR QUIET",
+        "heading": "What kind of quiet do you need?",
+        "bodyHTML": "<p>Different types of quiet solve different needs. Choose the environment, not simply the lowest decibel count.</p>",
+        "cards": [
+          {
+            "title": "Courtyard cafes: Oromia Coffee & Lounge",
+            "description": "Tucked deep in a District 3 alley. A lush, koi-pond garden cafe where the city noise completely fades away.",
+            "map_url": "https://www.google.com/maps/search/?api=1&query=Oromia+Coffee+Lounge+Ho+Chi+Minh"
+          },
+          {
+            "title": "Upper floors: Mockingbird Cafe",
+            "description": "Hidden on the top floor of a vintage 19th-century apartment block on Ton That Dam. Perfect for watching the sunset in peace.",
+            "map_url": "https://www.google.com/maps/search/?api=1&query=Mockingbird+Cafe+Ton+That+Dam"
+          },
+          {
+            "title": "Hotel lounges: Café des Beaux-Arts",
+            "description": "Located inside Hotel des Arts. A Parisian-style salon that is elegantly quiet, ideal for reading a book with high tea.",
+            "map_url": "https://www.google.com/maps/search/?api=1&query=Cafe+des+Beaux-Arts+Saigon"
+          },
+          {
+            "title": "I want to disappear for an afternoon.",
+            "description": "Go farther out. Water, vegetation and lower density can show you a version of HCMC that downtown does not.",
+            "map_url": ""
+          }
+        ]
+      },
+      {
+        "label": "TIME",
+        "heading": "Quiet changes by hour",
+        "bodyHTML": "<p><b>7–9 AM:</b> active city, softer heat.<br><b>11 AM–2 PM:</b> air-conditioned spaces become genuinely useful.<br><b>3–5 PM:</b> cafés become transition spaces between work and evening.<br><b>After 8 PM:</b> upper floors can feel detached from the street below.</p>",
+        "cards": []
+      }
+    ],
+    "quote": {
+      "text": "The city does not always become quiet. Sometimes you simply change your distance from its noise.",
+      "small": "Oria thought"
+    }
+  },
+  "I have 2 hours to kill": {
+    "eyebrow": "DISCOVERY · 2 HOURS",
+    "title": "I have 2 hours to kill.",
+    "image": "/images/discovery/two-hours.jpg",
+    "intro": "Turn spare time into one small, coherent urban experience instead of another rushed checklist.",
+    "lede": "Two hours is enough time for one meaningful piece of Saigon — if you stop treating movement as the experience.",
+    "sections": [
+      {
+        "label": "START HERE",
+        "heading": "Two hours is not empty time.",
+        "bodyHTML": "<p>It is enough time for one small piece of Saigon. The mistake is spending forty minutes travelling somewhere just because it appeared on a list.</p><p><b>Stay closer. See less. Notice more.</b></p>",
+        "cards": []
+      },
+      {
+        "label": "BY LOCATION",
+        "heading": "Start with where you already are",
+        "bodyHTML": "<p>Your best two-hour plan depends less on “top attractions” and more on the radius around you.</p>",
+        "cards": [
+          {
+            "title": "Read & Coffee: Saigon Book Street",
+            "description": "A pedestrian-only street lined with bookstores and cafes, shaded by mature trees right next to the Post Office.",
+            "map_url": "https://www.google.com/maps/search/?api=1&query=Nguyen+Van+Binh+Book+Street"
+          },
+          {
+            "title": "Museum: Fine Arts Museum",
+            "description": "Stunning French colonial architecture mixed with Vietnamese art collections. Quiet and profoundly atmospheric.",
+            "map_url": "https://www.google.com/maps/search/?api=1&query=Ho+Chi+Minh+City+Museum+of+Fine+Arts"
+          },
+          {
+            "title": "Recovery: Oria Spa",
+            "description": "A deep tissue massage or a quick foot reflexology session to reset your body before the next flight or meeting.",
+            "map_url": "https://www.google.com/maps/search/?api=1&query=Oria+Spa+Ho+Chi+Minh+City"
+          },
+          {
+            "title": "It is raining?",
+            "description": "Shrink the radius, not the experience. One building, one café and one nearby indoor stop can be enough.",
+            "map_url": ""
+          }
+        ]
+      },
+      {
+        "label": "RULE",
+        "heading": "The two-hour rule",
+        "bodyHTML": "<p>Spend no more than <b>20–25 minutes moving</b>. Keep the rest for actually being somewhere. Spare time becomes travel when you give it attention.</p>",
+        "cards": []
+      }
+    ],
+    "quote": {
+      "text": "Spare time becomes travel when you give it attention.",
+      "small": "Oria thought"
+    }
+  },
+  "Take me somewhere local": {
+    "eyebrow": "DISCOVERY · LOCAL",
+    "title": "Take me somewhere local.",
+    "image": "/images/discovery/local.jpg",
+    "intro": "Do not search for a visual cliché. Look for places that still have a real function in the life around them.",
+    "lede": "The most local place is not necessarily the place with the fewest foreigners. It is the place that would still make sense if no visitor arrived tomorrow.",
+    "sections": [
+      {
+        "label": "START HERE",
+        "heading": "Local is not a look.",
+        "bodyHTML": "<p>Plastic stools do not automatically make something authentic. An alley is not automatically “hidden”. A place does not become more local because tourists have not discovered it yet.</p><p>Local is better understood as <b>a place that still has a real function in the everyday life around it.</b></p>",
+        "cards": []
+      },
+      {
+        "label": "CHOOSE A LAYER",
+        "heading": "Which local life do you want to see?",
+        "bodyHTML": "<p>Saigon contains several kinds of everyday life. Choosing one is more meaningful than trying to “find the locals”.</p>",
+        "cards": [
+          {
+            "title": "See the city wake up: Tân Định Market",
+            "description": "Go early. Markets are infrastructure before they are sightseeing: food arrives, shops prepare, breakfast happens.",
+            "map_url": "https://www.google.com/maps/search/?api=1&query=Tan+Dinh+Market"
+          },
+          {
+            "title": "Neighbourhood life: Nguyen Thien Thuat Apartments",
+            "description": "One of the oldest apartment complexes in the city. A vertical village buzzing with street food and daily life.",
+            "map_url": "https://www.google.com/maps/search/?api=1&query=Nguyen+Thien+Thuat+Apartments"
+          },
+          {
+            "title": "Another cultural layer: Hào Sĩ Phường",
+            "description": "A hundred-year-old alley showcasing how Chinese-Vietnamese history, architecture, and residential life overlap.",
+            "map_url": "https://www.google.com/maps/search/?api=1&query=Hao+Si+Phuong+Alley"
+          },
+          {
+            "title": "Unexpectedly slow: Bình Quới Village",
+            "description": "Challenges the idea that HCMC must always feel dense. A lush, green oasis mimicking the Mekong Delta.",
+            "map_url": "https://www.google.com/maps/search/?api=1&query=Binh+Quoi+Village"
+          }
+        ]
+      },
+      {
+        "label": "VISIT WELL",
+        "heading": "Do not turn ordinary life into a stage.",
+        "bodyHTML": "<p>Do not block narrow alleys for photographs. Do not photograph residents closely without permission. Buy something if you use someone’s business as part of your experience.</p><p>Someone else’s ordinary neighbourhood is not an installation.</p>",
+        "cards": []
+      }
+    ],
+    "quote": {
+      "text": "Local is not a look. It is a relationship between a place and the life around it.",
+      "small": "Oria thought"
+    }
+  },
+  "I want to walk around": {
+    "eyebrow": "DISCOVERY · WALK",
+    "title": "I want to walk around.",
+    "image": "/images/discovery/walk.jpg",
+    "intro": "Do not conquer Saigon on foot. Walk the pockets where transitions become visible.",
+    "lede": "A car shows you destinations. Walking shows you what exists between them.",
+    "sections": [
+      {
+        "label": "START HERE",
+        "heading": "Saigon is not walkable everywhere.",
+        "bodyHTML": "<p>That makes choosing the right walk more important. Do not attempt to conquer the city on foot. <b>Walk its pockets.</b> Each one tells a different story.</p>",
+        "cards": []
+      },
+      {
+        "label": "ROUTES",
+        "heading": "Four walks, four versions of the city",
+        "bodyHTML": "<p>Do not measure these walks only by kilometres. Measure them by how often the city changes around you.</p>",
+        "cards": [
+          {
+            "title": "River wind: Bạch Đằng Wharf Park",
+            "description": "A wide, paved promenade along the Saigon River. Best at sunset when the city lights up and the breeze rolls in.",
+            "map_url": "https://www.google.com/maps/search/?api=1&query=Bach+Dang+Wharf+Park"
+          },
+          {
+            "title": "Tree canopy: Turtle Lake to Independence Palace",
+            "description": "District 3 works because of its massive heritage trees. Walk down Pham Ngoc Thach under a tunnel of green.",
+            "map_url": "https://www.google.com/maps/search/?api=1&query=Turtle+Lake+Ho+Chi+Minh+City"
+          },
+          {
+            "title": "Historical density: Đồng Khởi Street",
+            "description": "From the Opera House to the river. The colonial and modern layers of the city compressed into a single avenue.",
+            "map_url": "https://www.google.com/maps/search/?api=1&query=Dong+Khoi+Street+Ho+Chi+Minh+City"
+          },
+          {
+            "title": "Boutique & Art: Thảo Điền (District 2)",
+            "description": "Villas turned into concept stores, art galleries, and craft bakeries. A highly walkable expat enclave.",
+            "map_url": "https://www.google.com/maps/search/?api=1&query=Xuan+Thuy+Thao+Dien"
+          }
+        ]
+      },
+      {
+        "label": "NOTICE",
+        "heading": "What makes a walk meaningful?",
+        "bodyHTML": "<p>A good urban walk lets you notice when <b>the buildings change, the noise changes, the people change, the businesses change and the pace changes.</b></p><p>That is when walking becomes a way of understanding a city.</p>",
+        "cards": []
+      }
+    ],
+    "quote": {
+      "text": "A good walk is not measured only in kilometres. It is measured in transitions.",
+      "small": "Oria thought"
+    }
+  },
+  "I need to buy something": {
+    "eyebrow": "DISCOVERY · BUY",
+    "title": "I need to buy something.",
+    "image": "/images/discovery/buy.jpg",
+    "intro": "Bring home something that still makes sense after the trip — not only something designed to say where you went.",
+    "lede": "The best thing to bring home is not always the object that looks most Vietnamese. Sometimes it is the object that reminds you how Vietnam actually lives.",
+    "sections": [
+      {
+        "label": "START HERE",
+        "heading": "Buy something that explains where you were.",
+        "bodyHTML": "<p>You do not necessarily need a souvenir. You need something that still makes sense when you take it home.</p>",
+        "cards": []
+      },
+      {
+        "label": "BY PURPOSE",
+        "heading": "What do you want to bring back?",
+        "bodyHTML": "<p>Start with how the object will live after the trip, not with how strongly it announces “Vietnam”.</p>",
+        "cards": [
+          {
+            "title": "Local Craft & Design: L'Usine",
+            "description": "A curated lifestyle store featuring high-quality Vietnamese fashion, homewares, and contemporary souvenirs.",
+            "map_url": "https://www.google.com/maps/search/?api=1&query=L+Usine+Dong+Khoi"
+          },
+          {
+            "title": "Chocolate & Gifts: Maison Marou",
+            "description": "Award-winning Vietnamese bean-to-bar chocolate. The packaging itself is a piece of art, perfect for gifting.",
+            "map_url": "https://www.google.com/maps/search/?api=1&query=Maison+Marou+Saigon"
+          },
+          {
+            "title": "Market Experience: Bến Thành Market",
+            "description": "The ultimate sensory overload. Go for the architecture and the food court, but remember to bargain hard for goods.",
+            "map_url": "https://www.google.com/maps/search/?api=1&query=Ben+Thanh+Market"
+          },
+          {
+            "title": "Ceramics & Home: Authentique Home",
+            "description": "Beautiful, hand-crafted Vietnamese pottery, ceramics, and textiles that elevate traditional techniques.",
+            "map_url": "https://www.google.com/maps/search/?api=1&query=Authentique+Home+Ho+Chi+Minh+City"
+          }
+        ]
+      },
+      {
+        "label": "BEFORE BUYING",
+        "heading": "Three better questions",
+        "bodyHTML": "<p><b>Was this made here?</b><br><b>Would someone living here use it?</b><br><b>Will I still value it when the trip is over?</b></p><p>If at least one answer is yes, it is probably more interesting than another generic souvenir.</p>",
+        "cards": []
+      }
+    ],
+    "quote": {
+      "text": "Buy the object for the life it can continue to have, not only for the moment you found it.",
+      "small": "Oria thought"
+    }
+  }
+}

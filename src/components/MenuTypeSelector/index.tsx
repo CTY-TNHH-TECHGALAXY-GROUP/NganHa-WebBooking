@@ -3,7 +3,8 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import styles from "./style.module.css";
-import { ArrowLeft, X } from "lucide-react";
+import { ArrowLeft, X, Clock, Info, ShieldCheck, Sparkles, MapPin, Search } from 'lucide-react';
+import SmartLogo from '@/components/SmartLogo/SmartLogo';
 
 // ============================================================================
 // 👇 KHU VỰC CẤU HÌNH ẢNH SÁCH (SỬA LINK ẢNH Ở ĐÂY) 👇
@@ -94,14 +95,7 @@ export default function MenuTypeSelector({ lang, onSelect, onBack }: Props) {
                     style={{ height: LAYOUT_CONFIG.header.logoHeight, width: LAYOUT_CONFIG.header.logoWidth }}
                 >
                     <div className="relative w-full h-full">
-                        <Image
-                            src="/assets/logos/logo-gold.webp"
-                            alt="ORIA SPA"
-                            fill
-                            className="object-contain drop-shadow-[0_0_25px_rgba(234,179,8,0.6)]"
-                            priority
-                            sizes="(max-width: 768px) 100vw, 450px"
-                        />
+                        <SmartLogo theme="light" className="w-full h-full object-contain drop-shadow-[0_0_25px_rgba(234,179,8,0.6)]" alt="ORIA SPA" />
                     </div>
                 </div>
                 <p
