@@ -11,7 +11,7 @@ import Footer from '@/components/Footer/Footer';
 
 const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
-  const isBookingPage = pathname === '/booking' || pathname.includes('/new-user/') || pathname.startsWith('/admin') || pathname.includes('/academy/understand-yourself');
+  const isBookingPage = pathname === '/booking' || pathname.includes('/new-user/') || pathname.startsWith('/admin');
 
   return (
     <>

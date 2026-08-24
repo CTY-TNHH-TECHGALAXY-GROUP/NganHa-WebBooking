@@ -127,19 +127,6 @@ export default function UnderstandYourselfApp() {
       </div>
 
       <div className={styles.main}>
-        <div className={styles.topbar}>
-          <div className={styles.progress}>
-            {stepNames[stage]} · 0{stage+1} / 05
-          </div>
-          <div className={styles['top-actions']}>
-            <div className={styles.lang}>
-              <button className={lang === 'vi' ? styles.active : ''} onClick={() => setLang('vi')}>VI</button>
-              <button className={lang === 'en' ? styles.active : ''} onClick={() => setLang('en')}>EN</button>
-            </div>
-            <button className={`${styles.btn} ${styles.ghost}`}>{t.save}</button>
-          </div>
-        </div>
-
         <div className={styles.content}>
           {/* STAGE 0: DISCOVER */}
           <section className={`${styles.screen} ${stage === 0 ? styles.active : ''}`}>
