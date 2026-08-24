@@ -146,6 +146,3 @@
  .score{grid-column:2}
  .pattern{font-size:39px}
 }
- .choice-grid,.result-grid,.two-col,.updated,.path-rows,.pathmeta,.group-grid{grid-template-columns:1fr}.pathmeta{margin-left:0}
- .scale-label{flex-direction:column;gap:4px}.insight{grid-template-columns:1fr;gap:10px}.direction{grid-template-columns:40px 1fr}.score{grid-column:2}.pattern{font-size:39px}
-}
