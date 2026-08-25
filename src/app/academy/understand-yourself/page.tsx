@@ -97,9 +97,10 @@ export default function UnderstandYourselfApp() {
             style={{background: `linear-gradient(to right, var(--ink) ${val}%, #e5e7eb ${val}%)`}}
           />
         </div>
-        <div className={styles['range-labels']}>
-          <span className={styles['hint-left']}>{leftLabel}</span>
-          <span className={styles['hint-right']}>{rightLabel}</span>
+        <div className={styles['range-hint']}>
+          <span>{leftLabel}</span>
+          <span>{rightLabel ? (lang === 'vi' ? 'Cân bằng' : 'Balanced') : ''}</span>
+          <span>{rightLabel}</span>
         </div>
         <p className={styles['range-state']}><strong>{bandData[0]}.</strong> {bandData[1]}</p>
       </div>
