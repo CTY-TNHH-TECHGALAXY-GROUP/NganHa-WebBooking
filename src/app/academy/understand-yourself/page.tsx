@@ -109,9 +109,9 @@ export default function UnderstandYourselfApp() {
 
   return (
     <div className={styles.shell}>
-      <div className={styles.sidebar}>
+      <div className={styles.side}>
         <div>
-          <div className={styles.brand}>Oria Spa</div>
+          
           <h1 className={`${styles.h1} ${styles['big-serif']}`} style={{marginTop: '20px'}}>{t.sideTitle}</h1>
           <p style={{fontSize: '14px', color: 'var(--textL)', marginTop: '10px'}}>{t.sideNote}</p>
         </div>
