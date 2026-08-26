@@ -454,7 +454,7 @@ const Header = () => {
                   <div className="nav-panel-card">
                     <div className="nav-card-header">
                       <SmartLogo theme="dark" className="nav-card-logo object-contain" />
-                      <h3 className="nav-card-title">TechGalaxy Group</h3>
+                      
                       <div className="nav-card-divider"></div>
                     </div>
                     

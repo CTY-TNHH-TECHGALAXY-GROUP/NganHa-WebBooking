@@ -227,13 +227,7 @@ const Hero = () => {
             <SmartLogo theme="dark" className="w-[300px] md:w-[450px] lg:w-[550px] h-auto object-contain drop-shadow-2xl" />
           </motion.div>
 
-          {/* TechGalaxy Group */}
-          <motion.span 
-            className="font-sans uppercase tracking-[6px] md:tracking-[8px] font-medium text-xl md:text-3xl lg:text-[2.5rem] mt-2 md:mt-4" 
-            variants={fadeInUp}
-          >
-            {getLocalizedText(systemSettings?.homepage_content?.hero?.companyName, currentLang as Locale, 'TechGalaxy Group')}
-          </motion.span>
+          
         </div>
 
 

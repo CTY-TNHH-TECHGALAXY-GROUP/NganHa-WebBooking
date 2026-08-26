@@ -29,7 +29,7 @@ const SmartLogo: React.FC<SmartLogoProps> = ({ theme = 'dark', className = '', a
           </filter>
           <mask id="logo-mask">
             <image 
-              href="/images/logo_fixed_slogan.png?v=2" 
+              href="/images/logo.png?v=3" 
               width="1248" 
               height="832" 
               filter="url(#invert-logo-mask)" 
