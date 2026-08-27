@@ -34,7 +34,9 @@ const GoogleReviewWidget = () => {
       {/* Text Info */}
       <div className="flex flex-col text-black">
         <span className="text-sm font-bold leading-tight">Excellent</span>
-        <span className="text-xs text-gray-700 leading-tight">{data.user_ratings_total} reviews</span>
+        <span className="text-xs text-gray-700 leading-tight">
+          {data.user_ratings_total} reviews on <span className="font-semibold">Google</span>
+        </span>
       </div>
     </a>
   );
