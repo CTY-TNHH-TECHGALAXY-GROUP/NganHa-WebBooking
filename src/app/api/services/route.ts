@@ -7,8 +7,8 @@ import { NextResponse } from 'next/server';
 import { getSupabaseAdmin } from '@/lib/supabase-server';
 import type { Service } from '@/components/Menu/types';
 
-export const revalidate = 60; // Cache for 60 seconds to save Egress
-// export const dynamic = 'force-dynamic';
+// export const revalidate = 60; // Cache for 60 seconds to save Egress
+export const dynamic = 'force-dynamic';
 
 /** Determine menuType from service ID prefix */
 const getMenuTypeFromId = (id: string): 'standard' | 'vip' => {
@@ -27,7 +27,8 @@ export const GET = async () => {
     const supabase = getSupabaseAdmin();
     const { data, error } = await supabase
       .from('Services')
-      .select('id, category, nameEN, nameVN, nameCN, nameJP, nameKR, description, imageUrl, priceVND, priceUSD, duration, tags, focusConfig, showPreferences, HINT, showCustomForYou, showNotes, isActive, isBestSeller, isBestChoice, media_url, media_type')
+      .select('id, category, nameEN, nameVN, nameCN, nameJP, nameKR, description, imageUrl, priceVND, priceUSD, duration, tags, focusConfig, showPreferences, showCustomForYou, showNotes, isActive, isBestSeller, isBestChoice, media_url, media_type')
+      .eq('isActive', true)
       .order('id', { ascending: true });
 
     if (error) {
@@ -62,7 +63,7 @@ export const GET = async () => {
       TAGS: item.tags || [],
       FOCUS_POSITION: item.focusConfig,
       SHOW_STRENGTH: item.showPreferences !== false,
-      HINT: item.HINT,
+      HINT: item.hint || '',
       SHOW_CUSTOM_FOR_YOU: item.showCustomForYou !== false,
       SHOW_NOTES: item.showNotes !== false,
       SHOW_PREFERENCES: item.showPreferences !== false,

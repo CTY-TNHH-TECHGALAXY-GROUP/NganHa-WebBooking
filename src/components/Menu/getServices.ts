@@ -16,7 +16,9 @@ export const getServices = async (filterType?: 'standard' | 'vip' | 'all'): Prom
         });
 
         if (!res.ok) {
-            throw new Error('Failed to fetch services API');
+            const errorText = await res.text();
+            console.error(`❌ API Error [${res.status}]:`, errorText);
+            throw new Error(`Failed to fetch services API: ${res.status}`);
         }
 
         const allServices: Service[] = await res.json();
