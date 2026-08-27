@@ -3,8 +3,9 @@ import { NextResponse } from 'next/server';
 export const revalidate = 86400; // Cache for 24 hours (86400 seconds)
 
 export async function GET() {
-  const PLACE_ID = process.env.GOOGLE_PLACE_ID;
-  const API_KEY = process.env.GOOGLE_PLACES_API_KEY;
+  // Lấy từ Vercel Env, nếu không có thì dùng luôn key bạn vừa cung cấp (hardcode)
+  const PLACE_ID = process.env.GOOGLE_PLACE_ID || 'ChIJ2ULTMCAvdTERA4I7Sei7vyY';
+  const API_KEY = process.env.GOOGLE_PLACES_API_KEY || 'AIzaSyAB-cpUgKBF8RCo5BuIttaWsGooLjK_ZJ8';
 
   if (!API_KEY || !PLACE_ID) {
     return NextResponse.json({ rating: 4.9, user_ratings_total: 720 });
@@ -13,7 +14,7 @@ export async function GET() {
   try {
     const res = await fetch(`https://maps.googleapis.com/maps/api/place/details/json?place_id=${PLACE_ID}&fields=rating,user_ratings_total&key=${API_KEY}`, {
         headers: {
-            'Referer': 'https://nganha-webbooking.vercel.app/' // Fake referer in case the key is restricted
+            'Referer': 'https://nganha-webbooking.vercel.app/' // Spoof referer cho Google API
         }
     });
     const data = await res.json();
