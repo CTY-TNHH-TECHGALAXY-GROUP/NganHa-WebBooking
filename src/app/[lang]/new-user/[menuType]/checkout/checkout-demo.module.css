@@ -8,7 +8,7 @@
   --ink-dim: rgba(245, 242, 234, 0.56);
   --ink-faint: rgba(245, 242, 234, 0.32);
   --glass-border: rgba(255, 255, 255, 0.08);
-  --serif: var(--font-heading), serif;
+  --serif: var(--font-body), sans-serif;
   --sans: var(--font-body), sans-serif;
   position: relative;
   height: 100%;

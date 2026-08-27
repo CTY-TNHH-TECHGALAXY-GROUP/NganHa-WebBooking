@@ -61,80 +61,6 @@ const COPY = {
 
 const COLLAPSED_TIME_SLOT_COUNT = 16;
 
-const fallbackServices: Service[] = [
-  {
-    id: 'body-60',
-    cat: 'Body',
-    names: { vi: "Massage Body 60'", en: "Body Massage 60'" },
-    descriptions: { vi: 'Nhịp lực êm, dầu thơm nhẹ, phù hợp phục hồi sau ngày dài.', en: 'Gentle rhythm, light aromatic oil, ideal after a long day.' },
-    img: '/flipmenu/standalone-celestial-menu%20(2)/public/images/services/thai.png',
-    priceVND: 450000,
-    priceUSD: 18,
-    timeValue: 60,
-    timeDisplay: '60 mins',
-    menuType: 'standard',
-  },
-  {
-    id: 'hot-stone-90',
-    cat: 'Body',
-    names: { vi: "Đá nóng thư giãn 90'", en: "Hot Stone Relaxation 90'" },
-    descriptions: { vi: 'Nhiệt đá ấm và thao tác chậm giúp thả lỏng vùng cổ vai gáy.', en: 'Warm stones and slow pressure help release neck and shoulder tension.' },
-    img: '/flipmenu/standalone-celestial-menu%20(2)/public/images/services/hotstone.png',
-    priceVND: 690000,
-    priceUSD: 28,
-    timeValue: 90,
-    timeDisplay: '90 mins',
-    menuType: 'standard',
-  },
-  {
-    id: 'ear-clean',
-    cat: 'Ear Clean',
-    names: { vi: 'Lấy ráy tai thư giãn', en: 'Relaxing Ear Clean' },
-    descriptions: { vi: 'Làm sạch nhẹ nhàng, kết hợp massage vùng tai và thái dương.', en: 'Gentle ear care with ear and temple massage.' },
-    img: '/flipmenu/standalone-celestial-menu%20(2)/public/images/services/ear-clean.png',
-    priceVND: 180000,
-    priceUSD: 8,
-    timeValue: 30,
-    timeDisplay: '30 mins',
-    menuType: 'standard',
-  },
-  {
-    id: 'herbal-wash',
-    cat: 'Hair Wash',
-    names: { vi: 'Gội đầu thảo mộc', en: 'Herbal Hair Wash' },
-    descriptions: { vi: 'Gội, xả, massage đầu cổ vai gáy với hương thảo mộc dịu.', en: 'Wash, rinse, and head-neck-shoulder massage with soft herbal scent.' },
-    img: '/flipmenu/standalone-celestial-menu%20(2)/public/images/services/hair-wash.png',
-    priceVND: 260000,
-    priceUSD: 11,
-    timeValue: 45,
-    timeDisplay: '45 mins',
-    menuType: 'standard',
-  },
-  {
-    id: 'foot-reflex',
-    cat: 'Foot',
-    names: { vi: 'Ấn huyệt bàn chân', en: 'Foot Reflexology' },
-    descriptions: { vi: 'Tập trung lòng bàn chân, bắp chân, giúp giảm mỏi khi di chuyển nhiều.', en: 'Focused foot and calf relief for tired legs.' },
-    img: '/flipmenu/standalone-celestial-menu%20(2)/public/images/services/foot-massage.png',
-    priceVND: 280000,
-    priceUSD: 12,
-    timeValue: 45,
-    timeDisplay: '45 mins',
-    menuType: 'standard',
-  },
-  {
-    id: 'facial-ritual',
-    cat: 'Facial',
-    names: { vi: 'Facial Ritual', en: 'Facial Ritual' },
-    descriptions: { vi: 'Làm sạch, massage nâng cơ nhẹ và cấp ẩm cho làn da mệt mỏi.', en: 'Cleanse, gentle lifting massage, and hydration for tired skin.' },
-    img: '/flipmenu/standalone-celestial-menu%20(2)/public/images/services/facial.png',
-    priceVND: 520000,
-    priceUSD: 21,
-    timeValue: 60,
-    timeDisplay: '60 mins',
-    menuType: 'standard',
-  },
-];
 
 const t = (key: keyof typeof COPY, lang: string) => (COPY[key] as Record<string, string>)[lang] || COPY[key].en;
 const langKey = (lang: string): SupportedLanguage =>
@@ -535,7 +461,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
   );
 
   const serviceOptions = useMemo(
-    () => (apiServices.length ? apiServices : fallbackServices.filter((service) => service.menuType === menuType)),
+    () => apiServices,
     [apiServices, menuType]
   );
 
