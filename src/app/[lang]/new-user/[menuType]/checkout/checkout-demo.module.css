@@ -1,6 +1,6 @@
 .page {
-  --bg-deep: #05060f;
-  --bg-mid: #0b0e1e;
+  --bg-deep: #000000;
+  --bg-mid: #0a0a0a;
   --gold: #c9a96e;
   --gold-soft: #e9d7ae;
   --gold-dim: rgba(201, 169, 110, 0.35);
@@ -8,8 +8,8 @@
   --ink-dim: rgba(245, 242, 234, 0.56);
   --ink-faint: rgba(245, 242, 234, 0.32);
   --glass-border: rgba(255, 255, 255, 0.08);
-  --serif: Georgia, "Times New Roman", serif;
-  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --serif: var(--font-heading), serif;
+  --sans: var(--font-body), sans-serif;
   position: relative;
   height: 100%;
   min-height: 100dvh;
@@ -188,7 +188,7 @@
   padding: 15px 18px;
   border: 1px solid rgba(255, 255, 255, 0.045);
   border-radius: 14px;
-  background: rgba(255, 255, 255, 0.032);
+  background: rgba(255, 255, 255, 0.05);
   transition: border-color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
 }
 
@@ -688,7 +688,7 @@
   padding: 18px 18px 16px;
   border: 1px solid rgba(255, 255, 255, 0.055);
   border-radius: 18px;
-  background: rgba(255, 255, 255, 0.032);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .invoiceRow1 {
@@ -719,7 +719,7 @@
   padding: 20px 18px;
   border: 1px solid rgba(255, 255, 255, 0.055);
   border-radius: 18px;
-  background: rgba(255, 255, 255, 0.032);
+  background: rgba(255, 255, 255, 0.05);
   color: var(--ink-dim);
   text-align: center;
 }
@@ -846,10 +846,10 @@
   display: grid;
   grid-template-rows: auto auto minmax(0, 1fr);
   padding: 26px;
-  border: 1px solid rgba(233, 215, 174, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 24px;
   background:
-    radial-gradient(circle at 18% 0%, rgba(233, 215, 174, 0.08), transparent 34%),
+    
     linear-gradient(135deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.018)),
     rgba(8, 10, 23, 0.76);
   box-shadow:
@@ -913,17 +913,7 @@
   display: none;
 }
 
-.servicePickerTabs button {
-  flex: 0 0 auto;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.028);
-  color: var(--ink-dim);
-  cursor: pointer;
-  padding: 10px 15px;
-  font: 800 11px var(--sans);
-  letter-spacing: 0.6px;
-}
+.servicePickerTabs button { padding: 10px 20px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, 0.15); background: transparent; color: #fff; font-size: 13px; font-weight: 500; cursor: pointer; transition: 0.2s; }
 
 .servicePickerTabs button.activeTab {
   color: #241b0c;
@@ -946,7 +936,7 @@
   padding: 12px;
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 18px;
-  background: rgba(255, 255, 255, 0.032);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .pickerServiceCard img,
@@ -980,23 +970,7 @@
   line-height: 1.38;
 }
 
-.pickerAddButton {
-  min-width: 96px;
-  min-height: 42px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-  border: 0;
-  border-radius: 999px;
-  background: linear-gradient(145deg, rgba(233, 215, 174, 0.95), rgba(201, 169, 110, 0.86));
-  color: #241b0c;
-  cursor: pointer;
-  font: 900 11px var(--sans);
-  letter-spacing: 1.2px;
-  text-transform: uppercase;
-  transition: transform 0.2s ease, filter 0.2s ease;
-}
+.pickerAddButton { min-width: 96px; min-height: 42px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; border: none; border-radius: 999px; background: var(--gold); color: #111; font-weight: 600; font-size: 13px; letter-spacing: 0.05em; text-transform: uppercase; cursor: pointer; transition: 0.2s; }
 
 .pickerAddButton:hover,
 .pickerAddButton:focus-visible {
@@ -1316,10 +1290,7 @@
     height: 68px;
   }
 
-  .pickerAddButton {
-    grid-column: 1 / -1;
-    width: 100%;
-  }
+  .pickerAddButton { min-width: 96px; min-height: 42px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; border: none; border-radius: 999px; background: var(--gold); color: #111; font-weight: 600; font-size: 13px; letter-spacing: 0.05em; text-transform: uppercase; cursor: pointer; transition: 0.2s; }
 
   .videoPreviewStage {
     width: 94vw;
