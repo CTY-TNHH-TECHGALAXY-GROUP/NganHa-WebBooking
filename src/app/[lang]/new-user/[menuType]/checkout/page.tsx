@@ -312,7 +312,7 @@ const DurationDrawer = ({
               className={styles.drawerConfirm} 
               onClick={() => onConfirm(selectedVariant)}
             >
-              {dict.checkout?.addToCart || 'THÊM VÀO GIỎ'}
+              {t('select', lang)}
             </button>
           </div>
         </div>
@@ -561,9 +561,9 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
 
   const addService = (service: Service, jumpToCart = false) => {
     addToCart(service, 1);
-    if (jumpToCart) {
-      window.requestAnimationFrame(() => document.getElementById('cart')?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
-    }
+    setActiveDrawerGroup(null);
+    setIsServicePickerOpen(false);
+    window.requestAnimationFrame(() => document.getElementById('cart')?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
   };
 
   const validate = () => {
