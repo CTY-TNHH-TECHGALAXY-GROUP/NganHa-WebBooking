@@ -1,0 +1,108 @@
+/* Fonts loaded via next/font/google in layout.tsx */
+
+:root {
+  /* ═══ MÀU SẮC THƯƠNG HIỆU ═══ */
+  --gold-100: #FFF8E1;
+  --gold-200: #F4E2B3;
+  --gold-300: #E8C97A;
+  --gold-400: #D4AF37;
+  --gold-500: #C9A348;
+  --gold-600: #B8860B;
+  --gold-700: #8D5A1B;
+  --gold-gradient: linear-gradient(135deg, #E7AA51 0%, #FFE499 25%, #8D5A1B 50%, #E7AA51 75%, #AC7031 100%);
+  --dark-bg: #0A0A0A;
+  --dark-surface: #1A1A1A;
+  --dark-card: #111111;
+
+  /* ═══ HEADER — Chinh kich thuoc thanh dieu huong ═══ */
+  --header-height: 88px;
+  /* Chieu cao header */
+  --header-padding-x: 40px;
+  /* Khoang cach 2 ben header */
+  --header-max-width: 100%;
+  /* Chieu rong toi da header (100% = tran man hinh) */
+
+  /* Logo */
+  --header-logo-gap: 10px;
+  /* Khoang cach icon va chu "ORIA SPA" */
+  --header-logo-icon-size: 30px;
+  /* Kich thuoc icon */
+  --header-logo-name-size: 26px;
+  /* Kich thuoc chu "ORIA SPA" */
+  --header-logo-sub-size: 11px;
+  /* Kich thuoc "let us understand you" */
+
+  /* Menu dieu huong (Home, Service, ...) */
+  --header-nav-gap: 32px;
+  /* Khoang cach giua cac muc menu */
+  --header-nav-font-size: 15px;
+  /* Co chu menu */
+  --header-nav-letter-spacing: 0.8px;
+  /* Gian chu menu */
+
+  /* Co ngon ngu */
+  --header-flag-width: 28px;
+  /* Chieu rong co */
+  --header-flag-height: 20px;
+  /* Chieu cao co */
+  --header-flag-gap: 6px;
+  /* Khoang cach giua cac co */
+
+  /* Nhom phai (co + login + gio hang) */
+  --header-right-gap: 16px;
+  /* Khoang cach giua co, login, gio hang */
+
+  /* ═══ HERO — Chinh phan banner chinh ═══ */
+  --hero-padding-top: 150px;
+  /* Khoang cach tu header den noi dung hero */
+  --hero-padding-bottom: 150px;
+  /* Khoang cach duoi noi dung hero */
+  --hero-max-width: 900px;
+  /* Chieu rong toi da noi dung hero */
+  --hero-content-gap: 20px;
+  /* Khoang cach giua cac phan hero */
+
+  /* Chu hero */
+  --hero-badge-size: 13px;
+  /* Co "Premium Spa & Barbershop" */
+  --hero-badge-spacing: 4px;
+  /* Gian chu badge */
+  --hero-sub-spacing: 10px;
+  /* Gian chu "HE THONG" */
+  --hero-title-spacing: -0.035em;
+  /* Natural luxury serif spacing for "Oria Spa" */
+  --hero-sub2-spacing: 0.08em;
+  /* Gentle spacing for the lower "spa" line */
+
+  /* Countdown timer */
+  --hero-countdown-box-radius: 12px;
+  /* Bo goc o countdown */
+  --hero-countdown-box-padding: 12px 16px;
+  /* Padding o countdown */
+  --hero-countdown-box-min-w: 64px;
+  /* Chieu rong toi thieu o countdown */
+  --hero-countdown-num-size: 28px;
+  /* Co so countdown */
+
+  /* Scroll hint */
+  --hero-scroll-hint-pb: 16px;
+  /* Padding duoi "Cuon xuong de kham pha" */
+}
+
+
+
+body {
+  background: var(--dark-bg);
+  color: white;
+  font-family: var(--font-body, 'Inter', sans-serif);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+section[id] {
+  scroll-margin-top: calc(var(--header-height) + 20px);
+}

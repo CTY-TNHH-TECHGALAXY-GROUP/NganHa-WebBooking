@@ -1,0 +1,173 @@
+═══════════════════════════════════════════════════════════════
+        KẾ HOẠCH TRIỂN KHAI - WEB BOOKING SPA NGÂN HÀ
+═══════════════════════════════════════════════════════════════
+Ngày lập: 19/03/2026
+Tech Stack: Next.js 14+ | Supabase | Tailwind CSS | Framer Motion
+
+
+1. ĐÁNH GIÁ & NGUYÊN TẮC SẮP XẾP
+───────────────────────────────────
+  • Nền tảng trước → UI sau → Logic sau cùng
+  • Các phần độc lập có thể làm song song
+  • i18n tích hợp ngay từ đầu (không để cuối)
+  • Hiệu ứng menu lật sách → tích hợp khi có Service Cards
+
+
+2. THỨ TỰ CÔNG VIỆC (11 BƯỚC)
+──────────────────────────────
+
+╔═══════════════════════════════════════════════════════════╗
+║  PHASE 1A: NỀN TẢNG (Làm đầu tiên)                     ║
+╚═══════════════════════════════════════════════════════════╝
+
+  Bước 1: Init Project + Design System
+  ─────────────────────────────────────
+    → Tạo project Next.js (TypeScript, Tailwind, App Router)
+    → Cài: framer-motion, lucide-react, react-pageflip, 
+           @supabase/supabase-js
+    → Cấu hình Tailwind theme (gold/dark palette)
+    → Setup Supabase clients
+    → Setup constants.ts, .env.local template
+
+  Bước 2: i18n Infrastructure
+  ────────────────────────────
+    → Cấu trúc routing: app/[locale]/
+    → Dictionaries 5 ngôn ngữ: vi, en, cn, jp, kr
+    → Middleware chuyển ngữ
+
+  Bước 3: Root Layout + Header
+  ─────────────────────────────
+    → Root layout (fonts, metadata, SEO)
+    → Header: sticky nav, logo, language switcher, mobile menu
+    → Files: Header.tsx / Header.logic.ts / Header.i18n.ts
+
+
+╔═══════════════════════════════════════════════════════════╗
+║  PHASE 1B: LANDING PAGE (Sau khi có nền tảng)           ║
+╚═══════════════════════════════════════════════════════════╝
+
+  Bước 4: Hero Section
+  ─────────────────────
+    → Fullscreen background video/image
+    → 2 chi nhánh CTAs (link Google Maps)
+    → Entrance animations (Framer Motion)
+
+  Bước 5: Service Cards + MENU LẬT SÁCH 📖
+  ──────────────────────────────────────────
+    → Thư viện: react-pageflip (StPageFlip wrapper)
+    → Mỗi "trang sách" = 1 gói dịch vụ (hình + giá)
+    → Hiệu ứng 3D page-flip khi vuốt/click
+    → Bìa sách: tông vàng gold sang trọng
+    → Mobile: single page, vuốt ngang
+    → Desktop: double page, click cạnh
+    → Fetch dữ liệu từ Supabase
+
+  Bước 6: Branch Info
+  ────────────────────
+    → 2 chi nhánh: 11 Ngô Đức Kế & 6B Thi Sách
+    → Google Maps link
+    → Card layout sang trọng
+
+  Bước 7: Promotions Section
+  ───────────────────────────
+    → Chương trình khuyến mãi
+    → Nút "Xem chi tiết" + "Đặt lịch ngay"
+
+  Bước 8: Footer + Floating Widgets
+  ──────────────────────────────────
+    → Footer: info, social links, copyright
+    → Floating buttons: Zalo, FB Messenger, WhatsApp, 
+      Line, KakaoTalk, WeChat, Hotline
+    → Fixed position, luôn hiển thị
+
+
+╔═══════════════════════════════════════════════════════════╗
+║  PHASE 1C: BOOKING FLOW (Core Feature)                   ║
+╚═══════════════════════════════════════════════════════════╝
+
+  Bước 9: Booking Form
+  ─────────────────────
+    → Chọn dịch vụ, ngày giờ, chi nhánh
+    → Điền: tên, SĐT, email
+    → Validation + submit to Supabase
+    → Files: BookingForm.tsx / .logic.ts / .i18n.ts
+
+  Bước 10: VietQR Payment
+  ────────────────────────
+    → Tạo mã QR từ VietQR Quick Link (không cần API key)
+    → URL: img.vietqr.io/image/{bank}-{account}-{template}.png
+    → Hiển thị đúng số tiền + ghi chú
+    → Status: PENDING_PAYMENT → CONFIRMED
+
+
+╔═══════════════════════════════════════════════════════════╗
+║  PHASE 1D: POLISH (Hoàn thiện)                           ║
+╚═══════════════════════════════════════════════════════════╝
+
+  Bước 11: Responsive + SEO + Performance
+  ────────────────────────────────────────
+    → Test: 375px, 768px, 1024px, 1440px
+    → Touch targets >= 44px (mobile)
+    → SEO meta tags
+    → Performance optimization
+
+
+3. HIỆU ỨNG MENU LẬT SÁCH (Chi tiết)
+──────────────────────────────────────
+
+  Thư viện: react-pageflip
+  Kỹ thuật: CSS 3D transforms (perspective, preserve-3d)
+
+  Thiết kế:
+  ┌─────────────────────────────────┐
+  │  📖 SERVICE MENU                │
+  │  ┌────────────┬───────────────┐ │
+  │  │  Trang trái│  Trang phải   │ │
+  │  │            │               │ │
+  │  │   [Hình]   │    [Hình]     │ │
+  │  │  Ear Clean │   Hair Wash   │ │
+  │  │  70 phút   │   90 phút     │ │
+  │  │  650,000đ  │   770,000đ    │ │
+  │  │            │               │ │
+  │  │   [ĐẶT]   │    [ĐẶT]     │ │
+  │  └────────────┴───────────────┘ │
+  │        ◄  1/3  ►                │
+  └─────────────────────────────────┘
+
+  • Bìa trước: Logo + "Our Services" (gradient gold)
+  • Mỗi trang: 1 dịch vụ (hình, tên, giờ, giá, nút đặt)
+  • Bìa sau: "Book Now" CTA
+  • Mobile: Single page, vuốt ngang
+  • Desktop: Double page, click cạnh
+
+
+4. BẢNG DEPENDENCIES
+────────────────────
+  #  │ Component     │ Phụ thuộc vào
+  ───┼───────────────┼──────────────────
+  1  │ Design System │ Không
+  2  │ i18n          │ Không
+  3  │ Header        │ i18n
+  4  │ Hero          │ Header
+  5  │ ServiceBook   │ react-pageflip
+  6  │ BranchInfo    │ i18n
+  7  │ Promotions    │ i18n
+  8  │ Footer        │ i18n
+  9  │ FloatingWidgets│ Không
+  10 │ BookingForm   │ Supabase
+  11 │ VietQRPayment │ BookingForm
+
+
+5. KIỂM TRA
+────────────
+  ✓ npm run build → không lỗi
+  ✓ Browser test: tất cả sections + booking flow
+  ✓ Hiệu ứng lật sách: click, vuốt, responsive
+  ✓ VietQR hiển thị đúng số tiền
+  ✓ Responsive: 375px, 768px, 1024px, 1440px
+  ✓ User review so với website mẫu Canva
+
+
+═══════════════════════════════════════════════════════════════
+Dự án: Web Booking - Hệ Thống Ngân Hà Barbershop & Spa
+═══════════════════════════════════════════════════════════════

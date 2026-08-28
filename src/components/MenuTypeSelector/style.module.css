@@ -1,0 +1,82 @@
+/* Container tạo không gian 3D */
+.perspective1000 {
+    perspective: 1000px;
+}
+
+/* Class chung cho bìa sách */
+.bookCover {
+    position: relative;
+    width: 19.5vh;
+    height: 26vh;
+    /* Mobile: 23% height per book -> 46% total. More breathing room for header/footer. */
+    /* Maintain ~0.75 aspect ratio */
+    /* iPhone SE (667px) -> ~187px height (safe) */
+    /* iPhone 14 Pro Max (932px) -> ~260px height (bigger & nice) */
+
+    border-radius: 0 0.5rem 0.5rem 0;
+    /* Bo tròn cạnh phải giống gáy sách */
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    /* shadow-2xl */
+    overflow: hidden;
+    transform-style: preserve-3d;
+    transition: transform 0.3s ease-out;
+}
+
+@media (min-width: 768px) {
+    .bookCover {
+        width: 20rem;
+        height: 26rem;
+        /* Desktop: Larger and more premium */
+    }
+}
+
+/* Hiệu ứng khi hover vào container thì xoay sách */
+.bookWrapper:hover .bookCover {
+    transform: rotateY(-6deg) translateY(-5px);
+    box-shadow: 10px 30px 60px -12px rgba(234, 179, 8, 0.2);
+}
+
+/* Hiệu ứng tia sáng quét qua (Shine Sweep) */
+@keyframes shine-sweep {
+    0% {
+        left: -100%;
+        opacity: 0;
+    }
+
+    10% {
+        opacity: 1;
+    }
+
+    50% {
+        left: 200%;
+        opacity: 0;
+    }
+
+    100% {
+        left: 200%;
+        opacity: 0;
+    }
+}
+
+.shineEffect {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 20%;
+    background: linear-gradient(to right, transparent, rgba(255, 215, 0, 0.2), transparent);
+    transform: skewX(-25deg);
+    pointer-events: none;
+    animation: shine-sweep 2s infinite;
+    animation-delay: 1.0s;
+}
+
+/* Ảnh bìa sách (Background Image) */
+.bgCover {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    inset: 0;
+}

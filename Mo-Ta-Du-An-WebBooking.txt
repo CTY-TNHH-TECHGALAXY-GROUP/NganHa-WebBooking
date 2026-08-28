@@ -1,0 +1,123 @@
+═══════════════════════════════════════════════════════════════
+           MÔ TẢ DỰ ÁN - WEBSITE ĐẶT LỊCH SPA NGÂN HÀ
+═══════════════════════════════════════════════════════════════
+
+1. DỰ ÁN LÀ GÌ?
+─────────────────
+Xây dựng một trang web đặt lịch trực tuyến cho Spa Ngân Hà, 
+nơi khách hàng có thể:
+  • Xem danh sách dịch vụ và bảng giá
+  • Chọn dịch vụ, ngày giờ, chi nhánh mong muốn
+  • Đặt lịch hẹn trực tuyến (không cần gọi điện)
+  • Thanh toán qua mã QR ngân hàng (VietQR)
+
+Trang web được thiết kế theo phong cách sang trọng, tông màu 
+vàng gold trên nền đen, phù hợp với thương hiệu Spa cao cấp.
+
+
+2. KHÁCH HÀNG SỬ DỤNG NHƯ THẾ NÀO?
+─────────────────────────────────────
+Bước 1: Khách truy cập trang web
+Bước 2: Xem các gói dịch vụ (massage, gội đầu, facial, v.v.)
+Bước 3: Chọn dịch vụ muốn đặt
+Bước 4: Điền thông tin (tên, số điện thoại, email)
+Bước 5: Chọn ngày và giờ hẹn
+Bước 6: Xác nhận đặt lịch
+Bước 7: Hiển thị mã QR thanh toán (đúng số tiền & ghi chú)
+        → Khách chuyển khoản qua app ngân hàng
+Bước 8: Nhân viên xác nhận thanh toán → Hoàn tất
+
+
+3. HỖ TRỢ NGÔN NGỮ
+────────────────────
+Trang web hỗ trợ 5 ngôn ngữ:
+  • Tiếng Việt
+  • Tiếng Anh (English)
+  • Tiếng Trung (中文)
+  • Tiếng Nhật (日本語)
+  • Tiếng Hàn (한국어)
+
+→ Phù hợp với khách du lịch quốc tế tại khu vực Quận 1.
+→ Nội dung ngôn ngữ được quản lý trên hệ thống,
+   quản lý có thể chỉnh sửa/cập nhật nội dung từng ngôn ngữ
+   trực tiếp trên trang quản trị (không cần lập trình viên).
+
+
+4. THÔNG TIN CƠ SỞ
+────────────────────
+  • Ngan Ha Barbershop & Spa
+  • Địa chỉ: 11 Ngô Đức Kế, P. Sài Gòn, Quận 1, TP.HCM
+  • Giờ hoạt động: 9:00 sáng - 12:00 đêm
+  • Có link Google Maps để khách dễ tìm đường
+
+
+5. CÁC GÓI DỊCH VỤ
+───────────────────
+Dữ liệu dịch vụ được lấy trực tiếp từ hệ thống (Supabase),
+hiển thị tự động trên trang web. Một số gói dịch vụ hiện có:
+
+  • Lấy ráy tai          - 70 phút  - 650.000đ / $30
+  • Cạo da gót chân      - 70 phút  - 600.000đ / $27
+  • Gội đầu dưỡng sinh   - 90 phút  - 770.000đ / $35
+  • Chăm sóc da mặt      - 90 phút  - 800.000đ / $36
+  • Gói Barbershop        - 120 phút - 800.000đ / $39
+
+Quản lý có thể thêm/sửa/xóa dịch vụ và cập nhật giá
+trực tiếp trên trang quản trị, trang web sẽ tự động cập nhật.
+
+
+6. THANH TOÁN
+─────────────
+GIAI ĐOẠN 1 (Triển khai ngay):
+  → Thanh toán qua mã QR VietQR
+  → Mã QR tự động tạo với đúng số tiền của hóa đơn
+  → Ghi chú tự động gồm: mã đặt lịch + tên khách hàng
+  → Nhân viên kiểm tra và xác nhận thanh toán
+
+GIAI ĐOẠN 2 (Tương lai):
+  → Tích hợp cổng thanh toán VNPay
+  → Khách có thể thanh toán trực tuyến bằng:
+     - Thẻ ATM nội địa
+     - Thẻ Visa / MasterCard
+     - Quét QR qua app VNPay
+  → Hệ thống tự động xác nhận thanh toán (không cần nhân viên)
+
+
+7. CÁC TÍNH NĂNG BỔ SUNG
+─────────────────────────
+  • Nút liên hệ nhanh luôn hiển thị trên màn hình:
+    - Zalo (Việt Nam)
+    - Facebook Messenger
+    - WhatsApp (Quốc tế)
+    - Line (Nhật Bản, Thái Lan)
+    - KakaoTalk (Hàn Quốc)
+    - WeChat (Trung Quốc)
+    - Hotline (gọi điện trực tiếp)
+  • Trang Khuyến mãi: đăng các chương trình giảm giá
+  • Thiết kế tương thích điện thoại (Mobile-first)
+    → Đa số khách sẽ truy cập bằng điện thoại
+  • Dùng chung hệ thống dữ liệu với web quản trị hiện có
+    → Đặt lịch từ web booking sẽ hiển thị ngay trên 
+       bảng điều khiển quản lý
+
+
+8. KẾ HOẠCH TRIỂN KHAI
+───────────────────────
+GIAI ĐOẠN 1 (Ưu tiên):
+  ✓ Trang giới thiệu Spa (hình ảnh, dịch vụ, chi nhánh)
+  ✓ Hệ thống đặt lịch trực tuyến
+  ✓ Thanh toán QR
+  ✓ Hỗ trợ 5 ngôn ngữ
+  ✓ Nút liên hệ nhanh (Zalo, FB, Hotline)
+
+GIAI ĐOẠN 2 (Phát triển thêm):
+  ○ Thanh toán VNPay
+  ○ Tài khoản khách hàng (đăng nhập, xem lịch sử)
+  ○ Hệ thống mã giảm giá / khuyến mãi
+  ○ Cửa hàng online (bán tinh dầu, đặt phòng xông hơi)
+
+
+═══════════════════════════════════════════════════════════════
+Ngày lập: 19/03/2026
+Dự án: Web Booking - Hệ Thống Ngân Hà Barbershop & Spa
+═══════════════════════════════════════════════════════════════
