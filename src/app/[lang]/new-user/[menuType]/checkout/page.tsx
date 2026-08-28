@@ -1022,7 +1022,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
 
                           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '18px', paddingTop: '16px', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
                             <span style={{ color: '#858391' }}>Updated price</span>
-                            <strong style={{ fontFamily: 'Georgia, serif', color: '#f2d58d', fontSize: '25px' }}>
+                            <strong style={{ color: '#f2d58d', fontSize: '25px' }}>
                               {formatCurrency(currentEditService.priceVND)} VNĐ
                             </strong>
                           </div>
