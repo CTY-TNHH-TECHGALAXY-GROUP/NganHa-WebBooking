@@ -902,23 +902,78 @@
 
 .servicePickerTabs {
   display: flex;
-  gap: 9px;
+  gap: 16px;
   overflow-x: auto;
-  margin-bottom: 16px;
-  padding-bottom: 4px;
+  margin-bottom: 24px;
+  padding-bottom: 12px;
   scrollbar-width: none;
+  justify-content: flex-start;
 }
 
 .servicePickerTabs::-webkit-scrollbar {
   display: none;
 }
 
-.servicePickerTabs button { padding: 10px 20px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, 0.15); background: transparent; color: #fff; font-size: 13px; font-weight: 500; cursor: pointer; transition: 0.2s; }
+.pickerTab {
+  position: relative;
+  flex: 0 0 auto;
+  padding: 12px 10px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  color: var(--ink-faint);
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
 
-.servicePickerTabs button.activeTab {
-  color: #241b0c;
-  border-color: rgba(233, 215, 174, 0.68);
-  background: linear-gradient(145deg, rgba(233, 215, 174, 0.95), rgba(201, 169, 110, 0.86));
+.pickerTab .categoryIcon {
+  width: 42px;
+  height: 42px;
+  background-color: var(--ink-faint);
+  mask-size: contain;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  -webkit-mask-position: center;
+  mask-repeat: no-repeat;
+  -webkit-mask-repeat: no-repeat;
+  transition: all 0.3s ease;
+  opacity: 0.8;
+}
+
+.pickerTab.activeTab {
+  color: var(--gold-soft);
+}
+
+.pickerTab.activeTab .categoryIcon {
+  background-color: var(--gold-soft);
+  transform: scale(1.1);
+  opacity: 1;
+}
+
+.pickerTab::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  transform: scaleX(0);
+  transform-origin: center;
+  background: var(--gold-soft);
+  transition: transform 300ms ease;
+  border-radius: 2px;
+}
+
+.pickerTab.activeTab::after {
+  transform: scaleX(1);
 }
 
 .servicePickerList {
@@ -970,7 +1025,7 @@
   line-height: 1.38;
 }
 
-.pickerAddButton { min-width: 96px; min-height: 42px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; border: none; border-radius: 999px; background: var(--gold); color: #111; font-weight: 600; font-size: 13px; letter-spacing: 0.05em; text-transform: uppercase; cursor: pointer; transition: 0.2s; }
+.pickerAddButton { min-width: 42px; width: 42px; height: 42px; display: inline-flex; align-items: center; justify-content: center; gap: 0; border: none; border-radius: 999px; background: var(--gold); color: #111; cursor: pointer; transition: 0.2s; padding: 0; }
 
 .pickerAddButton:hover,
 .pickerAddButton:focus-visible {
@@ -1290,7 +1345,7 @@
     height: 68px;
   }
 
-  .pickerAddButton { min-width: 96px; min-height: 42px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; border: none; border-radius: 999px; background: var(--gold); color: #111; font-weight: 600; font-size: 13px; letter-spacing: 0.05em; text-transform: uppercase; cursor: pointer; transition: 0.2s; }
+  .pickerAddButton { min-width: 42px; width: 42px; height: 42px; display: inline-flex; align-items: center; justify-content: center; gap: 0; border: none; border-radius: 999px; background: var(--gold); color: #111; cursor: pointer; transition: 0.2s; padding: 0; }
 
   .videoPreviewStage {
     width: 94vw;

@@ -370,14 +370,39 @@ const CheckoutGroupedServiceCard = ({
           }
         }} 
         aria-label={`${t('add', lang)} ${serviceName(selectedVariant, lang)}`}
-        style={{ alignSelf: 'center', minWidth: '80px' }}
+        style={{ alignSelf: 'center', minWidth: '42px', width: '42px', height: '42px', padding: 0 }}
       >
-        <Plus size={17} />
-        <span>{t('add', lang)}</span>
+        <Plus size={20} />
       </button>
     </article>
   );
 };
+
+
+const CATEGORY_ICONS: Record<string, string> = {
+  'Body Massage': '/category-icons-svg/body-massage.svg',
+  'Foot Massage': '/category-icons-svg/foot-massage.svg',
+  'Ear Clean': '/category-icons-svg/ear-clean.svg',
+  'Barber': '/category-icons-svg/haircut.svg',
+  'Package': '/category-icons-svg/package.svg',
+  'Add-on': '/category-icons-svg/adds-on.svg',
+  'VIP Package': '/category-icons-svg/combo-king.svg',
+  'Facial': '/category-icons-svg/facial-care.svg',
+  'all': '/category-icons-svg/combo-king.svg'
+};
+
+function getCategoryIcon(catName: string) {
+  // If it's a known string, return it
+  if (CATEGORY_ICONS[catName]) return CATEGORY_ICONS[catName];
+  // Fallbacks
+  if (catName.toLowerCase().includes('body')) return '/category-icons-svg/body-massage.svg';
+  if (catName.toLowerCase().includes('foot')) return '/category-icons-svg/foot-massage.svg';
+  if (catName.toLowerCase().includes('ear')) return '/category-icons-svg/ear-clean.svg';
+  if (catName.toLowerCase().includes('barber')) return '/category-icons-svg/haircut.svg';
+  if (catName.toLowerCase().includes('vip')) return '/category-icons-svg/combo-king.svg';
+  if (catName.toLowerCase().includes('facial')) return '/category-icons-svg/facial-care.svg';
+  return '/category-icons-svg/package.svg';
+}
 
 export default function CheckoutPage({ params }: { params: PageParams }) {
   const router = useRouter();
@@ -466,7 +491,22 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
   );
 
   const categoryIds = useMemo(
-    () => Array.from(new Set(serviceOptions.map((service) => service.cat).filter(Boolean))),
+    () => {
+      const cats = new Set<string>();
+      serviceOptions.forEach(service => {
+        if (!service.cat) return;
+        let parsed = service.cat;
+        if (typeof parsed === 'string' && parsed.startsWith('[')) {
+          try { parsed = JSON.parse(parsed); } catch(e) {}
+        }
+        if (Array.isArray(parsed)) {
+          parsed.forEach(c => cats.add(c));
+        } else if (typeof parsed === 'string') {
+          cats.add(parsed);
+        }
+      });
+      return Array.from(cats);
+    },
     [serviceOptions]
   );
 
@@ -1144,19 +1184,35 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
             <div className={styles.servicePickerTabs}>
               <button
                 type="button"
-                className={activeCategory === 'all' ? styles.activeTab : ''}
+                className={`${styles.pickerTab} ${activeCategory === 'all' ? styles.activeTab : ''}`}
                 onClick={() => setActiveCategory('all')}
               >
-                {t('all', lang)}
+                <div
+                  className={styles.categoryIcon}
+                  style={{
+                    maskImage: `url('/category-icons-svg/package.svg')`,
+                    WebkitMaskImage: `url('/category-icons-svg/package.svg')`
+                  }}
+                  aria-hidden="true"
+                />
+                <span>{t('all', lang)}</span>
               </button>
               {categoryIds.map((id) => (
                 <button
                   key={id}
                   type="button"
-                  className={activeCategory === id ? styles.activeTab : ''}
+                  className={`${styles.pickerTab} ${activeCategory === id ? styles.activeTab : ''}`}
                   onClick={() => setActiveCategory(id)}
                 >
-                  {categoryName(id, lang)}
+                  <div
+                    className={styles.categoryIcon}
+                    style={{
+                      maskImage: `url(${getCategoryIcon(id)})`,
+                      WebkitMaskImage: `url(${getCategoryIcon(id)})`
+                    }}
+                    aria-hidden="true"
+                  />
+                  <span>{categoryName(id, lang)}</span>
                 </button>
               ))}
             </div>
