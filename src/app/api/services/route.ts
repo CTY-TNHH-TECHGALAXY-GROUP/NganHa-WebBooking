@@ -20,8 +20,62 @@ const getMenuTypeFromId = (id: string): 'standard' | 'vip' => {
 export const GET = async () => {
   try {
     if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
-      console.warn('[API /services] Missing Supabase env vars, returning empty service list for fallback UI.');
-      return NextResponse.json([]);
+      
+      console.warn('[API /services] Missing Supabase env vars, returning mock service list for local dev.');
+      return NextResponse.json([
+        {
+          id: 'NHS001',
+          cat: 'Body Massage',
+          names: { en: 'Aroma coconut oil', vi: 'Aroma coconut oil', cn: 'Aroma coconut oil', jp: 'Aroma coconut oil', kr: 'Aroma coconut oil' },
+          descriptions: { en: 'Full-body care with coconut oil', vi: 'Full-body care with coconut oil' },
+          img: '/images/services/aroma-oil.png',
+          priceVND: 580000,
+          priceUSD: 24,
+          timeValue: 60,
+          timeDisplay: '60 mins',
+          menuType: 'standard',
+          TAGS: ['body', 'oil'],
+          ACTIVE: true,
+          BEST_SELLER: true
+        },
+        {
+          id: 'NHS002',
+          cat: 'Body Massage',
+          names: { en: 'Aroma coconut oil 90 mins', vi: 'Aroma coconut oil 90 mins' },
+          descriptions: { en: 'Full-body care with coconut oil' },
+          priceVND: 790000,
+          priceUSD: 33,
+          timeValue: 90,
+          timeDisplay: '90 mins',
+          menuType: 'standard',
+          ACTIVE: true
+        },
+        {
+          id: 'NHS003',
+          cat: 'Foot Massage',
+          names: { en: 'Foot & Leg Massage', vi: 'Massage chân' },
+          descriptions: { en: 'Relaxing foot massage' },
+          priceVND: 350000,
+          priceUSD: 15,
+          timeValue: 45,
+          timeDisplay: '45 mins',
+          menuType: 'standard',
+          ACTIVE: true
+        },
+        {
+          id: 'NHS004',
+          cat: 'Ear Clean',
+          names: { en: 'Ear Cleaning & Head Massage', vi: 'Lấy ráy tai' },
+          descriptions: { en: 'Traditional ear cleaning' },
+          priceVND: 250000,
+          priceUSD: 10,
+          timeValue: 30,
+          timeDisplay: '30 mins',
+          menuType: 'standard',
+          ACTIVE: true
+        }
+      ]);
+
     }
 
     const supabase = getSupabaseAdmin();
