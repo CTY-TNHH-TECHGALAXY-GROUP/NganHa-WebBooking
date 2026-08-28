@@ -40,7 +40,7 @@ export async function generateMetadata(): Promise<Metadata> {
       seo = { ...seo, ...data.value };
     }
   } catch (e) {
-    console.error('Error reading seo.json for metadata', e);
+    if (e instanceof Error && !e.message.includes('Missing Supabase env vars')) console.error('Error reading seo.json for metadata', e);
   }
 
   return {
@@ -91,7 +91,7 @@ const RootLayout = async ({
       }, {});
     }
   } catch (e) {
-    console.error('Error fetching WebBookingContent', e);
+    if (e instanceof Error && !e.message.includes('Missing Supabase env vars')) console.error('Error fetching WebBookingContent', e);
   }
 
   // Fetch System Settings & About Story Media
