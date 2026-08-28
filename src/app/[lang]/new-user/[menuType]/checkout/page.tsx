@@ -52,6 +52,7 @@ const COPY = {
   total: { vi: 'Tổng cộng', en: 'Total Bill', cn: '总计', jp: '合計', kr: '총액' },
   vat: { vi: '*Giá đã bao gồm VAT', en: '*Price includes VAT', cn: '*价格含VAT', jp: '*税込価格', kr: '*VAT 포함' },
   confirm: { vi: 'Xác nhận đặt lịch', en: 'Confirm order', cn: '确认预约', jp: '予約を確定', kr: '예약 확정' },
+  select: { vi: 'Chọn', en: 'Select', cn: '选择', jp: '選択', kr: '선택' },
   edit: { vi: 'Sửa', en: 'Edit', cn: '编辑', jp: '編集', kr: '편집' },
   remove: { vi: 'Xóa', en: 'Remove', cn: '删除', jp: '削除', kr: '삭제' },
   selectService: { vi: 'Vui lòng chọn ít nhất 1 dịch vụ.', en: 'Please select at least 1 service.', cn: '请至少选择1项服务。', jp: 'サービスを1つ以上選択してください。', kr: '서비스를 1개 이상 선택해 주세요.' },
