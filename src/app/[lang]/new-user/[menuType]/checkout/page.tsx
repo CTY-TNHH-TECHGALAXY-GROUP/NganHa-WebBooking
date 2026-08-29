@@ -1211,21 +1211,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
             </header>
 
             <div className={styles.servicePickerTabs}>
-              <button
-                type="button"
-                className={`${styles.pickerTab} ${activeCategory === 'all' ? styles.activeTab : ''}`}
-                onClick={() => setActiveCategory('all')}
-              >
-                <div
-                  className={styles.categoryIcon}
-                  style={{
-                    maskImage: `url('/category-icons-svg/package.svg')`,
-                    WebkitMaskImage: `url('/category-icons-svg/package.svg')`
-                  }}
-                  aria-hidden="true"
-                />
-                <span>{t('all', lang)}</span>
-              </button>
+              
               {categoryIds.map((id) => (
                 <button
                   key={id}
