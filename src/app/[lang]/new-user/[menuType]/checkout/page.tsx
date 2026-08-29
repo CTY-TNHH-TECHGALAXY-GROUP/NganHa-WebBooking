@@ -512,9 +512,19 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
   );
 
   const visibleServices = useMemo(
-    () => activeCategory === 'all'
-      ? serviceOptions
-      : serviceOptions.filter((service) => service.cat === activeCategory),
+    () => {
+      if (activeCategory === 'all') return serviceOptions;
+      return serviceOptions.filter((service) => {
+        let parsed = service.cat;
+        if (typeof parsed === 'string' && parsed.startsWith('[')) {
+          try { parsed = JSON.parse(parsed); } catch(e) {}
+        }
+        if (Array.isArray(parsed)) {
+          return parsed.includes(activeCategory);
+        }
+        return parsed === activeCategory;
+      });
+    },
     [activeCategory, serviceOptions]
   );
 
@@ -1205,14 +1215,16 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                   className={`${styles.pickerTab} ${activeCategory === id ? styles.activeTab : ''}`}
                   onClick={() => setActiveCategory(id)}
                 >
-                  <div
-                    className={styles.categoryIcon}
-                    style={{
-                      maskImage: `url(${getCategoryIcon(id)})`,
-                      WebkitMaskImage: `url(${getCategoryIcon(id)})`
-                    }}
-                    aria-hidden="true"
-                  />
+                  {id !== 'all' && (
+                    <div
+                      className={styles.categoryIcon}
+                      style={{
+                        maskImage: `url(${getCategoryIcon(id)})`,
+                        WebkitMaskImage: `url(${getCategoryIcon(id)})`
+                      }}
+                      aria-hidden="true"
+                    />
+                  )}
                   <span>{categoryName(id, lang)}</span>
                 </button>
               ))}
