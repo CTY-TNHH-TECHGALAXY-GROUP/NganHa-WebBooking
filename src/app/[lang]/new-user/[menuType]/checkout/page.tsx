@@ -1116,6 +1116,30 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
         </div>
       </main>
 
+      
+      {customizingService && (
+        <CustomForYouModal
+            isOpen={!!customizingService}
+            onClose={() => setCustomizingService(null)}
+            onSave={handleSaveCustom}
+            serviceData={{
+                ID: customizingService.id,
+                NAMES: customizingService.names as Record<string, string>,
+                FOCUS_POSITION: customizingService.FOCUS_POSITION as any,
+                TAGS: customizingService.TAGS as any,
+                SHOW_STRENGTH: customizingService.SHOW_STRENGTH,
+                HINT: customizingService.HINT as Record<string, string>,
+                PRICE_VN: customizingService.priceVND,
+                PRICE_USD: customizingService.priceUSD,
+                SHOW_NOTES: customizingService.SHOW_NOTES,
+                SHOW_PREFERENCES: customizingService.SHOW_PREFERENCES,
+                SHOW_GENDER: customizingService.SHOW_GENDER,
+                SHOW_FOCUS: customizingService.SHOW_FOCUS,
+            }}
+            lang={lang as any}
+        />
+      )}
+
       <PaymentModal
         isOpen={isPaymentModalOpen}
         onClose={() => setIsPaymentModalOpen(false)}
