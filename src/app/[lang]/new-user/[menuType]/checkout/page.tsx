@@ -668,12 +668,12 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
           onClick={() => router.back()}
         >
           <ChevronLeft size={18} />
-          <span className="text-sm font-semibold uppercase tracking-[0.15em] hidden sm:block">{t('menu', lang)}</span>
+          <span className="text-base font-semibold uppercase tracking-[0.15em] hidden sm:block">{t('menu', lang)}</span>
         </button>
         
         <SmartLogo theme="dark" className="h-20 md:h-28 lg:h-32 w-auto object-contain mb-5 drop-shadow-xl" />
         
-        <h1 className="text-2xl md:text-[28px] font-serif text-[#f1e9dc] tracking-wide">
+        <h1 className="text-3xl md:text-[30px] font-serif text-[#f1e9dc] tracking-wide">
           {t('title', lang)}
         </h1>
         
@@ -1047,7 +1047,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                               value={editNote}
                               onChange={(e) => setEditNote(e.target.value)}
                               placeholder={lang === 'vi' ? 'Ghi chú thêm...' : 'Additional notes...'}
-                              className="h-[48px] flex-1 w-full rounded-[14px] bg-transparent border border-white/10 text-[#a3a1ad] px-4 outline-none focus:border-[#c9a96e]/50 text-sm"
+                              className="h-[48px] flex-1 w-full rounded-[14px] bg-transparent border border-white/10 text-[#a3a1ad] px-4 outline-none focus:border-[#c9a96e]/50 text-base"
                            />
                            <button 
                              onClick={() => {
@@ -1056,7 +1056,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                                setEditServiceId(null);
                                setEditBaseName(null);
                              }}
-                             className="h-[48px] px-6 rounded-[14px] font-bold text-[13px] bg-gradient-to-r from-[#ecd38f] to-[#c6a55f] text-[#2c2416] whitespace-nowrap shrink-0 w-full sm:w-auto"
+                             className="h-[48px] px-6 rounded-[14px] font-bold text-[15px] bg-gradient-to-r from-[#ecd38f] to-[#c6a55f] text-[#2c2416] whitespace-nowrap shrink-0 w-full sm:w-auto"
                            >
                              {lang === 'vi' ? 'Lưu' : 'Save'}
                            </button>
