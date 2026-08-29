@@ -6,6 +6,7 @@ import { getText } from './utils';
 interface PreferencesProps {
     lang: LanguageCode;
     showStrength: boolean;
+    showGender: boolean;
     values: {
         strength?: 'light' | 'medium' | 'strong';
         therapist: 'male' | 'female' | 'random';
@@ -13,7 +14,7 @@ interface PreferencesProps {
     onChange: (key: string, value: any) => void;
 }
 
-const Preferences: React.FC<PreferencesProps> = ({ lang, showStrength, values, onChange }) => {
+const Preferences: React.FC<PreferencesProps> = ({ lang, showStrength, showGender, values, onChange }) => {
     const strengthOptions = [
         { value: 'light', label: { en: 'Light', vi: 'Nhẹ', jp: '弱い', kr: '약하게', cn: '轻' } },
         { value: 'medium', label: { en: 'Medium', vi: 'Vừa', jp: '普通', kr: '보통', cn: '中' } },
@@ -31,8 +32,8 @@ const Preferences: React.FC<PreferencesProps> = ({ lang, showStrength, values, o
             {/* Strength Section */}
             {showStrength && (
                 <div>
-                    <h4 className="flex items-center gap-2 text-[10px] font-bold text-[#C9A96E]/80 uppercase tracking-widest mb-3">
-                        <Activity size={14} />
+                    <h4 className="flex items-center gap-2 text-[10px] sm:text-sm font-bold text-[#C9A96E]/80 uppercase tracking-widest mb-3">
+                        <Activity size={16} className="sm:w-5 sm:h-5" />
                         {getText({ en: 'Strength', vi: 'Lực tay', jp: '強さ', kr: '강도', cn: '力度' }, lang)}
                     </h4>
                     <div className="flex gap-2">
@@ -47,7 +48,7 @@ const Preferences: React.FC<PreferencesProps> = ({ lang, showStrength, values, o
                                 <button
                                     key={opt.value}
                                     onClick={() => onChange('strength', opt.value)}
-                                    className={`flex-1 py-3 px-2 rounded-xl text-sm font-semibold border transition-all ${activeClass}`}
+                                    className={`flex-1 py-3 sm:py-4 px-2 rounded-xl text-sm sm:text-base font-semibold border transition-all ${activeClass}`}
                                 >
                                     {getText(opt.label, lang)}
                                 </button>
@@ -58,9 +59,10 @@ const Preferences: React.FC<PreferencesProps> = ({ lang, showStrength, values, o
             )}
 
             {/* Therapist Section */}
-            <div>
-                <h4 className="flex items-center gap-2 text-[10px] font-bold text-[#C9A96E]/80 uppercase tracking-widest mb-3">
-                    <User size={14} />
+            {showGender && (
+                <div>
+                <h4 className="flex items-center gap-2 text-[10px] sm:text-sm font-bold text-[#C9A96E]/80 uppercase tracking-widest mb-3">
+                    <User size={16} className="sm:w-5 sm:h-5" />
                     {getText({ en: 'Therapist', vi: 'Kỹ thuật viên', jp: 'セラピスト', kr: '테라피스트', cn: '技师' }, lang)}
                 </h4>
                 <div className="flex gap-2">
@@ -75,7 +77,7 @@ const Preferences: React.FC<PreferencesProps> = ({ lang, showStrength, values, o
                             <button
                                 key={opt.value}
                                 onClick={() => onChange('therapist', opt.value)}
-                                className={`flex-1 py-3 px-2 rounded-xl text-sm font-semibold border transition-all ${activeClass}`}
+                                className={`flex-1 py-3 sm:py-4 px-2 rounded-xl text-sm sm:text-base font-semibold border transition-all ${activeClass}`}
                             >
                                 {getText(opt.label, lang)}
                             </button>
@@ -83,8 +85,10 @@ const Preferences: React.FC<PreferencesProps> = ({ lang, showStrength, values, o
                     })}
                 </div>
             </div>
+            )}
         </div>
     );
 };
 
 export default Preferences;
+

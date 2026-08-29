@@ -7,6 +7,8 @@ import SmartLogo from '@/components/SmartLogo';
 import AlertModal from '@/components/Shared/AlertModal';
 import OrderConfirmModal from '@/components/Checkout/OrderConfirmModal';
 import PaymentModal from '@/components/Checkout/PaymentModal';
+import CustomForYouModal from '@/components/CustomForYou';
+import { CustomPreferences } from '@/components/CustomForYou/types';
 import { CATEGORIES } from '@/components/Menu/constants';
 import { useMenuData } from '@/components/Menu/MenuContext';
 import type { CartItem, Service, SupportedLanguage } from '@/components/Menu/types';
@@ -427,6 +429,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
   const [bookingTime, setBookingTime] = useState('');
   const [note, setNote] = useState('');
   const [activeCategory, setActiveCategory] = useState('');
+  const [customizingService, setCustomizingService] = useState<Service | null>(null);
   const [isServicePickerOpen, setIsServicePickerOpen] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('');
   const [amountPaid, setAmountPaid] = useState('');
@@ -575,9 +578,20 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
   const genderOptions = [t('male', lang), t('female', lang), t('other', lang)];
 
   const addService = (service: Service, jumpToCart = false) => {
-    addToCart(service, 1);
     setActiveDrawerGroup(null);
     setIsServicePickerOpen(false);
+    setCustomizingService(service);
+  };
+
+  const handleSaveCustom = (prefs: CustomPreferences) => {
+    if (!customizingService) return;
+    addToCart(customizingService, 1, {
+      strength: prefs.strength,
+      therapist: prefs.therapist,
+      notes: prefs.notes,
+      bodyParts: prefs.bodyParts
+    });
+    setCustomizingService(null);
     window.requestAnimationFrame(() => document.getElementById('cart')?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
   };
 

@@ -8,13 +8,15 @@ export interface ServiceData {
     NAMES: Record<string, string>; // { EN: "...", VN: "..." }
     FOCUS_POSITION?: Record<BodyPartKey, boolean>; // Map<Part, boolean>
     TAGS?: Array<Record<string, string>>; // List các tag [0: Pregnant, 1: Allergy]
-    SHOW_STRENGTH?: boolean;
     HINT?: Record<string, string>; // Placeholder cho Other Notes
     PRICE_VN?: number;
     PRICE_USD?: number;
     // UI Configuration Flags (Task E2+E3)
     SHOW_NOTES?: boolean;           // Show/hide Notes section
-    SHOW_PREFERENCES?: boolean;     // Show/hide Preferences (Strength + Therapist Gender)
+    SHOW_PREFERENCES?: boolean;     // Legacy
+    SHOW_GENDER?: boolean;
+    SHOW_STRENGTH?: boolean;
+    SHOW_FOCUS?: boolean;
 }
 
 // Cấu trúc Data Lưu Trữ preferences của khách
