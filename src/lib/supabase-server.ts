@@ -29,7 +29,7 @@ const createMockSupabase = () => {
   } as any;
 };
 
-export const getSupabaseAdmin = () => {
+export const getSupabaseAdmin = (): SupabaseClient => {
   if (!_supabaseAdmin) {
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -37,7 +37,7 @@ export const getSupabaseAdmin = () => {
     if (!url || !key) {
       console.warn('Missing Supabase env vars, using Mock Client');
       _supabaseAdmin = createMockSupabase();
-      return _supabaseAdmin;
+      return _supabaseAdmin as SupabaseClient;
     }
 
     _supabaseAdmin = createClient(url, key);
