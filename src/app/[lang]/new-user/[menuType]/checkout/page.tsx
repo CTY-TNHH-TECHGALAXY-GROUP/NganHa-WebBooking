@@ -426,7 +426,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
   const [bookingDate, setBookingDate] = useState(() => localISODate(new Date()));
   const [bookingTime, setBookingTime] = useState('');
   const [note, setNote] = useState('');
-  const [activeCategory, setActiveCategory] = useState('all');
+  const [activeCategory, setActiveCategory] = useState('');
   const [isServicePickerOpen, setIsServicePickerOpen] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('');
   const [amountPaid, setAmountPaid] = useState('');
@@ -510,6 +510,10 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
     },
     [serviceOptions]
   );
+
+  useEffect(() => {
+    if (!activeCategory && categoryIds.length > 0) setActiveCategory(categoryIds[0]);
+  }, [categoryIds, activeCategory]);
 
   const visibleServices = useMemo(
     () => {

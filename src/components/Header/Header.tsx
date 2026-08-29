@@ -242,6 +242,7 @@ const Header = () => {
   };
 
   const pathname = usePathname();
+  const isCheckoutPage = pathname.includes('/checkout');
   const isHomepage = pathname === '/' || pathname === '/vi' || pathname === '/en';
   const showLogo = !isHomepage || isScrolled;
 
