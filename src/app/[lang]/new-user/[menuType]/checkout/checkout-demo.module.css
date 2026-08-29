@@ -1139,8 +1139,8 @@
   bottom: 0;
   width: min(760px, calc(100% - 28px));
   transform: translate(-50%, 105%);
-  background: linear-gradient(180deg, rgba(34, 33, 29, 0.99), rgba(15, 15, 14, 0.995));
-  border: 1px solid rgba(217, 184, 94, 0.26);
+  background: linear-gradient(180deg, rgba(14, 16, 25, 0.99), rgba(6, 8, 14, 0.995));
+  border: 1px solid rgba(255, 255, 255, 0.06);
   border-bottom: 0;
   border-radius: 18px 18px 0 0;
   box-shadow: 0 -24px 80px rgba(0, 0, 0, 0.62);
@@ -1158,7 +1158,7 @@
   width: 54px;
   height: 4px;
   border-radius: 999px;
-  background: rgba(217, 184, 94, 0.38);
+  background: rgba(255, 255, 255, 0.15);
   margin: 11px auto 4px;
 }
 
@@ -1254,7 +1254,7 @@
 
 .drawerOption.drawerOptionActive {
   border-color: rgba(217, 184, 94, 0.72);
-  background: linear-gradient(180deg, rgba(217, 184, 94, 0.20), rgba(115, 85, 24, 0.10));
+  background: linear-gradient(180deg, rgba(201, 169, 110, 0.15), rgba(201, 169, 110, 0.05));
   box-shadow: 0 0 0 3px rgba(217, 184, 94, 0.06);
 }
 

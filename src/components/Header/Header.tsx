@@ -268,7 +268,7 @@ const Header = () => {
             </div>
 
             {/* Center Logo */}
-            <div className={`absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transition-opacity duration-300 z-0 ${showLogo ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+            <div className={`absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transition-opacity duration-300 z-0 ${(showLogo && !isCheckoutPage) ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
               <a href="/" className="block mt-2 md:mt-3">
                 <SmartLogo theme="dark" className="h-14 md:h-[68px] w-auto object-contain cursor-pointer scale-100 md:scale-125" />
               </a>
