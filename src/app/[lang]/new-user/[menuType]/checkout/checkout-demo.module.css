@@ -935,8 +935,8 @@
 }
 
 .pickerTab .categoryIcon {
-  width: 42px;
-  height: 42px;
+  width: 64px;
+  height: 64px;
   background-color: var(--ink-faint);
   mask-size: contain;
   mask-position: center;
@@ -954,7 +954,7 @@
 
 .pickerTab.activeTab .categoryIcon {
   background-color: var(--gold-soft);
-  transform: scale(1.1);
+  transform: scale(1.18);
   opacity: 1;
 }
 

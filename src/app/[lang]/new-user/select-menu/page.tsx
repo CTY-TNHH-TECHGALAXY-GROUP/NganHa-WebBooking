@@ -7,14 +7,19 @@ import { useRouter } from "next/navigation";
 // Import Component tái sử dụng
 import MenuTypeSelector from "@/components/MenuTypeSelector";
 
+import { useTranslation } from "@/components/TranslationProvider";
+
 export default function SelectMenuPage({ params }: { params: Promise<{ lang: string }> }) {
     const router = useRouter();
-    const [lang, setLang] = useState("en");
+    const { currentLang } = useTranslation();
+    const [urlLang, setUrlLang] = useState("en");
 
     // Lấy lang từ params
     useEffect(() => {
-        params.then((p) => setLang(p.lang));
+        params.then((p) => setUrlLang(p.lang));
     }, [params]);
+
+    const lang = currentLang || urlLang;
 
     // Hàm xử lý khi user chọn gói
     const handleSelectMenu = (type: string) => {

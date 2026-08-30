@@ -8,16 +8,19 @@ import { useParams, useRouter, notFound } from 'next/navigation';
 import StandardMenu from '@/components/Menu/Standard';
 //import PremiumMenu from '@/components/Menu/Premium';
 
+import { useTranslation } from '@/components/TranslationProvider';
+
 export default function MenuPage() {
     // 1. Lấy tham số từ URL
     const params = useParams();
     const router = useRouter();
+    const { currentLang } = useTranslation();
 
     // URL dạng: /en/new-user/standard/menu
     // -> lang = "en"
     // -> menuType = "standard"
     const menuType = params.menuType as string;
-    const lang = (params.lang as string) || 'en';
+    const lang = currentLang || (params.lang as string) || 'en';
 
     // 2. Hàm xử lý quay lại (truyền xuống cho con dùng)
     const handleBack = () => {

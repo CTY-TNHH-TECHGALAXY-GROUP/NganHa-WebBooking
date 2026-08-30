@@ -14,6 +14,7 @@ import { useMenuData } from '@/components/Menu/MenuContext';
 import type { CartItem, Service, SupportedLanguage } from '@/components/Menu/types';
 import { formatCurrency } from '@/components/Menu/utils';
 import { getDictionary } from '@/lib/dictionaries';
+import { useTranslation } from '@/components/TranslationProvider';
 import styles from './checkout-demo.module.css';
 
 type PageParams = Promise<{ lang: string; menuType: string }>;
@@ -91,9 +92,15 @@ const translatePart = (key: string, lang: string) => {
   return map[key]?.[lang] || key.toLowerCase();
 };
 
-const displayDate = (iso: string) => {
+const displayDate = (iso: string, lang: string = 'en') => {
   const [year, month, day] = iso.split('-');
-  return `${day}/${month}/${year}`;
+  if (lang === 'vi') return `${day}/${month}/${year}`;
+  if (lang === 'cn' || lang === 'jp') return `${year}年${month}月${day}日`;
+  if (lang === 'kr') return `${year}년 ${month}월 ${day}일`;
+  
+  const date = new Date(`${iso}T00:00:00`);
+  const m = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][date.getMonth()];
+  return `${m} ${Number(day)}, ${year}`;
 };
 
 const nextDates = (count = 7) => {
@@ -104,6 +111,33 @@ const nextDates = (count = 7) => {
     date.setDate(today.getDate() + index);
     return localISODate(date);
   });
+};
+
+const getFormattedDow = (index: number, date: Date, lang: string) => {
+  if (index === 0) {
+    const todayMap: Record<string, string> = {
+      vi: 'Hôm nay', en: 'Today', cn: '今天', jp: '今日', kr: '오늘'
+    };
+    return todayMap[lang] || todayMap.en;
+  }
+  const dows: Record<string, string[]> = {
+    vi: ['CN', 'Th 2', 'Th 3', 'Th 4', 'Th 5', 'Th 6', 'Th 7'],
+    en: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+    cn: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
+    jp: ['日', '月', '火', '水', '木', '金', '土'],
+    kr: ['일', '월', '화', '수', '목', '금', '토']
+  };
+  return (dows[lang] || dows.en)[date.getDay()];
+};
+
+const getFormattedMonth = (date: Date, lang: string) => {
+  const m = date.getMonth();
+  const monthsEn = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  if (lang === 'en') return monthsEn[m];
+  if (lang === 'vi') return `Tháng ${m + 1}`;
+  if (lang === 'cn' || lang === 'jp') return `${m + 1}月`;
+  if (lang === 'kr') return `${m + 1}월`;
+  return monthsEn[m];
 };
 
 const buildTimeSlots = () => {
@@ -425,7 +459,8 @@ function getCategoryIcon(catName: string) {
 export default function CheckoutPage({ params }: { params: PageParams }) {
   const router = useRouter();
   const { lang: rawLang, menuType: rawMenuType } = use(params);
-  const lang = langKey(rawLang);
+  const { currentLang } = useTranslation();
+  const lang = langKey(currentLang || rawLang);
   const menuType = rawMenuType === 'vip' ? 'vip' : 'standard';
   const dict = getDictionary(lang);
   const { services, cart, addToCart, removeFromCart, updateCartItemOptions, replaceCartItemService } = useMenuData();
@@ -831,7 +866,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                 <div className={styles.bookingHeading}>
                   <div className={styles.bookingTitle}>{t('booking', lang)}</div>
                   <div className={styles.bookingSummary}>
-                    {bookingDate && bookingTime ? `${displayDate(bookingDate)} · ${bookingTime}` : t('summaryEmpty', lang)}
+                    {bookingDate && bookingTime ? `${displayDate(bookingDate, lang)} · ${bookingTime}` : t('summaryEmpty', lang)}
                   </div>
                 </div>
 
@@ -846,10 +881,10 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                         onClick={() => setBookingDate(iso)}
                       >
                         <span className={styles.dow}>
-                          {index === 0 ? (lang === 'vi' ? 'Hôm nay' : 'Today') : (lang === 'vi' ? ['CN', 'Th 2', 'Th 3', 'Th 4', 'Th 5', 'Th 6', 'Th 7'][date.getDay()] : ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][date.getDay()])}
+                          {getFormattedDow(index, date, lang)}
                         </span>
                         <span className={styles.day}>{date.getDate()}</span>
-                        <span className={styles.month}>{lang === 'vi' ? `Tháng ${date.getMonth() + 1}` : date.getMonth() + 1}</span>
+                        <span className={styles.month}>{getFormattedMonth(date, lang)}</span>
                       </button>
                     );
                   })}
@@ -857,7 +892,6 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
 
                 <div className={styles.timeLabelRow}>
                   <strong>{t('available', lang)}</strong>
-                  <span className={styles.slotLegend}>{t('slotNote', lang)}</span>
                 </div>
 
                 <div className={styles.timeSlots}>
@@ -923,7 +957,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                   </div>
                   <div className={styles.detail}>
                     <span>{t('date', lang)}</span>
-                    <strong>{displayDate(bookingDate)}</strong>
+                    <strong>{displayDate(bookingDate, lang)}</strong>
                   </div>
                   <div className={styles.detail}>
                     <span>{t('time', lang)}</span>
