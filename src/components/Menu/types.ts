@@ -102,12 +102,17 @@ export interface ServiceOptions {
     tag1: boolean;
     content: string;
   };
+  addons?: {
+    privateRoom?: boolean;
+  };
 }
 
 export interface CartItem extends Service {
   cartId: string; // ID riêng biệt trong giỏ (để phân biệt cùng món nhưng khác options)
   qty: number;
   options?: ServiceOptions;
+  basePriceVND?: number; // Giá gốc trước add-on
+  basePriceUSD?: number;
 }
 
 // export type CartState = Record<string, number>; // (Legacy - Deactivated)

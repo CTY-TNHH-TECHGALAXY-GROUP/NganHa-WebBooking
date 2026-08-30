@@ -564,31 +564,36 @@ const Header = () => {
                               {item.timeValue > 0 ? `${item.timeValue} ${cartText('mins', currentLang.code)}` : item.timeDisplay}
                             </p>
                             
-                            {/* Render Options */}
-                            {(item.options?.therapist || item.options?.strength || (item.options?.bodyParts?.focus?.length || 0) > 0 || (item.options?.bodyParts?.avoid?.length || 0) > 0) && (
-                              <div className="mt-2 space-y-1">
-                                {item.options?.therapist && (
-                                  <p className="font-sans text-[11px] text-gray-600">
-                                    <span className="text-gray-400 capitalize">KTV:</span> {item.options.therapist === 'male' ? (currentLang.code === 'vi' ? 'Nam' : 'Male') : item.options.therapist === 'female' ? (currentLang.code === 'vi' ? 'Nữ' : 'Female') : (currentLang.code === 'vi' ? 'Ngẫu nhiên' : 'Random')}
-                                  </p>
+                                {/* Render Options */}
+                                {(item.options?.therapist || item.options?.strength || (item.options?.bodyParts?.focus?.length || 0) > 0 || (item.options?.bodyParts?.avoid?.length || 0) > 0 || item.options?.addons?.privateRoom) && (
+                                  <div className="mt-2 space-y-1">
+                                    {item.options?.therapist && (
+                                      <p className="font-sans text-[11px] text-gray-600">
+                                        <span className="text-gray-400 capitalize">KTV:</span> {item.options.therapist === 'male' ? (currentLang.code === 'vi' ? 'Nam' : 'Male') : item.options.therapist === 'female' ? (currentLang.code === 'vi' ? 'Nữ' : 'Female') : (currentLang.code === 'vi' ? 'Ngẫu nhiên' : 'Random')}
+                                      </p>
+                                    )}
+                                    {item.options?.strength && (
+                                      <p className="font-sans text-[11px] text-gray-600">
+                                        <span className="text-gray-400 capitalize">Lực:</span> {item.options.strength === 'light' ? (currentLang.code === 'vi' ? 'Nhẹ' : 'Light') : item.options.strength === 'medium' ? (currentLang.code === 'vi' ? 'Vừa' : 'Medium') : (currentLang.code === 'vi' ? 'Mạnh' : 'Strong')}
+                                      </p>
+                                    )}
+                                    {item.options?.bodyParts?.focus && item.options.bodyParts.focus.length > 0 && (
+                                      <p className="font-sans text-[11px] text-gray-600">
+                                        <span className="text-gray-400 capitalize">{currentLang.code === 'vi' ? 'Tập trung:' : 'Focus:'}</span> {item.options.bodyParts.focus.length >= 8 ? (currentLang.code === 'vi' ? 'Toàn thân' : 'Full Body') : item.options.bodyParts.focus.map(p => translatePart(p, currentLang.code)).join(', ')}
+                                      </p>
+                                    )}
+                                    {item.options?.bodyParts?.avoid && item.options.bodyParts.avoid.length > 0 && (
+                                      <p className="font-sans text-[11px] text-gray-600">
+                                        <span className="text-gray-400 capitalize">{currentLang.code === 'vi' ? 'Tránh:' : 'Avoid:'}</span> {item.options.bodyParts.avoid.map(p => translatePart(p, currentLang.code)).join(', ')}
+                                      </p>
+                                    )}
+                                    {item.options?.addons?.privateRoom && (
+                                      <p className="font-sans text-[11px] text-gray-600">
+                                        <span className="text-gray-400 capitalize">{currentLang.code === 'vi' ? 'Add-on:' : 'Add-on:'}</span> <span className="text-[#c9a96e]">{currentLang.code === 'vi' ? 'Phòng riêng (+105K)' : 'Private Room (+105K)'}</span>
+                                      </p>
+                                    )}
+                                  </div>
                                 )}
-                                {item.options?.strength && (
-                                  <p className="font-sans text-[11px] text-gray-600">
-                                    <span className="text-gray-400 capitalize">Lực:</span> {item.options.strength === 'light' ? (currentLang.code === 'vi' ? 'Nhẹ' : 'Light') : item.options.strength === 'medium' ? (currentLang.code === 'vi' ? 'Vừa' : 'Medium') : (currentLang.code === 'vi' ? 'Mạnh' : 'Strong')}
-                                  </p>
-                                )}
-                                {item.options?.bodyParts?.focus && item.options.bodyParts.focus.length > 0 && (
-                                  <p className="font-sans text-[11px] text-gray-600">
-                                    <span className="text-gray-400 capitalize">{currentLang.code === 'vi' ? 'Tập trung:' : 'Focus:'}</span> {item.options.bodyParts.focus.length >= 8 ? (currentLang.code === 'vi' ? 'Toàn thân' : 'Full Body') : item.options.bodyParts.focus.map(p => translatePart(p, currentLang.code)).join(', ')}
-                                  </p>
-                                )}
-                                {item.options?.bodyParts?.avoid && item.options.bodyParts.avoid.length > 0 && (
-                                  <p className="font-sans text-[11px] text-gray-600">
-                                    <span className="text-gray-400 capitalize">{currentLang.code === 'vi' ? 'Tránh:' : 'Avoid:'}</span> {item.options.bodyParts.avoid.map(p => translatePart(p, currentLang.code)).join(', ')}
-                                  </p>
-                                )}
-                              </div>
-                            )}
                           </div>
                         </div>
                         <div className="mt-3">

@@ -1,5 +1,5 @@
 import React from 'react';
-import { User, Activity } from 'lucide-react';
+import { User, Hand } from 'lucide-react';
 import { LanguageCode } from './types';
 import { getText } from './utils';
 
@@ -33,7 +33,7 @@ const Preferences: React.FC<PreferencesProps> = ({ lang, showStrength, showGende
             {showStrength && (
                 <div>
                     <h4 className="flex items-center gap-2 text-[10px] sm:text-sm font-bold text-[#C9A96E]/80 uppercase tracking-widest mb-3">
-                        <Activity size={16} className="sm:w-5 sm:h-5" />
+                        <Hand size={16} className="sm:w-5 sm:h-5" />
                         {getText({ en: 'Strength', vi: 'Lực tay', jp: '強さ', kr: '강도', cn: '力度' }, lang)}
                     </h4>
                     <div className="flex gap-2">

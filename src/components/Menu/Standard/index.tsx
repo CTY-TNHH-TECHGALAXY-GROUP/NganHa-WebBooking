@@ -169,7 +169,8 @@ export default function StandardMenu({ lang, onBack, onCheckout }: StandardMenuP
                 strength: prefs.strength,
                 therapist: prefs.therapist,
                 bodyParts: prefs.bodyParts,
-                notes: prefs.notes
+                notes: prefs.notes,
+                addons: prefs.addons
             });
         });
         closeSheet();

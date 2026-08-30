@@ -425,7 +425,8 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
         strength: prefs.strength,
         therapist: prefs.therapist,
         bodyParts: prefs.bodyParts,
-        notes: prefs.notes
+        notes: prefs.notes,
+        addons: prefs.addons
       });
     });
     syncCart();

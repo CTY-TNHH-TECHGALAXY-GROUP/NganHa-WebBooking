@@ -28,10 +28,13 @@ export interface CustomPreferences {
     notes: {
         tag0: boolean; // Trạng thái tag đầu tiên (Pregnant)
         tag1: boolean; // Trạng thái tag thứ hai (Allergy)
-        content: string; // Nội dung ghi chú thêm
+        content: string; // Nội dung user gõ
     };
     strength?: 'light' | 'medium' | 'strong';
     therapist: 'male' | 'female' | 'random';
+    addons?: {
+        privateRoom?: boolean;
+    };
 }
 
 export interface MultiLangText {

@@ -37,12 +37,27 @@ export const serviceToCartItem = (
   service: Service,
   qty = 1,
   options?: ServiceOptions
-): CartItem => ({
-  ...service,
-  cartId: makeCartId(service.id),
-  qty,
-  options: options || {},
-});
+): CartItem => {
+  const mergedOptions = options || {};
+  let newPriceVND = service.priceVND;
+  let newPriceUSD = service.priceUSD;
+  
+  if (mergedOptions.addons?.privateRoom) {
+    newPriceVND += 105000;
+    newPriceUSD += 5;
+  }
+
+  return {
+    ...service,
+    cartId: makeCartId(service.id),
+    qty,
+    options: mergedOptions,
+    basePriceVND: service.priceVND,
+    basePriceUSD: service.priceUSD,
+    priceVND: newPriceVND,
+    priceUSD: newPriceUSD,
+  };
+};
 
 export const appendBookingCartItem = (
   service: Service,
@@ -116,12 +131,24 @@ export const updateBookingCartItemOptions = (cartId: string, options: Partial<Se
 
   const next = [...current];
   const item = next[index];
+  const nextOptions = {
+    ...item.options,
+    ...options,
+  };
+  
+  let newPriceVND = item.basePriceVND ?? item.priceVND;
+  let newPriceUSD = item.basePriceUSD ?? item.priceUSD;
+  
+  if (nextOptions.addons?.privateRoom) {
+    newPriceVND += 105000;
+    newPriceUSD += 5; // Assuming ~5 USD
+  }
+
   next[index] = {
     ...item,
-    options: {
-      ...item.options,
-      ...options,
-    },
+    options: nextOptions,
+    priceVND: newPriceVND,
+    priceUSD: newPriceUSD,
   };
   writeBookingCart(next);
   return next;

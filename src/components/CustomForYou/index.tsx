@@ -62,7 +62,10 @@ export default function CustomForYouModal({
                         content: initialData.notes?.content || ""
                     },
                     strength: initialData.strength || (serviceData.SHOW_STRENGTH !== false ? 'medium' : undefined),
-                    therapist: initialData.therapist || 'random'
+                    therapist: initialData.therapist || 'random',
+                    addons: {
+                        privateRoom: initialData.addons?.privateRoom || false
+                    }
                 });
             } else {
                 // Reset to default
@@ -70,7 +73,8 @@ export default function CustomForYouModal({
                     bodyParts: { focus: [], avoid: [] },
                     notes: { tag0: false, tag1: false, content: "" },
                     strength: serviceData.SHOW_STRENGTH !== false ? 'medium' : undefined,
-                    therapist: 'random'
+                    therapist: 'random',
+                    addons: { privateRoom: false }
                 });
             }
         }
@@ -140,7 +144,7 @@ export default function CustomForYouModal({
             />
 
             {/* Modal Content - Fixed Height for no scroll */}
-            <div className="relative w-full sm:w-[95vw] max-w-2xl bg-[#0d0d0d] rounded-t-[32px] rounded-b-none sm:rounded-[32px] overflow-hidden flex flex-col h-[90vh] sm:h-[85vh] animate-in slide-in-from-bottom-10 sm:zoom-in-95 duration-300 border border-white/10 shadow-2xl">
+            <div className="relative w-full sm:w-[95vw] sm:max-w-[540px] bg-[#0d0d0d] rounded-t-[32px] rounded-b-none sm:rounded-[32px] overflow-hidden flex flex-col h-[90vh] sm:h-[80vh] sm:max-h-[780px] animate-in slide-in-from-bottom-10 sm:zoom-in-95 duration-300 border border-white/10 shadow-2xl">
 
                 {/* Header */}
                 <div className="px-6 py-4 flex items-center justify-between z-20">
@@ -199,6 +203,40 @@ export default function CustomForYouModal({
                                     onChange={handleNoteChange}
                                 />
                             )}
+                            
+                            {/* 4. Add-ons Section */}
+                            <div className="pt-2">
+                                <label className={`flex items-center justify-between p-4 rounded-2xl border transition-all cursor-pointer ${
+                                    prefs.addons?.privateRoom 
+                                        ? 'bg-[#1c1c1e] border-[#C9A96E]/50 shadow-[0_0_15px_rgba(201,169,110,0.1)]' 
+                                        : 'bg-[#1c1c1e] border-white/5 hover:border-white/20'
+                                }`}>
+                                    <div className="flex flex-col gap-1">
+                                        <span className={`text-[15px] font-medium transition-colors ${
+                                            prefs.addons?.privateRoom ? 'text-[#C9A96E]' : 'text-gray-200'
+                                        }`}>
+                                            {getText({ en: 'Private Room', vi: 'Phòng riêng', jp: '個室', kr: '프라이빗 룸', cn: '包间' }, lang)}
+                                        </span>
+                                        <span className="text-[13px] text-gray-500 font-medium">
+                                            + 105.000 VNĐ
+                                        </span>
+                                    </div>
+                                    
+                                    <div className={`relative w-[48px] h-[28px] rounded-full transition-colors duration-300 ease-in-out ${
+                                        prefs.addons?.privateRoom ? 'bg-[#C9A96E]' : 'bg-[#2c2c2e]'
+                                    }`}>
+                                        <div className={`absolute top-[2px] left-[2px] w-[24px] h-[24px] bg-white rounded-full shadow-md transition-transform duration-300 ease-in-out flex items-center justify-center ${
+                                            prefs.addons?.privateRoom ? 'translate-x-[20px]' : 'translate-x-0'
+                                        }`} />
+                                    </div>
+                                    <input 
+                                        type="checkbox" 
+                                        className="sr-only"
+                                        checked={prefs.addons?.privateRoom || false}
+                                        onChange={(e) => handlePrefChange('addons', { ...prefs.addons, privateRoom: e.target.checked })}
+                                    />
+                                </label>
+                            </div>
                         </div>
                     </div>
 

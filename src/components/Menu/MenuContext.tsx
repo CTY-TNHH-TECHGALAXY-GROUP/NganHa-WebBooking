@@ -96,7 +96,20 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
 
     // [NEW] Cập nhật options cho 1 item cụ thể (CartId)
     const updateCartItemOptions = (cartId: string, options: ServiceOptions) => {
-        setCart(prev => prev.map(item => item.cartId === cartId ? { ...item, options: { ...item.options, ...options } } : item));
+        setCart(prev => prev.map(item => {
+            if (item.cartId === cartId) {
+                const mergedOptions = { ...item.options, ...options };
+                let newPriceVND = item.basePriceVND ?? item.priceVND;
+                let newPriceUSD = item.basePriceUSD ?? item.priceUSD;
+                
+                if (mergedOptions.addons?.privateRoom) {
+                    newPriceVND += 105000;
+                    newPriceUSD += 5;
+                }
+                return { ...item, options: mergedOptions, priceVND: newPriceVND, priceUSD: newPriceUSD };
+            }
+            return item;
+        }));
     };
 
     // [NEW] Cập nhật options cho TOÀN BỘ giỏ hàng (Bulk Update)
@@ -108,11 +121,24 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
     const replaceCartItemService = (cartId: string, newService: Service, options?: ServiceOptions) => {
         setCart(prev => prev.map(item => {
             if (item.cartId === cartId) {
+                const mergedOptions = { ...item.options, ...options };
+                let newPriceVND = newService.priceVND;
+                let newPriceUSD = newService.priceUSD;
+                
+                if (mergedOptions.addons?.privateRoom) {
+                    newPriceVND += 105000;
+                    newPriceUSD += 5;
+                }
+
                 return {
                     ...newService, // Spread the new service first (replaces id, price, names, timeValue, etc.)
                     cartId: item.cartId, // Preserve the old cartId so it doesn't move
                     qty: item.qty, // Preserve the old quantity
-                    options: { ...item.options, ...options } // Merge the options
+                    options: mergedOptions, // Merge the options
+                    basePriceVND: newService.priceVND,
+                    basePriceUSD: newService.priceUSD,
+                    priceVND: newPriceVND,
+                    priceUSD: newPriceUSD,
                 };
             }
             return item;

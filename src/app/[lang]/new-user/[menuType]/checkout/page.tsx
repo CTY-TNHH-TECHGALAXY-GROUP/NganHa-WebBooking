@@ -604,7 +604,8 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
       strength: prefs.strength,
       therapist: prefs.therapist,
       notes: prefs.notes,
-      bodyParts: prefs.bodyParts
+      bodyParts: prefs.bodyParts,
+      addons: prefs.addons
     });
     setCustomizingService(null);
     window.requestAnimationFrame(() => document.getElementById('cart')?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
@@ -966,6 +967,12 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                         <div className={styles.detail}>
                           <span style={{ fontSize: '12px' }}>{lang === 'vi' ? 'Vùng cần tránh' : 'Avoid Area'}</span>
                           <strong style={{ fontSize: '12px', textAlign: 'right', maxWidth: '60%', color: '#ef4444' }}>{item.options.bodyParts.avoid.map(p => translatePart(p, lang)).join(', ')}</strong>
+                        </div>
+                      )}
+                      {item.options?.addons?.privateRoom && (
+                        <div className={styles.detail}>
+                          <span style={{ fontSize: '12px' }}>{lang === 'vi' ? 'Add-on' : 'Add-on'}</span>
+                          <strong style={{ fontSize: '12px', textAlign: 'right', maxWidth: '60%', color: '#c9a96e' }}>{lang === 'vi' ? 'Phòng riêng (+105K)' : 'Private Room (+105K)'}</strong>
                         </div>
                       )}
                     </div>
