@@ -513,15 +513,10 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
     () => {
       const cats = new Set<string>();
       serviceOptions.forEach(service => {
-        if (!service.cat) return;
-        let parsed = service.cat;
-        if (typeof parsed === 'string' && parsed.startsWith('[')) {
-          try { parsed = JSON.parse(parsed); } catch(e) {}
-        }
-        if (Array.isArray(parsed)) {
-          parsed.forEach(c => cats.add(c));
-        } else if (typeof parsed === 'string') {
-          cats.add(parsed);
+        if (service.cats && service.cats.length > 0) {
+          service.cats.forEach(c => cats.add(c));
+        } else if (service.cat) {
+          cats.add(service.cat);
         }
       });
       return Array.from(cats);
@@ -537,14 +532,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
     () => {
       if (activeCategory === 'all') return serviceOptions;
       return serviceOptions.filter((service) => {
-        let parsed = service.cat;
-        if (typeof parsed === 'string' && parsed.startsWith('[')) {
-          try { parsed = JSON.parse(parsed); } catch(e) {}
-        }
-        if (Array.isArray(parsed)) {
-          return parsed.includes(activeCategory);
-        }
-        return parsed === activeCategory;
+        return service.cat === activeCategory || (service.cats && service.cats.includes(activeCategory));
       });
     },
     [activeCategory, serviceOptions]
