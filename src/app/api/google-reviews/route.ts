@@ -5,7 +5,7 @@ export const revalidate = 86400; // Cache for 24 hours (86400 seconds)
 export async function GET() {
   // Lấy từ Vercel Env, nếu không có thì dùng luôn key bạn vừa cung cấp (hardcode)
   const PLACE_ID = process.env.GOOGLE_PLACE_ID || 'ChIJ2ULTMCAvdTERA4I7Sei7vyY';
-  const API_KEY = process.env.GOOGLE_PLACES_API_KEY || 'AIzaSyA0P49WTPu1WptaJszIXN2qhdE-NcxXF3A';
+  const API_KEY = process.env.GOOGLE_PLACES_API_KEY || 'AIzaSyBnDLPbnJa56HHZi7iH7y-GhelBRhfalwo';
 
   if (!API_KEY || !PLACE_ID) {
     return NextResponse.json({ rating: 4.8, user_ratings_total: 1330 });
