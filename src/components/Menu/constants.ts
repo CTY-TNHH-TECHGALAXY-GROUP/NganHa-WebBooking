@@ -19,7 +19,7 @@ export const CATEGORIES: Category[] = [
             kr: '전신 마사지',
             cn: '全身按摩'
         },
-        image: '/assets/icons/body.webp'
+        image: '/category-icons-svg/body-massage.svg'
     },
     {
         id: 'Foot',
@@ -30,7 +30,7 @@ export const CATEGORIES: Category[] = [
             kr: '발 마사지',
             cn: '足部按摩'
         },
-        image: '/assets/icons/foot.webp'
+        image: '/category-icons-svg/foot-massage.svg'
     },
     {
         id: 'Hair Wash',
@@ -41,7 +41,7 @@ export const CATEGORIES: Category[] = [
             kr: '샴푸',
             cn: '洗头'
         },
-        image: '/assets/icons/hairwash.webp'
+        image: '/category-icons-svg/hair-wash.svg'
     },
     {
         id: 'Facial',
@@ -52,7 +52,7 @@ export const CATEGORIES: Category[] = [
             kr: '페이셜 케어',
             cn: '面部护理'
         },
-        image: '/assets/icons/facial.webp'
+        image: '/category-icons-svg/facial-care.svg'
     },
     {
         id: 'Heel Skin Shave',
@@ -63,7 +63,7 @@ export const CATEGORIES: Category[] = [
             kr: '발뒤꿈치 케어',
             cn: '磨脚皮'
         },
-        image: '/assets/icons/heelskinshave.webp'
+        image: '/category-icons-svg/heel-care.svg'
     },
     {
         id: 'Manicure & Pedicure',
@@ -74,7 +74,7 @@ export const CATEGORIES: Category[] = [
             kr: '네일 케어',
             cn: '美甲'
         },
-        image: '/assets/icons/nails.webp'
+        image: '/category-icons-svg/nail-care.svg'
     },
     {
         id: 'Ear Clean',
@@ -85,7 +85,7 @@ export const CATEGORIES: Category[] = [
             kr: '귀 청소',
             cn: '采耳'
         },
-        image: '/assets/icons/earclean.webp'
+        image: '/category-icons-svg/ear-clean.svg'
     },
     {
         id: 'Barber',
@@ -96,7 +96,7 @@ export const CATEGORIES: Category[] = [
             kr: '이발',
             cn: '男士理发'
         },
-        image: '/assets/icons/haircut.webp'
+        image: '/category-icons-svg/haircut.svg'
     },
     {
         id: 'Premium',
@@ -107,7 +107,7 @@ export const CATEGORIES: Category[] = [
             kr: 'VIP 코스',
             cn: 'VIP套餐'
         },
-        image: '/assets/icons/combo-king.webp'
+        image: '/category-icons-svg/combo-king.svg'
     },
     {
         id: 'Additional',
@@ -118,6 +118,6 @@ export const CATEGORIES: Category[] = [
             kr: '추가 서비스',
             cn: '额外服务'
         },
-        image: '/assets/icons/add-more.webp'
+        image: '/category-icons-svg/adds-on.svg'
     }
 ];
