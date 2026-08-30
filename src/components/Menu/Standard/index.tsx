@@ -313,6 +313,8 @@ export default function StandardMenu({ lang, onBack, onCheckout }: StandardMenuP
                                 // Task E3: Pass visibility flags
                                 SHOW_NOTES: sheet.data.SHOW_NOTES,
                                 SHOW_PREFERENCES: sheet.data.SHOW_PREFERENCES,
+                                SHOW_GENDER: sheet.data.SHOW_GENDER,
+                                SHOW_FOCUS: sheet.data.SHOW_FOCUS,
                             }}
                             lang={lang as any}
                         />

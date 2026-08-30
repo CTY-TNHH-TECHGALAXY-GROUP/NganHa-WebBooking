@@ -108,3 +108,21 @@ export const updateBookingCartItemNote = (cartId: string, content: string) => {
   writeBookingCart(next);
   return next;
 };
+
+export const updateBookingCartItemOptions = (cartId: string, options: Partial<ServiceOptions>) => {
+  const current = readBookingCart();
+  const index = current.findIndex((item) => item.cartId === cartId);
+  if (index < 0) return current;
+
+  const next = [...current];
+  const item = next[index];
+  next[index] = {
+    ...item,
+    options: {
+      ...item.options,
+      ...options,
+    },
+  };
+  writeBookingCart(next);
+  return next;
+};

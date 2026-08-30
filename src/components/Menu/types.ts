@@ -33,6 +33,7 @@ export interface ServiceMedia {
 export interface Service {
   id: string;          // VD: "NHS001"
   cat: string;         // VD: "Body" - ID danh mục
+  cats?: string[];     // Array of category IDs for multi-category support
 
   // Thông tin hiển thị
   names: MultiLangString;
@@ -70,6 +71,8 @@ export interface Service {
   SHOW_CUSTOM_FOR_YOU?: boolean;  // Show/hide entire Custom For You modal
   SHOW_NOTES?: boolean;           // Show/hide Notes section in Custom modal
   SHOW_PREFERENCES?: boolean;     // Show/hide Preferences (Strength + Therapist Gender)
+  SHOW_GENDER?: boolean;          // Bật/tắt chọn giới tính KTV
+  SHOW_FOCUS?: boolean;           // Bật/tắt chức năng Body Map (Focus/Avoid)
 
   // New Logic Flags
   ACTIVE?: boolean;      // Hiển thị hay không

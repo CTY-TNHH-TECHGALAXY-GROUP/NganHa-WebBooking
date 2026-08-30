@@ -8,7 +8,7 @@ import { getDictionary } from '@/lib/dictionaries';
 // 🔧 UI CONFIGURATION — Chỉnh màu sắc tại đây
 // ============================================================================
 const SVG_CONFIG = {
-    viewBox: '0 0 120 270',
+    viewBox: '5 3 110 264',
     containerBg: '#0d0d0d',          // Nền hộp SVG: Đen trùng nền tổng
     defaultFill: '#1c1c1e',          // Chưa chọn: Đen nhạt
     defaultStroke: '#3f3f46',        // Chưa chọn: Viền xám tối
@@ -47,6 +47,10 @@ const BODY_SVG: Record<BodyPartKey, SvgShape[]> = {
         { type: 'rect', x: 33, y: 147, width: 24, height: 55, rx: 12 },   // Đùi trái
         { type: 'rect', x: 63, y: 147, width: 24, height: 55, rx: 12 },   // Đùi phải
     ],
+    KNEE: [
+        { type: 'ellipse', cx: 45, cy: 204, rx: 11, ry: 12 },             // Gối trái
+        { type: 'ellipse', cx: 75, cy: 204, rx: 11, ry: 12 },             // Gối phải
+    ],
     CALF: [
         { type: 'rect', x: 35, y: 205, width: 20, height: 45, rx: 10 },   // Bắp chân trái
         { type: 'rect', x: 65, y: 205, width: 20, height: 45, rx: 10 },   // Bắp chân phải
@@ -64,6 +68,7 @@ const ALL_BODY_PARTS: { key: BodyPartKey; height: string }[] = [
     { key: 'ARM', height: '10%' },
     { key: 'BACK', height: '12%' },
     { key: 'THIGH', height: '17%' },
+    { key: 'KNEE', height: '8%' },
     { key: 'CALF', height: '15%' },
     { key: 'FOOT', height: '10%' },
 ];
@@ -126,10 +131,10 @@ const BodyMap: React.FC<BodyMapProps> = ({ focus, avoid, lang, serviceData, onTo
     if (availableParts.length === 0) return null;
 
     return (
-        <div className="flex gap-2 h-[460px] sm:h-[550px]">
+        <div className="flex gap-2 items-stretch min-h-[500px] w-full">
 
             {/* CỘT TRÁI: Nút Toàn Thân */}
-            <div className="w-[15%] flex flex-col items-center justify-center pr-2">
+            <div className="w-[15%] flex flex-col items-center justify-center pr-1 sm:pr-2">
                 {availableParts.length > 1 && (
                     <label className="flex flex-col items-center justify-center cursor-pointer bg-[#1c1c1e] p-2 rounded-xl border border-white/5 transition-all hover:border-[#C9A96E] active:scale-95 shadow-sm py-4 w-full h-[100px] sm:h-[120px]">
                         <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center mb-2 sm:mb-3 transition-colors border-2 ${isFullBody ? 'bg-[#C9A96E] border-[#C9A96E]' : 'bg-[#0d0d0d] border-white/10'}`}>
@@ -145,13 +150,12 @@ const BodyMap: React.FC<BodyMapProps> = ({ focus, avoid, lang, serviceData, onTo
 
             {/* CỘT GIỮA: SVG Body Figure */}
             <div
-                className="w-[40%] h-[340px] sm:h-[450px] relative flex items-center justify-center pl-2 rounded-xl overflow-hidden self-center"
+                className="w-[45%] relative flex items-center justify-center pl-1 sm:pl-2 rounded-xl overflow-hidden self-stretch"
                 style={{ backgroundColor: SVG_CONFIG.containerBg, border: '1px solid rgba(255,255,255,0.05)' }}
             >
                 <svg
                     viewBox={SVG_CONFIG.viewBox}
-                    className="w-full h-full"
-                    style={{ maxHeight: '100%' }}
+                    className="w-full h-full object-contain"
                 >
                     {/* Glow Filters */}
                     <defs>
@@ -199,7 +203,7 @@ const BodyMap: React.FC<BodyMapProps> = ({ focus, avoid, lang, serviceData, onTo
             </div>
 
             {/* CỘT PHẢI: Bảng Checklist */}
-            <div className="w-[45%] flex flex-col h-[380px] sm:h-[480px] pl-2 self-center">
+            <div className="w-[40%] flex flex-col pl-2 self-stretch">
                 <div
                     className="flex flex-row items-center text-[9px] sm:text-xs font-bold uppercase tracking-tight pb-2 border-b border-white/10 flex-none mb-2 sm:mb-4 pt-0"
                     style={{ marginRight: LAYOUT_CONFIG.checklist.paddingRight }}
@@ -211,7 +215,7 @@ const BodyMap: React.FC<BodyMapProps> = ({ focus, avoid, lang, serviceData, onTo
                     </div>
                 </div>
 
-                <div className="flex flex-col flex-1 justify-between overflow-y-auto custom-scrollbar" style={{ marginRight: LAYOUT_CONFIG.checklist.paddingRight }}>
+                <div className="flex flex-col flex-1 justify-between" style={{ marginRight: LAYOUT_CONFIG.checklist.paddingRight }}>
                     {ALL_BODY_PARTS.map((part) => {
                         const isAvailable = availableParts.find(p => p.key === part.key);
                         const isFocus = focus.includes(part.key);
@@ -235,6 +239,7 @@ const BodyMap: React.FC<BodyMapProps> = ({ focus, avoid, lang, serviceData, onTo
                                                 ARM: { en: 'Arm', vi: 'Tay', jp: '腕', kr: '팔', cn: '手臂' },
                                                 BACK: { en: 'Back', vi: 'Lưng', jp: '背中', kr: '등', cn: '背部' },
                                                 THIGH: { en: 'Thigh', vi: 'Đùi', jp: '太もも', kr: '허벅지', cn: '大腿' },
+                                                KNEE: { en: 'Knees', vi: 'Đầu gối', jp: '膝', kr: '무릎', cn: '膝盖' },
                                                 CALF: { en: 'Calf', vi: 'Bắp chân', jp: 'ふくらはぎ', kr: '종아리', cn: '小腿' },
                                                 FOOT: { en: 'Foot', vi: 'Bàn chân', jp: '足', kr: '발', cn: '脚' },
                                             }[part.key] as MultiLangText, lang)}
@@ -273,6 +278,7 @@ const BodyMap: React.FC<BodyMapProps> = ({ focus, avoid, lang, serviceData, onTo
                                             ARM: { en: 'Arm', vi: 'Tay', jp: '腕', kr: '팔', cn: '手臂' },
                                             BACK: { en: 'Back', vi: 'Lưng', jp: '背中', kr: '등', cn: '背部' },
                                             THIGH: { en: 'Thigh', vi: 'Đùi', jp: '太もも', kr: '허벅지', cn: '大腿' },
+                                            KNEE: { en: 'Knees', vi: 'Đầu gối', jp: '膝', kr: '무릎', cn: '膝盖' },
                                             CALF: { en: 'Calf', vi: 'Bắp chân', jp: 'ふくらはぎ', kr: '종아리', cn: '小腿' },
                                             FOOT: { en: 'Foot', vi: 'Bàn chân', jp: '足', kr: '발', cn: '脚' },
                                         }[part.key] as MultiLangText, lang)}

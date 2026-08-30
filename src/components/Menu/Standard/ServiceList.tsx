@@ -100,10 +100,10 @@ export default function ServiceList({ categories, services, cart, lang, selected
         <div className="flex-1 overflow-y-auto px-4 pb-40 scroll-smooth no-scrollbar" id="service-list-container">
             <AnimatePresence mode="wait" custom={direction}>
                 {categories.map(cat => {
-                    // Phân loại NGHIÊM NGẶT theo category id (cat)
+                    // Phân loại theo category id (cat) hoặc cats (multi-category)
                     const categoryGroups = Object.values(groupedServices).filter(group => {
                         const rep = group[0];
-                        return rep.cat === cat.id;
+                        return rep.cat === cat.id || (rep.cats && rep.cats.includes(cat.id));
                     });
 
                     if (categoryGroups.length === 0) return null;

@@ -81,7 +81,7 @@ export const GET = async () => {
     const supabase = getSupabaseAdmin();
     const { data, error } = await supabase
       .from('Services')
-      .select('id, category, nameEN, nameVN, nameCN, nameJP, nameKR, description, imageUrl, priceVND, priceUSD, duration, tags, focusConfig, showPreferences, showCustomForYou, showNotes, isActive, isBestSeller, isBestChoice, media_url, media_type')
+      .select('id, category, nameEN, nameVN, nameCN, nameJP, nameKR, description, imageUrl, priceVND, priceUSD, duration, tags, focusConfig, showPreferences, showCustomForYou, showNotes, showGender, showStrength, showFocus, isActive, isBestSeller, isBestChoice, media_url, media_type')
       .eq('isActive', true)
       .order('id', { ascending: true });
 
@@ -91,9 +91,29 @@ export const GET = async () => {
     }
 
     // Transform to Service[] format (matching wrb-noi-bo-dev)
-    const services: Service[] = (data || []).map((item: any) => ({
-      id: item.id,
-      cat: item.category || 'Unknown',
+    const services: Service[] = (data || []).map((item: any) => {
+      let cat = item.category || 'Unknown';
+      let cats: string[] | undefined = undefined;
+
+      if (typeof cat === 'string' && cat.trim().startsWith('[')) {
+        try {
+          const parsed = JSON.parse(cat);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            cats = parsed.map(c => String(c));
+            cat = cats[0]; // fallback to first item
+          }
+        } catch (e) {
+          // ignore parsing error, keep as string
+        }
+      } else if (Array.isArray(cat)) {
+        cats = cat.map(c => String(c));
+        cat = cats[0] || 'Unknown';
+      }
+
+      return {
+        id: item.id,
+        cat,
+        cats,
       names: {
         en: item.nameEN || '',
         vi: item.nameVN || '',
@@ -116,17 +136,20 @@ export const GET = async () => {
       menuType: getMenuTypeFromId(item.id),
       TAGS: item.tags || [],
       FOCUS_POSITION: item.focusConfig,
-      SHOW_STRENGTH: item.showPreferences !== false,
       HINT: item.hint || '',
       SHOW_CUSTOM_FOR_YOU: item.showCustomForYou !== false,
       SHOW_NOTES: item.showNotes !== false,
       SHOW_PREFERENCES: item.showPreferences !== false,
+      SHOW_GENDER: item.showGender !== false,
+      SHOW_STRENGTH: item.showStrength !== false,
+      SHOW_FOCUS: item.showFocus !== false,
       ACTIVE: item.isActive,
       BEST_SELLER: item.isBestSeller,
       BEST_CHOICE: item.isBestChoice,
       media_url: item.media_url,
       media_type: item.media_type,
-    }));
+    };
+  });
 
     // Return Service[] directly (same as wrb-noi-bo-dev)
     return NextResponse.json(services);

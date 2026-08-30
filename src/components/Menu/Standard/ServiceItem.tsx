@@ -28,6 +28,14 @@ export default function ServiceItem({ service, quantity, lang, isBestSeller, onC
     const isSelected = quantity > 0;
     const [isVideoLoading, setIsVideoLoading] = React.useState(true);
 
+    const BEST_SELLER_LABEL = {
+        en: 'BEST SELLER',
+        vi: 'BÁN CHẠY',
+        kr: '베스트셀러',
+        cn: '热销',
+        jp: 'ベストセラー'
+    };
+
     return (
         <div
             onClick={onClick}
@@ -40,8 +48,8 @@ export default function ServiceItem({ service, quantity, lang, isBestSeller, onC
         >
             {/* [LOGIC NEW] Badge Best Seller */}
             {isBestSeller && (
-                <div className="absolute top-0 right-0 bg-gradient-to-r from-[#C9A96E] to-[#B38728] text-white text-[9px] font-bold pl-2 pr-3 py-0.5 rounded-bl-lg rounded-tr-2xl shadow-sm z-10 whitespace-nowrap">
-                    BEST SELLER
+                <div className="absolute top-0 right-0 bg-gradient-to-r from-[#C9A96E] to-[#B38728] text-white text-[9px] font-bold px-3 py-1 rounded-bl-lg rounded-tr-2xl shadow-sm z-10 whitespace-nowrap">
+                    {BEST_SELLER_LABEL[lang as keyof typeof BEST_SELLER_LABEL] || 'BEST SELLER'}
                 </div>
             )}
 

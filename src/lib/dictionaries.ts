@@ -136,6 +136,7 @@ const dictionaries = {
             hand: "Hand",
             hands: "Hands",
             thigh: "Thigh",
+            knee: "Knees",
             leg: "Leg",
             legs: "Legs",
             calf: "Calf",
@@ -148,6 +149,7 @@ const dictionaries = {
             BACK: "Back",
             ARM: "Arm",
             THIGH: "Thigh",
+            KNEE: "Knees",
             CALF: "Calf"
         },
         tags: {
@@ -296,6 +298,7 @@ const dictionaries = {
             hand: "Bàn tay",
             hands: "Bàn tay",
             thigh: "Đùi",
+            knee: "Đầu gối",
             leg: "Chân",
             legs: "Chân",
             calf: "Bắp chân",
@@ -308,6 +311,7 @@ const dictionaries = {
             BACK: "Lưng",
             ARM: "Tay",
             THIGH: "Đùi",
+            KNEE: "Đầu gối",
             CALF: "Bắp chân"
         },
         tags: {
@@ -456,6 +460,7 @@ const dictionaries = {
             hand: "손",
             hands: "손",
             thigh: "허벅지",
+            knee: "무릎",
             leg: "다리",
             legs: "다리",
             calf: "종아리",
@@ -468,6 +473,7 @@ const dictionaries = {
             BACK: "등",
             ARM: "팔",
             THIGH: "허벅지",
+            KNEE: "무릎",
             CALF: "종아리"
         },
         tags: {
@@ -616,6 +622,7 @@ const dictionaries = {
             hand: "手",
             hands: "手",
             thigh: "大腿",
+            knee: "膝盖",
             leg: "腿",
             legs: "腿",
             calf: "小腿",
@@ -628,6 +635,7 @@ const dictionaries = {
             BACK: "背部",
             ARM: "手臂",
             THIGH: "大腿",
+            KNEE: "膝盖",
             CALF: "小腿"
         },
         tags: {
@@ -776,6 +784,7 @@ const dictionaries = {
             hand: "手",
             hands: "手",
             thigh: "太もも",
+            knee: "膝",
             leg: "脚",
             legs: "脚",
             calf: "ふくらはぎ",
@@ -788,6 +797,7 @@ const dictionaries = {
             BACK: "背中",
             ARM: "腕",
             THIGH: "太もも",
+            KNEE: "膝",
             CALF: "ふくらはぎ"
         },
         tags: {

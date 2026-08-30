@@ -106,6 +106,21 @@ const itemName = (item: CartItem, lang: string) =>
 const countCartItems = (items: CartItem[]) =>
   items.reduce((sum, item) => sum + item.qty, 0);
 
+const translatePart = (key: string, lang: string) => {
+  const map: Record<string, any> = {
+    HEAD: { vi: 'Đầu', en: 'Head', jp: '頭', kr: '머리', cn: '头' },
+    NECK: { vi: 'Cổ', en: 'Neck', jp: '首', kr: '목', cn: '颈' },
+    SHOULDER: { vi: 'Vai', en: 'Shoulder', jp: '肩', kr: '어깨', cn: '肩' },
+    BACK: { vi: 'Lưng', en: 'Back', jp: '背中', kr: '등', cn: '背部' },
+    ARM: { vi: 'Tay', en: 'Arm', jp: '腕', kr: '팔', cn: '手臂' },
+    THIGH: { vi: 'Đùi', en: 'Thigh', jp: '太もも', kr: '허벅지', cn: '大腿' },
+    KNEE: { vi: 'Đầu gối', en: 'Knee', jp: '膝', kr: '무릎', cn: '膝盖' },
+    CALF: { vi: 'Bắp chân', en: 'Calf', jp: 'ふくらはぎ', kr: '종아리', cn: '小腿' },
+    FOOT: { vi: 'Bàn chân', en: 'Foot', jp: '足', kr: '발', cn: '脚' },
+  };
+  return map[key]?.[lang] || key.toLowerCase();
+};
+
 const Header = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [cartSnapshot, setCartSnapshot] = useState<CartItem[]>([]);
@@ -545,7 +560,35 @@ const Header = () => {
                         <div className="flex justify-between items-start gap-4">
                           <div>
                             <strong className="font-sans text-[16px] font-normal text-[#1a1a1a] block leading-snug">{itemName(item, currentLang.code)}</strong>
-                            <p className="font-sans text-[11px] text-gray-500 mt-2 uppercase tracking-wider">{item.timeValue} {cartText('mins', currentLang.code)} · {cartText('vipRoom', currentLang.code)} 2</p>
+                            <p className="font-sans text-[11px] text-gray-500 mt-2 uppercase tracking-wider">
+                              {item.timeValue > 0 ? `${item.timeValue} ${cartText('mins', currentLang.code)}` : item.timeDisplay}
+                            </p>
+                            
+                            {/* Render Options */}
+                            {(item.options?.therapist || item.options?.strength || (item.options?.bodyParts?.focus?.length || 0) > 0 || (item.options?.bodyParts?.avoid?.length || 0) > 0) && (
+                              <div className="mt-2 space-y-1">
+                                {item.options?.therapist && (
+                                  <p className="font-sans text-[11px] text-gray-600">
+                                    <span className="text-gray-400 capitalize">KTV:</span> {item.options.therapist === 'male' ? (currentLang.code === 'vi' ? 'Nam' : 'Male') : item.options.therapist === 'female' ? (currentLang.code === 'vi' ? 'Nữ' : 'Female') : (currentLang.code === 'vi' ? 'Ngẫu nhiên' : 'Random')}
+                                  </p>
+                                )}
+                                {item.options?.strength && (
+                                  <p className="font-sans text-[11px] text-gray-600">
+                                    <span className="text-gray-400 capitalize">Lực:</span> {item.options.strength === 'light' ? (currentLang.code === 'vi' ? 'Nhẹ' : 'Light') : item.options.strength === 'medium' ? (currentLang.code === 'vi' ? 'Vừa' : 'Medium') : (currentLang.code === 'vi' ? 'Mạnh' : 'Strong')}
+                                  </p>
+                                )}
+                                {item.options?.bodyParts?.focus && item.options.bodyParts.focus.length > 0 && (
+                                  <p className="font-sans text-[11px] text-gray-600">
+                                    <span className="text-gray-400 capitalize">{currentLang.code === 'vi' ? 'Tập trung:' : 'Focus:'}</span> {item.options.bodyParts.focus.length >= 8 ? (currentLang.code === 'vi' ? 'Toàn thân' : 'Full Body') : item.options.bodyParts.focus.map(p => translatePart(p, currentLang.code)).join(', ')}
+                                  </p>
+                                )}
+                                {item.options?.bodyParts?.avoid && item.options.bodyParts.avoid.length > 0 && (
+                                  <p className="font-sans text-[11px] text-gray-600">
+                                    <span className="text-gray-400 capitalize">{currentLang.code === 'vi' ? 'Tránh:' : 'Avoid:'}</span> {item.options.bodyParts.avoid.map(p => translatePart(p, currentLang.code)).join(', ')}
+                                  </p>
+                                )}
+                              </div>
+                            )}
                           </div>
                         </div>
                         <div className="mt-3">

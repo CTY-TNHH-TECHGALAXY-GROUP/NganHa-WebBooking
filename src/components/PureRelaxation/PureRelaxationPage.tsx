@@ -9,7 +9,10 @@ import {
   appendBookingCartItem,
   readBookingCart,
   removeOneBookingCartItem,
+  updateBookingCartItemOptions,
 } from '@/lib/bookingCartStorage';
+import CustomForYouModal from '@/components/CustomForYou';
+import { CustomPreferences } from '@/components/CustomForYou/types';
 import { getPureRelaxationSections } from './pureRelaxationData';
 import type {
   PureRelaxationDuration,
@@ -128,6 +131,10 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
   const [durationIndex, setDurationIndex] = useState(0);
   const [notice, setNotice] = useState('');
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [showCustomForYou, setShowCustomForYou] = useState(false);
+  const [lastAddedCartIds, setLastAddedCartIds] = useState<string[]>([]);
+  const [modalServiceData, setModalServiceData] = useState<any>(null);
+  const [pendingCheckout, setPendingCheckout] = useState(false);
   const router = useRouter();
   const { currentLang } = useTranslation();
 
@@ -412,13 +419,56 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
     };
   }, [active, activeDuration, section.title, selectedCartServiceId, displayMedia]);
 
-  const addToCart = useCallback(() => {
-    const cart = appendBookingCartItem(buildServicePayload(), 1);
+  const handleSaveCustom = useCallback((prefs: CustomPreferences) => {
+    lastAddedCartIds.forEach(cartId => {
+      updateBookingCartItemOptions(cartId, {
+        strength: prefs.strength,
+        therapist: prefs.therapist,
+        bodyParts: prefs.bodyParts,
+        notes: prefs.notes
+      });
+    });
+    syncCart();
+    setShowCustomForYou(false);
+    if (pendingCheckout) {
+      setPendingCheckout(false);
+      router.push(`/${currentLang || 'en'}/new-user/standard/checkout`);
+    }
+  }, [lastAddedCartIds, syncCart, pendingCheckout, currentLang, router]);
+
+  const addToCart = useCallback((onSuccess?: any) => {
+    const payload = buildServicePayload();
+    const dbService = dbServices.find(s => s.id === payload.id) || dbServices.find(s => s.id === activeDuration.id);
+    if (dbService) {
+      payload.FOCUS_POSITION = dbService.FOCUS_POSITION;
+      payload.SHOW_STRENGTH = dbService.SHOW_STRENGTH;
+      payload.SHOW_NOTES = dbService.SHOW_NOTES;
+      payload.SHOW_PREFERENCES = dbService.SHOW_PREFERENCES;
+      payload.SHOW_CUSTOM_FOR_YOU = dbService.SHOW_CUSTOM_FOR_YOU;
+      payload.SHOW_GENDER = dbService.SHOW_GENDER;
+      payload.SHOW_FOCUS = dbService.SHOW_FOCUS;
+      payload.HINT = dbService.HINT;
+      payload.TAGS = dbService.TAGS;
+    }
+
+    const cart = appendBookingCartItem(payload, 1);
     syncCart(cart);
-    setNotice('Added to cart');
-    window.setTimeout(() => setNotice(''), 2200);
+
+    const newlyAddedItem = cart[cart.length - 1];
+    const showCustomForYou = dbService ? dbService.SHOW_CUSTOM_FOR_YOU !== false : true;
+    
+    if (showCustomForYou) {
+      setModalServiceData(payload);
+      setLastAddedCartIds([newlyAddedItem.cartId]);
+      setShowCustomForYou(true);
+      if (typeof onSuccess === 'function') setPendingCheckout(true);
+    } else {
+      setNotice('Added to cart');
+      window.setTimeout(() => setNotice(''), 2200);
+      if (typeof onSuccess === 'function') onSuccess();
+    }
     return cart;
-  }, [buildServicePayload, syncCart]);
+  }, [buildServicePayload, syncCart, dbServices, activeDuration]);
 
   const decreaseQuantity = useCallback(() => {
     const cart = removeOneBookingCartItem(selectedCartServiceId);
@@ -429,8 +479,9 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
   }, [selectedCartServiceId, syncCart]);
 
   const bookNow = useCallback(() => {
-    addToCart();
-    router.push(`/${currentLang || 'en'}/new-user/standard/checkout`);
+    addToCart(() => {
+      router.push(`/${currentLang || 'en'}/new-user/standard/checkout`);
+    });
   }, [addToCart, currentLang, router]);
 
   return (
@@ -652,6 +703,31 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
           </div>
         </div>
       ) : null}
+      {showCustomForYou && modalServiceData && (
+        <CustomForYouModal
+          isOpen={showCustomForYou}
+          onClose={() => {
+            setShowCustomForYou(false);
+            setPendingCheckout(false);
+          }}
+          onSave={handleSaveCustom}
+          serviceData={{
+            ID: modalServiceData.id,
+            NAMES: modalServiceData.names as Record<string, string>,
+            FOCUS_POSITION: modalServiceData.FOCUS_POSITION,
+            TAGS: modalServiceData.TAGS,
+            SHOW_STRENGTH: modalServiceData.SHOW_STRENGTH,
+            HINT: modalServiceData.HINT,
+            PRICE_VN: modalServiceData.priceVND,
+            PRICE_USD: modalServiceData.priceUSD,
+            SHOW_NOTES: modalServiceData.SHOW_NOTES,
+            SHOW_PREFERENCES: modalServiceData.SHOW_PREFERENCES,
+            SHOW_GENDER: modalServiceData.SHOW_GENDER,
+            SHOW_FOCUS: modalServiceData.SHOW_FOCUS,
+          }}
+          lang={currentLang as any}
+        />
+      )}
     </section>
   );
 };

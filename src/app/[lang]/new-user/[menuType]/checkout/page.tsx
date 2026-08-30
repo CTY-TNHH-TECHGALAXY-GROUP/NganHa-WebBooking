@@ -76,6 +76,21 @@ const localISODate = (date: Date) => {
   return `${year}-${month}-${day}`;
 };
 
+const translatePart = (key: string, lang: string) => {
+  const map: Record<string, any> = {
+    HEAD: { vi: 'Đầu', en: 'Head', jp: '頭', kr: '머리', cn: '头' },
+    NECK: { vi: 'Cổ', en: 'Neck', jp: '首', kr: '목', cn: '颈' },
+    SHOULDER: { vi: 'Vai', en: 'Shoulder', jp: '肩', kr: '어깨', cn: '肩' },
+    BACK: { vi: 'Lưng', en: 'Back', jp: '背中', kr: '등', cn: '背部' },
+    ARM: { vi: 'Tay', en: 'Arm', jp: '腕', kr: '팔', cn: '手臂' },
+    THIGH: { vi: 'Đùi', en: 'Thigh', jp: '太もも', kr: '허벅지', cn: '大腿' },
+    KNEE: { vi: 'Đầu gối', en: 'Knee', jp: '膝', kr: '무릎', cn: '膝盖' },
+    CALF: { vi: 'Bắp chân', en: 'Calf', jp: 'ふくらはぎ', kr: '종아리', cn: '小腿' },
+    FOOT: { vi: 'Bàn chân', en: 'Foot', jp: '足', kr: '발', cn: '脚' },
+  };
+  return map[key]?.[lang] || key.toLowerCase();
+};
+
 const displayDate = (iso: string) => {
   const [year, month, day] = iso.split('-');
   return `${day}/${month}/${year}`;
@@ -925,6 +940,36 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                     <span>{t('time', lang)}</span>
                     <strong>{bookingTime}</strong>
                   </div>
+                  
+                  {/* Custom Preferences */}
+                  {(item.options?.therapist || item.options?.strength || (item.options?.bodyParts?.focus?.length || 0) > 0 || (item.options?.bodyParts?.avoid?.length || 0) > 0 || item.options?.notes?.content) && (
+                    <div style={{ marginTop: '8px', paddingTop: '8px', borderTop: '1px solid rgba(255, 255, 255, 0.05)' }}>
+                      {item.options?.therapist && (
+                        <div className={styles.detail}>
+                          <span style={{ fontSize: '12px' }}>{lang === 'vi' ? 'KTV' : 'Therapist'}</span>
+                          <strong style={{ fontSize: '12px' }}>{item.options.therapist === 'male' ? (lang === 'vi' ? 'Nam' : 'Male') : item.options.therapist === 'female' ? (lang === 'vi' ? 'Nữ' : 'Female') : (lang === 'vi' ? 'Ngẫu nhiên' : 'Random')}</strong>
+                        </div>
+                      )}
+                      {item.options?.strength && (
+                        <div className={styles.detail}>
+                          <span style={{ fontSize: '12px' }}>{lang === 'vi' ? 'Lực massage' : 'Strength'}</span>
+                          <strong style={{ fontSize: '12px' }}>{item.options.strength === 'light' ? (lang === 'vi' ? 'Nhẹ' : 'Light') : item.options.strength === 'medium' ? (lang === 'vi' ? 'Vừa' : 'Medium') : (lang === 'vi' ? 'Mạnh' : 'Strong')}</strong>
+                        </div>
+                      )}
+                      {item.options?.bodyParts?.focus && item.options.bodyParts.focus.length > 0 && (
+                        <div className={styles.detail}>
+                          <span style={{ fontSize: '12px' }}>{lang === 'vi' ? 'Vùng tập trung' : 'Focus Area'}</span>
+                          <strong style={{ fontSize: '12px', textAlign: 'right', maxWidth: '60%' }}>{item.options.bodyParts.focus.length >= 8 ? (lang === 'vi' ? 'Toàn thân' : 'Full Body') : item.options.bodyParts.focus.map(p => translatePart(p, lang)).join(', ')}</strong>
+                        </div>
+                      )}
+                      {item.options?.bodyParts?.avoid && item.options.bodyParts.avoid.length > 0 && (
+                        <div className={styles.detail}>
+                          <span style={{ fontSize: '12px' }}>{lang === 'vi' ? 'Vùng cần tránh' : 'Avoid Area'}</span>
+                          <strong style={{ fontSize: '12px', textAlign: 'right', maxWidth: '60%', color: '#ef4444' }}>{item.options.bodyParts.avoid.map(p => translatePart(p, lang)).join(', ')}</strong>
+                        </div>
+                      )}
+                    </div>
+                  )}
                   
                   {editingCartId === item.cartId ? (() => {
                     const rawOriginalName = item.names?.en?.trim().toLowerCase() || item.id;
