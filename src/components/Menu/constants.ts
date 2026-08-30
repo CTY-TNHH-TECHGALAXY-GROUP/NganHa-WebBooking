@@ -13,58 +13,81 @@ export const CATEGORIES: Category[] = [
     {
         id: 'Body',
         names: {
-            en: 'Body Massage',
-            vi: 'Massage Body',
-            jp: 'ボディマッサージ',
-            kr: '전신 마사지',
-            cn: '全身按摩'
+            en: 'Body Care',
+            vi: 'Body Care',
+            jp: 'ボディケア',
+            kr: '바디 케어',
+            cn: '身体护理'
         },
         image: '/category-icons-svg/body-massage.svg'
     },
     {
         id: 'Foot',
         names: {
-            en: 'Foot Massage',
-            vi: 'Massage Chân',
-            jp: '足裏マッサージ',
-            kr: '발 마사지',
-            cn: '足部按摩'
+            en: 'Foot Care',
+            vi: 'Foot Care',
+            jp: 'フットケア',
+            kr: '발 케어',
+            cn: '足部护理'
         },
         image: '/category-icons-svg/foot-massage.svg'
     },
     {
-        id: 'Hair Wash',
+        id: 'Ear Clean',
         names: {
-            en: 'Hair Wash',
-            vi: 'Gội Đầu',
-            jp: '洗髪',
-            kr: '샴푸',
-            cn: '洗头'
+            en: 'Ear Clean',
+            vi: 'Lấy Ráy Tai',
+            jp: '耳掃除',
+            kr: '귀 청소',
+            cn: '采耳'
         },
-        image: '/category-icons-svg/hair-wash.svg'
+        image: '/category-icons-svg/ear-clean.svg'
     },
     {
-        id: 'Facial',
+        id: 'Package',
         names: {
-            en: 'Facial',
-            vi: 'Chăm Sóc Mặt',
-            jp: 'フェイシャル',
-            kr: '페이셜 케어',
-            cn: '面部护理'
+            en: 'Package',
+            vi: 'Gói Dịch Vụ',
+            jp: 'パッケージ',
+            kr: '패키지',
+            cn: '套餐'
         },
-        image: '/category-icons-svg/facial-care.svg'
+        image: '/category-icons-svg/package.svg'
     },
     {
-        id: 'Heel Skin Shave',
+        id: 'Premium',
         names: {
-            en: 'Heel Care',
-            vi: 'Chà Gót Chân',
-            jp: 'かかとケア',
-            kr: '발뒤꿈치 케어',
-            cn: '磨脚皮'
+            en: 'VIP Package',
+            vi: 'Gói Dịch Vụ VIP',
+            jp: 'VIPパッケージ',
+            kr: 'VIP 패키지',
+            cn: 'VIP套餐'
         },
-        image: '/category-icons-svg/heel-care.svg'
+        image: '/category-icons-svg/combo-king.svg'
     },
+    {
+        id: 'Additional',
+        names: {
+            en: 'Add On',
+            vi: 'Add On',
+            jp: 'アドオン',
+            kr: '추가',
+            cn: '附加'
+        },
+        image: '/category-icons-svg/adds-on.svg'
+    },
+    {
+        id: 'Barber',
+        names: {
+            en: 'Barber',
+            vi: 'Cắt Tóc',
+            jp: '床屋',
+            kr: '이발',
+            cn: '理发'
+        },
+        image: '/category-icons-svg/haircut.svg'
+    },
+
     {
         id: 'Manicure & Pedicure',
         names: {
@@ -76,48 +99,4 @@ export const CATEGORIES: Category[] = [
         },
         image: '/category-icons-svg/nail-care.svg'
     },
-    {
-        id: 'Ear Clean',
-        names: {
-            en: 'Ear Clean',
-            vi: 'Ráy Tai',
-            jp: '耳掃除',
-            kr: '귀 청소',
-            cn: '采耳'
-        },
-        image: '/category-icons-svg/ear-clean.svg'
-    },
-    {
-        id: 'Barber',
-        names: {
-            en: 'Barber',
-            vi: 'Cắt Tóc Nam',
-            jp: '理容',
-            kr: '이발',
-            cn: '男士理发'
-        },
-        image: '/category-icons-svg/haircut.svg'
-    },
-    {
-        id: 'Premium',
-        names: {
-            en: 'VIP Package',
-            vi: 'Gói VIP',
-            jp: 'VIPコース',
-            kr: 'VIP 코스',
-            cn: 'VIP套餐'
-        },
-        image: '/category-icons-svg/combo-king.svg'
-    },
-    {
-        id: 'Additional',
-        names: {
-            en: 'Add-on',
-            vi: 'Dịch Vụ Lẻ',
-            jp: '追加サービス',
-            kr: '추가 서비스',
-            cn: '额外服务'
-        },
-        image: '/category-icons-svg/adds-on.svg'
-    }
 ];

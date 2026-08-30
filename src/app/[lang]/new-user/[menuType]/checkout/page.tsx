@@ -432,27 +432,29 @@ const CheckoutGroupedServiceCard = ({
 
 
 const CATEGORY_ICONS: Record<string, string> = {
-  'Body Massage': '/category-icons-svg/body-massage.svg',
-  'Foot Massage': '/category-icons-svg/foot-massage.svg',
-  'Ear Clean': '/category-icons-svg/ear-clean.svg',
-  'Barber': '/category-icons-svg/haircut.svg',
-  'Package': '/category-icons-svg/package.svg',
-  'Add-on': '/category-icons-svg/adds-on.svg',
-  'VIP Package': '/category-icons-svg/combo-king.svg',
-  'Facial': '/category-icons-svg/facial-care.svg',
-  'all': '/category-icons-svg/combo-king.svg'
+  'BODY': '/category-icons-svg/body-massage.svg',
+  'FOOT': '/category-icons-svg/foot-massage.svg',
+  'ADDITIONAL': '/category-icons-svg/adds-on.svg',
+  'ADD-ON': '/category-icons-svg/adds-on.svg',
+  'EAR CLEAN': '/category-icons-svg/ear-clean.svg',
+  'BARBER': '/category-icons-svg/haircut.svg',
+  'PREMIUM': '/category-icons-svg/combo-king.svg',
+  'VIP PACKAGE': '/category-icons-svg/combo-king.svg',
+  'PACKAGE': '/category-icons-svg/package.svg',
+  'FACIAL': '/category-icons-svg/facial-care.svg',
+  'ALL': '/category-icons-svg/combo-king.svg'
 };
 
 function getCategoryIcon(catName: string) {
-  // If it's a known string, return it
-  if (CATEGORY_ICONS[catName]) return CATEGORY_ICONS[catName];
-  // Fallbacks
-  if (catName.toLowerCase().includes('body')) return '/category-icons-svg/body-massage.svg';
-  if (catName.toLowerCase().includes('foot')) return '/category-icons-svg/foot-massage.svg';
-  if (catName.toLowerCase().includes('ear')) return '/category-icons-svg/ear-clean.svg';
-  if (catName.toLowerCase().includes('barber')) return '/category-icons-svg/haircut.svg';
-  if (catName.toLowerCase().includes('vip')) return '/category-icons-svg/combo-king.svg';
-  if (catName.toLowerCase().includes('facial')) return '/category-icons-svg/facial-care.svg';
+  const upper = catName.toUpperCase();
+  if (CATEGORY_ICONS[upper]) return CATEGORY_ICONS[upper];
+  if (upper.includes('PREMIUM') || upper.includes('VIP')) return '/category-icons-svg/combo-king.svg';
+  if (upper.includes('ADDITIONAL') || upper.includes('ADD')) return '/category-icons-svg/adds-on.svg';
+  if (upper.includes('BODY')) return '/category-icons-svg/body-massage.svg';
+  if (upper.includes('FOOT')) return '/category-icons-svg/foot-massage.svg';
+  if (upper.includes('EAR')) return '/category-icons-svg/ear-clean.svg';
+  if (upper.includes('BARBER')) return '/category-icons-svg/haircut.svg';
+  if (upper.includes('PACKAGE')) return '/category-icons-svg/package.svg';
   return '/category-icons-svg/package.svg';
 }
 
@@ -492,7 +494,18 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
   const [activeDrawerGroup, setActiveDrawerGroup] = useState<Service[] | null>(null);
 
   const dateOptions = useMemo(() => nextDates(), []);
-  const allSlots = useMemo(() => buildTimeSlots(), []);
+  const allSlots = useMemo(() => {
+    const slots = buildTimeSlots();
+    const now = new Date();
+    const todayISO = localISODate(now);
+    if (bookingDate === todayISO) {
+      const currentHour = now.getHours();
+      const currentMinute = now.getMinutes();
+      const currentTimeStr = `${String(currentHour).padStart(2, '0')}:${String(currentMinute).padStart(2, '0')}`;
+      return slots.filter((slot) => slot > currentTimeStr);
+    }
+    return slots;
+  }, [bookingDate]);
   const busySlots = useMemo(() => busySlotsForDate(bookingDate), [bookingDate]);
   const availableSlots = useMemo(() => allSlots.filter((slot) => !busySlots.includes(slot)), [allSlots, busySlots]);
 
@@ -554,7 +567,14 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
           cats.add(service.cat);
         }
       });
-      return Array.from(cats);
+      const catArray = Array.from(cats);
+      const order = ['Premium', 'Body', 'Foot', 'Ear Clean', 'Barber', 'Package', 'Additional'];
+      catArray.sort((a, b) => {
+        const idxA = order.indexOf(a);
+        const idxB = order.indexOf(b);
+        return (idxA === -1 ? 999 : idxA) - (idxB === -1 ? 999 : idxB);
+      });
+      return catArray;
     },
     [serviceOptions]
   );
@@ -1308,28 +1328,37 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
               </button>
             </header>
 
-            <div className={styles.servicePickerTabs}>
-              
-              {categoryIds.map((id) => (
-                <button
-                  key={id}
-                  type="button"
-                  className={`${styles.pickerTab} ${activeCategory === id ? styles.activeTab : ''}`}
-                  onClick={() => setActiveCategory(id)}
-                >
-                  {id !== 'all' && (
-                    <div
-                      className={styles.categoryIcon}
-                      style={{
-                        maskImage: `url(${getCategoryIcon(id)})`,
-                        WebkitMaskImage: `url(${getCategoryIcon(id)})`
-                      }}
-                      aria-hidden="true"
-                    />
-                  )}
-                  <span>{categoryName(id, lang)}</span>
-                </button>
-              ))}
+            <div className={styles.tabsScrollWrapper}>
+              <div className={styles.servicePickerTabs}>
+                
+                {categoryIds.map((id) => (
+                  <button
+                    key={id}
+                    type="button"
+                    className={`${styles.pickerTab} ${activeCategory === id ? styles.activeTab : ''}`}
+                    onClick={() => setActiveCategory(id)}
+                  >
+                    {id !== 'all' && (
+                      <div
+                        className={styles.categoryIcon}
+                        style={{
+                          maskImage: `url(${getCategoryIcon(id)})`,
+                          WebkitMaskImage: `url(${getCategoryIcon(id)})`
+                        }}
+                        aria-hidden="true"
+                      />
+                    )}
+                    <span>{categoryName(id, lang)}</span>
+                  </button>
+                ))}
+              </div>
+              {categoryIds.length > 3 && (
+                <div className={styles.tabsScrollArrow} aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="9 18 15 12 9 6" />
+                  </svg>
+                </div>
+              )}
             </div>
 
             <div className={styles.servicePickerList}>
