@@ -61,7 +61,7 @@ export default function CustomForYouModal({
                         tag1: initialData.notes?.tag1 || false,
                         content: initialData.notes?.content || ""
                     },
-                    strength: initialData.strength || (serviceData.SHOW_STRENGTH ? 'medium' : undefined),
+                    strength: initialData.strength || (serviceData.SHOW_STRENGTH !== false ? 'medium' : undefined),
                     therapist: initialData.therapist || 'random'
                 });
             } else {
@@ -69,7 +69,7 @@ export default function CustomForYouModal({
                 setPrefs({
                     bodyParts: { focus: [], avoid: [] },
                     notes: { tag0: false, tag1: false, content: "" },
-                    strength: serviceData.SHOW_STRENGTH ? 'medium' : undefined,
+                    strength: serviceData.SHOW_STRENGTH !== false ? 'medium' : undefined,
                     therapist: 'random'
                 });
             }
@@ -170,7 +170,7 @@ export default function CustomForYouModal({
                             {showPreferences && (
                                 <Preferences
                                     lang={lang}
-                                    showStrength={!!serviceData.SHOW_STRENGTH}
+                                    showStrength={serviceData.SHOW_STRENGTH !== false}
                                     showGender={showGender}
                                     values={{ strength: prefs.strength, therapist: prefs.therapist }}
                                     onChange={handlePrefChange}

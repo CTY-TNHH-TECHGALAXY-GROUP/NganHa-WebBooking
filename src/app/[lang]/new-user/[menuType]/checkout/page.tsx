@@ -692,12 +692,12 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
 
       <header className="relative z-10 flex flex-col items-center pt-8 md:pt-12 pb-6 mb-6">
         <button 
-          className="absolute left-4 md:left-8 top-10 md:top-14 flex items-center gap-2 text-[#c9a96e] hover:text-white transition-colors z-20" 
+          className="absolute left-4 md:left-8 top-20 md:top-28 flex items-center gap-1 text-[#c9a96e] hover:text-white transition-colors z-20" 
           type="button" 
           onClick={() => router.back()}
         >
           <ChevronLeft size={18} />
-          <span className="text-base font-semibold uppercase tracking-[0.15em] hidden sm:block">{t('menu', lang)}</span>
+          <span className="text-base font-semibold uppercase tracking-[0.15em]">Back</span>
         </button>
         
         <SmartLogo theme="dark" className="h-20 md:h-28 lg:h-32 w-auto object-contain mb-5 drop-shadow-xl" />
