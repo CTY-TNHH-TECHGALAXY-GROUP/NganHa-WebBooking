@@ -203,6 +203,31 @@ const SpaceAdminPage = () => {
 
   const RenderMediaCard = ({ keyPath }: { keyPath: string }) => {
     const currentMedia = getNestedValue(contentData, keyPath);
+    const serverObjPos = currentMedia?.objectPosition || 'center';
+    const [localObjPos, setLocalObjPos] = useState(serverObjPos);
+
+    useEffect(() => {
+      setLocalObjPos(currentMedia?.objectPosition || 'center');
+    }, [currentMedia?.objectPosition]);
+
+    const objPos = localObjPos;
+
+    const savePos = async () => {
+      if (localObjPos === serverObjPos) return;
+      setUploadingId(keyPath);
+      try {
+        const updatedMedia = { ...(currentMedia || { type: 'image', src: '' }), objectPosition: localObjPos };
+        const newMediaData = setNestedValue(contentData, keyPath, updatedMedia);
+        setContentData(newMediaData);
+        await saveContent(newMediaData);
+        setSuccessId(keyPath);
+        setTimeout(() => setSuccessId(null), 3000);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setUploadingId(null);
+      }
+    };
     
     return (
       <div
@@ -216,9 +241,9 @@ const SpaceAdminPage = () => {
         <div className="relative w-full aspect-video bg-admin-panel-2 flex items-center justify-center border-b border-admin-line-strong">
           {currentMedia?.src ? (
             currentMedia.type === 'video' ? (
-              <video src={currentMedia.src} controls className="w-full h-full object-cover" />
+              <video src={currentMedia.src} controls className="w-full h-full object-cover" style={{ objectPosition: objPos }} />
             ) : (
-              <img src={currentMedia.src} alt="" className="w-full h-full object-cover" />
+              <img src={currentMedia.src} alt="" className="w-full h-full object-cover" style={{ objectPosition: objPos }} />
             )
           ) : (
             <div className="text-center text-admin-text-faint">
@@ -237,7 +262,7 @@ const SpaceAdminPage = () => {
             <div className="absolute inset-0 bg-white/70 backdrop-blur-sm flex items-center justify-center">
               <div className="text-center">
                 <div className="w-8 h-8 border-2 border-admin-gold border-t-transparent rounded-full animate-spin mx-auto mb-2" />
-                <p className="text-sm text-admin-gold font-medium">Đang tải lên...</p>
+                <p className="text-sm text-admin-gold font-medium">Đang lưu...</p>
               </div>
             </div>
           )}
@@ -272,6 +297,31 @@ const SpaceAdminPage = () => {
               className="w-full bg-admin-panel-2 border border-admin-line-strong text-admin-text text-sm rounded-lg px-3 py-2 outline-none focus:border-admin-gold transition-colors"
             />
           </div>
+
+          {currentMedia?.src && (
+            <div className="mb-4 bg-admin-panel-2 p-3 rounded-lg border border-admin-line-strong">
+              <label className="text-[10px] text-admin-text-faint uppercase tracking-wider mb-2 flex justify-between">
+                <span>Căn chỉnh (X - Y)</span>
+                <span className="text-admin-gold">{objPos}</span>
+              </label>
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-[10px] w-4 text-admin-text-faint">X:</span>
+                <input type="range" min="0" max="100" 
+                  value={objPos === 'center' ? 50 : parseInt(objPos.split(' ')[0]) || 50}
+                  onChange={e => setLocalObjPos(`${e.target.value}% ${objPos === 'center' ? '50%' : objPos.split(' ')[1] || '50%'}`)}
+                  onMouseUp={savePos} onTouchEnd={savePos}
+                  className="flex-1 accent-admin-gold" />
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] w-4 text-admin-text-faint">Y:</span>
+                <input type="range" min="0" max="100" 
+                  value={objPos === 'center' ? 50 : parseInt(objPos.split(' ')[1]) || 50}
+                  onChange={e => setLocalObjPos(`${objPos === 'center' ? '50%' : objPos.split(' ')[0] || '50%'} ${e.target.value}%`)}
+                  onMouseUp={savePos} onTouchEnd={savePos}
+                  className="flex-1 accent-admin-gold" />
+              </div>
+            </div>
+          )}
 
           <div className="mt-auto space-y-2">
             <div className="relative">
@@ -333,11 +383,54 @@ const SpaceAdminPage = () => {
     );
   }
 
+  const getSectionKeys = (sectionId: string, defaultKeys: string[]) => {
+    if (sectionId === 'hero' || sectionId === 'cta') return defaultKeys;
+    const customData = contentData[sectionId];
+    if (customData && typeof customData === 'object' && Object.keys(customData).length > 0) {
+      return Object.keys(customData).map(k => `${sectionId}.${k}`);
+    }
+    return defaultKeys;
+  };
+
+  const handleAddMedia = async (sectionId: string) => {
+    const newKey = window.prompt('Nhập mã hiển thị ngắn gọn (VD: vip_room, massage_2):');
+    if (!newKey || !/^[a-zA-Z0-9_]+$/.test(newKey)) {
+      alert('Mã không hợp lệ! Vui lòng chỉ dùng chữ cái, số và dấu gạch dưới.');
+      return;
+    }
+    
+    const keyPath = `${sectionId}.${newKey}`;
+    if (getNestedValue(contentData, keyPath)) {
+      alert('Mã này đã tồn tại!');
+      return;
+    }
+    
+    const newMediaData = setNestedValue(contentData, keyPath, { type: 'image', src: '', title: newKey });
+    setContentData(newMediaData);
+    await saveContent(newMediaData);
+  };
+
+  const handleRemoveMedia = async (keyPath: string) => {
+    if (!window.confirm(`Bạn có chắc chắn muốn xóa [${keyPath}] không? Hành động này không thể hoàn tác.`)) return;
+    
+    const parts = keyPath.split('.');
+    const sectionId = parts[0];
+    const itemKey = parts[1];
+    
+    const newMediaData = { ...contentData };
+    if (newMediaData[sectionId] && newMediaData[sectionId][itemKey]) {
+      delete newMediaData[sectionId][itemKey];
+    }
+    
+    setContentData(newMediaData);
+    await saveContent(newMediaData);
+  };
+
   return (
     <div className="p-6 lg:p-10 max-w-5xl mx-auto">
       <div className="mb-8">
         <h1 className="text-2xl lg:text-3xl font-bold text-admin-text">✨ Quản Lý Media: Space Experience</h1>
-        <p className="text-admin-text-dim mt-2">Cấu hình hình ảnh và video cho từng góc không gian của Spa.</p>
+        <p className="text-admin-text-dim mt-2">Cấu hình hình ảnh và video cho từng góc không gian của Spa. Bạn có thể thêm không giới hạn media cho từng khu vực.</p>
       </div>
 
       <div className="space-y-12">
@@ -346,21 +439,48 @@ const SpaceAdminPage = () => {
         ) : (
           spaceStructure.map((section) => {
             const isExpanded = expandedCats[section.id] !== false;
+            const currentKeys = getSectionKeys(section.id, section.keys);
+            const isDynamic = !['hero', 'cta'].includes(section.id);
+            
             return (
               <div key={section.id} className="space-y-4 bg-admin-panel p-4 rounded-2xl border border-admin-line shadow-sm">
-                <button 
-                  onClick={() => toggleCat(section.id)}
-                  className="w-full flex items-center justify-between text-lg font-bold text-admin-gold hover:opacity-80 transition-opacity"
-                >
-                  <span>{section.title}</span>
-                  {isExpanded ? <ChevronDown size={20} /> : <ChevronRight size={20} />}
-                </button>
+                <div className="flex items-center justify-between">
+                  <button 
+                    onClick={() => toggleCat(section.id)}
+                    className="flex-1 flex items-center gap-2 text-lg font-bold text-admin-gold hover:opacity-80 transition-opacity text-left"
+                  >
+                    {isExpanded ? <ChevronDown size={20} /> : <ChevronRight size={20} />}
+                    <span>{section.title}</span>
+                  </button>
+                  {isDynamic && isExpanded && (
+                    <button 
+                      onClick={() => handleAddMedia(section.id)}
+                      className="px-4 py-2 bg-admin-gold text-admin-background text-sm font-bold rounded-lg hover:brightness-110 transition-all"
+                    >
+                      + Thêm Video / Ảnh
+                    </button>
+                  )}
+                </div>
                 
                 {isExpanded && (
                   <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 pt-4 border-t border-admin-line-strong">
-                    {section.keys.map((keyPath) => (
-                      <RenderMediaCard key={keyPath} keyPath={keyPath} />
+                    {currentKeys.map((keyPath) => (
+                      <div key={keyPath} className="relative group">
+                        <RenderMediaCard keyPath={keyPath} />
+                        {isDynamic && currentKeys.length > 1 && (
+                          <button 
+                            onClick={() => handleRemoveMedia(keyPath)}
+                            className="absolute -top-3 -right-3 w-8 h-8 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-md z-10 font-bold"
+                            title="Xóa mục này"
+                          >
+                            ×
+                          </button>
+                        )}
+                      </div>
                     ))}
+                    {currentKeys.length === 0 && (
+                      <p className="text-admin-text-dim text-sm italic col-span-full">Chưa có dữ liệu nào. Hãy bấm "Thêm Video / Ảnh" để tạo mới.</p>
+                    )}
                   </div>
                 )}
               </div>

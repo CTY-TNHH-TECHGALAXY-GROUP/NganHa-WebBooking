@@ -33,9 +33,27 @@ const defaultMedia = {
 export default function SpacePage() {
   const [contentMedia, setContentMedia] = useState<any>({});
   
-  const [welcomeTab, setWelcomeTab] = useState<'reception' | 'lounge' | 'ritual'>('reception');
-  const [floor1Tab, setFloor1Tab] = useState<'body' | 'foot' | 'private'>('body');
-  const [floor2Tab, setFloor2Tab] = useState<'suite' | 'headSpa' | 'quiet'>('suite');
+  const getTabsForSection = (section: 'welcome' | 'floor1' | 'floor2') => {
+    const customData = contentMedia[section];
+    if (customData && typeof customData === 'object' && Object.keys(customData).length > 0) {
+      return Object.keys(customData);
+    }
+    return Object.keys(defaultMedia[section]);
+  };
+
+  const welcomeTabs = getTabsForSection('welcome');
+  const floor1Tabs = getTabsForSection('floor1');
+  const floor2Tabs = getTabsForSection('floor2');
+
+  const [welcomeTab, setWelcomeTab] = useState<string>('reception');
+  const [floor1Tab, setFloor1Tab] = useState<string>('body');
+  const [floor2Tab, setFloor2Tab] = useState<string>('suite');
+
+  useEffect(() => {
+    if (!welcomeTabs.includes(welcomeTab)) setWelcomeTab(welcomeTabs[0]);
+    if (!floor1Tabs.includes(floor1Tab)) setFloor1Tab(floor1Tabs[0]);
+    if (!floor2Tabs.includes(floor2Tab)) setFloor2Tab(floor2Tabs[0]);
+  }, [contentMedia, welcomeTabs, floor1Tabs, floor2Tabs, welcomeTab, floor1Tab, floor2Tab]);
 
   const [welcomeFading, setWelcomeFading] = useState(false);
   const [floor1Fading, setFloor1Fading] = useState(false);
@@ -64,7 +82,11 @@ export default function SpacePage() {
     }
     const actualVal = val?.src || val || fallback;
     const isVideo = typeof actualVal === 'string' && (actualVal.endsWith('.mp4') || actualVal.endsWith('.webm'));
-    return { src: actualVal, type: val?.type || (isVideo ? 'video' : 'image') };
+    return { 
+      src: actualVal, 
+      type: val?.type || (isVideo ? 'video' : 'image'),
+      objectPosition: val?.objectPosition || 'center'
+    };
   };
 
   const getMediaTitle = (keyPath: string, defaultTitle: string) => {
@@ -78,7 +100,7 @@ export default function SpacePage() {
   };
 
 // Move MediaRenderer outside to prevent remounts on every SpacePage render
-const MediaRenderer = ({ mediaObj, className, alt, onEnded }: { mediaObj: {src: string, type: string}, className?: string, alt?: string, onEnded?: () => void }) => {
+const MediaRenderer = ({ mediaObj, className, alt, onEnded }: { mediaObj: {src: string, type: string, objectPosition?: string}, className?: string, alt?: string, onEnded?: () => void }) => {
   useEffect(() => {
     if (mediaObj.type !== 'video' && onEnded) {
       const timer = setTimeout(() => {
@@ -100,11 +122,11 @@ const MediaRenderer = ({ mediaObj, className, alt, onEnded }: { mediaObj: {src: 
         playsInline 
         onEnded={onEnded}
         preload="auto"
-        style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+        style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: mediaObj.objectPosition || 'center', display: 'block' }}
       />
     );
   }
-  return <img key={mediaObj.src} src={mediaObj.src} alt={alt || ""} className={className} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />;
+  return <img key={mediaObj.src} src={mediaObj.src} alt={alt || ""} className={className} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: mediaObj.objectPosition || 'center', display: 'block' }} />;
 };
 
   useEffect(() => {
@@ -147,35 +169,32 @@ const MediaRenderer = ({ mediaObj, className, alt, onEnded }: { mediaObj: {src: 
   const handleTabChange = (section: 'welcome' | 'floor1' | 'floor2', tab: string) => {
     if (section === 'welcome') {
       setWelcomeFading(true);
-      setWelcomeTab(tab as any);
+      setWelcomeTab(tab);
       setTimeout(() => setWelcomeFading(false), 170);
     } else if (section === 'floor1') {
       setFloor1Fading(true);
-      setFloor1Tab(tab as any);
+      setFloor1Tab(tab);
       setTimeout(() => setFloor1Fading(false), 170);
     } else if (section === 'floor2') {
       setFloor2Fading(true);
-      setFloor2Tab(tab as any);
+      setFloor2Tab(tab);
       setTimeout(() => setFloor2Fading(false), 170);
     }
   };
 
   const handleWelcomeEnded = () => {
-    const tabs: Array<'reception' | 'lounge' | 'ritual'> = ['reception', 'lounge', 'ritual'];
-    const nextIdx = (tabs.indexOf(welcomeTab) + 1) % tabs.length;
-    handleTabChange('welcome', tabs[nextIdx]);
+    const nextIdx = (welcomeTabs.indexOf(welcomeTab) + 1) % welcomeTabs.length;
+    handleTabChange('welcome', welcomeTabs[nextIdx]);
   };
 
   const handleFloor1Ended = () => {
-    const tabs: Array<'body' | 'foot' | 'private'> = ['body', 'foot', 'private'];
-    const nextIdx = (tabs.indexOf(floor1Tab) + 1) % tabs.length;
-    handleTabChange('floor1', tabs[nextIdx]);
+    const nextIdx = (floor1Tabs.indexOf(floor1Tab) + 1) % floor1Tabs.length;
+    handleTabChange('floor1', floor1Tabs[nextIdx]);
   };
 
   const handleFloor2Ended = () => {
-    const tabs: Array<'suite' | 'headSpa' | 'quiet'> = ['suite', 'headSpa', 'quiet'];
-    const nextIdx = (tabs.indexOf(floor2Tab) + 1) % tabs.length;
-    handleTabChange('floor2', tabs[nextIdx]);
+    const nextIdx = (floor2Tabs.indexOf(floor2Tab) + 1) % floor2Tabs.length;
+    handleTabChange('floor2', floor2Tabs[nextIdx]);
   };
 
   const scrollTo = (id: string) => {
@@ -213,7 +232,7 @@ const MediaRenderer = ({ mediaObj, className, alt, onEnded }: { mediaObj: {src: 
         </div>
 
         <div className={`${styles.videoFrame} ${styles.reveal}`}>
-          <MediaRenderer mediaObj={getMedia(`welcome.${welcomeTab}`, defaultMedia.welcome[welcomeTab])} alt="Welcome area" className={welcomeFading ? styles.fadeOut : ''} onEnded={handleWelcomeEnded} />
+          <MediaRenderer mediaObj={getMedia(`welcome.${welcomeTab}`, defaultMedia.welcome[welcomeTab as keyof typeof defaultMedia.welcome])} alt="Welcome area" className={welcomeFading ? styles.fadeOut : ''} onEnded={handleWelcomeEnded} />
           <div className={styles['media-watermark']}></div>
           <div className={styles.videoUi}>
             <div className={styles.videoLabel}>Welcome Area / Film 01</div>
@@ -224,9 +243,11 @@ const MediaRenderer = ({ mediaObj, className, alt, onEnded }: { mediaObj: {src: 
         <div className={`${styles.microNav} ${styles.reveal}`}>
           <div className={styles.microLeft}>Explore within this space</div>
           <div className={styles.microList}>
-            <button className={welcomeTab === 'reception' ? styles.active : ''} onClick={() => handleTabChange('welcome', 'reception')}>{getMediaTitle('welcome.reception', 'Reception')}</button>
-            <button className={welcomeTab === 'lounge' ? styles.active : ''} onClick={() => handleTabChange('welcome', 'lounge')}>{getMediaTitle('welcome.lounge', 'Lounge')}</button>
-            <button className={welcomeTab === 'ritual' ? styles.active : ''} onClick={() => handleTabChange('welcome', 'ritual')}>{getMediaTitle('welcome.ritual', 'Welcome Ritual')}</button>
+            {welcomeTabs.map((tab) => (
+              <button key={tab} className={welcomeTab === tab ? styles.active : ''} onClick={() => handleTabChange('welcome', tab)}>
+                {getMediaTitle(`welcome.${tab}`, tab.charAt(0).toUpperCase() + tab.slice(1))}
+              </button>
+            ))}
           </div>
         </div>
       </section>
@@ -246,7 +267,7 @@ const MediaRenderer = ({ mediaObj, className, alt, onEnded }: { mediaObj: {src: 
         </div>
 
         <div className={`${styles.videoFrame} ${styles.reveal}`}>
-          <MediaRenderer mediaObj={getMedia(`floor1.${floor1Tab}`, defaultMedia.floor1[floor1Tab])} alt="First floor" className={floor1Fading ? styles.fadeOut : ''} onEnded={handleFloor1Ended} />
+          <MediaRenderer mediaObj={getMedia(`floor1.${floor1Tab}`, defaultMedia.floor1[floor1Tab as keyof typeof defaultMedia.floor1])} alt="First floor" className={floor1Fading ? styles.fadeOut : ''} onEnded={handleFloor1Ended} />
           <div className={styles['media-watermark']}></div>
           <div className={styles.videoUi}>
             <div className={styles.videoLabel}>First Floor / Film 02</div>
@@ -257,9 +278,11 @@ const MediaRenderer = ({ mediaObj, className, alt, onEnded }: { mediaObj: {src: 
         <div className={`${styles.microNav} ${styles.reveal}`}>
           <div className={styles.microLeft}>Explore within this floor</div>
           <div className={styles.microList}>
-            <button className={floor1Tab === 'body' ? styles.active : ''} onClick={() => handleTabChange('floor1', 'body')}>{getMediaTitle('floor1.body', 'Body Therapy')}</button>
-            <button className={floor1Tab === 'foot' ? styles.active : ''} onClick={() => handleTabChange('floor1', 'foot')}>{getMediaTitle('floor1.foot', 'Foot Care')}</button>
-            <button className={floor1Tab === 'private' ? styles.active : ''} onClick={() => handleTabChange('floor1', 'private')}>{getMediaTitle('floor1.private', 'Private Room')}</button>
+            {floor1Tabs.map((tab) => (
+              <button key={tab} className={floor1Tab === tab ? styles.active : ''} onClick={() => handleTabChange('floor1', tab)}>
+                {getMediaTitle(`floor1.${tab}`, tab.charAt(0).toUpperCase() + tab.slice(1))}
+              </button>
+            ))}
           </div>
         </div>
       </section>
@@ -272,7 +295,7 @@ const MediaRenderer = ({ mediaObj, className, alt, onEnded }: { mediaObj: {src: 
         </div>
 
         <div className={`${styles.videoFrame} ${styles.reveal}`}>
-          <MediaRenderer mediaObj={getMedia(`floor2.${floor2Tab}`, defaultMedia.floor2[floor2Tab])} alt="Second floor" className={floor2Fading ? styles.fadeOut : ''} onEnded={handleFloor2Ended} />
+          <MediaRenderer mediaObj={getMedia(`floor2.${floor2Tab}`, defaultMedia.floor2[floor2Tab as keyof typeof defaultMedia.floor2])} alt="Second floor" className={floor2Fading ? styles.fadeOut : ''} onEnded={handleFloor2Ended} />
           <div className={styles['media-watermark']}></div>
           <div className={styles.videoUi}>
             <div className={styles.videoLabel}>Second Floor / Film 03</div>
@@ -283,9 +306,11 @@ const MediaRenderer = ({ mediaObj, className, alt, onEnded }: { mediaObj: {src: 
         <div className={`${styles.microNav} ${styles.reveal}`}>
           <div className={styles.microLeft}>Explore within this floor</div>
           <div className={styles.microList}>
-            <button className={floor2Tab === 'suite' ? styles.active : ''} onClick={() => handleTabChange('floor2', 'suite')}>{getMediaTitle('floor2.suite', 'Private Suite')}</button>
-            <button className={floor2Tab === 'headSpa' ? styles.active : ''} onClick={() => handleTabChange('floor2', 'headSpa')}>{getMediaTitle('floor2.headSpa', 'Head Spa')}</button>
-            <button className={floor2Tab === 'quiet' ? styles.active : ''} onClick={() => handleTabChange('floor2', 'quiet')}>{getMediaTitle('floor2.quiet', 'Quiet Corner')}</button>
+            {floor2Tabs.map((tab) => (
+              <button key={tab} className={floor2Tab === tab ? styles.active : ''} onClick={() => handleTabChange('floor2', tab)}>
+                {getMediaTitle(`floor2.${tab}`, tab.charAt(0).toUpperCase() + tab.slice(1))}
+              </button>
+            ))}
           </div>
         </div>
       </section>

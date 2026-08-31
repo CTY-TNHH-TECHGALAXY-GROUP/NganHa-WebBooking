@@ -77,35 +77,61 @@ const getActiveItem = (service: PureRelaxationService, variantIndex: number, con
     }
     const mediaSrc = langData.src || override.src;
     const mediaType = langData.type || override.type;
+    const objectPosition = langData.objectPosition || override.objectPosition;
+    
     if (mediaSrc) {
       active.media = {
         ...active.media,
         type: mediaType as 'image' | 'video',
         src: mediaSrc,
-      };
+        ...(objectPosition ? { objectPosition } : {})
+      } as any;
     }
   }
 
   return active;
 };
 
-const MediaPreview = ({ media, label }: { media: PureRelaxationMedia; label: string }) => {
+const MediaPreview = ({ media, label }: { media: any; label: string }) => {
+  const objPos = media.objectPosition || 'center';
+  const [isVideoLoading, setIsVideoLoading] = useState(true);
+
+  useEffect(() => {
+    if (media.type === 'video') {
+      setIsVideoLoading(true);
+    }
+  }, [media.src, media.type]);
+  
   return (
     <div className={styles.mediaFrame}>
       <div className={styles.mediaFade} key={media.src}>
         {media.type === 'video' ? (
-          <video
-            className={styles.media}
-            src={media.src}
-            poster={media.poster}
-            muted
-            autoPlay
-            loop
-            playsInline
-            preload="metadata"
-          />
+          <>
+            <video
+              className={styles.media}
+              src={media.src}
+              poster={media.poster}
+              muted
+              autoPlay
+              loop
+              playsInline
+              preload="metadata"
+              style={{ objectPosition: objPos }}
+              onPlaying={() => setIsVideoLoading(false)}
+              onCanPlay={() => setIsVideoLoading(false)}
+              onWaiting={() => setIsVideoLoading(true)}
+            />
+            {isVideoLoading && (
+              <div className="absolute inset-0 flex items-center justify-center bg-black/10 z-10 pointer-events-none transition-opacity duration-300">
+                <div className="flex flex-col items-center gap-2 text-white/90">
+                  <div className="w-8 h-8 border-[2.5px] border-[var(--gold-soft)] border-t-transparent rounded-full animate-spin"></div>
+                  <span className="text-[9px] uppercase tracking-[0.2em] font-medium opacity-80" style={{ color: 'var(--gold-soft)' }}>Loading Video</span>
+                </div>
+              </div>
+            )}
+          </>
         ) : (
-          <img className={styles.media} src={media.src} alt={label} loading="lazy" />
+          <img className={styles.media} src={media.src} alt={label} loading="lazy" style={{ objectPosition: objPos }} />
         )}
       </div>
       <div className={styles.mediaOverlay} />

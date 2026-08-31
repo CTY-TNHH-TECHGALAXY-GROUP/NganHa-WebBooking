@@ -203,6 +203,7 @@ const PureAdminPage = () => {
 
     const mediaType = cData.type || service.media?.type || 'image';
     const mediaSrc = cData.src || service.media?.src;
+    const objPos = cData.objectPosition || 'center';
 
     const langData = cData[activeLang] || {};
 
@@ -219,8 +220,6 @@ const PureAdminPage = () => {
       
       const finalUrl = processGoogleDriveLink(url.trim());
       
-      // Since Google Drive uc?id links don't have .mp4 extensions, we might need to rely on what the user says or just guess.
-      // But typically we can still check the original url.
       let isVideo = !!url.match(/\.(mp4|mov|webm)$/i);
       if (!isVideo && url.includes('drive.google.com')) {
         isVideo = window.confirm('Link Google Drive này là VIDEO phải không?\n(Nhấn OK nếu là Video, Cancel nếu là Hình ảnh)');
@@ -246,9 +245,9 @@ const PureAdminPage = () => {
           {mediaSrc ? (
             <div className="w-full h-40 relative bg-black/5 flex items-center justify-center">
               {mediaType === 'video' ? (
-                <video src={mediaSrc} className="w-full h-full object-cover" autoPlay muted loop playsInline />
+                <video src={mediaSrc} className="w-full h-full object-cover" style={{ objectPosition: objPos }} autoPlay muted loop playsInline />
               ) : (
-                <img src={mediaSrc} alt={serviceName} className="w-full h-full object-cover" />
+                <img src={mediaSrc} alt={serviceName} className="w-full h-full object-cover" style={{ objectPosition: objPos }} />
               )}
               
               <div className="absolute top-2 right-2 bg-black/60 px-2 py-1 rounded text-[10px] text-white font-medium flex items-center gap-1 backdrop-blur-md">
@@ -315,6 +314,33 @@ const PureAdminPage = () => {
             </div>
           )}
         </div>
+
+        {mediaSrc && (
+          <div className="flex flex-col gap-2 p-3 bg-admin-panel rounded-lg border border-admin-line">
+            <label className="text-[10px] uppercase font-bold text-admin-text-dim flex justify-between">
+              <span>Căn chỉnh vị trí ảnh/video</span>
+              <span className="text-admin-gold">{objPos}</span>
+            </label>
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] w-4 text-admin-text-faint">X:</span>
+              <input 
+                type="range" min="0" max="100" 
+                value={objPos === 'center' ? 50 : parseInt(objPos.split(' ')[0]) || 50} 
+                onChange={e => handleTextChange(serviceName, activeLang, 'objectPosition', `${e.target.value}% ${objPos === 'center' ? '50%' : objPos.split(' ')[1] || '50%'}`)} 
+                className="flex-1 accent-admin-gold" 
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] w-4 text-admin-text-faint">Y:</span>
+              <input 
+                type="range" min="0" max="100" 
+                value={objPos === 'center' ? 50 : parseInt(objPos.split(' ')[1]) || 50} 
+                onChange={e => handleTextChange(serviceName, activeLang, 'objectPosition', `${objPos === 'center' ? '50%' : objPos.split(' ')[0] || '50%'} ${e.target.value}%`)} 
+                className="flex-1 accent-admin-gold" 
+              />
+            </div>
+          </div>
+        )}
 
         {/* Text Fields */}
         <div className="flex flex-col gap-3">
