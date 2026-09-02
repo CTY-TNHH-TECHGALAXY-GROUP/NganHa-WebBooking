@@ -491,6 +491,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
   const [changeDenominations, setChangeDenominations] = useState<number[]>([]);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [returnToConfirmAfterEdit, setReturnToConfirmAfterEdit] = useState(false);
   const [videoPreview, setVideoPreview] = useState<ReturnType<typeof resolveServiceMedia> | null>(null);
   const [isVideoPreviewClosing, setIsVideoPreviewClosing] = useState(false);
   const [alertState, setAlertState] = useState<{ isOpen: boolean; message: string; type?: 'error' | 'success' | 'info' }>({ isOpen: false, message: '' });
@@ -656,6 +657,10 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
       setEditingCustomCartId(null);
       setEditingCustomInitialData(null);
       setCustomizingService(null);
+      if (returnToConfirmAfterEdit) {
+        setReturnToConfirmAfterEdit(false);
+        window.setTimeout(() => setIsConfirmOpen(true), 100);
+      }
       return;
     }
 
@@ -668,7 +673,12 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
       addons: prefs.addons
     });
     setCustomizingService(null);
-    window.requestAnimationFrame(() => document.getElementById('cart')?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+    if (returnToConfirmAfterEdit) {
+      setReturnToConfirmAfterEdit(false);
+      window.setTimeout(() => setIsConfirmOpen(true), 100);
+    } else {
+      window.requestAnimationFrame(() => document.getElementById('cart')?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+    }
   };
 
   const validate = () => {
@@ -1349,7 +1359,12 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
             </div>
             <div className={styles.vatNote}>{t('vat', lang)}</div>
 
-            <button className={styles.primaryButton} type="button" disabled={cart.length === 0} onClick={handleConfirmOrder}>
+            <button 
+              className={styles.primaryButton} 
+              type="button" 
+              disabled={cart.length === 0 || !customerInfo.name.trim() || (!customerInfo.email.trim() && !customerInfo.phone.trim())} 
+              onClick={handleConfirmOrder}
+            >
               {t('confirm', lang)}
             </button>
           </aside>
@@ -1364,6 +1379,10 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
               setCustomizingService(null);
               setEditingCustomCartId(null);
               setEditingCustomInitialData(null);
+              if (returnToConfirmAfterEdit) {
+                setReturnToConfirmAfterEdit(false);
+                window.setTimeout(() => setIsConfirmOpen(true), 100);
+              }
             }}
             onSave={handleSaveCustom}
             serviceData={{
@@ -1410,6 +1429,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
         bookingTime={bookingTime}
         onEditService={(item) => {
           setIsConfirmOpen(false);
+          setReturnToConfirmAfterEdit(true);
           handleEditCartItemCustomization(item);
         }}
         onEditCustomerInfo={() => {

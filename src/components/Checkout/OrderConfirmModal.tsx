@@ -230,37 +230,25 @@ export default function OrderConfirmModal({
                         </span>
                     </div>
 
-                    {/* Step Title */}
-                    <h2 className="text-xl md:text-2xl font-bold text-white tracking-wide mt-1">
-                        {currentStep === 2 && (lang === 'vi' ? 'Xác nhận đặt lịch' : lang === 'cn' ? '确认预约' : lang === 'jp' ? 'ご予約の確認' : lang === 'kr' ? '예약 확인' : 'Confirm Booking')}
-                        {currentStep === 3 && (lang === 'vi' ? 'Đặt lịch thành công!' : lang === 'cn' ? '预约成功！' : lang === 'jp' ? 'ご予約が完了しました！' : lang === 'kr' ? '예약이 완료되었습니다!' : 'Booking Successful!')}
-                    </h2>
-
-                    {/* Step Subtitle / Note */}
-                    <p className="text-xs md:text-sm text-[#e2be6f] mt-1 font-medium max-w-lg">
-                        {currentStep === 2 && (
-                            lang === 'vi'
-                                ? 'Kiểm tra lại thông tin trải nghiệm của bạn trước khi gửi.'
-                                : lang === 'cn'
-                                ? '请在确认前仔细检查您的预约体验。'
-                                : lang === 'jp'
-                                ? '確定前にもう一度体験内容をご確認ください。'
-                                : lang === 'kr'
-                                ? '확정하기 전에 예약 내용을 다시 확인해 주세요.'
-                                : 'Review your experience details before final confirmation.'
-                        )}
-                        {currentStep === 3 && (
-                            lang === 'vi'
-                                ? 'Chúng tôi đang trong quá trình xử lý đơn của bạn, vui lòng đợi 1 tí nhé ✨'
-                                : lang === 'cn'
-                                ? '我们正在处理您的订单，请稍候片刻 ✨'
-                                : lang === 'jp'
-                                ? '現在リクエストを処理中です。少々お待ちください ✨'
-                                : lang === 'kr'
-                                ? '고객님의 예약을 처리 중입니다. 잠시만 기다려 주세요 ✨'
-                                : 'We are processing your booking, please wait a moment ✨'
-                        )}
-                    </p>
+                    {/* Step Title & Subtitle (Only for Step 2 to avoid duplicate in Step 3) */}
+                    {currentStep === 2 && (
+                        <>
+                            <h2 className="text-xl md:text-2xl font-bold text-white tracking-wide mt-1">
+                                {lang === 'vi' ? 'Xác nhận đặt lịch' : lang === 'cn' ? '确认预约' : lang === 'jp' ? 'ご予約の確認' : lang === 'kr' ? '예약 확인' : 'Confirm Booking'}
+                            </h2>
+                            <p className="text-xs md:text-sm text-[#e2be6f] mt-1 font-medium max-w-lg">
+                                {lang === 'vi'
+                                    ? 'Kiểm tra lại thông tin trải nghiệm của bạn trước khi gửi.'
+                                    : lang === 'cn'
+                                    ? '请在确认前仔细检查您的预约体验。'
+                                    : lang === 'jp'
+                                    ? '確定前にもう一度体験内容をご確認ください。'
+                                    : lang === 'kr'
+                                    ? '확정하기 전에 예약 내용을 다시 확인해 주세요.'
+                                    : 'Review your experience details before final confirmation.'}
+                            </p>
+                        </>
+                    )}
                 </div>
 
                 {/* Modal Body */}
@@ -405,7 +393,6 @@ export default function OrderConfirmModal({
                                     <div className="space-y-3">
                                         <div className="flex justify-between items-center pb-1.5 border-b border-white/10">
                                             <div className="flex items-center gap-2">
-                                                <Sparkles size={14} className="text-[#C9A96E]" />
                                                 <span className="text-[11px] font-bold text-[#C9A96E] uppercase tracking-wider">
                                                     {lang === 'vi' ? 'TRẢI NGHIỆM CỦA BẠN' : 'YOUR EXPERIENCE'}
                                                 </span>
