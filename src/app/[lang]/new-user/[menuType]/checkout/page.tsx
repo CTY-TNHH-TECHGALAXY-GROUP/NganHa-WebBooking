@@ -687,9 +687,41 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
     return true;
   };
 
+  const handleEditCartItemCustomization = (item: CartItem) => {
+    const s = services.find((srv) => srv.id === item.id) || {
+      id: item.id,
+      names: item.names,
+      priceVND: item.priceVND,
+      priceUSD: item.priceUSD || 0,
+      timeValue: item.timeValue,
+      timeDisplay: item.timeDisplay,
+      SHOW_STRENGTH: true,
+      SHOW_NOTES: true,
+      SHOW_PREFERENCES: true,
+      SHOW_GENDER: true,
+      SHOW_FOCUS: true,
+    } as any;
+    setCustomizingService(s);
+    setEditingCustomCartId(item.cartId);
+    setEditingCustomInitialData({
+      strength: (item.options?.strength as any) || 'medium',
+      therapist: (item.options?.therapist as any) || 'random',
+      notes: {
+        tag0: item.options?.notes?.tag0 ?? false,
+        tag1: item.options?.notes?.tag1 ?? false,
+        content: item.options?.notes?.content || '',
+      },
+      bodyParts: {
+        focus: item.options?.bodyParts?.focus || [],
+        avoid: item.options?.bodyParts?.avoid || [],
+      },
+      addons: item.options?.addons,
+    });
+  };
+
   const handleConfirmOrder = () => {
     if (!validate()) return;
-    setIsPaymentModalOpen(true);
+    setIsConfirmOpen(true);
   };
 
   const handlePaymentNext = (data: { paymentMethod: string; amountPaid: string; changeDenominations: number[] }) => {
@@ -700,7 +732,9 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
     window.setTimeout(() => setIsConfirmOpen(true), 220);
   };
 
-  const handleFinalSubmit = async () => {
+  const handleFinalSubmit = async (data?: { paymentMethod?: string }) => {
+    const chosenMethod = data?.paymentMethod || paymentMethod || 'cash_vnd';
+    setPaymentMethod(chosenMethod);
     const rawPhone = customerInfo.phone.trim();
     const phoneWithCountry = rawPhone
       ? rawPhone.startsWith('+')
@@ -733,17 +767,17 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
         staffGender: 'any',
         lang,
         selectedServices,
-        paymentMethod,
+        paymentMethod: chosenMethod,
         amountPaid: parseInt(amountPaid.replace(/\./g, '') || '0', 10),
         changeDenominations,
       }),
     });
 
-    const data = await response.json();
-    if (!response.ok || data?.success === false) {
-      throw new Error(data?.error || 'Failed to submit booking');
+    const resData = await response.json();
+    if (!response.ok || resData?.success === false) {
+      throw new Error(resData?.error || 'Failed to submit booking');
     }
-    return data?.data?.bookingId || data?.bookingId;
+    return resData?.data?.bookingId || resData?.bookingId;
   };
 
   return (
@@ -1374,6 +1408,13 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
         guestCount={guestCount}
         bookingDate={bookingDate}
         bookingTime={bookingTime}
+        onEditService={(item) => {
+          setIsConfirmOpen(false);
+          handleEditCartItemCustomization(item);
+        }}
+        onEditCustomerInfo={() => {
+          setIsConfirmOpen(false);
+        }}
       />
 
       <AlertModal
