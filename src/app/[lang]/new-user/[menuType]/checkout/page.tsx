@@ -1,7 +1,7 @@
 'use client';
 
 import React, { use, useEffect, useMemo, useState } from 'react';
-import { ChevronDown, ChevronLeft, Plus, X, Edit2, Trash2 } from 'lucide-react';
+import { ChevronDown, ChevronLeft, Plus, X, Edit2, Edit3, Trash2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import SmartLogo from '@/components/SmartLogo';
 import AlertModal from '@/components/Shared/AlertModal';
@@ -816,34 +816,6 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                 </div>
               </div>
 
-              {/* Number of Guests */}
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', borderRadius: '14px', background: '#111226', border: '1px solid rgba(255,255,255,0.08)', marginBottom: '14px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: '#f1e9dc' }}>
-                  <span style={{ color: '#c9a96e', fontSize: '16px' }}>👥</span>
-                  <span style={{ fontWeight: 600 }}>{lang === 'vi' ? 'Số lượng khách' : lang === 'cn' ? '人数' : lang === 'jp' ? 'ご利用人数' : lang === 'kr' ? '인원수' : 'Number of Guests'}</span>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <button
-                    type="button"
-                    onClick={() => setGuestCount(prev => Math.max(1, prev - 1))}
-                    style={{ width: '32px', height: '32px', borderRadius: '8px', background: 'rgba(255,255,255,0.06)', color: '#fff', border: '1px solid rgba(255,255,255,0.1)', cursor: guestCount <= 1 ? 'not-allowed' : 'pointer', fontSize: '16px', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: guestCount <= 1 ? 0.4 : 1 }}
-                    disabled={guestCount <= 1}
-                  >
-                    -
-                  </button>
-                  <span style={{ fontWeight: 'bold', color: '#f2d58d', fontSize: '16px', minWidth: '24px', textAlign: 'center' }}>
-                    {guestCount}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => setGuestCount(prev => Math.min(20, prev + 1))}
-                    style={{ width: '32px', height: '32px', borderRadius: '8px', background: 'rgba(201,169,110,0.15)', color: '#f2d58d', border: '1px solid rgba(201,169,110,0.3)', cursor: 'pointer', fontSize: '16px', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-                  >
-                    +
-                  </button>
-                </div>
-              </div>
-
               <div className={styles.togglePair}>
                 <button
                   type="button"
@@ -926,6 +898,49 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                   />
                 </label>
               )}
+
+              {/* Number of Guests - Transparent Matching Style */}
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', borderRadius: '16px', background: 'transparent', border: '1px solid rgba(255,255,255,0.08)', marginTop: '12px' }}>
+                <span style={{ fontWeight: 500, fontSize: '14px', color: '#c9a96e' }}>
+                  {lang === 'vi' ? 'Số lượng khách' : lang === 'cn' ? '人数' : lang === 'jp' ? 'ご利用人数' : lang === 'kr' ? '인원수' : 'Number of Guests'}
+                </span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <button
+                    type="button"
+                    onClick={() => setGuestCount(prev => Math.max(1, prev - 1))}
+                    style={{ width: '32px', height: '32px', borderRadius: '8px', background: 'rgba(255,255,255,0.06)', color: '#fff', border: '1px solid rgba(255,255,255,0.1)', cursor: guestCount <= 1 ? 'not-allowed' : 'pointer', fontSize: '16px', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: guestCount <= 1 ? 0.4 : 1 }}
+                    disabled={guestCount <= 1}
+                  >
+                    -
+                  </button>
+                  <span style={{ fontWeight: 'bold', color: '#f2d58d', fontSize: '15px', minWidth: '24px', textAlign: 'center' }}>
+                    {guestCount}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setGuestCount(prev => Math.min(20, prev + 1))}
+                    style={{ width: '32px', height: '32px', borderRadius: '8px', background: 'rgba(201,169,110,0.15)', color: '#f2d58d', border: '1px solid rgba(201,169,110,0.3)', cursor: 'pointer', fontSize: '16px', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+
+              {/* Privacy / Security Notice */}
+              <p style={{ fontSize: '11px', color: '#8e8b9a', marginTop: '10px', display: 'flex', alignItems: 'flex-start', gap: '6px', lineHeight: 1.5 }}>
+                <span style={{ color: '#c9a96e', fontSize: '12px', marginTop: '1px' }}>🔒</span>
+                <span>
+                  {lang === 'vi'
+                    ? 'Thông tin của bạn được bảo mật tuyệt đối, chỉ phục vụ cho việc đặt lịch và hỗ trợ trải nghiệm dịch vụ tại Oria Spa.'
+                    : lang === 'cn'
+                    ? '您的信息受到严格保密，仅用于 Oria Spa 的预约和服务体验。'
+                    : lang === 'jp'
+                    ? 'お客様の個人情報は厳重に保護され、Oria Spaでのご予約およびサービス提供のみに使用されます。'
+                    : lang === 'kr'
+                    ? '고객님의 정보는 안전하게 보호되며, Oria Spa 예약 및 서비스 제공 목적으로만 사용됩니다.'
+                    : 'Your information is strictly confidential and used solely for booking and service experience at Oria Spa.'}
+                </span>
+              </p>
 
               <div className={styles.bookingBlock}>
                 <div className={styles.bookingHeading}>
@@ -1115,9 +1130,10 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                                   });
                                   if (!group) return activeBaseNameEn;
                                   const f = group[0];
-                                  const raw = f.names?.en?.trim().toLowerCase() || f.id;
+                                  const raw = f.names?.en?.trim() || f.id;
                                   const name = raw.replace(/\s*\d+\s*(mins?|'|phút).*$/i, '').trim();
-                                  return lang === 'vi' ? (f.names?.vi?.replace(/\s*\d+\s*(mins?|'|phút).*$/i, '').trim() || name) : (f.names?.en?.replace(/\s*\d+\s*(mins?|'|phút).*$/i, '').trim() || name);
+                                  const rawDisplay = lang === 'vi' ? (f.names?.vi?.replace(/\s*\d+\s*(mins?|'|phút).*$/i, '').trim() || name) : (f.names?.en?.replace(/\s*\d+\s*(mins?|'|phút).*$/i, '').trim() || name);
+                                  return rawDisplay.replace(/\b\w/g, c => c.toUpperCase());
                                 })()}
                               </span>
                               <ChevronDown size={14} style={{ color: '#8e8b9a' }} />
@@ -1128,9 +1144,10 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                                  const f = g[0];
                                  const raw = f.names?.en?.trim().toLowerCase() || f.id;
                                  const name = raw.replace(/\s*\d+\s*(mins?|'|phút).*$/i, '').trim();
-                                 const displayName = lang === 'vi' 
+                                 const rawDisplayName = lang === 'vi' 
                                     ? (f.names?.vi?.replace(/\s*\d+\s*(mins?|'|phút).*$/i, '').trim() || name) 
                                     : (f.names?.en?.replace(/\s*\d+\s*(mins?|'|phút).*$/i, '').trim() || name);
+                                 const displayName = rawDisplayName.replace(/\b\w/g, c => c.toUpperCase());
                                  const isSelected = activeBaseNameEn === name;
                                  
                                  return (
@@ -1193,9 +1210,8 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                             })}
                           </div>
 
-                          {/* Custom Preferences Button (Focus, Avoid, Strength) */}
-                          <button
-                            type="button"
+                          {/* Custom Preferences Card with Edit Icon in Top Right */}
+                          <div
                             onClick={() => {
                               setCustomizingService(currentEditService);
                               setEditingCustomCartId(item.cartId);
@@ -1214,10 +1230,27 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                                 addons: item.options?.addons,
                               });
                             }}
-                            className="w-full py-2.5 px-4 mb-3 rounded-xl border border-[#c9a96e]/40 bg-[#c9a96e]/10 text-[#f2d58d] hover:bg-[#c9a96e]/20 text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-sm"
+                            className="group relative cursor-pointer p-3.5 mb-3 rounded-2xl bg-white/[0.03] hover:bg-[#c9a96e]/10 border border-white/10 hover:border-[#c9a96e]/40 transition-all shadow-sm"
                           >
-                            <span>✨ {lang === 'vi' ? 'Tùy chỉnh (Vùng tập trung, Vùng tránh, Lực...)' : lang === 'cn' ? '✨ 个性化定制 (重点/避开部位、力度...)' : lang === 'jp' ? '✨ カスタマイズ (重点・除外部位、強さ...)' : lang === 'kr' ? '✨ 맞춤 설정 (집중/제외 부위, 강도...)' : '✨ Customize (Focus, Avoid, Strength...)'}</span>
-                          </button>
+                            <div className="flex items-center justify-between mb-1.5">
+                              <span className="text-[11px] font-bold uppercase tracking-wider text-[#c9a96e]">
+                                {lang === 'vi' ? 'Tùy chỉnh của bạn' : lang === 'cn' ? '您的个性化定制' : lang === 'jp' ? 'お客様のカスタマイズ' : lang === 'kr' ? '맞춤 설정' : 'Custom Preferences'}
+                              </span>
+                              <div className="w-7 h-7 rounded-full bg-white/5 group-hover:bg-[#c9a96e]/20 flex items-center justify-center text-[#c9a96e] transition-colors">
+                                <Edit3 size={13} />
+                              </div>
+                            </div>
+                            <div className="text-xs text-[#d1cbbd] flex flex-wrap items-center gap-x-3 gap-y-1">
+                              <span>{lang === 'vi' ? 'Lực:' : 'Strength:'} <strong className="text-[#f2d58d] capitalize">{item.options?.strength || 'Medium'}</strong></span>
+                              <span>{lang === 'vi' ? 'KTV:' : 'Therapist:'} <strong className="text-[#f2d58d] capitalize">{item.options?.therapist || 'Random'}</strong></span>
+                              {item.options?.bodyParts?.focus?.length ? (
+                                <span>{lang === 'vi' ? 'Tập trung:' : 'Focus:'} <strong className="text-[#f2d58d]">{item.options.bodyParts.focus.join(', ')}</strong></span>
+                              ) : null}
+                              {item.options?.bodyParts?.avoid?.length ? (
+                                <span>{lang === 'vi' ? 'Tránh:' : 'Avoid:'} <strong className="text-red-400">{item.options.bodyParts.avoid.join(', ')}</strong></span>
+                              ) : null}
+                            </div>
+                          </div>
 
                           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '14px', paddingTop: '14px', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
                             <span style={{ color: '#858391' }}>Updated price</span>

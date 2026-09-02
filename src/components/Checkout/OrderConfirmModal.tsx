@@ -161,6 +161,17 @@ const OrderConfirmModal: React.FC<OrderConfirmModalProps> = ({
         }
     };
 
+    const handleReturnHome = () => {
+        try {
+            localStorage.removeItem('BOOKING_CART');
+            localStorage.removeItem('booking_cart');
+            localStorage.removeItem('SPAWIFI_CART');
+        } catch (e) {
+            console.error('Error clearing cart cache', e);
+        }
+        window.location.href = `/${lang}`;
+    };
+
     if (success) {
         const baseUrl = typeof window !== 'undefined' ? window.location.origin : UI_CONFIG.JOURNEY_BASE_URL;
         const journeyUrl = `${baseUrl}/${lang}/journey/${bookingId}`;
@@ -168,10 +179,9 @@ const OrderConfirmModal: React.FC<OrderConfirmModalProps> = ({
         // === TABLET MODE: Show QR Code ===
         if (isTabletDevice && bookingId) {
             return (
-                <div className="fixed inset-0 z-[120] flex items-center justify-center bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900">
+                <div className="fixed inset-0 z-[120] flex items-center justify-center bg-black/85 backdrop-blur-xl p-4">
                     <div
-                        className="w-full max-w-lg p-8 flex flex-col items-center text-center space-y-6 m-4 animate-in zoom-in-95 duration-300"
-                        style={{ borderRadius: UI_CONFIG.BORDER_RADIUS }}
+                        className="w-full max-w-lg p-8 flex flex-col items-center text-center space-y-6 m-4 animate-in zoom-in-95 duration-300 bg-[#121124]/95 border border-[#c9a96e]/30 rounded-[28px] shadow-2xl"
                     >
                         {/* Success Check */}
                         <div className="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center border-4 border-green-500/30">
@@ -182,7 +192,7 @@ const OrderConfirmModal: React.FC<OrderConfirmModalProps> = ({
                             <h2 className="text-2xl font-bold text-white mb-2">
                                 {dict.checkout?.order_submitted || 'Order Submitted!'}
                             </h2>
-                            <p className="text-indigo-300 text-sm">
+                            <p className="text-[#e2be6f] text-sm">
                                 {dict.checkout?.scan_qr || 'Scan QR code to track your service on your phone'}
                             </p>
                         </div>
@@ -208,11 +218,11 @@ const OrderConfirmModal: React.FC<OrderConfirmModalProps> = ({
                         {/* Info */}
                         <div className="bg-white/5 border border-white/10 rounded-2xl p-4 w-full space-y-2">
                             <div className="flex justify-between text-sm">
-                                <span className="text-indigo-300">{dict.checkout?.total_bill || 'Total'}</span>
-                                <span className="font-bold text-amber-400 text-lg">{formatCurrency(totalVND)} VND</span>
+                                <span className="text-gray-400">{dict.checkout?.total_bill || 'Total'}</span>
+                                <span className="font-bold text-[#f2d58d] text-lg">{formatCurrency(totalVND)} VND</span>
                             </div>
                             <div className="flex justify-between items-center text-sm">
-                                <div className="flex gap-2 items-center text-indigo-300">
+                                <div className="flex gap-2 items-center text-gray-400">
                                     <Clock size={16} />
                                     <span>{dict.checkout?.time || (lang === 'en' ? 'Time' : 'Thời gian')}</span>
                                 </div>
@@ -224,18 +234,18 @@ const OrderConfirmModal: React.FC<OrderConfirmModalProps> = ({
                         <div className="space-y-3 w-full">
                             <div className="w-full bg-white/10 rounded-full h-2 overflow-hidden">
                                 <div
-                                    className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full transition-all duration-1000 ease-linear"
+                                    className="h-full bg-gradient-to-r from-[#c9a96e] to-[#ecd38f] rounded-full transition-all duration-1000 ease-linear"
                                     style={{ width: `${(tabletResetCountdown / UI_CONFIG.TABLET_RESET_SECONDS) * 100}%` }}
                                 />
                             </div>
-                            <p className="text-xs text-indigo-400">
-                                {dict.checkout?.screen_resets_in || 'Screen resets in'} <span className="font-bold text-white">{tabletResetCountdown}s</span>
+                            <p className="text-xs text-[#d1cbbd]">
+                                {dict.checkout?.screen_resets_in || 'Screen resets in'} <span className="font-bold text-[#f2d58d]">{tabletResetCountdown}s</span>
                             </p>
                         </div>
 
                         <button
                             onClick={handleTabletReset}
-                            className="text-indigo-400 text-sm font-medium hover:text-white transition-colors"
+                            className="text-[#c9a96e] text-sm font-medium hover:text-white transition-colors"
                         >
                             {dict.checkout?.reset_now || '<- Reset now'}
                         </button>
@@ -246,15 +256,15 @@ const OrderConfirmModal: React.FC<OrderConfirmModalProps> = ({
 
         // === NORMAL WEB BOOKING MODE: Premium Thank You Screen ===
         return (
-            <div className="fixed inset-0 z-[120] flex items-center justify-center bg-black/85 backdrop-blur-md animate-in fade-in duration-300 p-4">
+            <div className="fixed inset-0 z-[120] flex items-center justify-center bg-black/80 backdrop-blur-xl animate-in fade-in duration-300 p-4">
                 <div 
-                    className="bg-[#1c1c1e] border border-[#c9a96e]/30 w-full p-6 sm:p-8 shadow-2xl flex flex-col items-center text-center space-y-5 m-auto relative overflow-hidden animate-in zoom-in-95 duration-300"
-                    style={{ maxWidth: '440px', borderRadius: UI_CONFIG.BORDER_RADIUS }}
+                    className="bg-[#121124]/90 backdrop-blur-2xl border border-[#c9a96e]/30 w-full p-6 sm:p-8 shadow-2xl flex flex-col items-center text-center space-y-5 m-auto relative overflow-hidden animate-in zoom-in-95 duration-300 rounded-[28px]"
+                    style={{ maxWidth: '440px' }}
                 >
                     {/* Gold Glow Background */}
-                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-40 bg-[#C9A96E]/25 rounded-full blur-3xl -z-10 opacity-70"></div>
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-48 bg-[#C9A96E]/20 rounded-full blur-3xl -z-10 opacity-70"></div>
 
-                    <div className="w-16 h-16 bg-gradient-to-br from-[#c9a96e]/20 to-[#0d0d0d] rounded-full flex items-center justify-center animate-in zoom-in duration-500 border-2 border-[#C9A96E]/50 shadow-inner">
+                    <div className="w-16 h-16 bg-gradient-to-br from-[#c9a96e]/20 to-black/40 rounded-full flex items-center justify-center animate-in zoom-in duration-500 border border-[#C9A96E]/40 shadow-inner">
                         <Check size={32} className="text-[#f2d58d]" strokeWidth={3.5} />
                     </div>
 
@@ -283,7 +293,7 @@ const OrderConfirmModal: React.FC<OrderConfirmModalProps> = ({
 
                     <div className="w-full space-y-3">
                         {/* Summary Card */}
-                        <div className="bg-[#0d0d0d]/90 border border-white/10 rounded-2xl p-4 shadow-sm space-y-2.5 text-left text-xs">
+                        <div className="bg-white/[0.04] border border-white/10 rounded-2xl p-4 shadow-sm space-y-2.5 text-left text-xs">
                             {/* Booking schedule */}
                             {(bookingDate || bookingTime) && (
                                 <div className="flex justify-between items-center border-b border-white/5 pb-2">
@@ -316,19 +326,13 @@ const OrderConfirmModal: React.FC<OrderConfirmModalProps> = ({
                         </div>
                     </div>
 
-                    <div className="w-full space-y-2 pt-1">
+                    <div className="w-full pt-2">
                         <button
-                            onClick={handleDone}
+                            onClick={handleReturnHome}
                             className="w-full py-3.5 rounded-xl font-bold uppercase tracking-wider text-xs bg-gradient-to-r from-[#ecd38f] to-[#c6a55f] text-[#2c2416] hover:brightness-105 active:scale-[0.98] transition-all shadow-lg flex items-center justify-center gap-2"
                         >
-                            <span>{lang === 'vi' ? 'Xem hành trình trải nghiệm' : 'View Journey Tracker'}</span>
+                            <span>{lang === 'vi' ? 'Quay về trang chủ' : 'Return to Home'}</span>
                             <ArrowRight size={14} />
-                        </button>
-                        <button
-                            onClick={() => { window.location.href = '/'; }}
-                            className="w-full py-2.5 rounded-xl font-medium text-xs text-gray-400 hover:text-white transition-colors"
-                        >
-                            {lang === 'vi' ? 'Quay về trang chủ' : 'Return to Home'}
                         </button>
                     </div>
 
@@ -348,278 +352,204 @@ const OrderConfirmModal: React.FC<OrderConfirmModalProps> = ({
     };
 
     return (
-        <div className="fixed inset-0 z-[120] flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-sm transition-opacity duration-300 animate-in fade-in pb-0 sm:pb-0">
+        <div className="fixed inset-0 z-[120] flex items-end sm:items-center justify-center bg-black/75 backdrop-blur-md transition-opacity duration-300 animate-in fade-in pb-0 sm:pb-0 p-0 sm:p-4">
             <div
-                className="bg-[#1c1c1e] border border-white/10 w-full max-h-[90vh] sm:h-auto rounded-t-[32px] shadow-2xl flex flex-col overflow-hidden relative animate-in slide-in-from-bottom-10 sm:zoom-in-95 duration-300"
-                style={{ maxWidth: UI_CONFIG.MODAL_MAX_WIDTH, borderRadius: UI_CONFIG.BORDER_RADIUS }}
+                className="bg-[#121124]/95 backdrop-blur-2xl border border-[#c9a96e]/25 w-full max-h-[92vh] md:max-h-[85vh] sm:rounded-[28px] rounded-t-[28px] shadow-2xl flex flex-col overflow-hidden relative animate-in slide-in-from-bottom-10 sm:zoom-in-95 duration-300 md:max-w-4xl"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Header */}
-                <div className="pt-8 pb-4 flex flex-col items-center text-center px-6 bg-[#1c1c1e] shrink-0 z-10">
-                    <div className="w-16 h-16 bg-[#0d0d0d] rounded-full flex items-center justify-center text-[#C9A96E] mb-4 border border-[#C9A96E]/30">
-                        <ClipboardList size={32} strokeWidth={2.5} />
+                <div className="pt-6 pb-3 flex flex-col items-center text-center px-6 border-b border-white/10 shrink-0 z-10 bg-transparent">
+                    <div className="w-12 h-12 bg-white/[0.04] rounded-full flex items-center justify-center text-[#C9A96E] mb-2 border border-[#C9A96E]/30">
+                        <ClipboardList size={24} strokeWidth={2.2} />
                     </div>
-                    <h2 className="text-2xl font-bold text-white">
+                    <h2 className="text-xl md:text-2xl font-bold text-white tracking-wide">
                         {dict.checkout?.modal_title || 'Xác nhận yêu cầu'}
                     </h2>
-                    <p className="text-sm text-gray-400 mt-1 font-medium">
+                    <p className="text-xs md:text-sm text-gray-400 mt-0.5 font-medium">
                         {dict.checkout?.review_text || 'Vui lòng kiểm tra lại đơn hàng.'}
                     </p>
                 </div>
 
-                {/* Scrollable Body */}
-                <div className="flex-1 overflow-y-auto px-6 pb-6 custom-scrollbar space-y-6 min-h-0">
-
-                    {/* Customer Details */}
-                    <div className="bg-[#0d0d0d] border border-white/5 rounded-2xl p-4 space-y-2">
-                        <div className="text-[11px] font-bold text-[#C9A96E] uppercase tracking-wider mb-2">{dict.checkout?.customer_details || 'Thông tin đặt hẹn'}</div>
-                        <div className="space-y-1.5">
-                            <div className="flex justify-between text-sm">
-                                <span className="text-gray-400 font-medium">{dict.checkout?.name || 'Họ và tên'}</span>
-                                <span className="font-bold text-[#C9A96E]">{customerInfo.name || 'Guest'}</span>
-                            </div>
-                            {customerInfo.phone && (
-                                <div className="flex justify-between text-sm">
-                                    <span className="text-gray-400 font-medium">{dict.checkout?.phone_label || 'Số điện thoại'}</span>
-                                    <span className="font-bold text-[#C9A96E]">{customerInfo.phone}</span>
+                {/* Body: Responsive 2-Column on Desktop (md:), 1-Column on Mobile */}
+                <div className="flex-1 overflow-y-auto p-4 sm:p-6 custom-scrollbar min-h-0">
+                    <div className="md:grid md:grid-cols-12 md:gap-6 space-y-4 md:space-y-0">
+                        
+                        {/* LEFT COLUMN (Desktop): Customer Info, Booking Time, Expected Time */}
+                        <div className="md:col-span-5 space-y-4">
+                            {/* Customer Details Card */}
+                            <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-4 space-y-2.5">
+                                <div className="text-[11px] font-bold text-[#C9A96E] uppercase tracking-wider mb-1">
+                                    {dict.checkout?.customer_details || 'Thông tin đặt hẹn'}
                                 </div>
-                            )}
-                            {customerInfo.email && (
-                                <div className="flex justify-between text-sm">
-                                    <span className="text-gray-400 font-medium">{dict.checkout?.email_label || 'Email'}</span>
-                                    <span className="font-bold text-[#C9A96E] truncate max-w-[200px]">{customerInfo.email}</span>
-                                </div>
-                            )}
-                            <div className="flex justify-between text-sm">
-                                <span className="text-gray-400 font-medium">{lang === 'vi' ? 'Số lượng khách' : 'Guests'}</span>
-                                <span className="font-bold text-white">{guestCount} {lang === 'vi' ? 'khách' : 'guest(s)'}</span>
-                            </div>
-                            {(bookingDate || bookingTime) && (
-                                <div className="flex justify-between text-sm">
-                                    <span className="text-gray-400 font-medium">{lang === 'vi' ? 'Lịch hẹn' : 'Booking time'}</span>
-                                    <span className="font-bold text-[#f2d58d]">{bookingDate} · {bookingTime}</span>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-
-                    {/* Order Summary */}
-                    <div>
-                        <div className="flex justify-between items-center mb-3 px-1">
-                            <span className="text-[11px] font-bold text-[#C9A96E] uppercase tracking-wider">{dict.checkout.order_summary}</span>
-                            <span className="bg-white/10 text-white text-[10px] font-bold px-2 py-1 rounded-full border border-white/5">{cart.length} {dict.checkout.items}</span>
-                        </div>
-
-                        <div className="space-y-3">
-                            {cart.map((item, idx) => {
-                                const strength = item.options?.strength;
-                                const therapist = item.options?.therapist;
-                                const focus = item.options?.bodyParts?.focus || [];
-                                const avoid = item.options?.bodyParts?.avoid || [];
-                                // ...
-
-                                const tags = [
-                                    item.options?.notes?.tag0 ? (dict.tags?.pregnant || 'Pregnant') : null,
-                                    item.options?.notes?.tag1 ? (dict.tags?.allergy || 'Allergy') : null
-                                ].filter(Boolean) as string[];
-
-                                const getStrengthColor = (s: string) => {
-                                    return 'text-[#C9A96E]';
-                                };
-                                const getTherapistColor = (t: string) => {
-                                    return 'text-[#C9A96E]';
-                                };
-
-                                return (
-                                    <div key={item.cartId} className="border border-white/5 rounded-2xl p-4 shadow-sm bg-[#0d0d0d]">
-                                        {/* Name & Price */}
-                                        <div className="flex justify-between items-start mb-1 gap-2">
-                                            <span className="font-bold text-white text-[15px] truncate flex-1">{idx + 1}. {item.names[lang] || item.names.en}</span>
-                                            <span className="font-bold text-white text-[15px] shrink-0">{formatCurrency(item.priceVND * item.qty)} VND</span>
+                                <div className="space-y-2 text-xs md:text-sm">
+                                    <div className="flex justify-between items-center">
+                                        <span className="text-gray-400">{dict.checkout?.name || 'Họ và tên'}</span>
+                                        <span className="font-bold text-[#f2d58d]">{customerInfo.name || 'Guest'}</span>
+                                    </div>
+                                    {customerInfo.phone && (
+                                        <div className="flex justify-between items-center">
+                                            <span className="text-gray-400">{dict.checkout?.phone_label || 'Số điện thoại'}</span>
+                                            <span className="font-bold text-white">{customerInfo.phone}</span>
                                         </div>
-                                        {/* Attributes */}
-                                        <div className="space-y-2">
-                                            {/* Duration */}
-                                            {(item.timeValue > 0 || item.timeDisplay) && (
-                                                <div className="flex justify-between items-center text-sm">
-                                                    <div className="flex gap-2 items-center">
-                                                        <div className="w-5 flex justify-center"><Clock size={16} className="text-gray-400" /></div>
-                                                        <span className="font-medium text-gray-400">{dict.checkout?.time || (lang === 'en' ? 'Time' : 'Thời gian')}</span>
-                                                    </div>
-                                                    <span className="font-bold text-[#C9A96E]">
-                                                        {item.timeDisplay 
-                                                            ? item.timeDisplay.replace('mins', dict.checkout?.mins || (lang === 'vi' ? 'phút' : 'mins'))
-                                                            : `${item.timeValue} ${dict.checkout?.mins || (lang === 'vi' ? 'phút' : 'mins')}`
-                                                        }
-                                                    </span>
-                                                </div>
-                                            )}
+                                    )}
+                                    {customerInfo.email && (
+                                        <div className="flex justify-between items-center">
+                                            <span className="text-gray-400">{dict.checkout?.email_label || 'Email'}</span>
+                                            <span className="font-bold text-white truncate max-w-[170px]">{customerInfo.email}</span>
+                                        </div>
+                                    )}
+                                    <div className="flex justify-between items-center pt-1 border-t border-white/5">
+                                        <span className="text-gray-400">{lang === 'vi' ? 'Số lượng khách' : 'Guests'}</span>
+                                        <span className="font-bold text-[#f2d58d]">{guestCount} {lang === 'vi' ? 'khách' : 'guest(s)'}</span>
+                                    </div>
+                                    {(bookingDate || bookingTime) && (
+                                        <div className="flex justify-between items-center">
+                                            <span className="text-gray-400">{lang === 'vi' ? 'Lịch hẹn' : 'Booking time'}</span>
+                                            <span className="font-bold text-[#f2d58d]">{bookingDate} · {bookingTime}</span>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
 
-                                            {/* Strength */}
-                                            <div className="flex justify-between items-center text-sm">
-                                                <div className="flex gap-2 items-center">
-                                                    <div className="w-5 flex justify-center"><Hand size={16} className="text-gray-400" /></div>
-                                                    <span className="font-medium text-gray-400">{dict.checkout.strength}</span>
-                                                </div>
-                                                <span className={`font-bold capitalize ${getStrengthColor(strength || '')}`}>
-                                                    {/* @ts-ignore */}
-                                                    {dict.options?.strength_levels?.[strength?.toLowerCase()] || strength || 'Medium'}
+                            {/* Expected Time Card */}
+                            <div className="bg-white/[0.03] border border-[#C9A96E]/25 rounded-2xl p-4 space-y-2">
+                                <div className="text-[10px] font-bold text-[#C9A96E] uppercase tracking-wider mb-1">
+                                    {dict.checkout.expected_time}
+                                </div>
+                                <div className="flex justify-between text-xs md:text-sm font-medium text-gray-300">
+                                    <span>{dict.checkout.start_time}</span>
+                                    <span className="text-[#f2d58d] font-bold">{formatTime(startTimeComp)}</span>
+                                </div>
+                                <div className="flex justify-between text-xs md:text-sm font-medium text-gray-300">
+                                    <span>{dict.checkout.end_time}</span>
+                                    <span className="text-[#f2d58d] font-bold">{formatTime(endTimeComp)}</span>
+                                </div>
+                            </div>
+
+                            {/* General Notes Alert */}
+                            {uniqueTags.length > 0 && (
+                                <div className="bg-red-500/10 border border-red-500/30 rounded-2xl p-3 flex items-start gap-2.5">
+                                    <AlertCircle size={18} className="text-red-400 shrink-0 mt-0.5" />
+                                    <div className="text-xs">
+                                        <span className="font-bold text-red-400 block mb-1">{dict.checkout.general_notes}</span>
+                                        <div className="flex flex-wrap gap-2">
+                                            {uniqueTags.map(tag => (
+                                                <span key={tag} className="text-red-300 font-medium flex items-center gap-1">
+                                                    {(tag === 'Pregnant' || tag === (dict.tags?.pregnant)) ? (dict.tags?.pregnant) : (dict.tags?.allergy)} {tag.includes('Pregnant') || tag === dict.tags?.pregnant ? '🤰' : '⚠️'}
                                                 </span>
-                                            </div>
-                                            {/* Therapist */}
-                                            <div className="flex justify-between items-center text-sm">
-                                                <div className="flex gap-2 items-center">
-                                                    <div className="w-5 flex justify-center"><User size={16} className="text-gray-400" /></div>
-                                                    <span className="font-medium text-gray-400">{dict.checkout.therapist}</span>
-                                                </div>
-                                                <span className={`font-bold capitalize ${getTherapistColor(therapist || '')}`}>
-                                                    {/* @ts-ignore */}
-                                                    {dict.options?.therapist_options?.[therapist?.toLowerCase()] || therapist || 'Random'}
-                                                </span>
-                                            </div>
-                                            {/* Avoid */}
-                                            {avoid.length > 0 && (
-                                                <div className="flex justify-between items-start text-sm">
-                                                    <div className="flex gap-2 items-center shrink-0 mt-0.5">
-                                                        <div className="w-5 flex justify-center"><Ban size={16} className="text-gray-400" /></div>
-                                                        <span className="font-medium text-gray-400">{dict.checkout.avoid}</span>
-                                                    </div>
-                                                    <span className="text-[#C9A96E] font-bold leading-tight mt-0.5 text-right w-2/3">
-                                                        {formatParts(avoid)}
-                                                    </span>
-                                                </div>
-                                            )}
-
-                                            {/* Focus */}
-                                            {focus.length > 0 && (
-                                                <div className="flex justify-between items-start text-sm">
-                                                    <div className="flex gap-2 items-center shrink-0 mt-0.5">
-                                                        <div className="w-5 flex justify-center"><HeartPulse size={16} className="text-gray-400" /></div>
-                                                        <span className="font-medium text-gray-400">{dict.checkout.focus}</span>
-                                                    </div>
-                                                    <span className="text-[#C9A96E] font-bold leading-tight mt-0.5 text-right w-2/3">
-                                                        {formatParts(focus)}
-                                                    </span>
-                                                </div>
-                                            )}
-
-                                            {/* Tags & Note Content - Footer */}
-                                            {(tags.length > 0 || item.options?.notes?.content) && (
-                                                <div className="mt-2 pt-2 border-t border-white/5 flex flex-col gap-2">
-                                                    {/* Tags */}
-                                                    {tags.length > 0 && (
-                                                        <div className="flex justify-end gap-2">
-                                                            {tags.map(tag => (
-                                                                <span key={tag} className="bg-[#C9A96E]/20 text-[#C9A96E] text-[10px] px-2 py-1 rounded border border-[#C9A96E]/30 font-bold uppercase">
-                                                                    {tag}
-                                                                </span>
-                                                            ))}
-                                                        </div>
-                                                    )}
-                                                    {/* Note Content */}
-                                                    {item.options?.notes?.content && (
-                                                        <div className="flex justify-between gap-4 text-xs italic text-gray-400 mt-1">
-                                                            <span className="shrink-0">{dict.history?.note_label || 'Note'}</span>
-                                                            <span className="text-right text-[#C9A96E] font-medium not-italic">{item.options.notes.content}</span>
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            )}
+                                            ))}
                                         </div>
                                     </div>
-                                );
-                            })}
-                        </div>
-                    </div>
-
-                    {/* Payment Info */}
-                    <div className="bg-[#0d0d0d] border border-white/5 rounded-2xl p-5 space-y-3">
-                        <div className="flex justify-between text-sm text-gray-400 mb-2">
-                            <span>{dict.checkout.payment_method}</span>
-                            <span className="font-bold text-[#C9A96E] uppercase">
-                                {dict.payment_methods?.[paymentMethod] || dict.payment_methods?.cash_vnd || 'Cash (VND)'}
-                            </span>
-                        </div>
-                        <div className="flex justify-between items-center text-sm text-gray-400 mb-4 border-b border-white/5 pb-3">
-                            <div className="flex gap-2 items-center">
-                                <Clock size={16} className="text-gray-400" />
-                                <span>{dict.checkout?.time || (lang === 'en' ? 'Time' : 'Thời gian')}</span>
-                            </div>
-                            <span className="font-bold text-[#C9A96E]">{totalTime} {dict.checkout?.mins || (lang === 'vi' ? 'phút' : 'mins')}</span>
-                        </div>
-
-                        <div className="flex justify-between items-center">
-                            <span className="font-bold text-white text-lg">{dict.checkout.total_bill}</span>
-                            <span className="font-bold text-[#C9A96E] text-xl">{formatCurrency(totalVND)} VND</span>
-                        </div>
-                        {amountPaid > 0 && (
-                            <>
-                                <div className="flex justify-between items-center text-sm">
-                                    <span className="font-medium text-gray-400">{dict.checkout.amount_paid}</span>
-                                    <span className="font-bold text-[#b09461]">{formatCurrency(amountPaid)} VND</span>
                                 </div>
-                                <div className="flex justify-between items-center text-base pt-1">
-                                    <span className="font-bold text-gray-400">{dict.checkout.change_due}</span>
-                                    <span className={`font-bold ${changeAmount >= 0 ? 'text-[#C9A96E]' : 'text-red-500'}`}>
-                                        {changeAmount >= 0
-                                            ? <span>{formatCurrency(changeAmount)} VND</span>
-                                            : <span>{dict.checkout.missing} {formatCurrency(Math.abs(changeAmount))} VND</span>
-                                        }
+                            )}
+                        </div>
+
+                        {/* RIGHT COLUMN (Desktop): Services List, Payment Summary & Action Buttons */}
+                        <div className="md:col-span-7 flex flex-col justify-between space-y-4">
+                            
+                            {/* Order Summary & Items List */}
+                            <div className="space-y-3">
+                                <div className="flex justify-between items-center px-1">
+                                    <span className="text-[11px] font-bold text-[#C9A96E] uppercase tracking-wider">
+                                        {dict.checkout.order_summary}
+                                    </span>
+                                    <span className="bg-white/10 text-white text-[10px] font-bold px-2 py-0.5 rounded-full border border-white/5">
+                                        {cart.length} {dict.checkout.items}
                                     </span>
                                 </div>
-                            </>
-                        )}
-                    </div>
 
-                    {/* General Notes Alert */}
-                    {uniqueTags.length > 0 && (
-                        <div className="bg-red-50 border border-red-100 rounded-xl p-3 flex items-start gap-3">
-                            <AlertCircle size={20} className="text-red-500 shrink-0 mt-0.5" />
-                            <div className="text-sm">
-                                <span className="font-bold text-red-500 block mb-1">{dict.checkout.general_notes}</span>
-                                <div className="flex flex-wrap gap-2">
-                                    {uniqueTags.map(tag => (
-                                        <span key={tag} className="text-red-600 font-medium flex items-center gap-1">
-                                            {/* Look up tag name again to be safe/consistent */}
-                                            {(tag === 'Pregnant' || tag === (dict.tags?.pregnant)) ? (dict.tags?.pregnant) : (dict.tags?.allergy)} {tag.includes('Pregnant') || tag === dict.tags?.pregnant ? '🤰' : '⚠️'}
-                                        </span>
-                                    ))}
+                                <div className="space-y-2.5 max-h-[220px] md:max-h-[260px] overflow-y-auto pr-1 custom-scrollbar">
+                                    {cart.map((item, idx) => {
+                                        const strength = item.options?.strength;
+                                        const therapist = item.options?.therapist;
+                                        const focus = item.options?.bodyParts?.focus || [];
+                                        const avoid = item.options?.bodyParts?.avoid || [];
+
+                                        const tags = [
+                                            item.options?.notes?.tag0 ? (dict.tags?.pregnant || 'Pregnant') : null,
+                                            item.options?.notes?.tag1 ? (dict.tags?.allergy || 'Allergy') : null
+                                        ].filter(Boolean) as string[];
+
+                                        return (
+                                            <div key={item.cartId || idx} className="border border-white/10 rounded-2xl p-3.5 bg-white/[0.02] hover:bg-white/[0.04] transition-colors">
+                                                {/* Name & Price */}
+                                                <div className="flex justify-between items-start mb-1.5 gap-2">
+                                                    <span className="font-bold text-white text-sm truncate flex-1">
+                                                        {idx + 1}. {item.names?.[lang] || item.names?.en || 'Service'}
+                                                    </span>
+                                                    <span className="font-bold text-[#f2d58d] text-sm shrink-0">
+                                                        {formatCurrency(item.priceVND * item.qty)} VND
+                                                    </span>
+                                                </div>
+
+                                                {/* Details */}
+                                                <div className="space-y-1.5 text-xs text-gray-400">
+                                                    {(item.timeValue > 0 || item.timeDisplay) && (
+                                                        <div className="flex justify-between items-center">
+                                                            <span>{dict.checkout?.time || 'Thời gian'}</span>
+                                                            <span className="font-bold text-gray-200">{item.timeValue || item.timeDisplay} {dict.checkout?.mins || 'phút'}</span>
+                                                        </div>
+                                                    )}
+                                                    {strength && (
+                                                        <div className="flex justify-between items-center">
+                                                            <span>{dict.custom_for_you?.strength_label || 'Lực'}</span>
+                                                            <span className="font-bold text-gray-200 capitalize">{strength}</span>
+                                                        </div>
+                                                    )}
+                                                    {therapist && (
+                                                        <div className="flex justify-between items-center">
+                                                            <span>{dict.custom_for_you?.therapist_gender || 'KTV'}</span>
+                                                            <span className="font-bold text-gray-200 capitalize">{therapist}</span>
+                                                        </div>
+                                                    )}
+                                                    {focus.length > 0 && (
+                                                        <div className="flex justify-between items-center">
+                                                            <span>{dict.custom_for_you?.focus_areas || 'Tập trung'}</span>
+                                                            <span className="font-bold text-[#f2d58d] text-right truncate max-w-[160px]">{formatParts(focus)}</span>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
                                 </div>
                             </div>
-                        </div>
-                    )}
 
-                    {/* Expected Time (Bottom Location) */}
-                    <div className="bg-[#0d0d0d] border border-[#C9A96E]/30 rounded-2xl p-4 space-y-2">
-                        <div className="text-[10px] font-bold text-[#C9A96E] uppercase tracking-wider mb-2">{dict.checkout.expected_time}</div>
-                        <div className="flex justify-between text-sm font-bold text-[#C9A96E] opacity-90">
-                            <span>{dict.checkout.start_time}</span>
-                            <span>{formatTime(startTimeComp)}</span>
-                        </div>
-                        <div className="flex justify-between text-sm font-bold text-[#C9A96E] opacity-90">
-                            <span>{dict.checkout.end_time}</span>
-                            <span>{formatTime(endTimeComp)}</span>
+                            {/* Payment Summary */}
+                            <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-4 space-y-2.5">
+                                <div className="flex justify-between text-xs text-gray-400">
+                                    <span>{dict.checkout.payment_method}</span>
+                                    <span className="font-bold text-[#f2d58d] uppercase">
+                                        {dict.payment_methods?.[paymentMethod] || dict.payment_methods?.cash_vnd || 'Cash (VND)'}
+                                    </span>
+                                </div>
+                                <div className="flex justify-between items-center pt-2 border-t border-white/5">
+                                    <span className="font-bold text-white text-sm md:text-base">{dict.checkout.total_bill}</span>
+                                    <span className="font-bold text-[#f2d58d] text-base md:text-lg">{formatCurrency(totalVND)} VND</span>
+                                </div>
+                            </div>
+
+                            {/* Footer Buttons (Embedded in right column on desktop) */}
+                            <div className="flex gap-3 pt-2">
+                                <button
+                                    onClick={onClose}
+                                    disabled={isSubmitting}
+                                    className="flex-1 py-3 rounded-xl border border-white/10 text-gray-400 font-bold uppercase text-xs tracking-wider hover:bg-white/5 transition-colors active:scale-[0.98]"
+                                >
+                                    {dict.checkout.cancel}
+                                </button>
+                                <button
+                                    onClick={handleConfirm}
+                                    disabled={isSubmitting}
+                                    className="flex-[1.5] bg-gradient-to-r from-[#ecd38f] to-[#c6a55f] text-[#2c2416] py-3 rounded-xl font-bold uppercase text-xs tracking-wider shadow-lg hover:brightness-105 transition-all active:scale-[0.98] flex items-center justify-center gap-2 group"
+                                >
+                                    <span>{dict.checkout.submit}</span>
+                                    {!isSubmitting && <ArrowRight size={15} className="group-hover:translate-x-1 transition-transform" strokeWidth={3} />}
+                                </button>
+                            </div>
+
                         </div>
                     </div>
-                </div>
-
-                {/* Footer Buttons */}
-                <div className="p-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] bg-[#1c1c1e] border-t border-white/10 flex gap-3 shrink-0">
-                    <button
-                        onClick={onClose}
-                        disabled={isSubmitting}
-                        className="flex-1 py-3.5 rounded-xl border border-[#3f3f46] text-gray-400 font-bold uppercase text-sm tracking-widest hover:bg-white/5 transition-colors"
-                    >
-                        {dict.checkout.cancel}
-                    </button>
-                    <button
-                        onClick={handleConfirm}
-                        disabled={isSubmitting}
-                        className="flex-[1.5] bg-[#C9A96E] text-white py-3.5 rounded-xl font-bold uppercase text-sm tracking-widest shadow-[0_0_15px_rgba(201,169,110,0.3)] hover:bg-[#b09461] transition-all active:scale-[0.98] flex items-center justify-center gap-2 group"
-                    >
-                        <span>{dict.checkout.submit}</span>
-                        {!isSubmitting && <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" strokeWidth={3} />}
-                    </button>
                 </div>
             </div>
 
