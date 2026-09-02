@@ -187,6 +187,9 @@ const pureRelaxationSections: PureRelaxationSection[] = [
         durations: [
           { label: "45'", price: 315000, id: 'NHS0100' },
           { label: "60'", price: 395000, id: 'NHS0101' },
+          { label: "70'", price: 525000, id: 'NHS0102' },
+          { label: "90'", price: 685000, id: 'NHS0103' },
+          { label: "120'", price: 945000, id: 'NHS0104' },
         ],
         privilege: warmTowel,
       },
@@ -214,6 +217,7 @@ const pureRelaxationSections: PureRelaxationSection[] = [
         durations: [
           { label: "30'", price: 315000, id: 'NHS0600' },
           { label: "45'", price: 385000, id: 'NHS0601' },
+          { label: "60'", price: 630000, id: 'NHS0602' },
         ],
         privilege: eyePillow,
       },
@@ -376,7 +380,7 @@ const pureRelaxationSections: PureRelaxationSection[] = [
         description: 'Razor Shave · Ear Clean · Facial · Heel Skin Shave · Hair Wash · 4-Hand Body Massage.',
         media: { type: type('spaVideo', 'image'), src: spaVideo, poster: fallbackImg, tag: 'Signature' },
         durations: [
-          { label: "150'", price: 1575000, id: 'NHS1008' },
+          { label: "120'", price: 1575000, id: 'NHS0800' },
         ],
         privilege: signatureTea,
       },
