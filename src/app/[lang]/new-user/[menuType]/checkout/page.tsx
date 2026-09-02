@@ -471,6 +471,9 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
   const [editServiceId, setEditServiceId] = useState<string | null>(null);
   const [editBaseName, setEditBaseName] = useState<string | null>(null);
   const [editNote, setEditNote] = useState('');
+  const [guestCount, setGuestCount] = useState<number>(1);
+  const [editingCustomCartId, setEditingCustomCartId] = useState<string | null>(null);
+  const [editingCustomInitialData, setEditingCustomInitialData] = useState<CustomPreferences | null>(null);
   const [contactMethod, setContactMethod] = useState<ContactMethod>('email');
   const [customerInfo, setCustomerInfo] = useState({ name: '', email: '', phone: '', gender: t('male', lang) });
   const [phoneCountry, setPhoneCountry] = useState(() => phoneCountryForLang(lang));
@@ -642,6 +645,20 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
   };
 
   const handleSaveCustom = (prefs: CustomPreferences) => {
+    if (editingCustomCartId && customizingService) {
+      replaceCartItemService(editingCustomCartId, customizingService, {
+        strength: prefs.strength,
+        therapist: prefs.therapist,
+        notes: prefs.notes,
+        bodyParts: prefs.bodyParts,
+        addons: prefs.addons
+      });
+      setEditingCustomCartId(null);
+      setEditingCustomInitialData(null);
+      setCustomizingService(null);
+      return;
+    }
+
     if (!customizingService) return;
     addToCart(customizingService, 1, {
       strength: prefs.strength,
@@ -712,7 +729,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
         time: bookingTime,
         branchId: 'ngan-ha-spa',
         branchName: 'ORIA SPA',
-        guests: 1,
+        guests: guestCount,
         staffGender: 'any',
         lang,
         selectedServices,
@@ -796,6 +813,34 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                       </button>
                     ))}
                   </div>
+                </div>
+              </div>
+
+              {/* Number of Guests */}
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', borderRadius: '14px', background: '#111226', border: '1px solid rgba(255,255,255,0.08)', marginBottom: '14px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: '#f1e9dc' }}>
+                  <span style={{ color: '#c9a96e', fontSize: '16px' }}>👥</span>
+                  <span style={{ fontWeight: 600 }}>{lang === 'vi' ? 'Số lượng khách' : lang === 'cn' ? '人数' : lang === 'jp' ? 'ご利用人数' : lang === 'kr' ? '인원수' : 'Number of Guests'}</span>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <button
+                    type="button"
+                    onClick={() => setGuestCount(prev => Math.max(1, prev - 1))}
+                    style={{ width: '32px', height: '32px', borderRadius: '8px', background: 'rgba(255,255,255,0.06)', color: '#fff', border: '1px solid rgba(255,255,255,0.1)', cursor: guestCount <= 1 ? 'not-allowed' : 'pointer', fontSize: '16px', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: guestCount <= 1 ? 0.4 : 1 }}
+                    disabled={guestCount <= 1}
+                  >
+                    -
+                  </button>
+                  <span style={{ fontWeight: 'bold', color: '#f2d58d', fontSize: '16px', minWidth: '24px', textAlign: 'center' }}>
+                    {guestCount}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setGuestCount(prev => Math.min(20, prev + 1))}
+                    style={{ width: '32px', height: '32px', borderRadius: '8px', background: 'rgba(201,169,110,0.15)', color: '#f2d58d', border: '1px solid rgba(201,169,110,0.3)', cursor: 'pointer', fontSize: '16px', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                  >
+                    +
+                  </button>
                 </div>
               </div>
 
@@ -1125,7 +1170,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                           </div>
 
                           <div style={{ fontSize: '11px', letterSpacing: '0.14em', textTransform: 'uppercase', color: '#8e8b9a', marginBottom: '8px', fontWeight: 750 }}>Duration</div>
-                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '18px' }}>
+                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '14px' }}>
                             {sortedGroup.map(svc => {
                               const isActive = editServiceId === svc.id || currentEditService.id === svc.id;
                               return (
@@ -1148,7 +1193,33 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                             })}
                           </div>
 
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '18px', paddingTop: '16px', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+                          {/* Custom Preferences Button (Focus, Avoid, Strength) */}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setCustomizingService(currentEditService);
+                              setEditingCustomCartId(item.cartId);
+                              setEditingCustomInitialData({
+                                strength: (item.options?.strength as any) || 'medium',
+                                therapist: (item.options?.therapist as any) || 'random',
+                                notes: {
+                                  tag0: item.options?.notes?.tag0 ?? false,
+                                  tag1: item.options?.notes?.tag1 ?? false,
+                                  content: item.options?.notes?.content || '',
+                                },
+                                bodyParts: {
+                                  focus: item.options?.bodyParts?.focus || [],
+                                  avoid: item.options?.bodyParts?.avoid || [],
+                                },
+                                addons: item.options?.addons,
+                              });
+                            }}
+                            className="w-full py-2.5 px-4 mb-3 rounded-xl border border-[#c9a96e]/40 bg-[#c9a96e]/10 text-[#f2d58d] hover:bg-[#c9a96e]/20 text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-sm"
+                          >
+                            <span>✨ {lang === 'vi' ? 'Tùy chỉnh (Vùng tập trung, Vùng tránh, Lực...)' : lang === 'cn' ? '✨ 个性化定制 (重点/避开部位、力度...)' : lang === 'jp' ? '✨ カスタマイズ (重点・除外部位、強さ...)' : lang === 'kr' ? '✨ 맞춤 설정 (집중/제외 부위, 강도...)' : '✨ Customize (Focus, Avoid, Strength...)'}</span>
+                          </button>
+
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '14px', paddingTop: '14px', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
                             <span style={{ color: '#858391' }}>Updated price</span>
                             <strong style={{ color: '#f2d58d', fontSize: '25px' }}>
                               {formatCurrency(currentEditService.priceVND)} VNĐ
@@ -1220,7 +1291,11 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
       {customizingService && (
         <CustomForYouModal
             isOpen={!!customizingService}
-            onClose={() => setCustomizingService(null)}
+            onClose={() => {
+              setCustomizingService(null);
+              setEditingCustomCartId(null);
+              setEditingCustomInitialData(null);
+            }}
             onSave={handleSaveCustom}
             serviceData={{
                 ID: customizingService.id,
@@ -1237,6 +1312,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                 SHOW_FOCUS: customizingService.SHOW_FOCUS,
             }}
             lang={lang as any}
+            initialData={editingCustomInitialData || undefined}
         />
       )}
 
@@ -1260,6 +1336,9 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
         customerInfo={customerInfo}
         paymentMethod={paymentMethod}
         amountPaid={parseInt(amountPaid.replace(/\./g, '') || '0', 10)}
+        guestCount={guestCount}
+        bookingDate={bookingDate}
+        bookingTime={bookingTime}
       />
 
       <AlertModal

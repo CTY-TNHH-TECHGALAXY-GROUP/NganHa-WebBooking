@@ -35,6 +35,9 @@ interface OrderConfirmModalProps {
     };
     paymentMethod: string; // code (e.g. 'cash_vnd')
     amountPaid: number;
+    guestCount?: number;
+    bookingDate?: string;
+    bookingTime?: string;
 }
 
 const OrderConfirmModal: React.FC<OrderConfirmModalProps> = ({
@@ -47,6 +50,9 @@ const OrderConfirmModal: React.FC<OrderConfirmModalProps> = ({
     customerInfo,
     paymentMethod,
     amountPaid,
+    guestCount = 1,
+    bookingDate,
+    bookingTime,
 }) => {
     // 1. Move all hooks to the top (React requirement)
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -86,27 +92,8 @@ const OrderConfirmModal: React.FC<OrderConfirmModalProps> = ({
     };
 
     const handleTabletReset = () => {
-        // Reset tablet to home page for next customer
         window.location.href = '/';
     };
-
-    // Auto-redirect effect (for NON-tablet devices)
-    useEffect(() => {
-        if (success && bookingId && !isTabletDevice) {
-            const timer = setTimeout(() => {
-                handleDone();
-            }, UI_CONFIG.REDIRECT_DELAY);
-
-            const interval = setInterval(() => {
-                setCountdown(prev => Math.max(0, prev - 1));
-            }, UI_CONFIG.COUNTDOWN_INTERVAL);
-
-            return () => {
-                clearTimeout(timer);
-                clearInterval(interval);
-            };
-        }
-    }, [success, bookingId, lang, isTabletDevice]);
 
     // Auto-reset countdown for TABLET devices
     useEffect(() => {
@@ -149,27 +136,31 @@ const OrderConfirmModal: React.FC<OrderConfirmModalProps> = ({
     const endTimeComp = new Date(startTimeComp.getTime() + totalTime * 60000);
 
     const formatTime = (date: Date) => {
-        return date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }); // 24h format HH:mm
+        return date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
     };
 
     const handleConfirm = async () => {
-        setSuccess(true); // Switch to success UI immediately
         setIsSubmitting(true);
         try {
             const returnedId = await onConfirm({});
-            if (returnedId) setBookingId(returnedId);
-            // SUCCESS is already true
-        } catch (error) {
+            if (returnedId) {
+                setBookingId(returnedId);
+            }
+            setSuccess(true);
+        } catch (error: any) {
             console.error("Submit error", error);
             setAlertState({
                 isOpen: true,
-                message: dict.checkout.alerts?.order_error || "Error sending order. Please try again.",
+                message: dict.checkout?.alerts?.order_error || "Error sending order. Please try again.",
                 type: 'error'
             });
             setIsSubmitting(false);
-            setSuccess(false); // Revert if error
+            setSuccess(false);
+        } finally {
+            setIsSubmitting(false);
         }
     };
+
     if (success) {
         const baseUrl = typeof window !== 'undefined' ? window.location.origin : UI_CONFIG.JOURNEY_BASE_URL;
         const journeyUrl = `${baseUrl}/${lang}/journey/${bookingId}`;
@@ -189,10 +180,10 @@ const OrderConfirmModal: React.FC<OrderConfirmModalProps> = ({
 
                         <div>
                             <h2 className="text-2xl font-bold text-white mb-2">
-                                {dict.checkout.order_submitted || 'Order Submitted!'}
+                                {dict.checkout?.order_submitted || 'Order Submitted!'}
                             </h2>
                             <p className="text-indigo-300 text-sm">
-                                {dict.checkout.scan_qr || 'Scan QR code to track your service on your phone'}
+                                {dict.checkout?.scan_qr || 'Scan QR code to track your service on your phone'}
                             </p>
                         </div>
 
@@ -217,7 +208,7 @@ const OrderConfirmModal: React.FC<OrderConfirmModalProps> = ({
                         {/* Info */}
                         <div className="bg-white/5 border border-white/10 rounded-2xl p-4 w-full space-y-2">
                             <div className="flex justify-between text-sm">
-                                <span className="text-indigo-300">{dict.checkout.total_bill || 'Total'}</span>
+                                <span className="text-indigo-300">{dict.checkout?.total_bill || 'Total'}</span>
                                 <span className="font-bold text-amber-400 text-lg">{formatCurrency(totalVND)} VND</span>
                             </div>
                             <div className="flex justify-between items-center text-sm">
@@ -238,7 +229,7 @@ const OrderConfirmModal: React.FC<OrderConfirmModalProps> = ({
                                 />
                             </div>
                             <p className="text-xs text-indigo-400">
-                                {dict.checkout.screen_resets_in || 'Screen resets in'} <span className="font-bold text-white">{tabletResetCountdown}s</span>
+                                {dict.checkout?.screen_resets_in || 'Screen resets in'} <span className="font-bold text-white">{tabletResetCountdown}s</span>
                             </p>
                         </div>
 
@@ -246,93 +237,100 @@ const OrderConfirmModal: React.FC<OrderConfirmModalProps> = ({
                             onClick={handleTabletReset}
                             className="text-indigo-400 text-sm font-medium hover:text-white transition-colors"
                         >
-                            {dict.checkout.reset_now || '<- Reset now'}
+                            {dict.checkout?.reset_now || '<- Reset now'}
                         </button>
                     </div>
                 </div>
             );
         }
 
-        // === NORMAL MODE: Auto-redirect to Journey ===
+        // === NORMAL WEB BOOKING MODE: Premium Thank You Screen ===
         return (
-            <div className="fixed inset-0 z-[120] flex items-center justify-center bg-black/80 backdrop-blur-md animate-in fade-in duration-300">
+            <div className="fixed inset-0 z-[120] flex items-center justify-center bg-black/85 backdrop-blur-md animate-in fade-in duration-300 p-4">
                 <div 
-                    className="bg-[#1c1c1e] border border-white/5 w-full p-8 shadow-2xl flex flex-col items-center text-center space-y-6 m-4 relative overflow-hidden animate-in zoom-in-95 duration-300"
-                    style={{ maxWidth: UI_CONFIG.SUCCESS_MODAL_MAX_WIDTH, borderRadius: UI_CONFIG.BORDER_RADIUS }}
+                    className="bg-[#1c1c1e] border border-[#c9a96e]/30 w-full p-6 sm:p-8 shadow-2xl flex flex-col items-center text-center space-y-5 m-auto relative overflow-hidden animate-in zoom-in-95 duration-300"
+                    style={{ maxWidth: '440px', borderRadius: UI_CONFIG.BORDER_RADIUS }}
                 >
                     {/* Gold Glow Background */}
-                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-32 bg-[#C9A96E]/20 rounded-full blur-3xl -z-10 opacity-50"></div>
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-40 bg-[#C9A96E]/25 rounded-full blur-3xl -z-10 opacity-70"></div>
 
-                    <div className="w-20 h-20 bg-[#0d0d0d] rounded-full flex items-center justify-center mb-2 animate-in zoom-in duration-500 border-4 border-[#C9A96E]/30 shadow-inner">
-                        <Check size={40} className="text-[#C9A96E]" strokeWidth={4} />
+                    <div className="w-16 h-16 bg-gradient-to-br from-[#c9a96e]/20 to-[#0d0d0d] rounded-full flex items-center justify-center animate-in zoom-in duration-500 border-2 border-[#C9A96E]/50 shadow-inner">
+                        <Check size={32} className="text-[#f2d58d]" strokeWidth={3.5} />
                     </div>
 
-                    <h2 className="text-2xl font-bold text-white">
-                        {dict.checkout.order_submitted}
-                    </h2>
+                    <div className="space-y-1.5">
+                        <h2 className="text-xl sm:text-2xl font-bold text-white tracking-wide">
+                            {lang === 'vi' ? '🎉 Đặt lịch thành công!' : lang === 'cn' ? '🎉 预约成功！' : lang === 'jp' ? '🎉 ご予約が完了しました！' : lang === 'kr' ? '🎉 예약이 완료되었습니다!' : '🎉 Booking Successful!'}
+                        </h2>
+                        {bookingId && (
+                            <div className="inline-flex items-center gap-1.5 bg-[#c9a96e]/15 border border-[#c9a96e]/30 px-3 py-1 rounded-full text-xs font-mono text-[#f2d58d] font-bold">
+                                <span>{lang === 'vi' ? 'Mã đơn:' : 'Order ID:'}</span>
+                                <span>#{bookingId}</span>
+                            </div>
+                        )}
+                        <p className="text-xs sm:text-sm text-[#e2be6f] font-medium pt-1">
+                            {lang === 'vi' 
+                                ? 'Chúng tôi đang trong quá trình xử lý đơn của bạn, vui lòng đợi 1 tí nhé ✨' 
+                                : lang === 'cn' 
+                                ? '我们正在处理您的订单，请稍候片刻 ✨' 
+                                : lang === 'jp' 
+                                ? '現在リクエストを処理中です。少々お待ちください ✨' 
+                                : lang === 'kr' 
+                                ? '고객님의 예약을 처리 중입니다. 잠시만 기다려 주세요 ✨' 
+                                : 'We are processing your booking, please wait a moment ✨'}
+                        </p>
+                    </div>
 
-                    <div className="w-full space-y-4">
-                        {/* Summary Card for Success - LIST ALL ITEMS */}
-                        <div className="bg-[#0d0d0d] border border-white/5 rounded-2xl p-4 shadow-sm space-y-3 text-left max-h-[30vh] overflow-y-auto custom-scrollbar">
-                            <div className="space-y-3">
+                    <div className="w-full space-y-3">
+                        {/* Summary Card */}
+                        <div className="bg-[#0d0d0d]/90 border border-white/10 rounded-2xl p-4 shadow-sm space-y-2.5 text-left text-xs">
+                            {/* Booking schedule */}
+                            {(bookingDate || bookingTime) && (
+                                <div className="flex justify-between items-center border-b border-white/5 pb-2">
+                                    <span className="text-gray-400">{lang === 'vi' ? 'Lịch hẹn:' : 'Schedule:'}</span>
+                                    <span className="font-bold text-[#f2d58d]">{bookingDate} · {bookingTime}</span>
+                                </div>
+                            )}
+
+                            {/* Number of guests */}
+                            <div className="flex justify-between items-center border-b border-white/5 pb-2">
+                                <span className="text-gray-400">{lang === 'vi' ? 'Số lượng khách:' : 'Guests:'}</span>
+                                <span className="font-bold text-white">{guestCount} {lang === 'vi' ? 'khách' : 'guest(s)'}</span>
+                            </div>
+
+                            {/* Services List */}
+                            <div className="space-y-1.5 py-1">
                                 {cart.map((item, idx) => (
-                                    <div key={item.cartId || idx} className="flex justify-between items-start border-b border-white/5 pb-2 last:border-0 last:pb-0">
-                                        <div className="font-bold text-white pr-4">
-                                            {idx + 1}. {item.names?.[lang] || item.names?.en || 'Service'}
-                                            {item.qty > 1 && <span className="text-gray-500 text-xs ml-2">x{item.qty}</span>}
-                                        </div>
-                                        <div className="font-bold text-[#C9A96E] shrink-0">{formatCurrency(item.priceVND * item.qty)} VND</div>
+                                    <div key={item.cartId || idx} className="flex justify-between items-start">
+                                        <span className="text-gray-300 truncate pr-2">{idx + 1}. {item.names?.[lang] || item.names?.en || 'Service'}</span>
+                                        <span className="font-bold text-white shrink-0">{formatCurrency(item.priceVND * item.qty)} đ</span>
                                     </div>
                                 ))}
                             </div>
 
-                            {/* Payment Totals */}
-                            <div className="pt-2 mt-2 border-t border-white/5 space-y-1">
-                                <div className="flex justify-between text-xs">
-                                    <span className="text-gray-400 font-medium">{dict.checkout.payment_method}</span>
-                                    <span className="font-bold text-white uppercase">
-                                        {dict.payment_methods?.[paymentMethod] || 'Cash'}
-                                    </span>
-                                </div>
-                                <div className="flex justify-between text-sm">
-                                    <span className="text-gray-400 font-bold">{dict.checkout.total_bill}</span>
-                                    <span className="font-bold text-[#C9A96E] text-lg">{formatCurrency(totalVND)} VND</span>
-                                </div>
-                            </div>
-                        </div>
-                        {/* Expected Time Card */}
-                        <div className="bg-[#0d0d0d] border border-[#C9A96E]/30 rounded-2xl p-4 space-y-2">
-                            <div className="text-[10px] font-bold text-[#C9A96E] uppercase tracking-wider mb-2">{dict.checkout.expected_time}</div>
-                            <div className="flex justify-between text-sm font-bold text-[#C9A96E] opacity-90">
-                                <span>{dict.checkout.start_time}</span>
-                                <span>{formatTime(startTimeComp)}</span>
-                            </div>
-                            <div className="flex justify-between text-sm font-bold text-[#C9A96E] opacity-90">
-                                <span>{dict.checkout.end_time}</span>
-                                <span>{formatTime(endTimeComp)}</span>
+                            {/* Total Amount */}
+                            <div className="pt-2 border-t border-white/5 flex justify-between items-center text-sm">
+                                <span className="text-gray-400 font-bold">{dict.checkout?.total_bill || 'Tổng cộng'}:</span>
+                                <span className="font-bold text-[#f2d58d] text-base">{formatCurrency(totalVND)} VND</span>
                             </div>
                         </div>
                     </div>
 
-                    <button
-                        onClick={handleDone}
-                        disabled={!bookingId}
-                        className={`w-full py-4 rounded-xl font-bold uppercase tracking-widest shadow-lg transition-all active:scale-95 text-sm flex items-center justify-center gap-2 ${bookingId ? 'bg-[#C9A96E] text-black shadow-[0_0_15px_rgba(201,169,110,0.3)] hover:bg-[#b09461]' : 'bg-[#1c1c1e] text-gray-500 border border-white/5 opacity-90'}`}
-                    >
-                        <span>
-                            {!bookingId 
-                                ? (dict.checkout.alerts?.submitting || 'Submitting...') 
-                                : (dict.checkout.alerts?.redirecting || 'Redirecting...')
-                            }
-                        </span>
-                        <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
-                    </button>
-                    <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">
-                        {!bookingId 
-                            ? (dict.checkout.alerts?.processing_wait || 'Please wait while we process your order')
-                            : (dict.checkout.alerts?.auto_redirect || 'Auto-redirecting in a few seconds')
-                        }
-                    </p>
+                    <div className="w-full space-y-2 pt-1">
+                        <button
+                            onClick={handleDone}
+                            className="w-full py-3.5 rounded-xl font-bold uppercase tracking-wider text-xs bg-gradient-to-r from-[#ecd38f] to-[#c6a55f] text-[#2c2416] hover:brightness-105 active:scale-[0.98] transition-all shadow-lg flex items-center justify-center gap-2"
+                        >
+                            <span>{lang === 'vi' ? 'Xem hành trình trải nghiệm' : 'View Journey Tracker'}</span>
+                            <ArrowRight size={14} />
+                        </button>
+                        <button
+                            onClick={() => { window.location.href = '/'; }}
+                            className="w-full py-2.5 rounded-xl font-medium text-xs text-gray-400 hover:text-white transition-colors"
+                        >
+                            {lang === 'vi' ? 'Quay về trang chủ' : 'Return to Home'}
+                        </button>
+                    </div>
 
                 </div>
             </div>
@@ -362,10 +360,10 @@ const OrderConfirmModal: React.FC<OrderConfirmModalProps> = ({
                         <ClipboardList size={32} strokeWidth={2.5} />
                     </div>
                     <h2 className="text-2xl font-bold text-white">
-                        {dict.checkout.modal_title}
+                        {dict.checkout?.modal_title || 'Xác nhận yêu cầu'}
                     </h2>
                     <p className="text-sm text-gray-400 mt-1 font-medium">
-                        {dict.checkout.review_text}
+                        {dict.checkout?.review_text || 'Vui lòng kiểm tra lại đơn hàng.'}
                     </p>
                 </div>
 
@@ -374,20 +372,34 @@ const OrderConfirmModal: React.FC<OrderConfirmModalProps> = ({
 
                     {/* Customer Details */}
                     <div className="bg-[#0d0d0d] border border-white/5 rounded-2xl p-4 space-y-2">
-                        <div className="text-[11px] font-bold text-[#C9A96E] uppercase tracking-wider mb-2">{dict.checkout.customer_details}</div>
-                        <div className="space-y-1">
+                        <div className="text-[11px] font-bold text-[#C9A96E] uppercase tracking-wider mb-2">{dict.checkout?.customer_details || 'Thông tin đặt hẹn'}</div>
+                        <div className="space-y-1.5">
                             <div className="flex justify-between text-sm">
-                                <span className="text-gray-400 font-medium">{dict.checkout.name}</span>
+                                <span className="text-gray-400 font-medium">{dict.checkout?.name || 'Họ và tên'}</span>
                                 <span className="font-bold text-[#C9A96E]">{customerInfo.name || 'Guest'}</span>
                             </div>
+                            {customerInfo.phone && (
+                                <div className="flex justify-between text-sm">
+                                    <span className="text-gray-400 font-medium">{dict.checkout?.phone_label || 'Số điện thoại'}</span>
+                                    <span className="font-bold text-[#C9A96E]">{customerInfo.phone}</span>
+                                </div>
+                            )}
+                            {customerInfo.email && (
+                                <div className="flex justify-between text-sm">
+                                    <span className="text-gray-400 font-medium">{dict.checkout?.email_label || 'Email'}</span>
+                                    <span className="font-bold text-[#C9A96E] truncate max-w-[200px]">{customerInfo.email}</span>
+                                </div>
+                            )}
                             <div className="flex justify-between text-sm">
-                                <span className="text-gray-400 font-medium">{dict.checkout.email_label}</span>
-                                <span className="font-bold text-[#C9A96E] truncate max-w-[200px]">{customerInfo.email || '-'}</span>
+                                <span className="text-gray-400 font-medium">{lang === 'vi' ? 'Số lượng khách' : 'Guests'}</span>
+                                <span className="font-bold text-white">{guestCount} {lang === 'vi' ? 'khách' : 'guest(s)'}</span>
                             </div>
-                            <div className="flex justify-between text-sm">
-                                <span className="text-gray-400 font-medium">{dict.checkout.gender_label}</span>
-                                <span className="font-bold text-[#C9A96E]">{customerInfo.gender || 'Unknown'}</span>
-                            </div>
+                            {(bookingDate || bookingTime) && (
+                                <div className="flex justify-between text-sm">
+                                    <span className="text-gray-400 font-medium">{lang === 'vi' ? 'Lịch hẹn' : 'Booking time'}</span>
+                                    <span className="font-bold text-[#f2d58d]">{bookingDate} · {bookingTime}</span>
+                                </div>
+                            )}
                         </div>
                     </div>
 
