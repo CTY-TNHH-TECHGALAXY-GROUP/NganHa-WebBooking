@@ -1,10 +1,11 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Image as ImageIcon, Video, Upload, CheckCircle, ChevronDown, ChevronRight, X, Plus, Save } from 'lucide-react';
+import { Image as ImageIcon, Video, Upload, CheckCircle, ChevronDown, ChevronRight, X, Plus, Save, Crop } from 'lucide-react';
 import { createClient } from '@/lib/supabase';
 import { getPureRelaxationSections } from '@/components/PureRelaxation/pureRelaxationData';
 import { PURE_RELAXATION_DEFAULTS } from '@/components/PureRelaxation/pureRelaxationDefaults';
+import FocalPointEditor from '@/components/Admin/FocalPointEditor';
 
 const defaultBgImages = [
   '/images/services/aroma-oil.png',
@@ -27,6 +28,243 @@ const LANGUAGES = [
   { id: 'jp', label: 'JP' },
   { id: 'kr', label: 'KR' },
 ];
+
+const processGoogleDriveLink = (url: string) => {
+    const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+    if (match && match[1]) {
+      return `https://drive.google.com/uc?id=${match[1]}`;
+    }
+    return url;
+  };
+
+const ServiceEditCard = ({
+service,
+contentData,
+localTextOverrides,
+uploadingId,
+successId,
+handleTextChange,
+saveTextChanges,
+handleFileUpload,
+setContentData,
+saveContent,
+setSuccessId
+}: any) => {
+  const [activeLang, setActiveLang] = useState('vi');
+  const [isFocalEditorOpen, setIsFocalEditorOpen] = useState(false);
+  const serviceName = service.name;
+  const isUploading = uploadingId === serviceName;
+  const isSuccessMedia = successId === serviceName;
+  const isSuccessText = successId === `${serviceName}-text`;
+
+  const cData = localTextOverrides[serviceName] !== undefined 
+    ? localTextOverrides[serviceName] 
+    : (contentData[serviceName] || {});
+
+  const mediaType = cData.type || service.media?.type || 'image';
+  const mediaSrc = cData.src || service.media?.src;
+  const objPos = cData.objectPosition || 'center';
+
+  const langData = cData[activeLang] || {};
+
+  const desc = langData.description !== undefined ? langData.description : '';
+  const privTitle = langData.privilege?.title !== undefined ? langData.privilege.title : '';
+  const privCopy = langData.privilege?.copy !== undefined ? langData.privilege.copy : '';
+  const privTime = langData.privilege?.time !== undefined ? langData.privilege.time : '';
+
+  const hasChanges = !!localTextOverrides[serviceName];
+
+  const handleServiceLink = async () => {
+    const url = window.prompt('Nhập đường link (URL) ảnh hoặc video:');
+    if (!url || !url.trim()) return;
+    
+    const finalUrl = processGoogleDriveLink(url.trim());
+    
+    let isVideo = !!url.match(/\.(mp4|mov|webm)$/i);
+    if (!isVideo && url.includes('drive.google.com')) {
+      isVideo = window.confirm('Link Google Drive này là VIDEO phải không?\n(Nhấn OK nếu là Video, Cancel nếu là Hình ảnh)');
+    }
+    const type = isVideo ? 'video' : 'image';
+    
+    let newMediaData = { ...contentData };
+    const existing = newMediaData[serviceName] || {};
+    newMediaData[serviceName] = { ...existing, type, src: finalUrl };
+    
+    setContentData(newMediaData);
+    await saveContent(newMediaData);
+    setSuccessId(serviceName);
+    setTimeout(() => setSuccessId(null), 3000);
+  };
+
+  const savePos = async (newPos: string) => {
+    setIsFocalEditorOpen(false);
+    let newMediaData = { ...contentData };
+    const existing = newMediaData[serviceName] || {};
+    newMediaData[serviceName] = { ...existing, objectPosition: newPos };
+    
+    setContentData(newMediaData);
+    await saveContent(newMediaData);
+    setSuccessId(serviceName);
+    setTimeout(() => setSuccessId(null), 3000);
+  };
+
+  return (
+    <div className="bg-admin-bg p-4 rounded-xl border border-admin-line flex flex-col gap-4">
+      <h4 className="font-bold text-admin-text border-b border-admin-line pb-2">{serviceName}</h4>
+      
+      {/* Media Upload */}
+      <div className="relative overflow-hidden group rounded-xl border border-admin-line-strong">
+        {mediaSrc ? (
+          <div className="w-full h-40 relative bg-black/5 flex items-center justify-center group/preview">
+            {mediaType === 'video' ? (
+              <video src={mediaSrc} className="w-full h-full object-cover" style={{ objectPosition: objPos }} autoPlay muted loop playsInline />
+            ) : (
+              <img src={mediaSrc} alt={serviceName} className="w-full h-full object-cover" style={{ objectPosition: objPos }} />
+            )}
+            
+            <button
+              onClick={() => setIsFocalEditorOpen(true)}
+              className="absolute top-2 right-2 bg-black/60 text-white rounded-full p-2 opacity-0 group-hover/preview:opacity-100 hover:bg-admin-gold hover:text-[#241804] transition-all z-10 shadow-lg"
+              title="Điều chỉnh vùng hiển thị"
+            >
+              <Crop size={16} />
+            </button>
+
+            <div className="absolute top-2 left-2 bg-black/60 px-2 py-1 rounded text-[10px] text-white font-medium flex items-center gap-1 backdrop-blur-md">
+              {mediaType === 'video' ? <Video size={12} /> : <ImageIcon size={12} />}
+              {mediaType === 'video' ? 'VIDEO' : 'IMAGE'}
+            </div>
+            
+            <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col gap-2 items-center justify-center pointer-events-none group-hover:pointer-events-auto">
+              <label className="cursor-pointer bg-admin-gold text-[#241804] px-4 py-2 rounded-lg text-xs font-bold hover:bg-[#a67433] transition-colors shadow-lg">
+                Đổi ảnh/video
+                <input
+                  type="file"
+                  accept="image/*,video/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) handleFileUpload(serviceName, file, false);
+                  }}
+                />
+              </label>
+              <button
+                onClick={handleServiceLink}
+                className="bg-admin-panel text-admin-text px-4 py-2 rounded-lg text-xs font-bold hover:bg-admin-line transition-colors shadow-lg"
+              >
+                🔗 Dán link
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="w-full h-40 bg-admin-panel-2 border border-admin-line border-dashed rounded-lg flex flex-col items-center justify-center text-admin-text-faint gap-3 transition-colors hover:border-admin-gold hover:bg-admin-panel">
+            <Upload size={24} className="opacity-50" />
+            <div className="flex gap-2">
+              <label className="cursor-pointer bg-admin-panel text-admin-text border border-admin-line px-3 py-1.5 rounded-md text-xs hover:bg-admin-line transition-colors">
+                Tải lên
+                <input
+                  type="file"
+                  accept="image/*,video/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) handleFileUpload(serviceName, file, false);
+                  }}
+                />
+              </label>
+              <button onClick={handleServiceLink} className="bg-admin-panel text-admin-text border border-admin-line px-3 py-1.5 rounded-md text-xs hover:bg-admin-line transition-colors">
+                Dán link
+              </button>
+            </div>
+          </div>
+        )}
+
+        {isUploading && (
+          <div className="absolute inset-0 bg-black/60 flex items-center justify-center z-10 backdrop-blur-sm">
+            <div className="animate-spin w-8 h-8 border-3 border-admin-gold border-t-transparent rounded-full"></div>
+          </div>
+        )}
+
+        {isSuccessMedia && (
+          <div className="absolute inset-0 bg-admin-green/90 flex items-center justify-center z-10 text-white backdrop-blur-sm">
+            <CheckCircle size={32} className="animate-[bounce_0.5s_ease-out]" />
+          </div>
+        )}
+      </div>
+
+      {isFocalEditorOpen && mediaSrc && (
+        <FocalPointEditor
+          src={mediaSrc}
+          mediaType={mediaType as 'image'|'video'}
+          aspectRatio={0.75} 
+          initialPosition={objPos}
+          onSave={savePos}
+          onClose={() => setIsFocalEditorOpen(false)}
+        />
+      )}
+
+      {/* Text Fields */}
+      <div className="flex flex-col gap-3">
+        <div className="flex gap-1 border-b border-admin-line pb-2">
+          {LANGUAGES.map(lang => (
+            <button
+              key={lang.id}
+              onClick={() => setActiveLang(lang.id)}
+              className={`px-3 py-1 rounded-md text-[10px] font-bold transition-colors ${activeLang === lang.id ? 'bg-admin-gold text-[#241804]' : 'bg-admin-panel text-admin-text-dim hover:text-admin-gold'}`}
+            >
+              {lang.label}
+            </button>
+          ))}
+        </div>
+
+        <div>
+          <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Mô tả dịch vụ ({activeLang})</label>
+          <textarea 
+            className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none min-h-[60px]"
+            value={desc}
+            onChange={(e) => handleTextChange(serviceName, activeLang, 'description', e.target.value)}
+            placeholder={`Mô tả (${activeLang.toUpperCase()})...`}
+          />
+        </div>
+
+        <div className="border-t border-admin-line pt-2 mt-1">
+          <label className="text-[10px] uppercase font-bold text-admin-gold mb-2 block">Đặc Quyền (Privilege) - {activeLang}</label>
+          <div className="space-y-2">
+            <input 
+              type="text"
+              className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none"
+              value={privTitle}
+              onChange={(e) => handleTextChange(serviceName, activeLang, 'privilege', e.target.value, 'title')}
+              placeholder="Tiêu đề đặc quyền..."
+            />
+            <textarea 
+              className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none min-h-[50px]"
+              value={privCopy}
+              onChange={(e) => handleTextChange(serviceName, activeLang, 'privilege', e.target.value, 'copy')}
+              placeholder="Mô tả đặc quyền..."
+            />
+            <input 
+              type="text"
+              className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none"
+              value={privTime}
+              onChange={(e) => handleTextChange(serviceName, activeLang, 'privilege', e.target.value, 'time')}
+              placeholder="Thời gian (VD: 5-10 mins)..."
+            />
+          </div>
+        </div>
+      </div>
+
+      <button 
+        onClick={() => saveTextChanges(serviceName)}
+        disabled={!hasChanges}
+        className={`mt-2 flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-bold transition-colors ${hasChanges ? 'bg-admin-gold text-[#241804] hover:bg-[#a67433]' : 'bg-admin-line text-admin-text-dim cursor-not-allowed'}`}
+      >
+        {isSuccessText ? <CheckCircle size={16} /> : <Save size={16} />}
+        {isSuccessText ? 'Đã lưu' : 'Lưu nội dung chữ'}
+      </button>
+    </div>
+  );
+};
 
 const PureAdminPage = () => {
   const [contentData, setContentData] = useState<any>({});
@@ -137,13 +375,6 @@ const PureAdminPage = () => {
     await saveContent(newMediaData);
   };
 
-  const processGoogleDriveLink = (url: string) => {
-    const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
-    if (match && match[1]) {
-      return `https://drive.google.com/uc?id=${match[1]}`;
-    }
-    return url;
-  };
 
   const handleLinkInputArray = async (keyPath: string) => {
     const url = window.prompt('Nhập đường link (URL) ảnh:');
@@ -190,220 +421,7 @@ const PureAdminPage = () => {
     setTimeout(() => setSuccessId(null), 3000);
   };
 
-  const ServiceEditCard = ({ service }: { service: any }) => {
-    const [activeLang, setActiveLang] = useState('vi');
-    const serviceName = service.name;
-    const isUploading = uploadingId === serviceName;
-    const isSuccessMedia = successId === serviceName;
-    const isSuccessText = successId === `${serviceName}-text`;
 
-    const cData = localTextOverrides[serviceName] !== undefined 
-      ? localTextOverrides[serviceName] 
-      : (contentData[serviceName] || {});
-
-    const mediaType = cData.type || service.media?.type || 'image';
-    const mediaSrc = cData.src || service.media?.src;
-    const objPos = cData.objectPosition || 'center';
-
-    const langData = cData[activeLang] || {};
-
-    const desc = langData.description !== undefined ? langData.description : '';
-    const privTitle = langData.privilege?.title !== undefined ? langData.privilege.title : '';
-    const privCopy = langData.privilege?.copy !== undefined ? langData.privilege.copy : '';
-    const privTime = langData.privilege?.time !== undefined ? langData.privilege.time : '';
-
-    const hasChanges = !!localTextOverrides[serviceName];
-
-    const handleServiceLink = async () => {
-      const url = window.prompt('Nhập đường link (URL) ảnh hoặc video:');
-      if (!url || !url.trim()) return;
-      
-      const finalUrl = processGoogleDriveLink(url.trim());
-      
-      let isVideo = !!url.match(/\.(mp4|mov|webm)$/i);
-      if (!isVideo && url.includes('drive.google.com')) {
-        isVideo = window.confirm('Link Google Drive này là VIDEO phải không?\n(Nhấn OK nếu là Video, Cancel nếu là Hình ảnh)');
-      }
-      const type = isVideo ? 'video' : 'image';
-      
-      let newMediaData = { ...contentData };
-      const existing = newMediaData[serviceName] || {};
-      newMediaData[serviceName] = { ...existing, type, src: finalUrl };
-      
-      setContentData(newMediaData);
-      await saveContent(newMediaData);
-      setSuccessId(serviceName);
-      setTimeout(() => setSuccessId(null), 3000);
-    };
-
-    return (
-      <div className="bg-admin-bg p-4 rounded-xl border border-admin-line flex flex-col gap-4">
-        <h4 className="font-bold text-admin-text border-b border-admin-line pb-2">{serviceName}</h4>
-        
-        {/* Media Upload */}
-        <div className="relative overflow-hidden group rounded-xl border border-admin-line-strong">
-          {mediaSrc ? (
-            <div className="w-full h-40 relative bg-black/5 flex items-center justify-center">
-              {mediaType === 'video' ? (
-                <video src={mediaSrc} className="w-full h-full object-cover" style={{ objectPosition: objPos }} autoPlay muted loop playsInline />
-              ) : (
-                <img src={mediaSrc} alt={serviceName} className="w-full h-full object-cover" style={{ objectPosition: objPos }} />
-              )}
-              
-              <div className="absolute top-2 right-2 bg-black/60 px-2 py-1 rounded text-[10px] text-white font-medium flex items-center gap-1 backdrop-blur-md">
-                {mediaType === 'video' ? <Video size={12} /> : <ImageIcon size={12} />}
-                {mediaType === 'video' ? 'VIDEO' : 'IMAGE'}
-              </div>
-              
-              <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col gap-2 items-center justify-center">
-                <label className="cursor-pointer bg-admin-gold text-[#241804] px-4 py-2 rounded-lg text-xs font-bold hover:bg-[#a67433] transition-colors shadow-lg">
-                  Đổi ảnh/video
-                  <input
-                    type="file"
-                    accept="image/*,video/*"
-                    className="hidden"
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) handleFileUpload(serviceName, file, false);
-                    }}
-                  />
-                </label>
-                <button
-                  onClick={handleServiceLink}
-                  className="bg-admin-panel text-admin-text px-4 py-2 rounded-lg text-xs font-bold hover:bg-admin-line transition-colors shadow-lg"
-                >
-                  🔗 Nhập link
-                </button>
-              </div>
-            </div>
-          ) : (
-            <div className="w-full h-40 flex flex-col items-center justify-center gap-2 hover:border-admin-gold transition-colors bg-admin-panel">
-              <Upload size={24} className="text-admin-text-dim" />
-              <div className="flex gap-2 mt-1">
-                <label className="cursor-pointer bg-admin-gold text-[#241804] px-4 py-1.5 rounded-lg text-xs font-bold hover:bg-[#a67433] shadow-sm transition-transform active:scale-95">
-                  Tải lên media
-                  <input
-                    type="file"
-                    accept="image/*,video/*"
-                    className="hidden"
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) handleFileUpload(serviceName, file, false);
-                    }}
-                  />
-                </label>
-                <button
-                  onClick={handleServiceLink}
-                  className="bg-admin-bg border border-admin-line text-admin-text px-4 py-1.5 rounded-lg text-xs font-bold hover:bg-admin-line shadow-sm transition-transform active:scale-95"
-                >
-                  🔗 Dán link
-                </button>
-              </div>
-            </div>
-          )}
-
-          {isUploading && (
-            <div className="absolute inset-0 bg-black/60 flex items-center justify-center z-10 backdrop-blur-sm">
-              <div className="animate-spin w-8 h-8 border-3 border-admin-gold border-t-transparent rounded-full"></div>
-            </div>
-          )}
-
-          {isSuccessMedia && (
-            <div className="absolute inset-0 bg-admin-green/90 flex items-center justify-center z-10 text-white backdrop-blur-sm">
-              <CheckCircle size={32} className="animate-[bounce_0.5s_ease-out]" />
-            </div>
-          )}
-        </div>
-
-        {mediaSrc && (
-          <div className="flex flex-col gap-2 p-3 bg-admin-panel rounded-lg border border-admin-line">
-            <label className="text-[10px] uppercase font-bold text-admin-text-dim flex justify-between">
-              <span>Căn chỉnh vị trí ảnh/video</span>
-              <span className="text-admin-gold">{objPos}</span>
-            </label>
-            <div className="flex items-center gap-2">
-              <span className="text-[10px] w-4 text-admin-text-faint">X:</span>
-              <input 
-                type="range" min="0" max="100" 
-                value={objPos === 'center' ? 50 : parseInt(objPos.split(' ')[0]) || 50} 
-                onChange={e => handleTextChange(serviceName, activeLang, 'objectPosition', `${e.target.value}% ${objPos === 'center' ? '50%' : objPos.split(' ')[1] || '50%'}`)} 
-                className="flex-1 accent-admin-gold" 
-              />
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-[10px] w-4 text-admin-text-faint">Y:</span>
-              <input 
-                type="range" min="0" max="100" 
-                value={objPos === 'center' ? 50 : parseInt(objPos.split(' ')[1]) || 50} 
-                onChange={e => handleTextChange(serviceName, activeLang, 'objectPosition', `${objPos === 'center' ? '50%' : objPos.split(' ')[0] || '50%'} ${e.target.value}%`)} 
-                className="flex-1 accent-admin-gold" 
-              />
-            </div>
-          </div>
-        )}
-
-        {/* Text Fields */}
-        <div className="flex flex-col gap-3">
-          <div className="flex gap-1 border-b border-admin-line pb-2">
-            {LANGUAGES.map(lang => (
-              <button
-                key={lang.id}
-                onClick={() => setActiveLang(lang.id)}
-                className={`px-3 py-1 rounded-md text-[10px] font-bold transition-colors ${activeLang === lang.id ? 'bg-admin-gold text-[#241804]' : 'bg-admin-panel text-admin-text-dim hover:text-admin-gold'}`}
-              >
-                {lang.label}
-              </button>
-            ))}
-          </div>
-
-          <div>
-            <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Mô tả dịch vụ ({activeLang})</label>
-            <textarea 
-              className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none min-h-[60px]"
-              value={desc}
-              onChange={(e) => handleTextChange(serviceName, activeLang, 'description', e.target.value)}
-              placeholder={`Mô tả (${activeLang.toUpperCase()})...`}
-            />
-          </div>
-
-          <div className="border-t border-admin-line pt-2 mt-1">
-            <label className="text-[10px] uppercase font-bold text-admin-gold mb-2 block">Đặc Quyền (Privilege) - {activeLang}</label>
-            <div className="space-y-2">
-              <input 
-                type="text"
-                className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none"
-                value={privTitle}
-                onChange={(e) => handleTextChange(serviceName, activeLang, 'privilege', e.target.value, 'title')}
-                placeholder="Tiêu đề đặc quyền..."
-              />
-              <textarea 
-                className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none min-h-[50px]"
-                value={privCopy}
-                onChange={(e) => handleTextChange(serviceName, activeLang, 'privilege', e.target.value, 'copy')}
-                placeholder="Mô tả đặc quyền..."
-              />
-              <input 
-                type="text"
-                className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none"
-                value={privTime}
-                onChange={(e) => handleTextChange(serviceName, activeLang, 'privilege', e.target.value, 'time')}
-                placeholder="Thời gian (VD: 5-10 mins)..."
-              />
-            </div>
-          </div>
-        </div>
-
-        <button 
-          onClick={() => saveTextChanges(serviceName)}
-          disabled={!hasChanges}
-          className={`mt-2 flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-bold transition-colors ${hasChanges ? 'bg-admin-gold text-[#241804] hover:bg-[#a67433]' : 'bg-admin-line text-admin-text-dim cursor-not-allowed'}`}
-        >
-          {isSuccessText ? <CheckCircle size={16} /> : <Save size={16} />}
-          {isSuccessText ? 'Đã lưu' : 'Lưu nội dung chữ'}
-        </button>
-      </div>
-    );
-  };
 
   // --- NARRATIVE EDITING ---
   const handleNarrativeChange = (sectionId: string, lang: string, field: string, value: any) => {
@@ -436,7 +454,14 @@ const PureAdminPage = () => {
     setTimeout(() => setSuccessId(null), 3000);
   };
 
-  const NarrativeEditCard = ({ section }: { section: any }) => {
+  const NarrativeEditCard = ({
+  section,
+  contentData,
+  localNarrativeOverrides,
+  successId,
+  handleNarrativeChange,
+  saveNarrativeChanges
+}: any) => {
     const [activeLang, setActiveLang] = useState('vi');
     const sectionId = section.id;
     const isSuccessText = successId === `narrative-${sectionId}`;
@@ -704,7 +729,14 @@ const PureAdminPage = () => {
                   {/* 1. Category Narrative Editor */}
                   <div className="mb-8">
                     <h4 className="text-xs font-bold text-admin-text-dim mb-3 uppercase tracking-widest">I. Bài viết giới thiệu danh mục (Perspective)</h4>
-                    <NarrativeEditCard section={section} />
+                    <NarrativeEditCard 
+                    section={section}
+                    contentData={contentData}
+                    localNarrativeOverrides={localNarrativeOverrides}
+                    successId={successId}
+                    handleNarrativeChange={handleNarrativeChange}
+                    saveNarrativeChanges={saveNarrativeChanges}
+                  />
                   </div>
 
                   {/* 2. Services Editor */}
