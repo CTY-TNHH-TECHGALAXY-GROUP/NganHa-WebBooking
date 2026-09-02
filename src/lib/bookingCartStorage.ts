@@ -153,3 +153,16 @@ export const updateBookingCartItemOptions = (cartId: string, options: Partial<Se
   writeBookingCart(next);
   return next;
 };
+
+export const clearBookingCart = () => {
+  if (!isBrowser()) return;
+  try {
+    window.localStorage.removeItem(BOOKING_CART_STORAGE_KEY);
+    window.localStorage.removeItem('BOOKING_CART');
+    window.localStorage.removeItem('booking_cart');
+    window.dispatchEvent(new Event('storage'));
+    window.dispatchEvent(new CustomEvent('cartUpdated', { detail: [] }));
+  } catch (error) {
+    console.warn('[bookingCartStorage] Unable to clear cart:', error);
+  }
+};

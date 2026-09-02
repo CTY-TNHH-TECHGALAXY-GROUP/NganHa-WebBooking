@@ -21,9 +21,10 @@ const MAX_INPUT_LENGTH = 500;
 interface AIChatBotProps {
   locale?: Locale;
   hideTrigger?: boolean;
+  phone?: string;
 }
 
-const AIChatBot = ({ locale = 'vi', hideTrigger = false }: AIChatBotProps) => {
+const AIChatBot = ({ locale = 'vi', hideTrigger = false, phone }: AIChatBotProps) => {
   const {
     messages,
     inputText,
@@ -126,7 +127,14 @@ const AIChatBot = ({ locale = 'vi', hideTrigger = false }: AIChatBotProps) => {
                   </div>
                   <div>
                     <h3 className="ai-chat-header-title">{t.title}</h3>
-                    <p className="ai-chat-header-subtitle">{t.subtitle}</p>
+                    <div className="ai-chat-header-subtitle flex items-center gap-2 mt-1">
+                      <span>{t.subtitle}</span>
+                      {phone && (
+                        <span className="text-[10px] bg-white/10 border border-white/20 px-2 py-0.5 rounded-full whitespace-nowrap">
+                          {phone}
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </div>
                 <button

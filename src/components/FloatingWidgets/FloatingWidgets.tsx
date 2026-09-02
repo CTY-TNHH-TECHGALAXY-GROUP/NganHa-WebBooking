@@ -53,7 +53,7 @@ const FloatingWidgets = () => {
       <div className="fixed bottom-24 md:bottom-6 right-4 md:right-6 z-[990] flex flex-col items-end justify-end pointer-events-none" suppressHydrationWarning={true}>
         {/* Hidden original ChatBot trigger */}
         <div className="pointer-events-auto">
-          <AIChatBot hideTrigger={true} />
+          <AIChatBot hideTrigger={true} phone={systemSettings?.phone} />
         </div>
 
         {/* Floating Greeting Bubble (Visible when menu is closed) */}

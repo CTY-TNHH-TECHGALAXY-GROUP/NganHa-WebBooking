@@ -13,8 +13,18 @@ import {
     DollarSign, 
     Receipt, 
     Calendar, 
-    Sparkles, 
-    Info
+    Info,
+    ArrowRightLeft,
+    Hand,
+    User,
+    Target,
+    ShieldOff,
+    Heart,
+    AlertTriangle,
+    FileText,
+    Sparkles,
+    ChevronDown,
+    ChevronUp
 } from 'lucide-react';
 import SmartLogo from '@/components/SmartLogo';
 import { CartItem } from '@/components/Menu/types';
@@ -22,6 +32,8 @@ import { formatCurrency } from '@/components/Menu/utils';
 import { createClient } from '@/lib/supabase';
 import { QRCodeSVG } from 'qrcode.react';
 import AlertModal from '@/components/Shared/AlertModal';
+import { VND_DENOMINATIONS, USD_INFO, ACCEPTED_CARDS } from '@/lib/paymentConstants';
+import { clearBookingCart } from '@/lib/bookingCartStorage';
 
 const UI_CONFIG = {
     MODAL_MAX_WIDTH: '880px',
@@ -88,13 +100,14 @@ export default function OrderConfirmModal({
     const [localTime, setLocalTime] = useState(initialBookingTime || '');
 
     // Payment method info popup
-    const [activeMethodInfo, setActiveMethodInfo] = useState<{
-        id: string;
-        title: string;
-        icon: any;
-        desc: string;
-        details: string;
-    } | null>(null);
+    const [activeMethodId, setActiveMethodId] = useState<string | null>(null);
+
+    // Track expanded state for service customizations
+    const [expandedItems, setExpandedItems] = useState<Record<number, boolean>>({});
+
+    const toggleExpand = (idx: number) => {
+        setExpandedItems(prev => ({ ...prev, [idx]: !prev[idx] }));
+    };
 
     useEffect(() => {
         if (isOpen) {
@@ -137,43 +150,44 @@ export default function OrderConfirmModal({
             icon: Banknote,
             label: lang === 'vi' ? 'Tiền mặt (VND)' : lang === 'cn' ? '现金支付 (VND)' : lang === 'jp' ? '現地現金払い (VND)' : lang === 'kr' ? '현장 현금 결제 (VND)' : 'Cash (VND)',
             desc: lang === 'vi' ? 'Thanh toán trực tiếp bằng VND khi đến quầy lễ tân' : 'Pay directly in cash at the reception desk',
-            details: lang === 'vi' ? 'Quý khách thanh toán trực tiếp bằng tiền mặt Việt Nam Đồng tại quầy lễ tân Oria Spa sau khi hoàn tất dịch vụ hoặc khi check-in.' : 'You can pay directly with Vietnamese Dong cash at Oria Spa reception desk upon arrival or check-out.',
-        },
-        {
-            id: 'card',
-            icon: CreditCard,
-            label: lang === 'vi' ? 'Thẻ POS / Visa' : lang === 'cn' ? '信用卡 / 借记卡' : lang === 'jp' ? 'クレジットカード' : lang === 'kr' ? '신용 / 체크카드' : 'Credit / POS Card',
-            desc: lang === 'vi' ? 'Hỗ trợ thẻ Visa, MasterCard, JCB, Napas qua máy POS' : 'Visa, MasterCard, JCB, Napas supported via POS',
-            details: lang === 'vi' ? 'Oria Spa hỗ trợ thanh toán quẹt thẻ máy POS tiện lợi không phụ phí cho tất cả các loại thẻ: Visa, MasterCard, JCB, Napas.' : 'Oria Spa accepts all major cards (Visa, MasterCard, JCB, ATM Napas) via wireless POS terminal with zero surcharge.',
-        },
-        {
-            id: 'transfer',
-            icon: QrCode,
-            label: lang === 'vi' ? 'VietQR / CK' : lang === 'cn' ? '银行转账 / 二维码' : lang === 'jp' ? '銀行振込 / QRコード' : lang === 'kr' ? '계좌이체 / QR결제' : 'VietQR Transfer',
-            desc: lang === 'vi' ? 'Quét mã VietQR chuyển khoản nhanh 24/7' : 'Scan VietQR code for 24/7 instant transfer',
-            details: lang === 'vi' ? 'Quét mã VietQR động trực tiếp tại quầy thanh toán với tên chủ tài khoản Oria Spa, xác nhận giao dịch tức thì trong 3 giây.' : 'Instant bank transfer by scanning dynamic VietQR code at the checkout desk. Transaction is confirmed in 3 seconds.',
         },
         {
             id: 'cash_usd',
             icon: DollarSign,
             label: lang === 'vi' ? 'Tiền mặt (USD)' : lang === 'cn' ? '美元现金 (USD)' : lang === 'jp' ? '米ドル現金 (USD)' : lang === 'kr' ? '미국 달러 현금 (USD)' : 'Cash (USD)',
             desc: lang === 'vi' ? 'Thanh toán bằng tiền mặt USD tại quầy thu ngân' : 'Pay in cash USD at the cashier desk',
-            details: lang === 'vi' ? 'Chấp nhận tiền mặt Đô la Mỹ (USD) mới, không rách rời theo tỷ giá quy đổi niêm yết tại quầy thu ngân Oria Spa.' : 'USD cash in crisp, intact bills is accepted according to the daily official exchange rate at Oria Spa.',
+        },
+        {
+            id: 'card',
+            icon: CreditCard,
+            label: lang === 'vi' ? 'Thẻ POS / Visa' : lang === 'cn' ? '信用卡 / 借记卡' : lang === 'jp' ? 'クレジットカード' : lang === 'kr' ? '신용 / 체크카드' : 'Credit / POS Card',
+            desc: lang === 'vi' ? 'Hỗ trợ thẻ Visa, MasterCard, JCB, Napas qua máy POS' : 'Visa, MasterCard, JCB, Napas supported via POS',
+        },
+        {
+            id: 'transfer',
+            icon: QrCode,
+            label: lang === 'vi' ? 'VietQR / CK' : lang === 'cn' ? '银行转账 / 二维码' : lang === 'jp' ? '銀行振込 / QRコード' : lang === 'kr' ? '계좌이체 / QR결제' : 'VietQR Transfer',
+            desc: 'Chúng tôi hỗ trợ international transfer, domestic transfer',
         },
     ];
 
     const formatParts = (parts: string[]) => {
+        if (!parts || parts.length === 0) return '';
         if (parts.length >= 8) return dict.custom_for_you?.full_body || 'Full Body';
         return parts.map(p => dict.body_parts?.[p.toLowerCase()] || dict.body_parts?.[p] || p).join(', ');
     };
 
     const handleConfirmBooking = async () => {
+        if (cart.length === 0) {
+            setAlertState({ isOpen: true, message: lang === 'vi' ? 'Vui lòng chọn ít nhất 1 dịch vụ' : 'Please select at least 1 service', type: 'error' });
+            return;
+        }
         if (!localName.trim()) {
-            setAlertState({ isOpen: true, message: dict.checkout.alerts?.fill_name || 'Please enter your Full Name', type: 'error' });
+            setAlertState({ isOpen: true, message: dict.checkout?.alerts?.fill_name || 'Please enter your Full Name', type: 'error' });
             return;
         }
         if (!localEmail.trim() && !localPhone.trim()) {
-            setAlertState({ isOpen: true, message: dict.checkout.alerts?.fill_phone_or_email || 'Please enter Phone Number or Email', type: 'error' });
+            setAlertState({ isOpen: true, message: dict.checkout?.alerts?.fill_phone_or_email || 'Please enter Phone Number or Email', type: 'error' });
             return;
         }
 
@@ -192,6 +206,7 @@ export default function OrderConfirmModal({
                 bookingTime: localTime,
             });
             if (returnedId) setBookingId(returnedId);
+            clearBookingCart();
             setCurrentStep(3);
         } catch (error: any) {
             setAlertState({ isOpen: true, message: error?.message || 'Error sending order. Please try again.', type: 'error' });
@@ -201,23 +216,18 @@ export default function OrderConfirmModal({
     };
 
     const handleReturnHome = () => {
-        try {
-            localStorage.removeItem('BOOKING_CART');
-            localStorage.removeItem('booking_cart');
-        } catch (e) { console.error('Error clearing cart cache', e); }
+        clearBookingCart();
         onClose();
         window.location.href = '/';
     };
 
-    const toTitleCase = (str: string) => {
-        if (!str) return '';
-        return str.replace(/\b\w/g, char => char.toUpperCase());
-    };
-
     return (
-        <div className="fixed inset-0 z-[120] flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-md transition-opacity duration-300 animate-in fade-in pb-0 sm:pb-0 p-0 sm:p-4">
+        <div 
+            className="fixed inset-0 z-[120] flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-md transition-opacity duration-300 animate-in fade-in pb-0 sm:pb-0 p-0 sm:p-4"
+            onClick={onClose}
+        >
             <div
-                className="bg-black/75 backdrop-blur-3xl border border-[#c9a96e]/30 w-full max-h-[92vh] md:max-h-[88vh] sm:rounded-[28px] rounded-t-[28px] shadow-[0_25px_60px_rgba(0,0,0,0.85)] flex flex-col overflow-hidden relative animate-in slide-in-from-bottom-10 sm:zoom-in-95 duration-300 md:max-w-4xl"
+                className="bg-black/60 backdrop-blur-3xl border border-[#c9a96e]/30 w-full max-h-[92vh] md:max-h-[88vh] sm:rounded-[28px] rounded-t-[28px] shadow-[0_25px_60px_rgba(0,0,0,0.85)] flex flex-col overflow-hidden relative animate-in slide-in-from-bottom-10 sm:zoom-in-95 duration-300 md:max-w-4xl"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Center Top Brand Header */}
@@ -388,7 +398,7 @@ export default function OrderConfirmModal({
                                     </div>
                                 </div>
 
-                                {/* RIGHT COLUMN: TRẢI NGHIỆM CỦA BẠN */}
+                                {/* RIGHT COLUMN: TRẢI NGHIỆM CỦA BẠN (With All Custom Badges & Notes) */}
                                 <div className="md:col-span-7 flex flex-col justify-between space-y-4">
                                     <div className="space-y-3">
                                         <div className="flex justify-between items-center pb-1.5 border-b border-white/10">
@@ -402,12 +412,27 @@ export default function OrderConfirmModal({
                                             </span>
                                         </div>
 
-                                        {/* Services List with sleek cards and Edit buttons */}
-                                        <div className="space-y-2.5 max-h-[220px] md:max-h-[230px] overflow-y-auto pr-1 custom-scrollbar">
+                                        {/* Services List with comprehensive customization badges */}
+                                        <div className="space-y-2.5 max-h-[240px] md:max-h-[250px] overflow-y-auto pr-1 custom-scrollbar">
                                             {cart.map((item, idx) => {
                                                 const strength = item.options?.strength;
                                                 const therapist = item.options?.therapist;
                                                 const focus = item.options?.bodyParts?.focus || [];
+                                                const avoid = item.options?.bodyParts?.avoid || [];
+                                                const isPregnant = item.options?.notes?.tag0;
+                                                const isAllergy = item.options?.notes?.tag1;
+                                                const noteContent = item.options?.notes?.content?.trim();
+                                                const hasPrivateRoom = item.options?.addons?.privateRoom;
+
+                                                const hasCustomizations = 
+                                                    strength || 
+                                                    therapist || 
+                                                    focus.length > 0 || 
+                                                    avoid.length > 0 || 
+                                                    isPregnant || 
+                                                    isAllergy || 
+                                                    noteContent || 
+                                                    hasPrivateRoom;
 
                                                 return (
                                                     <div 
@@ -417,8 +442,8 @@ export default function OrderConfirmModal({
                                                         {/* Top Title & Edit */}
                                                         <div className="flex justify-between items-start gap-2">
                                                             <div className="flex-1 pr-2">
-                                                                <span className="font-bold text-white text-sm">
-                                                                    {toTitleCase(item.names?.[lang] || item.names?.en || 'Dịch vụ Spa')}
+                                                                <span className="font-bold text-white text-sm capitalize">
+                                                                    {item.names?.[lang] || item.names?.en || 'Dịch vụ Spa'}
                                                                 </span>
                                                                 <div className="flex items-center gap-2 text-xs text-gray-400 mt-0.5">
                                                                     <span className="flex items-center gap-1">
@@ -445,25 +470,105 @@ export default function OrderConfirmModal({
                                                             </div>
                                                         </div>
 
-                                                        {/* Customization badges */}
-                                                        {(strength || therapist || focus.length > 0) && (
-                                                            <div className="flex flex-wrap gap-1.5 pt-1 border-t border-white/[0.04] text-[11px]">
-                                                                {strength && (
-                                                                    <span className="bg-white/5 px-2 py-0.5 rounded-md text-gray-300 border border-white/5">
-                                                                        {dict.custom_for_you?.strength_label || 'Lực'}: <strong className="text-[#f2d58d] capitalize">{strength}</strong>
-                                                                    </span>
+                                                        {/* All Customization badges: Strength, Therapist, Focus, Avoid, Pregnancy, Allergy, Note, Addon */}
+                                                        {hasCustomizations && (
+                                                            <>
+                                                                {!expandedItems[idx] ? (
+                                                                    <div className="pt-1 mt-1 border-t border-white/[0.04]">
+                                                                        <button
+                                                                            type="button"
+                                                                            onClick={() => toggleExpand(idx)}
+                                                                            className="w-full py-1.5 flex items-center justify-center gap-1 text-[10px] text-gray-400 hover:text-[#c9a96e] transition-colors cursor-pointer"
+                                                                        >
+                                                                            <span>{lang === 'vi' ? 'Xem thêm chi tiết' : 'See details'}</span>
+                                                                            <ChevronDown size={12} />
+                                                                        </button>
+                                                                    </div>
+                                                                ) : (
+                                                                    <div className="pt-2 mt-2 border-t border-white/[0.04] text-[11px] space-y-1.5 animate-in slide-in-from-top-1 fade-in duration-200">
+                                                                        {strength && (
+                                                                            <div className="flex justify-between items-center bg-white/[0.02] p-2 rounded-lg border border-white/[0.02]">
+                                                                                <div className="flex items-center gap-2 text-gray-400">
+                                                                                    <Hand size={13} />
+                                                                                    <span>{dict.custom_for_you?.strength_label || 'Lực'}</span>
+                                                                                </div>
+                                                                                <span className="text-[#f2d58d] font-bold capitalize">{strength}</span>
+                                                                            </div>
+                                                                        )}
+                                                                        {therapist && (
+                                                                            <div className="flex justify-between items-center bg-white/[0.02] p-2 rounded-lg border border-white/[0.02]">
+                                                                                <div className="flex items-center gap-2 text-gray-400">
+                                                                                    <User size={13} />
+                                                                                    <span>{dict.custom_for_you?.therapist_gender || 'KTV'}</span>
+                                                                                </div>
+                                                                                <span className="text-[#f2d58d] font-bold capitalize">{therapist}</span>
+                                                                            </div>
+                                                                        )}
+                                                                        {focus.length > 0 && (
+                                                                            <div className="flex justify-between items-center bg-white/[0.02] p-2 rounded-lg border border-white/[0.02]">
+                                                                                <div className="flex items-center gap-2 text-gray-400">
+                                                                                    <Target size={13} />
+                                                                                    <span>{dict.custom_for_you?.focus_areas || 'Tập trung'}</span>
+                                                                                </div>
+                                                                                <span className="text-[#f2d58d] font-bold truncate ml-2 max-w-[150px] text-right">{formatParts(focus)}</span>
+                                                                            </div>
+                                                                        )}
+                                                                        {avoid.length > 0 && (
+                                                                            <div className="flex justify-between items-center bg-white/[0.02] p-2 rounded-lg border border-white/[0.02]">
+                                                                                <div className="flex items-center gap-2 text-gray-400">
+                                                                                    <ShieldOff size={13} />
+                                                                                    <span>{dict.custom_for_you?.avoid_areas || (lang === 'vi' ? 'Tránh' : 'Avoid')}</span>
+                                                                                </div>
+                                                                                <span className="text-[#f2d58d] font-bold truncate ml-2 max-w-[150px] text-right">{formatParts(avoid)}</span>
+                                                                            </div>
+                                                                        )}
+                                                                        {hasPrivateRoom && (
+                                                                            <div className="flex justify-between items-center bg-white/[0.02] p-2 rounded-lg border border-white/[0.02]">
+                                                                                <div className="flex items-center gap-2 text-gray-400">
+                                                                                    <Sparkles size={13} />
+                                                                                    <span>{dict.custom_for_you?.private_room || (lang === 'vi' ? 'Phòng riêng' : 'Private Room')}</span>
+                                                                                </div>
+                                                                                <span className="text-[#f2d58d] font-bold">+105K</span>
+                                                                            </div>
+                                                                        )}
+                                                                        {isPregnant && (
+                                                                            <div className="flex justify-between items-center bg-white/[0.02] p-2 rounded-lg border border-white/[0.02]">
+                                                                                <div className="flex items-center gap-2 text-gray-400">
+                                                                                    <Heart size={13} />
+                                                                                    <span>{dict.tags?.pregnant || (lang === 'vi' ? 'Mang thai' : 'Pregnant')}</span>
+                                                                                </div>
+                                                                                <span className="text-[#f2d58d] font-bold">{lang === 'vi' ? 'Có' : 'Yes'}</span>
+                                                                            </div>
+                                                                        )}
+                                                                        {isAllergy && (
+                                                                            <div className="flex justify-between items-center bg-white/[0.02] p-2 rounded-lg border border-white/[0.02]">
+                                                                                <div className="flex items-center gap-2 text-gray-400">
+                                                                                    <AlertTriangle size={13} />
+                                                                                    <span>{dict.tags?.allergy || (lang === 'vi' ? 'Dị ứng' : 'Allergy')}</span>
+                                                                                </div>
+                                                                                <span className="text-[#f2d58d] font-bold">{lang === 'vi' ? 'Có' : 'Yes'}</span>
+                                                                            </div>
+                                                                        )}
+                                                                        {noteContent && (
+                                                                            <div className="flex justify-between items-start bg-white/[0.02] p-2 rounded-lg border border-white/[0.02]">
+                                                                                <div className="flex items-center gap-2 text-gray-400 mt-0.5">
+                                                                                    <FileText size={13} />
+                                                                                    <span>{dict.checkout?.note || 'Ghi chú'}</span>
+                                                                                </div>
+                                                                                <span className="text-white italic max-w-[150px] text-right line-clamp-2 ml-2 leading-tight">&quot;{noteContent}&quot;</span>
+                                                                            </div>
+                                                                        )}
+                                                                        <button
+                                                                            type="button"
+                                                                            onClick={() => toggleExpand(idx)}
+                                                                            className="w-full py-1 mt-1 flex items-center justify-center gap-1 text-[10px] text-gray-400 hover:text-[#c9a96e] transition-colors cursor-pointer"
+                                                                        >
+                                                                            <span>{lang === 'vi' ? 'Thu gọn' : 'Show less'}</span>
+                                                                            <ChevronUp size={12} />
+                                                                        </button>
+                                                                    </div>
                                                                 )}
-                                                                {therapist && (
-                                                                    <span className="bg-white/5 px-2 py-0.5 rounded-md text-gray-300 border border-white/5">
-                                                                        {dict.custom_for_you?.therapist_gender || 'KTV'}: <strong className="text-[#f2d58d] capitalize">{therapist}</strong>
-                                                                    </span>
-                                                                )}
-                                                                {focus.length > 0 && (
-                                                                    <span className="bg-white/5 px-2 py-0.5 rounded-md text-gray-300 border border-white/5">
-                                                                        {dict.custom_for_you?.focus_areas || 'Tập trung'}: <strong className="text-[#f2d58d]">{formatParts(focus)}</strong>
-                                                                    </span>
-                                                                )}
-                                                            </div>
+                                                            </>
                                                         )}
                                                     </div>
                                                 );
@@ -486,7 +591,7 @@ export default function OrderConfirmModal({
                                             </span>
                                         </div>
 
-                                        {/* Informational Payment Chips (Click opens info popover) */}
+                                        {/* Informational Payment Chips (Click opens rich info popover) */}
                                         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                                             {PAYMENT_METHODS_ACCEPTED.map((method) => {
                                                 const Icon = method.icon;
@@ -494,13 +599,7 @@ export default function OrderConfirmModal({
                                                     <div
                                                         key={method.id}
                                                         id={`payment-chip-${method.id}`}
-                                                        onClick={() => setActiveMethodInfo({
-                                                            id: method.id,
-                                                            title: method.label,
-                                                            icon: method.icon,
-                                                            desc: method.desc,
-                                                            details: method.details,
-                                                        })}
+                                                        onClick={() => setActiveMethodId(method.id)}
                                                         className="p-2 rounded-xl bg-white/[0.03] hover:bg-[#c9a96e]/10 border border-white/5 hover:border-[#c9a96e]/40 transition-all cursor-pointer flex flex-col items-center text-center gap-1 group"
                                                         title="Bấm để xem chi tiết / Click for details"
                                                     >
@@ -542,7 +641,7 @@ export default function OrderConfirmModal({
                                     type="button"
                                     onClick={onClose}
                                     disabled={isSubmitting}
-                                    className="flex-1 py-3 rounded-xl border border-white/10 text-gray-400 font-bold uppercase text-xs tracking-wider hover:bg-white/5 transition-colors active:scale-[0.98]"
+                                    className="flex-1 py-3 rounded-xl border border-white/10 text-gray-400 font-bold uppercase text-xs tracking-wider hover:bg-white/5 transition-colors active:scale-[0.98] cursor-pointer"
                                 >
                                     {dict.checkout?.cancel || 'Hủy bỏ'}
                                 </button>
@@ -613,7 +712,13 @@ export default function OrderConfirmModal({
                                     onClick={handleReturnHome}
                                     className="w-full bg-gradient-to-r from-[#ecd38f] to-[#c6a55f] text-[#2c2416] py-3.5 rounded-2xl font-bold uppercase text-xs tracking-wider shadow-lg hover:brightness-105 transition-all active:scale-[0.98] flex items-center justify-center gap-2 group cursor-pointer"
                                 >
-                                    <span>{lang === 'vi' ? 'Quay về trang chủ' : 'Return to Home'}</span>
+                                    <span>
+                                        {lang === 'vi' ? 'Quay về trang chủ' : 
+                                         lang === 'cn' ? '返回首页' : 
+                                         lang === 'jp' ? 'ホームに戻る' : 
+                                         lang === 'kr' ? '홈으로 돌아가기' : 
+                                         'Return to Home'}
+                                    </span>
                                     <ArrowRight size={15} className="group-hover:translate-x-1 transition-transform" strokeWidth={3} />
                                 </button>
                             </div>
@@ -622,37 +727,150 @@ export default function OrderConfirmModal({
                 </div>
             </div>
 
-            {/* Payment Method Info Popover / Modal */}
-            {activeMethodInfo && (
+            {/* ================= RICH PAYMENT METHOD INFO POPOVER ================= */}
+            {activeMethodId && (
                 <div 
-                    className="fixed inset-0 z-[130] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200"
-                    onClick={() => setActiveMethodInfo(null)}
+                    className="fixed inset-0 z-[130] flex items-center justify-center bg-black/75 backdrop-blur-md p-4 animate-in fade-in duration-200"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        setActiveMethodId(null);
+                    }}
                 >
                     <div 
-                        className="bg-[#181628]/95 backdrop-blur-2xl border border-[#c9a96e]/40 max-w-sm w-full p-5 rounded-3xl shadow-2xl relative space-y-3"
-                        onClick={(e) => e.stopPropagation()}
+                        className="bg-black/60 backdrop-blur-2xl border border-[#c9a96e]/40 max-w-md w-full p-5 sm:p-6 rounded-3xl shadow-[0_15px_40px_rgba(0,0,0,0.8)] relative space-y-4 max-h-[85vh] flex flex-col cursor-pointer"
                     >
-                        <div className="flex items-center justify-between border-b border-white/10 pb-2.5">
+                        {/* Header */}
+                        <div className="flex items-center justify-between border-b border-white/10 pb-3 shrink-0">
                             <div className="flex items-center gap-2.5">
-                                <div className="w-8 h-8 rounded-xl bg-[#c9a96e]/15 border border-[#c9a96e]/30 flex items-center justify-center text-[#f2d58d]">
-                                    <activeMethodInfo.icon size={16} />
+                                <div className="w-9 h-9 rounded-xl bg-[#c9a96e]/15 border border-[#c9a96e]/30 flex items-center justify-center text-[#f2d58d]">
+                                    {activeMethodId === 'cash_vnd' && <Banknote size={18} />}
+                                    {activeMethodId === 'cash_usd' && <DollarSign size={18} />}
+                                    {activeMethodId === 'card' && <CreditCard size={18} />}
+                                    {activeMethodId === 'transfer' && <QrCode size={18} />}
                                 </div>
-                                <h4 className="font-bold text-white text-sm">{activeMethodInfo.title}</h4>
+                                <div>
+                                    <h4 className="font-bold text-white text-base">
+                                        {activeMethodId === 'cash_vnd' && (lang === 'vi' ? 'Tiền mặt tại Spa (VND)' : 'Cash at Spa (VND)')}
+                                        {activeMethodId === 'cash_usd' && (lang === 'vi' ? 'Tiền mặt USD' : 'Cash (USD)')}
+                                        {activeMethodId === 'card' && (lang === 'vi' ? 'Thẻ POS & Không tiếp xúc' : 'Credit / POS Card')}
+                                        {activeMethodId === 'transfer' && (lang === 'vi' ? 'VietQR / Chuyển khoản 24/7' : 'VietQR Transfer')}
+                                    </h4>
+                                    <p className="text-[11px] text-[#f2d58d]">
+                                        {activeMethodId === 'cash_vnd' && (lang === 'vi' ? 'Các mệnh giá tiền Polymer Việt Nam Đồng' : 'Accepted VND Polymer Denominations')}
+                                        {activeMethodId === 'cash_usd' && (lang === 'vi' ? 'Quy định thu đổi & hoàn tiền' : 'Collection & Exchange Rules')}
+                                        {activeMethodId === 'card' && (lang === 'vi' ? 'Các loại thẻ và ví điện tử hỗ trợ' : 'Accepted Cards & Mobile Wallets')}
+                                        {activeMethodId === 'transfer' && (lang === 'vi' ? 'Quét mã QR chuyển khoản nhanh' : 'Instant dynamic QR transfer')}
+                                    </p>
+                                </div>
                             </div>
                             <button 
-                                onClick={() => setActiveMethodInfo(null)}
-                                className="w-7 h-7 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-gray-400 hover:text-white transition-colors"
+                                onClick={() => setActiveMethodId(null)}
+                                className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-gray-400 hover:text-white transition-colors cursor-pointer"
                             >
-                                <X size={14} />
+                                <X size={16} />
                             </button>
                         </div>
-                        <p className="text-xs text-[#f2d58d] font-medium">{activeMethodInfo.desc}</p>
-                        <p className="text-xs text-gray-300 leading-relaxed font-light">{activeMethodInfo.details}</p>
-                        <div className="pt-2">
+
+                        {/* Popover Scrollable Body */}
+                        <div className="flex-1 overflow-y-auto space-y-3.5 pr-1 custom-scrollbar min-h-0">
+                            
+                            {/* CASH VND CONTENT: Grid of 7 Banknotes */}
+                            {activeMethodId === 'cash_vnd' && (
+                                <div className="space-y-3">
+                                    <p className="text-xs text-gray-300">
+                                        {lang === 'vi'
+                                            ? 'Quý khách thanh toán tiền mặt trực tiếp tại quầy thu ngân. Spa chấp nhận tất cả các mệnh giá tiền polymer Việt Nam Đồng:'
+                                            : 'Pay directly at the cashier desk. Oria Spa accepts all standard Vietnamese Dong polymer notes:'}
+                                    </p>
+                                    <div className="grid grid-cols-2 gap-2.5">
+                                        {VND_DENOMINATIONS.map((denom) => (
+                                            <div key={denom.amount} className="flex flex-col items-center gap-1 bg-white/[0.02] p-1.5 rounded-xl border border-white/5">
+                                                <div className="rounded-lg overflow-hidden border border-white/10 aspect-[2/1] w-full relative">
+                                                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                                                    <img src={denom.imgUrl} alt={`${formatCurrency(denom.amount)} VND`} className="w-full h-full object-cover" />
+                                                </div>
+                                                <span className="text-[11px] font-bold text-[#f2d58d]">{formatCurrency(denom.amount)} VND</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* CASH USD CONTENT: Exchange Rate + Refund Note + USD Illustration */}
+                            {activeMethodId === 'cash_usd' && (
+                                <div className="space-y-3">
+                                    {/* Exchange Rate Box */}
+                                    <div className="bg-black/50 border border-[#C9A96E]/40 rounded-2xl p-3.5 text-center">
+                                        <div className="text-[11px] text-[#C9A96E] font-bold uppercase tracking-wider mb-0.5">
+                                            {lang === 'vi' ? 'Tỷ giá quy đổi' : 'Exchange Rate'}
+                                        </div>
+                                        <div className="text-xl font-black text-[#f2d58d]">
+                                            1 USD = {formatCurrency(USD_INFO.exchangeRate)} VND
+                                        </div>
+                                    </div>
+
+                                    {/* Refund in VND note */}
+                                    <div className="bg-blue-950/40 border border-blue-500/30 rounded-2xl p-3 flex gap-2.5 items-center">
+                                        <div className="w-7 h-7 rounded-full bg-blue-500/20 flex items-center justify-center shrink-0">
+                                            <ArrowRightLeft size={14} className="text-blue-400" />
+                                        </div>
+                                        <p className="text-xs text-blue-300 leading-snug font-medium">
+                                            {dict.payment_methods?.refund_note || (lang === 'vi' ? 'Tiền thừa sẽ được thối lại bằng tiền mặt Việt Nam Đồng (VND).' : 'Change will be returned in VND cash.')}
+                                        </p>
+                                    </div>
+
+                                    {/* USD Banknotes image */}
+                                    <div className="rounded-xl overflow-hidden border border-white/10 shadow-sm">
+                                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                                        <img src={USD_INFO.imgUrl} alt="USD Cash" className="w-full h-auto object-cover" />
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* CARD CONTENT: Accepted Cards Grid */}
+                            {activeMethodId === 'card' && (
+                                <div className="space-y-3">
+                                    <p className="text-xs text-gray-300">
+                                        {lang === 'vi'
+                                            ? 'Thanh toán quẹt thẻ máy POS không phụ phí giao dịch. Hỗ trợ tất cả các thẻ quốc tế và ví thông minh:'
+                                            : 'Zero surcharge card payment via POS terminal. Supports all major international cards and mobile wallets:'}
+                                    </p>
+                                    <div className="grid grid-cols-3 gap-2.5">
+                                        {ACCEPTED_CARDS.map((card) => (
+                                            <div key={card.name} className="flex flex-col items-center gap-1.5 bg-white p-2 rounded-xl border border-white/10 shadow-sm">
+                                                <div className="w-full h-8 flex items-center justify-center overflow-hidden">
+                                                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                                                    <img src={card.img} alt={card.name} className="max-h-full max-w-full object-contain mix-blend-multiply" />
+                                                </div>
+                                                <span className="text-[10px] font-bold text-gray-700 text-center leading-none">{card.name}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* TRANSFER CONTENT: QR / Transfer */}
+                            {activeMethodId === 'transfer' && (
+                                <div className="space-y-3 text-center">
+                                    <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/10 flex flex-col items-center gap-3">
+                                        <div className="w-14 h-14 rounded-2xl bg-[#c9a96e]/15 border border-[#c9a96e]/30 flex items-center justify-center text-[#f2d58d]">
+                                            <QrCode size={30} />
+                                        </div>
+                                        <div className="text-sm font-bold text-[#f2d58d]">QR & Bank Transfer</div>
+                                        <p className="text-sm text-gray-200 leading-relaxed font-medium">
+                                            Chúng tôi hỗ trợ international transfer, domestic transfer
+                                        </p>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Popover Footer Button */}
+                        <div className="pt-2 border-t border-white/10 shrink-0">
                             <button
                                 type="button"
-                                onClick={() => setActiveMethodInfo(null)}
-                                className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#ecd38f] to-[#c6a55f] text-[#2c2416] text-xs font-bold uppercase tracking-wider hover:brightness-105 transition-all"
+                                onClick={() => setActiveMethodId(null)}
+                                className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#ecd38f] to-[#c6a55f] text-[#2c2416] text-xs font-bold uppercase tracking-wider hover:brightness-105 transition-all cursor-pointer"
                             >
                                 {lang === 'vi' ? 'Đã hiểu' : 'Understood'}
                             </button>

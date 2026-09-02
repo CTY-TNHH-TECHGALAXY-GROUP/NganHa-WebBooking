@@ -1,20 +1,44 @@
 // /api/chat/route.ts - Gemini AI chat endpoint for ORIA SPA
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { NextRequest, NextResponse } from 'next/server';
+import { getSupabaseAdmin } from '@/lib/supabase-server';
 
 export const dynamic = 'force-dynamic';
 
-// ═══════════════════════════════════════
-// Spa Knowledge Base (injected into system prompt)
-// ═══════════════════════════════════════
+const fetchSystemSettings = async () => {
+  try {
+    const supabase = getSupabaseAdmin();
+    const { data } = await supabase.from('WebBookingContent').select('value').eq('key', 'system_settings').single();
+    return data?.value || {};
+  } catch (e) {
+    return {};
+  }
+};
 
-const SPA_KNOWLEDGE = `
+// Language instruction templates
+const LANGUAGE_INSTRUCTIONS: Record<string, string> = {
+  vi: 'Trả lời bằng tiếng Việt. Dùng giọng văn thân thiện, lịch sự như nhân viên spa chuyên nghiệp.',
+  en: 'Reply in English. Use a friendly, professional spa receptionist tone.',
+  cn: '用中文回答。使用友好、专业的水疗接待员语气。',
+  jp: '日本語で返答してください。フレンドリーでプロフェッショナルなスパ受付の口調を使ってください。',
+  kr: '한국어로 답변해 주세요. 친절하고 전문적인 스파 안내원의 어조를 사용하세요.',
+};
+
+const buildSystemPrompt = (locale: string, systemSettings: any): string => {
+  const langInstruction = LANGUAGE_INSTRUCTIONS[locale] || LANGUAGE_INSTRUCTIONS.vi;
+  
+  const phone = systemSettings?.phone || '0123.456.789';
+  const mapsUrl = systemSettings?.googleMaps || 'https://maps.app.goo.gl/8XBkjsJicXqdNsZk7';
+  const hours = systemSettings?.hours || '9:00 AM - 12:00 AM (Last order 11:30 PM)';
+
+  const SPA_KNOWLEDGE = `
 ## ORIA SPA - Thông tin
 
 ### Chi nhánh
 - **ORIA SPA Barbershop**: 11 Ngô Đức Kế, P. Sài Gòn, Quận 1, TP.HCM
-  - Giờ mở cửa: 9:00 AM - 12:00 AM (Last order 11:30 PM)
-  - Google Maps: https://maps.app.goo.gl/8XBkjsJicXqdNsZk7
+  - Hotline/SĐT: ${phone}
+  - Giờ mở cửa: ${hours}
+  - Google Maps: ${mapsUrl}
 
 ### Dịch vụ & Giá
 
@@ -49,18 +73,6 @@ const SPA_KNOWLEDGE = `
 - Khách có thể đặt lịch online qua website
 `;
 
-// Language instruction templates
-const LANGUAGE_INSTRUCTIONS: Record<string, string> = {
-  vi: 'Trả lời bằng tiếng Việt. Dùng giọng văn thân thiện, lịch sự như nhân viên spa chuyên nghiệp.',
-  en: 'Reply in English. Use a friendly, professional spa receptionist tone.',
-  cn: '用中文回答。使用友好、专业的水疗接待员语气。',
-  jp: '日本語で返答してください。フレンドリーでプロフェッショナルなスパ受付の口調を使ってください。',
-  kr: '한국어로 답변해 주세요. 친절하고 전문적인 스파 안내원의 어조를 사용하세요.',
-};
-
-const buildSystemPrompt = (locale: string): string => {
-  const langInstruction = LANGUAGE_INSTRUCTIONS[locale] || LANGUAGE_INSTRUCTIONS.vi;
-
   return `Bạn là trợ lý AI chăm sóc khách hàng cao cấp của ORIA SPA (ORIA SPA) tại Quận 1, TP. Hồ Chí Minh.
 
 ${langInstruction}
@@ -70,6 +82,8 @@ ${langInstruction}
 - Xưng hô là "em" hoặc "ORIA SPA", và gọi khách hàng là "anh/chị" hoặc "Quý khách".
 - Trả lời ngắn gọn, súc tích (tối đa 150 từ). Dùng emoji phù hợp.
 - Nếu khách hỏi ngoài phạm vi spa, lịch sự từ chối và hướng lại về dịch vụ spa.
+- Nếu khách hỏi địa chỉ, đường đi, hãy cung cấp Google Maps link.
+- Nếu khách hỏi số điện thoại liên hệ, hãy cung cấp số Hotline/SĐT.
 
 [Nguyên tắc Giao tiếp BẮT BUỘC]
 - Mở đầu cuộc trò chuyện (câu đầu tiên khi gặp khách): BẮT BUỘC dùng "ORIA SPA Xin Chào,".
@@ -88,7 +102,7 @@ Bước 2: Gợi ý dịch vụ (Bắt bệnh - Kê đơn)
 
 Bước 3: Chốt lịch (Call to Action)
 - Khi khách đã ưng ý, khéo léo hỏi xem khách muốn đặt lịch lúc nào.
-- Hướng dẫn khách dùng tính năng đặt lịch trực tiếp trên website.
+- Hướng dẫn khách dùng tính năng đặt lịch trực tiếp trên website hoặc gọi qua số Hotline/SĐT.
 
 ${SPA_KNOWLEDGE}`;
 };
@@ -138,11 +152,14 @@ export const POST = async (request: NextRequest) => {
     }
 
     const genAI = new GoogleGenerativeAI(apiKey);
+    
+    // Fetch system settings dynamically
+    const systemSettings = await fetchSystemSettings();
 
     // Khởi tạo model và nhúng Kịch bản ORIA SPA ngay tại đây
     const model = genAI.getGenerativeModel({
       model: 'gemini-2.0-flash',
-      systemInstruction: buildSystemPrompt(locale)
+      systemInstruction: buildSystemPrompt(locale, systemSettings)
     });
 
     // Build chat history cho Gemini

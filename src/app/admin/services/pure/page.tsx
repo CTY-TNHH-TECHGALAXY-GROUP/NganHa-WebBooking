@@ -68,10 +68,12 @@ const ServiceEditCard = ({
 
   const langData = cData[activeLang] || {};
 
-  const desc = langData.description !== undefined ? langData.description : '';
-  const privTitle = langData.privilege?.title !== undefined ? langData.privilege.title : '';
-  const privCopy = langData.privilege?.copy !== undefined ? langData.privilege.copy : '';
-  const privTime = langData.privilege?.time !== undefined ? langData.privilege.time : '';
+  const desc = langData.description !== undefined ? langData.description : (service.description || '');
+  const defaultPriv = service.privilege || {};
+  const privTitle = langData.privilege?.title !== undefined ? langData.privilege.title : (defaultPriv.title || '');
+  const privCopy = langData.privilege?.copy !== undefined ? langData.privilege.copy : (defaultPriv.copy || '');
+  const privTime = langData.privilege?.time !== undefined ? langData.privilege.time : (defaultPriv.time || '');
+  const privImage = langData.privilege?.image !== undefined ? langData.privilege.image : (defaultPriv.image || '');
 
   const hasChanges = !!localTextOverrides?.[serviceName];
 
@@ -249,8 +251,22 @@ const ServiceEditCard = ({
               className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none"
               value={privTime}
               onChange={(e) => handleTextChange?.(serviceName, activeLang, 'privilege', e.target.value, 'time')}
-              placeholder="Thời gian (VD: 5-10 mins)..."
+              placeholder="Thời gian (VD: 8-10 mins)..."
             />
+            <div className="flex gap-2 items-center">
+              <input 
+                type="text"
+                className="flex-1 bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none"
+                value={privImage}
+                onChange={(e) => handleTextChange?.(serviceName, activeLang, 'privilege', e.target.value, 'image')}
+                placeholder="Image URL cho Privilege..."
+              />
+              {privImage && (
+                <div className="w-10 h-10 shrink-0 rounded border border-admin-line overflow-hidden bg-black/20">
+                  <img src={privImage} className="w-full h-full object-cover" alt="Privilege Preview" />
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
