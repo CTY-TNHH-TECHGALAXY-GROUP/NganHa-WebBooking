@@ -15,7 +15,7 @@ export default function BookingBell() {
     const supabase = createClient();
 
     const channel = supabase
-      .channel('admin-new-bookings')
+      .channel(`admin-new-bookings-${Math.random()}`)
       .on(
         'postgres_changes' as any,
         { event: 'INSERT', schema: 'public', table: 'Bookings' },
