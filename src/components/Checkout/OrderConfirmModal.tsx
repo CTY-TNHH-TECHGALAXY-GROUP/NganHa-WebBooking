@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { X, ClipboardList, Clock, ArrowRight, Check, User, HeartPulse, Ban, GripHorizontal, AlertCircle, Phone, Mail, Hand } from 'lucide-react';
+import { X, ClipboardList, Clock, ArrowRight, Check, User, HeartPulse, Ban, GripHorizontal, AlertCircle, Phone, Mail, Hand, MapPin } from 'lucide-react';
+import SmartLogo from '@/components/SmartLogo';
 import { CartItem } from '@/components/Menu/types';
 import { formatCurrency } from '@/components/Menu/utils';
 import { createClient } from '@/lib/supabase';
@@ -358,52 +359,52 @@ const OrderConfirmModal: React.FC<OrderConfirmModalProps> = ({
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Header */}
-                <div className="pt-6 pb-3 flex flex-col items-center text-center px-6 border-b border-white/10 shrink-0 z-10 bg-transparent">
-                    <div className="w-12 h-12 bg-white/[0.04] rounded-full flex items-center justify-center text-[#C9A96E] mb-2 border border-[#C9A96E]/30">
+                <div className="pt-6 pb-4 flex flex-col items-center text-center px-6 border-b border-white/10 shrink-0 z-10 bg-transparent">
+                    <div className="w-12 h-12 rounded-full flex items-center justify-center text-[#C9A96E] mb-2 bg-[#c9a96e]/10 border border-[#C9A96E]/30">
                         <ClipboardList size={24} strokeWidth={2.2} />
                     </div>
                     <h2 className="text-xl md:text-2xl font-bold text-white tracking-wide">
                         {dict.checkout?.modal_title || 'Xác nhận yêu cầu'}
                     </h2>
-                    <p className="text-xs md:text-sm text-gray-400 mt-0.5 font-medium">
+                    <p className="text-xs md:text-sm text-[#d1cbbd] mt-0.5 font-medium">
                         {dict.checkout?.review_text || 'Vui lòng kiểm tra lại đơn hàng.'}
                     </p>
                 </div>
 
                 {/* Body: Responsive 2-Column on Desktop (md:), 1-Column on Mobile */}
                 <div className="flex-1 overflow-y-auto p-4 sm:p-6 custom-scrollbar min-h-0">
-                    <div className="md:grid md:grid-cols-12 md:gap-6 space-y-4 md:space-y-0">
+                    <div className="md:grid md:grid-cols-12 md:gap-8 space-y-6 md:space-y-0">
                         
-                        {/* LEFT COLUMN (Desktop): Customer Info, Booking Time, Expected Time */}
-                        <div className="md:col-span-5 space-y-4">
-                            {/* Customer Details Card */}
-                            <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-4 space-y-2.5">
-                                <div className="text-[11px] font-bold text-[#C9A96E] uppercase tracking-wider mb-1">
+                        {/* LEFT COLUMN (Desktop): Customer Info, Booking Time, Brand Contact */}
+                        <div className="md:col-span-5 flex flex-col justify-between space-y-5">
+                            {/* Customer Details */}
+                            <div className="space-y-3">
+                                <div className="text-[11px] font-bold text-[#C9A96E] uppercase tracking-wider pb-1 border-b border-white/10">
                                     {dict.checkout?.customer_details || 'Thông tin đặt hẹn'}
                                 </div>
                                 <div className="space-y-2 text-xs md:text-sm">
-                                    <div className="flex justify-between items-center">
+                                    <div className="flex justify-between items-center py-1 border-b border-white/[0.04]">
                                         <span className="text-gray-400">{dict.checkout?.name || 'Họ và tên'}</span>
                                         <span className="font-bold text-[#f2d58d]">{customerInfo.name || 'Guest'}</span>
                                     </div>
                                     {customerInfo.phone && (
-                                        <div className="flex justify-between items-center">
+                                        <div className="flex justify-between items-center py-1 border-b border-white/[0.04]">
                                             <span className="text-gray-400">{dict.checkout?.phone_label || 'Số điện thoại'}</span>
                                             <span className="font-bold text-white">{customerInfo.phone}</span>
                                         </div>
                                     )}
                                     {customerInfo.email && (
-                                        <div className="flex justify-between items-center">
+                                        <div className="flex justify-between items-center py-1 border-b border-white/[0.04]">
                                             <span className="text-gray-400">{dict.checkout?.email_label || 'Email'}</span>
                                             <span className="font-bold text-white truncate max-w-[170px]">{customerInfo.email}</span>
                                         </div>
                                     )}
-                                    <div className="flex justify-between items-center pt-1 border-t border-white/5">
+                                    <div className="flex justify-between items-center py-1 border-b border-white/[0.04]">
                                         <span className="text-gray-400">{lang === 'vi' ? 'Số lượng khách' : 'Guests'}</span>
                                         <span className="font-bold text-[#f2d58d]">{guestCount} {lang === 'vi' ? 'khách' : 'guest(s)'}</span>
                                     </div>
                                     {(bookingDate || bookingTime) && (
-                                        <div className="flex justify-between items-center">
+                                        <div className="flex justify-between items-center py-1 border-b border-white/[0.04]">
                                             <span className="text-gray-400">{lang === 'vi' ? 'Lịch hẹn' : 'Booking time'}</span>
                                             <span className="font-bold text-[#f2d58d]">{bookingDate} · {bookingTime}</span>
                                         </div>
@@ -411,18 +412,24 @@ const OrderConfirmModal: React.FC<OrderConfirmModalProps> = ({
                                 </div>
                             </div>
 
-                            {/* Expected Time Card */}
-                            <div className="bg-white/[0.03] border border-[#C9A96E]/25 rounded-2xl p-4 space-y-2">
-                                <div className="text-[10px] font-bold text-[#C9A96E] uppercase tracking-wider mb-1">
-                                    {dict.checkout.expected_time}
+                            {/* Official Oria Spa Brand Block (Replaces Estimated Time) */}
+                            <div className="pt-3 border-t border-white/10 space-y-2.5">
+                                <div className="flex items-center gap-3">
+                                    <SmartLogo theme="dark" className="h-8 w-auto object-contain" />
                                 </div>
-                                <div className="flex justify-between text-xs md:text-sm font-medium text-gray-300">
-                                    <span>{dict.checkout.start_time}</span>
-                                    <span className="text-[#f2d58d] font-bold">{formatTime(startTimeComp)}</span>
-                                </div>
-                                <div className="flex justify-between text-xs md:text-sm font-medium text-gray-300">
-                                    <span>{dict.checkout.end_time}</span>
-                                    <span className="text-[#f2d58d] font-bold">{formatTime(endTimeComp)}</span>
+                                <div className="space-y-1.5 text-xs text-gray-300">
+                                    <div className="flex items-start gap-2">
+                                        <MapPin size={14} className="text-[#C9A96E] shrink-0 mt-0.5" />
+                                        <span className="leading-snug text-[11px] text-gray-300">11 Ngô Đức Kế, P. Bến Nghé, Quận 1, TP.HCM</span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <Phone size={14} className="text-[#C9A96E] shrink-0" />
+                                        <a href="tel:+84964090277" className="text-[11px] text-[#f2d58d] font-medium hover:underline">(+84) 964 090 277</a>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <Mail size={14} className="text-[#C9A96E] shrink-0" />
+                                        <span className="text-[11px] text-gray-300">contact@oriaspa.com</span>
+                                    </div>
                                 </div>
                             </div>
 
@@ -449,31 +456,26 @@ const OrderConfirmModal: React.FC<OrderConfirmModalProps> = ({
                             
                             {/* Order Summary & Items List */}
                             <div className="space-y-3">
-                                <div className="flex justify-between items-center px-1">
+                                <div className="flex justify-between items-center pb-1 border-b border-white/10">
                                     <span className="text-[11px] font-bold text-[#C9A96E] uppercase tracking-wider">
                                         {dict.checkout.order_summary}
                                     </span>
-                                    <span className="bg-white/10 text-white text-[10px] font-bold px-2 py-0.5 rounded-full border border-white/5">
+                                    <span className="bg-[#c9a96e]/15 text-[#f2d58d] text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-[#c9a96e]/30">
                                         {cart.length} {dict.checkout.items}
                                     </span>
                                 </div>
 
-                                <div className="space-y-2.5 max-h-[220px] md:max-h-[260px] overflow-y-auto pr-1 custom-scrollbar">
+                                <div className="space-y-3 max-h-[220px] md:max-h-[240px] overflow-y-auto pr-1 custom-scrollbar">
                                     {cart.map((item, idx) => {
                                         const strength = item.options?.strength;
                                         const therapist = item.options?.therapist;
                                         const focus = item.options?.bodyParts?.focus || [];
                                         const avoid = item.options?.bodyParts?.avoid || [];
 
-                                        const tags = [
-                                            item.options?.notes?.tag0 ? (dict.tags?.pregnant || 'Pregnant') : null,
-                                            item.options?.notes?.tag1 ? (dict.tags?.allergy || 'Allergy') : null
-                                        ].filter(Boolean) as string[];
-
                                         return (
-                                            <div key={item.cartId || idx} className="border border-white/10 rounded-2xl p-3.5 bg-white/[0.02] hover:bg-white/[0.04] transition-colors">
+                                            <div key={item.cartId || idx} className="py-2.5 border-b border-white/[0.06] last:border-b-0 space-y-1.5">
                                                 {/* Name & Price */}
-                                                <div className="flex justify-between items-start mb-1.5 gap-2">
+                                                <div className="flex justify-between items-start gap-2">
                                                     <span className="font-bold text-white text-sm truncate flex-1">
                                                         {idx + 1}. {item.names?.[lang] || item.names?.en || 'Service'}
                                                     </span>
@@ -483,29 +485,29 @@ const OrderConfirmModal: React.FC<OrderConfirmModalProps> = ({
                                                 </div>
 
                                                 {/* Details */}
-                                                <div className="space-y-1.5 text-xs text-gray-400">
+                                                <div className="grid grid-cols-2 gap-x-3 gap-y-1 text-xs text-gray-400">
                                                     {(item.timeValue > 0 || item.timeDisplay) && (
-                                                        <div className="flex justify-between items-center">
-                                                            <span>{dict.checkout?.time || 'Thời gian'}</span>
-                                                            <span className="font-bold text-gray-200">{item.timeValue || item.timeDisplay} {dict.checkout?.mins || 'phút'}</span>
+                                                        <div className="flex items-center gap-1.5">
+                                                            <Clock size={12} className="text-gray-400" />
+                                                            <span>{item.timeValue || item.timeDisplay} {dict.checkout?.mins || 'phút'}</span>
                                                         </div>
                                                     )}
                                                     {strength && (
-                                                        <div className="flex justify-between items-center">
-                                                            <span>{dict.custom_for_you?.strength_label || 'Lực'}</span>
+                                                        <div className="flex items-center gap-1.5">
+                                                            <span className="text-gray-400">{dict.custom_for_you?.strength_label || 'Lực'}:</span>
                                                             <span className="font-bold text-gray-200 capitalize">{strength}</span>
                                                         </div>
                                                     )}
                                                     {therapist && (
-                                                        <div className="flex justify-between items-center">
-                                                            <span>{dict.custom_for_you?.therapist_gender || 'KTV'}</span>
+                                                        <div className="flex items-center gap-1.5">
+                                                            <span className="text-gray-400">{dict.custom_for_you?.therapist_gender || 'KTV'}:</span>
                                                             <span className="font-bold text-gray-200 capitalize">{therapist}</span>
                                                         </div>
                                                     )}
                                                     {focus.length > 0 && (
-                                                        <div className="flex justify-between items-center">
-                                                            <span>{dict.custom_for_you?.focus_areas || 'Tập trung'}</span>
-                                                            <span className="font-bold text-[#f2d58d] text-right truncate max-w-[160px]">{formatParts(focus)}</span>
+                                                        <div className="flex items-center gap-1.5 col-span-2">
+                                                            <span className="text-[#C9A96E]">{dict.custom_for_you?.focus_areas || 'Tập trung'}:</span>
+                                                            <span className="font-bold text-[#f2d58d] truncate">{formatParts(focus)}</span>
                                                         </div>
                                                     )}
                                                 </div>
@@ -516,14 +518,14 @@ const OrderConfirmModal: React.FC<OrderConfirmModalProps> = ({
                             </div>
 
                             {/* Payment Summary */}
-                            <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-4 space-y-2.5">
+                            <div className="pt-3 border-t border-white/10 space-y-2">
                                 <div className="flex justify-between text-xs text-gray-400">
                                     <span>{dict.checkout.payment_method}</span>
                                     <span className="font-bold text-[#f2d58d] uppercase">
                                         {dict.payment_methods?.[paymentMethod] || dict.payment_methods?.cash_vnd || 'Cash (VND)'}
                                     </span>
                                 </div>
-                                <div className="flex justify-between items-center pt-2 border-t border-white/5">
+                                <div className="flex justify-between items-center pt-1">
                                     <span className="font-bold text-white text-sm md:text-base">{dict.checkout.total_bill}</span>
                                     <span className="font-bold text-[#f2d58d] text-base md:text-lg">{formatCurrency(totalVND)} VND</span>
                                 </div>

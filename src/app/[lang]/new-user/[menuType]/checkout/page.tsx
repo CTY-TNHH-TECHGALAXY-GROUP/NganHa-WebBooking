@@ -899,8 +899,26 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                 </label>
               )}
 
+              {/* Privacy / Security Notice */}
+              <p style={{ fontSize: '11px', color: '#9b99a8', marginTop: '8px', marginBottom: '12px', display: 'flex', alignItems: 'flex-start', gap: '6px', lineHeight: 1.5 }}>
+                <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '14px', height: '14px', minWidth: '14px', borderRadius: '50%', background: 'rgba(201,169,110,0.2)', color: '#f2d58d', fontSize: '10px', fontWeight: 'bold', fontStyle: 'italic', fontFamily: 'serif', marginTop: '1px' }}>
+                  i
+                </span>
+                <span>
+                  {lang === 'vi'
+                    ? 'Thông tin của bạn được bảo mật tuyệt đối, chỉ phục vụ cho việc đặt lịch và hỗ trợ trải nghiệm dịch vụ tại Oria Spa.'
+                    : lang === 'cn'
+                    ? '您的信息受到严格保密，仅用于 Oria Spa 的预约和服务体验。'
+                    : lang === 'jp'
+                    ? 'お客様の個人情報は厳重に保護され、Oria Spaでのご予約およびサービス提供のみに使用されます。'
+                    : lang === 'kr'
+                    ? '고객님의 정보는 안전하게 보호되며, Oria Spa 예약 및 서비스 제공 목적으로만 사용됩니다.'
+                    : 'Your information is strictly confidential and used solely for booking and service experience at Oria Spa.'}
+                </span>
+              </p>
+
               {/* Number of Guests - Transparent Matching Style */}
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', borderRadius: '16px', background: 'transparent', border: '1px solid rgba(255,255,255,0.08)', marginTop: '12px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', borderRadius: '16px', background: 'transparent', border: '1px solid rgba(255,255,255,0.08)', marginBottom: '16px' }}>
                 <span style={{ fontWeight: 500, fontSize: '14px', color: '#c9a96e' }}>
                   {lang === 'vi' ? 'Số lượng khách' : lang === 'cn' ? '人数' : lang === 'jp' ? 'ご利用人数' : lang === 'kr' ? '인원수' : 'Number of Guests'}
                 </span>
@@ -925,22 +943,6 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                   </button>
                 </div>
               </div>
-
-              {/* Privacy / Security Notice */}
-              <p style={{ fontSize: '11px', color: '#8e8b9a', marginTop: '10px', display: 'flex', alignItems: 'flex-start', gap: '6px', lineHeight: 1.5 }}>
-                <span style={{ color: '#c9a96e', fontSize: '12px', marginTop: '1px' }}>🔒</span>
-                <span>
-                  {lang === 'vi'
-                    ? 'Thông tin của bạn được bảo mật tuyệt đối, chỉ phục vụ cho việc đặt lịch và hỗ trợ trải nghiệm dịch vụ tại Oria Spa.'
-                    : lang === 'cn'
-                    ? '您的信息受到严格保密，仅用于 Oria Spa 的预约和服务体验。'
-                    : lang === 'jp'
-                    ? 'お客様の個人情報は厳重に保護され、Oria Spaでのご予約およびサービス提供のみに使用されます。'
-                    : lang === 'kr'
-                    ? '고객님의 정보는 안전하게 보호되며, Oria Spa 예약 및 서비스 제공 목적으로만 사용됩니다.'
-                    : 'Your information is strictly confidential and used solely for booking and service experience at Oria Spa.'}
-                </span>
-              </p>
 
               <div className={styles.bookingBlock}>
                 <div className={styles.bookingHeading}>
