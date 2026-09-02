@@ -163,9 +163,9 @@ const pureRelaxationSections: PureRelaxationSection[] = [
         description: 'Dry technique for guests who prefer an oil-free treatment.',
         media: { type: type('massageVideo', 'image'), src: massageVideo, poster: fallbackImg, tag: 'No oil' },
         durations: [
-          { label: "70'", price: 685000, id: 'NHS0028' },
-          { label: "90'", price: 840000, id: 'NHS0029' },
-          { label: "120'", price: 1050000, id: 'NHS0030' },
+          { label: "70'", price: 685000, id: 'NHS0047' },
+          { label: "90'", price: 840000, id: 'NHS0048' },
+          { label: "120'", price: 1050000, id: 'NHS0049' },
         ],
         privilege: herbalFootSoak,
       },

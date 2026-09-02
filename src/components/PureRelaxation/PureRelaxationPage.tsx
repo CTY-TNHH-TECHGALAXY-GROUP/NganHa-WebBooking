@@ -618,7 +618,7 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
               }[currentLang] || 'Choose duration'}
             </div>
             <div className={styles.durationGrid}>
-              {active.durations.map((duration, index) => (
+              {displayDurations.map((duration, index) => (
                 <button
                   className={`${styles.durationButton} ${durationIndex === index ? styles.durationActive : ''}`}
                   key={duration.label}
