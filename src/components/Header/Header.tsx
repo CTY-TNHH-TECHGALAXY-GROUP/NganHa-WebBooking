@@ -13,6 +13,7 @@ import { readBookingCart, removeBookingCartItemByCartId, updateBookingCartItemQu
 import { useHeaderLogic, LANGUAGES } from './Header.logic';
 import { useSystemSettings } from '@/components/SystemSettingsProvider';
 import { Locale } from '@/lib/constants';
+import { getDictionary } from '@/lib/dictionaries';
 
 // 🔧 UI CONFIGURATION
 const HEADER_TRANSITION_DURATION = 0.3;
@@ -159,6 +160,7 @@ const Header = () => {
   const { systemSettings, getLocalizedText } = useSystemSettings();
   const hpNav = systemSettings?.homepage_content?.navigation;
   const lang = currentLang.code as Locale;
+  const dict = getDictionary(lang);
 
   const NAV_ITEMS = useMemo(() => {
     return [
@@ -366,7 +368,7 @@ const Header = () => {
                 </div>
               </div>
 
-              <a href="https://maps.app.goo.gl/8XBkjsJicXqdNsZk7" target="_blank" rel="noopener noreferrer" className="header-icon-btn text-[#f7ebc7]" aria-label="Location">
+              <a href="https://www.google.com/maps/search/?api=1&query=Oria+Spa&query_place_id=ChIJ2ULTMCAvdTERA4I7Sei7vyY" target="_blank" rel="noopener noreferrer" className="header-icon-btn text-[#f7ebc7]" aria-label="Location">
                 <MapPin size={20} className="text-[#f7ebc7]" />
               </a>
             </div>
@@ -569,27 +571,33 @@ const Header = () => {
                                   <div className="mt-2 space-y-1">
                                     {item.options?.therapist && (
                                       <p className="font-sans text-[11px] text-gray-600">
-                                        <span className="text-gray-400 capitalize">KTV:</span> {item.options.therapist === 'male' ? (currentLang.code === 'vi' ? 'Nam' : 'Male') : item.options.therapist === 'female' ? (currentLang.code === 'vi' ? 'Nữ' : 'Female') : (currentLang.code === 'vi' ? 'Ngẫu nhiên' : 'Random')}
+                                        <span className="text-gray-400 capitalize">{dict.checkout?.therapist || 'KTV'}:</span> <span style={{ textTransform: 'capitalize' }}>
+                                          {/* @ts-ignore */} 
+                                          {dict.options?.therapist_options?.[item.options.therapist?.toLowerCase()] || item.options.therapist}
+                                        </span>
                                       </p>
                                     )}
                                     {item.options?.strength && (
                                       <p className="font-sans text-[11px] text-gray-600">
-                                        <span className="text-gray-400 capitalize">Lực:</span> {item.options.strength === 'light' ? (currentLang.code === 'vi' ? 'Nhẹ' : 'Light') : item.options.strength === 'medium' ? (currentLang.code === 'vi' ? 'Vừa' : 'Medium') : (currentLang.code === 'vi' ? 'Mạnh' : 'Strong')}
+                                        <span className="text-gray-400 capitalize">{dict.checkout?.strength || 'Lực'}:</span> <span style={{ textTransform: 'capitalize' }}>
+                                          {/* @ts-ignore */} 
+                                          {dict.options?.strength_levels?.[item.options.strength?.toLowerCase()] || item.options.strength}
+                                        </span>
                                       </p>
                                     )}
                                     {item.options?.bodyParts?.focus && item.options.bodyParts.focus.length > 0 && (
                                       <p className="font-sans text-[11px] text-gray-600">
-                                        <span className="text-gray-400 capitalize">{currentLang.code === 'vi' ? 'Tập trung:' : 'Focus:'}</span> {item.options.bodyParts.focus.length >= 8 ? (currentLang.code === 'vi' ? 'Toàn thân' : 'Full Body') : item.options.bodyParts.focus.map(p => translatePart(p, currentLang.code)).join(', ')}
+                                        <span className="text-gray-400 capitalize">{dict.checkout?.focus || (currentLang.code === 'vi' ? 'Tập trung:' : 'Focus:')}</span> {item.options.bodyParts.focus.length >= 8 ? (dict.custom_for_you?.full_body || (currentLang.code === 'vi' ? 'Toàn thân' : 'Full Body')) : item.options.bodyParts.focus.map(p => translatePart(p, currentLang.code)).join(', ')}
                                       </p>
                                     )}
                                     {item.options?.bodyParts?.avoid && item.options.bodyParts.avoid.length > 0 && (
                                       <p className="font-sans text-[11px] text-gray-600">
-                                        <span className="text-gray-400 capitalize">{currentLang.code === 'vi' ? 'Tránh:' : 'Avoid:'}</span> {item.options.bodyParts.avoid.map(p => translatePart(p, currentLang.code)).join(', ')}
+                                        <span className="text-gray-400 capitalize">{dict.checkout?.avoid || (currentLang.code === 'vi' ? 'Tránh:' : 'Avoid:')}</span> {item.options.bodyParts.avoid.map(p => translatePart(p, currentLang.code)).join(', ')}
                                       </p>
                                     )}
                                     {item.options?.addons?.privateRoom && (
                                       <p className="font-sans text-[11px] text-gray-600">
-                                        <span className="text-gray-400 capitalize">{currentLang.code === 'vi' ? 'Add-on:' : 'Add-on:'}</span> <span className="text-[#c9a96e]">{currentLang.code === 'vi' ? 'Phòng riêng (+105K)' : 'Private Room (+105K)'}</span>
+                                        <span className="text-gray-400 capitalize">Add-on:</span> <span className="text-[#c9a96e]">{currentLang.code === 'vi' ? 'Phòng riêng (+105K)' : currentLang.code === 'cn' ? '包间 (+105K)' : currentLang.code === 'kr' ? '프라이빗 룸 (+105K)' : currentLang.code === 'jp' ? '個室 (+105K)' : 'Private Room (+105K)'}</span>
                                       </p>
                                     )}
                                   </div>

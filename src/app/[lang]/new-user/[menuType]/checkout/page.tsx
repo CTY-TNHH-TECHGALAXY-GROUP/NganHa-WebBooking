@@ -989,32 +989,38 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                     <div style={{ marginTop: '8px', paddingTop: '8px', borderTop: '1px solid rgba(255, 255, 255, 0.05)' }}>
                       {item.options?.therapist && (
                         <div className={styles.detail}>
-                          <span style={{ fontSize: '12px' }}>{lang === 'vi' ? 'KTV' : 'Therapist'}</span>
-                          <strong style={{ fontSize: '12px' }}>{item.options.therapist === 'male' ? (lang === 'vi' ? 'Nam' : 'Male') : item.options.therapist === 'female' ? (lang === 'vi' ? 'Nữ' : 'Female') : (lang === 'vi' ? 'Ngẫu nhiên' : 'Random')}</strong>
+                          <span style={{ fontSize: '12px' }}>{dict.checkout?.therapist || (lang === 'vi' ? 'KTV' : 'Therapist')}</span>
+                          <strong style={{ fontSize: '12px', textTransform: 'capitalize' }}>
+                            {/* @ts-ignore */}
+                            {dict.options?.therapist_options?.[item.options.therapist?.toLowerCase()] || item.options.therapist}
+                          </strong>
                         </div>
                       )}
                       {item.options?.strength && (
                         <div className={styles.detail}>
-                          <span style={{ fontSize: '12px' }}>{lang === 'vi' ? 'Lực massage' : 'Strength'}</span>
-                          <strong style={{ fontSize: '12px' }}>{item.options.strength === 'light' ? (lang === 'vi' ? 'Nhẹ' : 'Light') : item.options.strength === 'medium' ? (lang === 'vi' ? 'Vừa' : 'Medium') : (lang === 'vi' ? 'Mạnh' : 'Strong')}</strong>
+                          <span style={{ fontSize: '12px' }}>{dict.checkout?.strength || (lang === 'vi' ? 'Lực massage' : 'Strength')}</span>
+                          <strong style={{ fontSize: '12px', textTransform: 'capitalize' }}>
+                            {/* @ts-ignore */}
+                            {dict.options?.strength_levels?.[item.options.strength?.toLowerCase()] || item.options.strength}
+                          </strong>
                         </div>
                       )}
                       {item.options?.bodyParts?.focus && item.options.bodyParts.focus.length > 0 && (
                         <div className={styles.detail}>
-                          <span style={{ fontSize: '12px' }}>{lang === 'vi' ? 'Vùng tập trung' : 'Focus Area'}</span>
-                          <strong style={{ fontSize: '12px', textAlign: 'right', maxWidth: '60%' }}>{item.options.bodyParts.focus.length >= 8 ? (lang === 'vi' ? 'Toàn thân' : 'Full Body') : item.options.bodyParts.focus.map(p => translatePart(p, lang)).join(', ')}</strong>
+                          <span style={{ fontSize: '12px' }}>{dict.checkout?.focus || (lang === 'vi' ? 'Vùng tập trung' : 'Focus Area')}</span>
+                          <strong style={{ fontSize: '12px', textAlign: 'right', maxWidth: '60%' }}>{item.options.bodyParts.focus.length >= 8 ? (dict.custom_for_you?.full_body || (lang === 'vi' ? 'Toàn thân' : 'Full Body')) : item.options.bodyParts.focus.map(p => translatePart(p, lang)).join(', ')}</strong>
                         </div>
                       )}
                       {item.options?.bodyParts?.avoid && item.options.bodyParts.avoid.length > 0 && (
                         <div className={styles.detail}>
-                          <span style={{ fontSize: '12px' }}>{lang === 'vi' ? 'Vùng cần tránh' : 'Avoid Area'}</span>
+                          <span style={{ fontSize: '12px' }}>{dict.checkout?.avoid || (lang === 'vi' ? 'Vùng cần tránh' : 'Avoid Area')}</span>
                           <strong style={{ fontSize: '12px', textAlign: 'right', maxWidth: '60%', color: '#ef4444' }}>{item.options.bodyParts.avoid.map(p => translatePart(p, lang)).join(', ')}</strong>
                         </div>
                       )}
                       {item.options?.addons?.privateRoom && (
                         <div className={styles.detail}>
-                          <span style={{ fontSize: '12px' }}>{lang === 'vi' ? 'Add-on' : 'Add-on'}</span>
-                          <strong style={{ fontSize: '12px', textAlign: 'right', maxWidth: '60%', color: '#c9a96e' }}>{lang === 'vi' ? 'Phòng riêng (+105K)' : 'Private Room (+105K)'}</strong>
+                          <span style={{ fontSize: '12px' }}>Add-on</span>
+                          <strong style={{ fontSize: '12px', textAlign: 'right', maxWidth: '60%', color: '#c9a96e' }}>{lang === 'vi' ? 'Phòng riêng (+105K)' : lang === 'cn' ? '包间 (+105K)' : lang === 'kr' ? '프라이빗 룸 (+105K)' : lang === 'jp' ? '個室 (+105K)' : 'Private Room (+105K)'}</strong>
                         </div>
                       )}
                     </div>
