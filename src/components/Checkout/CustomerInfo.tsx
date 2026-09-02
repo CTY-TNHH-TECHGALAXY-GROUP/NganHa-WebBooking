@@ -15,8 +15,8 @@ export default function CustomerInfo({ lang, dict, info, onChange }: CustomerInf
     );
 
     // Extract raw labels for buttons (removing the placeholder hints in parenthesis if any)
-    const emailLabel = dict.checkout.email?.split('(')[0]?.trim() || 'Email';
-    const phoneLabel = dict.checkout.phone?.split('(')[0]?.trim() || 'Phone';
+    const emailLabel = dict.checkout.email?.split('(')?.[0]?.trim() || 'Email';
+    const phoneLabel = dict.checkout.phone?.split('(')?.[0]?.trim() || 'Phone';
 
     return (
         <div className="bg-[#1c1c1e] text-white p-5 rounded-3xl shadow-sm border border-white/5">

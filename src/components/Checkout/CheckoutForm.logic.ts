@@ -37,7 +37,7 @@ export const useCheckoutFormLogic = (
     const getInitialData = (): CheckoutFormData => {
         if (isAuthUser && user) {
             return {
-                fullName: user.user_metadata?.full_name || user.email?.split('@')[0] || '',
+                fullName: user.user_metadata?.full_name || user.email?.split('@')?.[0] || '',
                 phone: user.phone || '',
                 email: user.email || '',
             };
