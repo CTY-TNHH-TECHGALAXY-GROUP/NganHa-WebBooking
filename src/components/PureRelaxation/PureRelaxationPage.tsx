@@ -554,9 +554,31 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
             </div>
             <div className={styles.pillGrid}>
               {section.services.map((service, index) => {
-                const svcDurId = service.durations?.[0]?.id || service.variants?.[0]?.durations?.[0]?.id;
-                const svDb = dbServices.find(s => s.id === svcDurId);
-                const svcName = svDb?.names?.[currentLang] || (currentLang === 'vi' ? (service.variants?.[0]?.subtitle || service.name) : service.name);
+                let svcName = service.name;
+                if (hasVariants(service)) {
+                  const groupTranslations: Record<string, Record<string, string>> = {
+                    'Hair Wash & Facial': {
+                      vi: 'Gội Đầu & Da Mặt',
+                      en: 'Hair Wash & Facial',
+                      cn: '洗发与面部护理',
+                      jp: '洗髪＆フェイシャル',
+                      kr: '샴푸 & 페이셜'
+                    },
+                    'Heel Care & Nail Cut': {
+                      vi: 'Chà Gót & Cắt Móng',
+                      en: 'Heel Care & Nail Cut',
+                      cn: '脚跟护理与修甲',
+                      jp: 'かかとケア＆爪切り',
+                      kr: '발뒤꿈치 케어 & 손발톱 정리'
+                    }
+                  };
+                  svcName = groupTranslations[service.name]?.[currentLang] || service.name;
+                } else {
+                  const svcDurId = service.durations?.[0]?.id;
+                  const svDb = dbServices.find(s => s.id === svcDurId);
+                  svcName = svDb?.names?.[currentLang] || (currentLang === 'vi' ? (service.variants?.[0]?.subtitle || service.name) : service.name);
+                }
+
                 return (
                   <button
                     className={`${styles.pill} ${serviceIndex === index ? styles.pillActive : ''}`}

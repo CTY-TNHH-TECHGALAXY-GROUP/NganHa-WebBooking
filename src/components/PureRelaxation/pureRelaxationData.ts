@@ -299,15 +299,7 @@ const pureRelaxationSections: PureRelaxationSection[] = [
           { name: 'Heel · Nail Cut · Body', subtitle: 'Chà gót - Cắt móng - Body', privilege: refreshingTea, media: { type: type('massageVideo', 'image'), src: massageVideo, poster: fallbackImg, tag: 'Body' }, durations: [{ label: "90'", price: 810000, id: 'NHS1018' }, { label: "120'", price: 1105000, id: 'NHS1019' }] },
         ],
       },
-      {
-        name: 'King Combo',
-        description: 'Razor Shave · Ear Clean · Facial · Heel Skin Shave · Hair Wash · 4-Hand Body Massage.',
-        media: { type: type('spaVideo', 'image'), src: spaVideo, poster: fallbackImg, tag: 'Signature' },
-        durations: [
-          { label: "150'", price: 1575000, id: 'NHS1008' },
-        ],
-        privilege: signatureTea,
-      },
+
     ],
   },
   {
@@ -378,7 +370,16 @@ const pureRelaxationSections: PureRelaxationSection[] = [
           { label: "90'", price: 1000000, id: 'NHP0003' },
           { label: "120'", price: 1300000, id: 'NHP0004' }
         ]
-      }
+      },
+      {
+        name: 'King Combo',
+        description: 'Razor Shave · Ear Clean · Facial · Heel Skin Shave · Hair Wash · 4-Hand Body Massage.',
+        media: { type: type('spaVideo', 'image'), src: spaVideo, poster: fallbackImg, tag: 'Signature' },
+        durations: [
+          { label: "150'", price: 1575000, id: 'NHS1008' },
+        ],
+        privilege: signatureTea,
+      },
     ]
   }
 ];
