@@ -85,6 +85,7 @@ const CustomizationSummary = ({ item, lang, onClick }: { item: CartItem & { tota
                         <span className="text-gray-400">{dict.checkout?.strength}</span>
                     </div>
                     <span className={`font-bold capitalize ${getStrengthColor(options.strength)}`}>
+                        {/* @ts-ignore */}
                         {dict.options?.strength_levels?.[options.strength?.toLowerCase()] || options.strength}
                     </span>
                 </div>
@@ -98,6 +99,7 @@ const CustomizationSummary = ({ item, lang, onClick }: { item: CartItem & { tota
                         <span className="text-gray-400">{dict.checkout?.therapist}</span>
                     </div>
                     <span className={`font-bold capitalize ${getTherapistColor(options.therapist)}`}>
+                        {/* @ts-ignore */}
                         {dict.options?.therapist_options?.[options.therapist?.toLowerCase()] || options.therapist}
                     </span>
                 </div>
