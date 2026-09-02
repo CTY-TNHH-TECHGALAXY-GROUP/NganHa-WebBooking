@@ -419,17 +419,19 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
 
   const buildServicePayload = useCallback((): Service => {
     const minutes = Number(activeDuration.label.replace(/\D/g, '')) || 0;
+    const dbService = dbServices.find(s => s.id === selectedCartServiceId) || dbServices.find(s => s.id === activeDuration.id);
+    
     return {
       id: selectedCartServiceId,
       cat: `Pure Relaxation · ${section.title}`,
-      names: {
+      names: dbService?.names || {
         vi: active.name,
         en: active.name,
         cn: active.name,
         jp: active.name,
         kr: active.name,
       },
-      descriptions: {
+      descriptions: dbService?.descriptions || {
         vi: active.subtitle,
         en: active.subtitle,
         cn: active.subtitle,
@@ -443,7 +445,7 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
       timeDisplay: activeDuration.label,
       menuType: 'standard',
     };
-  }, [active, activeDuration, section.title, selectedCartServiceId, displayMedia]);
+  }, [active, activeDuration, section.title, selectedCartServiceId, displayMedia, dbServices]);
 
   const handleSaveCustom = useCallback((prefs: CustomPreferences) => {
     lastAddedCartIds.forEach(cartId => {
@@ -511,56 +513,110 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
     });
   }, [addToCart, currentLang, router]);
 
+  const translatedName = useMemo(() => {
+    if (!dbServices.length) return active.name;
+    const firstDurationId = active.durations[0]?.id;
+    const dbSvc = dbServices.find(s => s.id === firstDurationId);
+    if (dbSvc && dbSvc.names && dbSvc.names[currentLang]) {
+      return dbSvc.names[currentLang];
+    }
+    return active.name;
+  }, [active.name, active.durations, dbServices, currentLang]);
+
+  const translatedSubtitle = useMemo(() => {
+    if (!dbServices.length) return active.subtitle;
+    const firstDurationId = active.durations[0]?.id;
+    const dbSvc = dbServices.find(s => s.id === firstDurationId);
+    if (dbSvc && dbSvc.descriptions && dbSvc.descriptions[currentLang]) {
+      return dbSvc.descriptions[currentLang];
+    }
+    return active.subtitle;
+  }, [active.subtitle, active.durations, dbServices, currentLang]);
+
   return (
     <section className={styles.serviceSection} id={section.id}>
       <div className={styles.sectionGrid}>
         <div className={styles.mediaPane}>
-          {active.media && <MediaPreview media={active.media} label={active.name} />}
+          {active.media && <MediaPreview media={active.media} label={translatedName} />}
         </div>
 
         <div className={styles.sectionContent}>
 
           <div className={styles.choiceBlock}>
-            <div className={styles.choiceLabel}>Choose service</div>
+            <div className={styles.choiceLabel}>
+              {{
+                vi: 'Chọn dịch vụ',
+                en: 'Choose service',
+                cn: '选择服务',
+                jp: 'サービスを選択',
+                kr: '서비스 선택'
+              }[currentLang] || 'Choose service'}
+            </div>
             <div className={styles.pillGrid}>
-              {section.services.map((service, index) => (
-                <button
-                  className={`${styles.pill} ${serviceIndex === index ? styles.pillActive : ''}`}
-                  key={service.name}
-                  type="button"
-                  onClick={() => setServiceIndex(index)}
-                >
-                  {service.name}
-                </button>
-              ))}
+              {section.services.map((service, index) => {
+                const svcDurId = service.durations?.[0]?.id || service.variants?.[0]?.durations?.[0]?.id;
+                const svDb = dbServices.find(s => s.id === svcDurId);
+                const svcName = svDb?.names?.[currentLang] || (currentLang === 'vi' ? (service.variants?.[0]?.subtitle || service.name) : service.name);
+                return (
+                  <button
+                    className={`${styles.pill} ${serviceIndex === index ? styles.pillActive : ''}`}
+                    key={service.name}
+                    type="button"
+                    onClick={() => setServiceIndex(index)}
+                  >
+                    {svcName}
+                  </button>
+                );
+              })}
             </div>
           </div>
 
           {hasVariants(selectedService) && (
             <div className={styles.choiceBlock}>
-              <div className={styles.choiceLabel}>Choose package</div>
+              <div className={styles.choiceLabel}>
+                {{
+                  vi: 'Chọn gói',
+                  en: 'Choose package',
+                  cn: '选择套餐',
+                  jp: 'パッケージを選択',
+                  kr: '패키지 선택'
+                }[currentLang] || 'Choose package'}
+              </div>
               <div className={styles.variantStack}>
-                {selectedService.variants.map((variant, index) => (
-                  <button
-                    className={`${styles.variantButton} ${variantIndex === index ? styles.variantActive : ''}`}
-                    key={variant.name}
-                    type="button"
-                    onClick={() => setVariantIndex(index)}
-                  >
-                    <span>{currentLang === 'vi' ? (variant.subtitle || variant.name) : variant.name}</span>
-                  </button>
-                ))}
+                {selectedService.variants.map((variant, index) => {
+                  const varDurId = variant.durations?.[0]?.id;
+                  const varDb = dbServices.find(s => s.id === varDurId);
+                  const varName = varDb?.names?.[currentLang] || (currentLang === 'vi' ? (variant.subtitle || variant.name) : variant.name);
+                  return (
+                    <button
+                      className={`${styles.variantButton} ${variantIndex === index ? styles.variantActive : ''}`}
+                      key={variant.name}
+                      type="button"
+                      onClick={() => setVariantIndex(index)}
+                    >
+                      <span>{varName}</span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
           )}
 
           <div className={styles.selectedPanel}>
-            <h3>{active.name}</h3>
-            <p>{active.subtitle}</p>
+            <h3>{translatedName}</h3>
+            <p>{translatedSubtitle}</p>
           </div>
 
           <div className={styles.choiceBlock}>
-            <div className={styles.choiceLabel}>Choose duration</div>
+            <div className={styles.choiceLabel}>
+              {{
+                vi: 'Chọn thời gian',
+                en: 'Choose duration',
+                cn: '选择时长',
+                jp: '期間を選択',
+                kr: '시간 선택'
+              }[currentLang] || 'Choose duration'}
+            </div>
             <div className={styles.durationGrid}>
               {active.durations.map((duration, index) => (
                 <button
@@ -578,7 +634,15 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
 
           <div className={styles.purchaseRow}>
             <div>
-              <span className={styles.priceLabel}>Selected price</span>
+              <span className={styles.priceLabel}>
+                {{
+                  vi: 'Giá',
+                  en: 'Selected price',
+                  cn: '所选价格',
+                  jp: '選択した価格',
+                  kr: '선택한 가격'
+                }[currentLang] || 'Selected price'}
+              </span>
               <strong>{formatVnd(activeDuration.price)}</strong>
               <div style={{ fontSize: '12px', color: '#7a705e', marginTop: '4px', fontStyle: 'italic', letterSpacing: '0.02em' }}>
                 *{{
@@ -592,7 +656,7 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
             </div>
             <div className={styles.actions}>
               {selectedCartQuantity > 0 ? (
-                <div className={styles.quantityStepper} aria-label={`${active.name} quantity in cart`}>
+                <div className={styles.quantityStepper} aria-label={`${translatedName} quantity in cart`}>
                   <button type="button" onClick={decreaseQuantity} aria-label="Decrease quantity">
                     -
                   </button>
@@ -604,11 +668,23 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
               ) : (
                 <button className={styles.secondaryButton} type="button" onClick={addToCart}>
                   <ShoppingBag size={17} />
-                  Add to cart
+                  {{
+                    vi: 'Thêm vào giỏ',
+                    en: 'Add to cart',
+                    cn: '加入购物车',
+                    jp: 'カートに追加',
+                    kr: '장바구니에 추가'
+                  }[currentLang] || 'Add to cart'}
                 </button>
               )}
               <button className={styles.primaryButton} type="button" onClick={bookNow}>
-                Book now
+                {{
+                  vi: 'Đặt ngay',
+                  en: 'Book now',
+                  cn: '立即预订',
+                  jp: '今すぐ予約',
+                  kr: '지금 예약'
+                }[currentLang] || 'Book now'}
               </button>
             </div>
           </div>
@@ -619,7 +695,15 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
             <div className={styles.privilegeCard}>
               <img src={active.privilege.image} alt={active.privilege.title} loading="lazy" />
               <div>
-                <span className={styles.choiceLabel}>Privilege Included</span>
+                <span className={styles.choiceLabel}>
+                  {{
+                    vi: 'Ưu đãi bao gồm',
+                    en: 'Privilege Included',
+                    cn: '包含特权',
+                    jp: '特典が含まれています',
+                    kr: '특전 포함'
+                  }[currentLang] || 'Privilege Included'}
+                </span>
                 <h4>{active.privilege.title}</h4>
                 <p>{active.privilege.copy}</p>
                 <small>

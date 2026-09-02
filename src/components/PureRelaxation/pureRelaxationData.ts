@@ -185,8 +185,8 @@ const pureRelaxationSections: PureRelaxationSection[] = [
         description: 'Relax tired feet and lower legs with focused pressure and release.',
         media: { type: type('footVideo', 'image'), src: footVideo, poster: footImg, tag: 'Foot ritual' },
         durations: [
-          { label: "45'", price: 315000 },
-          { label: "60'", price: 395000 },
+          { label: "45'", price: 315000, id: 'NHS0100' },
+          { label: "60'", price: 395000, id: 'NHS0101' },
         ],
         privilege: warmTowel,
       },
@@ -212,8 +212,8 @@ const pureRelaxationSections: PureRelaxationSection[] = [
         description: 'Focused ear-cleaning with a quiet, careful pace.',
         media: { type: type('herbalImg', 'image'), src: herbalImg, tag: 'Ear clean' },
         durations: [
-          { label: "30'", price: 315000 },
-          { label: "45'", price: 385000 },
+          { label: "30'", price: 315000, id: 'NHS0600' },
+          { label: "45'", price: 385000, id: 'NHS0601' },
         ],
         privilege: eyePillow,
       },
@@ -375,8 +375,8 @@ const pureRelaxationSections: PureRelaxationSection[] = [
         description: 'Premium massage and care in a private VIP setting.',
         media: { type: 'image', src: fallbackImg, tag: 'VIP' },
         durations: [
-          { label: "90'", price: 1000000 },
-          { label: "120'", price: 1300000 }
+          { label: "90'", price: 1000000, id: 'NHP0003' },
+          { label: "120'", price: 1300000, id: 'NHP0004' }
         ]
       }
     ]
