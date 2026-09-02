@@ -344,7 +344,7 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
   const active = useMemo(() => getActiveItem(selectedService, variantIndex, contentMedia, currentLang), [selectedService, variantIndex, contentMedia, currentLang]);
   
   const displayDurations = useMemo(() => {
-    return active.durations.map(duration => {
+    return (active.durations || []).map(duration => {
       const dbService = dbServices.find(s => s.id === duration.id);
       return {
         ...duration,
@@ -515,7 +515,7 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
 
   const translatedName = useMemo(() => {
     if (!dbServices.length) return active.name;
-    const firstDurationId = active.durations[0]?.id;
+    const firstDurationId = active.durations?.[0]?.id;
     const dbSvc = dbServices.find(s => s.id === firstDurationId);
     if (dbSvc && dbSvc.names && dbSvc.names[currentLang]) {
       return dbSvc.names[currentLang];
@@ -525,7 +525,7 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
 
   const translatedSubtitle = useMemo(() => {
     if (!dbServices.length) return active.subtitle;
-    const firstDurationId = active.durations[0]?.id;
+    const firstDurationId = active.durations?.[0]?.id;
     const dbSvc = dbServices.find(s => s.id === firstDurationId);
     if (dbSvc && dbSvc.descriptions && dbSvc.descriptions[currentLang]) {
       return dbSvc.descriptions[currentLang];
