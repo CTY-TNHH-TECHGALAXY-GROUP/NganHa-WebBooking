@@ -37,18 +37,19 @@ const processGoogleDriveLink = (url: string) => {
     return url;
   };
 
+// 1. Service Edit Card component (defined outside parent to prevent re-mounting on state updates)
 const ServiceEditCard = ({
-service,
-contentData,
-localTextOverrides,
-uploadingId,
-successId,
-handleTextChange,
-saveTextChanges,
-handleFileUpload,
-setContentData,
-saveContent,
-setSuccessId
+  service,
+  contentData = {},
+  localTextOverrides = {},
+  uploadingId,
+  successId,
+  handleTextChange,
+  saveTextChanges,
+  handleFileUpload,
+  setContentData,
+  saveContent,
+  setSuccessId
 }: any) => {
   const [activeLang, setActiveLang] = useState('vi');
   const [isFocalEditorOpen, setIsFocalEditorOpen] = useState(false);
@@ -57,9 +58,9 @@ setSuccessId
   const isSuccessMedia = successId === serviceName;
   const isSuccessText = successId === `${serviceName}-text`;
 
-  const cData = localTextOverrides[serviceName] !== undefined 
+  const cData = localTextOverrides?.[serviceName] !== undefined 
     ? localTextOverrides[serviceName] 
-    : (contentData[serviceName] || {});
+    : (contentData?.[serviceName] || {});
 
   const mediaType = cData.type || service.media?.type || 'image';
   const mediaSrc = cData.src || service.media?.src;
@@ -72,7 +73,7 @@ setSuccessId
   const privCopy = langData.privilege?.copy !== undefined ? langData.privilege.copy : '';
   const privTime = langData.privilege?.time !== undefined ? langData.privilege.time : '';
 
-  const hasChanges = !!localTextOverrides[serviceName];
+  const hasChanges = !!localTextOverrides?.[serviceName];
 
   const handleServiceLink = async () => {
     const url = window.prompt('Nhập đường link (URL) ảnh hoặc video:');
@@ -144,7 +145,7 @@ setSuccessId
                   className="hidden"
                   onChange={(e) => {
                     const file = e.target.files?.[0];
-                    if (file) handleFileUpload(serviceName, file, false);
+                    if (file) handleFileUpload?.(serviceName, file, false);
                   }}
                 />
               </label>
@@ -168,7 +169,7 @@ setSuccessId
                   className="hidden"
                   onChange={(e) => {
                     const file = e.target.files?.[0];
-                    if (file) handleFileUpload(serviceName, file, false);
+                    if (file) handleFileUpload?.(serviceName, file, false);
                   }}
                 />
               </label>
@@ -222,7 +223,7 @@ setSuccessId
           <textarea 
             className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none min-h-[60px]"
             value={desc}
-            onChange={(e) => handleTextChange(serviceName, activeLang, 'description', e.target.value)}
+            onChange={(e) => handleTextChange?.(serviceName, activeLang, 'description', e.target.value)}
             placeholder={`Mô tả (${activeLang.toUpperCase()})...`}
           />
         </div>
@@ -234,20 +235,20 @@ setSuccessId
               type="text"
               className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none"
               value={privTitle}
-              onChange={(e) => handleTextChange(serviceName, activeLang, 'privilege', e.target.value, 'title')}
+              onChange={(e) => handleTextChange?.(serviceName, activeLang, 'privilege', e.target.value, 'title')}
               placeholder="Tiêu đề đặc quyền..."
             />
             <textarea 
               className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none min-h-[50px]"
               value={privCopy}
-              onChange={(e) => handleTextChange(serviceName, activeLang, 'privilege', e.target.value, 'copy')}
+              onChange={(e) => handleTextChange?.(serviceName, activeLang, 'privilege', e.target.value, 'copy')}
               placeholder="Mô tả đặc quyền..."
             />
             <input 
               type="text"
               className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none"
               value={privTime}
-              onChange={(e) => handleTextChange(serviceName, activeLang, 'privilege', e.target.value, 'time')}
+              onChange={(e) => handleTextChange?.(serviceName, activeLang, 'privilege', e.target.value, 'time')}
               placeholder="Thời gian (VD: 5-10 mins)..."
             />
           </div>
@@ -255,12 +256,188 @@ setSuccessId
       </div>
 
       <button 
-        onClick={() => saveTextChanges(serviceName)}
+        onClick={() => saveTextChanges?.(serviceName)}
         disabled={!hasChanges}
         className={`mt-2 flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-bold transition-colors ${hasChanges ? 'bg-admin-gold text-[#241804] hover:bg-[#a67433]' : 'bg-admin-line text-admin-text-dim cursor-not-allowed'}`}
       >
         {isSuccessText ? <CheckCircle size={16} /> : <Save size={16} />}
         {isSuccessText ? 'Đã lưu' : 'Lưu nội dung chữ'}
+      </button>
+    </div>
+  );
+};
+
+// 2. Narrative Edit Card component (defined outside parent to prevent re-mounting on state updates)
+const NarrativeEditCard = ({
+  section,
+  contentData = {},
+  localNarrativeOverrides = {},
+  successId,
+  handleNarrativeChange,
+  saveNarrativeChanges
+}: any) => {
+  const [activeLang, setActiveLang] = useState('vi');
+  const sectionId = section.id;
+  const isSuccessText = successId === `narrative-${sectionId}`;
+
+  const existingNarratives = contentData.narratives || {};
+  const nData = localNarrativeOverrides?.[sectionId] !== undefined 
+    ? localNarrativeOverrides[sectionId] 
+    : (existingNarratives[sectionId] || {});
+
+  const langData = nData[activeLang] || {};
+  const defaults = PURE_RELAXATION_DEFAULTS[sectionId]?.[activeLang] || {};
+  const hasChanges = !!localNarrativeOverrides?.[sectionId];
+
+  const getValue = (field: string) => {
+    return langData[field] !== undefined ? langData[field] : (defaults[field] || '');
+  };
+
+  const isVip = sectionId === 'vip-package';
+
+  return (
+    <div className="bg-admin-bg p-5 rounded-xl border border-admin-line flex flex-col gap-4">
+      <div className="flex gap-1 border-b border-admin-line pb-3">
+        {LANGUAGES.map(lang => (
+          <button
+            key={lang.id}
+            onClick={() => setActiveLang(lang.id)}
+            className={`px-4 py-1.5 rounded-md text-xs font-bold transition-colors ${activeLang === lang.id ? 'bg-admin-gold text-[#241804]' : 'bg-admin-panel text-admin-text-dim hover:text-admin-gold'}`}
+          >
+            {lang.label}
+          </button>
+        ))}
+      </div>
+
+      <div className="flex flex-col xl:flex-row gap-6">
+        <div className="flex-1 space-y-3">
+          {!isVip && (
+            <>
+              <div>
+                <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Eyebrow (Tiêu đề nhỏ)</label>
+                <input 
+                  className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none"
+                  value={getValue('eyebrow')}
+                  onChange={(e) => handleNarrativeChange?.(sectionId, activeLang, 'eyebrow', e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Quote (Trích dẫn)</label>
+                <textarea 
+                  className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none min-h-[50px]"
+                  value={getValue('quote')}
+                  onChange={(e) => handleNarrativeChange?.(sectionId, activeLang, 'quote', e.target.value)}
+                />
+              </div>
+            </>
+          )}
+
+          <div>
+            <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Headline (Tiêu đề chính)</label>
+            <input 
+              className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none"
+              value={getValue('headline')}
+              onChange={(e) => handleNarrativeChange?.(sectionId, activeLang, 'headline', e.target.value)}
+            />
+          </div>
+          <div>
+            <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Lead (Đoạn mở đầu)</label>
+            <textarea 
+              className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none min-h-[60px]"
+              value={getValue('lead')}
+              onChange={(e) => handleNarrativeChange?.(sectionId, activeLang, 'lead', e.target.value)}
+            />
+          </div>
+
+          {!isVip && (
+            <>
+              <div>
+                <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Body 1</label>
+                <textarea 
+                  className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none min-h-[60px]"
+                  value={getValue('body1')}
+                  onChange={(e) => handleNarrativeChange?.(sectionId, activeLang, 'body1', e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Body 2</label>
+                <textarea 
+                  className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none min-h-[60px]"
+                  value={getValue('body2')}
+                  onChange={(e) => handleNarrativeChange?.(sectionId, activeLang, 'body2', e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Body 3</label>
+                <textarea 
+                  className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none min-h-[60px]"
+                  value={getValue('body3')}
+                  onChange={(e) => handleNarrativeChange?.(sectionId, activeLang, 'body3', e.target.value)}
+                />
+              </div>
+            </>
+          )}
+
+          {isVip && (
+            <>
+              <div>
+                <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Paragraphs (Nội dung đoạn văn - Tách bằng dấu Enter)</label>
+                <textarea 
+                  className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none min-h-[100px]"
+                  value={Array.isArray(langData.paragraphs) ? langData.paragraphs.join('\n') : getValue('paragraphs')}
+                  onChange={(e) => handleNarrativeChange?.(sectionId, activeLang, 'paragraphs', e.target.value.split('\n'))}
+                />
+              </div>
+              <div>
+                <label className="text-[10px] uppercase font-bold text-admin-gold mb-1 block">Special Text</label>
+                <textarea 
+                  className="w-full bg-admin-panel border border-admin-gold/50 rounded-lg p-2 text-sm text-admin-gold focus:border-admin-gold focus:outline-none min-h-[60px]"
+                  value={getValue('specialText')}
+                  onChange={(e) => handleNarrativeChange?.(sectionId, activeLang, 'specialText', e.target.value)}
+                />
+              </div>
+            </>
+          )}
+        </div>
+        
+        <div className="w-full xl:w-[280px] shrink-0">
+           <div className="bg-[#f5f1ea] text-[#241804] p-5 rounded-xl border border-admin-line shadow-inner text-[10px] font-sans sticky top-6">
+              <div className="text-center font-bold mb-4 border-b border-[#241804]/10 pb-2 uppercase tracking-widest text-[#a67433]">
+                 Vị trí trên Template
+              </div>
+              {!isVip ? (
+                <div className="space-y-2 text-center">
+                  <div className="text-[#a67433] tracking-widest uppercase font-bold text-[8px] border border-dashed border-[#a67433] p-1 bg-[#a67433]/10">[Eyebrow]</div>
+                  <div className="text-xl font-serif border border-dashed border-gray-400 p-1 bg-white">[Headline]</div>
+                  <div className="font-medium text-[10px] leading-relaxed border border-dashed border-gray-400 p-1 bg-white">[Lead]</div>
+                  <div className="italic border-l-2 border-[#a67433] pl-2 text-left text-[10px] bg-white p-1 border-dashed border border-gray-400">[Quote]</div>
+                  <div className="text-left text-gray-500 border border-dashed border-gray-400 p-1 bg-white">[Body 1]</div>
+                  <div className="text-left text-gray-500 border border-dashed border-gray-400 p-1 bg-white">[Body 2]</div>
+                  <div className="text-left text-gray-500 border border-dashed border-gray-400 p-1 bg-white">[Body 3]</div>
+                </div>
+              ) : (
+                <div className="space-y-3 text-center">
+                  <div className="text-xl font-serif border border-dashed border-gray-400 p-1 bg-white text-[#241804]">[Headline]</div>
+                  <div className="font-medium text-[10px] leading-relaxed border border-dashed border-gray-400 p-1 bg-white">[Lead]</div>
+                  <div className="text-left text-gray-500 border border-dashed border-gray-400 p-2 bg-white flex flex-col gap-1.5">
+                     <div>[Paragraphs - dòng 1]</div>
+                     <div>[Paragraphs - dòng 2]</div>
+                     <div>[Paragraphs - dòng 3]</div>
+                  </div>
+                  <div className="text-[#a67433] italic text-lg font-serif border border-dashed border-[#a67433] p-2 bg-[#a67433]/10">[Special Text]</div>
+                </div>
+              )}
+           </div>
+        </div>
+      </div>
+
+      <button 
+        onClick={() => saveNarrativeChanges?.(sectionId)}
+        disabled={!hasChanges}
+        className={`mt-2 flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-bold transition-colors ${hasChanges ? 'bg-admin-gold text-[#241804] hover:bg-[#a67433]' : 'bg-admin-line text-admin-text-dim cursor-not-allowed'}`}
+      >
+        {isSuccessText ? <CheckCircle size={16} /> : <Save size={16} />}
+        {isSuccessText ? 'Đã lưu' : 'Lưu Narrative'}
       </button>
     </div>
   );
@@ -375,7 +552,6 @@ const PureAdminPage = () => {
     await saveContent(newMediaData);
   };
 
-
   const handleLinkInputArray = async (keyPath: string) => {
     const url = window.prompt('Nhập đường link (URL) ảnh:');
     if (!url || !url.trim()) return;
@@ -421,8 +597,6 @@ const PureAdminPage = () => {
     setTimeout(() => setSuccessId(null), 3000);
   };
 
-
-
   // --- NARRATIVE EDITING ---
   const handleNarrativeChange = (sectionId: string, lang: string, field: string, value: any) => {
     setLocalNarrativeOverrides((prev: any) => {
@@ -454,186 +628,10 @@ const PureAdminPage = () => {
     setTimeout(() => setSuccessId(null), 3000);
   };
 
-  const NarrativeEditCard = ({
-  section,
-  contentData,
-  localNarrativeOverrides,
-  successId,
-  handleNarrativeChange,
-  saveNarrativeChanges
-}: any) => {
-    const [activeLang, setActiveLang] = useState('vi');
-    const sectionId = section.id;
-    const isSuccessText = successId === `narrative-${sectionId}`;
-
-    const existingNarratives = contentData.narratives || {};
-    const nData = localNarrativeOverrides[sectionId] !== undefined 
-      ? localNarrativeOverrides[sectionId] 
-      : (existingNarratives[sectionId] || {});
-
-    const langData = nData[activeLang] || {};
-    const defaults = PURE_RELAXATION_DEFAULTS[sectionId]?.[activeLang] || {};
-    const hasChanges = !!localNarrativeOverrides[sectionId];
-
-    const getValue = (field: string) => {
-      return langData[field] !== undefined ? langData[field] : (defaults[field] || '');
-    };
-
-    const isVip = sectionId === 'vip-package';
-
-    return (
-      <div className="bg-admin-bg p-5 rounded-xl border border-admin-line flex flex-col gap-4">
-        <div className="flex gap-1 border-b border-admin-line pb-3">
-          {LANGUAGES.map(lang => (
-            <button
-              key={lang.id}
-              onClick={() => setActiveLang(lang.id)}
-              className={`px-4 py-1.5 rounded-md text-xs font-bold transition-colors ${activeLang === lang.id ? 'bg-admin-gold text-[#241804]' : 'bg-admin-panel text-admin-text-dim hover:text-admin-gold'}`}
-            >
-              {lang.label}
-            </button>
-          ))}
-        </div>
-
-        <div className="flex flex-col xl:flex-row gap-6">
-          <div className="flex-1 space-y-3">
-            {!isVip && (
-              <>
-                <div>
-                  <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Eyebrow (Tiêu đề nhỏ)</label>
-                  <input 
-                    className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none"
-                    value={getValue('eyebrow')}
-                    onChange={(e) => handleNarrativeChange(sectionId, activeLang, 'eyebrow', e.target.value)}
-                  />
-                </div>
-                <div>
-                  <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Quote (Trích dẫn)</label>
-                  <textarea 
-                    className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none min-h-[50px]"
-                    value={getValue('quote')}
-                    onChange={(e) => handleNarrativeChange(sectionId, activeLang, 'quote', e.target.value)}
-                  />
-                </div>
-              </>
-            )}
-
-            <div>
-              <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Headline (Tiêu đề chính)</label>
-              <input 
-                className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none"
-                value={getValue('headline')}
-                onChange={(e) => handleNarrativeChange(sectionId, activeLang, 'headline', e.target.value)}
-              />
-            </div>
-            <div>
-              <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Lead (Đoạn mở đầu)</label>
-              <textarea 
-                className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none min-h-[60px]"
-                value={getValue('lead')}
-                onChange={(e) => handleNarrativeChange(sectionId, activeLang, 'lead', e.target.value)}
-              />
-            </div>
-
-            {!isVip && (
-              <>
-                <div>
-                  <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Body 1</label>
-                  <textarea 
-                    className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none min-h-[60px]"
-                    value={getValue('body1')}
-                    onChange={(e) => handleNarrativeChange(sectionId, activeLang, 'body1', e.target.value)}
-                  />
-                </div>
-                <div>
-                  <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Body 2</label>
-                  <textarea 
-                    className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none min-h-[60px]"
-                    value={getValue('body2')}
-                    onChange={(e) => handleNarrativeChange(sectionId, activeLang, 'body2', e.target.value)}
-                  />
-                </div>
-                <div>
-                  <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Body 3</label>
-                  <textarea 
-                    className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none min-h-[60px]"
-                    value={getValue('body3')}
-                    onChange={(e) => handleNarrativeChange(sectionId, activeLang, 'body3', e.target.value)}
-                  />
-                </div>
-              </>
-            )}
-
-            {isVip && (
-              <>
-                <div>
-                  <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Paragraphs (Nội dung đoạn văn - Tách bằng dấu Enter)</label>
-                  <textarea 
-                    className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none min-h-[100px]"
-                    value={Array.isArray(langData.paragraphs) ? langData.paragraphs.join('\n') : getValue('paragraphs')}
-                    onChange={(e) => handleNarrativeChange(sectionId, activeLang, 'paragraphs', e.target.value.split('\n'))}
-                  />
-                </div>
-                <div>
-                  <label className="text-[10px] uppercase font-bold text-admin-gold mb-1 block">Special Text</label>
-                  <textarea 
-                    className="w-full bg-admin-panel border border-admin-gold/50 rounded-lg p-2 text-sm text-admin-gold focus:border-admin-gold focus:outline-none min-h-[60px]"
-                    value={getValue('specialText')}
-                    onChange={(e) => handleNarrativeChange(sectionId, activeLang, 'specialText', e.target.value)}
-                  />
-                </div>
-              </>
-            )}
-          </div>
-          
-          <div className="w-full xl:w-[280px] shrink-0">
-             <div className="bg-[#f5f1ea] text-[#241804] p-5 rounded-xl border border-admin-line shadow-inner text-[10px] font-sans sticky top-6">
-                <div className="text-center font-bold mb-4 border-b border-[#241804]/10 pb-2 uppercase tracking-widest text-[#a67433]">
-                   Vị trí trên Template
-                </div>
-                {!isVip ? (
-                  <div className="space-y-2 text-center">
-                    <div className="text-[#a67433] tracking-widest uppercase font-bold text-[8px] border border-dashed border-[#a67433] p-1 bg-[#a67433]/10">[Eyebrow]</div>
-                    <div className="text-xl font-serif border border-dashed border-gray-400 p-1 bg-white">[Headline]</div>
-                    <div className="font-medium text-[10px] leading-relaxed border border-dashed border-gray-400 p-1 bg-white">[Lead]</div>
-                    <div className="italic border-l-2 border-[#a67433] pl-2 text-left text-[10px] bg-white p-1 border-dashed border border-gray-400">[Quote]</div>
-                    <div className="text-left text-gray-500 border border-dashed border-gray-400 p-1 bg-white">[Body 1]</div>
-                    <div className="text-left text-gray-500 border border-dashed border-gray-400 p-1 bg-white">[Body 2]</div>
-                    <div className="text-left text-gray-500 border border-dashed border-gray-400 p-1 bg-white">[Body 3]</div>
-                  </div>
-                ) : (
-                  <div className="space-y-3 text-center">
-                    <div className="text-xl font-serif border border-dashed border-gray-400 p-1 bg-white text-[#241804]">[Headline]</div>
-                    <div className="font-medium text-[10px] leading-relaxed border border-dashed border-gray-400 p-1 bg-white">[Lead]</div>
-                    <div className="text-left text-gray-500 border border-dashed border-gray-400 p-2 bg-white flex flex-col gap-1.5">
-                       <div>[Paragraphs - dòng 1]</div>
-                       <div>[Paragraphs - dòng 2]</div>
-                       <div>[Paragraphs - dòng 3]</div>
-                    </div>
-                    <div className="text-[#a67433] italic text-lg font-serif border border-dashed border-[#a67433] p-2 bg-[#a67433]/10">[Special Text]</div>
-                  </div>
-                )}
-             </div>
-          </div>
-        </div>
-
-        <button 
-          onClick={() => saveNarrativeChanges(sectionId)}
-          disabled={!hasChanges}
-          className={`mt-2 flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-bold transition-colors ${hasChanges ? 'bg-admin-gold text-[#241804] hover:bg-[#a67433]' : 'bg-admin-line text-admin-text-dim cursor-not-allowed'}`}
-        >
-          {isSuccessText ? <CheckCircle size={16} /> : <Save size={16} />}
-          {isSuccessText ? 'Đã lưu' : 'Lưu Narrative'}
-        </button>
-      </div>
-    );
-  };
-
-
   if (loading) return <div className="p-8 text-center text-admin-text-dim">Đang tải cấu hình...</div>;
 
   const currentSlideshow = contentData.slideshow || defaultBgImages;
-  const sections = getPureRelaxationSections(); // Use raw structure for admin layout
+  const sections = getPureRelaxationSections();
 
   return (
     <div className="p-6 lg:p-10 max-w-7xl mx-auto">
@@ -730,13 +728,13 @@ const PureAdminPage = () => {
                   <div className="mb-8">
                     <h4 className="text-xs font-bold text-admin-text-dim mb-3 uppercase tracking-widest">I. Bài viết giới thiệu danh mục (Perspective)</h4>
                     <NarrativeEditCard 
-                    section={section}
-                    contentData={contentData}
-                    localNarrativeOverrides={localNarrativeOverrides}
-                    successId={successId}
-                    handleNarrativeChange={handleNarrativeChange}
-                    saveNarrativeChanges={saveNarrativeChanges}
-                  />
+                      section={section}
+                      contentData={contentData}
+                      localNarrativeOverrides={localNarrativeOverrides}
+                      successId={successId}
+                      handleNarrativeChange={handleNarrativeChange}
+                      saveNarrativeChanges={saveNarrativeChanges}
+                    />
                   </div>
 
                   {/* 2. Services Editor */}
@@ -746,7 +744,20 @@ const PureAdminPage = () => {
                       {section.services.map(service => {
                          const items = service.variants ? service.variants.map(v => ({...v, name: v.name, description: v.subtitle})) : [service];
                          return items.map((item, idx) => (
-                           <ServiceEditCard key={`${service.name}-${idx}`} service={item} />
+                           <ServiceEditCard 
+                             key={`${service.name}-${idx}`} 
+                             service={item}
+                             contentData={contentData}
+                             localTextOverrides={localTextOverrides}
+                             uploadingId={uploadingId}
+                             successId={successId}
+                             handleTextChange={handleTextChange}
+                             saveTextChanges={saveTextChanges}
+                             handleFileUpload={handleFileUpload}
+                             setContentData={setContentData}
+                             saveContent={saveContent}
+                             setSuccessId={setSuccessId}
+                           />
                          ));
                       })}
                     </div>
@@ -763,3 +774,4 @@ const PureAdminPage = () => {
 };
 
 export default PureAdminPage;
+
