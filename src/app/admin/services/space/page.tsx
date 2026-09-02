@@ -1,8 +1,9 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Image as ImageIcon, Video, Upload, CheckCircle, ChevronDown, ChevronRight } from 'lucide-react';
+import { Image as ImageIcon, Video, Upload, CheckCircle, ChevronDown, ChevronRight, Crop } from 'lucide-react';
 import { createClient } from '@/lib/supabase';
+import FocalPointEditor from '@/components/Admin/FocalPointEditor';
 
 const spaceStructure = [
   { id: 'hero', title: 'Hero Section', keys: ['hero'] },
@@ -205,6 +206,7 @@ const SpaceAdminPage = () => {
     const currentMedia = getNestedValue(contentData, keyPath);
     const serverObjPos = currentMedia?.objectPosition || 'center';
     const [localObjPos, setLocalObjPos] = useState(serverObjPos);
+    const [isFocalEditorOpen, setIsFocalEditorOpen] = useState(false);
 
     useEffect(() => {
       setLocalObjPos(currentMedia?.objectPosition || 'center');
@@ -212,11 +214,16 @@ const SpaceAdminPage = () => {
 
     const objPos = localObjPos;
 
-    const savePos = async () => {
-      if (localObjPos === serverObjPos) return;
+    const savePos = async (newPos: string) => {
+      if (newPos === serverObjPos) {
+        setIsFocalEditorOpen(false);
+        return;
+      }
+      setLocalObjPos(newPos);
+      setIsFocalEditorOpen(false);
       setUploadingId(keyPath);
       try {
-        const updatedMedia = { ...(currentMedia || { type: 'image', src: '' }), objectPosition: localObjPos };
+        const updatedMedia = { ...(currentMedia || { type: 'image', src: '' }), objectPosition: newPos };
         const newMediaData = setNestedValue(contentData, keyPath, updatedMedia);
         setContentData(newMediaData);
         await saveContent(newMediaData);
@@ -238,13 +245,22 @@ const SpaceAdminPage = () => {
           ${successId === keyPath ? 'border-admin-green ring-1 ring-admin-green-a' : 'border-admin-line-strong hover:border-admin-gold hover:-translate-y-1'}
         `}
       >
-        <div className="relative w-full aspect-video bg-admin-panel-2 flex items-center justify-center border-b border-admin-line-strong">
+        <div className="relative w-full aspect-video bg-admin-panel-2 flex items-center justify-center border-b border-admin-line-strong group">
           {currentMedia?.src ? (
-            currentMedia.type === 'video' ? (
-              <video src={currentMedia.src} controls className="w-full h-full object-cover" style={{ objectPosition: objPos }} />
-            ) : (
-              <img src={currentMedia.src} alt="" className="w-full h-full object-cover" style={{ objectPosition: objPos }} />
-            )
+            <>
+              {currentMedia.type === 'video' ? (
+                <video src={currentMedia.src} controls className="w-full h-full object-cover" style={{ objectPosition: objPos }} />
+              ) : (
+                <img src={currentMedia.src} alt="" className="w-full h-full object-cover" style={{ objectPosition: objPos }} />
+              )}
+              <button
+                onClick={() => setIsFocalEditorOpen(true)}
+                className="absolute top-2 right-2 bg-black/60 text-white rounded-full p-2 opacity-0 group-hover:opacity-100 hover:bg-admin-gold hover:text-[#241804] transition-all z-10 shadow-lg"
+                title="Điều chỉnh vùng hiển thị"
+              >
+                <Crop size={16} />
+              </button>
+            </>
           ) : (
             <div className="text-center text-admin-text-faint">
               <ImageIcon size={32} className="mx-auto mb-2" />
@@ -253,13 +269,13 @@ const SpaceAdminPage = () => {
           )}
 
           {successId === keyPath && (
-            <div className="absolute top-3 right-3 bg-admin-green text-white text-xs font-bold px-3 py-1.5 rounded-full flex items-center gap-1 animate-bounce">
+            <div className="absolute top-3 left-3 bg-admin-green text-white text-xs font-bold px-3 py-1.5 rounded-full flex items-center gap-1 animate-bounce z-10">
               <CheckCircle size={14} /> Đã lưu!
             </div>
           )}
 
           {uploadingId === keyPath && (
-            <div className="absolute inset-0 bg-white/70 backdrop-blur-sm flex items-center justify-center">
+            <div className="absolute inset-0 bg-white/70 backdrop-blur-sm flex items-center justify-center z-10">
               <div className="text-center">
                 <div className="w-8 h-8 border-2 border-admin-gold border-t-transparent rounded-full animate-spin mx-auto mb-2" />
                 <p className="text-sm text-admin-gold font-medium">Đang lưu...</p>
@@ -298,29 +314,15 @@ const SpaceAdminPage = () => {
             />
           </div>
 
-          {currentMedia?.src && (
-            <div className="mb-4 bg-admin-panel-2 p-3 rounded-lg border border-admin-line-strong">
-              <label className="text-[10px] text-admin-text-faint uppercase tracking-wider mb-2 flex justify-between">
-                <span>Căn chỉnh (X - Y)</span>
-                <span className="text-admin-gold">{objPos}</span>
-              </label>
-              <div className="flex items-center gap-2 mb-2">
-                <span className="text-[10px] w-4 text-admin-text-faint">X:</span>
-                <input type="range" min="0" max="100" 
-                  value={objPos === 'center' ? 50 : parseInt(objPos.split(' ')[0]) || 50}
-                  onChange={e => setLocalObjPos(`${e.target.value}% ${objPos === 'center' ? '50%' : objPos.split(' ')[1] || '50%'}`)}
-                  onMouseUp={savePos} onTouchEnd={savePos}
-                  className="flex-1 accent-admin-gold" />
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="text-[10px] w-4 text-admin-text-faint">Y:</span>
-                <input type="range" min="0" max="100" 
-                  value={objPos === 'center' ? 50 : parseInt(objPos.split(' ')[1]) || 50}
-                  onChange={e => setLocalObjPos(`${objPos === 'center' ? '50%' : objPos.split(' ')[0] || '50%'} ${e.target.value}%`)}
-                  onMouseUp={savePos} onTouchEnd={savePos}
-                  className="flex-1 accent-admin-gold" />
-              </div>
-            </div>
+          {isFocalEditorOpen && currentMedia?.src && (
+            <FocalPointEditor
+              src={currentMedia.src}
+              mediaType={currentMedia.type || 'image'}
+              aspectRatio={16/9}
+              initialPosition={objPos}
+              onSave={savePos}
+              onClose={() => setIsFocalEditorOpen(false)}
+            />
           )}
 
           <div className="mt-auto space-y-2">

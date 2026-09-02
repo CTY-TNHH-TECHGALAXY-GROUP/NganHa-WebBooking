@@ -108,15 +108,37 @@ export async function POST(request: Request) {
     // ── 2. Sinh mã đơn ────────────────────────────────
     const bookingId = await generateBookingId(supabase);
 
-    // ── 3. Tổng hợp notes ─────────────────────────────
+    // ── 3. Tổng hợp notes & focus area ────────────────
     const notesParts: string[] = [];
     if (guests && guests > 1) notesParts.push(`Số khách: ${guests}`);
     if (staffGender && staffGender !== 'any') {
       const genderLabel = staffGender === 'female' ? 'Nữ' : 'Nam';
       notesParts.push(`Yêu cầu KTV: ${genderLabel}`);
     }
-    if (note?.trim()) notesParts.push(`Ghi chú: ${note.trim()}`);
+    if (note?.trim()) notesParts.push(`Ghi chú chung: ${note.trim()}`);
     const finalNotes = notesParts.join(' | ') || null;
+
+    const focusParts: string[] = [];
+    selectedServices.forEach((svc: any) => {
+      const opts = svc.options;
+      if (opts) {
+        const itemNotes = [];
+        if (opts.notes?.tag0) itemNotes.push('Phụ nữ có thai');
+        if (opts.notes?.tag1) itemNotes.push('Có dị ứng');
+        if (opts.bodyParts?.focus?.length) itemNotes.push(`Tập trung: ${opts.bodyParts.focus.join(', ')}`);
+        if (opts.bodyParts?.avoid?.length) itemNotes.push(`Tránh: ${opts.bodyParts.avoid.join(', ')}`);
+        if (opts.strength) {
+          const sMap: Record<string, string> = { soft: 'Nhẹ', medium: 'Vừa', strong: 'Mạnh' };
+          itemNotes.push(`Lực: ${sMap[opts.strength] || opts.strength}`);
+        }
+        if (opts.notes?.content) itemNotes.push(`Chú ý: ${opts.notes.content}`);
+        
+        if (itemNotes.length > 0) {
+          focusParts.push(`- ${svc.name}: ${itemNotes.join(' | ')}`);
+        }
+      }
+    });
+    const finalFocusAreaNote = focusParts.length > 0 ? focusParts.join('\n') : null;
 
     // ── 4. INSERT Bookings ────────────────────────────
     const totalAmount = selectedServices.reduce(
@@ -132,6 +154,8 @@ export async function POST(request: Request) {
     const { error: bookingErr } = await supabase.from('Bookings').insert({
       id: bookingId,
       billCode: bookingId,
+      source: 'WEB_BOOKING',
+      guestCount: guests ? Number(guests) : 1,
       branchName: branchName || BRANCH_DEFAULT,
       bookingDate,
       timeBooking: time || null,
@@ -141,7 +165,7 @@ export async function POST(request: Request) {
       customerLang: lang || 'vi',
       customerId,
       notes: finalNotes,
-      focusAreaNote: note?.trim() || null,
+      focusAreaNote: finalFocusAreaNote,
       totalAmount,
       status: 'NEW',
       tip: 0,
@@ -182,6 +206,7 @@ export async function POST(request: Request) {
 
     // ── 6. Trả về success ─────────────────────────────
     console.log(`✅ [API Bookings] Đơn WB tạo thành công: ${bookingId}`);
+
     return NextResponse.json({
       success: true,
       data: {

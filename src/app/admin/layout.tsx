@@ -7,6 +7,7 @@ import {
   LayoutDashboard, BookOpen, FileText, Wrench, Film, Search, Globe, Settings,
   Menu, X, ChevronRight, LogOut, ImagePlus, Clock
 } from 'lucide-react';
+import BookingBell from '@/components/Admin/BookingBell';
 
 // 🔧 UI CONFIGURATION
 const SIDEBAR_WIDTH = '260px';
@@ -52,7 +53,8 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
         >
           {isMobileOpen ? <X size={22} /> : <Menu size={22} />}
         </button>
-        <span className="text-admin-text font-bold text-lg"><span className="text-admin-gold mr-1">✦</span> Quản Trị NganHa</span>
+        <span className="flex-1 text-admin-text font-bold text-lg"><span className="text-admin-gold mr-1">✦</span> Quản Trị NganHa</span>
+        <BookingBell />
       </div>
 
       {/* Overlay for mobile */}
@@ -73,12 +75,15 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
         ${isMobileOpen ? 'translate-x-0' : '-translate-x-full'}
       `}>
         {/* Logo */}
-        <div className="p-6 border-b border-admin-line-strong flex items-center gap-2">
-          <span className="text-admin-gold text-xl">✦</span>
-          <div>
-            <h1 className="text-base font-bold text-admin-text tracking-wide">NganHa Admin</h1>
-            <p className="text-[11px] text-admin-text-faint mt-0.5">Hệ thống quản trị nội dung</p>
+        <div className="p-6 border-b border-admin-line-strong flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="text-admin-gold text-xl">✦</span>
+            <div>
+              <h1 className="text-base font-bold text-admin-text tracking-wide">NganHa Admin</h1>
+              <p className="text-[11px] text-admin-text-faint mt-0.5">Hệ thống quản trị nội dung</p>
+            </div>
           </div>
+          <BookingBell />
         </div>
 
         {/* Navigation */}
