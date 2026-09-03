@@ -746,7 +746,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
       } else if (emailMissing) {
         msg = lang === 'vi' ? 'Vui lòng điền địa chỉ email của bạn.' : lang === 'cn' ? '请输入您的电子邮件。' : lang === 'jp' ? 'メールアドレスを入力してください。' : lang === 'kr' ? '이메일 주소를 입력해 주세요.' : 'Please enter your email address.';
       } else if (emailInvalid) {
-        msg = lang === 'vi' ? 'Email không đúng định dạng (cần có ký tự @ và tên miền, ví dụ: abc@gmail.com).' : lang === 'cn' ? '电子邮件格式无效（必须包含 @ 和域名）。' : lang === 'jp' ? 'メールアドレスの形式が正しくありません（@が必要です）。' : lang === 'kr' ? '이메일 형식이 잘못되었습니다 (@ 포함 필요).' : 'Please enter a valid email address containing @ and domain.';
+        msg = lang === 'vi' ? 'Định dạng email không hợp lệ.' : lang === 'cn' ? '电子邮件格式无效。' : lang === 'jp' ? '無効なメールアドレス形式です。' : lang === 'kr' ? '이메일 형식이 유효하지 않습니다.' : 'Invalid email format.';
       }
 
       setAlertState({
@@ -1022,7 +1022,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                     type="email"
                     value={customerInfo.email}
                     onChange={(event) => updateCustomer('email', event.target.value)}
-                    placeholder={lang === 'vi' ? 'Địa chỉ Email * (ví dụ: name@gmail.com)' : lang === 'cn' ? '电子邮件 * (例如 name@gmail.com)' : lang === 'jp' ? 'メールアドレス * (例: name@gmail.com)' : lang === 'kr' ? '이메일 주소 * (예: name@gmail.com)' : 'Email Address * (e.g. name@gmail.com)'}
+                    placeholder={lang === 'vi' ? 'Địa chỉ Email *' : lang === 'cn' ? '电子邮件 *' : lang === 'jp' ? 'メールアドレス *' : lang === 'kr' ? '이메일 주소 *' : 'Email Address *'}
                   />
                 </label>
                 {hasAttemptedSubmit && !customerInfo.email.trim() && (
@@ -1032,7 +1032,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                 )}
                 {hasAttemptedSubmit && customerInfo.email.trim() && !isValidEmail(customerInfo.email) && (
                   <div style={{ color: '#ef4444', fontSize: '11.5px', marginTop: '5px', paddingLeft: '4px', fontWeight: 500 }}>
-                    * {lang === 'vi' ? 'Email không đúng định dạng (phải có ký tự @ và tên miền, ví dụ: abc@gmail.com)' : lang === 'cn' ? '电子邮件格式无效（需包含 @ 及域名）' : lang === 'jp' ? 'メールアドレスの形式が正しくありません（@が必要です）' : lang === 'kr' ? '이메일 형식이 잘못되었습니다 (@ 포함 필요)' : 'Invalid email format (must include @ and domain, e.g. name@example.com)'}
+                    * {lang === 'vi' ? 'Định dạng email không hợp lệ' : lang === 'cn' ? '电子邮件格式无效' : lang === 'jp' ? '無効なメールアドレス形式です' : lang === 'kr' ? '이메일 형식이 유효하지 않습니다' : 'Invalid email format'}
                   </div>
                 )}
               </div>
