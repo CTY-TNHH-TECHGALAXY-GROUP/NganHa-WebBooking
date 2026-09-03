@@ -376,15 +376,7 @@ const pureRelaxationSections: PureRelaxationSection[] = [
     mediaLabel: 'VIP Package',
     description: 'Exclusive and premium VIP experiences tailored for ultimate relaxation.',
     services: [
-      {
-        name: 'VIP Experience',
-        description: 'Premium massage and care in a private VIP setting.',
-        media: { type: 'image', src: fallbackImg, tag: 'VIP' },
-        durations: [
-          { label: "90'", price: 1000000, id: 'NHP0003' },
-          { label: "120'", price: 1300000, id: 'NHP0004' }
-        ]
-      },
+
       {
         name: 'King Combo',
         description: 'Razor Shave · Ear Clean · Facial · Heel Skin Shave · Hair Wash · 4-Hand Body Massage.',
