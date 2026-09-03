@@ -114,6 +114,7 @@
 
 /* ❌ HIDE WHEN BOOKING BASKET IS ACTIVE (MOBILE) */
 body.has-floating-basket .floating-widgets,
-body.has-booking-modal .floating-widgets {
+body.has-booking-modal .floating-widgets,
+body.has-booking-modal .google-review-widget {
   display: none !important;
 }

@@ -229,7 +229,7 @@ export default function OrderConfirmModal({
 
     return (
         <div 
-            className="fixed inset-0 flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-md transition-opacity duration-300 animate-in fade-in pb-0 sm:pb-0 p-0 sm:p-4" style={{ zIndex: Z.MODAL }}
+            className={`fixed inset-0 flex ${currentStep === 3 ? 'items-center' : 'items-end sm:items-center'} justify-center bg-black/80 backdrop-blur-md transition-opacity duration-300 animate-in fade-in pb-0 sm:pb-0 p-0 sm:p-4`} style={{ zIndex: Z.MODAL }}
             onClick={onClose}
         >
             <div

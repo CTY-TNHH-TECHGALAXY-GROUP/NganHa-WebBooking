@@ -151,13 +151,7 @@ const buildTimeSlots = () => {
 
 const busySlotsForDate = (iso: string) => {
   const day = Number(iso.slice(-2));
-  const patterns = [
-    ['10:00', '10:30', '15:00', '18:00', '18:30'],
-    ['09:30', '11:30', '14:00', '17:30', '20:30'],
-    ['12:00', '12:30', '16:30', '19:00'],
-    ['09:00', '13:30', '14:00', '19:30', '21:00'],
-  ];
-  return patterns[day % patterns.length];
+  return [] as string[]; // Temporarily open all slots until real API is connected
 };
 
 const serviceName = (service: Service | CartItem, lang: string) =>
