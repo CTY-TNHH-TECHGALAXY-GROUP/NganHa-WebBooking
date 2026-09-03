@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
-import { DoorOpen, ShoppingBag, Timer, UserRound } from 'lucide-react';
+import { DoorOpen, ShoppingBag, Timer, UserRound, ChevronRight } from 'lucide-react';
 import { useTranslation } from '@/components/TranslationProvider';
 import type { CartItem, Service } from '@/components/Menu/types';
 import {
@@ -333,14 +333,60 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
 
   // Fetch dynamic services and content from admin panel
   const [dbServices, setDbServices] = useState<any[]>([]);
+  const [isDbLoaded, setIsDbLoaded] = useState(false);
   useEffect(() => {
     fetch('/api/services')
       .then(res => res.json())
-      .then(data => setDbServices(Array.isArray(data) ? data : []))
-      .catch(console.error);
+      .then(data => {
+        setDbServices(Array.isArray(data) ? data : []);
+        setIsDbLoaded(true);
+      })
+      .catch((e) => {
+        console.error(e);
+        setIsDbLoaded(true);
+      });
   }, []);
 
-  const selectedService = section.services[serviceIndex];
+  
+  const filteredServices = useMemo(() => {
+    if (!isDbLoaded) return section.services;
+    return section.services.map(svc => {
+      let newSvc = { ...svc };
+      if (newSvc.variants) {
+         newSvc.variants = newSvc.variants.map((v: any) => ({
+             ...v,
+             durations: v.durations?.filter((d: any) => dbServices.some(db => db.id === d.id))
+         })).filter((v: any) => v.durations && v.durations.length > 0);
+      }
+      if (newSvc.durations) {
+         newSvc.durations = newSvc.durations.filter((d: any) => dbServices.some(db => db.id === d.id));
+      }
+      return newSvc;
+    }).filter(svc => {
+      if (svc.variants) return svc.variants.length > 0;
+      if (svc.durations) return svc.durations.some((d: any) => dbServices.some(db => db.id === d.id));
+      return false;
+    });
+  }, [section.services, dbServices, isDbLoaded]);
+
+  useEffect(() => {
+    if (filteredServices.length > 0 && serviceIndex >= filteredServices.length) {
+      setServiceIndex(0);
+      setVariantIndex(0);
+      setDurationIndex(0);
+    }
+  }, [filteredServices.length, serviceIndex]);
+
+  const selectedService = filteredServices[serviceIndex] || filteredServices[0];
+  
+  if (!selectedService) {
+    return (
+       <section className={styles.serviceSection} id={section.id}>
+         <div className="text-center py-20 opacity-60">Coming soon / Đang cập nhật</div>
+       </section>
+    );
+  }
+
   const active = useMemo(() => getActiveItem(selectedService, variantIndex, contentMedia, currentLang), [selectedService, variantIndex, contentMedia, currentLang]);
   
   const displayDurations = useMemo(() => {
@@ -553,7 +599,7 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
               }[currentLang] || 'Choose service'}
             </div>
             <div className={styles.pillGrid}>
-              {section.services.map((service, index) => {
+              {filteredServices.map((service, index) => {
                 let svcName = service.name;
                 if (hasVariants(service)) {
                   const groupTranslations: Record<string, Record<string, string>> = {
@@ -713,7 +759,7 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
 
           {notice && <p className={styles.notice}>{notice}</p>}
 
-          {active.privilege && (
+          {active.privilege?.image && (
             <div className={styles.privilegeCard}>
               <img src={active.privilege.image} alt={active.privilege.title} loading="lazy" />
               <div>
@@ -879,6 +925,39 @@ const bgImages = [
   '/images/services/thai.png'
 ];
 
+const TRANSLATIONS = {
+  en: {
+    randomRoom: "Random Room",
+    roomSub: "Assigned by the spa team for the smoothest flow.",
+    randomStaff: "Random Staff",
+    staffSub: "A suitable therapist will be arranged for your chosen ritual."
+  },
+  vi: {
+    randomRoom: "Phòng Ngẫu Nhiên",
+    roomSub: "Được sắp xếp bởi lễ tân để quá trình diễn ra trơn tru nhất.",
+    randomStaff: "KTV Ngẫu Nhiên",
+    staffSub: "KTV phù hợp sẽ được sắp xếp cho dịch vụ của bạn."
+  },
+  cn: {
+    randomRoom: "随机房间",
+    roomSub: "由前台安排，确保流程最顺畅。",
+    randomStaff: "随机理疗师",
+    staffSub: "将为您选择的服务安排合适的理疗师。"
+  },
+  kr: {
+    randomRoom: "무작위 객실",
+    roomSub: "원활한 진행을 위해 리셉션에서 배정합니다.",
+    randomStaff: "무작위 테라피스트",
+    staffSub: "선택하신 서비스에 적합한 테라피스트가 배정됩니다."
+  },
+  jp: {
+    randomRoom: "ランダムな部屋",
+    roomSub: "最もスムーズな進行のためにフロントが割り当てます。",
+    randomStaff: "ランダムなセラピスト",
+    staffSub: "選択したサービスに最適なセラピストが手配されます。"
+  }
+};
+
 const PureRelaxationPage = () => {
   const navRef = useRef<HTMLDivElement>(null);
   const [bgIndex, setBgIndex] = useState(0);
@@ -894,7 +973,8 @@ const PureRelaxationPage = () => {
       .catch(console.error);
   }, []);
 
-  const pureRelaxationSections = useMemo(() => getPureRelaxationSections(contentMedia), [contentMedia]);
+  const { currentLang } = useTranslation();
+  const pureRelaxationSections = useMemo(() => getPureRelaxationSections(contentMedia, currentLang), [contentMedia, currentLang]);
   
   const [activeSection, setActiveSection] = useState(pureRelaxationSections[0]?.id || 'body-care');
 
@@ -927,6 +1007,8 @@ const PureRelaxationPage = () => {
     }
   };
 
+  const t = TRANSLATIONS[currentLang as keyof typeof TRANSLATIONS] || TRANSLATIONS.en;
+
   return (
     <main className={styles.page}>
       {/* Fixed Background Image Slideshow for Parallax */}
@@ -943,8 +1025,8 @@ const PureRelaxationPage = () => {
           <h1>Pure Relaxation</h1>
 
           <div className={styles.preferenceWrap}>
-            <PreferenceNote icon={<DoorOpen size={18} />} title="Random Room" copy="Assigned by the spa team for the smoothest flow." />
-            <PreferenceNote icon={<UserRound size={18} />} title="Random Staff" copy="A suitable therapist will be arranged for your chosen ritual." />
+            <PreferenceNote icon={<DoorOpen size={18} />} title={t.randomRoom} copy={t.roomSub} />
+            <PreferenceNote icon={<UserRound size={18} />} title={t.randomStaff} copy={t.staffSub} />
           </div>
         </div>
       </div>
@@ -976,6 +1058,9 @@ const PureRelaxationPage = () => {
               <span className={styles.categoryTitle}>{section.title}</span>
             </button>
           ))}
+        </div>
+        <div className={styles.scrollHint}>
+          <ChevronRight size={24} />
         </div>
       </nav>
 

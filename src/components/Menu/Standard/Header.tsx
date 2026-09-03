@@ -1,3 +1,6 @@
+'use client';
+
+import { ChevronRight } from 'lucide-react';
 /*
  * File: Standard/Header.tsx
  * Chức năng: Thanh điều hướng (Navigation Bar) trên cùng.
@@ -9,7 +12,6 @@
  * Tác giả: TunHisu
  * Ngày cập nhật: 2026-01-31
  */
-'use client';
 import React, { useRef, useEffect, useState } from 'react';
 import { Category } from '@/components/Menu/types';
 
@@ -25,7 +27,7 @@ export default function Header({ categories, activeCategory, lang, onSelectCateg
     const [isReady, setIsReady] = useState(false);
     
     // Nhân bản danh sách 14 lần (~100 items) để tạo cảm giác scroll vô cực an toàn
-    const multiplier = 14;
+    const multiplier = 3;
     const repeatedCategories = Array(multiplier).fill(categories).flat();
 
     useEffect(() => {
@@ -35,7 +37,7 @@ export default function Header({ categories, activeCategory, lang, onSelectCateg
             el.style.scrollBehavior = 'auto';
             const blockWidth = el.scrollWidth / multiplier;
             // Nhảy đến block thứ 7 (chính giữa)
-            el.scrollLeft = blockWidth * (multiplier / 2);
+            el.scrollLeft = blockWidth * Math.floor(multiplier / 2);
             
             // Hiện UI lên
             setIsReady(true);
@@ -118,6 +120,9 @@ export default function Header({ categories, activeCategory, lang, onSelectCateg
                         </button>
                     );
                 })}
+            </div>
+            <div className="absolute right-0 top-[20px] bottom-[20px] w-12 bg-gradient-to-l from-black via-black/80 to-transparent pointer-events-none flex items-center justify-end pr-1 text-[#C9A96E]/80 md:hidden z-10 animate-[pulse_2s_ease-in-out_infinite]">
+                <ChevronRight size={20} />
             </div>
             <div className="text-[9px] text-center text-gray-500 uppercase tracking-widest mt-2 border-t border-gray-800 pt-1">
                 — Random Staff & Room —

@@ -1340,10 +1340,15 @@
     padding: 22px 18px;
   }
 
-  .fieldRow,
   .miniGrid {
     grid-template-columns: 1fr;
     flex-direction: column;
+  }
+
+  .fieldRow {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(92px, 0.9fr);
+    align-items: stretch;
   }
 
   .timeSlots {

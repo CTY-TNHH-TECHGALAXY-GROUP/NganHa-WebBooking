@@ -41,14 +41,14 @@ const Footer = () => {
   const copyrightText = footerContent?.copyright || `© ${new Date().getFullYear()} TECHGALAXY GROUP. All rights reserved.`;
 
   return (
-    <footer id="footer" className="bg-[rgba(40,27,21,1)] text-[#f7ebc7] relative z-10">
+    <footer id="footer" className="bg-[rgba(40,27,21,1)] text-[#f7ebc7] relative z-10 overflow-x-hidden">
       {/* Core Values Section */}
-      <div className="py-24 px-6 border-b border-[rgba(247,235,199,0.15)] bg-transparent">
+      <div className="py-12 md:py-24 px-6 border-b border-[rgba(247,235,199,0.15)] bg-transparent">
         <div className="max-w-6xl mx-auto flex flex-col items-center">
           <h2 className="font-serif text-3xl md:text-4xl text-center text-[#f7ebc7] mb-16 tracking-wide uppercase">
             {currentLang === 'vi' ? 'Giá Trị Cốt Lõi' : 'Our Core Value'}
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-16 gap-x-8 text-center w-full">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-8 md:gap-y-16 gap-x-8 text-center w-full">
             {CORE_VALUES.map((value, index) => {
               const Icon = value.icon;
               return (
@@ -79,12 +79,12 @@ const Footer = () => {
       </div>
 
       {/* Main Footer Section */}
-      <div className="py-20 px-6">
+      <div className="py-12 md:py-20 px-6">
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-16 md:gap-12">
           {/* Logo & Description */}
           <div className="flex flex-col gap-8 items-start">
             <SmartLogo theme="dark" className="w-[220px] h-auto object-contain" />
-            <p className="text-[15px] text-[#f7ebc7]/60 leading-relaxed font-light whitespace-pre-line">
+            <p className="text-[15px] text-[#f7ebc7]/60 leading-relaxed font-light whitespace-pre-line break-words">
               {descText}
             </p>
           </div>
@@ -96,7 +96,7 @@ const Footer = () => {
             </h4>
             <div className="w-12 h-[1px] bg-[rgba(212,175,55,0.3)] mb-2"></div>
             <ul className="text-[15px] text-[#f7ebc7]/70 space-y-4 leading-relaxed font-light">
-              <li className="whitespace-pre-line">
+              <li className="whitespace-pre-line break-words">
                 {addressText}
               </li>
             </ul>

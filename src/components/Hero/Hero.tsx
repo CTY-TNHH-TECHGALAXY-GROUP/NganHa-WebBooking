@@ -1,7 +1,7 @@
 // Hero.tsx - Cinematic Fullscreen Hero (Showcase Style)
 'use client';
 
-import { useMemo, useState, useEffect, useCallback, useRef } from 'react';
+import React, { useMemo, useState, useEffect, useCallback, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { MapPin, Clock, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useTranslation } from '@/components/TranslationProvider';
@@ -21,7 +21,7 @@ const HERO_PARTICLE_COUNT = 30;
 // ═══════════════════════════════════════════
 
 const DEFAULT_HOMEPAGE_VIDEOS = [
-  { id: 'foot-massage', url: '/videos/0807.mp4', poster: 'https://i.ibb.co/fs2MBD4/hero-spa-bg.jpg' }
+  { id: 'foot-massage', url: '/videos/0807(1).mp4', poster: 'https://i.ibb.co/fs2MBD4/hero-spa-bg.jpg' }
 ];
 
 const Hero = () => {
@@ -131,8 +131,21 @@ const Hero = () => {
     })),
   []);
 
+
+
+  const [touchStart, setTouchStart] = useState(0);
+  const handleTouchStart = (e: React.TouchEvent) => setTouchStart(e.targetTouches[0].clientX);
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (!touchStart) return;
+    const touchEnd = e.changedTouches[0].clientX;
+    const dist = touchStart - touchEnd;
+    if (dist > 50) handleNextVideo();
+    else if (dist < -50) handlePrevVideo();
+    setTouchStart(0);
+  };
+
   return (
-    <section id="hero" className="hero-section hero-section--cinematic">
+    <section id="hero" className="hero-section hero-section--cinematic" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
       {/* Particles */}
       <div className="hero-particles">
         {particles.map((p) => (
@@ -224,7 +237,7 @@ const Hero = () => {
         <div className="flex flex-col items-center justify-center -translate-y-12 md:-translate-y-24 gap-4 md:gap-6 z-10 relative">
           {/* Main Title (Oria Spa Logo) */}
           <motion.div className="flex justify-center items-center" variants={heroTitle}>
-            <SmartLogo theme="dark" className="w-[300px] md:w-[450px] lg:w-[550px] h-auto object-contain drop-shadow-2xl" />
+            <SmartLogo theme="dark" className="w-[min(300px,calc(100vw-48px))] md:w-[450px] lg:w-[550px] h-auto object-contain drop-shadow-2xl" />
           </motion.div>
 
           

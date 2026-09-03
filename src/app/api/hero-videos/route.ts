@@ -5,8 +5,11 @@ import { getSupabaseAdmin } from '@/lib/supabase-server';
 export const dynamic = 'force-dynamic';
 
 const DEFAULT_VIDEOS = [
-  { id: 'foot-massage', url: '/videos/0807.mp4', poster: 'https://i.ibb.co/fs2MBD4/hero-spa-bg.jpg', sort_order: 1 },
+  { id: 'foot-massage', url: '/videos/0807(1).mp4', poster: 'https://i.ibb.co/fs2MBD4/hero-spa-bg.jpg', sort_order: 1 },
 ];
+
+const normalizeVideoUrl = (url: unknown) =>
+  typeof url === 'string' && url === '/videos/0807.mp4' ? '/videos/0807(1).mp4' : url;
 
 export async function GET() {
   try {
@@ -23,7 +26,15 @@ export async function GET() {
       return apiResponse.success(DEFAULT_VIDEOS);
     }
 
-    return apiResponse.success(data.value);
+    const videos = Array.isArray(data.value)
+      ? data.value.map((video: Record<string, unknown>) => ({
+          ...video,
+          url: normalizeVideoUrl(video.url),
+          media_url: normalizeVideoUrl(video.media_url),
+        }))
+      : DEFAULT_VIDEOS;
+
+    return apiResponse.success(videos);
   } catch (error: any) {
     console.error('Error fetching hero videos:', error);
     // Fallback to default if DB fails
