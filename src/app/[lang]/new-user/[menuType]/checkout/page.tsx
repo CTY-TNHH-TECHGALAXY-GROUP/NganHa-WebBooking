@@ -1028,7 +1028,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                     type="email"
                     value={customerInfo.email}
                     onChange={(event) => updateCustomer('email', event.target.value)}
-                    placeholder={lang === 'vi' ? 'Địa chỉ Email *' : lang === 'cn' ? '电子邮件 *' : lang === 'jp' ? 'メールアドレス *' : lang === 'kr' ? '이메일 주소 *' : 'Email Address *'}
+                    placeholder={lang === 'vi' ? 'Địa chỉ Email * (ví dụ: name@gmail.com)' : lang === 'cn' ? '电子邮件 * (例如: name@gmail.com)' : lang === 'jp' ? 'メールアドレス * (例: name@gmail.com)' : lang === 'kr' ? '이메일 주소 * (예: name@gmail.com)' : 'Email Address * (e.g. name@gmail.com)'}
                   />
                 </label>
                 {hasAttemptedSubmit && !customerInfo.email.trim() && (
