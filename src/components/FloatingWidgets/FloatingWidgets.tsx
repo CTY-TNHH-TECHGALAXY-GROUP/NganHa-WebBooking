@@ -157,7 +157,7 @@ const FloatingWidgets = () => {
       </div>
 
       {/* Google Review Widget on Bottom Left */}
-      {!isFooterVisible && <GoogleReviewWidget />}
+      <GoogleReviewWidget />
     </>
   );
 };

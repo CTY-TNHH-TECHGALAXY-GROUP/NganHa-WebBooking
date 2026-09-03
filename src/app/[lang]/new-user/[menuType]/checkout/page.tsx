@@ -465,7 +465,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
   const lang = langKey(currentLang || rawLang);
   const menuType = rawMenuType === 'vip' ? 'vip' : 'standard';
   const dict = getDictionary(lang);
-  const { services, cart, addToCart, removeFromCart, updateCartItemOptions, replaceCartItemService } = useMenuData();
+  const { services, cart, loading: servicesLoading, addToCart, removeFromCart, updateCartItemOptions, replaceCartItemService } = useMenuData();
 
   const [editingCartId, setEditingCartId] = useState<string | null>(null);
   const [editServiceId, setEditServiceId] = useState<string | null>(null);
@@ -585,6 +585,9 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
 
   useEffect(() => {
     if (!activeCategory && categoryIds.length > 0) setActiveCategory(categoryIds[0]);
+    if (activeCategory && categoryIds.length > 0 && !categoryIds.includes(activeCategory)) {
+      setActiveCategory(categoryIds[0]);
+    }
   }, [categoryIds, activeCategory]);
 
   const visibleServices = useMemo(
@@ -1517,7 +1520,10 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                     key={id}
                     type="button"
                     className={`${styles.pickerTab} ${activeCategory === id ? styles.activeTab : ''}`}
-                    onClick={() => setActiveCategory(id)}
+                    onClick={(event) => {
+                      setActiveCategory(id);
+                      event.currentTarget.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                    }}
                   >
                     {id !== 'all' && (
                       <div
@@ -1541,17 +1547,23 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
             </div>
 
             <div className={styles.servicePickerList}>
-              {groupedVisibleServices.map((group) => (
-                <CheckoutGroupedServiceCard
-                  key={group[0].id}
-                  group={group}
-                  lang={lang}
-                  dict={dict}
-                  addService={addService}
-                  openDurationDrawer={setActiveDrawerGroup}
-                  openVideoPreview={openVideoPreview}
-                />
-              ))}
+              {servicesLoading ? (
+                <div className={styles.servicePickerState}>Đang tải dịch vụ...</div>
+              ) : groupedVisibleServices.length ? (
+                groupedVisibleServices.map((group) => (
+                  <CheckoutGroupedServiceCard
+                    key={group[0].id}
+                    group={group}
+                    lang={lang}
+                    dict={dict}
+                    addService={addService}
+                    openDurationDrawer={setActiveDrawerGroup}
+                    openVideoPreview={openVideoPreview}
+                  />
+                ))
+              ) : (
+                <div className={styles.servicePickerState}>Chưa có dịch vụ phù hợp.</div>
+              )}
             </div>
           </section>
         </div>
