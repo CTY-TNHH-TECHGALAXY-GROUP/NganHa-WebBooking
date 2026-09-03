@@ -105,6 +105,7 @@ export default function OrderConfirmModal({
 
     // Track expanded state for service customizations
     const [expandedItems, setExpandedItems] = useState<Record<number, boolean>>({});
+    const [isTermsAgreed, setIsTermsAgreed] = useState(false);
 
     const toggleExpand = (idx: number) => {
         setExpandedItems(prev => ({ ...prev, [idx]: !prev[idx] }));
@@ -116,6 +117,7 @@ export default function OrderConfirmModal({
         }
         if (isOpen) {
             document.body.classList.add('has-booking-modal');
+            setIsTermsAgreed(false);
             setCurrentStep(2);
             setIsEditingSchedule(false);
             setLocalName(initialCustomerInfo?.name || '');
@@ -637,8 +639,56 @@ export default function OrderConfirmModal({
                                 </div>
                             </div>
 
+                            {/* Terms of Service & Privacy Policy Agreement Row */}
+                            <div className="pt-2 pb-1">
+                                <label 
+                                    htmlFor="agree-terms-checkbox" 
+                                    className="flex items-start gap-2.5 cursor-pointer group select-none p-2 rounded-xl transition-colors hover:bg-white/[0.02]"
+                                >
+                                    <div className="relative flex items-center justify-center mt-0.5 shrink-0">
+                                        <input 
+                                            type="checkbox"
+                                            id="agree-terms-checkbox"
+                                            checked={isTermsAgreed}
+                                            onChange={(e) => setIsTermsAgreed(e.target.checked)}
+                                            className="sr-only"
+                                        />
+                                        <div className={`w-4 h-4 sm:w-4.5 sm:h-4.5 rounded border transition-all flex items-center justify-center ${
+                                            isTermsAgreed 
+                                                ? 'bg-[#c9a96e] border-[#c9a96e] text-[#1c140e]' 
+                                                : 'border-white/30 bg-white/5 group-hover:border-[#c9a96e]/60'
+                                        }`}>
+                                            {isTermsAgreed && <Check size={13} strokeWidth={3.5} />}
+                                        </div>
+                                    </div>
+                                    <span className="text-[11px] sm:text-xs text-gray-300 leading-relaxed">
+                                        {lang === 'vi' ? (
+                                            <>
+                                                Tôi đã đọc và đồng ý với <span className="text-[#f2d58d] font-semibold underline underline-offset-2">Điều khoản dịch vụ</span> & <span className="text-[#f2d58d] font-semibold underline underline-offset-2">Chính sách bảo mật</span> của Oria Spa.
+                                            </>
+                                        ) : lang === 'cn' ? (
+                                            <>
+                                                我已阅读并同意 Oria Spa 的 <span className="text-[#f2d58d] font-semibold underline underline-offset-2">服务条款</span> 与 <span className="text-[#f2d58d] font-semibold underline underline-offset-2">隐私政策</span>。
+                                            </>
+                                        ) : lang === 'jp' ? (
+                                            <>
+                                                Oria Spa の <span className="text-[#f2d58d] font-semibold underline underline-offset-2">利用規約</span> および <span className="text-[#f2d58d] font-semibold underline underline-offset-2">プライバシーポリシー</span> に同意します。
+                                            </>
+                                        ) : lang === 'kr' ? (
+                                            <>
+                                                Oria Spa 의 <span className="text-[#f2d58d] font-semibold underline underline-offset-2">이용약관</span> 및 <span className="text-[#f2d58d] font-semibold underline underline-offset-2">개인정보 처리방침</span>에 동의합니다.
+                                            </>
+                                        ) : (
+                                            <>
+                                                I have read and agree to Oria Spa&apos;s <span className="text-[#f2d58d] font-semibold underline underline-offset-2">Terms of Service</span> & <span className="text-[#f2d58d] font-semibold underline underline-offset-2">Privacy Policy</span>.
+                                            </>
+                                        )}
+                                    </span>
+                                </label>
+                            </div>
+
                             {/* Step 2 Footer Buttons (Cancel & Submit) */}
-                            <div className="flex gap-3 pt-2">
+                            <div className="flex gap-3 pt-1">
                                 <button
                                     id="modal-step2-cancel-btn"
                                     type="button"
@@ -651,12 +701,19 @@ export default function OrderConfirmModal({
                                 <button
                                     id="modal-step2-confirm-btn"
                                     type="button"
-                                    onClick={handleConfirmBooking}
-                                    disabled={isSubmitting}
-                                    className="flex-[1.5] bg-gradient-to-r from-[#ecd38f] to-[#c6a55f] text-[#2c2416] py-3 rounded-xl font-bold uppercase text-xs tracking-wider shadow-lg hover:brightness-105 transition-all active:scale-[0.98] flex items-center justify-center gap-2 group cursor-pointer"
+                                    onClick={() => {
+                                        if (!isTermsAgreed) return;
+                                        handleConfirmBooking();
+                                    }}
+                                    disabled={isSubmitting || !isTermsAgreed}
+                                    className={`flex-[1.5] py-3 rounded-xl font-bold uppercase text-xs tracking-wider shadow-lg transition-all flex items-center justify-center gap-2 group ${
+                                        !isTermsAgreed || isSubmitting
+                                            ? 'bg-white/10 text-gray-400 border border-white/10 cursor-not-allowed opacity-50'
+                                            : 'bg-gradient-to-r from-[#ecd38f] to-[#c6a55f] text-[#2c2416] hover:brightness-105 active:scale-[0.98] cursor-pointer'
+                                    }`}
                                 >
                                     <span>{isSubmitting ? (lang === 'vi' ? 'Đang gửi...' : 'Processing...') : (dict.checkout?.submit || 'Xác nhận đặt lịch')}</span>
-                                    {!isSubmitting && <ArrowRight size={15} className="group-hover:translate-x-1 transition-transform" strokeWidth={3} />}
+                                    {!isSubmitting && isTermsAgreed && <ArrowRight size={15} className="group-hover:translate-x-1 transition-transform" strokeWidth={3} />}
                                 </button>
                             </div>
                         </div>

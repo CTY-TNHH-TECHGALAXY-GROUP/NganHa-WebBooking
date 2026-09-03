@@ -459,6 +459,15 @@ function getCategoryIcon(catName: string) {
   return '/category-icons-svg/package.svg';
 }
 
+const isValidEmail = (email: string) => {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+};
+
+const isValidPhone = (phone: string) => {
+  const digits = phone.replace(/\D/g, '');
+  return digits.length >= 8 && digits.length <= 15;
+};
+
 export default function CheckoutPage({ params }: { params: PageParams }) {
   const router = useRouter();
   const { lang: rawLang, menuType: rawMenuType } = use(params);
@@ -477,6 +486,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
   const [editingCustomInitialData, setEditingCustomInitialData] = useState<CustomPreferences | null>(null);
   const [contactMethod, setContactMethod] = useState<ContactMethod>('email');
   const [customerInfo, setCustomerInfo] = useState({ name: '', email: '', phone: '', gender: t('male', lang) });
+  const [hasAttemptedSubmit, setHasAttemptedSubmit] = useState(false);
   const [phoneCountry, setPhoneCountry] = useState(() => phoneCountryForLang(lang));
   const [isGenderOpen, setIsGenderOpen] = useState(false);
   const [isPhoneCountryOpen, setIsPhoneCountryOpen] = useState(false);
@@ -690,18 +700,42 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
   };
 
   const validate = () => {
+    setHasAttemptedSubmit(true);
     if (cart.length === 0) {
       setAlertState({ isOpen: true, message: t('selectService', lang), type: 'error' });
       return false;
     }
-    if (!customerInfo.name.trim()) {
-      setAlertState({ isOpen: true, message: dict.checkout.alerts?.fill_name || 'Please enter your Full Name', type: 'error' });
+
+    const nameMissing = !customerInfo.name.trim();
+    const phoneMissing = !customerInfo.phone.trim();
+    const phoneInvalid = !phoneMissing && !isValidPhone(customerInfo.phone);
+    const emailMissing = !customerInfo.email.trim();
+    const emailInvalid = !emailMissing && !isValidEmail(customerInfo.email);
+
+    if (nameMissing || phoneMissing || emailMissing || phoneInvalid || emailInvalid) {
+      let msg = '';
+      if (nameMissing) {
+        msg = lang === 'vi' ? 'Vui lòng điền họ và tên của bạn.' : lang === 'cn' ? '请输入您的全名。' : lang === 'jp' ? 'お名前を入力してください。' : lang === 'kr' ? '성함을 입력해 주세요.' : 'Please enter your Full Name.';
+      } else if (phoneMissing && emailMissing) {
+        msg = lang === 'vi' ? 'Bắt buộc phải điền cả số điện thoại và email.' : lang === 'cn' ? '电话号码和电子邮件均为必填项。' : lang === 'jp' ? '電話番号とメールアドレスの両方を入力してください。' : lang === 'kr' ? '전화번호와 이메일을 모두 입력해 주세요.' : 'Both phone number and email are required.';
+      } else if (phoneMissing) {
+        msg = lang === 'vi' ? 'Vui lòng điền số điện thoại liên hệ.' : lang === 'cn' ? '请输入您的联系电话。' : lang === 'jp' ? 'ご連絡先電話番号を入力してください。' : lang === 'kr' ? '연락처 전화번호를 입력해 주세요.' : 'Please enter your phone number.';
+      } else if (phoneInvalid) {
+        msg = lang === 'vi' ? 'Số điện thoại không hợp lệ (tối thiểu 8 chữ số).' : lang === 'cn' ? '电话号码无效（至少8位数字）。' : lang === 'jp' ? '無効な電話番号です（8桁以上）。' : lang === 'kr' ? '유효하지 않은 전화번호입니다 (8자리 이상).' : 'Invalid phone number (minimum 8 digits).';
+      } else if (emailMissing) {
+        msg = lang === 'vi' ? 'Vui lòng điền địa chỉ email của bạn.' : lang === 'cn' ? '请输入您的电子邮件。' : lang === 'jp' ? 'メールアドレスを入力してください。' : lang === 'kr' ? '이메일 주소를 입력해 주세요.' : 'Please enter your email address.';
+      } else if (emailInvalid) {
+        msg = lang === 'vi' ? 'Email không đúng định dạng (cần có ký tự @ và tên miền, ví dụ: abc@gmail.com).' : lang === 'cn' ? '电子邮件格式无效（必须包含 @ 和域名）。' : lang === 'jp' ? 'メールアドレスの形式が正しくありません（@が必要です）。' : lang === 'kr' ? '이메일 형식이 잘못되었습니다 (@ 포함 필요).' : 'Please enter a valid email address containing @ and domain.';
+      }
+
+      setAlertState({
+        isOpen: true,
+        message: msg,
+        type: 'error'
+      });
       return false;
     }
-    if (!customerInfo.email.trim() && !customerInfo.phone.trim()) {
-      setAlertState({ isOpen: true, message: dict.checkout.alerts?.fill_phone_or_email || 'Please enter Phone Number or Email', type: 'error' });
-      return false;
-    }
+
     return true;
   };
 
@@ -828,65 +862,63 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
             <section className={styles.panel}>
               <p className={styles.eyebrow}>{t('customer', lang)}</p>
 
-              <div className={styles.fieldRow}>
-                <label className={styles.field} style={{ flex: 2 }}>
-                  <input
-                    value={customerInfo.name}
-                    onChange={(event) => updateCustomer('name', event.target.value)}
-                    placeholder={t('fullName', lang)}
-                  />
-                </label>
-                <div className={`${styles.field} ${styles.genderField} ${isGenderOpen ? styles.genderOpen : ''}`}>
-                  <button
-                    type="button"
-                    className={styles.genderTrigger}
-                    onClick={() => setIsGenderOpen((open) => !open)}
-                    aria-haspopup="listbox"
-                    aria-expanded={isGenderOpen}
-                    aria-label="Gender"
+              {/* Full Name & Gender */}
+              <div style={{ marginBottom: '12px' }}>
+                <div className={styles.fieldRow} style={{ marginBottom: 0 }}>
+                  <label 
+                    className={styles.field} 
+                    style={{ 
+                      flex: 2,
+                      ...(hasAttemptedSubmit && !customerInfo.name.trim() ? { borderColor: '#ef4444', boxShadow: '0 0 0 1px #ef4444' } : {}) 
+                    }}
                   >
-                    <span>{customerInfo.gender}</span>
-                    <span className={styles.genderChevron}>⌄</span>
-                  </button>
-                  <div className={styles.genderMenu} role="listbox">
-                    {genderOptions.map((option) => (
-                      <button
-                        key={option}
-                        type="button"
-                        className={`${styles.genderOption} ${customerInfo.gender === option ? styles.genderOptionActive : ''}`}
-                        onClick={() => {
-                          updateCustomer('gender', option);
-                          setIsGenderOpen(false);
-                        }}
-                        role="option"
-                        aria-selected={customerInfo.gender === option}
-                      >
-                        {option}
-                      </button>
-                    ))}
+                    <input
+                      value={customerInfo.name}
+                      onChange={(event) => updateCustomer('name', event.target.value)}
+                      placeholder={lang === 'vi' ? 'Họ và tên *' : lang === 'cn' ? '姓名 *' : lang === 'jp' ? 'お名前 *' : lang === 'kr' ? '성함 *' : 'Full Name *'}
+                    />
+                  </label>
+                  <div className={`${styles.field} ${styles.genderField} ${isGenderOpen ? styles.genderOpen : ''}`}>
+                    <button
+                      type="button"
+                      className={styles.genderTrigger}
+                      onClick={() => setIsGenderOpen((open) => !open)}
+                      aria-haspopup="listbox"
+                      aria-expanded={isGenderOpen}
+                      aria-label="Gender"
+                    >
+                      <span>{customerInfo.gender}</span>
+                      <span className={styles.genderChevron}>⌄</span>
+                    </button>
+                    <div className={styles.genderMenu} role="listbox">
+                      {genderOptions.map((option) => (
+                        <button
+                          key={option}
+                          type="button"
+                          className={`${styles.genderOption} ${customerInfo.gender === option ? styles.genderOptionActive : ''}`}
+                          onClick={() => {
+                            updateCustomer('gender', option);
+                            setIsGenderOpen(false);
+                          }}
+                          role="option"
+                          aria-selected={customerInfo.gender === option}
+                        >
+                          {option}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </div>
+                {hasAttemptedSubmit && !customerInfo.name.trim() && (
+                  <div style={{ color: '#ef4444', fontSize: '11.5px', marginTop: '5px', paddingLeft: '4px', fontWeight: 500 }}>
+                    * {lang === 'vi' ? 'Vui lòng nhập họ và tên của bạn' : lang === 'cn' ? '请输入您的全名' : lang === 'jp' ? 'お名前を入力してください' : lang === 'kr' ? '성함을 입력해 주세요' : 'Please enter your full name'}
+                  </div>
+                )}
               </div>
 
-              <div className={styles.togglePair}>
-                <button
-                  type="button"
-                  className={contactMethod === 'email' ? styles.activeTab : ''}
-                  onClick={() => setContactMethod('email')}
-                >
-                  Email
-                </button>
-                <button
-                  type="button"
-                  className={contactMethod === 'phone' ? styles.activeTab : ''}
-                  onClick={() => setContactMethod('phone')}
-                >
-                  {lang === 'vi' ? 'Số điện thoại' : 'Phone No.'}
-                </button>
-              </div>
-
-              {contactMethod === 'phone' ? (
-                <div className={styles.phoneGroup} style={{ position: isPhoneCountryOpen ? 'relative' : 'static', zIndex: isPhoneCountryOpen ? 9999 : 'auto' }}>
+              {/* Phone Number (Required) */}
+              <div style={{ marginBottom: '12px' }}>
+                <div className={styles.phoneGroup} style={{ position: isPhoneCountryOpen ? 'relative' : 'static', zIndex: isPhoneCountryOpen ? 9999 : 'auto', marginBottom: 0 }}>
                   <div className={`${styles.field} ${styles.phoneCountryField}`} style={{ position: 'relative', zIndex: isPhoneCountryOpen ? 50 : 1 }}>
                     <div 
                       className={styles.phoneCountrySelect} 
@@ -931,25 +963,58 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                       </div>
                     )}
                   </div>
-                  <label className={styles.field}>
+                  <label 
+                    className={styles.field}
+                    style={{
+                      ...(hasAttemptedSubmit && (!customerInfo.phone.trim() || !isValidPhone(customerInfo.phone)) ? { borderColor: '#ef4444', boxShadow: '0 0 0 1px #ef4444' } : {})
+                    }}
+                  >
                     <input
                       type="tel"
                       value={customerInfo.phone}
-                      onChange={(event) => updateContact(event.target.value)}
-                      placeholder={t('phone', lang)}
+                      onChange={(event) => updateCustomer('phone', event.target.value)}
+                      placeholder={lang === 'vi' ? 'Số điện thoại *' : lang === 'cn' ? '电话号码 *' : lang === 'jp' ? 'お電話番号 *' : lang === 'kr' ? '전화번호 *' : 'Phone Number *'}
                     />
                   </label>
                 </div>
-              ) : (
-                <label className={styles.field}>
+                {hasAttemptedSubmit && !customerInfo.phone.trim() && (
+                  <div style={{ color: '#ef4444', fontSize: '11.5px', marginTop: '5px', paddingLeft: '4px', fontWeight: 500 }}>
+                    * {lang === 'vi' ? 'Vui lòng nhập số điện thoại' : lang === 'cn' ? '请输入电话号码' : lang === 'jp' ? '電話番号を入力してください' : lang === 'kr' ? '전화번호를 입력해 주세요' : 'Please enter phone number'}
+                  </div>
+                )}
+                {hasAttemptedSubmit && customerInfo.phone.trim() && !isValidPhone(customerInfo.phone) && (
+                  <div style={{ color: '#ef4444', fontSize: '11.5px', marginTop: '5px', paddingLeft: '4px', fontWeight: 500 }}>
+                    * {lang === 'vi' ? 'Số điện thoại không hợp lệ (tối thiểu 8 chữ số)' : lang === 'cn' ? '电话号码无效（至少8位数字）' : lang === 'jp' ? '無効な電話番号です（8桁以上）' : lang === 'kr' ? '유효하지 않은 전화번호입니다 (8자리 이상)' : 'Invalid phone number (minimum 8 digits)'}
+                  </div>
+                )}
+              </div>
+
+              {/* Email Address (Required with @) */}
+              <div style={{ marginBottom: '12px' }}>
+                <label 
+                  className={styles.field}
+                  style={{
+                    ...(hasAttemptedSubmit && (!customerInfo.email.trim() || !isValidEmail(customerInfo.email)) ? { borderColor: '#ef4444', boxShadow: '0 0 0 1px #ef4444' } : {})
+                  }}
+                >
                   <input
                     type="email"
-                    value={currentContactValue}
-                    onChange={(event) => updateContact(event.target.value)}
-                    placeholder={t('email', lang)}
+                    value={customerInfo.email}
+                    onChange={(event) => updateCustomer('email', event.target.value)}
+                    placeholder={lang === 'vi' ? 'Địa chỉ Email * (ví dụ: name@gmail.com)' : lang === 'cn' ? '电子邮件 * (例如 name@gmail.com)' : lang === 'jp' ? 'メールアドレス * (例: name@gmail.com)' : lang === 'kr' ? '이메일 주소 * (예: name@gmail.com)' : 'Email Address * (e.g. name@gmail.com)'}
                   />
                 </label>
-              )}
+                {hasAttemptedSubmit && !customerInfo.email.trim() && (
+                  <div style={{ color: '#ef4444', fontSize: '11.5px', marginTop: '5px', paddingLeft: '4px', fontWeight: 500 }}>
+                    * {lang === 'vi' ? 'Vui lòng nhập địa chỉ email' : lang === 'cn' ? '请输入电子邮件地址' : lang === 'jp' ? 'メールアドレスを入力してください' : lang === 'kr' ? '이메일 주소를 입력해 주세요' : 'Please enter email address'}
+                  </div>
+                )}
+                {hasAttemptedSubmit && customerInfo.email.trim() && !isValidEmail(customerInfo.email) && (
+                  <div style={{ color: '#ef4444', fontSize: '11.5px', marginTop: '5px', paddingLeft: '4px', fontWeight: 500 }}>
+                    * {lang === 'vi' ? 'Email không đúng định dạng (phải có ký tự @ và tên miền, ví dụ: abc@gmail.com)' : lang === 'cn' ? '电子邮件格式无效（需包含 @ 及域名）' : lang === 'jp' ? 'メールアドレスの形式が正しくありません（@が必要です）' : lang === 'kr' ? '이메일 형식이 잘못되었습니다 (@ 포함 필요)' : 'Invalid email format (must include @ and domain, e.g. name@example.com)'}
+                  </div>
+                )}
+              </div>
 
               {/* Privacy / Security Notice */}
               <p style={{ fontSize: '11px', color: '#9b99a8', marginTop: '8px', marginBottom: '12px', display: 'flex', alignItems: 'flex-start', gap: '6px', lineHeight: 1.5 }}>
@@ -1370,7 +1435,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
             <button 
               className={styles.primaryButton} 
               type="button" 
-              disabled={cart.length === 0 || !customerInfo.name.trim() || (!customerInfo.email.trim() && !customerInfo.phone.trim())} 
+              disabled={cart.length === 0} 
               onClick={handleConfirmOrder}
             >
               {t('confirm', lang)}
