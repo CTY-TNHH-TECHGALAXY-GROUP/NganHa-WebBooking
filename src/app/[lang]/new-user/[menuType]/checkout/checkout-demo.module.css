@@ -931,6 +931,7 @@
   top: 0;
   bottom: 12px;
   width: 44px;
+  z-index: 10;
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -954,8 +955,8 @@
 
 .pickerTab {
   position: relative;
-  flex: 0 0 clamp(108px, 14vw, 132px);
-  min-width: 0;
+  flex: 0 0 clamp(90px, 26vw, 132px);
+  min-width: 90px;
   padding: 12px 10px 10px;
   display: flex;
   flex-direction: column;
@@ -979,7 +980,8 @@
   min-height: 2.4em;
   text-align: center;
   line-height: 1.2;
-  overflow-wrap: anywhere;
+  white-space: normal;
+  word-break: break-word;
 }
 
 .pickerTab .categoryIcon {
@@ -1496,8 +1498,14 @@
   }
 
   .pickerTab span {
-    min-height: 2.35em;
-  }
+  display: block;
+  max-width: 100%;
+  min-height: 2.4em;
+  text-align: center;
+  line-height: 1.2;
+  white-space: normal;
+  word-break: break-word;
+}
 
   .servicePickerList {
     gap: 10px;

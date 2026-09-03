@@ -111,7 +111,11 @@ export default function OrderConfirmModal({
     };
 
     useEffect(() => {
+        if (!isOpen) {
+            document.body.classList.remove('has-booking-modal');
+        }
         if (isOpen) {
+            document.body.classList.add('has-booking-modal');
             setCurrentStep(2);
             setIsEditingSchedule(false);
             setLocalName(initialCustomerInfo?.name || '');
@@ -121,6 +125,7 @@ export default function OrderConfirmModal({
             setLocalDate(initialBookingDate || '');
             setLocalTime(initialBookingTime || '');
         }
+        return () => { document.body.classList.remove('has-booking-modal'); };
     }, [isOpen, initialCustomerInfo, initialGuestCount, initialBookingDate, initialBookingTime]);
 
     useEffect(() => {
