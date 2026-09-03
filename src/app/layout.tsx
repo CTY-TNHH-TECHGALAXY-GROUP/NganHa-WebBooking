@@ -49,6 +49,11 @@ export async function generateMetadata(): Promise<Metadata> {
     keywords: Array.isArray(seo.keywords)
       ? seo.keywords
       : seo.keywords.split(',').map((k: string) => k.trim()),
+    appleWebApp: {
+      title: "Oria Spa",
+      statusBarStyle: "black-translucent",
+      capable: true,
+    },
     openGraph: {
       title: seo.title,
       description: seo.description,
