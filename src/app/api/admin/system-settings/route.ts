@@ -9,7 +9,7 @@ export async function GET() {
     const { data, error } = await supabase
       .from('SystemConfigs')
       .select('key, value')
-      .in('key', ['system_settings', 'about_story_content', 'brand_history', 'homepage_content']);
+      .in('key', ['system_settings', 'about_story_content', 'brand_history', 'homepage_content', 'footer_content']);
 
     if (error) {
       console.error('Error fetching system settings:', error);
@@ -20,7 +20,8 @@ export async function GET() {
       system_settings: {},
       about_story_content: {},
       brand_history: [],
-      homepage_content: {}
+      homepage_content: {},
+      footer_content: {}
     };
 
     if (data) {
@@ -29,6 +30,7 @@ export async function GET() {
         if (item.key === 'about_story_content') result.about_story_content = item.value;
         if (item.key === 'brand_history') result.brand_history = item.value;
         if (item.key === 'homepage_content') result.homepage_content = item.value;
+        if (item.key === 'footer_content') result.footer_content = item.value;
       });
     }
 
@@ -41,7 +43,7 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    const { system_settings, about_story_content, brand_history, homepage_content } = await request.json();
+    const { system_settings, about_story_content, brand_history, homepage_content, footer_content } = await request.json();
     const supabase = getSupabaseAdmin();
 
     const upsertData = [];
@@ -74,6 +76,14 @@ export async function POST(request: Request) {
       upsertData.push({
         key: 'homepage_content',
         value: homepage_content,
+        updated_at: new Date().toISOString()
+      });
+    }
+
+    if (footer_content !== undefined) {
+      upsertData.push({
+        key: 'footer_content',
+        value: footer_content,
         updated_at: new Date().toISOString()
       });
     }
