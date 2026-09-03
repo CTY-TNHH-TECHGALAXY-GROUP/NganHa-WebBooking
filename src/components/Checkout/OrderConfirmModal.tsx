@@ -597,22 +597,19 @@ export default function OrderConfirmModal({
                                             </span>
                                         </div>
 
-                                        {/* Informational Payment Chips (Click opens rich info popover) */}
-                                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                                        {/* Informational Payment List (No button/card framing) */}
+                                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-0.5">
                                             {PAYMENT_METHODS_ACCEPTED.map((method) => {
                                                 const Icon = method.icon;
                                                 return (
                                                     <div
                                                         key={method.id}
-                                                        id={`payment-chip-${method.id}`}
-                                                        onClick={() => setActiveMethodId(method.id)}
-                                                        className="p-2 rounded-xl bg-white/[0.03] hover:bg-[#c9a96e]/10 border border-white/5 hover:border-[#c9a96e]/40 transition-all cursor-pointer flex flex-col items-center text-center gap-1 group"
-                                                        title="Bấm để xem chi tiết / Click for details"
+                                                        className="flex items-center gap-2 py-1 px-0.5 text-gray-300"
                                                     >
-                                                        <div className="w-7 h-7 rounded-lg bg-white/5 group-hover:bg-[#c9a96e]/20 flex items-center justify-center text-[#f2d58d] transition-colors">
-                                                            <Icon size={14} />
+                                                        <div className="w-6 h-6 rounded-md bg-[#c9a96e]/10 flex items-center justify-center text-[#f2d58d] shrink-0">
+                                                            <Icon size={13} />
                                                         </div>
-                                                        <span className="text-[11px] font-medium text-gray-300 group-hover:text-white leading-tight">
+                                                        <span className="text-[11px] font-normal text-gray-300 leading-tight">
                                                             {method.label}
                                                         </span>
                                                     </div>

@@ -847,16 +847,14 @@
   display: grid;
   grid-template-rows: auto auto minmax(0, 1fr);
   padding: 26px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(201, 169, 110, 0.28);
   border-radius: 24px;
-  background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01)),
-    rgba(0, 0, 0, 0.4);
+  background: rgba(18, 15, 13, 0.85);
   backdrop-filter: blur(30px);
   -webkit-backdrop-filter: blur(30px);
   box-shadow:
-    0 36px 120px rgba(0, 0, 0, 0.54),
-    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    0 36px 120px rgba(0, 0, 0, 0.7),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
   overflow: hidden;
   min-width: 0;
 }
@@ -1053,12 +1051,20 @@
   grid-template-columns: 118px minmax(0, 1fr) auto;
   gap: 15px;
   align-items: center;
-  padding: 12px;
+  padding: 12px 14px;
   width: 100%;
   min-width: 0;
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 18px;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.04);
+  cursor: pointer;
+  transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.pickerServiceCard:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(201, 169, 110, 0.35);
+  transform: translateY(-1px);
 }
 
 .pickerServiceCard img,
@@ -1099,7 +1105,7 @@
   -webkit-box-orient: vertical;
 }
 
-.pickerAddButton { min-width: 42px; width: 42px; height: 42px; display: inline-flex; align-items: center; justify-content: center; gap: 0; border: none; border-radius: 999px; background: var(--gold); color: #111; cursor: pointer; transition: 0.2s; padding: 0; }
+.pickerAddButton { min-width: 36px; width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; gap: 0; border: none; border-radius: 999px; background: var(--gold); color: #111; cursor: pointer; transition: transform 0.2s, filter 0.2s; padding: 0; flex-shrink: 0; align-self: center; }
 
 .pickerAddButton:hover,
 .pickerAddButton:focus-visible {
@@ -1211,17 +1217,19 @@
   position: fixed;
   left: 50%;
   bottom: 0;
-  width: min(760px, calc(100% - 28px));
+  width: min(760px, calc(100% - 24px));
   transform: translate(-50%, 105%);
-  background: linear-gradient(180deg, rgba(14, 16, 25, 0.99), rgba(6, 8, 14, 0.995));
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(18, 15, 13, 0.88);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border: 1px solid rgba(201, 169, 110, 0.28);
   border-bottom: 0;
-  border-radius: 18px 18px 0 0;
-  box-shadow: 0 -24px 80px rgba(0, 0, 0, 0.62);
+  border-radius: 22px 22px 0 0;
+  box-shadow: 0 -24px 80px rgba(0, 0, 0, 0.75);
   z-index: 101;
   transition: transform 0.34s cubic-bezier(0.22, 0.8, 0.25, 1);
   overflow: hidden;
-  padding-bottom: env(safe-area-inset-bottom);
+  padding-bottom: max(16px, env(safe-area-inset-bottom));
 }
 
 .durationDrawer.drawerShow {
@@ -1251,8 +1259,8 @@
   border-radius: 8px;
   background-size: cover;
   background-position: center;
-  background-color: #10141d;
-  border: 1px solid rgba(199, 154, 75, 0.14);
+  background-color: transparent;
+  border: 1px solid rgba(199, 154, 75, 0.25);
 }
 
 .drawerTitle {
@@ -1294,31 +1302,37 @@
 
 .drawerOptions {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 12px;
 }
 
 .drawerOption {
-  border: 1px solid rgba(217, 184, 94, 0.16);
-  background: rgba(217, 184, 94, 0.03);
-  border-radius: 10px;
-  padding: 13px 10px;
+  border: 1px solid rgba(217, 184, 94, 0.2);
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  padding: 12px 14px;
   cursor: pointer;
   text-align: left;
   color: #d8d2c5;
   transition: 0.2s ease;
+  min-width: 0;
 }
 
 .drawerOption span {
   display: block;
-  font-size: 14px;
+  font-size: 13px;
   margin-bottom: 5px;
+  color: #a7a196;
+  white-space: nowrap;
 }
 
 .drawerOption strong {
   font-family: var(--serif);
-  font-size: 18px;
+  font-size: 16px;
   color: #f0e3bb;
+  display: block;
+  white-space: nowrap;
+  letter-spacing: -0.01em;
 }
 
 .drawerOption:hover {
@@ -1414,7 +1428,7 @@
   }
 
   .pickerServiceCard {
-    grid-template-columns: 88px minmax(0, 1fr) 42px;
+    grid-template-columns: 88px minmax(0, 1fr) auto;
     gap: 12px;
   }
 
@@ -1433,7 +1447,7 @@
     font-size: 13.5px;
   }
 
-  .pickerAddButton { min-width: 42px; width: 42px; height: 42px; display: inline-flex; align-items: center; justify-content: center; gap: 0; border: none; border-radius: 999px; background: var(--gold); color: #111; cursor: pointer; transition: 0.2s; padding: 0; }
+  .pickerAddButton { min-width: 36px; width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; gap: 0; border: none; border-radius: 999px; background: var(--gold); color: #111; cursor: pointer; transition: transform 0.2s, filter 0.2s; padding: 0; flex-shrink: 0; align-self: center; }
 
   .videoPreviewStage {
     width: 94vw;
@@ -1512,12 +1526,40 @@
     padding-right: 0;
   }
 
+  .durationDrawer {
+    width: 100%;
+    border-radius: 20px 20px 0 0;
+  }
+
+  .drawerBody {
+    padding: 16px;
+  }
+
+  .drawerOptions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .drawerOption {
+    padding: 10px 12px;
+  }
+
+  .drawerOption span {
+    font-size: 12px;
+    margin-bottom: 3px;
+  }
+
+  .drawerOption strong {
+    font-size: 15px;
+  }
+
   .pickerServiceCard {
-    grid-template-columns: 66px minmax(0, 1fr);
-    grid-template-rows: auto auto;
+    grid-template-columns: 66px minmax(0, 1fr) auto;
+    grid-template-rows: auto;
     gap: 10px 12px;
     padding: 11px;
     border-radius: 16px;
+    align-items: center;
   }
 
   .pickerServiceCard img,
@@ -1541,12 +1583,12 @@
   }
 
   .pickerAddButton {
-    grid-column: 1 / 2;
-    grid-row: 2 / 3;
-    min-width: 40px !important;
-    width: 40px !important;
-    height: 40px !important;
-    align-self: start !important;
+    grid-column: auto;
+    grid-row: auto;
+    min-width: 32px !important;
+    width: 32px !important;
+    height: 32px !important;
+    align-self: center !important;
   }
 }
 
@@ -1567,8 +1609,14 @@
   }
 
   .pickerServiceCard {
-    grid-template-columns: 58px minmax(0, 1fr);
-    padding: 10px;
+    grid-template-columns: 56px minmax(0, 1fr) auto;
+    padding: 9px;
+  }
+
+  .pickerAddButton {
+    min-width: 28px !important;
+    width: 28px !important;
+    height: 28px !important;
   }
 
   .pickerServiceCard img,

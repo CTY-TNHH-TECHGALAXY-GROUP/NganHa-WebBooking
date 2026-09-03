@@ -384,13 +384,24 @@ const CheckoutGroupedServiceCard = ({
 }) => {
   const selectedVariant = group[0];
 
+  const handleCardClick = () => {
+    if (group.length > 1) {
+      openDurationDrawer(group);
+    } else {
+      addService(selectedVariant);
+    }
+  };
+
   return (
-    <article className={styles.pickerServiceCard}>
+    <article 
+      className={styles.pickerServiceCard}
+      onClick={handleCardClick}
+    >
       {renderCheckoutServiceMedia(selectedVariant, openVideoPreview)}
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', minWidth: 0 }}>
         <h3>{serviceName(selectedVariant, lang)}</h3>
         <p>{serviceDescription(selectedVariant, lang)}</p>
-        <div className={styles.serviceMeta} style={{ marginTop: '0.5rem', flexWrap: 'wrap', display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <div className={styles.serviceMeta} style={{ marginTop: '0.4rem', flexWrap: 'wrap', display: 'flex', alignItems: 'center', gap: '8px' }}>
           {group.length > 1 ? (
             <>
               <span style={{ fontSize: '11px', textTransform: 'uppercase', color: '#9b978e' }}>Từ</span>
@@ -408,17 +419,13 @@ const CheckoutGroupedServiceCard = ({
       <button 
         type="button" 
         className={styles.pickerAddButton} 
-        onClick={() => {
-          if (group.length > 1) {
-            openDurationDrawer(group);
-          } else {
-            addService(selectedVariant);
-          }
+        onClick={(e) => {
+          e.stopPropagation();
+          handleCardClick();
         }} 
         aria-label={`${t('add', lang)} ${serviceName(selectedVariant, lang)}`}
-        style={{ alignSelf: 'center', minWidth: '42px', width: '42px', height: '42px', padding: 0 }}
       >
-        <Plus size={20} />
+        <Plus size={16} />
       </button>
     </article>
   );
@@ -480,6 +487,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
   const [activeCategory, setActiveCategory] = useState('');
   const [customizingService, setCustomizingService] = useState<Service | null>(null);
   const [isServicePickerOpen, setIsServicePickerOpen] = useState(false);
+  const [returnToServicePickerOnCancel, setReturnToServicePickerOnCancel] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('');
   const [amountPaid, setAmountPaid] = useState('');
   const [changeDenominations, setChangeDenominations] = useState<number[]>([]);
@@ -639,6 +647,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
   const addService = (service: Service, jumpToCart = false) => {
     setActiveDrawerGroup(null);
     setIsServicePickerOpen(false);
+    setReturnToServicePickerOnCancel(true);
     setCustomizingService(service);
   };
 
@@ -653,6 +662,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
       });
       setEditingCustomCartId(null);
       setEditingCustomInitialData(null);
+      setReturnToServicePickerOnCancel(false);
       setCustomizingService(null);
       if (returnToConfirmAfterEdit) {
         setReturnToConfirmAfterEdit(false);
@@ -662,6 +672,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
     }
 
     if (!customizingService) return;
+    setReturnToServicePickerOnCancel(false);
     addToCart(customizingService, 1, {
       strength: prefs.strength,
       therapist: prefs.therapist,
@@ -1379,6 +1390,9 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
               if (returnToConfirmAfterEdit) {
                 setReturnToConfirmAfterEdit(false);
                 window.setTimeout(() => setIsConfirmOpen(true), 100);
+              } else if (returnToServicePickerOnCancel) {
+                setReturnToServicePickerOnCancel(false);
+                setIsServicePickerOpen(true);
               }
             }}
             onSave={handleSaveCustom}
