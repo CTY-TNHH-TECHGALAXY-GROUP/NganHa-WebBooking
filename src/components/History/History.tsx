@@ -5,6 +5,14 @@ import Image from 'next/image';
 import { AnimatePresence, motion, useMotionValue, useSpring } from 'framer-motion';
 import { useSystemSettings } from '@/components/SystemSettingsProvider';
 import { useTranslation } from '@/components/TranslationProvider';
+import {
+  HISTORY_CHAPTER_TRANSLATIONS,
+  HISTORY_FINALE_DEFAULTS,
+  HISTORY_HERO_DEFAULTS,
+  HISTORY_INTERFACE_COPY,
+  HISTORY_LOCALES,
+  type HistoryLocale,
+} from './History.localization';
 import styles from './History.module.css';
 
 type Scene = {
@@ -494,35 +502,210 @@ export const chaptersEn: Chapter[] = [
   },
 ];
 
-const isEnglish = (lang: string) => lang === 'en';
+export const normalizeHistoryLocale = (locale: string): HistoryLocale => {
+  if (locale === 'zh') return 'cn';
+  return HISTORY_LOCALES.includes(locale as HistoryLocale) ? locale as HistoryLocale : 'vi';
+};
+
+type LocalizedText = Record<HistoryLocale, string>;
+type LocalizedMeta = Record<HistoryLocale, string[]>;
+
+const historyText = (vi: string, en: string, values?: Partial<Record<'jp' | 'kr' | 'cn', string>>): LocalizedText => ({
+  vi,
+  en,
+  jp: values?.jp || en,
+  kr: values?.kr || en,
+  cn: values?.cn || en,
+});
+
+const historyMeta = (vi: string[], en: string[], values?: Partial<Record<'jp' | 'kr' | 'cn', string[]>>): LocalizedMeta => ({
+  vi,
+  en,
+  jp: values?.jp || en,
+  kr: values?.kr || en,
+  cn: values?.cn || en,
+});
+
+const mergeLocalizedText = (defaults: LocalizedText, value?: Record<string, string>) => ({ ...defaults, ...(value || {}) });
+const mergeLocalizedMeta = (defaults: LocalizedMeta, value?: Record<string, string[]>) => ({ ...defaults, ...(value || {}) });
+
+export const createDefaultBrandHistoryConfig = () => ({
+  hero: {
+    image: '/images/about-bg.png',
+    eyebrow: historyText(HISTORY_HERO_DEFAULTS.vi.eyebrow, HISTORY_HERO_DEFAULTS.en.eyebrow, {
+      jp: HISTORY_HERO_DEFAULTS.jp.eyebrow, kr: HISTORY_HERO_DEFAULTS.kr.eyebrow, cn: HISTORY_HERO_DEFAULTS.cn.eyebrow,
+    }),
+    title1: historyText(HISTORY_HERO_DEFAULTS.vi.title1, HISTORY_HERO_DEFAULTS.en.title1, {
+      jp: HISTORY_HERO_DEFAULTS.jp.title1, kr: HISTORY_HERO_DEFAULTS.kr.title1, cn: HISTORY_HERO_DEFAULTS.cn.title1,
+    }),
+    title2: historyText(HISTORY_HERO_DEFAULTS.vi.title2, HISTORY_HERO_DEFAULTS.en.title2, {
+      jp: HISTORY_HERO_DEFAULTS.jp.title2, kr: HISTORY_HERO_DEFAULTS.kr.title2, cn: HISTORY_HERO_DEFAULTS.cn.title2,
+    }),
+    body: historyText(HISTORY_HERO_DEFAULTS.vi.body, HISTORY_HERO_DEFAULTS.en.body, {
+      jp: HISTORY_HERO_DEFAULTS.jp.body, kr: HISTORY_HERO_DEFAULTS.kr.body, cn: HISTORY_HERO_DEFAULTS.cn.body,
+    }),
+  },
+  finale: {
+    eyebrow: historyText(HISTORY_FINALE_DEFAULTS.vi.eyebrow, HISTORY_FINALE_DEFAULTS.en.eyebrow, {
+      jp: HISTORY_FINALE_DEFAULTS.jp.eyebrow, kr: HISTORY_FINALE_DEFAULTS.kr.eyebrow, cn: HISTORY_FINALE_DEFAULTS.cn.eyebrow,
+    }),
+    title: historyText(HISTORY_FINALE_DEFAULTS.vi.title, HISTORY_FINALE_DEFAULTS.en.title, {
+      jp: HISTORY_FINALE_DEFAULTS.jp.title, kr: HISTORY_FINALE_DEFAULTS.kr.title, cn: HISTORY_FINALE_DEFAULTS.cn.title,
+    }),
+    body: historyText(HISTORY_FINALE_DEFAULTS.vi.body, HISTORY_FINALE_DEFAULTS.en.body, {
+      jp: HISTORY_FINALE_DEFAULTS.jp.body, kr: HISTORY_FINALE_DEFAULTS.kr.body, cn: HISTORY_FINALE_DEFAULTS.cn.body,
+    }),
+  },
+  chapters: chaptersVi.map((chapterVi, chapterIndex) => {
+    const chapterEn = chaptersEn[chapterIndex] || chapterVi;
+    const translations = {
+      jp: HISTORY_CHAPTER_TRANSLATIONS.jp[chapterIndex],
+      kr: HISTORY_CHAPTER_TRANSLATIONS.kr[chapterIndex],
+      cn: HISTORY_CHAPTER_TRANSLATIONS.cn[chapterIndex],
+    };
+
+    return {
+      id: `history-${chapterVi.year}`,
+      year: chapterVi.year,
+      eyebrow: historyText(chapterVi.eyebrow, chapterEn.eyebrow, {
+        jp: translations.jp?.eyebrow, kr: translations.kr?.eyebrow, cn: translations.cn?.eyebrow,
+      }),
+      title: historyText(chapterVi.title, chapterEn.title, {
+        jp: translations.jp?.title, kr: translations.kr?.title, cn: translations.cn?.title,
+      }),
+      body: historyText(chapterVi.body, chapterEn.body, {
+        jp: translations.jp?.body, kr: translations.kr?.body, cn: translations.cn?.body,
+      }),
+      meta: historyMeta(chapterVi.meta, chapterEn.meta, {
+        jp: translations.jp?.meta, kr: translations.kr?.meta, cn: translations.cn?.meta,
+      }),
+      scenes: chapterVi.scenes.map((sceneVi, sceneIndex) => {
+        const sceneEn = chapterEn.scenes[sceneIndex] || sceneVi;
+        const sceneTranslations = {
+          jp: translations.jp?.scenes[sceneIndex],
+          kr: translations.kr?.scenes[sceneIndex],
+          cn: translations.cn?.scenes[sceneIndex],
+        };
+
+        return {
+          id: `history-${chapterVi.year}-${sceneIndex + 1}`,
+          title: historyText(sceneVi.title, sceneEn.title, {
+            jp: sceneTranslations.jp?.title, kr: sceneTranslations.kr?.title, cn: sceneTranslations.cn?.title,
+          }),
+          label: historyText(sceneVi.label, sceneEn.label, {
+            jp: sceneTranslations.jp?.label, kr: sceneTranslations.kr?.label, cn: sceneTranslations.cn?.label,
+          }),
+          body: historyText(sceneVi.body, sceneEn.body, {
+            jp: sceneTranslations.jp?.body, kr: sceneTranslations.kr?.body, cn: sceneTranslations.cn?.body,
+          }),
+          image: sceneVi.image,
+          alt: historyText(sceneVi.alt, sceneEn.alt, {
+            jp: sceneTranslations.jp?.title, kr: sceneTranslations.kr?.title, cn: sceneTranslations.cn?.title,
+          }),
+          imageFit: sceneVi.imageFit,
+          imagePosition: sceneVi.imagePosition,
+        };
+      }),
+    };
+  }),
+});
+
+export const hydrateBrandHistoryConfig = (config?: any) => {
+  const defaults = createDefaultBrandHistoryConfig();
+  const source = Array.isArray(config) ? { chapters: config } : config || {};
+  const sourceChapters = Array.isArray(source.chapters) ? source.chapters : [];
+  const chaptersByYear = new Map(sourceChapters.map((chapter: any) => [chapter.year, chapter]));
+  const extraChapters = sourceChapters
+    .filter((chapter: any) => !defaults.chapters.some(defaultChapter => defaultChapter.year === chapter.year))
+    .map((chapter: any) => ({
+      ...chapter,
+      id: chapter.id || `history-${chapter.year}`,
+      eyebrow: mergeLocalizedText(historyText(chapter.eyebrow?.vi || '', chapter.eyebrow?.en || ''), chapter.eyebrow),
+      title: mergeLocalizedText(historyText(chapter.title?.vi || '', chapter.title?.en || ''), chapter.title),
+      body: mergeLocalizedText(historyText(chapter.body?.vi || '', chapter.body?.en || ''), chapter.body),
+      meta: mergeLocalizedMeta(historyMeta(chapter.meta?.vi || [], chapter.meta?.en || []), chapter.meta),
+      scenes: (chapter.scenes || []).map((scene: any, sceneIndex: number) => ({
+        ...scene,
+        id: scene.id || `history-${chapter.year}-${sceneIndex + 1}`,
+        title: mergeLocalizedText(historyText(scene.title?.vi || '', scene.title?.en || ''), scene.title),
+        label: mergeLocalizedText(historyText(scene.label?.vi || '', scene.label?.en || ''), scene.label),
+        body: mergeLocalizedText(historyText(scene.body?.vi || '', scene.body?.en || ''), scene.body),
+        alt: mergeLocalizedText(historyText(scene.alt?.vi || '', scene.alt?.en || ''), scene.alt),
+      })),
+    }));
+
+  return {
+    hero: {
+      ...defaults.hero,
+      ...(source.hero || {}),
+      image: source.hero?.image || defaults.hero.image,
+      eyebrow: mergeLocalizedText(defaults.hero.eyebrow, source.hero?.eyebrow),
+      title1: mergeLocalizedText(defaults.hero.title1, source.hero?.title1),
+      title2: mergeLocalizedText(defaults.hero.title2, source.hero?.title2),
+      body: mergeLocalizedText(defaults.hero.body, source.hero?.body),
+    },
+    finale: {
+      ...defaults.finale,
+      ...(source.finale || {}),
+      eyebrow: mergeLocalizedText(defaults.finale.eyebrow, source.finale?.eyebrow),
+      title: mergeLocalizedText(defaults.finale.title, source.finale?.title),
+      body: mergeLocalizedText(defaults.finale.body, source.finale?.body),
+    },
+    chapters: [...defaults.chapters.map(defaultChapter => {
+      const chapter: any = chaptersByYear.get(defaultChapter.year) || {};
+      return {
+        ...defaultChapter,
+        ...chapter,
+        id: chapter.id || defaultChapter.id,
+        eyebrow: mergeLocalizedText(defaultChapter.eyebrow, chapter.eyebrow),
+        title: mergeLocalizedText(defaultChapter.title, chapter.title),
+        body: mergeLocalizedText(defaultChapter.body, chapter.body),
+        meta: mergeLocalizedMeta(defaultChapter.meta, chapter.meta),
+        scenes: defaultChapter.scenes.map((defaultScene, sceneIndex) => {
+          const scene: any = chapter.scenes?.[sceneIndex] || {};
+          return {
+            ...defaultScene,
+            ...scene,
+            id: scene.id || defaultScene.id,
+            title: mergeLocalizedText(defaultScene.title, scene.title),
+            label: mergeLocalizedText(defaultScene.label, scene.label),
+            body: mergeLocalizedText(defaultScene.body, scene.body),
+            alt: mergeLocalizedText(defaultScene.alt, scene.alt),
+          };
+        }),
+      };
+    }), ...extraChapters],
+  };
+};
 
 export const History = () => {
   const { currentLang } = useTranslation();
-  const isEn = isEnglish(currentLang);
+  const locale = normalizeHistoryLocale(currentLang);
+  const copy = HISTORY_INTERFACE_COPY[locale];
   const { brandHistory, getLocalizedText } = useSystemSettings();
+  const hydratedHistory = useMemo(() => hydrateBrandHistoryConfig(brandHistory), [brandHistory]);
 
   const chapters = useMemo(() => {
-    const chaptersData = brandHistory?.chapters || (Array.isArray(brandHistory) ? brandHistory : null);
-    if (chaptersData && chaptersData.length > 0) {
-      return chaptersData.map((chapter: any) => ({
+    if (hydratedHistory.chapters.length > 0) {
+      return hydratedHistory.chapters.map((chapter: any) => ({
         year: chapter.year || '',
-        eyebrow: getLocalizedText(chapter.eyebrow, isEn ? 'en' : 'vi', ''),
-        title: getLocalizedText(chapter.title, isEn ? 'en' : 'vi', ''),
-        body: getLocalizedText(chapter.body, isEn ? 'en' : 'vi', ''),
-        meta: chapter.meta?.[isEn ? 'en' : 'vi'] || [],
+        eyebrow: getLocalizedText(chapter.eyebrow, locale, ''),
+        title: getLocalizedText(chapter.title, locale, ''),
+        body: getLocalizedText(chapter.body, locale, ''),
+        meta: chapter.meta?.[locale] || [],
         scenes: chapter.scenes?.map((scene: any) => ({
-          title: getLocalizedText(scene.title, isEn ? 'en' : 'vi', ''),
-          label: getLocalizedText(scene.label, isEn ? 'en' : 'vi', ''),
-          body: getLocalizedText(scene.body, isEn ? 'en' : 'vi', ''),
+          title: getLocalizedText(scene.title, locale, ''),
+          label: getLocalizedText(scene.label, locale, ''),
+          body: getLocalizedText(scene.body, locale, ''),
           image: scene.image || '',
-          alt: getLocalizedText(scene.title, isEn ? 'en' : 'vi', ''), // Fallback alt to title
+          alt: getLocalizedText(scene.alt, locale, getLocalizedText(scene.title, locale, '')),
           imageFit: scene.imageFit,
           imagePosition: scene.imagePosition,
         })) || []
       }));
     }
-    return isEn ? chaptersEn : chaptersVi;
-  }, [brandHistory, isEn, getLocalizedText]);
+    return chaptersVi;
+  }, [hydratedHistory, locale, getLocalizedText]);
   const [activeChapter, setActiveChapter] = useState(0);
   const [activeScenes, setActiveScenes] = useState<Record<string, number>>({});
   const [cacheBuster, setCacheBuster] = useState('');
@@ -697,8 +880,8 @@ export const History = () => {
       >
         <div className={styles.heroMedia}>
           <Image
-            src={getBustedUrl(brandHistory?.hero?.image || "/images/about-bg.png")}
-            alt={isEn ? 'Ngan Ha to Oria Spa historical atmosphere' : 'Không gian lịch sử Ngân Hà đến Oria Spa'}
+            src={getBustedUrl(hydratedHistory.hero?.image || "/images/about-bg.png")}
+            alt={getLocalizedText(hydratedHistory.hero?.title2, locale, 'Oria Spa')}
             fill
             unoptimized
             priority
@@ -707,32 +890,26 @@ export const History = () => {
         </div>
         <div className={styles.heroCopy}>
           <span className={styles.eyebrow}>
-            {getLocalizedText(brandHistory?.hero?.eyebrow, isEn ? 'en' : 'vi', isEn ? 'A story worth following' : 'Hành trình đáng dõi theo')}
+            {getLocalizedText(hydratedHistory.hero?.eyebrow, locale, HISTORY_HERO_DEFAULTS[locale].eyebrow)}
           </span>
           <h1>
-            {getLocalizedText(brandHistory?.hero?.title1, isEn ? 'en' : 'vi', isEn ? 'Our' : 'Lịch Sử')} <em>{getLocalizedText(brandHistory?.hero?.title2, isEn ? 'en' : 'vi', isEn ? 'History' : 'Ngân Hà')}</em>
+            {getLocalizedText(hydratedHistory.hero?.title1, locale, HISTORY_HERO_DEFAULTS[locale].title1)} <em>{getLocalizedText(hydratedHistory.hero?.title2, locale, HISTORY_HERO_DEFAULTS[locale].title2)}</em>
           </h1>
           <p>
-            {getLocalizedText(brandHistory?.hero?.body, isEn ? 'en' : 'vi', isEn
-              ? 'From a modest first space to a more cinematic wellness destination, each milestone carries the same quiet promise: better care, warmer hospitality, and a calmer guest experience.'
-              : 'Từ một không gian nhỏ ban đầu đến một điểm đến spa chỉn chu hơn, mỗi cột mốc đều giữ cùng một lời hứa: chăm sóc tốt hơn, đón tiếp ấm hơn và trải nghiệm bình yên hơn.')}
+            {getLocalizedText(hydratedHistory.hero?.body, locale, HISTORY_HERO_DEFAULTS[locale].body)}
           </p>
           <a className={styles.scrollCue} href="#history-2015">
             <span />
-            {isEn ? 'Scroll to follow the journey' : 'Cuộn để theo dõi hành trình'}
+            {copy.scrollCue}
           </a>
         </div>
       </motion.header>
 
       <div className={styles.intro}>
         <div>
-          <span className={styles.eyebrow}>{isEn ? 'Cinematic timeline' : 'Dòng thời gian điện ảnh'}</span>
-          <h2>{isEn ? 'A calmer way to feel the brand story.' : 'Một cách bình yên hơn để cảm nhận câu chuyện thương hiệu.'}</h2>
-          <p>
-            {isEn
-              ? 'The interface fades into the background; image, rhythm, and memory become the main experience.'
-              : 'Giao diện lùi nhẹ về sau; hình ảnh, nhịp kể và ký ức trở thành trọng tâm của trải nghiệm.'}
-          </p>
+          <span className={styles.eyebrow}>{copy.introEyebrow}</span>
+          <h2>{copy.introTitle}</h2>
+          <p>{copy.introBody}</p>
         </div>
         <div className={styles.stickyYear}>
           <AnimatePresence mode="popLayout">
@@ -783,7 +960,7 @@ export const History = () => {
                   ))}
                 </div>
                 <div className={styles.storyInline}>
-                  <span>{isEn ? 'Current moment' : 'Khoảnh khắc hiện tại'}</span>
+                  <span>{copy.currentMoment}</span>
                   <strong>{scene.title}</strong>
                   <p>{scene.body}</p>
                 </div>
@@ -802,7 +979,7 @@ export const History = () => {
                   tabIndex={chapter.scenes.length > 1 ? 0 : undefined}
                   aria-label={
                     chapter.scenes.length > 1
-                      ? `${isEn ? 'Image sequence for' : 'Chuỗi ảnh của'} ${chapter.year}. ${isEn ? 'Click or press Enter to continue.' : 'Bấm hoặc nhấn Enter để xem tiếp.'}`
+                      ? `${copy.imageSequence} ${chapter.year}. ${copy.imageSequenceHint}`
                       : undefined
                   }
                   onClick={() => {
@@ -836,12 +1013,12 @@ export const History = () => {
                     <p>{scene.body}</p>
                   </div>
                   {chapter.scenes.length > 1 && (
-                    <div className={styles.stageArrows} aria-label={isEn ? 'Change image' : 'Chuyển ảnh'}>
+                    <div className={styles.stageArrows} aria-label={copy.changeImage}>
                       <span
                         role="link"
                         tabIndex={0}
                         className={styles.stageArrow}
-                        aria-label={isEn ? 'Previous image' : 'Ảnh trước'}
+                        aria-label={copy.previousImage}
                         onClick={event => {
                           event.stopPropagation();
                           cycleScene(chapter, sceneIndex, -1);
@@ -859,7 +1036,7 @@ export const History = () => {
                         role="link"
                         tabIndex={0}
                         className={styles.stageArrow}
-                        aria-label={isEn ? 'Next image' : 'Ảnh tiếp theo'}
+                        aria-label={copy.nextImage}
                         onClick={event => {
                           event.stopPropagation();
                           cycleScene(chapter, sceneIndex, 1);
@@ -878,7 +1055,7 @@ export const History = () => {
                 </div>
 
                 {chapter.scenes.length > 1 && (
-                  <div className={styles.filmstrip} role="tablist" aria-label={isEn ? 'Scene moments' : 'Các khoảnh khắc'}>
+                  <div className={styles.filmstrip} role="tablist" aria-label={copy.sceneMoments}>
                     {chapter.scenes.map((item: any, index: number) => (
                       <span
                         key={item.title}
@@ -888,7 +1065,7 @@ export const History = () => {
                         onClick={() => selectScene(chapter, index)}
                         onKeyDown={event => handleSceneKey(event, chapter, index)}
                         aria-selected={index === sceneIndex}
-                        aria-label={`${isEn ? 'View image' : 'Xem ảnh'} ${index + 1}: ${item.label}`}
+                        aria-label={`${copy.viewImage} ${index + 1}: ${item.label}`}
                       >
                         <span className={styles.sceneThumb}>
                           <Image src={getBustedUrl(item.image)} alt="" fill sizes="96px" unoptimized />
@@ -914,7 +1091,7 @@ export const History = () => {
 
       <nav 
         className={styles.yearNav} 
-        aria-label={isEn ? 'History years' : 'Các năm lịch sử'}
+        aria-label={copy.historyYears}
         style={{ 
           opacity: isNavVisible ? 1 : 0, 
           visibility: isNavVisible ? 'visible' : 'hidden',

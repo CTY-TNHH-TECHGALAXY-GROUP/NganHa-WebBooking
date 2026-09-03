@@ -109,7 +109,7 @@ export const SystemSettingsProvider = ({
   
   const getLocalizedText = (textObj: Record<string, string> | undefined, locale: Locale, fallback = '') => {
     if (!textObj) return fallback;
-    return textObj[locale] || textObj['vi'] || fallback;
+    return textObj[locale] || textObj['en'] || textObj['vi'] || fallback;
   };
 
   return (

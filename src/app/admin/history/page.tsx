@@ -3,7 +3,27 @@
 import React, { useState, useEffect } from 'react';
 import { Save, Plus, Trash2, Edit3, Image as ImageIcon, ArrowLeft, ChevronDown, ChevronRight, Download } from 'lucide-react';
 import Link from 'next/link';
-import { chaptersVi, chaptersEn } from '@/components/History/History';
+import {
+  createDefaultBrandHistoryConfig,
+  hydrateBrandHistoryConfig,
+} from '@/components/History/History';
+import { HISTORY_LANGUAGE_TABS, type HistoryLocale } from '@/components/History/History.localization';
+
+const emptyLocalizedText = (vi = '', en = ''): Record<HistoryLocale, string> => ({
+  vi,
+  en,
+  jp: '',
+  kr: '',
+  cn: '',
+});
+
+const emptyLocalizedMeta = (): Record<HistoryLocale, string[]> => ({
+  vi: [],
+  en: [],
+  jp: [],
+  kr: [],
+  cn: [],
+});
 
 // Helper component for multi-language input
 const MultiLangInput = ({ 
@@ -17,7 +37,7 @@ const MultiLangInput = ({
   onChange: (val: Record<string, string>) => void;
   multiline?: boolean;
 }) => {
-  const [lang, setLang] = useState<'vi' | 'en'>('vi');
+  const [lang, setLang] = useState<HistoryLocale>('vi');
 
   const handleChange = (text: string) => {
     onChange({ ...(value || {}), [lang]: text });
@@ -27,21 +47,17 @@ const MultiLangInput = ({
     <div className="mb-4 bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
       <div className="flex items-center justify-between mb-3">
         <label className="block text-sm font-semibold text-gray-800">{label}</label>
-        <div className="flex bg-gray-100 p-1 rounded-lg">
-          <button 
-            type="button" 
-            onClick={() => setLang('vi')} 
-            className={`px-3 py-1 text-xs font-bold rounded-md ${lang === 'vi' ? 'bg-white shadow-sm text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
-          >
-            Tiếng Việt
-          </button>
-          <button 
-            type="button" 
-            onClick={() => setLang('en')} 
-            className={`px-3 py-1 text-xs font-bold rounded-md ${lang === 'en' ? 'bg-white shadow-sm text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
-          >
-            English
-          </button>
+        <div className="flex max-w-full overflow-x-auto bg-gray-100 p-1 rounded-lg">
+          {HISTORY_LANGUAGE_TABS.map(language => (
+            <button
+              key={language.code}
+              type="button"
+              onClick={() => setLang(language.code)}
+              className={`shrink-0 px-2.5 py-1 text-xs font-bold rounded-md ${lang === language.code ? 'bg-white shadow-sm text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
+            >
+              <span aria-hidden="true">{language.flag}</span> {language.label}
+            </button>
+          ))}
         </div>
       </div>
       {multiline ? (
@@ -49,7 +65,7 @@ const MultiLangInput = ({
           className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 min-h-[80px]"
           value={value?.[lang] || ''}
           onChange={e => handleChange(e.target.value)}
-          placeholder={`Nhập ${lang === 'vi' ? 'Tiếng Việt' : 'Tiếng Anh'}...`}
+          placeholder={`Nhập nội dung ${HISTORY_LANGUAGE_TABS.find(item => item.code === lang)?.label}...`}
         />
       ) : (
         <input
@@ -57,7 +73,7 @@ const MultiLangInput = ({
           className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500"
           value={value?.[lang] || ''}
           onChange={e => handleChange(e.target.value)}
-          placeholder={`Nhập ${lang === 'vi' ? 'Tiếng Việt' : 'Tiếng Anh'}...`}
+          placeholder={`Nhập nội dung ${HISTORY_LANGUAGE_TABS.find(item => item.code === lang)?.label}...`}
         />
       )}
     </div>
@@ -65,21 +81,7 @@ const MultiLangInput = ({
 };
 
 export default function BrandHistoryPage() {
-  const [config, setConfig] = useState<any>({
-    hero: {
-      image: '/images/about-bg.png',
-      eyebrow: { vi: 'Hành trình đáng dõi theo', en: 'A story worth following' },
-      title1: { vi: 'Lịch Sử', en: 'Our' },
-      title2: { vi: 'Ngân Hà', en: 'History' },
-      body: { vi: 'Từ một không gian nhỏ ban đầu đến một điểm đến spa chỉn chu hơn, mỗi cột mốc đều giữ cùng một lời hứa: chăm sóc tốt hơn, đón tiếp ấm hơn và trải nghiệm bình yên hơn.', en: 'From a humble beginning to a refined spa destination, every milestone carries the same promise: better care, warmer hospitality, and a more peaceful experience.' }
-    },
-    finale: {
-      eyebrow: { vi: 'Câu chuyện còn tiếp tục', en: 'The story continues' },
-      title: { vi: 'Ít cảm giác giao diện hơn. Nhiều cảm xúc hơn.', en: 'Less interface. More feeling.' },
-      body: { vi: 'Lịch sử trở thành một hành trình điện ảnh nhẹ nhàng qua thương hiệu, con người và những không gian đã tạo nên Ngân Hà.', en: 'History becomes a quiet cinematic journey through the brand, its people, and its spaces.' }
-    },
-    chapters: []
-  });
+  const [config, setConfig] = useState<any>(createDefaultBrandHistoryConfig);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
@@ -89,37 +91,7 @@ export default function BrandHistoryPage() {
     fetch('/api/admin/system-settings')
       .then(res => res.json())
       .then(data => {
-        if (data.brand_history && data.brand_history.hero && data.brand_history.chapters) {
-          setConfig(data.brand_history);
-        } else if (data.brand_history && Array.isArray(data.brand_history) && data.brand_history.length > 0) {
-          // Backward compatibility if it was just an array
-          setConfig((prev: any) => ({ ...prev, chapters: data.brand_history }));
-        } else {
-          // Auto-seed from hardcoded data if DB is empty
-          const seedData = chaptersVi.map((chVi, index) => {
-            const chEn = chaptersEn[index] || chVi;
-            return {
-              id: Date.now().toString() + index,
-              year: chVi.year,
-              eyebrow: { vi: chVi.eyebrow, en: chEn.eyebrow },
-              title: { vi: chVi.title, en: chEn.title },
-              body: { vi: chVi.body, en: chEn.body },
-              meta: { vi: chVi.meta, en: chEn.meta },
-              scenes: chVi.scenes.map((scVi, sIdx) => {
-                const scEn = chEn.scenes[sIdx] || scVi;
-                return {
-                  id: Date.now().toString() + index + sIdx,
-                  title: { vi: scVi.title, en: scEn.title },
-                  label: { vi: scVi.label, en: scEn.label },
-                  body: { vi: scVi.body, en: scEn.body },
-                  image: scVi.image,
-                  alt: { vi: scVi.alt, en: scEn.alt }
-                };
-              })
-            };
-          });
-          setConfig((prev: any) => ({ ...prev, chapters: seedData }));
-        }
+        setConfig(hydrateBrandHistoryConfig(data.brand_history));
         setLoading(false);
       })
       .catch(err => {
@@ -153,10 +125,10 @@ export default function BrandHistoryPage() {
     const newChapter = {
       id: Date.now().toString(),
       year: new Date().getFullYear().toString(),
-      eyebrow: { vi: 'Cột mốc mới', en: 'New Milestone' },
-      title: { vi: '', en: '' },
-      body: { vi: '', en: '' },
-      meta: { vi: [], en: [] },
+      eyebrow: emptyLocalizedText('Cột mốc mới', 'New Milestone'),
+      title: emptyLocalizedText(),
+      body: emptyLocalizedText(),
+      meta: emptyLocalizedMeta(),
       scenes: []
     };
     setConfig({ ...config, chapters: [...config.chapters, newChapter] });
@@ -180,11 +152,11 @@ export default function BrandHistoryPage() {
     const newChapters = [...config.chapters];
     const newScene = {
       id: Date.now().toString(),
-      title: { vi: '', en: '' },
-      label: { vi: '', en: '' },
-      body: { vi: '', en: '' },
+      title: emptyLocalizedText(),
+      label: emptyLocalizedText(),
+      body: emptyLocalizedText(),
       image: '',
-      alt: { vi: '', en: '' }
+      alt: emptyLocalizedText(),
     };
     if (!newChapters[chapterIndex].scenes) newChapters[chapterIndex].scenes = [];
     newChapters[chapterIndex].scenes.push(newScene);
