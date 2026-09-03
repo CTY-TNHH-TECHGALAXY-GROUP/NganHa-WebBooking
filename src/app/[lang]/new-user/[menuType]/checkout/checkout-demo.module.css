@@ -278,7 +278,7 @@
 }
 
 .genderOpen {
-  z-index: 40;
+  z-index: 60;
 }
 
 .genderMenu {
@@ -286,15 +286,15 @@
   top: calc(100% + 8px);
   right: 0;
   left: 0;
-  z-index: 45;
+  z-index: 100;
   display: none;
   padding: 6px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(201, 169, 110, 0.35);
   border-radius: 14px;
-  background: rgba(10, 12, 26, 0.96);
+  background: rgba(18, 15, 13, 0.98);
   backdrop-filter: blur(28px) saturate(135%);
   -webkit-backdrop-filter: blur(28px) saturate(135%);
-  box-shadow: 0 24px 70px -18px rgba(0, 0, 0, 0.98), 0 0 36px -16px rgba(201, 169, 110, 0.32);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.95), 0 0 24px rgba(201, 169, 110, 0.2);
 }
 
 .genderOpen .genderMenu {

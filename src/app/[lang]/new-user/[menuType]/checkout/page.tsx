@@ -487,6 +487,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
   const [contactMethod, setContactMethod] = useState<ContactMethod>('email');
   const [customerInfo, setCustomerInfo] = useState({ name: '', email: '', phone: '', gender: t('male', lang) });
   const [hasAttemptedSubmit, setHasAttemptedSubmit] = useState(false);
+
   const [phoneCountry, setPhoneCountry] = useState(() => phoneCountryForLang(lang));
   const [isGenderOpen, setIsGenderOpen] = useState(false);
   const [isPhoneCountryOpen, setIsPhoneCountryOpen] = useState(false);
@@ -508,6 +509,26 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
   const [isVideoPreviewClosing, setIsVideoPreviewClosing] = useState(false);
   const [alertState, setAlertState] = useState<{ isOpen: boolean; message: string; type?: 'error' | 'success' | 'info' }>({ isOpen: false, message: '' });
   const [activeDrawerGroup, setActiveDrawerGroup] = useState<Service[] | null>(null);
+
+  useEffect(() => {
+    if (!isGenderOpen && !isPhoneCountryOpen) return;
+    const handleClickOutside = (e: MouseEvent | TouchEvent) => {
+      const target = e.target as HTMLElement | null;
+      if (!target) return;
+      if (!target.closest?.('.' + styles.genderField)) {
+        setIsGenderOpen(false);
+      }
+      if (!target.closest?.('.' + styles.phoneCountryField)) {
+        setIsPhoneCountryOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('touchstart', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
+  }, [isGenderOpen, isPhoneCountryOpen]);
 
   const dateOptions = useMemo(() => nextDates(), []);
   const allSlots = useMemo(() => {
@@ -863,8 +884,8 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
               <p className={styles.eyebrow}>{t('customer', lang)}</p>
 
               {/* Full Name & Gender */}
-              <div style={{ marginBottom: '12px' }}>
-                <div className={styles.fieldRow} style={{ marginBottom: 0 }}>
+              <div style={{ marginBottom: '12px', position: 'relative', zIndex: isGenderOpen ? 60 : 3 }}>
+                <div className={styles.fieldRow} style={{ marginBottom: 0, position: 'relative', zIndex: isGenderOpen ? 60 : 3 }}>
                   <label 
                     className={styles.field} 
                     style={{ 
