@@ -51,7 +51,7 @@ export async function generateMetadata(): Promise<Metadata> {
       : seo.keywords.split(',').map((k: string) => k.trim()),
     appleWebApp: {
       title: "Oria Spa",
-      statusBarStyle: "black-translucent",
+      statusBarStyle: "default",
       capable: true,
     },
     openGraph: {
@@ -76,7 +76,7 @@ export const viewport = {
   maximumScale: 1,
   userScalable: false, // Prevent zooming
   viewportFit: "cover",
-  themeColor: "#000000",
+  themeColor: "#281b15",
 };
 
 const RootLayout = async ({

@@ -12,8 +12,10 @@
   left: 0;
   right: 0;
   z-index: 30; /* Z.HEADER */
-  height: var(--header-height);
+  height: calc(var(--header-height) + env(safe-area-inset-top, 0px));
+  padding-top: env(safe-area-inset-top, 0px);
   background: transparent;
+  box-sizing: border-box;
 }
 
 .site-header::before {
@@ -798,8 +800,8 @@
 
 .nav-fullscreen-close {
   position: absolute;
-  top: 30px;
-  left: 30px;
+  top: max(24px, calc(env(safe-area-inset-top, 0px) + 12px));
+  left: 24px;
   background: transparent;
   border: none;
   color: #f7ebc7; /* White color */

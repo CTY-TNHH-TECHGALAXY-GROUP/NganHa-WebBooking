@@ -485,6 +485,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
   const [editingCustomCartId, setEditingCustomCartId] = useState<string | null>(null);
   const [editingCustomInitialData, setEditingCustomInitialData] = useState<CustomPreferences | null>(null);
   const [contactMethod, setContactMethod] = useState<ContactMethod>('email');
+  const [genderKey, setGenderKey] = useState<'male' | 'female' | 'other'>('male');
   const [customerInfo, setCustomerInfo] = useState({ name: '', email: '', phone: '', gender: t('male', lang) });
   const [hasAttemptedSubmit, setHasAttemptedSubmit] = useState(false);
 
@@ -509,6 +510,10 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
   const [isVideoPreviewClosing, setIsVideoPreviewClosing] = useState(false);
   const [alertState, setAlertState] = useState<{ isOpen: boolean; message: string; type?: 'error' | 'success' | 'info' }>({ isOpen: false, message: '' });
   const [activeDrawerGroup, setActiveDrawerGroup] = useState<Service[] | null>(null);
+
+  useEffect(() => {
+    setCustomerInfo((prev) => ({ ...prev, gender: t(genderKey, lang) }));
+  }, [genderKey, lang]);
 
   useEffect(() => {
     if (!isGenderOpen && !isPhoneCountryOpen) return;
@@ -858,9 +863,9 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
       <div className={styles.nebula} />
       <div className={styles.stars} />
 
-      <header className="relative z-10 flex flex-col items-center pt-8 md:pt-12 pb-6 mb-6">
+      <header className="relative z-10 flex flex-col items-center pt-[max(2rem,calc(env(safe-area-inset-top)+1rem))] md:pt-12 pb-6 mb-6">
         <button 
-          className="absolute left-4 md:left-8 top-20 md:top-28 flex items-center gap-1 text-[#c9a96e] hover:text-white transition-colors z-20" 
+          className="absolute left-4 md:left-8 top-[max(5rem,calc(env(safe-area-inset-top)+2.5rem))] md:top-28 flex items-center gap-1 text-[#c9a96e] hover:text-white transition-colors z-20" 
           type="button" 
           onClick={() => router.back()}
         >
@@ -908,23 +913,24 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                       aria-expanded={isGenderOpen}
                       aria-label="Gender"
                     >
-                      <span>{customerInfo.gender}</span>
+                      <span>{t(genderKey, lang)}</span>
                       <span className={styles.genderChevron}>⌄</span>
                     </button>
                     <div className={styles.genderMenu} role="listbox">
-                      {genderOptions.map((option) => (
+                      {(['male', 'female', 'other'] as const).map((key) => (
                         <button
-                          key={option}
+                          key={key}
                           type="button"
-                          className={`${styles.genderOption} ${customerInfo.gender === option ? styles.genderOptionActive : ''}`}
+                          className={`${styles.genderOption} ${genderKey === key ? styles.genderOptionActive : ''}`}
                           onClick={() => {
-                            updateCustomer('gender', option);
+                            setGenderKey(key);
+                            updateCustomer('gender', t(key, lang));
                             setIsGenderOpen(false);
                           }}
                           role="option"
-                          aria-selected={customerInfo.gender === option}
+                          aria-selected={genderKey === key}
                         >
-                          {option}
+                          {t(key, lang)}
                         </button>
                       ))}
                     </div>
