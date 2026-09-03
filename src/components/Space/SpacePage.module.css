@@ -608,3 +608,240 @@ img.heroMedia {
   .ctaCopy { gap: 28px; }
   .footer { padding: 24px 20px; display: block; line-height: 2; }
 }
+\n
+.capacitySection {
+  background: #281b15;
+  color: #f7ebc7;
+  padding: clamp(60px, 12vw, 120px) var(--pad);
+  font-family: "DM Sans", sans-serif;
+  overflow: hidden;
+}
+
+.capacityInner {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(80px, 15vw, 140px);
+}
+
+.capacityHeader {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  align-items: start;
+}
+
+.kicker {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 24px;
+  color: #cfb46e;
+}
+
+.capacityHeaderLeft h2 {
+  font-family: var(--font-playfair), "Playfair Display", serif;
+  font-size: clamp(32px, 5vw, 64px);
+  line-height: 1.1;
+  font-weight: 400;
+}
+
+.capacityHeaderRight {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.introPrimary {
+  font-size: clamp(20px, 2.5vw, 28px);
+  line-height: 1.4;
+  color: #f7ebc7;
+}
+
+.introSecondary {
+  font-size: clamp(15px, 1.2vw, 16px);
+  line-height: 1.6;
+  color: rgba(247, 235, 199, 0.7);
+  max-width: 480px;
+}
+
+.capacityNumberRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  align-items: center;
+}
+
+.numberWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.hugeNumber {
+  font-family: var(--font-playfair), "Playfair Display", serif;
+  font-size: clamp(120px, 25vw, 360px);
+  line-height: 0.8;
+  color: #cfb46e;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.capacityLabel {
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(247, 235, 199, 0.5);
+  padding-left: 0.5vw;
+}
+
+.capacityContent {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.capacityContent h3 {
+  font-family: var(--font-playfair), "Playfair Display", serif;
+  font-size: clamp(28px, 3vw, 42px);
+  line-height: 1.2;
+  font-weight: 400;
+}
+
+.capacityContent p {
+  font-size: clamp(15px, 1.2vw, 16px);
+  line-height: 1.6;
+  color: rgba(247, 235, 199, 0.7);
+  max-width: 480px;
+}
+
+.facilitiesRow {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 60px;
+}
+
+.facilitiesIntro {
+  position: sticky;
+  top: 120px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-self: start;
+}
+
+.facilitiesIntro h3 {
+  font-family: var(--font-playfair), "Playfair Display", serif;
+  font-size: clamp(28px, 3vw, 42px);
+  line-height: 1.2;
+  font-weight: 400;
+}
+
+.facilitiesIntro p {
+  font-size: clamp(15px, 1.2vw, 16px);
+  line-height: 1.6;
+  color: rgba(247, 235, 199, 0.7);
+  max-width: 360px;
+}
+
+.facilitiesList {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid rgba(247, 235, 199, 0.15);
+}
+
+.facilityItem {
+  display: flex;
+  gap: 40px;
+  padding: 32px 0;
+  border-bottom: 1px solid rgba(247, 235, 199, 0.15);
+}
+
+.facNum {
+  font-family: var(--font-playfair), "Playfair Display", serif;
+  font-size: 20px;
+  color: #cfb46e;
+}
+
+.facText {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.facText h4 {
+  font-size: 20px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+}
+
+.facText p {
+  font-size: 15px;
+  line-height: 1.6;
+  color: rgba(247, 235, 199, 0.7);
+}
+
+.capacityFooter {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  padding-top: 60px;
+}
+
+.capacityFooter h2 {
+  font-family: var(--font-playfair), "Playfair Display", serif;
+  font-size: clamp(42px, 6vw, 84px);
+  line-height: 1.1;
+  font-weight: 400;
+}
+
+.closingHighlight {
+  color: #cfb46e;
+  display: block;
+}
+
+.capacityFooter p {
+  font-size: 14px;
+  color: rgba(247, 235, 199, 0.5);
+  max-width: 400px;
+  line-height: 1.5;
+}
+
+@media (max-width: 1024px) {
+  .capacityHeader,
+  .capacityNumberRow,
+  .facilitiesRow {
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+  
+  .hugeNumber {
+    font-size: clamp(140px, 35vw, 200px);
+  }
+  
+  .facilitiesIntro {
+    position: static;
+  }
+  
+  .facilityItem {
+    gap: 16px;
+    flex-direction: column;
+    padding: 24px 0;
+  }
+  
+  .facNum {
+    margin-bottom: -4px;
+  }
+}
+
+.desktopOnly {
+  display: block;
+}
+@media (max-width: 1024px) {
+  .desktopOnly {
+    display: none;
+  }
+}
