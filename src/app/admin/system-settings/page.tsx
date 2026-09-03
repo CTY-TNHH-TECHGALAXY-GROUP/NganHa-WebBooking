@@ -242,10 +242,62 @@ export default function SystemSettingsPage() {
             />
 
             <MultiLangInput
+              label="Nội dung Chi nhánh / Địa chỉ (Branch Address / Content)"
+              value={footerContent.address || systemSettings.address || {}}
+              onChange={val => {
+                setFooterContent({ ...footerContent, address: val });
+                setSystemSettings({ ...systemSettings, address: val });
+              }}
+              multiline
+            />
+
+            <MultiLangInput
               label="Tiêu đề Cột Liên hệ (Contact Title)"
               value={footerContent.contactTitle || {}}
               onChange={val => setFooterContent({ ...footerContent, contactTitle: val })}
             />
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Số Hotline / Điện thoại</label>
+                <input
+                  type="text"
+                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500"
+                  value={footerContent.phone ?? systemSettings.phone ?? ''}
+                  onChange={e => {
+                    setFooterContent({ ...footerContent, phone: e.target.value });
+                    setSystemSettings({ ...systemSettings, phone: e.target.value });
+                  }}
+                  placeholder="+84..."
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Link Facebook</label>
+                <input
+                  type="text"
+                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500"
+                  value={footerContent.facebook ?? systemSettings.facebook ?? ''}
+                  onChange={e => {
+                    setFooterContent({ ...footerContent, facebook: e.target.value });
+                    setSystemSettings({ ...systemSettings, facebook: e.target.value });
+                  }}
+                  placeholder="https://facebook.com/..."
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Link Zalo</label>
+                <input
+                  type="text"
+                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500"
+                  value={footerContent.zalo ?? systemSettings.zalo ?? ''}
+                  onChange={e => {
+                    setFooterContent({ ...footerContent, zalo: e.target.value });
+                    setSystemSettings({ ...systemSettings, zalo: e.target.value });
+                  }}
+                  placeholder="https://zalo.me/..."
+                />
+              </div>
+            </div>
 
             <div className="mb-6 bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
               <label className="block text-sm font-semibold text-gray-800 mb-3">Văn bản Bản quyền (Copyright)</label>

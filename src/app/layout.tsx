@@ -104,6 +104,7 @@ const RootLayout = async ({
   let aboutStoryContent = {};
   let brandHistory: any = null;
   let homepageStyling: any = null;
+  let footerContent: any = {};
   try {
     const supabase = getSupabaseAdmin();
     const { data } = await supabase.from('SystemConfigs')
@@ -120,7 +121,7 @@ const RootLayout = async ({
            (systemSettings as any).homepage_content = item.value;
         }
         if (item.key === 'footer_content') {
-           (systemSettings as any).footer_content = item.value;
+           footerContent = item.value || {};
         }
       });
     }
@@ -167,7 +168,7 @@ const RootLayout = async ({
       </head>
       <body className="w-full min-h-full antialiased font-sans" suppressHydrationWarning>
         <SplashScreen />
-        <SystemSettingsProvider systemSettings={systemSettings} aboutStoryContent={aboutStoryContent} brandHistory={brandHistory} footerContent={(systemSettings as any).footer_content || {}}>
+        <SystemSettingsProvider systemSettings={systemSettings} aboutStoryContent={aboutStoryContent} brandHistory={brandHistory} footerContent={footerContent}>
           <TranslationProvider initialTranslations={translations}>
             <LayoutWrapper>{children}</LayoutWrapper>
           </TranslationProvider>

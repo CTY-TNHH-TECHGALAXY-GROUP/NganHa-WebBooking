@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSystemSettings } from '@/components/SystemSettingsProvider';
 import { useTranslation } from '@/components/TranslationProvider';
 import SmartLogo from '@/components/SmartLogo';
@@ -24,21 +24,74 @@ const CORE_VALUES = [
 ];
 
 const Footer = () => {
-  const { systemSettings, footerContent, getLocalizedText } = useSystemSettings();
+  const { systemSettings: initialSettings, footerContent: initialFooter, getLocalizedText } = useSystemSettings();
   const { currentLang } = useTranslation();
 
-  const phone = systemSettings?.phone || '+84964090277';
-  const facebook = systemSettings?.facebook || 'https://facebook.com';
-  const zalo = systemSettings?.zalo || 'https://zalo.me';
-  const addressText = systemSettings?.address?.[currentLang] || '11 Ngô Đức Kế, Q.1, TP.HCM & 6B Thi Sách, Q.1, TP.HCM';
+  const [footerData, setFooterData] = useState<any>(initialFooter || {});
+  const [settingsData, setSettingsData] = useState<any>(initialSettings || {});
 
-  const descText = getLocalizedText(footerContent?.description, currentLang as any, currentLang === 'vi' 
-    ? 'Trải nghiệm dịch vụ chăm sóc sức khoẻ và làm đẹp đẳng cấp tại trung tâm Quận 1, TP.HCM.'
-    : 'Experience premium wellness and beauty services in the heart of District 1, HCMC.');
-  
-  const locationsTitle = getLocalizedText(footerContent?.locationsTitle, currentLang as any, currentLang === 'vi' ? 'Chi nhánh' : 'Locations');
-  const contactTitle = getLocalizedText(footerContent?.contactTitle, currentLang as any, currentLang === 'vi' ? 'Liên hệ' : 'Contact');
-  const copyrightText = footerContent?.copyright || `© ${new Date().getFullYear()} TECHGALAXY GROUP. All rights reserved.`;
+  useEffect(() => {
+    if (initialFooter && Object.keys(initialFooter).length > 0) {
+      setFooterData(initialFooter);
+    }
+  }, [initialFooter]);
+
+  useEffect(() => {
+    if (initialSettings && Object.keys(initialSettings).length > 0) {
+      setSettingsData(initialSettings);
+    }
+  }, [initialSettings]);
+
+  // Client-side fetch on mount to guarantee fresh real-time data from admin
+  useEffect(() => {
+    fetch('/api/admin/system-settings')
+      .then(res => res.json())
+      .then(data => {
+        if (data?.footer_content && Object.keys(data.footer_content).length > 0) {
+          setFooterData(data.footer_content);
+        }
+        if (data?.system_settings && Object.keys(data.system_settings).length > 0) {
+          setSettingsData(data.system_settings);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  const phone = footerData?.phone || settingsData?.phone || '+84964090277';
+  const facebook = footerData?.facebook || settingsData?.facebook || 'https://facebook.com';
+  const zalo = footerData?.zalo || settingsData?.zalo || 'https://zalo.me';
+
+  // Smart detect: if user entered address in locationsTitle, use it for address
+  const isLocationsTitleAnAddress = footerData?.locationsTitle && 
+    (typeof footerData.locationsTitle === 'string' 
+      ? footerData.locationsTitle.includes('Ngô Đức Kế') || footerData.locationsTitle.includes('HCM') || footerData.locationsTitle.includes('Vietnam')
+      : footerData.locationsTitle.vi?.includes('Ngô Đức Kế') || footerData.locationsTitle.en?.includes('Ngo Duc Ke'));
+
+  const addressText = getLocalizedText(
+    footerData?.address || (isLocationsTitleAnAddress ? footerData.locationsTitle : undefined),
+    currentLang as any,
+    settingsData?.address?.[currentLang] || '11 Ngô Đức Kế, Q.1, TP.HCM & 6B Thi Sách, Q.1, TP.HCM'
+  );
+
+  const descText = getLocalizedText(
+    footerData?.description,
+    currentLang as any,
+    currentLang === 'vi' 
+      ? 'Trải nghiệm dịch vụ chăm sóc sức khoẻ và làm đẹp đẳng cấp tại trung tâm Quận 1, TP.HCM.'
+      : 'Experience premium wellness and beauty services in the heart of District 1, HCMC.'
+  );
+
+  const locationsTitle = isLocationsTitleAnAddress
+    ? (currentLang === 'vi' ? 'Chi nhánh' : currentLang === 'cn' ? '分店' : currentLang === 'jp' ? '店舗情報' : currentLang === 'kr' ? '지점 안내' : 'Locations')
+    : getLocalizedText(footerData?.locationsTitle, currentLang as any, currentLang === 'vi' ? 'Chi nhánh' : 'Locations');
+
+  const contactTitle = getLocalizedText(
+    footerData?.contactTitle,
+    currentLang as any,
+    currentLang === 'vi' ? 'Liên hệ' : 'Contact'
+  );
+
+  const copyrightText = footerData?.copyright || `© ${new Date().getFullYear()} TECHGALAXY GROUP. All rights reserved.`;
 
   return (
     <footer id="footer" className="bg-[rgba(40,27,21,1)] text-[#f7ebc7] relative z-10 overflow-x-hidden">
