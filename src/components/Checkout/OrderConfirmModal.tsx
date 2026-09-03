@@ -1,5 +1,6 @@
 'use client';
 
+import { Z } from '@/lib/zIndex';
 import React, { useEffect, useState } from 'react';
 import { 
     X, 
@@ -223,11 +224,11 @@ export default function OrderConfirmModal({
 
     return (
         <div 
-            className="fixed inset-0 z-[120] flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-md transition-opacity duration-300 animate-in fade-in pb-0 sm:pb-0 p-0 sm:p-4"
+            className="fixed inset-0 flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-md transition-opacity duration-300 animate-in fade-in pb-0 sm:pb-0 p-0 sm:p-4" style={{ zIndex: Z.MODAL }}
             onClick={onClose}
         >
             <div
-                className="bg-black/60 backdrop-blur-3xl border border-[#c9a96e]/30 w-full max-h-[92vh] md:max-h-[88vh] sm:rounded-[28px] rounded-t-[28px] shadow-[0_25px_60px_rgba(0,0,0,0.85)] flex flex-col overflow-hidden relative animate-in slide-in-from-bottom-10 sm:zoom-in-95 duration-300 md:max-w-4xl"
+                className="bg-black/60 backdrop-blur-3xl border border-[#c9a96e]/30 w-full max-h-[92dvh] md:max-h-[88vh] sm:rounded-[28px] rounded-t-[28px] shadow-[0_25px_60px_rgba(0,0,0,0.85)] flex flex-col overflow-hidden relative animate-in slide-in-from-bottom-10 sm:zoom-in-95 duration-300 md:max-w-4xl"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Center Top Brand Header */}
@@ -730,7 +731,7 @@ export default function OrderConfirmModal({
             {/* ================= RICH PAYMENT METHOD INFO POPOVER ================= */}
             {activeMethodId && (
                 <div 
-                    className="fixed inset-0 z-[130] flex items-center justify-center bg-black/75 backdrop-blur-md p-4 animate-in fade-in duration-200"
+                    className="fixed inset-0 flex items-center justify-center bg-black/75 backdrop-blur-md p-4 animate-in fade-in duration-200" style={{ zIndex: Z.MODAL_NESTED }}
                     onClick={(e) => {
                         e.stopPropagation();
                         setActiveMethodId(null);

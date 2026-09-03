@@ -1533,13 +1533,11 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                   </button>
                 ))}
               </div>
-              {categoryIds.length > 3 && (
-                <div className={styles.tabsScrollArrow} aria-hidden="true">
+              <div className={styles.tabsScrollArrow} aria-hidden="true">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                     <polyline points="9 18 15 12 9 6" />
                   </svg>
                 </div>
-              )}
             </div>
 
             <div className={styles.servicePickerList}>

@@ -638,3 +638,7 @@
     display: none;
   }
 }
+
+@media (max-width: 480px) {
+  .heroTitle { font-size: clamp(36px, 10vw, 58px); }
+}

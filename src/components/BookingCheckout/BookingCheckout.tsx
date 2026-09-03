@@ -6,6 +6,7 @@
  */
 'use client';
 
+import { Z } from '@/lib/zIndex';
 import React, { useState, useMemo } from 'react';
 import { useMenuData } from '@/components/Menu/MenuContext';
 import { formatCurrency } from '@/components/Menu/utils';
@@ -217,7 +218,7 @@ const BookingCheckout = ({ lang, onBack }: BookingCheckoutProps) => {
   // ════════════════════════════════════════
   if (isSuccess && bookingResult) {
     return (
-      <div className="fixed inset-0 z-[120] flex items-center justify-center bg-black">
+      <div className="fixed inset-0 md:max-w-2xl md:mx-auto flex items-center justify-center bg-black" style={{ zIndex: Z.MODAL }}>
         <div className="text-center p-8 max-w-md w-full">
           {/* Checkmark */}
           <div className="w-24 h-24 bg-[#D4AF37] rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-yellow-500/20">
@@ -245,7 +246,7 @@ const BookingCheckout = ({ lang, onBack }: BookingCheckoutProps) => {
                 item.options?.notes?.content
               ].filter(Boolean).join(', ');
               return (
-              <div key={item.cartId} className="flex justify-between text-sm mb-2">
+              <div key={item.cartId} className="flex justify-between text-base mb-2">
                 <div className="flex-1 pr-2">
                   <span className="text-gray-300">{idx + 1}. {item.names?.[lang] || item.names?.en}</span>
                   {tags && <p className="text-[#C9A96E] text-xs italic mt-0.5">{tags}</p>}
@@ -261,7 +262,7 @@ const BookingCheckout = ({ lang, onBack }: BookingCheckoutProps) => {
 
           <button
             onClick={() => window.location.href = '/'}
-            className="w-full py-4 bg-[#D4AF37] text-black font-bold rounded-xl text-sm uppercase tracking-widest shadow-lg hover:brightness-110 transition-all active:scale-[0.98]"
+            className="w-full py-4 bg-[#D4AF37] text-black font-bold rounded-xl text-base uppercase tracking-widest shadow-lg hover:brightness-110 transition-all active:scale-[0.98]"
           >
             {t('go_home')}
           </button>
@@ -276,7 +277,7 @@ const BookingCheckout = ({ lang, onBack }: BookingCheckoutProps) => {
   const visibleTimeSlots = showAllTimes ? TIME_SLOTS : TIME_SLOTS.slice(0, VISIBLE_TIME_SLOTS);
 
   return (
-    <div className="fixed inset-0 z-50 bg-black flex flex-col h-[100dvh]">
+    <div className="fixed inset-0 md:max-w-2xl md:mx-auto bg-black flex flex-col h-[100dvh]" style={{ zIndex: Z.DRAWER }}>
 
       {/* HEADER with step indicator */}
       <div className="shrink-0 px-5 pt-6 pb-4 bg-black/90 backdrop-blur-xl border-b border-white/5">
@@ -310,7 +311,7 @@ const BookingCheckout = ({ lang, onBack }: BookingCheckoutProps) => {
               <div className="relative">
                 <User size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" />
                 <input type="text" name="name" value={form.name} onChange={handleChange}
-                  className="w-full bg-[#111] border border-gray-800 rounded-xl py-3.5 pl-11 pr-4 text-white text-sm focus:border-[#D4AF37] focus:outline-none transition-colors"
+                  className="w-full bg-[#111] border border-gray-800 rounded-xl py-3.5 pl-11 pr-4 text-white text-base focus:border-[#D4AF37] focus:outline-none transition-colors"
                   placeholder="Nhập họ và tên" />
               </div>
             </div>
@@ -321,7 +322,7 @@ const BookingCheckout = ({ lang, onBack }: BookingCheckoutProps) => {
               <div className="relative">
                 <Phone size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" />
                 <input type="tel" name="phone" value={form.phone} onChange={handleChange}
-                  className="w-full bg-[#111] border border-gray-800 rounded-xl py-3.5 pl-11 pr-4 text-white text-sm focus:border-[#D4AF37] focus:outline-none transition-colors"
+                  className="w-full bg-[#111] border border-gray-800 rounded-xl py-3.5 pl-11 pr-4 text-white text-base focus:border-[#D4AF37] focus:outline-none transition-colors"
                   placeholder="0912 345 678" />
               </div>
             </div>
@@ -332,7 +333,7 @@ const BookingCheckout = ({ lang, onBack }: BookingCheckoutProps) => {
               <div className="relative">
                 <Mail size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" />
                 <input type="email" name="email" value={form.email} onChange={handleChange}
-                  className="w-full bg-[#111] border border-gray-800 rounded-xl py-3.5 pl-11 pr-4 text-white text-sm focus:border-[#D4AF37] focus:outline-none transition-colors"
+                  className="w-full bg-[#111] border border-gray-800 rounded-xl py-3.5 pl-11 pr-4 text-white text-base focus:border-[#D4AF37] focus:outline-none transition-colors"
                   placeholder="email@example.com" />
               </div>
             </div>
@@ -356,7 +357,7 @@ const BookingCheckout = ({ lang, onBack }: BookingCheckoutProps) => {
               <div className="grid grid-cols-3 gap-3">
                 {(['any', 'male', 'female'] as StaffGender[]).map(g => (
                   <button key={g} onClick={() => setForm(p => ({ ...p, staffGender: g }))}
-                    className={`py-3 rounded-xl border text-sm font-bold transition-all ${form.staffGender === g
+                    className={`py-3 rounded-xl border text-base font-bold transition-all ${form.staffGender === g
                       ? 'bg-[#D4AF37]/10 border-[#D4AF37] text-[#D4AF37]'
                       : 'bg-[#111] border-gray-800 text-gray-400 hover:border-gray-600'}`}>
                     {t(`staff_${g}` as keyof typeof TEXT)}
@@ -371,7 +372,7 @@ const BookingCheckout = ({ lang, onBack }: BookingCheckoutProps) => {
               <div className="relative">
                 <MessageSquare size={16} className="absolute left-4 top-4 text-gray-500" />
                 <textarea name="note" value={form.note} onChange={handleChange} rows={3}
-                  className="w-full bg-[#111] border border-gray-800 rounded-xl py-3 pl-11 pr-4 text-white text-sm focus:border-[#D4AF37] focus:outline-none transition-colors resize-none"
+                  className="w-full bg-[#111] border border-gray-800 rounded-xl py-3 pl-11 pr-4 text-white text-base focus:border-[#D4AF37] focus:outline-none transition-colors resize-none"
                   placeholder="Ghi chú thêm..." />
               </div>
             </div>
@@ -392,7 +393,7 @@ const BookingCheckout = ({ lang, onBack }: BookingCheckoutProps) => {
                   <div className="flex items-center gap-3">
                     <MapPin size={18} className={form.branchId === b.id ? 'text-[#D4AF37]' : 'text-gray-500'} />
                     <div>
-                      <p className={`font-bold text-sm ${form.branchId === b.id ? 'text-[#D4AF37]' : 'text-white'}`}>{b.name}</p>
+                      <p className={`font-bold text-base ${form.branchId === b.id ? 'text-[#D4AF37]' : 'text-white'}`}>{b.name}</p>
                       <p className="text-xs text-gray-500 mt-0.5">{b.address}</p>
                     </div>
                     {form.branchId === b.id && (
@@ -411,7 +412,7 @@ const BookingCheckout = ({ lang, onBack }: BookingCheckoutProps) => {
               <div className="relative">
                 <Calendar size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" />
                 <input type="date" name="date" value={form.date} onChange={handleChange} min={minDate}
-                  className="w-full bg-[#111] border border-gray-800 rounded-xl py-3.5 pl-11 pr-4 text-white text-sm focus:border-[#D4AF37] focus:outline-none transition-colors [color-scheme:dark]" />
+                  className="w-full bg-[#111] border border-gray-800 rounded-xl py-3.5 pl-11 pr-4 text-white text-base focus:border-[#D4AF37] focus:outline-none transition-colors [color-scheme:dark]" />
               </div>
             </div>
 
@@ -421,10 +422,10 @@ const BookingCheckout = ({ lang, onBack }: BookingCheckoutProps) => {
                 <label className="text-xs font-bold text-gray-400 uppercase tracking-wider">{t('time')}</label>
                 <Clock size={14} className="text-gray-500" />
               </div>
-              <div className="grid grid-cols-4 gap-2">
+              <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
                 {visibleTimeSlots.map(slot => (
                   <button key={slot} onClick={() => setForm(p => ({ ...p, time: slot }))}
-                    className={`py-3 rounded-xl text-sm font-bold transition-all ${form.time === slot
+                    className={`py-3 rounded-xl text-base font-bold transition-all ${form.time === slot
                       ? 'bg-[#D4AF37] text-black shadow-lg shadow-yellow-500/20'
                       : 'bg-[#111] border border-gray-800 text-gray-400 hover:border-gray-600'}`}>
                     {slot}
@@ -433,7 +434,7 @@ const BookingCheckout = ({ lang, onBack }: BookingCheckoutProps) => {
               </div>
               {!showAllTimes && TIME_SLOTS.length > VISIBLE_TIME_SLOTS && (
                 <button onClick={() => setShowAllTimes(true)}
-                  className="w-full text-center text-sm text-gray-400 hover:text-white mt-3 py-2 transition-colors">
+                  className="w-full text-center text-base text-gray-400 hover:text-white mt-3 py-2 transition-colors">
                   {t('view_more')} ({TIME_SLOTS.length - VISIBLE_TIME_SLOTS} slots)
                 </button>
               )}
@@ -457,19 +458,19 @@ const BookingCheckout = ({ lang, onBack }: BookingCheckoutProps) => {
                   return (
                   <div key={item.cartId} className="flex justify-between items-start mb-2">
                     <div className="min-w-0 pr-3">
-                      <p className="text-white text-sm font-medium">{idx + 1}. {item.names?.[lang] || item.names?.en}</p>
+                      <p className="text-white text-base font-medium">{idx + 1}. {item.names?.[lang] || item.names?.en}</p>
                       <p className="text-gray-500 text-xs mt-0.5">{item.timeValue} {t('mins')} × {item.qty}</p>
                       {tags && <p className="text-[#C9A96E] text-xs italic mt-0.5">{tags}</p>}
                     </div>
                     <div className="text-right shrink-0">
-                      <p className="text-[#D4AF37] text-sm font-bold">{formatCurrency(item.priceVND * item.qty)}</p>
+                      <p className="text-[#D4AF37] text-base font-bold">{formatCurrency(item.priceVND * item.qty)}</p>
                       <p className="text-red-500 text-[10px] font-bold">{item.priceUSD * item.qty} USD</p>
                     </div>
                   </div>
                 )})}
 
                 <div className="border-t border-gray-800 pt-3 space-y-1">
-                  <div className="flex justify-between text-sm">
+                  <div className="flex justify-between text-base">
                     <span className="text-gray-400">{t('duration_label')}</span>
                     <span className="text-white font-bold">{summary.totalDuration} {t('mins')}</span>
                   </div>
@@ -477,7 +478,7 @@ const BookingCheckout = ({ lang, onBack }: BookingCheckoutProps) => {
                     <span className="text-[#D4AF37] font-bold uppercase text-xs tracking-wider">{t('total')}</span>
                     <div className="text-right">
                       <p className="text-xl font-bold text-[#D4AF37]">{formatCurrency(summary.totalVND)} VND</p>
-                      <p className="text-red-500 font-bold text-sm">{summary.totalUSD} USD</p>
+                      <p className="text-red-500 font-bold text-base">{summary.totalUSD} USD</p>
                     </div>
                   </div>
                 </div>
@@ -486,29 +487,29 @@ const BookingCheckout = ({ lang, onBack }: BookingCheckoutProps) => {
 
             {/* Booking details */}
             <div className="bg-[#111] rounded-2xl p-4 space-y-2 border border-gray-800">
-              <div className="flex justify-between text-sm">
+              <div className="flex justify-between text-base">
                 <span className="text-gray-400">{t('name')}</span>
                 <span className="text-white font-bold">{form.name}</span>
               </div>
-              <div className="flex justify-between text-sm">
+              <div className="flex justify-between text-base">
                 <span className="text-gray-400">{t('phone')}</span>
                 <span className="text-white font-bold">{form.phone}</span>
               </div>
               {form.email && (
-                <div className="flex justify-between text-sm">
+                <div className="flex justify-between text-base">
                   <span className="text-gray-400">{t('email')}</span>
                   <span className="text-white font-bold truncate max-w-[200px]">{form.email}</span>
                 </div>
               )}
-              <div className="flex justify-between text-sm">
+              <div className="flex justify-between text-base">
                 <span className="text-gray-400">{t('date')}</span>
                 <span className="text-white font-bold">{form.date}</span>
               </div>
-              <div className="flex justify-between text-sm">
+              <div className="flex justify-between text-base">
                 <span className="text-gray-400">{t('time')}</span>
                 <span className="text-white font-bold">{form.time}</span>
               </div>
-              <div className="flex justify-between text-sm">
+              <div className="flex justify-between text-base">
                 <span className="text-gray-400">{t('branch')}</span>
                 <span className="text-white font-bold">{BRANCH_LIST.find(b => b.id === form.branchId)?.name}</span>
               </div>
@@ -523,7 +524,7 @@ const BookingCheckout = ({ lang, onBack }: BookingCheckoutProps) => {
                   <Check className={`w-3 h-3 text-black transition-transform ${form.agreeTerms ? 'scale-100' : 'scale-0'}`} />
                 </div>
               </div>
-              <span className="text-gray-400 text-sm">{t('terms')}</span>
+              <span className="text-gray-400 text-base">{t('terms')}</span>
             </label>
           </div>
         )}
@@ -534,13 +535,13 @@ const BookingCheckout = ({ lang, onBack }: BookingCheckoutProps) => {
         style={{ paddingBottom: 'calc(1rem + env(safe-area-inset-bottom))' }}>
         {step < 3 ? (
           <button onClick={() => setStep(s => s + 1)} disabled={!canProceed(step)}
-            className="w-full py-3.5 bg-gradient-to-r from-yellow-600 to-yellow-500 text-black font-bold rounded-xl shadow-lg flex items-center justify-center gap-2 text-sm uppercase tracking-wider disabled:opacity-30 disabled:cursor-not-allowed hover:brightness-110 transition-all active:scale-[0.98]">
+            className="w-full py-3.5 bg-gradient-to-r from-yellow-600 to-yellow-500 text-black font-bold rounded-xl shadow-lg flex items-center justify-center gap-2 text-base uppercase tracking-wider disabled:opacity-30 disabled:cursor-not-allowed hover:brightness-110 transition-all active:scale-[0.98]">
             <span>{t('next')}</span>
             <ArrowRight size={16} strokeWidth={3} />
           </button>
         ) : (
           <button onClick={handleSubmit} disabled={isSubmitting || !canProceed(3)}
-            className="w-full py-3.5 bg-gradient-to-r from-yellow-600 to-yellow-500 text-black font-bold rounded-xl shadow-lg flex items-center justify-center gap-2 text-sm uppercase tracking-wider disabled:opacity-30 disabled:cursor-not-allowed hover:brightness-110 transition-all active:scale-[0.98]">
+            className="w-full py-3.5 bg-gradient-to-r from-yellow-600 to-yellow-500 text-black font-bold rounded-xl shadow-lg flex items-center justify-center gap-2 text-base uppercase tracking-wider disabled:opacity-30 disabled:cursor-not-allowed hover:brightness-110 transition-all active:scale-[0.98]">
             <span>{isSubmitting ? t('submitting') : t('confirm_btn')}</span>
           </button>
         )}

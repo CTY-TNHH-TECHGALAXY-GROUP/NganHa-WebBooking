@@ -1182,8 +1182,14 @@ body.showcase-page .floating-widgets {
 /* â•â•â• RESPONSIVE â•â•â• */
 @media (max-width: 1024px) {
   .sc-nav__links {
-    display: none;
+    display: flex;
+    overflow-x: auto;
+    white-space: nowrap;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 4px;
   }
+  .sc-nav__links::-webkit-scrollbar { display: none; }
 
   .sc-pricing__grid {
     grid-template-columns: 1fr;

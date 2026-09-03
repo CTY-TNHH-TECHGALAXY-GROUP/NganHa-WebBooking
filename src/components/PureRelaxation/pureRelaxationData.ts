@@ -45,7 +45,7 @@ export type PureRelaxationSection = {
   services: PureRelaxationService[];
 };
 
-export const getPureRelaxationSections = (contentMedia: any = {}): PureRelaxationSection[] => {
+export const getPureRelaxationSections = (contentMedia: any = {}, currentLang: string = 'vi'): PureRelaxationSection[] => {
   const spaVideo = contentMedia.spaVideo?.src || '/images/services/aroma-oil.png';
   const massageVideo = contentMedia.massageVideo?.src || '/images/services/aroma-oil.png';
   const headSpaVideo = contentMedia.headSpaVideo?.src || '/images/services/hairwash.png';
@@ -58,6 +58,16 @@ export const getPureRelaxationSections = (contentMedia: any = {}): PureRelaxatio
   const herbalImg = contentMedia.herbalImg?.src || 'https://images.unsplash.com/photo-1519823551278-64ac92734fb1?auto=format&fit=crop&w=900&q=80';
 
   const type = (key: string, def: string) => contentMedia[key]?.type || def;
+
+  const tTitle = (enTitle: string, vi: string, cn: string, jp: string, kr: string) => {
+    switch (currentLang) {
+      case 'vi': return vi;
+      case 'cn': return cn;
+      case 'jp': return jp;
+      case 'kr': return kr;
+      default: return enTitle;
+    }
+  };
 
 
 const herbalFootSoak: PureRelaxationPrivilege = {
@@ -120,7 +130,7 @@ const pureRelaxationSections: PureRelaxationSection[] = [
   {
     id: 'body-care',
     index: '01 / 07',
-    title: 'Body Care',
+    title: tTitle('Body Care', 'Chăm sóc cơ thể', '身体护理', 'ボディケア', '바디 케어'),
     icon: '/category-icons-svg/body-massage.svg',
     mediaLabel: 'Body care',
     description: 'Four direct body rituals with clear duration choices, calm pricing, and a privilege included in each booking.',
@@ -175,7 +185,7 @@ const pureRelaxationSections: PureRelaxationSection[] = [
   {
     id: 'foot-care',
     index: '02 / 07',
-    title: 'Foot Care',
+    title: tTitle('Foot Care', 'Chăm sóc chân', '足部护理', 'フットケア', '풋 케어'),
     icon: '/category-icons-svg/foot-massage.svg',
     mediaLabel: 'Foot care',
     description: 'Compact foot care choices with duration only where the guest needs it.',
@@ -205,7 +215,7 @@ const pureRelaxationSections: PureRelaxationSection[] = [
   {
     id: 'ear-clean',
     index: '03 / 07',
-    title: 'Ear Clean',
+    title: tTitle('Ear Clean', 'Lấy ráy tai', '采耳', '耳掃除', '귀 청소'),
     icon: '/category-icons-svg/ear-clean.svg',
     mediaLabel: 'Ear clean',
     description: 'Ear-cleaning services are grouped by the real combinations guests choose most often.',
@@ -263,7 +273,7 @@ const pureRelaxationSections: PureRelaxationSection[] = [
   {
     id: 'barber',
     index: '04 / 07',
-    title: 'Barber',
+    title: tTitle('Barber', 'Cắt tóc nam', '男士理发', '理容室', '이발'),
     icon: '/category-icons-svg/haircut.svg',
     mediaLabel: 'Barber',
     description: 'A minimal grooming section with direct selections and no crowded menu wall.',
@@ -280,7 +290,7 @@ const pureRelaxationSections: PureRelaxationSection[] = [
   {
     id: 'package',
     index: '05 / 07',
-    title: 'Package',
+    title: tTitle('Package', 'Gói dịch vụ', '套餐', 'パッケージ', '패키지'),
     icon: '/category-icons-svg/package.svg',
     mediaLabel: 'Package',
     description: 'Choose a package family first, then the specific ritual and duration.',
@@ -309,7 +319,7 @@ const pureRelaxationSections: PureRelaxationSection[] = [
   {
     id: 'adds-on',
     index: '06 / 07',
-    title: 'Add on',
+    title: tTitle('Add on', 'Dịch vụ thêm', '附加服务', '追加', '추가 서비스'),
     icon: '/category-icons-svg/adds-on.svg',
     mediaLabel: 'Add on',
     description: 'Enhance your experience with these additional services.',
@@ -361,7 +371,7 @@ const pureRelaxationSections: PureRelaxationSection[] = [
   {
     id: 'vip-package',
     index: '07 / 07',
-    title: 'VIP Package',
+    title: tTitle('VIP Package', 'Gói VIP', 'VIP 套餐', 'VIP パッケージ', 'VIP 패키지'),
     icon: '/category-icons-svg/combo-king.svg',
     mediaLabel: 'VIP Package',
     description: 'Exclusive and premium VIP experiences tailored for ultimate relaxation.',

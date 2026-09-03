@@ -1,6 +1,7 @@
 // AIChatBot.tsx - AI Chat popup with text + voice input
 'use client';
 
+import { Z } from '@/lib/zIndex';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageCircle, X, Send, Mic, MicOff, Bot, User, ArrowRight, Sparkles } from 'lucide-react';
 import { useAIChatBot } from './AIChatBot.logic';
@@ -102,7 +103,7 @@ const AIChatBot = ({ locale = 'vi', hideTrigger = false, phone }: AIChatBotProps
           <>
             {/* Mobile overlay */}
             <motion.div
-              className="ai-chat-overlay"
+              className="ai-chat-overlay" style={{ zIndex: Z.FLOATING_CHAT - 1 }}
               variants={overlayVariants}
               initial="hidden"
               animate="visible"
@@ -112,7 +113,7 @@ const AIChatBot = ({ locale = 'vi', hideTrigger = false, phone }: AIChatBotProps
 
             {/* Chat window */}
             <motion.div
-              className="ai-chat-popup border-[3px] border-white"
+              className="ai-chat-popup " style={{ zIndex: Z.FLOATING_CHAT }}
               variants={popupVariants}
               initial="hidden"
               animate="visible"
@@ -203,7 +204,7 @@ const AIChatBot = ({ locale = 'vi', hideTrigger = false, phone }: AIChatBotProps
               </div>
 
               {/* ─── Input Bar ─── */}
-              <div className="ai-chat-input-bar">
+              <div className="ai-chat-input-bar pb-[env(safe-area-inset-bottom)]">
                 {/* Voice button */}
                 {isVoiceSupported && (
                   <button

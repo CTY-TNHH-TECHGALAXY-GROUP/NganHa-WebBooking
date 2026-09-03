@@ -131,10 +131,10 @@ const BodyMap: React.FC<BodyMapProps> = ({ focus, avoid, lang, serviceData, onTo
     if (availableParts.length === 0) return null;
 
     return (
-        <div className="flex gap-2 items-stretch min-h-[500px] w-full">
+        <div className="flex gap-2 items-stretch min-h-[380px] sm:min-h-[500px] w-full">
 
             {/* CỘT TRÁI: Nút Toàn Thân */}
-            <div className="w-[15%] flex flex-col items-center justify-center pr-1 sm:pr-2">
+            <div className="w-[12%] flex flex-col items-center justify-center pr-1 sm:pr-2">
                 {availableParts.length > 1 && (
                     <label className="flex flex-col items-center justify-center cursor-pointer bg-[#1c1c1e] p-2 rounded-xl border border-white/5 transition-all hover:border-[#C9A96E] active:scale-95 shadow-sm py-4 w-full h-[100px] sm:h-[120px]">
                         <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center mb-2 sm:mb-3 transition-colors border-2 ${isFullBody ? 'bg-[#C9A96E] border-[#C9A96E]' : 'bg-[#0d0d0d] border-white/10'}`}>
@@ -150,7 +150,7 @@ const BodyMap: React.FC<BodyMapProps> = ({ focus, avoid, lang, serviceData, onTo
 
             {/* CỘT GIỮA: SVG Body Figure */}
             <div
-                className="w-[45%] relative flex items-center justify-center pl-1 sm:pl-2 rounded-xl overflow-hidden self-stretch"
+                className="w-[48%] relative flex items-center justify-center pl-1 sm:pl-2 rounded-xl overflow-hidden self-stretch"
                 style={{ backgroundColor: SVG_CONFIG.containerBg, border: '1px solid rgba(255,255,255,0.05)' }}
             >
                 <svg

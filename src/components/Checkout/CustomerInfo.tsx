@@ -37,7 +37,7 @@ export default function CustomerInfo({ lang, dict, info, onChange }: CustomerInf
                     />
 
                     {/* Gender Dropdown */}
-                    <div className="w-[100px] shrink-0 relative">
+                    <div className="w-[80px] sm:w-[100px] shrink-0 relative">
                         <select
                             value={info.gender}
                             onChange={(e) => onChange('gender', e.target.value)}

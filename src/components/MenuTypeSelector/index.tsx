@@ -25,7 +25,7 @@ const LAYOUT_CONFIG = {
         gapLogoText: "5px",      // Khoảng cách Logo - Chữ gần hơn
         marginBottom: "15px",    // Khoảng cách Chữ - Sách gần hơn
         logoHeight: "80px",      // Giảm chiều cao Logo cho đỡ chiếm chỗ
-        logoWidth: "260px",      // Giảm chiều rộng tương ứng
+        logoWidth: "min(260px, 70vw)",      // Giảm chiều rộng tương ứng
         titleSize: "18px",       // Giảm cỡ chữ tiêu đề 1 chút
     },
 
@@ -70,7 +70,7 @@ export default function MenuTypeSelector({ lang, onSelect, onBack }: Props) {
 
     return (
     <>
-        <div className="flex flex-col items-center justify-between h-full w-full max-h-full py-2 relative">
+        <div className="flex flex-col items-center justify-between h-full w-full max-h-full py-2 relative overflow-y-auto">
 
             {/* MŨI TÊN QUAY LẠI (GÓC TRÁI TRÊN) */}
             {onBack && (
@@ -122,7 +122,7 @@ export default function MenuTypeSelector({ lang, onSelect, onBack }: Props) {
                 >
                     <div
                         className={`${styles.bookCover} ${styles.perspective1000} relative`}
-                        style={{ width: LAYOUT_CONFIG.books.width, height: LAYOUT_CONFIG.books.height }}
+                        
                     >
                         <div className={`${styles.bgCover} relative overflow-hidden`}>
                             <Image
@@ -162,7 +162,7 @@ export default function MenuTypeSelector({ lang, onSelect, onBack }: Props) {
                 >
                     <div
                         className={`${styles.bookCover} ${styles.perspective1000} relative`}
-                        style={{ width: LAYOUT_CONFIG.books.width, height: LAYOUT_CONFIG.books.height }}
+                        
                     >
                         <div className={`${styles.bgCover} relative overflow-hidden`}>
                             <Image

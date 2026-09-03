@@ -1,3 +1,6 @@
+'use client';
+
+import { Z } from '@/lib/zIndex';
 import React, { useState, useEffect, useMemo } from 'react';
 import { X, Minus, Plus, Hand, User, Heart, Ban, Tag, MessageSquare, Clock } from 'lucide-react';
 import { useMenuData } from '@/components/Menu/MenuContext';
@@ -288,14 +291,14 @@ export default function CartDrawer({ cart, services, lang, isOpen, onClose, onUp
         <>
             {/* Overlay */}
             <div
-                className={`fixed inset-0 ${CONFIG.OVERLAY_COLOR} z-40 transition-opacity duration-${CONFIG.ANIMATION_DURATION} ${isClosing ? 'opacity-0' : 'opacity-100'}`}
+                className={`fixed inset-0 ${CONFIG.OVERLAY_COLOR} transition-opacity duration-300 ${isClosing ? 'opacity-0' : 'opacity-100'}`} style={{ zIndex: Z.DRAWER_OVERLAY }}
                 onClick={handleClose}
             />
 
             {/* Drawer Container */}
             <div className={`
-                fixed bottom-0 left-0 w-full ${CONFIG.BG_COLOR} rounded-t-[${CONFIG.BORDER_RADIUS}] z-50 overflow-hidden flex flex-col shadow-2xl
-                transform transition-transform duration-${CONFIG.ANIMATION_DURATION} ease-out pb-safe
+                fixed bottom-0 left-0 w-full ${CONFIG.BG_COLOR} rounded-t-[30px] md:max-w-lg md:mx-auto md:rounded-[30px] overflow-hidden flex flex-col shadow-2xl" style={{ zIndex: Z.DRAWER }}
+                transform transition-transform duration-300 ease-out pb-safe
                 ${(isClosing || !isVisible) ? 'translate-y-full' : 'translate-y-0'}
             `} style={{ maxHeight: CONFIG.MAX_HEIGHT }}>
 
@@ -306,7 +309,7 @@ export default function CartDrawer({ cart, services, lang, isOpen, onClose, onUp
 
                 {/* Title */}
                 <div className="text-center pb-6 pt-2">
-                    <h2 className="text-xl font-bold text-[#C9A96E] uppercase tracking-widest">{t('title')}</h2>
+                    <h2 className="text-base sm:text-xl font-bold break-words text-[#C9A96E] uppercase tracking-widest">{t('title')}</h2>
                     <div className="w-10 h-0.5 bg-[#b6965b] mx-auto mt-2"></div>
                 </div>
 
@@ -371,7 +374,7 @@ export default function CartDrawer({ cart, services, lang, isOpen, onClose, onUp
                     <div className="flex justify-between items-end mb-6">
                         <span className="text-gray-400 font-bold tracking-widest text-sm mb-1 uppercase">{t('total')}</span>
                         <div className="text-right">
-                            <div className="text-xl font-bold text-[#C9A96E]">
+                            <div className="text-base sm:text-xl font-bold break-words text-[#C9A96E]">
                                 {formatCurrency(totalVND)} VND <span className="text-sm font-normal text-gray-400">/</span> <span className="text-emerald-600 font-bold">{totalUSD} USD</span>
                             </div>
                         </div>

@@ -1,4 +1,5 @@
 "use client";
+import { Z } from '@/lib/zIndex';
 import React, { useState, useEffect } from 'react';
 import styles from './SplashScreen.module.css';
 import SmartLogo from '@/components/SmartLogo';

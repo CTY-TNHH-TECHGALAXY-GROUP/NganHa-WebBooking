@@ -117,7 +117,7 @@ export default function DesignYourJourneyPage() {
           <div className={styles.finalLabel}>{getLoc('finalLabel')}</div>
           <h5 dangerouslySetInnerHTML={{ __html: getLoc('finalTitle') }} />
           <p>{getLoc('finalDesc')}</p>
-          <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
+          <div style={{ display: 'flex', gap: '20px', alignItems: 'center', flexWrap: 'wrap' }}>
             <Link href={`/${currentLang || 'en'}/menu`} className={styles.finalLink}>
               {getLoc('finalLink')}
             </Link>

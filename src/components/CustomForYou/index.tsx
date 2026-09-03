@@ -1,3 +1,6 @@
+'use client';
+
+import { Z } from '@/lib/zIndex';
 import React, { useState, useEffect, useRef } from "react";
 import { X, Check, ChevronDown } from "lucide-react";
 import { ServiceData, CustomPreferences, LanguageCode } from "./types";
@@ -47,6 +50,16 @@ export default function CustomForYouModal({
     };
 
     // Reset or Load initial data when modal opens
+
+    useEffect(() => {
+        if (isOpen) {
+            document.body.classList.add('modal-open');
+        } else {
+            document.body.classList.remove('modal-open');
+        }
+        return () => document.body.classList.remove('modal-open');
+    }, [isOpen]);
+
     useEffect(() => {
         if (isOpen) {
             if (initialData) {
@@ -136,7 +149,7 @@ export default function CustomForYouModal({
     const showFocus = serviceData.SHOW_FOCUS !== false;
 
     return (
-        <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-6 animate-in fade-in duration-200">
+        <div className="fixed inset-0 flex items-end sm:items-center justify-center p-0 sm:p-6 animate-in fade-in duration-200" style={{ zIndex: Z.MODAL }}>
             {/* Backdrop */}
             <div
                 className="absolute inset-0 bg-black/80 backdrop-blur-sm"
@@ -144,7 +157,7 @@ export default function CustomForYouModal({
             />
 
             {/* Modal Content - Fixed Height for no scroll */}
-            <div className="relative w-full sm:w-[95vw] sm:max-w-[540px] bg-[#0d0d0d] rounded-t-[32px] rounded-b-none sm:rounded-[32px] overflow-hidden flex flex-col h-[90vh] sm:h-[80vh] sm:max-h-[780px] animate-in slide-in-from-bottom-10 sm:zoom-in-95 duration-300 border border-white/10 shadow-2xl">
+            <div className="relative w-full sm:w-[95vw] sm:max-w-[540px] bg-[#0d0d0d] rounded-t-[32px] rounded-b-none sm:rounded-[32px] overflow-hidden flex flex-col h-[90dvh] sm:h-[80vh] sm:max-h-[780px] animate-in slide-in-from-bottom-10 sm:zoom-in-95 duration-300 border border-white/10 shadow-2xl">
 
                 {/* Header */}
                 <div className="px-6 py-4 flex items-center justify-between z-20">

@@ -588,6 +588,7 @@ img.heroMedia {
 
 @media(max-width: 600px) {
   .hero h1 { font-size: 58px; }
+  .hero { min-height: 100svh; }
   .heroCopy { bottom: 9vh; }
   .stickyIndex { right: 8px; }
   .chapter { padding: 88px 20px 42px; }
@@ -602,7 +603,7 @@ img.heroMedia {
   .galleryHead p { margin-top: 16px; }
   .galleryMain { height: 58vh; min-height: 430px; }
   .gallerySide { grid-template-columns: 1fr; height: auto; }
-  .gallerySide div { height: 300px; }
+  .gallerySide > div { height: 300px; }
   .cta { padding: 55px 20px; }
   .ctaCopy { gap: 28px; }
   .footer { padding: 24px 20px; display: block; line-height: 2; }

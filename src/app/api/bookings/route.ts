@@ -182,20 +182,50 @@ export async function POST(request: Request) {
     }
 
     // ── 5. INSERT BookingItems ────────────────────────
-    const bookingItems = selectedServices.map((svc: {
-      variantId: string;
-      priceVND: number;
-      name: string;
-      duration: number;
-      quantity?: number;
-    }) => ({
-      id: `${bookingId}-${svc.variantId}`,
-      bookingId,
-      serviceId: svc.variantId,
-      quantity: svc.quantity || 1,
-      price: svc.priceVND,
-      status: 'WAITING',
-    }));
+        const bookingItems = selectedServices.map((svc: any) => {
+      const opts = svc.options || {};
+      
+      // Map strength
+      let strengthStr = undefined;
+      if (opts.strength) {
+         const s = opts.strength.toLowerCase();
+         if (s === 'light' || s === 'nhẹ') strengthStr = 'LIGHT';
+         else if (s === 'hard' || s === 'strong' || s === 'mạnh') strengthStr = 'HARD';
+         else strengthStr = 'NORMAL';
+      }
+
+      // Map therapist
+      let therapistStr = "Ngẫu nhiên";
+      if (opts.therapist === 'male') therapistStr = 'Nam';
+      else if (opts.therapist === 'female') therapistStr = 'Nữ';
+
+      // Map notes
+      const extraNotes = [];
+      if (opts.notes?.tag0) extraNotes.push('Phụ nữ có thai');
+      if (opts.notes?.tag1) extraNotes.push('Có dị ứng');
+      let finalNote = opts.notes?.content || "";
+      if (extraNotes.length > 0) {
+        finalNote = extraNotes.join(', ') + (finalNote ? " - " + finalNote : "");
+      }
+
+      const structuredOptions = {
+        strength: strengthStr,
+        focus: opts.bodyParts?.focus || [],
+        avoid: opts.bodyParts?.avoid || [],
+        therapist: therapistStr,
+        note: finalNote
+      };
+
+      return {
+        id: `${bookingId}-${svc.variantId}`,
+        bookingId,
+        serviceId: svc.variantId,
+        quantity: svc.quantity || 1,
+        price: svc.priceVND,
+        status: 'WAITING',
+        options: structuredOptions
+      };
+    });
 
     const { error: itemsErr } = await supabase.from('BookingItems').insert(bookingItems);
 

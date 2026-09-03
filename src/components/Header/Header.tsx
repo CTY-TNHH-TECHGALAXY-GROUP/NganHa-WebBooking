@@ -1,6 +1,7 @@
 // Header.tsx - Sticky Navigation with transparent-to-solid effect
 'use client';
 
+import { Z } from '@/lib/zIndex';
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import { usePathname } from 'next/navigation';
@@ -287,9 +288,9 @@ const Header = () => {
             </div>
 
             {/* Center Logo */}
-            <div className={`absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transition-opacity duration-300 z-0 ${showLogo ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+            <div className={`md:absolute md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 transition-opacity duration-300 z-0 ml-4 md:ml-0 flex-1 md:flex-none flex justify-start md:justify-center ${showLogo ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
               <a href="/" className="block mt-2 md:mt-3">
-                <SmartLogo theme="dark" className="h-14 md:h-[68px] w-auto object-contain cursor-pointer scale-100 md:scale-125" />
+                <SmartLogo theme="dark" className="h-10 sm:h-14 md:h-[68px] w-auto object-contain cursor-pointer scale-100 md:scale-125" />
               </a>
             </div>
 
@@ -300,7 +301,7 @@ const Header = () => {
               {/* Book Button */}
               <Link 
                 href={`/${currentLang.code}/new-user/standard/checkout`}
-                className="hidden sm:block text-[#f7ebc7] hover:text-[#f7ebc7]/80 active:opacity-50 font-bold text-sm uppercase tracking-wider mr-4 lg:mr-6 transition-all duration-300"
+                className="text-[#f7ebc7] hover:text-[#f7ebc7]/80 active:opacity-50 font-bold text-xs sm:text-sm uppercase tracking-wider mr-3 lg:mr-6 transition-all duration-300"
               >
                 Book
               </Link>
@@ -522,7 +523,7 @@ const Header = () => {
           <>
             <motion.button
               type="button"
-              className="nav-cart-backdrop fixed inset-0 bg-[#3a3528]/80 backdrop-blur-sm z-[10000]"
+              className="nav-cart-backdrop fixed inset-0 bg-[#3a3528]/80 backdrop-blur-sm" style={{ zIndex: Z.DRAWER_OVERLAY }}
               aria-label="Close cart"
               onClick={() => setIsCartOpen(false)}
               initial={{ opacity: 0 }}
@@ -530,8 +531,7 @@ const Header = () => {
               exit={{ opacity: 0 }}
             />
             <motion.aside
-              className="nav-cart-drawer fixed top-0 right-0 bg-[#F4F1EB] z-[10001] flex flex-col px-6"
-              style={{ width: '100%', maxWidth: '340px', maxHeight: '100vh', boxShadow: '-6px 0 24px rgba(0,0,0,0.16)' }}
+              className="nav-cart-drawer fixed top-0 right-0 bg-[#F4F1EB] flex flex-col px-6" style={{ zIndex: Z.DRAWER, width: '100%', maxWidth: '340px', maxHeight: '100vh', boxShadow: '-6px 0 24px rgba(0,0,0,0.16)' }}
               role="dialog"
               aria-modal="true"
               aria-label={cartText('title', currentLang.code)}

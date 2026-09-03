@@ -1,7 +1,8 @@
 // FloatingWidgets.tsx - Fixed contact buttons (right side) + AI ChatBot
 'use client';
 
-import { useState } from 'react';
+import { Z } from '@/lib/zIndex';
+import { useEffect, useState } from 'react';
 import { Phone, MessageCircle, Bot, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SOCIAL_LINKS, BRANCHES } from '@/lib/constants';
@@ -28,6 +29,20 @@ const FloatingWidgets = () => {
   const chatGreeting = getLocalizedText(systemSettings?.homepage_content?.chat?.greeting, lang as any, GREETING_TEXT[lang] || GREETING_TEXT.vi);
   const hotlineUrl = systemSettings?.phone ? `tel:${systemSettings.phone}` : SOCIAL_LINKS.HOTLINE;
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isFooterVisible, setIsFooterVisible] = useState(false);
+
+  useEffect(() => {
+    const footer = document.getElementById('footer');
+    if (!footer || !('IntersectionObserver' in window)) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsFooterVisible(entry.isIntersecting),
+      { threshold: 0.02 }
+    );
+
+    observer.observe(footer);
+    return () => observer.disconnect();
+  }, []);
 
   const handleChatClick = () => {
     document.getElementById('ai-chat-trigger')?.click();
@@ -44,13 +59,13 @@ const FloatingWidgets = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="fixed inset-0 bg-black/20 backdrop-blur-sm z-[985]"
+            className="fixed inset-0 bg-black/20 backdrop-blur-sm" style={{ zIndex: Z.FLOATING - 5 }}
             onClick={() => setIsMenuOpen(false)}
           />
         )}
       </AnimatePresence>
 
-      <div className="fixed bottom-24 md:bottom-6 right-4 md:right-6 z-[990] flex flex-col items-end justify-end pointer-events-none" suppressHydrationWarning={true}>
+      <div className="fixed bottom-4 md:bottom-6 right-4 md:right-6 floating-widgets flex flex-col items-end justify-end pointer-events-none" style={{ zIndex: Z.FLOATING }} suppressHydrationWarning={true}>
         {/* Hidden original ChatBot trigger */}
         <div className="pointer-events-auto">
           <AIChatBot hideTrigger={true} phone={systemSettings?.phone} />
@@ -58,16 +73,16 @@ const FloatingWidgets = () => {
 
         {/* Floating Greeting Bubble (Visible when menu is closed) */}
         <AnimatePresence>
-          {!isMenuOpen && (
+          {!isMenuOpen && !isFooterVisible && (
             <motion.div
               initial={{ opacity: 0, y: 10, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 10, scale: 0.95 }}
-              transition={{ delay: 1, duration: 0.4 }}
-              className="relative mb-3 mr-1 bg-[#f7ebc7] text-[#1a1a1a] p-4 rounded-2xl shadow-xl max-w-[350px] cursor-pointer pointer-events-auto after:absolute after:content-[''] after:-bottom-3 after:right-8 after:border-[7px] after:border-transparent after:border-t-[#f7ebc7]"
+              transition={{ duration: 0.4 }}
+              className="relative mb-3 mr-1 bg-[#f7ebc7] text-[#1a1a1a] p-3 sm:p-4 rounded-2xl shadow-xl max-w-[280px] sm:max-w-[350px] cursor-pointer pointer-events-auto after:absolute after:content-[''] after:-bottom-3 after:right-8 after:border-[7px] after:border-transparent after:border-t-[#f7ebc7]"
               onClick={() => setIsMenuOpen(true)}
             >
-              <p className="text-[14px] leading-relaxed font-medium whitespace-pre-line">{chatGreeting}</p>
+              <p className="text-[12px] sm:text-[14px] leading-relaxed font-medium whitespace-normal">{chatGreeting}</p>
             </motion.div>
           )}
         </AnimatePresence>
@@ -142,7 +157,7 @@ const FloatingWidgets = () => {
       </div>
 
       {/* Google Review Widget on Bottom Left */}
-      <GoogleReviewWidget />
+      {!isFooterVisible && <GoogleReviewWidget />}
     </>
   );
 };

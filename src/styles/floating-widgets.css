@@ -38,20 +38,30 @@
 @media (max-width: 1024px) {
   .floating-widgets {
     top: auto !important;
-    bottom: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    width: 100% !important;
+    bottom: max(14px, env(safe-area-inset-bottom)) !important;
+    left: auto !important;
+    right: 14px !important;
+    width: min(82vw, 360px) !important;
     transform: none !important;
-    flex-direction: row !important;
-    justify-content: center !important;
-    background: rgba(8, 8, 8, 0.95);
-    backdrop-filter: blur(16px);
-    border-top: 1px solid rgba(212, 175, 55, 0.15);
-    padding: 12px 20px calc(12px + env(safe-area-inset-bottom));
-    gap: 40px !important;
-    z-index: 998; /* Just below main overlays */
-    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5);
+    flex-direction: column !important;
+    align-items: flex-end !important;
+    justify-content: flex-end !important;
+    background: transparent;
+    backdrop-filter: none;
+    border-top: 0;
+    padding: 0;
+    gap: 8px !important;
+    z-index: 998;
+    box-shadow: none;
+    pointer-events: none;
+  }
+
+  .floating-widgets > * {
+    max-width: 100%;
+  }
+
+  .floating-widgets p {
+    overflow-wrap: anywhere;
   }
 
   .floating-btn {
@@ -63,6 +73,43 @@
   .floating-btn:hover {
     transform: none;
     box-shadow: none;
+  }
+
+  .google-review-widget {
+    left: 12px !important;
+    bottom: max(14px, env(safe-area-inset-bottom)) !important;
+    max-width: 10.5rem;
+    padding: 0.5rem 0.65rem !important;
+    gap: 0.45rem !important;
+    border-radius: 8px !important;
+  }
+
+  .google-review-widget svg {
+    width: 20px;
+    height: 20px;
+    flex: 0 0 auto;
+  }
+
+  .google-review-widget .text-2xl {
+    font-size: 1.35rem;
+  }
+}
+
+@media (max-width: 620px) {
+  .floating-widgets {
+    right: 10px !important;
+    bottom: max(12px, env(safe-area-inset-bottom)) !important;
+    width: min(66vw, 290px) !important;
+  }
+
+  .floating-widgets [class*="max-w"] {
+    max-width: min(58vw, 250px) !important;
+  }
+
+  .google-review-widget {
+    left: 10px !important;
+    max-width: 9rem;
+    padding-inline: 0.55rem !important;
   }
 }
 

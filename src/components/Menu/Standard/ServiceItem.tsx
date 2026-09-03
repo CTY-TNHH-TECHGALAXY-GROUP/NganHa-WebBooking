@@ -86,7 +86,7 @@ export default function ServiceItem({ service, quantity, lang, isBestSeller, onC
             </div>
 
             {/* 2. Nội dung text (Không hiện giá) */}
-            <div className="flex flex-col justify-center flex-1 min-w-0 py-1 h-20" style={{ paddingRight: '70px' }}>
+            <div className="flex flex-col justify-center flex-1 min-w-0 py-1 min-h-[5rem]" style={{ paddingRight: '48px' }}>
                 <h3 className="font-bold text-white text-[15px] leading-tight mb-1.5 line-clamp-2 font-luxury tracking-wide">
                     {name}
                 </h3>

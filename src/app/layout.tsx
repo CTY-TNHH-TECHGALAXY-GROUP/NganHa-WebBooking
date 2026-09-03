@@ -148,8 +148,10 @@ const RootLayout = async ({
                 font-family: var(--font-heading);
                 font-weight: ${headingWeight};
               }
-              .hero-title {
-                font-size: ${heroHeadingSize} !important;
+              @media (min-width: 768px) {
+                .hero-title {
+                  font-size: ${heroHeadingSize} !important;
+                }
               }
               body {
                 font-family: var(--font-body);

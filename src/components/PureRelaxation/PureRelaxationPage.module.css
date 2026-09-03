@@ -13,7 +13,7 @@
   min-height: 100dvh;
   overflow-x: clip;
   overflow-y: visible;
-  padding-bottom: 7rem;
+  padding-bottom: 4rem;
 }
 
 .fixedBackground {
@@ -71,6 +71,7 @@
   z-index: 10;
   padding-top: 2rem;
   box-shadow: 0 -10px 30px rgba(40, 27, 21, 0.05);
+  overflow: clip;
 }
 
 .eyebrow,
@@ -149,23 +150,27 @@
 
 .sectionNavShell {
   position: sticky;
-  top: 5.25rem;
-  z-index: 20;
-  padding: 0 4rem;
+  top: var(--header-height, 80px);
+  z-index: 25;
+  padding: 0 clamp(1rem, 4vw, 4rem);
   border-block: 1px solid var(--pure-line);
   background: rgba(246, 242, 234, 0.84);
   backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
 }
 
 .sectionNav {
   display: flex;
-  justify-content: center;
-  gap: 2.4rem;
+  justify-content: flex-start;
+  gap: clamp(1rem, 3vw, 2.4rem);
   align-items: center;
   max-width: 1500px;
   margin: 0 auto;
+  padding-inline: 0 2.75rem;
   overflow-x: auto;
   overscroll-behavior-inline: contain;
+  scroll-padding-inline: 1rem;
+  -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
 }
 
@@ -176,11 +181,12 @@
 .navButton {
   position: relative;
   flex: 0 0 auto;
-  padding: 1.2rem 0 1rem;
+  min-width: clamp(6.25rem, 14vw, 8.5rem);
+  padding: 0.95rem 0.25rem 0.8rem;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.6rem;
+  gap: 0.45rem;
   color: rgba(40, 27, 21, 0.58);
   font-family: var(--font-inter), Inter, Arial, sans-serif;
   font-size: 0.85rem;
@@ -191,7 +197,13 @@
   border: 0;
   cursor: pointer;
   transition: color 0.3s ease;
-  animation: gentleFloat 2.5s ease-in-out infinite;
+}
+
+.categoryTitle {
+  display: block;
+  max-width: 100%;
+  text-align: center;
+  white-space: nowrap;
 }
 
 @keyframes gentleFloat {
@@ -635,7 +647,7 @@
 }
 
 @media (max-width: 1180px) {
-  .hero,
+  .topPanel,
   .sectionsWrap,
   .sectionNavShell {
     padding-inline: 2rem;
@@ -665,7 +677,7 @@
   }
 
   .sectionNavShell {
-    top: 4.6rem;
+    top: var(--header-height, 80px);
   }
 
   .mediaPane {
@@ -685,9 +697,34 @@
 
 @media (max-width: 620px) {
   .hero,
-  .sectionsWrap,
-  .sectionNavShell {
+  .sectionsWrap {
     padding-inline: 1rem;
+  }
+
+  .page {
+    padding-bottom: 7.5rem;
+  }
+
+  .sectionNavShell {
+    padding-inline: 0;
+  }
+
+  .sectionNav {
+    gap: 0.75rem;
+    padding-inline: 1rem 2.4rem;
+    scroll-padding-inline: 1rem;
+  }
+
+  .navButton {
+    min-width: 5.9rem;
+    padding: 0.8rem 0.2rem 0.7rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+  }
+
+  .categoryIcon {
+    width: 3.2rem;
+    height: 3.2rem;
   }
 
   .hero {
@@ -730,6 +767,10 @@
   .mediaFrame {
     height: 22.5rem;
     min-height: 22.5rem;
+  }
+
+  .scrollHint {
+    width: 2.4rem;
   }
 }
 
@@ -945,3 +986,24 @@
   .vipHeadline { font-size: 38px; }
 }
 
+
+.scrollHint {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 3.5rem;
+  background: linear-gradient(to right, transparent, rgba(246, 242, 234, 0.98) 70%);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 0.25rem;
+  pointer-events: none;
+  color: #C5A880;
+}
+
+@media (min-width: 900px) {
+  .scrollHint {
+    display: none;
+  }
+}

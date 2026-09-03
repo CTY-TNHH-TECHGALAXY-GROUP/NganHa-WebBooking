@@ -1,7 +1,7 @@
 .splashContainer {
   position: fixed;
   inset: 0;
-  z-index: 99999;
+  
   background-color: #0c0b0a; /* Almost black */
   display: flex;
   align-items: center;
@@ -23,7 +23,7 @@
 }
 
 .logo {
-  width: 350px;
+  width: min(350px, 85vw);
   height: auto;
   object-fit: contain;
   margin-bottom: 24px;

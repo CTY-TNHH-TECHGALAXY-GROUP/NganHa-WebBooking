@@ -1,5 +1,6 @@
 'use client';
 
+import { Z } from '@/lib/zIndex';
 import React, { useEffect, useState } from 'react';
 
 const GoogleG = () => (
@@ -30,8 +31,7 @@ const GoogleReviewWidget = () => {
       href="https://search.google.com/local/reviews?placeid=ChIJ2ULTMCAvdTERA4I7Sei7vyY"
       target="_blank"
       rel="noopener noreferrer"
-      className={`fixed bottom-24 md:bottom-6 left-4 md:left-6 z-[990] flex items-center gap-3 px-4 py-2 rounded-md shadow-lg transition-all hover:-translate-y-1 hover:shadow-xl ${loading ? 'opacity-70' : 'opacity-100'}`}
-      style={{ backgroundColor: '#FDF8E7', border: '1px solid #E8D399' }}
+      className={`fixed bottom-4 md:bottom-6 left-4 md:left-6 google-review-widget flex items-center gap-3 px-4 py-2 rounded-md shadow-lg transition-all hover:-translate-y-1 hover:shadow-xl ${loading ? 'opacity-70' : 'opacity-100'}`} style={{ zIndex: Z.FLOATING, backgroundColor: '#FDF8E7', border: '1px solid #E8D399' }}
       aria-label="View our Google Reviews"
     >
       {/* Google G Icon */}
@@ -44,7 +44,7 @@ const GoogleReviewWidget = () => {
       </div>
 
       {/* Text Info */}
-      <div className="flex flex-col text-black">
+      <div className="hidden md:flex flex-col text-black">
         <span className="text-sm font-bold leading-tight">Excellent</span>
         <span className="text-xs text-gray-700 leading-tight">
           {data.user_ratings_total.toLocaleString()} reviews on{' '}

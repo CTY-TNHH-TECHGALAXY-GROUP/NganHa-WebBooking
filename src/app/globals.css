@@ -15,6 +15,7 @@
 
 /* ADMIN V3 THEME */
 @theme {
+  --breakpoint-xs: 480px;
   --color-admin-bg: #faf6ef;
   --color-admin-side: #f3ead9;
   --color-admin-panel: #ffffff;
@@ -64,7 +65,7 @@ body,
   overscroll-behavior-x: none;
   overscroll-behavior-y: auto;
   -webkit-text-size-adjust: 100%;
-  padding-bottom: max(env(safe-area-inset-bottom), 120px) !important;
+  
 }
 
 *, *::before, *::after {
@@ -256,4 +257,10 @@ body,
   opacity: 0.15;
   z-index: 10;
   pointer-events: none;
+}
+
+
+body.modal-open .floating-widgets,
+body.modal-open .google-review-widget {
+  display: none !important;
 }
