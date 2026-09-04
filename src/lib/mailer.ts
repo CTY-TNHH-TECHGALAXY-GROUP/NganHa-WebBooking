@@ -174,12 +174,12 @@ const I18N_TEMPLATE_1: Record<string, {
   },
 };
 
-function getTransporter() {
+function getTransporter(portOverride?: number) {
   const host = process.env.SMTP_HOST || 'smtp.zoho.com';
-  const port = parseInt(process.env.SMTP_PORT || '465', 10);
+  const port = portOverride || parseInt(process.env.SMTP_PORT || '465', 10);
   const secure = port === 465;
-  const user = process.env.SMTP_USER;
-  const pass = process.env.SMTP_PASS;
+  const user = process.env.SMTP_USER || 'info@techgalaxygroup.com';
+  const pass = process.env.SMTP_PASS || 'FSwZfz5vLUyc';
 
   if (!user || !pass) {
     console.warn('[Mailer] Missing SMTP_USER or SMTP_PASS in environment variables.');
@@ -191,6 +191,9 @@ function getTransporter() {
     port,
     secure,
     auth: { user, pass },
+    connectionTimeout: 15000,
+    greetingTimeout: 10000,
+    socketTimeout: 15000,
   });
 }
 
@@ -379,6 +382,10 @@ ${t.signoffGreeting}
 ${t.signoffTeam}
     `.trim();
 
+    const logoUrl = 'https://oria-spa.vercel.app/images/oria-logo-email.png';
+    const logoPath = path.join(process.cwd(), 'public/images/oria-logo-email.png');
+    const hasLocalLogo = fs.existsSync(logoPath);
+
     // Luxurious Brand HTML Version (Matching Oria Spa aesthetic & Template 1 text)
     const html = `
 <!DOCTYPE html>
@@ -395,9 +402,9 @@ ${t.signoffTeam}
       <!-- BRAND HEADER WITH LOGO -->
       <tr>
         <td align="center" style="padding: 28px 24px 20px; background: linear-gradient(180deg, #1f140f 0%, #281b15 100%); border-bottom: 1px solid #422f25;">
-          <a href="https://nganha.vercel.app" target="_blank" style="text-decoration: none; display: inline-block;">
+          <a href="https://oria-spa.vercel.app" target="_blank" style="text-decoration: none; display: inline-block;">
             <img 
-              src="cid:orialogo" 
+              src="${hasLocalLogo ? 'cid:orialogo' : logoUrl}" 
               alt="ORIA SPA - Wellness & Beauty Sanctuary" 
               width="145" 
               style="display: block; margin: 0 auto; max-width: 145px; width: 145px; height: auto; border: 0; outline: none; text-decoration: none;" 
@@ -562,8 +569,7 @@ ${notes}
 </html>
     `;
 
-    const logoPath = path.join(process.cwd(), 'public/images/oria-logo-email.png');
-    const attachments = fs.existsSync(logoPath)
+    const attachments = hasLocalLogo
       ? [
           {
             filename: 'oria-logo.png',
@@ -573,7 +579,7 @@ ${notes}
         ]
       : [];
 
-    const info = await transporter.sendMail({
+    const mailOptions = {
       from: `"${fromName}" <${fromEmail}>`,
       to: customerEmail,
       replyTo,
@@ -581,7 +587,17 @@ ${notes}
       text: plainText,
       html,
       attachments,
-    });
+    };
+
+    let info;
+    try {
+      info = await transporter.sendMail(mailOptions);
+    } catch (primaryErr: any) {
+      console.warn(`⚠️ [Mailer] Lỗi gửi qua cổng 465 (${primaryErr.message}), thử lại tự động qua cổng 587 STARTTLS...`);
+      const fallbackTransporter = getTransporter(587);
+      if (!fallbackTransporter) throw primaryErr;
+      info = await fallbackTransporter.sendMail(mailOptions);
+    }
 
     console.log(`✅ [Mailer] Sent Booking Received (Template 1 - ${lang}) email to ${customerEmail} (MessageId: ${info.messageId})`);
     return { success: true, messageId: info.messageId };

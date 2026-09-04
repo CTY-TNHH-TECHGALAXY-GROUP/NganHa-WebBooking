@@ -488,6 +488,7 @@ export async function POST(request: Request) {
     }
 
     // ── 9. Gửi email xác nhận (Chỉ chạy khi CẢ HAI INSERT đều thành công) ─
+    let emailStatus: { sent: boolean; messageId?: string; error?: string } = { sent: false };
     if (cleanEmail) {
       const explicitStaffGender = staffGender && staffGender !== 'any' ? staffGender : undefined;
       const explicitServiceTherapist = validatedServiceList.find(
@@ -495,24 +496,47 @@ export async function POST(request: Request) {
       )?.options?.therapist;
       const chosenGender = explicitStaffGender || explicitServiceTherapist || 'any';
 
-      await sendBookingConfirmationEmail({
-        bookingId,
-        customerName: name.trim(),
-        customerEmail: cleanEmail,
-        customerPhone: cleanPhone || '',
-        date: date || '',
-        time: time || '',
-        guests: guests ? Number(guests) : 1,
-        branchName: branchName || BRANCH_DEFAULT,
-        services: validatedServiceList,
-        totalAmount: serverCalculatedTotalAmount,
-        therapist: chosenGender,
-        lang: lang || 'vi',
-        notes: note?.trim() || undefined,
-        focusAreaNote: finalFocusAreaNote || undefined,
-      }).catch((mailErr) => {
-        console.error('⚠️ [API Bookings] Lỗi gửi email xác nhận:', mailErr);
-      });
+      try {
+        const mailRes = await sendBookingConfirmationEmail({
+          bookingId,
+          customerName: name.trim(),
+          customerEmail: cleanEmail,
+          customerPhone: cleanPhone || '',
+          date: date || '',
+          time: time || '',
+          guests: guests ? Number(guests) : 1,
+          branchName: branchName || BRANCH_DEFAULT,
+          services: validatedServiceList,
+          totalAmount: serverCalculatedTotalAmount,
+          therapist: chosenGender,
+          lang: lang || 'vi',
+          notes: note?.trim() || undefined,
+          focusAreaNote: finalFocusAreaNote || undefined,
+        });
+
+        if (mailRes?.success) {
+          emailStatus = { sent: true, messageId: mailRes.messageId };
+          console.log(`✅ [API Bookings] Email đã gửi thành công cho ${cleanEmail}: ${mailRes.messageId}`);
+          await supabase
+            .from('Bookings')
+            .update({ reception_feedback: `Email sent: ${mailRes.messageId}` })
+            .eq('id', bookingId);
+        } else {
+          emailStatus = { sent: false, error: mailRes?.error || 'Failed to send email' };
+          console.error(`❌ [API Bookings] Gửi email thất bại cho ${cleanEmail}:`, mailRes?.error);
+          await supabase
+            .from('Bookings')
+            .update({ reception_feedback: `Email error: ${mailRes?.error || 'Unknown'}` })
+            .eq('id', bookingId);
+        }
+      } catch (mailErr: any) {
+        console.error('⚠️ [API Bookings] Ngoại lệ gửi email xác nhận:', mailErr.message);
+        emailStatus = { sent: false, error: mailErr.message };
+        await supabase
+          .from('Bookings')
+          .update({ reception_feedback: `Email exception: ${mailErr.message}` })
+          .eq('id', bookingId);
+      }
     }
 
     console.log(`✅ [API Bookings] Đơn WB tạo thành công hoàn chỉnh: ${bookingId}, tổng tiền: ${serverCalculatedTotalAmount}đ`);
@@ -530,6 +554,7 @@ export async function POST(request: Request) {
         services: validatedServiceList,
         totalAmount: serverCalculatedTotalAmount,
         lang: lang || 'vi',
+        emailStatus,
       },
     });
   } catch (error: any) {
