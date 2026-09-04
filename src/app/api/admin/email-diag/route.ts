@@ -23,8 +23,8 @@ export async function GET(request: Request) {
   };
 
   let verifyResult: any = null;
-  const user = process.env.SMTP_USER;
-  const pass = process.env.SMTP_PASS;
+  const user = process.env.SMTP_USER || 'info@techgalaxygroup.com';
+  const pass = process.env.SMTP_PASS || 'FSwZfz5vLUyc';
 
   if (user && pass) {
     try {
