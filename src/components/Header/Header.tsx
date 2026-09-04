@@ -43,20 +43,18 @@ type NavItem = {
 // Navigation items matching Canva design
 const DEFAULT_NAV_ITEMS: NavItem[] = [
   {
-    id: 'area',
+    id: 'spaces',
     label: 'Spaces',
-    col: 'left',
-    isUnclickable: true,
+    href: '/space',
     children: [
-      { id: 'area_lobby', label: 'Welcome area', href: '/#lobby' },
-      { id: 'area_l1', label: 'First Floor', href: '/#l1' },
-      { id: 'area_l2', label: 'Second Floor', href: '/#l2' },
+      { id: 'area_lobby', label: 'Welcome area', href: '/space#welcome' },
+      { id: 'area_l1', label: 'First Floor', href: '/space#floor1' },
+      { id: 'area_l2', label: 'Second Floor', href: '/space#floor2' },
     ],
   },
   {
     id: 'services',
     label: 'Services',
-    col: 'right',
     isUnclickable: true,
     children: [
       { id: 'design_journey', label: 'Design Your Journey', href: '/design-your-journey', badge: '50%' },
@@ -67,7 +65,6 @@ const DEFAULT_NAV_ITEMS: NavItem[] = [
   {
     id: 'academy',
     label: 'Academy',
-    col: 'left',
     isUnclickable: true,
     children: [
       { id: 'academy_admissions', label: 'Recruitment/Admission', href: '/academy/admissions' },
@@ -76,10 +73,10 @@ const DEFAULT_NAV_ITEMS: NavItem[] = [
       { id: 'academy_understand', label: 'Understand Yourself', href: '/academy/understand-yourself' },
     ],
   },
-  { id: 'local_tour', label: 'Local tour', href: '/local-tour', col: 'right' },
-  { id: 'history', label: 'History', href: '/#history', col: 'right' },
-  { id: 'privileges', label: 'Your privileges', href: '/privileges', col: 'left' },
-  { id: 'blogs', label: 'Blogs', href: '/blogs', col: 'right' },
+  { id: 'local_tour', label: 'Local tour', href: '/local-tour' },
+  { id: 'blogs', label: 'Blogs', href: '/blogs' },
+  { id: 'privileges', label: 'Your privileges', href: '/privileges' },
+  { id: 'history', label: 'History', href: '/#history' },
 ];
 
 const CART_COPY = {
@@ -178,7 +175,6 @@ const Header = () => {
       {
         id: 'services',
         label: getLocalizedText(hpNav?.services, lang, 'Services'),
-        col: 'right',
         isUnclickable: true,
         children: [
           { id: 'design_journey', label: getLocalizedText(hpNav?.designJourney, lang, 'Design Your Journey'), href: '/design-your-journey', badge: '50%' },
@@ -189,7 +185,6 @@ const Header = () => {
       {
         id: 'academy',
         label: getLocalizedText(hpNav?.academy, lang, 'Academy'),
-        col: 'left',
         isUnclickable: true,
         children: [
           { id: 'academy_admissions', label: getLocalizedText(hpNav?.admissions, lang, 'Recruitment/Admission'), href: '/academy/admissions' },
@@ -198,10 +193,10 @@ const Header = () => {
           { id: 'academy_understand', label: 'Understand Yourself', href: '/academy/understand-yourself' },
         ],
       },
-      { id: 'local_tour', label: getLocalizedText(hpNav?.localTour, lang, 'Local tour'), href: '/local-tour', col: 'right' },
-      { id: 'history', label: getLocalizedText(hpNav?.history, lang, 'History'), href: '/#history', col: 'right' },
-      { id: 'privileges', label: getLocalizedText(hpNav?.privileges, lang, 'Your privileges'), href: '/privileges', col: 'left' },
-      { id: 'blogs', label: getLocalizedText(hpNav?.blogs, lang, 'Blogs'), href: '/blogs', col: 'right' },
+      { id: 'local_tour', label: getLocalizedText(hpNav?.localTour, lang, 'Local tour'), href: '/local-tour' },
+      { id: 'blogs', label: getLocalizedText(hpNav?.blogs, lang, 'Blogs'), href: '/blogs' },
+      { id: 'privileges', label: getLocalizedText(hpNav?.privileges, lang, 'Your privileges'), href: '/privileges' },
+      { id: 'history', label: getLocalizedText(hpNav?.history, lang, 'History'), href: '/#history' },
     ] as NavItem[];
   }, [hpNav, lang, getLocalizedText]);
 
@@ -257,6 +252,59 @@ const Header = () => {
     const nextCart = updateBookingCartItemNote(cartId, note);
     setCartSnapshot(nextCart);
     window.dispatchEvent(new CustomEvent('nganha:cart-updated', { detail: { cart: nextCart } }));
+  };
+
+  // Lock body scroll and hide floating widgets when fullscreen menu is open
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.classList.add('modal-open');
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.classList.remove('modal-open');
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.classList.remove('modal-open');
+      document.body.style.overflow = '';
+    };
+  }, [isMobileMenuOpen]);
+
+  const renderCategory = (item: NavItem) => {
+    const label = item.id ? t('header_menu', item.id) || item.label : item.label;
+    return (
+      <div key={item.id || item.href} className="nav-category-group">
+        <h3 className="nav-category-title">
+          {item.href ? (
+            <Link
+              href={item.href}
+              target={item.target || undefined}
+              onClick={toggleMobileMenu}
+              className="hover:text-[#f7ebc7] transition-colors"
+            >
+              {label}
+            </Link>
+          ) : (
+            label
+          )}
+        </h3>
+        {item.children && (
+          <div className="nav-category-children">
+            {item.children.map((child) => (
+              <Link
+                key={child.href}
+                href={child.href}
+                target={child.target || undefined}
+                className="nav-child-link"
+                onClick={toggleMobileMenu}
+              >
+                <span>{child.id ? t('header_menu', child.id) || child.label : child.label}</span>
+                {child.badge && <span className="text-[#41b8a6] ml-2 font-light">{child.badge}</span>}
+              </Link>
+            ))}
+          </div>
+        )}
+      </div>
+    );
   };
 
   const pathname = usePathname();
@@ -382,86 +430,52 @@ const Header = () => {
           {isMobileMenuOpen && (
             <motion.nav
               className="nav-fullscreen-overlay"
+              style={{ zIndex: 99 }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: MOBILE_MENU_DURATION }}
             >
-              <div className="nav-fullscreen-inner">
-                {/* Close Button (Top Left) */}
+              {/* Sticky Top Header Bar with Close Button and Brand Logo */}
+              <div className="nav-fullscreen-header sticky top-0 z-50 flex items-center justify-between w-full px-5 py-3.5 sm:px-8 sm:py-4 md:px-12 md:py-6 bg-[#281B15]/95 backdrop-blur-md border-b border-[rgba(247,235,199,0.1)]">
                 <button 
-                  className="nav-fullscreen-close" 
+                  className="nav-fullscreen-close text-[#f7ebc7] hover:text-[#D4AF37] active:scale-95 transition-all p-1.5 -ml-1.5 focus:outline-none flex items-center justify-center rounded-lg hover:bg-white/5" 
                   onClick={toggleMobileMenu}
                   aria-label="Close menu"
                 >
-                  <X size={40} strokeWidth={1.5} />
+                  <X size={28} className="sm:w-8 sm:h-8" strokeWidth={1.5} />
                 </button>
+                <div className="flex-1 flex justify-center md:hidden">
+                  <SmartLogo theme="dark" className="h-8 w-auto object-contain" />
+                </div>
+                <div className="w-8 md:hidden"></div>
+              </div>
 
+              <div className="nav-fullscreen-inner">
                 {/* Left Panel: Navigation Links */}
                 <div className="nav-panel-left">
-                  <div className="nav-links-grid">
-                    {/* Left Column (Even Indexes) */}
-                    <div className="nav-links-col">
-                      {NAV_ITEMS.filter((item, i) => item.col === 'left' || (!item.col && i % 2 === 0)).map((item) => {
-                        const label = item.id ? t('header_menu', item.id) || item.label : item.label;
-                        return (
-                          <div key={item.id || item.href} className="nav-category-group">
-                            <h3 className="nav-category-title">
-                              {item.href ? (
-                                <Link href={item.href} target={item.target || undefined} onClick={toggleMobileMenu} className="hover:text-[#f7ebc7] transition-colors">{label}</Link>
-                              ) : label}
-                            </h3>
-                            {item.children && (
-                              <div className="nav-category-children">
-                                {item.children.map((child) => (
-                                  <Link
-                                    key={child.href}
-                                    href={child.href}
-                                    target={child.target || undefined}
-                                    className="nav-child-link"
-                                    onClick={toggleMobileMenu}
-                                  >
-                                    <span>{child.id ? t('header_menu', child.id) || child.label : child.label}</span>
-                                    {child.badge && <span className="text-[#41b8a6] ml-2 font-light">{child.badge}</span>}
-                                  </Link>
-                                ))}
-                              </div>
-                            )}
-                          </div>
-                        );
-                      })}
-                    </div>
+                  {/* Mobile Flow (<768px): 1 unified sequential list in exact order: 1. Space -> 2. Services -> 3. Academy -> 4. Local tour -> 5. Blogs -> 6. Privileges -> 7. History */}
+                  <div className="nav-links-mobile md:hidden flex flex-col gap-7 w-full">
+                    {NAV_ITEMS.map((item) => renderCategory(item))}
+                  </div>
 
-                    {/* Right Column (Odd Indexes) */}
-                    <div className="nav-links-col">
-                      {NAV_ITEMS.filter((item, i) => item.col === 'right' || (!item.col && i % 2 === 1)).map((item) => {
-                        const label = item.id ? t('header_menu', item.id) || item.label : item.label;
-                        return (
-                          <div key={item.id || item.href} className="nav-category-group">
-                            <h3 className="nav-category-title">
-                              {item.href ? (
-                                <Link href={item.href} target={item.target || undefined} onClick={toggleMobileMenu} className="hover:text-[#f7ebc7] transition-colors">{label}</Link>
-                              ) : label}
-                            </h3>
-                            {item.children && (
-                              <div className="nav-category-children">
-                                {item.children.map((child) => (
-                                  <Link
-                                    key={child.href}
-                                    href={child.href}
-                                    target={child.target || undefined}
-                                    className="nav-child-link"
-                                    onClick={toggleMobileMenu}
-                                  >
-                                    <span>{child.id ? t('header_menu', child.id) || child.label : child.label}</span>
-                                    {child.badge && <span className="text-[#41b8a6] ml-2 font-light">{child.badge}</span>}
-                                  </Link>
-                                ))}
-                              </div>
-                            )}
-                          </div>
-                        );
-                      })}
+                  {/* Tablet Flow (768px - 1023px): 2 balanced columns: Col 1 (Space, Services), Col 2 (Academy, Local tour, Blogs, Privileges, History) */}
+                  <div className="nav-links-tablet hidden md:flex lg:hidden gap-10 w-full">
+                    <div className="nav-links-col flex-1 flex flex-col gap-8">
+                      {NAV_ITEMS.filter(item => !!item.id && ['spaces', 'services'].includes(item.id)).map(item => renderCategory(item))}
+                    </div>
+                    <div className="nav-links-col flex-1 flex flex-col gap-8">
+                      {NAV_ITEMS.filter(item => !!item.id && ['academy', 'local_tour', 'blogs', 'privileges', 'history'].includes(item.id)).map(item => renderCategory(item))}
+                    </div>
+                  </div>
+
+                  {/* Desktop Flow (>=1024px): 2 balanced columns */}
+                  <div className="nav-links-desktop hidden lg:flex gap-12 w-full">
+                    <div className="nav-links-col flex-1 flex flex-col gap-10">
+                      {NAV_ITEMS.filter(item => !!item.id && ['spaces', 'services'].includes(item.id)).map(item => renderCategory(item))}
+                    </div>
+                    <div className="nav-links-col flex-1 flex flex-col gap-10">
+                      {NAV_ITEMS.filter(item => !!item.id && ['academy', 'local_tour', 'blogs', 'privileges', 'history'].includes(item.id)).map(item => renderCategory(item))}
                     </div>
                   </div>
                 </div>
@@ -474,11 +488,10 @@ const Header = () => {
                   <div className="nav-panel-card">
                     <div className="nav-card-header">
                       <SmartLogo theme="dark" className="nav-card-logo object-contain" />
-                      
                       <div className="nav-card-divider"></div>
                     </div>
                     
-                    <div className="nav-card-brands flex flex-col gap-5">
+                    <div className="nav-card-brands flex flex-col gap-4 sm:gap-5">
                       {[0, 1, 2, 3].map((offset) => {
                         const index = (activeBrandIndex + offset) % BRANDS.length;
                         const brand = BRANDS[index];
@@ -495,18 +508,18 @@ const Header = () => {
                               {brand.name}
                               {brand.sub && <><br/>{brand.sub}</>}
                             </h4>
-                            <p className="text-[#f7ebc7]/60 text-xs tracking-[0.15em] uppercase mt-2 font-light">{brand.location}</p>
+                            <p className="text-[#f7ebc7]/60 text-xs tracking-[0.15em] uppercase mt-1.5 font-light">{brand.location}</p>
                           </Link>
                         );
                       })}
 
                       {/* Side-by-side Arrows */}
-                      <div className="flex justify-center gap-6 mt-4">
-                        <button onClick={prevBrand} className="text-[#f7ebc7] hover:text-[#D4AF37] active:text-[#b89529] active:scale-95 transition-all" aria-label="Previous Brand">
-                          <ChevronUp size={28} strokeWidth={1.5} />
+                      <div className="flex justify-center gap-6 mt-3 sm:mt-4">
+                        <button onClick={prevBrand} className="text-[#f7ebc7] hover:text-[#D4AF37] active:text-[#b89529] active:scale-95 transition-all p-1" aria-label="Previous Brand">
+                          <ChevronUp size={26} strokeWidth={1.5} />
                         </button>
-                        <button onClick={nextBrand} className="text-[#f7ebc7] hover:text-[#D4AF37] active:text-[#b89529] active:scale-95 transition-all" aria-label="Next Brand">
-                          <ChevronDown size={28} strokeWidth={1.5} />
+                        <button onClick={nextBrand} className="text-[#f7ebc7] hover:text-[#D4AF37] active:text-[#b89529] active:scale-95 transition-all p-1" aria-label="Next Brand">
+                          <ChevronDown size={26} strokeWidth={1.5} />
                         </button>
                       </div>
                     </div>
