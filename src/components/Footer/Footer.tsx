@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useSystemSettings } from '@/components/SystemSettingsProvider';
 import { useTranslation } from '@/components/TranslationProvider';
 import SmartLogo from '@/components/SmartLogo';
-import { HeartHandshake, Leaf, HeartPulse, HandHeart, Globe, ShieldCheck } from 'lucide-react';
+import { HeartPulse, ShieldCheck } from 'lucide-react';
 
 const CORE_VALUES_SECTION_TITLE: Record<string, string> = {
   vi: 'GIÁ TRỊ CỐT LÕI',
@@ -16,7 +16,8 @@ const CORE_VALUES_SECTION_TITLE: Record<string, string> = {
 
 const CORE_VALUES = [
   {
-    icon: HeartHandshake,
+    icon: null,
+    imgSrc: '/images/core-values/guest-centric.png',
     title: {
       vi: 'TẬN TÂM PHỤNG SỰ',
       en: 'GUEST-CENTRIC EXCELLENCE',
@@ -26,7 +27,8 @@ const CORE_VALUES = [
     }
   },
   {
-    icon: Leaf,
+    icon: null,
+    imgSrc: '/images/core-values/natural-authenticity.png',
     title: {
       vi: 'THUẦN THIÊN NHIÊN',
       en: 'NATURAL AUTHENTICITY',
@@ -37,6 +39,7 @@ const CORE_VALUES = [
   },
   {
     icon: HeartPulse,
+    imgSrc: null,
     title: {
       vi: 'LẮNG NGHE & THẤU HIỂU',
       en: 'EMPATHETIC UNDERSTANDING',
@@ -46,7 +49,8 @@ const CORE_VALUES = [
     }
   },
   {
-    icon: HandHeart,
+    icon: null,
+    imgSrc: '/images/core-values/artisans-touch.png',
     title: {
       vi: 'BÀN TAY NGHỆ NHÂN',
       en: "ARTISAN'S TOUCH",
@@ -56,7 +60,8 @@ const CORE_VALUES = [
     }
   },
   {
-    icon: Globe,
+    icon: null,
+    imgSrc: '/images/core-values/global-essence.png',
     title: {
       vi: 'HỘI NHẬP & SÁNG TẠO',
       en: 'GLOBAL ESSENCE & CREATIVE FUSION',
@@ -67,6 +72,7 @@ const CORE_VALUES = [
   },
   {
     icon: ShieldCheck,
+    imgSrc: null,
     title: {
       vi: 'SẠCH KHỎE ĐỒNG HÀNH',
       en: 'HYGIENE & HEALTH PRIORITY',
@@ -174,7 +180,19 @@ const Footer = () => {
               return (
                 <div key={index} className="flex flex-col items-center gap-5">
                   <div className="w-24 h-24 rounded-full flex items-center justify-center transition-transform hover:scale-105 duration-300">
-                    <Icon size={56} className="text-[#f7ebc7]" strokeWidth={1.2} />
+                    {value.imgSrc ? (
+                      <img 
+                        src={value.imgSrc} 
+                        alt={itemTitle} 
+                        className="w-16 h-16 md:w-20 md:h-20 object-contain"
+                        style={{
+                          filter: 'brightness(0) saturate(100%) invert(92%) sepia(16%) saturate(444%) hue-rotate(350deg) brightness(101%) contrast(94%)',
+                          WebkitFilter: 'brightness(0) saturate(100%) invert(92%) sepia(16%) saturate(444%) hue-rotate(350deg) brightness(101%) contrast(94%)',
+                        }}
+                      />
+                    ) : (
+                      Icon && <Icon size={56} className="text-[#f7ebc7]" strokeWidth={1.2} />
+                    )}
                   </div>
                   <h3 className="font-sans text-lg md:text-xl font-medium tracking-wide text-[#f7ebc7] uppercase">
                     {itemTitle}
