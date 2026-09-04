@@ -1,7 +1,7 @@
 'use client';
 
 import React, { use, useEffect, useMemo, useRef, useState } from 'react';
-import { ChevronDown, ChevronLeft, Plus, X, Edit2, Edit3, Trash2, Calendar } from 'lucide-react';
+import { ChevronDown, ChevronLeft, Plus, X, Edit2, Edit3, Trash2, Calendar, RotateCcw, Clock } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import SmartLogo from '@/components/SmartLogo';
 import AlertModal from '@/components/Shared/AlertModal';
@@ -113,8 +113,37 @@ const nextDates = (count = 7) => {
   });
 };
 
-const getFormattedDow = (index: number, date: Date, lang: string) => {
-  if (index === 0) {
+const isDateToday = (isoOrDate: string | Date) => {
+  const todayISO = localISODate(new Date());
+  const targetISO = typeof isoOrDate === 'string' ? isoOrDate : localISODate(isoOrDate);
+  return targetISO === todayISO;
+};
+
+const formatFullDate = (iso: string, lang: string = 'en') => {
+  if (!iso) return '';
+  const [yearStr, monthStr, dayStr] = iso.split('-');
+  const date = new Date(Number(yearStr), Number(monthStr) - 1, Number(dayStr));
+
+  const dowsFull: Record<string, string[]> = {
+    vi: ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'],
+    en: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+    cn: ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
+    jp: ['日曜日', '月曜日', '火曜日', '水曜日', '木曜日', '金曜日', '土曜日'],
+    kr: ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'],
+  };
+
+  const dow = (dowsFull[lang] || dowsFull.en)[date.getDay()];
+
+  if (lang === 'vi') return `${dow}, ${dayStr}/${monthStr}/${yearStr}`;
+  if (lang === 'cn' || lang === 'jp') return `${dow}, ${yearStr}年${monthStr}月${dayStr}日`;
+  if (lang === 'kr') return `${dow}, ${yearStr}년 ${monthStr}월 ${dayStr}일`;
+
+  const monthsEn = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  return `${dow}, ${monthsEn[date.getMonth()]} ${Number(dayStr)}, ${yearStr}`;
+};
+
+const getFormattedDow = (date: Date, lang: string) => {
+  if (isDateToday(date)) {
     const todayMap: Record<string, string> = {
       vi: 'Hôm nay', en: 'Today', cn: '今天', jp: '今日', kr: '오늘'
     };
@@ -565,25 +594,34 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
   }, [isGenderOpen, isPhoneCountryOpen]);
 
   const calendarInputRef = useRef<HTMLInputElement>(null);
-  const [customSelectedDates, setCustomSelectedDates] = useState<string[]>([]);
+  // Dải 7 ngày hiển thị linh hoạt bắt đầu từ stripAnchorDate (mặc định là hôm nay)
+  const [stripAnchorDate, setStripAnchorDate] = useState<string>(() => localISODate(new Date()));
 
-  const baseDateOptions = useMemo(() => nextDates(14), []);
   const dateOptions = useMemo(() => {
-    const combined = [...baseDateOptions];
-    customSelectedDates.forEach(d => {
-      if (!combined.includes(d)) {
-        combined.push(d);
-      }
+    const [y, m, d] = stripAnchorDate.split('-').map(Number);
+    const base = new Date(y, m - 1, d);
+    base.setHours(0, 0, 0, 0);
+    return Array.from({ length: 7 }, (_, index) => {
+      const dObj = new Date(base);
+      dObj.setDate(base.getDate() + index);
+      return localISODate(dObj);
     });
-    return combined.sort();
-  }, [baseDateOptions, customSelectedDates]);
+  }, [stripAnchorDate]);
 
   const handleCustomDateSelect = (pickedDate: string) => {
     if (!pickedDate) return;
-    setBookingDate(pickedDate);
-    if (!customSelectedDates.includes(pickedDate)) {
-      setCustomSelectedDates(prev => [...prev, pickedDate]);
-    }
+    const todayISO = localISODate(new Date());
+    const validDate = pickedDate < todayISO ? todayISO : pickedDate;
+    setBookingDate(validDate);
+    // Khi chọn ngày qua calendar, dải 7 ngày chuyển sang hiển thị bắt đầu từ ngày được chọn
+    // Giúp ngày được chọn hiển thị rõ ràng ngay ô đầu tiên và được active màu gold rực rỡ
+    setStripAnchorDate(validDate);
+  };
+
+  const handleResetToToday = () => {
+    const todayISO = localISODate(new Date());
+    setBookingDate(todayISO);
+    setStripAnchorDate(todayISO);
   };
   const allSlots = useMemo(() => {
     const slots = buildTimeSlots();
@@ -1170,19 +1208,20 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                         display: 'inline-flex',
                         alignItems: 'center',
                         gap: '6px',
-                        padding: '4px 10px',
-                        borderRadius: '8px',
-                        backgroundColor: 'rgba(201, 169, 110, 0.15)',
-                        border: '1px solid rgba(201, 169, 110, 0.4)',
+                        padding: '5px 12px',
+                        borderRadius: '10px',
+                        backgroundColor: 'rgba(201, 169, 110, 0.18)',
+                        border: '1px solid rgba(201, 169, 110, 0.45)',
                         color: '#f2d58d',
-                        fontSize: '12px',
+                        fontSize: '12.5px',
                         fontWeight: 600,
                         cursor: 'pointer',
                         transition: 'all 0.2s',
+                        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)',
                       }}
                       title={lang === 'vi' ? 'Mở lịch chọn ngày bất kỳ' : 'Open calendar to pick date'}
                     >
-                      <Calendar size={14} color="#f2d58d" />
+                      <Calendar size={15} color="#f2d58d" />
                       <span>{lang === 'vi' ? 'Mở lịch' : lang === 'cn' ? '选日期' : lang === 'jp' ? 'カレンダー' : lang === 'kr' ? '달력' : 'Calendar'}</span>
                     </button>
                     <input
@@ -1194,13 +1233,101 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                       style={{ position: 'absolute', opacity: 0, pointerEvents: 'none', width: 0, height: 0 }}
                     />
                   </div>
-                  <div className={styles.bookingSummary}>
-                    {bookingDate && bookingTime ? `${displayDate(bookingDate, lang)} · ${bookingTime}` : t('summaryEmpty', lang)}
+                </div>
+
+                {/* Banner Hiển Thị Ngày & Giờ Đã Chọn Nổi Bật - Dễ Nhận Biết */}
+                <div
+                  style={{
+                    marginTop: '10px',
+                    marginBottom: '14px',
+                    padding: '12px 16px',
+                    borderRadius: '14px',
+                    background: 'linear-gradient(135deg, rgba(201, 169, 110, 0.18) 0%, rgba(26, 20, 14, 0.9) 100%)',
+                    border: '1px solid rgba(201, 169, 110, 0.45)',
+                    boxShadow: '0 8px 24px -8px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    gap: '12px',
+                    flexWrap: 'wrap',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: '220px' }}>
+                    <div
+                      style={{
+                        width: '38px',
+                        height: '38px',
+                        borderRadius: '10px',
+                        backgroundColor: 'rgba(201, 169, 110, 0.22)',
+                        border: '1px solid rgba(201, 169, 110, 0.5)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: '#f2d58d',
+                        flexShrink: 0,
+                      }}
+                    >
+                      <Calendar size={18} />
+                    </div>
+                    <div>
+                      <div style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.8px', color: '#c9a96e', fontWeight: 600 }}>
+                        {lang === 'vi' ? 'Ngày & Giờ bạn chọn' : lang === 'cn' ? '您选择的预约时间' : lang === 'jp' ? '選択した予約日時' : lang === 'kr' ? '선택한 예약 일시' : 'Selected Schedule'}
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', marginTop: '2px' }}>
+                        <span style={{ fontSize: '16px', fontWeight: 700, color: '#ffffff', letterSpacing: '0.2px' }}>
+                          {formatFullDate(bookingDate, lang)}
+                        </span>
+                        <span style={{ color: 'rgba(255, 255, 255, 0.3)' }}>·</span>
+                        <span
+                          style={{
+                            fontSize: '14px',
+                            fontWeight: 700,
+                            color: '#f2d58d',
+                            backgroundColor: 'rgba(201, 169, 110, 0.22)',
+                            border: '1px solid rgba(201, 169, 110, 0.4)',
+                            padding: '2px 9px',
+                            borderRadius: '6px',
+                            fontFamily: 'monospace',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '4px',
+                          }}
+                        >
+                          <Clock size={12} />
+                          {bookingTime || (lang === 'vi' ? 'Chọn giờ bên dưới' : 'Select time below')}
+                        </span>
+                      </div>
+                    </div>
                   </div>
+
+                  {!isDateToday(bookingDate) && (
+                    <button
+                      type="button"
+                      onClick={handleResetToToday}
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        padding: '6px 12px',
+                        borderRadius: '8px',
+                        backgroundColor: 'rgba(0, 0, 0, 0.45)',
+                        border: '1px solid rgba(201, 169, 110, 0.4)',
+                        color: '#f2d58d',
+                        fontSize: '12px',
+                        fontWeight: 600,
+                        cursor: 'pointer',
+                        transition: 'all 0.2s',
+                      }}
+                      title={lang === 'vi' ? 'Quay về ngày hôm nay' : 'Reset to today'}
+                    >
+                      <RotateCcw size={12} />
+                      <span>{lang === 'vi' ? 'Về hôm nay' : lang === 'cn' ? '回到今天' : lang === 'jp' ? '今日に戻る' : lang === 'kr' ? '오늘로 가기' : 'Today'}</span>
+                    </button>
+                  )}
                 </div>
 
                 <div className={styles.dateScroller} aria-label={t('booking', lang)}>
-                  {dateOptions.map((iso, index) => {
+                  {dateOptions.map((iso) => {
                     const date = new Date(`${iso}T00:00:00`);
                     return (
                       <button
@@ -1210,7 +1337,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                         onClick={() => setBookingDate(iso)}
                       >
                         <span className={styles.dow}>
-                          {getFormattedDow(index, date, lang)}
+                          {getFormattedDow(date, lang)}
                         </span>
                         <span className={styles.day}>{date.getDate()}</span>
                         <span className={styles.month}>{getFormattedMonth(date, lang)}</span>
