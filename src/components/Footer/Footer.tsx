@@ -4,23 +4,77 @@ import React, { useEffect, useState } from 'react';
 import { useSystemSettings } from '@/components/SystemSettingsProvider';
 import { useTranslation } from '@/components/TranslationProvider';
 import SmartLogo from '@/components/SmartLogo';
-import { HeartHandshake, Leaf, HeartPulse, Globe, ShieldCheck } from 'lucide-react';
+import { HeartHandshake, Leaf, HeartPulse, HandHeart, Globe, ShieldCheck } from 'lucide-react';
 
-const ArtisanIcon = ({ size = 56, className = "", strokeWidth = 1.2 }: any) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" className={className}>
-    <path d="M12 3C12 9 15 12 21 12C15 12 12 15 12 21C12 15 9 12 3 12C9 12 12 9 12 3Z" />
-    <circle cx="6.5" cy="17.5" r="1.5" />
-    <path d="M18 5v4M16 7h4" />
-  </svg>
-);
+const CORE_VALUES_SECTION_TITLE: Record<string, string> = {
+  vi: 'GIÁ TRỊ CỐT LÕI',
+  en: 'OUR CORE VALUES',
+  cn: '核心价值',
+  jp: '私たちのコアバリュー',
+  kr: '핵심 가치'
+};
 
 const CORE_VALUES = [
-  { icon: null, imgSrc: '/images/core-values/guest-centric.png', titleVi: 'TẬN TÂM PHỤNG SỰ', titleEn: 'Guest-Centric Excellence' },
-  { icon: null, imgSrc: '/images/core-values/natural-authenticity.png', titleVi: 'THUẦN THIÊN NHIÊN', titleEn: 'Natural Authenticity' },
-  { icon: HeartPulse, titleVi: 'LẮNG NGHE & THẤU HIỂU', titleEn: 'Empathetic Understanding' },
-  { icon: null, imgSrc: '/images/core-values/artisans-touch.png', titleVi: 'BÀN TAY NGHỆ NHÂN', titleEn: "Artisan's Touch" },
-  { icon: null, imgSrc: '/images/core-values/global-essence.png', titleVi: 'HỘI NHẬP & SÁNG TẠO', titleEn: 'Global Essence & Creative Fusion' },
-  { icon: ShieldCheck, titleVi: 'SẠCH KHỎE ĐỒNG HÀNH', titleEn: 'Hygiene & Health Priority' },
+  {
+    icon: HeartHandshake,
+    title: {
+      vi: 'TẬN TÂM PHỤNG SỰ',
+      en: 'GUEST-CENTRIC EXCELLENCE',
+      cn: '全心服务',
+      jp: '真心のおもてなし',
+      kr: '정성을 다하는 서비스'
+    }
+  },
+  {
+    icon: Leaf,
+    title: {
+      vi: 'THUẦN THIÊN NHIÊN',
+      en: 'NATURAL AUTHENTICITY',
+      cn: '纯粹自然',
+      jp: '純粋な自然の恵み',
+      kr: '순수한 자연의 본질'
+    }
+  },
+  {
+    icon: HeartPulse,
+    title: {
+      vi: 'LẮNG NGHE & THẤU HIỂU',
+      en: 'EMPATHETIC UNDERSTANDING',
+      cn: '倾听与理解',
+      jp: '傾聴と深い理解',
+      kr: '경청과 깊은 공감'
+    }
+  },
+  {
+    icon: HandHeart,
+    title: {
+      vi: 'BÀN TAY NGHỆ NHÂN',
+      en: "ARTISAN'S TOUCH",
+      cn: '匠人手法',
+      jp: '匠の手技',
+      kr: '장인의 손길'
+    }
+  },
+  {
+    icon: Globe,
+    title: {
+      vi: 'HỘI NHẬP & SÁNG TẠO',
+      en: 'GLOBAL ESSENCE & CREATIVE FUSION',
+      cn: '融合与创新',
+      jp: 'グローバルと創造の融合',
+      kr: '융합과 창의적 감각'
+    }
+  },
+  {
+    icon: ShieldCheck,
+    title: {
+      vi: 'SẠCH KHỎE ĐỒNG HÀNH',
+      en: 'HYGIENE & HEALTH PRIORITY',
+      cn: '卫生与健康同行',
+      jp: '衛生と健康の優先',
+      kr: '청결과 건강의 동행'
+    }
+  },
 ];
 
 const Footer = () => {
@@ -111,30 +165,19 @@ const Footer = () => {
       <div className="py-12 md:py-24 px-6 border-b border-[rgba(247,235,199,0.15)] bg-transparent">
         <div className="max-w-6xl mx-auto flex flex-col items-center">
           <h2 className="font-serif text-3xl md:text-4xl text-center text-[#f7ebc7] mb-16 tracking-wide uppercase">
-            {currentLang === 'vi' ? 'Giá Trị Cốt Lõi' : 'Our Core Value'}
+            {CORE_VALUES_SECTION_TITLE[currentLang] || CORE_VALUES_SECTION_TITLE.en}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-8 md:gap-y-16 gap-x-8 text-center w-full">
             {CORE_VALUES.map((value, index) => {
               const Icon = value.icon;
+              const itemTitle = (value.title as any)[currentLang] || (value.title as any)['en'] || (value.title as any)['vi'];
               return (
                 <div key={index} className="flex flex-col items-center gap-5">
                   <div className="w-24 h-24 rounded-full flex items-center justify-center transition-transform hover:scale-105 duration-300">
-                    {value.imgSrc ? (
-                      <img 
-                        src={value.imgSrc} 
-                        alt={value.titleEn} 
-                        className="w-16 h-16 md:w-20 md:h-20 object-contain"
-                        style={{
-                          filter: 'invert(93%) sepia(21%) saturate(579%) hue-rotate(334deg) brightness(101%) contrast(97%)',
-                          mixBlendMode: 'screen'
-                        }}
-                      />
-                    ) : (
-                      Icon && <Icon size={56} className="text-[#f7ebc7]" strokeWidth={1.2} />
-                    )}
+                    <Icon size={56} className="text-[#f7ebc7]" strokeWidth={1.2} />
                   </div>
                   <h3 className="font-sans text-lg md:text-xl font-medium tracking-wide text-[#f7ebc7] uppercase">
-                    {currentLang === 'vi' ? value.titleVi : value.titleEn}
+                    {itemTitle}
                   </h3>
                 </div>
               );
