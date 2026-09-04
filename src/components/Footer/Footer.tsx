@@ -117,32 +117,40 @@ const Footer = () => {
       .catch(() => {});
   }, []);
 
+  const isOnlyPhoneNumber = (val?: string) => {
+    if (!val) return false;
+    const trimmed = val.trim();
+    if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) return false;
+    const digitsOnly = trimmed.replace(/\D/g, '');
+    return digitsOnly.length >= 7 && /^[\s\d+().-]{7,}$/.test(trimmed);
+  };
+
   const phone = footerData?.phone || settingsData?.phone || '+84964090277';
   const cleanPhone = phone.replace(/\D/g, '');
+  const phoneDisplay = isOnlyPhoneNumber(phone) ? phone : 'Oria Spa';
 
   const facebook = footerData?.facebook || settingsData?.facebook;
   let facebookUrl: string | undefined = undefined;
-  let facebookDisplay = '';
+  let facebookDisplay = 'Oria Spa';
   if (facebook && typeof facebook === 'string' && facebook.trim()) {
     const trimmed = facebook.trim();
     facebookUrl = trimmed.startsWith('http') ? trimmed : `https://${trimmed}`;
-    const match = trimmed.match(/(?:facebook\.com|fb\.com)\/([^/?#]+)/);
-    facebookDisplay = match ? match[1] : 'ORIA SPA';
+    facebookDisplay = isOnlyPhoneNumber(trimmed) ? trimmed : 'Oria Spa';
   }
 
   const zalo = footerData?.zalo || settingsData?.zalo;
   let zaloUrl: string | undefined = undefined;
-  let zaloDisplay = '';
+  let zaloDisplay = 'Oria Spa';
   if (zalo && typeof zalo === 'string' && zalo.trim()) {
     const trimmed = zalo.trim();
     const cleanZalo = trimmed.replace(/\D/g, '');
     zaloUrl = trimmed.startsWith('http') ? trimmed : (cleanZalo ? `https://zalo.me/${cleanZalo}` : undefined);
-    zaloDisplay = trimmed.startsWith('http') ? (cleanZalo ? `+${cleanZalo}` : 'Zalo Chat') : trimmed;
+    zaloDisplay = isOnlyPhoneNumber(trimmed) ? trimmed : 'Oria Spa';
   }
 
   const rawWhatsapp = footerData?.whatsapp || settingsData?.whatsapp;
   let whatsappUrl: string | undefined = undefined;
-  let whatsappDisplay = '';
+  let whatsappDisplay = 'Oria Spa';
   if (rawWhatsapp && typeof rawWhatsapp === 'string' && rawWhatsapp.trim()) {
     const trimmed = rawWhatsapp.trim();
     if (trimmed.startsWith('http')) {
@@ -151,25 +159,37 @@ const Footer = () => {
       } else {
         whatsappUrl = trimmed;
       }
-      const match = trimmed.match(/(?:phone=|wa\.me\/)(\d+)/);
-      whatsappDisplay = match ? `+${match[1]}` : (cleanPhone ? `+${cleanPhone}` : 'WhatsApp');
+      whatsappDisplay = 'Oria Spa';
     } else {
       const waDigits = trimmed.replace(/\D/g, '');
       whatsappUrl = waDigits ? `https://wa.me/${waDigits}` : undefined;
-      whatsappDisplay = trimmed.startsWith('+') ? trimmed : `+${trimmed}`;
+      whatsappDisplay = isOnlyPhoneNumber(trimmed) ? trimmed : 'Oria Spa';
     }
   }
 
   const wechat = footerData?.wechat || settingsData?.wechat;
+  let wechatUrl: string | undefined = undefined;
+  let wechatDisplay = 'Oria Spa';
+  let wechatIsLink = false;
+  if (wechat && typeof wechat === 'string' && wechat.trim()) {
+    const trimmed = wechat.trim();
+    if (trimmed.startsWith('http')) {
+      wechatUrl = trimmed;
+      wechatDisplay = 'Oria Spa';
+      wechatIsLink = true;
+    } else {
+      wechatDisplay = trimmed;
+      wechatIsLink = false;
+    }
+  }
 
   const rawKakao = footerData?.kakaotalk || settingsData?.kakaotalk;
   let kakaotalkUrl: string | undefined = undefined;
-  let kakaotalkDisplay = '';
+  let kakaotalkDisplay = 'Oria Spa';
   if (rawKakao && typeof rawKakao === 'string' && rawKakao.trim()) {
     const trimmed = rawKakao.trim();
     kakaotalkUrl = trimmed.startsWith('http') ? trimmed : `https://pf.kakao.com/${trimmed}`;
-    const match = trimmed.match(/(?:pf\.kakao\.com|open\.kakao\.com)\/([^/?#]+)/);
-    kakaotalkDisplay = match ? match[1] : (trimmed.startsWith('http') ? 'KakaoTalk' : trimmed);
+    kakaotalkDisplay = isOnlyPhoneNumber(trimmed) ? trimmed : 'Oria Spa';
   }
 
   // Smart detect: if user entered address in locationsTitle, use it for address
@@ -278,7 +298,7 @@ const Footer = () => {
             <ul className="text-[15px] text-[#f7ebc7]/70 space-y-3 font-light">
               {phone && (
                 <li>
-                  Hotline: <a href={`tel:${phone.replace(/[^\d+]/g, '')}`} className="text-[#D4AF37] hover:text-[#f7ebc7] transition-colors font-medium">{phone}</a>
+                  Hotline: <a href={`tel:${phone.replace(/[^\d+]/g, '')}`} className="text-[#D4AF37] hover:text-[#f7ebc7] transition-colors font-medium">{phoneDisplay}</a>
                 </li>
               )}
               {whatsappUrl && (
@@ -293,10 +313,10 @@ const Footer = () => {
               )}
               {wechat && (
                 <li>
-                  {wechat.startsWith('http') ? (
-                    <>WeChat: <a href={wechat} target="_blank" rel="noreferrer" className="text-[#D4AF37] hover:text-[#f7ebc7] transition-colors font-medium">{wechat}</a></>
+                  {wechatIsLink && wechatUrl ? (
+                    <>WeChat: <a href={wechatUrl} target="_blank" rel="noreferrer" className="text-[#D4AF37] hover:text-[#f7ebc7] transition-colors font-medium">{wechatDisplay}</a></>
                   ) : (
-                    <span>WeChat: <span className="text-[#D4AF37] font-medium">{wechat}</span></span>
+                    <span>WeChat: <span className="text-[#D4AF37] font-medium">{wechatDisplay}</span></span>
                   )}
                 </li>
               )}
