@@ -237,6 +237,19 @@ export async function POST(request: Request) {
 
     // ── 6. Gửi email xác nhận tự động cho khách ───────
     if (email && typeof email === 'string' && email.includes('@')) {
+      let therapistName: string | undefined = undefined;
+      const explicitStaffGender = staffGender && staffGender !== 'any' ? staffGender : undefined;
+      const explicitServiceTherapist = selectedServices.find(
+        (s: any) => s.options?.therapist && s.options.therapist !== 'any'
+      )?.options?.therapist;
+      const chosenGender = explicitStaffGender || explicitServiceTherapist;
+
+      if (chosenGender === 'female') {
+        therapistName = lang === 'vi' ? 'Nữ (Female Therapist)' : 'Female Therapist';
+      } else if (chosenGender === 'male') {
+        therapistName = lang === 'vi' ? 'Nam (Male Therapist)' : 'Male Therapist';
+      }
+
       sendBookingConfirmationEmail({
         bookingId,
         customerName: name,
@@ -247,6 +260,7 @@ export async function POST(request: Request) {
         branchName: branchName || BRANCH_DEFAULT,
         services: selectedServices,
         totalAmount,
+        therapist: therapistName,
         lang: lang || 'vi',
         notes: finalNotes || undefined,
       }).catch((mailErr) => {
