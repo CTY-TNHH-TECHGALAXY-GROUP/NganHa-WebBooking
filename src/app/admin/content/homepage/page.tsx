@@ -46,6 +46,7 @@ const DEFAULT_CONTENT = {
     certification: { vi: 'Chứng nhận', en: 'Certification', kr: '인증', jp: '認証', cn: '认证' },
     
     localTour: { vi: 'Tour địa phương', en: 'Local tour', kr: '지역 투어', jp: 'ローカルツアー', cn: '本地游' },
+    lostAndFound: { vi: 'Đồ thất lạc', en: 'Lost & Found', kr: '분실물 센터', jp: '忘れ物', cn: '失物招领' },
     history: { vi: 'Lịch sử', en: 'History', kr: '역사', jp: '歴史', cn: '历史' },
     privileges: { vi: 'Đặc quyền của bạn', en: 'Your privileges', kr: '당신의 특권', jp: 'あなたの特권', cn: '您的特权' },
     blogs: { vi: 'Bài viết', en: 'Blogs', kr: '블로그', jp: 'ブログ', cn: '博客' },
@@ -388,6 +389,10 @@ export default function HomepageContentPage() {
             <div>
               <label className="block text-xs text-admin-text-dim mb-1">Local tour</label>
               <input type="text" value={content.navigation.localTour?.[activeLang] || ''} onChange={(e) => handleInputChange('navigation', 'localTour', e.target.value)} className="w-full bg-admin-background border border-admin-line rounded-lg px-3 py-2 text-sm text-admin-text" />
+            </div>
+            <div>
+              <label className="block text-xs text-admin-text-dim mb-1">Lost & Found</label>
+              <input type="text" value={content.navigation.lostAndFound?.[activeLang] || ''} onChange={(e) => handleInputChange('navigation', 'lostAndFound', e.target.value)} className="w-full bg-admin-background border border-admin-line rounded-lg px-3 py-2 text-sm text-admin-text" />
             </div>
             <div>
               <label className="block text-xs text-admin-text-dim mb-1">Your privileges</label>

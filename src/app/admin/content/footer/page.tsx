@@ -33,6 +33,7 @@ const DEFAULT_CONTENT = {
   whatsapp: 'https://api.whatsapp.com/send/?phone=84964090277&text=Hello+Oria+Spa&type=phone_number&app_absent=0',
   wechat: '+84964090277',
   kakaotalk: 'https://pf.kakao.com/_xjVyxaX',
+  line: '',
   facebook: '',
   copyright: `© ${new Date().getFullYear()} TECHGALAXY GROUP. All rights reserved.`,
 };
@@ -61,6 +62,7 @@ export default function FooterContentPage() {
           whatsapp: fc.whatsapp ?? ss.whatsapp ?? DEFAULT_CONTENT.whatsapp,
           wechat: fc.wechat ?? ss.wechat ?? DEFAULT_CONTENT.wechat,
           kakaotalk: fc.kakaotalk ?? ss.kakaotalk ?? DEFAULT_CONTENT.kakaotalk,
+          line: fc.line ?? ss.line ?? DEFAULT_CONTENT.line,
           facebook: fc.facebook ?? ss.facebook ?? '',
           copyright: fc.copyright || DEFAULT_CONTENT.copyright,
         });
@@ -87,6 +89,7 @@ export default function FooterContentPage() {
             whatsapp: content.whatsapp,
             wechat: content.wechat,
             kakaotalk: content.kakaotalk,
+            line: content.line,
             facebook: content.facebook,
             address: content.address,
           }
@@ -256,6 +259,16 @@ export default function FooterContentPage() {
                 value={content.whatsapp || ''}
                 onChange={e => handleChange('whatsapp', e.target.value)}
                 placeholder="+84964090277 hoặc link https://wa.me/..."
+                className="w-full bg-admin-bg border border-admin-line-strong rounded-xl px-4 py-3 text-admin-text text-sm focus:border-admin-gold focus:ring-1 focus:ring-admin-gold outline-none transition-colors"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-admin-text-dim mb-2">LINE ID / Link</label>
+              <input
+                type="text"
+                value={content.line || ''}
+                onChange={e => handleChange('line', e.target.value)}
+                placeholder="ID hoặc link https://line.me/..."
                 className="w-full bg-admin-bg border border-admin-line-strong rounded-xl px-4 py-3 text-admin-text text-sm focus:border-admin-gold focus:ring-1 focus:ring-admin-gold outline-none transition-colors"
               />
             </div>

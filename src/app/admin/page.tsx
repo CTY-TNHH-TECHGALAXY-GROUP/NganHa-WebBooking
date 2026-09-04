@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Film, BookOpen, FileText, Wrench, ArrowRight, Globe, Settings, Search } from 'lucide-react';
+import { Film, BookOpen, FileText, Wrench, ArrowRight, Globe, Settings, Search, ArchiveRestore } from 'lucide-react';
 
 const QUICK_ACTIONS = [
   {
@@ -40,6 +40,15 @@ const QUICK_ACTIONS = [
     color: 'from-amber-600 to-amber-700',
     borderColor: 'border-admin-line-strong',
     iconBg: 'bg-amber-600',
+  },
+  {
+    title: 'Lost & Found',
+    description: 'Cập nhật từng món đồ khách để quên và trạng thái trả lại.',
+    href: '/admin/lost-and-found',
+    icon: ArchiveRestore,
+    color: 'from-admin-copper-a to-admin-copper-b',
+    borderColor: 'border-admin-line-strong',
+    iconBg: 'bg-admin-copper',
   },
   {
     title: 'Ảnh / Video & Giá Dịch Vụ',

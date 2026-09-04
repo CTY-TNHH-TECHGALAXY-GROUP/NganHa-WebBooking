@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { 
-  LayoutDashboard, BookOpen, FileText, Wrench, Film, Search, Globe, Settings,
+  LayoutDashboard, BookOpen, FileText, Wrench, Film, Search, Globe, Settings, ArchiveRestore,
   Menu, X, ChevronRight, LogOut, ImagePlus, Clock
 } from 'lucide-react';
 import BookingBell from '@/components/Admin/BookingBell';
@@ -17,6 +17,7 @@ const NAV_ITEMS = [
   { label: 'Quản lý Đặt Lịch', href: '/admin/bookings', icon: Clock },
   { label: 'Tra Cứu Khách Hàng', href: '/admin/customers', icon: Search },
   { label: 'Lịch sử Thương hiệu', href: '/admin/history', icon: BookOpen },
+  { label: 'Lost & Found', href: '/admin/lost-and-found', icon: ArchiveRestore },
   { label: 'Video Trang chủ', href: '/admin/hero-videos', icon: Film },
   { label: 'Sách Lật (Flipbook)', href: '/admin/flipbook-pages', icon: BookOpen },
   { label: 'Bài viết (Blog)', href: '/admin/posts', icon: FileText },

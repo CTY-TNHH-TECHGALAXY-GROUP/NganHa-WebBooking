@@ -1,7 +1,7 @@
 'use client';
 
 import React, { use, useEffect, useMemo, useState } from 'react';
-import { ChevronDown, ChevronLeft, Plus, X, Edit2, Edit3, Trash2 } from 'lucide-react';
+import { ChevronDown, ChevronLeft, Plus, X, Edit2, Edit3, Trash2, Sparkles } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import SmartLogo from '@/components/SmartLogo';
 import AlertModal from '@/components/Shared/AlertModal';
@@ -475,7 +475,36 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
   const lang = langKey(currentLang || rawLang);
   const menuType = rawMenuType === 'vip' ? 'vip' : 'standard';
   const dict = getDictionary(lang);
-  const { services, cart, loading: servicesLoading, addToCart, removeFromCart, updateCartItemOptions, replaceCartItemService } = useMenuData();
+  const { services, cart, loading: servicesLoading, addToCart, removeFromCart, updateCartItemOptions, replaceCartItemService, revalidateCart } = useMenuData();
+  const [idempotencyKey] = useState(() => 'idemp_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 8));
+
+  // PHASE 4 & 6.B: Auto-revalidate cart with server canonical rates on mount
+  useEffect(() => {
+    let isMounted = true;
+    (async () => {
+      if (!cart || cart.length === 0) return;
+      const res = await revalidateCart();
+      if (!isMounted) return;
+      if (res.unavailableItems && res.unavailableItems.length > 0) {
+        setAlertState({
+          isOpen: true,
+          type: 'info',
+          message: lang === 'vi'
+            ? 'Một số dịch vụ trong giỏ hàng đã ngừng hoạt động và được tự động cập nhật lại.'
+            : 'Some unavailable services were refreshed or removed from your cart.',
+        });
+      } else if (res.hasPriceChanged) {
+        setAlertState({
+          isOpen: true,
+          type: 'info',
+          message: lang === 'vi'
+            ? 'Giá một số dịch vụ trong giỏ hàng đã được đồng bộ chuẩn xác từ hệ thống.'
+            : 'Your cart pricing has been refreshed with current system rates.',
+        });
+      }
+    })();
+    return () => { isMounted = false; };
+  }, []);
 
   const [editingCartId, setEditingCartId] = useState<string | null>(null);
   const [editServiceId, setEditServiceId] = useState<string | null>(null);
@@ -810,39 +839,56 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
     window.setTimeout(() => setIsConfirmOpen(true), 220);
   };
 
-  const handleFinalSubmit = async (data?: { paymentMethod?: string }) => {
+  const handleFinalSubmit = async (data?: {
+    paymentMethod?: string;
+    customerInfo?: { name: string; email: string; phone: string; gender: string };
+    guestCount?: number;
+    bookingDate?: string;
+    bookingTime?: string;
+  }) => {
     const chosenMethod = data?.paymentMethod || paymentMethod || 'cash_vnd';
     setPaymentMethod(chosenMethod);
-    const rawPhone = customerInfo.phone.trim();
+
+    const effectiveName = (data?.customerInfo?.name || customerInfo.name).trim();
+    const rawPhone = (data?.customerInfo?.phone || customerInfo.phone).trim();
+    const effectiveEmail = (data?.customerInfo?.email || customerInfo.email).trim();
+    const effectiveGender = genderKey;
+    const effectiveGuests = data?.guestCount || guestCount;
+    const effectiveDate = data?.bookingDate || bookingDate;
+    const effectiveTime = data?.bookingTime || bookingTime;
+
     const phoneWithCountry = rawPhone
       ? rawPhone.startsWith('+')
         ? rawPhone
         : `${phoneCountry.code}${rawPhone.replace(/^0+/, '')}`
       : '';
 
+    // Gửi minimal identifiers, server tự fetch DB & tính toán giá
     const selectedServices = cart.map((item) => ({
       variantId: item.id,
-      name: serviceName(item, lang),
-      duration: item.timeValue,
-      priceVND: item.priceVND,
-      basePriceVND: item.basePriceVND || item.priceVND,
-      quantity: item.qty,
+      serviceId: item.id,
+      quantity: item.qty || 1,
       options: item.options || {},
     }));
 
     const response = await fetch('/api/bookings', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'Idempotency-Key': idempotencyKey,
+      },
       body: JSON.stringify({
-        name: customerInfo.name,
+        idempotencyKey,
+        name: effectiveName,
         phone: phoneWithCountry,
-        email: customerInfo.email,
+        email: effectiveEmail,
+        customerGender: effectiveGender,
         note,
-        date: bookingDate,
-        time: bookingTime,
+        date: effectiveDate,
+        time: effectiveTime,
         branchId: 'ngan-ha-spa',
         branchName: 'ORIA SPA',
-        guests: guestCount,
+        guests: effectiveGuests,
         staffGender: 'any',
         lang,
         selectedServices,
@@ -854,6 +900,9 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
 
     const resData = await response.json();
     if (!response.ok || resData?.success === false) {
+      if (resData?.code === 'CART_REQUIRES_REVIEW') {
+        await revalidateCart();
+      }
       throw new Error(resData?.error || 'Failed to submit booking');
     }
     return resData?.data?.bookingId || resData?.bookingId;
@@ -1445,7 +1494,30 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                 </article>
               ))
             ) : (
-              <div className={styles.emptyCart}>{t('emptyCart', lang)}</div>
+              <div className="py-8 px-4 text-center flex flex-col items-center justify-center rounded-2xl bg-white/[0.02] border border-white/[0.08] my-4">
+                <div className="w-12 h-12 rounded-full bg-[#c9a96e]/10 flex items-center justify-center text-[#f2d58d] mb-3">
+                  <Sparkles size={24} />
+                </div>
+                <h4 className="text-white font-medium text-base mb-1">
+                  {lang === 'vi' ? 'Giỏ hàng đang trống' : lang === 'cn' ? '您的购物车为空' : lang === 'kr' ? '장바구니가 비어 있습니다' : lang === 'jp' ? 'カートは空です' : 'Your cart is empty'}
+                </h4>
+                <p className="text-xs text-[#f7ebc7]/60 max-w-xs mb-5 leading-relaxed">
+                  {lang === 'vi' 
+                    ? 'Chưa có dịch vụ nào được chọn. Quý khách vui lòng chọn dịch vụ từ thực đơn để tiếp tục.' 
+                    : 'No treatments selected yet. Please explore our curated spa menu to proceed.'}
+                </p>
+                <button
+                  type="button"
+                  onClick={() => router.push(`/${lang}/new-user/${menuType}/menu`)}
+                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#c9a96e] to-[#dfc085] text-[#1a120e] font-semibold text-xs tracking-wider uppercase transition-all duration-300 hover:brightness-110 shadow-lg hover:shadow-[#c9a96e]/20 flex items-center gap-2 cursor-pointer"
+                  tabIndex={0}
+                  role="button"
+                  aria-label={lang === 'vi' ? 'Khám phá Menu dịch vụ' : 'Explore Services Menu'}
+                >
+                  <Plus size={14} />
+                  <span>{lang === 'vi' ? 'Khám phá Menu Dịch Vụ' : 'Explore Services Menu'}</span>
+                </button>
+              </div>
             )}
 
             <button type="button" className={styles.addServicesSlot} onClick={() => setIsServicePickerOpen(true)}>

@@ -17,7 +17,7 @@ const SplashScreen = () => {
       return;
     }
 
-    // Minimum display time for the splash screen
+    // Keep the welcome moment brief, then always release the page.
     const timer = setTimeout(() => {
       setIsFadingOut(true);
       sessionStorage.setItem('hasSeenSplash', 'true');
@@ -25,8 +25,8 @@ const SplashScreen = () => {
       // Remove from DOM after fade animation completes
       setTimeout(() => {
         setIsVisible(false);
-      }, 600); // Matches the CSS transition duration
-    }, 2000); // 2 seconds display time
+      }, 450);
+    }, 900);
 
     return () => clearTimeout(timer);
   }, []);

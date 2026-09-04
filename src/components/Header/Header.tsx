@@ -74,6 +74,7 @@ const DEFAULT_NAV_ITEMS: NavItem[] = [
     ],
   },
   { id: 'local_tour', label: 'Local tour', href: '/local-tour' },
+  { id: 'lost_and_found', label: 'Lost & Found', href: '/lost-and-found' },
   { id: 'blogs', label: 'Blogs', href: '/blogs' },
   { id: 'privileges', label: 'Your privileges', href: '/privileges' },
   { id: 'history', label: 'History', href: '/#history' },
@@ -194,6 +195,7 @@ const Header = () => {
         ],
       },
       { id: 'local_tour', label: getLocalizedText(hpNav?.localTour, lang, 'Local tour'), href: '/local-tour' },
+      { id: 'lost_and_found', label: getLocalizedText(hpNav?.lostAndFound, lang, 'Lost & Found'), href: '/lost-and-found' },
       { id: 'blogs', label: getLocalizedText(hpNav?.blogs, lang, 'Blogs'), href: '/blogs' },
       { id: 'privileges', label: getLocalizedText(hpNav?.privileges, lang, 'Your privileges'), href: '/privileges' },
       { id: 'history', label: getLocalizedText(hpNav?.history, lang, 'History'), href: '/#history' },
@@ -465,7 +467,7 @@ const Header = () => {
                       {NAV_ITEMS.filter(item => !!item.id && ['spaces', 'services'].includes(item.id)).map(item => renderCategory(item))}
                     </div>
                     <div className="nav-links-col flex-1 flex flex-col gap-8">
-                      {NAV_ITEMS.filter(item => !!item.id && ['academy', 'local_tour', 'blogs', 'privileges', 'history'].includes(item.id)).map(item => renderCategory(item))}
+                      {NAV_ITEMS.filter(item => !!item.id && ['academy', 'local_tour', 'lost_and_found', 'blogs', 'privileges', 'history'].includes(item.id)).map(item => renderCategory(item))}
                     </div>
                   </div>
 
@@ -475,7 +477,7 @@ const Header = () => {
                       {NAV_ITEMS.filter(item => !!item.id && ['spaces', 'services'].includes(item.id)).map(item => renderCategory(item))}
                     </div>
                     <div className="nav-links-col flex-1 flex flex-col gap-10">
-                      {NAV_ITEMS.filter(item => !!item.id && ['academy', 'local_tour', 'blogs', 'privileges', 'history'].includes(item.id)).map(item => renderCategory(item))}
+                      {NAV_ITEMS.filter(item => !!item.id && ['academy', 'local_tour', 'lost_and_found', 'blogs', 'privileges', 'history'].includes(item.id)).map(item => renderCategory(item))}
                     </div>
                   </div>
                 </div>

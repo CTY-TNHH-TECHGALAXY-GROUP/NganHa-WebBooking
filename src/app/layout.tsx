@@ -4,7 +4,6 @@ import LayoutWrapper from "@/components/LayoutWrapper";
 import { TranslationProvider } from "@/components/TranslationProvider";
 import { SystemSettingsProvider } from "@/components/SystemSettingsProvider";
 import { getSupabaseAdmin } from "@/lib/supabase-server";
-import SplashScreen from "@/components/SplashScreen/SplashScreen";
 import "./globals.css";
 
 // 🔧 FONT CONFIGURATION
@@ -183,7 +182,6 @@ const RootLayout = async ({
         )}
       </head>
       <body className="w-full min-h-full antialiased font-sans" suppressHydrationWarning>
-        <SplashScreen />
         <SystemSettingsProvider systemSettings={systemSettings} aboutStoryContent={aboutStoryContent} brandHistory={brandHistory} footerContent={footerContent}>
           <TranslationProvider initialTranslations={translations}>
             <LayoutWrapper>{children}</LayoutWrapper>

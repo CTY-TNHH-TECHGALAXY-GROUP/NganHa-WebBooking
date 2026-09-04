@@ -192,6 +192,15 @@ const Footer = () => {
     kakaotalkDisplay = isOnlyPhoneNumber(trimmed) ? trimmed : 'Oria Spa';
   }
 
+  const rawLine = footerData?.line || settingsData?.line;
+  let lineUrl: string | undefined = undefined;
+  let lineDisplay = 'Oria Spa';
+  if (rawLine && typeof rawLine === 'string' && rawLine.trim()) {
+    const trimmed = rawLine.trim();
+    lineUrl = trimmed.startsWith('http') ? trimmed : `https://line.me/ti/p/~${trimmed}`;
+    lineDisplay = isOnlyPhoneNumber(trimmed) ? trimmed : 'Oria Spa';
+  }
+
   // Smart detect: if user entered address in locationsTitle, use it for address
   const isLocationsTitleAnAddress = footerData?.locationsTitle && 
     (typeof footerData.locationsTitle === 'string' 
@@ -323,6 +332,11 @@ const Footer = () => {
               {kakaotalkUrl && (
                 <li>
                   KakaoTalk: <a href={kakaotalkUrl} target="_blank" rel="noreferrer" className="text-[#D4AF37] hover:text-[#f7ebc7] transition-colors font-medium">{kakaotalkDisplay}</a>
+                </li>
+              )}
+              {lineUrl && (
+                <li>
+                  LINE: <a href={lineUrl} target="_blank" rel="noreferrer" className="text-[#D4AF37] hover:text-[#f7ebc7] transition-colors font-medium">{lineDisplay}</a>
                 </li>
               )}
               {facebookUrl && (

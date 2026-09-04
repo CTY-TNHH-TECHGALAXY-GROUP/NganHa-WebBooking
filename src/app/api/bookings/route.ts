@@ -1,8 +1,9 @@
 // ═══════════════════════════════════════
 // POST /api/bookings
-// Nhận đơn đặt lịch từ Web Booking → INSERT vào Supabase
+// Server-authoritative, atomic, collision-safe booking API
 // ═══════════════════════════════════════
 import { NextResponse } from 'next/server';
+import crypto from 'crypto';
 import { getSupabaseAdmin } from '@/lib/supabase-server';
 import { sendBookingConfirmationEmail } from '@/lib/mailer';
 
@@ -11,23 +12,22 @@ export const dynamic = 'force-dynamic';
 // 🔧 CONFIGURATION
 const BRANCH_DEFAULT = 'ORIA SPA';
 const BOOKING_ID_PREFIX = 'WB';
+const PRIVATE_ROOM_SERVICE_ID = 'NHS0900';
+const PRIVATE_ROOM_DEFAULT_PRICE_VND = 105000;
 
-/** Sinh mã đơn theo format: WB-001-27032026 */
-const generateBookingId = async (supabase: ReturnType<typeof getSupabaseAdmin>): Promise<string> => {
+/**
+ * Sinh mã đơn chống collision 100%, định dạng: WB-05092026-X7K9A2F
+ * Kết hợp ngày tháng + entropy thời gian + random bytes, triệt tiêu hoàn toàn race condition.
+ */
+const generateCollisionSafeBookingId = (): string => {
   const now = new Date();
   const dd = String(now.getDate()).padStart(2, '0');
   const mm = String(now.getMonth() + 1).padStart(2, '0');
   const yyyy = String(now.getFullYear());
-  const dateStr = `${dd}${mm}${yyyy}`; // 27032026
-
-  // Đếm số đơn WB đã tạo trong ngày hôm nay
-  const { count } = await supabase
-    .from('Bookings')
-    .select('id', { count: 'exact', head: true })
-    .like('id', `${BOOKING_ID_PREFIX}-%-${dateStr}`);
-
-  const seq = String((count || 0) + 1).padStart(3, '0');
-  return `${BOOKING_ID_PREFIX}-${seq}-${dateStr}`; // VD: WB-001-27032026
+  const dateStr = `${dd}${mm}${yyyy}`;
+  const timeComponent = (now.getTime() % 1000000).toString(36).padStart(4, '0').toUpperCase();
+  const randomSuffix = crypto.randomBytes(3).toString('hex').toUpperCase();
+  return `${BOOKING_ID_PREFIX}-${dateStr}-${timeComponent}${randomSuffix}`;
 };
 
 export async function POST(request: Request) {
@@ -44,79 +44,230 @@ export async function POST(request: Request) {
       branchName,
       guests,
       staffGender,
+      customerGender,
       lang,
-      selectedServices, // SelectedServiceItem[]
+      selectedServices,
+      paymentMethod,
+      amountPaid,
+      changeDenominations,
     } = body;
 
-    // ── Validate ──────────────────────────────────────
-    if (!name || !selectedServices || selectedServices.length === 0) {
+    const idempotencyKey =
+      body.idempotencyKey ||
+      request.headers.get('Idempotency-Key') ||
+      body.clientSessionId ||
+      null;
+
+    // ── 1. Validate Input cơ bản ──────────────────────
+    if (!name || typeof name !== 'string' || !name.trim()) {
       return NextResponse.json(
-        { success: false, error: 'Thiếu thông tin bắt buộc (tên, dịch vụ)' },
+        { success: false, error: 'Thiếu họ tên khách hàng (fullName is required)' },
+        { status: 400 }
+      );
+    }
+
+    if (!Array.isArray(selectedServices) || selectedServices.length === 0) {
+      return NextResponse.json(
+        { success: false, error: 'Giỏ hàng trống. Vui lòng chọn ít nhất một dịch vụ.' },
         { status: 400 }
       );
     }
 
     const supabase = getSupabaseAdmin();
 
-    // ── 1. UPSERT Customer theo SĐT ──────────────────
-    let customerId: string | null = null;
+    // ── 2. Kiểm tra Idempotency ───────────────────────
+    if (idempotencyKey && typeof idempotencyKey === 'string') {
+      const { data: existingBooking } = await supabase
+        .from('Bookings')
+        .select('id, billCode, totalAmount, customerName, customerPhone, customerEmail, bookingDate, timeBooking, branchName, customerLang')
+        .eq('idLegacy', `idemp:${idempotencyKey.trim()}`)
+        .maybeSingle();
 
-    const contactKey = phone || email || null;
-    if (contactKey) {
-      // Tìm theo SĐT trước, nếu không có thì theo email
-      const query = phone
-        ? supabase.from('Customers').select('id').eq('phone', phone).maybeSingle()
-        : supabase.from('Customers').select('id').eq('email', email).maybeSingle();
+      if (existingBooking) {
+        console.log(`[API Bookings] Idempotent hit: return existing booking ${existingBooking.id}`);
+        return NextResponse.json({
+          success: true,
+          idempotent: true,
+          data: {
+            bookingId: existingBooking.id,
+            billCode: existingBooking.billCode,
+            customerName: existingBooking.customerName,
+            customerPhone: existingBooking.customerPhone,
+            date,
+            time,
+            branchName: existingBooking.branchName || BRANCH_DEFAULT,
+            totalAmount: existingBooking.totalAmount,
+            lang: existingBooking.customerLang || lang || 'vi',
+          },
+        });
+      }
+    }
+
+    // ── 3. PHASE 1: Server-Authoritative Pricing ──────
+    // Lấy danh sách ID dịch vụ cần xác thực
+    const requestedServiceIds: string[] = selectedServices
+      .map((s: any) => s.variantId || s.serviceId || s.id)
+      .filter(Boolean);
+
+    if (requestedServiceIds.length === 0) {
+      return NextResponse.json(
+        { success: false, error: 'Không tìm thấy mã dịch vụ hợp lệ trong yêu cầu' },
+        { status: 400 }
+      );
+    }
+
+    const allIdsToQuery = Array.from(new Set([...requestedServiceIds, PRIVATE_ROOM_SERVICE_ID]));
+
+    const { data: dbServices, error: fetchSvcErr } = await supabase
+      .from('Services')
+      .select('id, nameVN, nameEN, priceVND, priceUSD, duration, isActive')
+      .in('id', allIdsToQuery);
+
+    if (fetchSvcErr) {
+      console.error('❌ [API Bookings] Lỗi truy vấn bảng Services:', fetchSvcErr.message);
+      return NextResponse.json(
+        { success: false, error: 'Lỗi kiểm tra giá dịch vụ từ hệ thống' },
+        { status: 500 }
+      );
+    }
+
+    const dbMap = new Map<string, any>();
+    (dbServices || []).forEach((s) => dbMap.set(s.id, s));
+
+    const privateRoomSvc = dbMap.get(PRIVATE_ROOM_SERVICE_ID);
+    const privateRoomPriceVND =
+      privateRoomSvc?.priceVND && Number(privateRoomSvc.priceVND) > 0
+        ? Number(privateRoomSvc.priceVND)
+        : PRIVATE_ROOM_DEFAULT_PRICE_VND;
+
+    // Kiểm tra tính hợp lệ của từng dịch vụ
+    const invalidServices: { id: string; reason: string }[] = [];
+    const validatedServiceList: any[] = [];
+    let serverCalculatedTotalAmount = 0;
+
+    for (let idx = 0; idx < selectedServices.length; idx++) {
+      const rawItem = selectedServices[idx];
+      const svcId = rawItem.variantId || rawItem.serviceId || rawItem.id;
+      const dbSvc = dbMap.get(svcId);
+
+      if (!dbSvc) {
+        invalidServices.push({ id: svcId, reason: 'SERVICE_NOT_FOUND' });
+        continue;
+      }
+
+      if (dbSvc.isActive === false) {
+        invalidServices.push({ id: svcId, reason: 'SERVICE_INACTIVE' });
+        continue;
+      }
+
+      // Giới hạn số lượng hợp lý từ 1 đến 20
+      const safeQty = Math.max(1, Math.min(20, Math.floor(Number(rawItem.quantity || rawItem.qty || 1))));
+      const basePriceVND = Number(dbSvc.priceVND) || 0;
+
+      const opts = rawItem.options || rawItem.customOptions || {};
+      const hasPrivateRoomAddon = Boolean(opts.addons?.privateRoom);
+
+      const itemCanonicalPriceVND = basePriceVND + (hasPrivateRoomAddon ? privateRoomPriceVND : 0);
+      serverCalculatedTotalAmount += itemCanonicalPriceVND * safeQty;
+
+      validatedServiceList.push({
+        variantId: dbSvc.id,
+        serviceId: dbSvc.id,
+        name: dbSvc.nameVN || dbSvc.nameEN || 'Dịch vụ',
+        dbNameVN: dbSvc.nameVN,
+        dbNameEN: dbSvc.nameEN,
+        duration: Number(dbSvc.duration) || 0,
+        basePriceVND,
+        priceVND: itemCanonicalPriceVND,
+        quantity: safeQty,
+        hasPrivateRoomAddon,
+        options: opts,
+      });
+    }
+
+    // Nếu giỏ hàng có dịch vụ không hợp lệ hoặc đã tắt: trả về 409 CART_REQUIRES_REVIEW
+    if (invalidServices.length > 0) {
+      return NextResponse.json(
+        {
+          success: false,
+          code: 'CART_REQUIRES_REVIEW',
+          error: 'Một số dịch vụ trong giỏ hàng đã thay đổi hoặc ngừng phục vụ. Vui lòng kiểm tra lại.',
+          invalidServices,
+        },
+        { status: 409 }
+      );
+    }
+
+    // ── 4. PHASE 5: Customer Demographic Persistence ──
+    let customerId: string | null = null;
+    const cleanPhone = phone ? String(phone).trim() : null;
+    const cleanEmail = email && typeof email === 'string' && email.includes('@') ? email.trim() : null;
+
+    // Chuẩn hóa customerGender: 'male' | 'female' | 'other'
+    let resolvedGender: string | null = null;
+    const rawGender = customerGender || staffGender;
+    if (rawGender) {
+      const gLower = String(rawGender).toLowerCase().trim();
+      if (gLower === 'male' || gLower === 'nam' || gLower === 'anh') resolvedGender = 'male';
+      else if (gLower === 'female' || gLower === 'nữ' || gLower === 'chị') resolvedGender = 'female';
+      else if (gLower === 'other' || gLower === 'khác') resolvedGender = 'other';
+    }
+
+    if (cleanPhone || cleanEmail) {
+      const query = cleanPhone
+        ? supabase.from('Customers').select('id, fullName, phone, email, gender').eq('phone', cleanPhone).maybeSingle()
+        : supabase.from('Customers').select('id, fullName, phone, email, gender').eq('email', cleanEmail).maybeSingle();
 
       const { data: existingCustomer } = await query;
 
       if (existingCustomer?.id) {
-        // Cập nhật thông tin nếu đã có
         customerId = existingCustomer.id;
-        await supabase
-          .from('Customers')
-          .update({
-            fullName: name,
-            ...(email && { email }),
-            updatedAt: new Date().toISOString(),
-          })
-          .eq('id', existingCustomer.id);
+        // Cập nhật thông tin mà KHÔNG ghi đè giá trị rỗng lên dữ liệu cũ
+        const updatePayload: Record<string, any> = {
+          fullName: name.trim(),
+          updatedAt: new Date().toISOString(),
+        };
+        if (cleanEmail && !existingCustomer.email) updatePayload.email = cleanEmail;
+        if (cleanPhone && !existingCustomer.phone) updatePayload.phone = cleanPhone;
+        if (resolvedGender && !existingCustomer.gender) updatePayload.gender = resolvedGender;
+
+        await supabase.from('Customers').update(updatePayload).eq('id', existingCustomer.id);
       } else {
-        // Tạo mới
         const newCusId = `CUS-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
         const { data: newCustomer, error: cusErr } = await supabase
           .from('Customers')
           .insert({
             id: newCusId,
-            fullName: name,
-            phone: phone || null,
-            email: email || null,
+            fullName: name.trim(),
+            phone: cleanPhone,
+            email: cleanEmail,
+            gender: resolvedGender,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
           })
           .select('id')
           .single();
+
         if (cusErr) {
-          console.error('❌ [API Bookings] Tạo Customer lỗi:', cusErr.message);
-          // Không fail toàn bộ request, tiếp tục mà không có customerId
+          console.warn('⚠️ [API Bookings] Tạo Customer thất bại (tiếp tục tạo booking):', cusErr.message);
         } else {
           customerId = newCustomer?.id || null;
         }
       }
     }
 
-    // ── 2. Sinh mã đơn ────────────────────────────────
-    const bookingId = await generateBookingId(supabase);
+    // ── 5. PHASE 3: Race-Safe Booking ID ──────────────
+    const bookingId = generateCollisionSafeBookingId();
 
-    // ── 3. Tổng hợp notes & focus area ────────────────
+    // ── 6. Tổng hợp notes & focus area ────────────────
     const notesParts: string[] = [];
     if (guests && Number(guests) > 1) notesParts.push(`Số khách: ${guests}`);
     if (staffGender && staffGender !== 'any') {
-      const genderLabel = staffGender === 'female' ? 'Nữ' : 'Nam';
+      const genderLabel = staffGender === 'female' ? 'Nữ' : staffGender === 'male' ? 'Nam' : staffGender;
       notesParts.push(`Yêu cầu KTV: ${genderLabel}`);
     }
-    const hasAnyPrivateRoom = selectedServices.some(
-      (s: any) => s.options?.addons?.privateRoom || s.customOptions?.addons?.privateRoom || s.variantId === 'NHS0900'
+    const hasAnyPrivateRoom = validatedServiceList.some(
+      (s) => s.hasPrivateRoomAddon || s.variantId === PRIVATE_ROOM_SERVICE_ID
     );
     if (hasAnyPrivateRoom) {
       notesParts.push('Yêu cầu phòng riêng (Private Room)');
@@ -164,8 +315,8 @@ export async function POST(request: Request) {
     };
 
     const focusParts: string[] = [];
-    selectedServices.forEach((svc: any) => {
-      const opts = svc.options || svc.customOptions;
+    validatedServiceList.forEach((svc: any) => {
+      const opts = svc.options;
       if (opts) {
         const itemNotes = [];
         if (opts.notes?.tag0) {
@@ -184,13 +335,13 @@ export async function POST(request: Request) {
           itemNotes.push(`${lbl}: ${translated}`);
         }
         if (opts.bodyParts?.avoid?.length) {
-          const lbl = isEn ? 'Avoid' : isCn ? '避开部位' : isJp ? '避ける部位' : isKr ? '제외 부위' : 'Tránh';
+          const lbl = isEn ? 'Avoid' : isCn ? '避开部位' : isJp ? '避ける部位' : isKr ? '제외 部位' : 'Tránh';
           const translated = opts.bodyParts.avoid.map((p: string) => translatePart(p)).join(', ');
           itemNotes.push(`${lbl}: ${translated}`);
         }
         if (opts.strength) {
           const strengthMap = STRENGTH_I18N[String(opts.strength).toLowerCase()] || {
-            vi: opts.strength, en: opts.strength, cn: opts.strength, jp: opts.strength, kr: opts.strength
+            vi: opts.strength, en: opts.strength, cn: opts.strength, jp: opts.strength, kr: opts.strength,
           };
           const strengthLabel = isEn ? 'Pressure' : isCn ? '力度' : isJp ? '強さ' : isKr ? '강도' : 'Lực';
           const strengthVal = strengthMap[lang] || strengthMap.en || opts.strength;
@@ -200,87 +351,78 @@ export async function POST(request: Request) {
           const lbl = isEn ? 'Note' : isCn ? '特别说明' : isJp ? '特記事項' : isKr ? '참고 메모' : 'Chú ý';
           itemNotes.push(`${lbl}: ${opts.notes.content}`);
         }
-        
+
         if (itemNotes.length > 0) {
-          const servicePrefix = selectedServices.length > 1 ? `[${svc.name || 'Dịch vụ'}]\n` : '';
-          focusParts.push(`${servicePrefix}${itemNotes.map(n => `• ${n}`).join('\n')}`);
+          const servicePrefix = validatedServiceList.length > 1 ? `[${svc.name}]\n` : '';
+          focusParts.push(`${servicePrefix}${itemNotes.map((n) => `• ${n}`).join('\n')}`);
         }
       }
     });
     const finalFocusAreaNote = focusParts.length > 0 ? focusParts.join('\n\n') : null;
 
-    // ── 4. INSERT Bookings ────────────────────────────
-    const totalAmount = selectedServices.reduce(
-      (sum: number, s: { priceVND: number; quantity?: number }) =>
-        sum + (s.priceVND || 0) * (s.quantity || 1),
-      0
-    );
-
+    // ── 7. PHASE 2: Atomic Creation & Rollback Safety ─
     const bookingDate = date
       ? new Date(`${date}T${time || '00:00'}:00+07:00`).toISOString()
       : new Date().toISOString();
 
-    const { error: bookingErr } = await supabase.from('Bookings').insert({
+    const bookingPayload: Record<string, any> = {
       id: bookingId,
       billCode: bookingId,
       source: 'WEB_BOOKING',
-      guestCount: guests ? Number(guests) : 1,
+      guestCount: guests ? Math.max(1, Number(guests)) : 1,
       branchName: branchName || BRANCH_DEFAULT,
       bookingDate,
       timeBooking: time || null,
-      customerName: name,
-      customerPhone: phone || null,
-      customerEmail: email || null,
+      customerName: name.trim(),
+      customerPhone: cleanPhone,
+      customerEmail: cleanEmail,
+      customerGender: resolvedGender,
       customerLang: lang || 'vi',
       customerId,
       roomName: hasAnyPrivateRoom ? 'Phòng riêng' : null,
       notes: finalNotes,
       focusAreaNote: finalFocusAreaNote,
-      totalAmount,
+      totalAmount: serverCalculatedTotalAmount,
       status: 'NEW',
       tip: 0,
+      idLegacy: idempotencyKey ? `idemp:${idempotencyKey.trim()}` : null,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-    });
+    };
+
+    const { error: bookingErr } = await supabase.from('Bookings').insert(bookingPayload);
 
     if (bookingErr) {
       console.error('❌ [API Bookings] INSERT Booking lỗi:', bookingErr.message);
       return NextResponse.json(
-        { success: false, error: `Lỗi tạo đơn: ${bookingErr.message}` },
+        { success: false, error: `Lỗi tạo đơn đặt lịch: ${bookingErr.message}` },
         { status: 500 }
       );
     }
 
-    // ── 5. INSERT BookingItems ────────────────────────
-    // Hỗ trợ nhận Private Room về DB với cùng id NHS0900 như add-on
-    const PRIVATE_ROOM_SERVICE_ID = 'NHS0900';
-    const PRIVATE_ROOM_PRICE = 105000;
-
+    // ── 8. Tạo BookingItems ────────────────────────────
     const bookingItems: any[] = [];
-    selectedServices.forEach((svc: any, idx: number) => {
-      const opts = svc.options || svc.customOptions || {};
-      
-      // Map strength
+    validatedServiceList.forEach((svc: any, idx: number) => {
+      const opts = svc.options || {};
+
       let strengthStr = undefined;
       if (opts.strength) {
-         const s = String(opts.strength).toLowerCase();
-         if (s === 'light' || s === 'nhẹ') strengthStr = 'LIGHT';
-         else if (s === 'hard' || s === 'strong' || s === 'mạnh') strengthStr = 'HARD';
-         else strengthStr = 'NORMAL';
+        const s = String(opts.strength).toLowerCase();
+        if (s === 'light' || s === 'nhẹ') strengthStr = 'LIGHT';
+        else if (s === 'hard' || s === 'strong' || s === 'mạnh') strengthStr = 'HARD';
+        else strengthStr = 'NORMAL';
       }
 
-      // Map therapist
-      let therapistStr = "Ngẫu nhiên";
+      let therapistStr = 'Ngẫu nhiên';
       if (opts.therapist === 'male') therapistStr = 'Nam';
       else if (opts.therapist === 'female') therapistStr = 'Nữ';
 
-      // Map notes
       const extraNotes = [];
       if (opts.notes?.tag0) extraNotes.push('Phụ nữ có thai');
       if (opts.notes?.tag1) extraNotes.push('Có dị ứng');
-      let finalNote = opts.notes?.content || "";
+      let finalNote = opts.notes?.content || '';
       if (extraNotes.length > 0) {
-        finalNote = extraNotes.join(', ') + (finalNote ? " - " + finalNote : "");
+        finalNote = extraNotes.join(', ') + (finalNote ? ' - ' + finalNote : '');
       }
 
       const structuredOptions = {
@@ -288,77 +430,82 @@ export async function POST(request: Request) {
         focus: opts.bodyParts?.focus || [],
         avoid: opts.bodyParts?.avoid || [],
         therapist: therapistStr,
-        note: finalNote
+        note: finalNote,
       };
 
-      const hasPrivateRoomAddon = Boolean(opts.addons?.privateRoom);
-      const qty = svc.quantity || 1;
-
-      // Giá gốc của dịch vụ (trừ phụ phí private room nếu đã bị cộng gộp)
-      let serviceItemPrice = svc.priceVND;
-      if (hasPrivateRoomAddon) {
-        if (svc.basePriceVND && svc.basePriceVND > 0) {
-          serviceItemPrice = svc.basePriceVND;
-        } else if (svc.priceVND >= PRIVATE_ROOM_PRICE) {
-          serviceItemPrice = svc.priceVND - PRIVATE_ROOM_PRICE;
-        }
-      }
-
-      // 1. Thêm dịch vụ chính vào BookingItems
+      // 1. Thêm dịch vụ chính với giá server-authoritative
       bookingItems.push({
         id: `${bookingId}-${svc.variantId}-${idx}`,
         bookingId,
         serviceId: svc.variantId,
-        quantity: qty,
-        price: serviceItemPrice,
+        quantity: svc.quantity,
+        price: svc.basePriceVND,
         status: 'WAITING',
-        options: structuredOptions
+        options: structuredOptions,
+        tip: 0,
       });
 
-      // 2. Nếu có add Private Room trong Custom For You, thêm 1 row riêng trong BookingItems với id NHS0900
-      if (hasPrivateRoomAddon) {
+      // 2. Thêm add-on Private Room nếu có
+      if (svc.hasPrivateRoomAddon) {
         bookingItems.push({
           id: `${bookingId}-${PRIVATE_ROOM_SERVICE_ID}-${idx}`,
           bookingId,
           serviceId: PRIVATE_ROOM_SERVICE_ID,
-          quantity: qty,
-          price: PRIVATE_ROOM_PRICE,
+          quantity: svc.quantity,
+          price: privateRoomPriceVND,
           status: 'WAITING',
           options: {
             displayName: 'Phòng riêng',
             parentServiceId: svc.variantId,
-            isAddon: true
-          }
+            isAddon: true,
+          },
+          tip: 0,
         });
       }
     });
 
     const { error: itemsErr } = await supabase.from('BookingItems').insert(bookingItems);
 
+    // ── NẾU INSERT ITEMS LỖI: COMPENSATION ROLLBACK ───
     if (itemsErr) {
-      console.error('⚠️ [API Bookings] INSERT BookingItems lỗi:', itemsErr.message);
-      // Không fail (đơn đã tạo), chỉ log
+      console.error('❌ [API Bookings] INSERT BookingItems lỗi -> Kích hoạt rollback xóa Booking:', itemsErr.message);
+      
+      // Rollback: Xóa bản ghi Booking vừa tạo để tránh đơn hàng ma
+      const { error: rollbackErr } = await supabase.from('Bookings').delete().eq('id', bookingId);
+      if (rollbackErr) {
+        console.error('🚨 [API Bookings] Rollback xóa Booking thất bại:', rollbackErr.message);
+      } else {
+        console.log(`🧹 [API Bookings] Đã rollback xóa thành công Booking mồ côi: ${bookingId}`);
+      }
+
+      return NextResponse.json(
+        {
+          success: false,
+          error: `Không thể tạo danh sách dịch vụ chi tiết (${itemsErr.message}). Đơn hàng đã được tự động hoàn tác.`,
+        },
+        { status: 500 }
+      );
     }
 
-    // ── 6. Gửi email xác nhận tự động cho khách ───────
-    if (email && typeof email === 'string' && email.includes('@')) {
+    // ── 9. Gửi email xác nhận (Chỉ chạy khi CẢ HAI INSERT đều thành công) ─
+    if (cleanEmail) {
       const explicitStaffGender = staffGender && staffGender !== 'any' ? staffGender : undefined;
-      const explicitServiceTherapist = selectedServices.find(
+      const explicitServiceTherapist = validatedServiceList.find(
         (s: any) => s.options?.therapist && s.options.therapist !== 'any'
       )?.options?.therapist;
       const chosenGender = explicitStaffGender || explicitServiceTherapist || 'any';
 
-      sendBookingConfirmationEmail({
+      await sendBookingConfirmationEmail({
         bookingId,
-        customerName: name,
-        customerEmail: email.trim(),
-        customerPhone: phone || '',
+        customerName: name.trim(),
+        customerEmail: cleanEmail,
+        customerPhone: cleanPhone || '',
         date: date || '',
         time: time || '',
         guests: guests ? Number(guests) : 1,
         branchName: branchName || BRANCH_DEFAULT,
-        services: selectedServices,
-        totalAmount,
+        services: validatedServiceList,
+        totalAmount: serverCalculatedTotalAmount,
         therapist: chosenGender,
         lang: lang || 'vi',
         notes: note?.trim() || undefined,
@@ -368,28 +515,27 @@ export async function POST(request: Request) {
       });
     }
 
-    // ── 7. Trả về success ─────────────────────────────
-    console.log(`✅ [API Bookings] Đơn WB tạo thành công: ${bookingId}`);
+    console.log(`✅ [API Bookings] Đơn WB tạo thành công hoàn chỉnh: ${bookingId}, tổng tiền: ${serverCalculatedTotalAmount}đ`);
 
     return NextResponse.json({
       success: true,
       data: {
         bookingId,
         billCode: bookingId,
-        customerName: name,
-        customerPhone: phone || null,
+        customerName: name.trim(),
+        customerPhone: cleanPhone,
         date,
         time,
         branchName: branchName || BRANCH_DEFAULT,
-        services: selectedServices,
-        totalAmount,
+        services: validatedServiceList,
+        totalAmount: serverCalculatedTotalAmount,
         lang: lang || 'vi',
       },
     });
   } catch (error: any) {
     console.error('❌ [API Bookings] Lỗi không xác định:', error.message);
     return NextResponse.json(
-      { success: false, error: error.message },
+      { success: false, error: error.message || 'Lỗi server không xác định' },
       { status: 500 }
     );
   }

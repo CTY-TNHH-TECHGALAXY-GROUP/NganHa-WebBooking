@@ -12,7 +12,7 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { Service, ServiceOptions, CartItem, Category } from '@/components/Menu/types';
 import { getServices } from '@/components/Menu/getServices';
-import { readBookingCart, serviceToCartItem, writeBookingCart } from '@/lib/bookingCartStorage';
+import { readBookingCart, serviceToCartItem, writeBookingCart, revalidateCartWithServer } from '@/lib/bookingCartStorage';
 
 interface MenuContextType {
     services: Service[];
@@ -31,6 +31,7 @@ interface MenuContextType {
     removeFromCart: (cartId: string) => void;
     clearCart: () => void;
     getQty: (serviceId: string) => number; // Helper lấy tổng số lượng của 1 service ID
+    revalidateCart: () => Promise<{ valid: boolean; hasPriceChanged: boolean; unavailableItems: any[]; updatedCart: CartItem[] }>;
 }
 
 const MenuContext = createContext<MenuContextType | undefined>(undefined);
@@ -156,10 +157,19 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
         return cart.filter(item => item.id === serviceId).reduce((sum, item) => sum + item.qty, 0);
     };
 
+    // 6. Đồng bộ & kiểm định lại giỏ hàng với Server Canonical Pricing
+    const revalidateCart = async () => {
+        const res = await revalidateCartWithServer();
+        if (res.hasPriceChanged || res.unavailableItems.length > 0) {
+            setCart(res.updatedCart);
+        }
+        return res;
+    };
+
     return (
         <MenuContext.Provider value={{
             services, categories, loading, error, refreshData: fetchData,
-            cart, addToCart, updateCartItem, updateCartItemOptions, updateAllCartItemOptions, replaceCartItemService, removeFromCart, clearCart, getQty
+            cart, addToCart, updateCartItem, updateCartItemOptions, updateAllCartItemOptions, replaceCartItemService, removeFromCart, clearCart, getQty, revalidateCart
         }}>
             {children}
         </MenuContext.Provider>
