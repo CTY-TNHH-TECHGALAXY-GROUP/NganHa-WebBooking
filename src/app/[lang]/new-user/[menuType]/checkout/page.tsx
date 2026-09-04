@@ -1,7 +1,7 @@
 'use client';
 
 import React, { use, useEffect, useMemo, useState } from 'react';
-import { ChevronDown, ChevronLeft, Plus, X, Edit2, Edit3, Trash2, Sparkles } from 'lucide-react';
+import { ChevronDown, ChevronLeft, Plus, X, Edit2, Edit3, Trash2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import SmartLogo from '@/components/SmartLogo';
 import AlertModal from '@/components/Shared/AlertModal';
@@ -1494,30 +1494,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                 </article>
               ))
             ) : (
-              <div className="py-8 px-4 text-center flex flex-col items-center justify-center rounded-2xl bg-white/[0.02] border border-white/[0.08] my-4">
-                <div className="w-12 h-12 rounded-full bg-[#c9a96e]/10 flex items-center justify-center text-[#f2d58d] mb-3">
-                  <Sparkles size={24} />
-                </div>
-                <h4 className="text-white font-medium text-base mb-1">
-                  {lang === 'vi' ? 'Giỏ hàng đang trống' : lang === 'cn' ? '您的购物车为空' : lang === 'kr' ? '장바구니가 비어 있습니다' : lang === 'jp' ? 'カートは空です' : 'Your cart is empty'}
-                </h4>
-                <p className="text-xs text-[#f7ebc7]/60 max-w-xs mb-5 leading-relaxed">
-                  {lang === 'vi' 
-                    ? 'Chưa có dịch vụ nào được chọn. Quý khách vui lòng chọn dịch vụ từ thực đơn để tiếp tục.' 
-                    : 'No treatments selected yet. Please explore our curated spa menu to proceed.'}
-                </p>
-                <button
-                  type="button"
-                  onClick={() => router.push(`/${lang}/new-user/${menuType}/menu`)}
-                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#c9a96e] to-[#dfc085] text-[#1a120e] font-semibold text-xs tracking-wider uppercase transition-all duration-300 hover:brightness-110 shadow-lg hover:shadow-[#c9a96e]/20 flex items-center gap-2 cursor-pointer"
-                  tabIndex={0}
-                  role="button"
-                  aria-label={lang === 'vi' ? 'Khám phá Menu dịch vụ' : 'Explore Services Menu'}
-                >
-                  <Plus size={14} />
-                  <span>{lang === 'vi' ? 'Khám phá Menu Dịch Vụ' : 'Explore Services Menu'}</span>
-                </button>
-              </div>
+              <div className={styles.emptyCart}>{t('emptyCart', lang)}</div>
             )}
 
             <button type="button" className={styles.addServicesSlot} onClick={() => setIsServicePickerOpen(true)}>
