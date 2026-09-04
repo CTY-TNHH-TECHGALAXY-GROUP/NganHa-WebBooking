@@ -1,7 +1,7 @@
 'use client';
 
-import React, { use, useEffect, useMemo, useState } from 'react';
-import { ChevronDown, ChevronLeft, Plus, X, Edit2, Edit3, Trash2 } from 'lucide-react';
+import React, { use, useEffect, useMemo, useRef, useState } from 'react';
+import { ChevronDown, ChevronLeft, Plus, X, Edit2, Edit3, Trash2, Calendar } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import SmartLogo from '@/components/SmartLogo';
 import AlertModal from '@/components/Shared/AlertModal';
@@ -564,7 +564,27 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
     };
   }, [isGenderOpen, isPhoneCountryOpen]);
 
-  const dateOptions = useMemo(() => nextDates(), []);
+  const calendarInputRef = useRef<HTMLInputElement>(null);
+  const [customSelectedDates, setCustomSelectedDates] = useState<string[]>([]);
+
+  const baseDateOptions = useMemo(() => nextDates(14), []);
+  const dateOptions = useMemo(() => {
+    const combined = [...baseDateOptions];
+    customSelectedDates.forEach(d => {
+      if (!combined.includes(d)) {
+        combined.push(d);
+      }
+    });
+    return combined.sort();
+  }, [baseDateOptions, customSelectedDates]);
+
+  const handleCustomDateSelect = (pickedDate: string) => {
+    if (!pickedDate) return;
+    setBookingDate(pickedDate);
+    if (!customSelectedDates.includes(pickedDate)) {
+      setCustomSelectedDates(prev => [...prev, pickedDate]);
+    }
+  };
   const allSlots = useMemo(() => {
     const slots = buildTimeSlots();
     const now = new Date();
@@ -1140,7 +1160,40 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
 
               <div className={styles.bookingBlock}>
                 <div className={styles.bookingHeading}>
-                  <div className={styles.bookingTitle}>{t('booking', lang)}</div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+                    <div className={styles.bookingTitle}>{t('booking', lang)}</div>
+                    {/* Calendar Icon Button */}
+                    <button
+                      type="button"
+                      onClick={() => calendarInputRef.current?.showPicker?.() || calendarInputRef.current?.focus()}
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        padding: '4px 10px',
+                        borderRadius: '8px',
+                        backgroundColor: 'rgba(201, 169, 110, 0.15)',
+                        border: '1px solid rgba(201, 169, 110, 0.4)',
+                        color: '#f2d58d',
+                        fontSize: '12px',
+                        fontWeight: 600,
+                        cursor: 'pointer',
+                        transition: 'all 0.2s',
+                      }}
+                      title={lang === 'vi' ? 'Mở lịch chọn ngày bất kỳ' : 'Open calendar to pick date'}
+                    >
+                      <Calendar size={14} color="#f2d58d" />
+                      <span>{lang === 'vi' ? 'Mở lịch' : lang === 'cn' ? '选日期' : lang === 'jp' ? 'カレンダー' : lang === 'kr' ? '달력' : 'Calendar'}</span>
+                    </button>
+                    <input
+                      ref={calendarInputRef}
+                      type="date"
+                      min={localISODate(new Date())}
+                      value={bookingDate}
+                      onChange={(e) => handleCustomDateSelect(e.target.value)}
+                      style={{ position: 'absolute', opacity: 0, pointerEvents: 'none', width: 0, height: 0 }}
+                    />
+                  </div>
                   <div className={styles.bookingSummary}>
                     {bookingDate && bookingTime ? `${displayDate(bookingDate, lang)} · ${bookingTime}` : t('summaryEmpty', lang)}
                   </div>
@@ -1164,6 +1217,28 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                       </button>
                     );
                   })}
+                  {/* Calendar Chip at end of scroller */}
+                  <button
+                    type="button"
+                    className={styles.dateChip}
+                    style={{
+                      borderStyle: 'dashed',
+                      borderColor: 'rgba(201, 169, 110, 0.5)',
+                      backgroundColor: 'rgba(201, 169, 110, 0.08)',
+                      minWidth: '68px',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      cursor: 'pointer',
+                    }}
+                    onClick={() => calendarInputRef.current?.showPicker?.() || calendarInputRef.current?.focus()}
+                    title={lang === 'vi' ? 'Mở lịch chọn ngày khác' : 'Pick a date from calendar'}
+                  >
+                    <Calendar size={18} color="#f2d58d" style={{ marginBottom: '2px' }} />
+                    <span className={styles.dow} style={{ color: '#f2d58d' }}>{lang === 'vi' ? 'Lịch' : lang === 'cn' ? '日历' : lang === 'jp' ? 'カレンダー' : lang === 'kr' ? '달력' : 'Calendar'}</span>
+                    <span style={{ fontSize: '10px', color: '#9ca3af', fontWeight: 500 }}>{lang === 'vi' ? 'Ngày khác' : 'More'}</span>
+                  </button>
                 </div>
 
                 <div className={styles.timeLabelRow}>

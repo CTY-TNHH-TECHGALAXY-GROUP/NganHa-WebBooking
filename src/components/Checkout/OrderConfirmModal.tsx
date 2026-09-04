@@ -358,6 +358,34 @@ export default function OrderConfirmModal({
                                                     </div>
                                                 </div>
 
+                                                <div className="grid grid-cols-2 gap-2 pt-1">
+                                                    <div>
+                                                        <label className="text-[10px] text-gray-400 uppercase font-medium flex items-center gap-1">
+                                                            <Calendar size={11} className="text-[#c9a96e]" />
+                                                            {lang === 'vi' ? 'Ngày hẹn' : 'Date'}
+                                                        </label>
+                                                        <input
+                                                            type="date"
+                                                            value={localDate}
+                                                            onChange={(e) => setLocalDate(e.target.value)}
+                                                            className="w-full bg-black/40 border border-white/15 rounded-lg px-2 py-1.5 text-xs text-white focus:border-[#c9a96e] outline-none mt-0.5"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="text-[10px] text-gray-400 uppercase font-medium flex items-center gap-1">
+                                                            <Clock size={11} className="text-[#c9a96e]" />
+                                                            {lang === 'vi' ? 'Giờ hẹn' : 'Time'}
+                                                        </label>
+                                                        <input
+                                                            type="text"
+                                                            value={localTime}
+                                                            onChange={(e) => setLocalTime(e.target.value)}
+                                                            className="w-full bg-black/40 border border-white/15 rounded-lg px-2.5 py-1.5 text-xs text-white focus:border-[#c9a96e] outline-none mt-0.5"
+                                                            placeholder="VD: 14:00"
+                                                        />
+                                                    </div>
+                                                </div>
+
                                                 <button
                                                     type="button"
                                                     onClick={() => setIsEditingSchedule(false)}

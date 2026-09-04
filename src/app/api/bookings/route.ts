@@ -16,18 +16,52 @@ const PRIVATE_ROOM_SERVICE_ID = 'NHS0900';
 const PRIVATE_ROOM_DEFAULT_PRICE_VND = 105000;
 
 /**
- * Sinh mã đơn chống collision 100%, định dạng: WB-05092026-X7K9A2F
- * Kết hợp ngày tháng + entropy thời gian + random bytes, triệt tiêu hoàn toàn race condition.
+ * Sinh mã đơn tuần tự dạng: WB-ddmmyyyy-001, WB-ddmmyyyy-002,...
+ * Đơn giản hoá đuôi ID = số thứ tự đơn trong ngày (3 chữ số zero-padded).
  */
-const generateCollisionSafeBookingId = (): string => {
+const generateSequentialBookingId = async (supabase: any, targetDate?: string): Promise<string> => {
   const now = new Date();
-  const dd = String(now.getDate()).padStart(2, '0');
-  const mm = String(now.getMonth() + 1).padStart(2, '0');
-  const yyyy = String(now.getFullYear());
-  const dateStr = `${dd}${mm}${yyyy}`;
-  const timeComponent = (now.getTime() % 1000000).toString(36).padStart(4, '0').toUpperCase();
-  const randomSuffix = crypto.randomBytes(3).toString('hex').toUpperCase();
-  return `${BOOKING_ID_PREFIX}-${dateStr}-${timeComponent}${randomSuffix}`;
+  let dateStr: string;
+  if (targetDate && targetDate.includes('-')) {
+    const parts = targetDate.split('-');
+    if (parts.length === 3) {
+      dateStr = `${parts[2].padStart(2, '0')}${parts[1].padStart(2, '0')}${parts[0]}`;
+    } else {
+      const dd = String(now.getDate()).padStart(2, '0');
+      const mm = String(now.getMonth() + 1).padStart(2, '0');
+      const yyyy = String(now.getFullYear());
+      dateStr = `${dd}${mm}${yyyy}`;
+    }
+  } else {
+    const dd = String(now.getDate()).padStart(2, '0');
+    const mm = String(now.getMonth() + 1).padStart(2, '0');
+    const yyyy = String(now.getFullYear());
+    dateStr = `${dd}${mm}${yyyy}`;
+  }
+
+  const prefix = `${BOOKING_ID_PREFIX}-${dateStr}-`;
+  const { data: existingBookings } = await supabase
+    .from('Bookings')
+    .select('id')
+    .like('id', `${prefix}%`);
+
+  let maxSeq = 0;
+  if (existingBookings && existingBookings.length > 0) {
+    for (const b of existingBookings) {
+      const suffix = b.id.replace(prefix, '');
+      const parsed = parseInt(suffix, 10);
+      if (!isNaN(parsed) && parsed > maxSeq) {
+        maxSeq = parsed;
+      }
+    }
+    if (maxSeq === 0) {
+      maxSeq = existingBookings.length;
+    }
+  }
+
+  const nextSeq = maxSeq + 1;
+  const seqStr = String(nextSeq).padStart(3, '0');
+  return `${prefix}${seqStr}`;
 };
 
 export async function POST(request: Request) {
@@ -120,7 +154,7 @@ export async function POST(request: Request) {
 
     const { data: dbServices, error: fetchSvcErr } = await supabase
       .from('Services')
-      .select('id, nameVN, nameEN, priceVND, priceUSD, duration, isActive')
+      .select('id, nameVN, nameEN, nameCN, nameJP, nameKR, priceVND, priceUSD, duration, isActive')
       .in('id', allIdsToQuery);
 
     if (fetchSvcErr) {
@@ -133,6 +167,23 @@ export async function POST(request: Request) {
 
     const dbMap = new Map<string, any>();
     (dbServices || []).forEach((s) => dbMap.set(s.id, s));
+
+    const getLocalizedServiceName = (dbSvc: any, targetLang: string): string => {
+      if (!dbSvc) return 'Dịch vụ Spa';
+      if (targetLang === 'en') return dbSvc.nameEN || dbSvc.nameVN || 'Spa Treatment';
+      if (targetLang === 'cn') return dbSvc.nameCN || dbSvc.nameEN || dbSvc.nameVN || '水疗服务';
+      if (targetLang === 'jp') return dbSvc.nameJP || dbSvc.nameEN || dbSvc.nameVN || 'トリートメントコース';
+      if (targetLang === 'kr') return dbSvc.nameKR || dbSvc.nameEN || dbSvc.nameVN || '스파 트리트먼트';
+      return dbSvc.nameVN || dbSvc.nameEN || 'Dịch vụ Spa';
+    };
+
+    const PRIVATE_ROOM_NAME_I18N: Record<string, string> = {
+      vi: 'Phòng riêng',
+      en: 'Private Room',
+      cn: '包间',
+      jp: '個室',
+      kr: '프라이빗 룸',
+    };
 
     const privateRoomSvc = dbMap.get(PRIVATE_ROOM_SERVICE_ID);
     const privateRoomPriceVND =
@@ -170,12 +221,17 @@ export async function POST(request: Request) {
       const itemCanonicalPriceVND = basePriceVND + (hasPrivateRoomAddon ? privateRoomPriceVND : 0);
       serverCalculatedTotalAmount += itemCanonicalPriceVND * safeQty;
 
+      const localizedName = getLocalizedServiceName(dbSvc, lang || 'vi');
+
       validatedServiceList.push({
         variantId: dbSvc.id,
         serviceId: dbSvc.id,
-        name: dbSvc.nameVN || dbSvc.nameEN || 'Dịch vụ',
+        name: localizedName,
         dbNameVN: dbSvc.nameVN,
         dbNameEN: dbSvc.nameEN,
+        dbNameCN: dbSvc.nameCN,
+        dbNameJP: dbSvc.nameJP,
+        dbNameKR: dbSvc.nameKR,
         duration: Number(dbSvc.duration) || 0,
         basePriceVND,
         priceVND: itemCanonicalPriceVND,
@@ -256,8 +312,8 @@ export async function POST(request: Request) {
       }
     }
 
-    // ── 5. PHASE 3: Race-Safe Booking ID ──────────────
-    const bookingId = generateCollisionSafeBookingId();
+    // ── 5. PHASE 3: Sequential & Collision-Safe Booking ID ──────
+    let bookingId = await generateSequentialBookingId(supabase, date);
 
     // ── 6. Tổng hợp notes & focus area ────────────────
     const notesParts: string[] = [];
@@ -270,7 +326,7 @@ export async function POST(request: Request) {
       (s) => s.hasPrivateRoomAddon || s.variantId === PRIVATE_ROOM_SERVICE_ID
     );
     if (hasAnyPrivateRoom) {
-      notesParts.push('Yêu cầu phòng riêng (Private Room)');
+      notesParts.push(PRIVATE_ROOM_NAME_I18N[lang || 'vi'] || 'Phòng riêng');
     }
     if (note?.trim()) notesParts.push(`Ghi chú chung: ${note.trim()}`);
     const finalNotes = notesParts.join(' | ') || null;
@@ -365,39 +421,48 @@ export async function POST(request: Request) {
       ? new Date(`${date}T${time || '00:00'}:00+07:00`).toISOString()
       : new Date().toISOString();
 
-    const bookingPayload: Record<string, any> = {
-      id: bookingId,
-      billCode: bookingId,
-      source: 'WEB_BOOKING',
-      guestCount: guests ? Math.max(1, Number(guests)) : 1,
-      branchName: branchName || BRANCH_DEFAULT,
-      bookingDate,
-      timeBooking: time || null,
-      customerName: name.trim(),
-      customerPhone: cleanPhone,
-      customerEmail: cleanEmail,
-      customerGender: resolvedGender,
-      customerLang: lang || 'vi',
-      customerId,
-      roomName: hasAnyPrivateRoom ? 'Phòng riêng' : null,
-      notes: finalNotes,
-      focusAreaNote: finalFocusAreaNote,
-      totalAmount: serverCalculatedTotalAmount,
-      status: 'NEW',
-      tip: 0,
-      idLegacy: idempotencyKey ? `idemp:${idempotencyKey.trim()}` : null,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
+    let insertSuccess = false;
+    let attempts = 0;
+    while (!insertSuccess && attempts < 5) {
+      attempts++;
+      const bookingPayload: Record<string, any> = {
+        id: bookingId,
+        billCode: bookingId,
+        source: 'WEB_BOOKING',
+        guestCount: guests ? Math.max(1, Number(guests)) : 1,
+        branchName: branchName || BRANCH_DEFAULT,
+        bookingDate,
+        timeBooking: time || null,
+        customerName: name.trim(),
+        customerPhone: cleanPhone,
+        customerEmail: cleanEmail,
+        customerGender: resolvedGender,
+        customerLang: lang || 'vi',
+        customerId,
+        roomName: hasAnyPrivateRoom ? (PRIVATE_ROOM_NAME_I18N[lang || 'vi'] || 'Phòng riêng') : null,
+        notes: finalNotes,
+        focusAreaNote: finalFocusAreaNote,
+        totalAmount: serverCalculatedTotalAmount,
+        status: 'NEW',
+        tip: 0,
+        idLegacy: idempotencyKey ? `idemp:${idempotencyKey.trim()}` : null,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
 
-    const { error: bookingErr } = await supabase.from('Bookings').insert(bookingPayload);
-
-    if (bookingErr) {
-      console.error('❌ [API Bookings] INSERT Booking lỗi:', bookingErr.message);
-      return NextResponse.json(
-        { success: false, error: `Lỗi tạo đơn đặt lịch: ${bookingErr.message}` },
-        { status: 500 }
-      );
+      const { error: bookingErr } = await supabase.from('Bookings').insert(bookingPayload);
+      if (!bookingErr) {
+        insertSuccess = true;
+      } else if (bookingErr.code === '23505' || bookingErr.message?.includes('duplicate key') || bookingErr.message?.includes('unique constraint')) {
+        console.warn(`⚠️ [API Bookings] Trùng ID ${bookingId}, tự động tăng số thứ tự tiếp theo...`);
+        bookingId = await generateSequentialBookingId(supabase, date);
+      } else {
+        console.error('❌ [API Bookings] INSERT Booking lỗi:', bookingErr.message);
+        return NextResponse.json(
+          { success: false, error: `Lỗi tạo đơn đặt lịch: ${bookingErr.message}` },
+          { status: 500 }
+        );
+      }
     }
 
     // ── 8. Tạo BookingItems ────────────────────────────
@@ -455,7 +520,7 @@ export async function POST(request: Request) {
           price: privateRoomPriceVND,
           status: 'WAITING',
           options: {
-            displayName: 'Phòng riêng',
+            displayName: PRIVATE_ROOM_NAME_I18N[lang || 'vi'] || 'Phòng riêng',
             parentServiceId: svc.variantId,
             isAddon: true,
           },
