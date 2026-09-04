@@ -96,7 +96,6 @@ export async function POST(request: Request) {
           })
           .select('id')
           .single();
-
         if (cusErr) {
           console.error('❌ [API Bookings] Tạo Customer lỗi:', cusErr.message);
           // Không fail toàn bộ request, tiếp tục mà không có customerId
@@ -111,7 +110,7 @@ export async function POST(request: Request) {
 
     // ── 3. Tổng hợp notes & focus area ────────────────
     const notesParts: string[] = [];
-    if (guests && guests > 1) notesParts.push(`Số khách: ${guests}`);
+    if (guests && Number(guests) > 1) notesParts.push(`Số khách: ${guests}`);
     if (staffGender && staffGender !== 'any') {
       const genderLabel = staffGender === 'female' ? 'Nữ' : 'Nam';
       notesParts.push(`Yêu cầu KTV: ${genderLabel}`);
@@ -124,34 +123,71 @@ export async function POST(request: Request) {
     const isJp = lang === 'jp';
     const isKr = lang === 'kr';
 
+    const BODY_PART_I18N: Record<string, Record<string, string>> = {
+      HEAD: { vi: 'Đầu', en: 'Head', cn: '头部', jp: '頭部', kr: '머리' },
+      NECK: { vi: 'Cổ', en: 'Neck', cn: '颈部', jp: '首', kr: '목' },
+      SHOULDER: { vi: 'Vai', en: 'Shoulder', cn: '肩部', jp: '肩', kr: '어깨' },
+      BACK: { vi: 'Lưng', en: 'Back', cn: '背部', jp: '背中', kr: '등' },
+      ARM: { vi: 'Tay', en: 'Arms', cn: '手臂', jp: '腕', kr: '팔' },
+      THIGH: { vi: 'Đùi', en: 'Thighs', cn: '大腿', jp: '太もも', kr: '허벅지' },
+      KNEE: { vi: 'Đầu gối', en: 'Knees', cn: '膝盖', jp: '膝', kr: '무릎' },
+      CALF: { vi: 'Bắp chân', en: 'Calves', cn: '小腿', jp: 'ふくらはぎ', kr: '종아리' },
+      FOOT: { vi: 'Bàn chân', en: 'Feet', cn: '足部', jp: '足・足裏', kr: '발' },
+    };
+
+    const translatePart = (p: string) => {
+      const upper = (p || '').toUpperCase().trim();
+      if (BODY_PART_I18N[upper]) {
+        return BODY_PART_I18N[upper][lang] || BODY_PART_I18N[upper].en || p;
+      }
+      for (const entry of Object.values(BODY_PART_I18N)) {
+        if (entry.vi.toLowerCase() === (p || '').toLowerCase().trim()) {
+          return entry[lang] || entry.en || p;
+        }
+      }
+      return p;
+    };
+
+    const STRENGTH_I18N: Record<string, Record<string, string>> = {
+      soft: { vi: 'Nhẹ', en: 'Light', cn: '轻柔', jp: '弱め（ソフト）', kr: '부드럽게 (약)' },
+      light: { vi: 'Nhẹ', en: 'Light', cn: '轻柔', jp: '弱め（ソフト）', kr: '부드럽게 (약)' },
+      medium: { vi: 'Vừa', en: 'Medium', cn: '适中', jp: '普通（ミディアム）', kr: '보통 (중)' },
+      normal: { vi: 'Vừa', en: 'Medium', cn: '适中', jp: '普通（ミディアム）', kr: '보통 (중)' },
+      hard: { vi: 'Mạnh', en: 'Firm', cn: '强劲', jp: '強め（ハード）', kr: '강하게 (강)' },
+      strong: { vi: 'Mạnh', en: 'Firm', cn: '强劲', jp: '強め（ハード）', kr: '강하게 (강)' },
+    };
+
     const focusParts: string[] = [];
     selectedServices.forEach((svc: any) => {
       const opts = svc.options;
       if (opts) {
         const itemNotes = [];
         if (opts.notes?.tag0) {
-          itemNotes.push(isEn ? 'Pregnant' : isCn ? '孕妇' : isJp ? '妊娠中' : isKr ? '임산부' : 'Phụ nữ có thai');
+          itemNotes.push(isEn ? 'Pregnant Guest' : isCn ? '孕期护理' : isJp ? '妊娠中' : isKr ? '임산부' : 'Phụ nữ có thai');
         }
         if (opts.notes?.tag1) {
-          itemNotes.push(isEn ? 'Allergies' : isCn ? '有过敏' : isJp ? 'アレルギーあり' : isKr ? '알레르기 있음' : 'Có dị ứng');
+          itemNotes.push(isEn ? 'Allergies / Sensitive skin' : isCn ? '有过敏史 / 敏感体质' : isJp ? 'アレルギーあり / 敏感肌' : isKr ? '알레르기 있음 / 민감성' : 'Có dị ứng');
         }
         if (opts.bodyParts?.focus?.length) {
-          const lbl = isEn ? 'Focus' : isCn ? '重点' : isJp ? '集中' : isKr ? '집중' : 'Tập trung';
-          itemNotes.push(`${lbl}: ${opts.bodyParts.focus.join(', ')}`);
+          const lbl = isEn ? 'Focus' : isCn ? '重点部位' : isJp ? '重点部位' : isKr ? '집중 관리' : 'Tập trung';
+          const translated = opts.bodyParts.focus.map((p: string) => translatePart(p)).join(', ');
+          itemNotes.push(`${lbl}: ${translated}`);
         }
         if (opts.bodyParts?.avoid?.length) {
-          const lbl = isEn ? 'Avoid' : isCn ? '避开' : isJp ? '避ける' : isKr ? '피할 부위' : 'Tránh';
-          itemNotes.push(`${lbl}: ${opts.bodyParts.avoid.join(', ')}`);
+          const lbl = isEn ? 'Avoid' : isCn ? '避开部位' : isJp ? '避ける部位' : isKr ? '제외 부위' : 'Tránh';
+          const translated = opts.bodyParts.avoid.map((p: string) => translatePart(p)).join(', ');
+          itemNotes.push(`${lbl}: ${translated}`);
         }
         if (opts.strength) {
-          const sMapVi: Record<string, string> = { soft: 'Nhẹ', light: 'Nhẹ', medium: 'Vừa', normal: 'Vừa', strong: 'Mạnh', hard: 'Mạnh' };
-          const sMapEn: Record<string, string> = { soft: 'Light', light: 'Light', medium: 'Medium', normal: 'Medium', strong: 'Firm', hard: 'Firm' };
+          const strengthMap = STRENGTH_I18N[String(opts.strength).toLowerCase()] || {
+            vi: opts.strength, en: opts.strength, cn: opts.strength, jp: opts.strength, kr: opts.strength
+          };
           const strengthLabel = isEn ? 'Pressure' : isCn ? '力度' : isJp ? '強さ' : isKr ? '강도' : 'Lực';
-          const strengthVal = isEn ? (sMapEn[opts.strength] || opts.strength) : (sMapVi[opts.strength] || opts.strength);
+          const strengthVal = strengthMap[lang] || strengthMap.en || opts.strength;
           itemNotes.push(`${strengthLabel}: ${strengthVal}`);
         }
         if (opts.notes?.content) {
-          const lbl = isEn ? 'Note' : isCn ? '备注' : isJp ? '備考' : isKr ? '메모' : 'Chú ý';
+          const lbl = isEn ? 'Note' : isCn ? '特别说明' : isJp ? '特記事項' : isKr ? '참고 메모' : 'Chú ý';
           itemNotes.push(`${lbl}: ${opts.notes.content}`);
         }
         
