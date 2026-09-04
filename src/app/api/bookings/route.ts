@@ -4,6 +4,7 @@
 // ═══════════════════════════════════════
 import { NextResponse } from 'next/server';
 import { getSupabaseAdmin } from '@/lib/supabase-server';
+import { sendBookingConfirmationEmail } from '@/lib/mailer';
 
 export const dynamic = 'force-dynamic';
 
@@ -234,7 +235,26 @@ export async function POST(request: Request) {
       // Không fail (đơn đã tạo), chỉ log
     }
 
-    // ── 6. Trả về success ─────────────────────────────
+    // ── 6. Gửi email xác nhận tự động cho khách ───────
+    if (email && typeof email === 'string' && email.includes('@')) {
+      sendBookingConfirmationEmail({
+        bookingId,
+        customerName: name,
+        customerEmail: email.trim(),
+        customerPhone: phone || '',
+        date: date || '',
+        time: time || '',
+        branchName: branchName || BRANCH_DEFAULT,
+        services: selectedServices,
+        totalAmount,
+        lang: lang || 'vi',
+        notes: finalNotes || undefined,
+      }).catch((mailErr) => {
+        console.error('⚠️ [API Bookings] Lỗi gửi email xác nhận:', mailErr);
+      });
+    }
+
+    // ── 7. Trả về success ─────────────────────────────
     console.log(`✅ [API Bookings] Đơn WB tạo thành công: ${bookingId}`);
 
     return NextResponse.json({
