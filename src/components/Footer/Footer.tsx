@@ -59,7 +59,19 @@ const Footer = () => {
 
   const phone = footerData?.phone || settingsData?.phone || '+84964090277';
   const facebook = footerData?.facebook || settingsData?.facebook || 'https://facebook.com';
-  const zalo = footerData?.zalo || settingsData?.zalo || 'https://zalo.me';
+  const zalo = footerData?.zalo || settingsData?.zalo || `https://zalo.me/${phone.replace(/\D/g, '')}`;
+  const whatsapp = footerData?.whatsapp || settingsData?.whatsapp;
+  const wechat = footerData?.wechat || settingsData?.wechat;
+  const kakaotalk = footerData?.kakaotalk || settingsData?.kakaotalk;
+
+  const cleanPhone = phone.replace(/\D/g, '');
+  const whatsappUrl = whatsapp
+    ? (whatsapp.startsWith('http') ? whatsapp : `https://wa.me/${whatsapp.replace(/\D/g, '')}`)
+    : (cleanPhone ? `https://wa.me/${cleanPhone}` : undefined);
+
+  const kakaotalkUrl = kakaotalk
+    ? (kakaotalk.startsWith('http') ? kakaotalk : `https://open.kakao.com/${kakaotalk}`)
+    : undefined;
 
   // Smart detect: if user entered address in locationsTitle, use it for address
   const isLocationsTitleAnAddress = footerData?.locationsTitle && 
@@ -161,10 +173,27 @@ const Footer = () => {
               {contactTitle}
             </h4>
             <div className="w-12 h-[1px] bg-[rgba(212,175,55,0.3)] mb-2"></div>
-            <ul className="text-[15px] text-[#f7ebc7]/70 space-y-4 font-light">
-              <li>Hotline: <a href={`tel:${phone}`} className="text-[#D4AF37] hover:text-[#f7ebc7] transition-colors">{phone}</a></li>
-              <li><a href={facebook} target="_blank" rel="noreferrer" className="hover:text-[#D4AF37] transition-colors">Facebook</a></li>
-              <li><a href={zalo} target="_blank" rel="noreferrer" className="hover:text-[#D4AF37] transition-colors">Zalo</a></li>
+            <ul className="text-[15px] text-[#f7ebc7]/70 space-y-3 font-light">
+              <li>Hotline: <a href={`tel:${phone}`} className="text-[#D4AF37] hover:text-[#f7ebc7] transition-colors font-medium">{phone}</a></li>
+              {whatsappUrl && (
+                <li><a href={whatsappUrl} target="_blank" rel="noreferrer" className="hover:text-[#D4AF37] transition-colors">WhatsApp</a></li>
+              )}
+              {zalo && (
+                <li><a href={zalo.startsWith('http') ? zalo : `https://zalo.me/${zalo.replace(/\D/g, '')}`} target="_blank" rel="noreferrer" className="hover:text-[#D4AF37] transition-colors">Zalo</a></li>
+              )}
+              {wechat && (
+                <li>
+                  {wechat.startsWith('http') ? (
+                    <a href={wechat} target="_blank" rel="noreferrer" className="hover:text-[#D4AF37] transition-colors">WeChat</a>
+                  ) : (
+                    <span>WeChat: <span className="text-[#D4AF37] font-medium">{wechat}</span></span>
+                  )}
+                </li>
+              )}
+              {kakaotalkUrl && (
+                <li><a href={kakaotalkUrl} target="_blank" rel="noreferrer" className="hover:text-[#D4AF37] transition-colors">KakaoTalk</a></li>
+              )}
+              {facebook && <li><a href={facebook} target="_blank" rel="noreferrer" className="hover:text-[#D4AF37] transition-colors">Facebook</a></li>}
             </ul>
           </div>
         </div>

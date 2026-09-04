@@ -11,6 +11,9 @@ export interface SystemSettings {
   phone?: string;
   zalo?: string;
   facebook?: string;
+  whatsapp?: string;
+  wechat?: string;
+  kakaotalk?: string;
   homepage_content?: any;
 }
 

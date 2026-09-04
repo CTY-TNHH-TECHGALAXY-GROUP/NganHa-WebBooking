@@ -199,7 +199,37 @@ export default function SystemSettingsPage() {
                   placeholder="Ví dụ: 9:00 AM - 12:00 AM"
                 />
               </div>
-              <div className="md:col-span-2">
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Link / SĐT WhatsApp</label>
+                <input
+                  type="text"
+                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500"
+                  value={systemSettings.whatsapp || ''}
+                  onChange={e => setSystemSettings({ ...systemSettings, whatsapp: e.target.value })}
+                  placeholder="Ví dụ: +84964090277 hoặc https://wa.me/84964090277"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">WeChat ID / Link</label>
+                <input
+                  type="text"
+                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500"
+                  value={systemSettings.wechat || ''}
+                  onChange={e => setSystemSettings({ ...systemSettings, wechat: e.target.value })}
+                  placeholder="Ví dụ: OriaSpa_SG hoặc link QR"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Link / ID KakaoTalk</label>
+                <input
+                  type="text"
+                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500"
+                  value={systemSettings.kakaotalk || ''}
+                  onChange={e => setSystemSettings({ ...systemSettings, kakaotalk: e.target.value })}
+                  placeholder="Ví dụ: https://pf.kakao.com/... hoặc ID"
+                />
+              </div>
+              <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">Link Bản Đồ Google</label>
                 <input
                   type="text"
@@ -295,6 +325,45 @@ export default function SystemSettingsPage() {
                     setSystemSettings({ ...systemSettings, zalo: e.target.value });
                   }}
                   placeholder="https://zalo.me/..."
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Link / SĐT WhatsApp</label>
+                <input
+                  type="text"
+                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500"
+                  value={footerContent.whatsapp ?? systemSettings.whatsapp ?? ''}
+                  onChange={e => {
+                    setFooterContent({ ...footerContent, whatsapp: e.target.value });
+                    setSystemSettings({ ...systemSettings, whatsapp: e.target.value });
+                  }}
+                  placeholder="Ví dụ: +84964090277 hoặc https://wa.me/84964090277"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">WeChat ID / Link</label>
+                <input
+                  type="text"
+                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500"
+                  value={footerContent.wechat ?? systemSettings.wechat ?? ''}
+                  onChange={e => {
+                    setFooterContent({ ...footerContent, wechat: e.target.value });
+                    setSystemSettings({ ...systemSettings, wechat: e.target.value });
+                  }}
+                  placeholder="Ví dụ: OriaSpa_SG hoặc link QR"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Link / ID KakaoTalk</label>
+                <input
+                  type="text"
+                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500"
+                  value={footerContent.kakaotalk ?? systemSettings.kakaotalk ?? ''}
+                  onChange={e => {
+                    setFooterContent({ ...footerContent, kakaotalk: e.target.value });
+                    setSystemSettings({ ...systemSettings, kakaotalk: e.target.value });
+                  }}
+                  placeholder="Ví dụ: https://pf.kakao.com/... hoặc ID"
                 />
               </div>
             </div>
