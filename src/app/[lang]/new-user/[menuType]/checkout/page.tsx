@@ -1235,68 +1235,44 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                   </div>
                 </div>
 
-                {/* Banner Hiển Thị Ngày & Giờ Đã Chọn Nổi Bật - Dễ Nhận Biết */}
+                {/* Hiển Thị Ngày & Giờ Đã Chọn Tinh Tế - Không Khung, Không Nút Bấm */}
                 <div
                   style={{
-                    marginTop: '10px',
+                    marginTop: '6px',
                     marginBottom: '14px',
-                    padding: '12px 16px',
-                    borderRadius: '14px',
-                    background: 'linear-gradient(135deg, rgba(201, 169, 110, 0.18) 0%, rgba(26, 20, 14, 0.9) 100%)',
-                    border: '1px solid rgba(201, 169, 110, 0.45)',
-                    boxShadow: '0 8px 24px -8px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08)',
                     display: 'flex',
-                    alignItems: 'center',
+                    alignItems: 'flex-end',
                     justifyContent: 'space-between',
-                    gap: '12px',
                     flexWrap: 'wrap',
+                    gap: '8px 16px',
+                    padding: '2px 0 6px',
                   }}
                 >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: '220px' }}>
+                  <div>
                     <div
                       style={{
-                        width: '38px',
-                        height: '38px',
-                        borderRadius: '10px',
-                        backgroundColor: 'rgba(201, 169, 110, 0.22)',
-                        border: '1px solid rgba(201, 169, 110, 0.5)',
+                        fontSize: '11px',
+                        textTransform: 'uppercase',
+                        letterSpacing: '1px',
+                        color: '#c9a96e',
+                        fontWeight: 600,
                         display: 'flex',
                         alignItems: 'center',
-                        justifyContent: 'center',
-                        color: '#f2d58d',
-                        flexShrink: 0,
+                        gap: '6px',
+                        marginBottom: '4px',
                       }}
                     >
-                      <Calendar size={18} />
+                      <Calendar size={13} color="#c9a96e" />
+                      <span>{lang === 'vi' ? 'Lịch hẹn đã chọn' : lang === 'cn' ? '已选预约时间' : lang === 'jp' ? '選択した日時' : lang === 'kr' ? '선택된 예약 일시' : 'Selected Schedule'}</span>
                     </div>
-                    <div>
-                      <div style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.8px', color: '#c9a96e', fontWeight: 600 }}>
-                        {lang === 'vi' ? 'Ngày & Giờ bạn chọn' : lang === 'cn' ? '您选择的预约时间' : lang === 'jp' ? '選択した予約日時' : lang === 'kr' ? '선택한 예약 일시' : 'Selected Schedule'}
-                      </div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', marginTop: '2px' }}>
-                        <span style={{ fontSize: '16px', fontWeight: 700, color: '#ffffff', letterSpacing: '0.2px' }}>
-                          {formatFullDate(bookingDate, lang)}
-                        </span>
-                        <span style={{ color: 'rgba(255, 255, 255, 0.3)' }}>·</span>
-                        <span
-                          style={{
-                            fontSize: '14px',
-                            fontWeight: 700,
-                            color: '#f2d58d',
-                            backgroundColor: 'rgba(201, 169, 110, 0.22)',
-                            border: '1px solid rgba(201, 169, 110, 0.4)',
-                            padding: '2px 9px',
-                            borderRadius: '6px',
-                            fontFamily: 'monospace',
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: '4px',
-                          }}
-                        >
-                          <Clock size={12} />
-                          {bookingTime || (lang === 'vi' ? 'Chọn giờ bên dưới' : 'Select time below')}
-                        </span>
-                      </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                      <span style={{ fontSize: '18px', fontWeight: 700, color: '#ffffff', letterSpacing: '0.2px' }}>
+                        {formatFullDate(bookingDate, lang)}
+                      </span>
+                      <span style={{ color: 'rgba(255, 255, 255, 0.35)', fontSize: '16px' }}>·</span>
+                      <span style={{ fontSize: '18px', fontWeight: 700, color: '#f2d58d', letterSpacing: '0.5px' }}>
+                        {bookingTime || (lang === 'vi' ? 'Chưa chọn giờ' : 'Select time')}
+                      </span>
                     </div>
                   </div>
 
@@ -1305,23 +1281,27 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                       type="button"
                       onClick={handleResetToToday}
                       style={{
+                        background: 'none',
+                        border: 'none',
+                        padding: '0',
+                        color: '#c9a96e',
+                        fontSize: '12.5px',
+                        fontWeight: 500,
+                        cursor: 'pointer',
                         display: 'inline-flex',
                         alignItems: 'center',
-                        gap: '6px',
-                        padding: '6px 12px',
-                        borderRadius: '8px',
-                        backgroundColor: 'rgba(0, 0, 0, 0.45)',
-                        border: '1px solid rgba(201, 169, 110, 0.4)',
-                        color: '#f2d58d',
-                        fontSize: '12px',
-                        fontWeight: 600,
-                        cursor: 'pointer',
-                        transition: 'all 0.2s',
+                        gap: '4px',
+                        textDecoration: 'underline',
+                        textUnderlineOffset: '3px',
+                        transition: 'color 0.2s',
+                        marginBottom: '2px',
                       }}
+                      onMouseEnter={(e) => (e.currentTarget.style.color = '#fff')}
+                      onMouseLeave={(e) => (e.currentTarget.style.color = '#c9a96e')}
                       title={lang === 'vi' ? 'Quay về ngày hôm nay' : 'Reset to today'}
                     >
                       <RotateCcw size={12} />
-                      <span>{lang === 'vi' ? 'Về hôm nay' : lang === 'cn' ? '回到今天' : lang === 'jp' ? '今日に戻る' : lang === 'kr' ? '오늘로 가기' : 'Today'}</span>
+                      <span>{lang === 'vi' ? 'Về hôm nay' : lang === 'cn' ? '回到今天' : lang === 'jp' ? '今日に戻る' : lang === 'kr' ? '오늘로 가기' : 'Back to today'}</span>
                     </button>
                   )}
                 </div>
