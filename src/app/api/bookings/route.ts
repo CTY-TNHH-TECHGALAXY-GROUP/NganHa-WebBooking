@@ -115,6 +115,12 @@ export async function POST(request: Request) {
       const genderLabel = staffGender === 'female' ? 'Nữ' : 'Nam';
       notesParts.push(`Yêu cầu KTV: ${genderLabel}`);
     }
+    const hasAnyPrivateRoom = selectedServices.some(
+      (s: any) => s.options?.addons?.privateRoom || s.customOptions?.addons?.privateRoom || s.variantId === 'NHS0900'
+    );
+    if (hasAnyPrivateRoom) {
+      notesParts.push('Yêu cầu phòng riêng (Private Room)');
+    }
     if (note?.trim()) notesParts.push(`Ghi chú chung: ${note.trim()}`);
     const finalNotes = notesParts.join(' | ') || null;
 
@@ -159,7 +165,7 @@ export async function POST(request: Request) {
 
     const focusParts: string[] = [];
     selectedServices.forEach((svc: any) => {
-      const opts = svc.options;
+      const opts = svc.options || svc.customOptions;
       if (opts) {
         const itemNotes = [];
         if (opts.notes?.tag0) {
@@ -167,6 +173,10 @@ export async function POST(request: Request) {
         }
         if (opts.notes?.tag1) {
           itemNotes.push(isEn ? 'Allergies / Sensitive skin' : isCn ? '有过敏史 / 敏感体质' : isJp ? 'アレルギーあり / 敏感肌' : isKr ? '알레르기 있음 / 민감성' : 'Có dị ứng');
+        }
+        if (opts.addons?.privateRoom) {
+          const prLbl = isEn ? 'Private Room (+105K)' : isCn ? '包间 (+105K)' : isJp ? '個室 (+105K)' : isKr ? '프라이빗 룸 (+105K)' : 'Phòng riêng (+105K)';
+          itemNotes.push(prLbl);
         }
         if (opts.bodyParts?.focus?.length) {
           const lbl = isEn ? 'Focus' : isCn ? '重点部位' : isJp ? '重点部位' : isKr ? '집중 관리' : 'Tập trung';
@@ -222,6 +232,7 @@ export async function POST(request: Request) {
       customerEmail: email || null,
       customerLang: lang || 'vi',
       customerId,
+      roomName: hasAnyPrivateRoom ? 'Phòng riêng' : null,
       notes: finalNotes,
       focusAreaNote: finalFocusAreaNote,
       totalAmount,
@@ -240,13 +251,18 @@ export async function POST(request: Request) {
     }
 
     // ── 5. INSERT BookingItems ────────────────────────
-        const bookingItems = selectedServices.map((svc: any) => {
-      const opts = svc.options || {};
+    // Hỗ trợ nhận Private Room về DB với cùng id NHS0900 như add-on
+    const PRIVATE_ROOM_SERVICE_ID = 'NHS0900';
+    const PRIVATE_ROOM_PRICE = 105000;
+
+    const bookingItems: any[] = [];
+    selectedServices.forEach((svc: any, idx: number) => {
+      const opts = svc.options || svc.customOptions || {};
       
       // Map strength
       let strengthStr = undefined;
       if (opts.strength) {
-         const s = opts.strength.toLowerCase();
+         const s = String(opts.strength).toLowerCase();
          if (s === 'light' || s === 'nhẹ') strengthStr = 'LIGHT';
          else if (s === 'hard' || s === 'strong' || s === 'mạnh') strengthStr = 'HARD';
          else strengthStr = 'NORMAL';
@@ -274,15 +290,46 @@ export async function POST(request: Request) {
         note: finalNote
       };
 
-      return {
-        id: `${bookingId}-${svc.variantId}`,
+      const hasPrivateRoomAddon = Boolean(opts.addons?.privateRoom);
+      const qty = svc.quantity || 1;
+
+      // Giá gốc của dịch vụ (trừ phụ phí private room nếu đã bị cộng gộp)
+      let serviceItemPrice = svc.priceVND;
+      if (hasPrivateRoomAddon) {
+        if (svc.basePriceVND && svc.basePriceVND > 0) {
+          serviceItemPrice = svc.basePriceVND;
+        } else if (svc.priceVND >= PRIVATE_ROOM_PRICE) {
+          serviceItemPrice = svc.priceVND - PRIVATE_ROOM_PRICE;
+        }
+      }
+
+      // 1. Thêm dịch vụ chính vào BookingItems
+      bookingItems.push({
+        id: `${bookingId}-${svc.variantId}-${idx}`,
         bookingId,
         serviceId: svc.variantId,
-        quantity: svc.quantity || 1,
-        price: svc.priceVND,
+        quantity: qty,
+        price: serviceItemPrice,
         status: 'WAITING',
         options: structuredOptions
-      };
+      });
+
+      // 2. Nếu có add Private Room trong Custom For You, thêm 1 row riêng trong BookingItems với id NHS0900
+      if (hasPrivateRoomAddon) {
+        bookingItems.push({
+          id: `${bookingId}-${PRIVATE_ROOM_SERVICE_ID}-${idx}`,
+          bookingId,
+          serviceId: PRIVATE_ROOM_SERVICE_ID,
+          quantity: qty,
+          price: PRIVATE_ROOM_PRICE,
+          status: 'WAITING',
+          options: {
+            displayName: 'Phòng riêng',
+            parentServiceId: svc.variantId,
+            isAddon: true
+          }
+        });
+      }
     });
 
     const { error: itemsErr } = await supabase.from('BookingItems').insert(bookingItems);

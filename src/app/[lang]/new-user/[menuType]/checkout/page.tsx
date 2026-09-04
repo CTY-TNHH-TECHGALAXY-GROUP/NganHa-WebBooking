@@ -825,6 +825,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
       name: serviceName(item, lang),
       duration: item.timeValue,
       priceVND: item.priceVND,
+      basePriceVND: item.basePriceVND || item.priceVND,
       quantity: item.qty,
       options: item.options || {},
     }));
