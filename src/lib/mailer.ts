@@ -1,5 +1,7 @@
 // src/lib/mailer.ts - Oria Spa Booking Received (Auto-confirmation) Email Service
 import nodemailer from 'nodemailer';
+import fs from 'fs';
+import path from 'path';
 
 export interface BookingEmailServiceItem {
   name?: string;
@@ -314,15 +316,17 @@ ${t.signoffTeam}
   <div style="background-color: #1a120e; padding: 32px 16px;">
     <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; background-color: #281b15; border-radius: 18px; overflow: hidden; border: 1px solid #4a352a; box-shadow: 0 10px 30px rgba(0,0,0,0.55);">
       
-      <!-- BRAND HEADER -->
+      <!-- BRAND HEADER WITH LOGO -->
       <tr>
-        <td align="center" style="padding: 36px 24px 24px; background: linear-gradient(180deg, #1f140f 0%, #281b15 100%); border-bottom: 1px solid #422f25;">
-          <div style="font-family: 'Playfair Display', Georgia, serif; font-size: 28px; font-weight: bold; letter-spacing: 4px; color: #D4AF37; text-transform: uppercase;">
-            ORIA SPA
-          </div>
-          <div style="font-size: 11px; letter-spacing: 2.5px; color: rgba(247, 235, 199, 0.6); text-transform: uppercase; margin-top: 4px;">
-            Wellness & Beauty Sanctuary
-          </div>
+        <td align="center" style="padding: 28px 24px 20px; background: linear-gradient(180deg, #1f140f 0%, #281b15 100%); border-bottom: 1px solid #422f25;">
+          <a href="https://nganha.vercel.app" target="_blank" style="text-decoration: none; display: inline-block;">
+            <img 
+              src="cid:orialogo" 
+              alt="ORIA SPA - Wellness & Beauty Sanctuary" 
+              width="145" 
+              style="display: block; margin: 0 auto; max-width: 145px; width: 145px; height: auto; border: 0; outline: none; text-decoration: none;" 
+            />
+          </a>
         </td>
       </tr>
 
@@ -484,6 +488,17 @@ ${notes}
 </html>
     `;
 
+    const logoPath = path.join(process.cwd(), 'public/images/oria-logo-email.png');
+    const attachments = fs.existsSync(logoPath)
+      ? [
+          {
+            filename: 'oria-logo.png',
+            path: logoPath,
+            cid: 'orialogo',
+          },
+        ]
+      : [];
+
     const info = await transporter.sendMail({
       from: `"${fromName}" <${fromEmail}>`,
       to: customerEmail,
@@ -491,6 +506,7 @@ ${notes}
       subject: `${t.subject} (#${bookingId})`,
       text: plainText,
       html,
+      attachments,
     });
 
     console.log(`✅ [Mailer] Sent Booking Received (Template 1 - ${lang}) email to ${customerEmail} (MessageId: ${info.messageId})`);

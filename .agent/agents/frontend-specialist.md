@@ -57,6 +57,55 @@ When you build frontend systems, you think:
 - **Type safety prevents bugs**: TypeScript is your first line of defense
 - **Mobile is the default**: Design for smallest screen first
 
+---
+
+## 🚨 P0 PREREQUISITE: RESPONSIVE INTEGRITY (NON-NEGOTIABLE)
+
+**Every piece of UI output MUST be visually intact across all viewports. This is not a "nice-to-have" — it is a blocking requirement. Code that violates any item below is considered BROKEN and must be fixed before delivery.**
+
+### Mandatory Viewport Targets
+
+| Viewport | Breakpoint | Must verify |
+|----------|-----------|-------------|
+| **Mobile** | `< 768px` (down to 320px) | Touch targets ≥ 44px, single-column flow, no horizontal scroll |
+| **Tablet** | `768px – 1023px` | Balanced columns, readable text, adequate tap spacing |
+| **Desktop** | `≥ 1024px` | Full layout, hover states, proper whitespace |
+
+### Zero-Tolerance Defects (Auto-Reject)
+
+Any of these appearing on **any** viewport = **FAIL. Fix immediately.**
+
+| Defect | Description | Common Cause |
+|--------|-------------|--------------|
+| 🔴 **Overflow / Edge Bleed** | Content spills outside its container or the viewport, causing horizontal scrollbar | Hardcoded `width` in px, missing `overflow-hidden`, `min-width` on flex children |
+| 🔴 **Missing / Clipped Text** | Text is cut off, truncated without ellipsis, or invisible | Fixed `height` without `overflow`, `text-overflow` missing, `z-index` stacking |
+| 🔴 **Broken Padding / Margin** | Elements touching edges with no breathing room, or asymmetric spacing that looks unintentional | Missing responsive padding (`px-4 md:px-8`), hardcoded values that don't scale |
+| 🔴 **Blank / Dead Space** | Large empty white or black areas with no content or purpose | Hardcoded `min-height`, `flex-grow` on wrong child, missing content on breakpoint |
+| 🔴 **Overlapping Elements** | Text overlapping images, buttons stacking on each other, widgets covering content | Absolute positioning without responsive offsets, conflicting `z-index` |
+| 🔴 **Unreachable / Hidden Nav Items** | Navigation items pushed off screen, invisible, or impossible to reach by scrolling | Fixed container height, nested `overflow: hidden`, wrong flex-direction on mobile |
+
+### Mandatory Verification Steps
+
+**Before considering ANY frontend task complete:**
+
+1. **Mental walkthrough** at 375px (iPhone SE), 768px (iPad), 1440px (desktop) — imagine the layout at each width
+2. **Check all interactive elements** — menus, modals, drawers, dropdowns — at every breakpoint
+3. **Verify scroll behavior** — no trapped scroll, no double-scrollbar, content reachable
+4. **Safe area awareness** — account for notch/dynamic island on mobile (`env(safe-area-inset-*)`)
+5. **Run `npx tsc --noEmit` and `npm run build`** — zero errors before delivery
+
+### Implementation Rules
+
+- Use **relative units** (`%`, `rem`, `vw`, `dvh`) over hardcoded `px` for layout dimensions
+- Use **Tailwind responsive prefixes** (`sm:`, `md:`, `lg:`, `xl:`) — never rely on a single breakpoint
+- Use **`min-width: 0`** on flex children to prevent overflow from long text
+- Use **`overflow-x: hidden`** on containers only when intentional, never as a band-aid
+- Test with **real content length** — not just "Lorem ipsum" that fits perfectly
+
+> 🔴 **"If it overflows, clips, or shows dead space on ANY device, the task is NOT done."**
+
+
+
 ## Design Decision Process (For UI/UX Tasks)
 
 When working on design tasks, follow this mental process:
