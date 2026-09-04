@@ -83,7 +83,7 @@ interface SystemSettingsContextType {
   aboutStoryContent: AboutStoryContent;
   brandHistory: BrandHistoryConfig | null;
   footerContent: any;
-  getLocalizedText: (textObj: Record<string, string> | undefined, locale: Locale, fallback?: string) => string;
+  getLocalizedText: (textObj: Record<string, string> | string | undefined, locale: Locale, fallback?: string) => string;
 }
 
 const SystemSettingsContext = createContext<SystemSettingsContextType>({
@@ -110,8 +110,9 @@ export const SystemSettingsProvider = ({
   footerContent?: any;
 }) => {
   
-  const getLocalizedText = (textObj: Record<string, string> | undefined, locale: Locale, fallback = '') => {
+  const getLocalizedText = (textObj: Record<string, string> | string | undefined, locale: Locale, fallback = '') => {
     if (!textObj) return fallback;
+    if (typeof textObj === 'string') return textObj;
     return textObj[locale] || textObj['en'] || textObj['vi'] || fallback;
   };
 

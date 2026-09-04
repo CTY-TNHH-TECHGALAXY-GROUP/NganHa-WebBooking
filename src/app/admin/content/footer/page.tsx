@@ -20,7 +20,20 @@ const DEFAULT_CONTENT = {
     cn: '在胡志明市第一郡的中心体验优质的健康与美容服务。'
   },
   locationsTitle: { vi: 'Chi nhánh', en: 'Locations', kr: '지점', jp: '店舗', cn: '分店' },
+  address: {
+    vi: '11 Ngô Đức Kế, Sài Gòn, Hồ Chí Minh 700000, Vietnam',
+    en: '11 Ngo Duc Ke, Saigon Ward, Ho Chi Minh City 700000, Vietnam',
+    cn: '越南胡志明市西贡 Ngô Đức Kế 街 11 号，邮编 700000',
+    jp: 'ベトナム 700000 ホーチミン市サイゴン、ゴー・ドゥック・ケー通り11番地',
+    kr: '베트남 700000 호찌민시 사이공, 응오득께 거리 11번지'
+  },
   contactTitle: { vi: 'Liên hệ', en: 'Contact', kr: '연락처', jp: '連絡先', cn: '联系我们' },
+  phone: '+84964090277',
+  zalo: '+84964090277',
+  whatsapp: 'https://api.whatsapp.com/send/?phone=84964090277&text=Hello+Oria+Spa&type=phone_number&app_absent=0',
+  wechat: '+84964090277',
+  kakaotalk: 'https://pf.kakao.com/_xjVyxaX',
+  facebook: '',
   copyright: `© ${new Date().getFullYear()} TECHGALAXY GROUP. All rights reserved.`,
 };
 
@@ -36,15 +49,21 @@ export default function FooterContentPage() {
     fetch('/api/admin/system-settings')
       .then(res => res.json())
       .then(data => {
-        if (data.footer_content) {
-          // Merge with default to ensure all fields exist
-          setContent({
-            description: { ...DEFAULT_CONTENT.description, ...(data.footer_content.description || {}) },
-            locationsTitle: { ...DEFAULT_CONTENT.locationsTitle, ...(data.footer_content.locationsTitle || {}) },
-            contactTitle: { ...DEFAULT_CONTENT.contactTitle, ...(data.footer_content.contactTitle || {}) },
-            copyright: data.footer_content.copyright || DEFAULT_CONTENT.copyright,
-          });
-        }
+        const fc = data.footer_content || {};
+        const ss = data.system_settings || {};
+        setContent({
+          description: { ...DEFAULT_CONTENT.description, ...(fc.description || {}) },
+          locationsTitle: { ...DEFAULT_CONTENT.locationsTitle, ...(fc.locationsTitle || {}) },
+          address: { ...DEFAULT_CONTENT.address, ...(fc.address || ss.address || {}) },
+          contactTitle: { ...DEFAULT_CONTENT.contactTitle, ...(fc.contactTitle || {}) },
+          phone: fc.phone ?? ss.phone ?? DEFAULT_CONTENT.phone,
+          zalo: fc.zalo ?? ss.zalo ?? DEFAULT_CONTENT.zalo,
+          whatsapp: fc.whatsapp ?? ss.whatsapp ?? DEFAULT_CONTENT.whatsapp,
+          wechat: fc.wechat ?? ss.wechat ?? DEFAULT_CONTENT.wechat,
+          kakaotalk: fc.kakaotalk ?? ss.kakaotalk ?? DEFAULT_CONTENT.kakaotalk,
+          facebook: fc.facebook ?? ss.facebook ?? '',
+          copyright: fc.copyright || DEFAULT_CONTENT.copyright,
+        });
         setLoading(false);
       })
       .catch(err => {
@@ -60,7 +79,18 @@ export default function FooterContentPage() {
       const res = await fetch('/api/admin/system-settings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ footer_content: content }),
+        body: JSON.stringify({ 
+          footer_content: content,
+          system_settings: {
+            phone: content.phone,
+            zalo: content.zalo,
+            whatsapp: content.whatsapp,
+            wechat: content.wechat,
+            kakaotalk: content.kakaotalk,
+            facebook: content.facebook,
+            address: content.address,
+          }
+        }),
       });
       if (res.ok) {
         setMessage({ type: 'success', text: 'Lưu thông tin Footer thành công!' });
@@ -78,7 +108,7 @@ export default function FooterContentPage() {
     setContent((prev: any) => ({
       ...prev,
       [field]: {
-        ...prev[field],
+        ...(prev[field] || {}),
         [activeLang]: value
       }
     }));
@@ -104,7 +134,7 @@ export default function FooterContentPage() {
             <LayoutTemplate className="text-admin-gold" />
             Thông Tin Footer
           </h1>
-          <p className="text-admin-text-dim mt-2">Quản lý nội dung văn bản hiển thị ở chân trang (Footer).</p>
+          <p className="text-admin-text-dim mt-2">Quản lý nội dung văn bản, địa chỉ chi nhánh và liên hệ hiển thị ở chân trang (Footer).</p>
         </div>
         <button
           onClick={handleSave}
@@ -143,36 +173,48 @@ export default function FooterContentPage() {
       </div>
 
       <div className="space-y-6">
+        {/* Section: Đa ngôn ngữ */}
         <section className="bg-admin-panel border border-admin-line rounded-2xl p-6 shadow-sm">
           <h2 className="text-lg font-bold text-admin-text mb-6 pb-4 border-b border-admin-line-strong">
-            Nội dung Đa ngôn ngữ
+            Nội dung Đa ngôn ngữ ({LANGUAGES.find(l => l.code === activeLang)?.label})
           </h2>
           <div className="space-y-6">
             <div>
-              <label className="block text-sm font-semibold text-admin-text-dim mb-2">Đoạn giới thiệu ngắn</label>
+              <label className="block text-sm font-semibold text-admin-text-dim mb-2">Đoạn giới thiệu thương hiệu ngắn</label>
               <textarea
-                value={content.description[activeLang] || ''}
+                value={content.description?.[activeLang] || ''}
                 onChange={e => handleI18nChange('description', e.target.value)}
                 rows={3}
+                className="w-full bg-admin-bg border border-admin-line-strong rounded-xl px-4 py-3 text-admin-text text-sm focus:border-admin-gold focus:ring-1 focus:ring-admin-gold outline-none transition-colors"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-admin-text-dim mb-2">Địa chỉ chi nhánh (Branch Address / Content)</label>
+              <textarea
+                value={content.address?.[activeLang] || ''}
+                onChange={e => handleI18nChange('address', e.target.value)}
+                rows={2}
+                placeholder="Ví dụ: 11 Ngô Đức Kế, Sài Gòn, Hồ Chí Minh 700000, Vietnam"
                 className="w-full bg-admin-bg border border-admin-line-strong rounded-xl px-4 py-3 text-admin-text text-sm focus:border-admin-gold focus:ring-1 focus:ring-admin-gold outline-none transition-colors"
               />
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-semibold text-admin-text-dim mb-2">Tiêu đề Chi nhánh</label>
+                <label className="block text-sm font-semibold text-admin-text-dim mb-2">Tiêu đề Cột Chi nhánh</label>
                 <input
                   type="text"
-                  value={content.locationsTitle[activeLang] || ''}
+                  value={content.locationsTitle?.[activeLang] || ''}
                   onChange={e => handleI18nChange('locationsTitle', e.target.value)}
                   className="w-full bg-admin-bg border border-admin-line-strong rounded-xl px-4 py-3 text-admin-text text-sm focus:border-admin-gold focus:ring-1 focus:ring-admin-gold outline-none transition-colors"
                 />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-admin-text-dim mb-2">Tiêu đề Liên hệ</label>
+                <label className="block text-sm font-semibold text-admin-text-dim mb-2">Tiêu đề Cột Liên hệ</label>
                 <input
                   type="text"
-                  value={content.contactTitle[activeLang] || ''}
+                  value={content.contactTitle?.[activeLang] || ''}
                   onChange={e => handleI18nChange('contactTitle', e.target.value)}
                   className="w-full bg-admin-bg border border-admin-line-strong rounded-xl px-4 py-3 text-admin-text text-sm focus:border-admin-gold focus:ring-1 focus:ring-admin-gold outline-none transition-colors"
                 />
@@ -180,7 +222,77 @@ export default function FooterContentPage() {
             </div>
           </div>
         </section>
+
+        {/* Section: Liên hệ & Mạng xã hội */}
+        <section className="bg-admin-panel border border-admin-line rounded-2xl p-6 shadow-sm">
+          <h2 className="text-lg font-bold text-admin-text mb-6 pb-4 border-b border-admin-line-strong">
+            Thông tin Liên hệ & Mạng xã hội
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div>
+              <label className="block text-sm font-semibold text-admin-text-dim mb-2">Số Hotline / Điện thoại</label>
+              <input
+                type="text"
+                value={content.phone || ''}
+                onChange={e => handleChange('phone', e.target.value)}
+                placeholder="+84964090277"
+                className="w-full bg-admin-bg border border-admin-line-strong rounded-xl px-4 py-3 text-admin-text text-sm focus:border-admin-gold focus:ring-1 focus:ring-admin-gold outline-none transition-colors"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-admin-text-dim mb-2">Link / SĐT Zalo</label>
+              <input
+                type="text"
+                value={content.zalo || ''}
+                onChange={e => handleChange('zalo', e.target.value)}
+                placeholder="+84964090277 hoặc https://zalo.me/..."
+                className="w-full bg-admin-bg border border-admin-line-strong rounded-xl px-4 py-3 text-admin-text text-sm focus:border-admin-gold focus:ring-1 focus:ring-admin-gold outline-none transition-colors"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-admin-text-dim mb-2">Link / SĐT WhatsApp</label>
+              <input
+                type="text"
+                value={content.whatsapp || ''}
+                onChange={e => handleChange('whatsapp', e.target.value)}
+                placeholder="+84964090277 hoặc link https://wa.me/..."
+                className="w-full bg-admin-bg border border-admin-line-strong rounded-xl px-4 py-3 text-admin-text text-sm focus:border-admin-gold focus:ring-1 focus:ring-admin-gold outline-none transition-colors"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-admin-text-dim mb-2">WeChat ID / Link</label>
+              <input
+                type="text"
+                value={content.wechat || ''}
+                onChange={e => handleChange('wechat', e.target.value)}
+                placeholder="+84964090277 hoặc ID"
+                className="w-full bg-admin-bg border border-admin-line-strong rounded-xl px-4 py-3 text-admin-text text-sm focus:border-admin-gold focus:ring-1 focus:ring-admin-gold outline-none transition-colors"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-admin-text-dim mb-2">Link / ID KakaoTalk</label>
+              <input
+                type="text"
+                value={content.kakaotalk || ''}
+                onChange={e => handleChange('kakaotalk', e.target.value)}
+                placeholder="https://pf.kakao.com/... hoặc ID"
+                className="w-full bg-admin-bg border border-admin-line-strong rounded-xl px-4 py-3 text-admin-text text-sm focus:border-admin-gold focus:ring-1 focus:ring-admin-gold outline-none transition-colors"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-admin-text-dim mb-2">Link Facebook (Để trống nếu không dùng)</label>
+              <input
+                type="text"
+                value={content.facebook || ''}
+                onChange={e => handleChange('facebook', e.target.value)}
+                placeholder="https://facebook.com/..."
+                className="w-full bg-admin-bg border border-admin-line-strong rounded-xl px-4 py-3 text-admin-text text-sm focus:border-admin-gold focus:ring-1 focus:ring-admin-gold outline-none transition-colors"
+              />
+            </div>
+          </div>
+        </section>
         
+        {/* Section: Cài đặt chung */}
         <section className="bg-admin-panel border border-admin-line rounded-2xl p-6 shadow-sm">
           <h2 className="text-lg font-bold text-admin-text mb-6 pb-4 border-b border-admin-line-strong">
             Cài đặt chung

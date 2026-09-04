@@ -76,13 +76,25 @@ const FloatingWidgets = () => {
   const hotlineUrl = phone ? `tel:${phone}` : SOCIAL_LINKS.HOTLINE;
   
   const whatsapp = systemSettings?.whatsapp;
-  const whatsappUrl = whatsapp
-    ? (whatsapp.startsWith('http') ? whatsapp : `https://wa.me/${whatsapp.replace(/\D/g, '')}`)
-    : `https://wa.me/${cleanPhone || '84964090277'}`;
+  let whatsappUrl = `https://wa.me/${cleanPhone || '84964090277'}`;
+  if (whatsapp && typeof whatsapp === 'string' && whatsapp.trim()) {
+    const trimmed = whatsapp.trim();
+    if (trimmed.startsWith('http')) {
+      if (trimmed.includes('phone=') && !/phone=\d+/.test(trimmed)) {
+        whatsappUrl = trimmed.replace('phone=', `phone=${cleanPhone || '84964090277'}`);
+      } else {
+        whatsappUrl = trimmed;
+      }
+    } else {
+      const digits = trimmed.replace(/\D/g, '');
+      whatsappUrl = digits ? `https://wa.me/${digits}` : `https://wa.me/${cleanPhone || '84964090277'}`;
+    }
+  }
 
   const zalo = systemSettings?.zalo;
+  const cleanZalo = zalo ? zalo.replace(/\D/g, '') : '';
   const zaloUrl = zalo
-    ? (zalo.startsWith('http') ? zalo : `https://zalo.me/${zalo.replace(/\D/g, '')}`)
+    ? (zalo.startsWith('http') ? zalo : (cleanZalo ? `https://zalo.me/${cleanZalo}` : `https://zalo.me/${cleanPhone || '0964090277'}`))
     : `https://zalo.me/${cleanPhone || '0964090277'}`;
 
   const wechat = systemSettings?.wechat;

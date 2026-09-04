@@ -49,9 +49,15 @@ export async function POST(request: Request) {
     const upsertData = [];
 
     if (system_settings !== undefined) {
+      const { data: existingSettings } = await supabase
+        .from('SystemConfigs')
+        .select('value')
+        .eq('key', 'system_settings')
+        .maybeSingle();
+
       upsertData.push({
         key: 'system_settings',
-        value: system_settings,
+        value: { ...(existingSettings?.value || {}), ...system_settings },
         updated_at: new Date().toISOString()
       });
     }
@@ -81,9 +87,15 @@ export async function POST(request: Request) {
     }
 
     if (footer_content !== undefined) {
+      const { data: existingFooter } = await supabase
+        .from('SystemConfigs')
+        .select('value')
+        .eq('key', 'footer_content')
+        .maybeSingle();
+
       upsertData.push({
         key: 'footer_content',
-        value: footer_content,
+        value: { ...(existingFooter?.value || {}), ...footer_content },
         updated_at: new Date().toISOString()
       });
     }

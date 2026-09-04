@@ -118,20 +118,59 @@ const Footer = () => {
   }, []);
 
   const phone = footerData?.phone || settingsData?.phone || '+84964090277';
-  const facebook = footerData?.facebook || settingsData?.facebook || 'https://facebook.com';
-  const zalo = footerData?.zalo || settingsData?.zalo || `https://zalo.me/${phone.replace(/\D/g, '')}`;
-  const whatsapp = footerData?.whatsapp || settingsData?.whatsapp;
-  const wechat = footerData?.wechat || settingsData?.wechat;
-  const kakaotalk = footerData?.kakaotalk || settingsData?.kakaotalk;
-
   const cleanPhone = phone.replace(/\D/g, '');
-  const whatsappUrl = whatsapp
-    ? (whatsapp.startsWith('http') ? whatsapp : `https://wa.me/${whatsapp.replace(/\D/g, '')}`)
-    : (cleanPhone ? `https://wa.me/${cleanPhone}` : undefined);
 
-  const kakaotalkUrl = kakaotalk
-    ? (kakaotalk.startsWith('http') ? kakaotalk : `https://open.kakao.com/${kakaotalk}`)
-    : undefined;
+  const facebook = footerData?.facebook || settingsData?.facebook;
+  let facebookUrl: string | undefined = undefined;
+  let facebookDisplay = '';
+  if (facebook && typeof facebook === 'string' && facebook.trim()) {
+    const trimmed = facebook.trim();
+    facebookUrl = trimmed.startsWith('http') ? trimmed : `https://${trimmed}`;
+    const match = trimmed.match(/(?:facebook\.com|fb\.com)\/([^/?#]+)/);
+    facebookDisplay = match ? match[1] : 'ORIA SPA';
+  }
+
+  const zalo = footerData?.zalo || settingsData?.zalo;
+  let zaloUrl: string | undefined = undefined;
+  let zaloDisplay = '';
+  if (zalo && typeof zalo === 'string' && zalo.trim()) {
+    const trimmed = zalo.trim();
+    const cleanZalo = trimmed.replace(/\D/g, '');
+    zaloUrl = trimmed.startsWith('http') ? trimmed : (cleanZalo ? `https://zalo.me/${cleanZalo}` : undefined);
+    zaloDisplay = trimmed.startsWith('http') ? (cleanZalo ? `+${cleanZalo}` : 'Zalo Chat') : trimmed;
+  }
+
+  const rawWhatsapp = footerData?.whatsapp || settingsData?.whatsapp;
+  let whatsappUrl: string | undefined = undefined;
+  let whatsappDisplay = '';
+  if (rawWhatsapp && typeof rawWhatsapp === 'string' && rawWhatsapp.trim()) {
+    const trimmed = rawWhatsapp.trim();
+    if (trimmed.startsWith('http')) {
+      if (trimmed.includes('phone=') && !/phone=\d+/.test(trimmed)) {
+        whatsappUrl = trimmed.replace('phone=', `phone=${cleanPhone || '84964090277'}`);
+      } else {
+        whatsappUrl = trimmed;
+      }
+      const match = trimmed.match(/(?:phone=|wa\.me\/)(\d+)/);
+      whatsappDisplay = match ? `+${match[1]}` : (cleanPhone ? `+${cleanPhone}` : 'WhatsApp');
+    } else {
+      const waDigits = trimmed.replace(/\D/g, '');
+      whatsappUrl = waDigits ? `https://wa.me/${waDigits}` : undefined;
+      whatsappDisplay = trimmed.startsWith('+') ? trimmed : `+${trimmed}`;
+    }
+  }
+
+  const wechat = footerData?.wechat || settingsData?.wechat;
+
+  const rawKakao = footerData?.kakaotalk || settingsData?.kakaotalk;
+  let kakaotalkUrl: string | undefined = undefined;
+  let kakaotalkDisplay = '';
+  if (rawKakao && typeof rawKakao === 'string' && rawKakao.trim()) {
+    const trimmed = rawKakao.trim();
+    kakaotalkUrl = trimmed.startsWith('http') ? trimmed : `https://pf.kakao.com/${trimmed}`;
+    const match = trimmed.match(/(?:pf\.kakao\.com|open\.kakao\.com)\/([^/?#]+)/);
+    kakaotalkDisplay = match ? match[1] : (trimmed.startsWith('http') ? 'KakaoTalk' : trimmed);
+  }
 
   // Smart detect: if user entered address in locationsTitle, use it for address
   const isLocationsTitleAnAddress = footerData?.locationsTitle && 
@@ -139,10 +178,12 @@ const Footer = () => {
       ? footerData.locationsTitle.includes('Ngô Đức Kế') || footerData.locationsTitle.includes('HCM') || footerData.locationsTitle.includes('Vietnam')
       : footerData.locationsTitle.vi?.includes('Ngô Đức Kế') || footerData.locationsTitle.en?.includes('Ngo Duc Ke'));
 
+  const rawAddress = footerData?.address || (isLocationsTitleAnAddress ? footerData.locationsTitle : undefined) || settingsData?.address;
+
   const addressText = getLocalizedText(
-    footerData?.address || (isLocationsTitleAnAddress ? footerData.locationsTitle : undefined),
+    rawAddress,
     currentLang as any,
-    settingsData?.address?.[currentLang] || '11 Ngô Đức Kế, Q.1, TP.HCM & 6B Thi Sách, Q.1, TP.HCM'
+    typeof rawAddress === 'string' ? rawAddress : (rawAddress?.vi || '11 Ngô Đức Kế, Sài Gòn, Hồ Chí Minh 700000, Vietnam')
   );
 
   const descText = getLocalizedText(
@@ -235,26 +276,40 @@ const Footer = () => {
             </h4>
             <div className="w-12 h-[1px] bg-[rgba(212,175,55,0.3)] mb-2"></div>
             <ul className="text-[15px] text-[#f7ebc7]/70 space-y-3 font-light">
-              <li>Hotline: <a href={`tel:${phone}`} className="text-[#D4AF37] hover:text-[#f7ebc7] transition-colors font-medium">{phone}</a></li>
-              {whatsappUrl && (
-                <li><a href={whatsappUrl} target="_blank" rel="noreferrer" className="hover:text-[#D4AF37] transition-colors">WhatsApp</a></li>
+              {phone && (
+                <li>
+                  Hotline: <a href={`tel:${phone.replace(/[^\d+]/g, '')}`} className="text-[#D4AF37] hover:text-[#f7ebc7] transition-colors font-medium">{phone}</a>
+                </li>
               )}
-              {zalo && (
-                <li><a href={zalo.startsWith('http') ? zalo : `https://zalo.me/${zalo.replace(/\D/g, '')}`} target="_blank" rel="noreferrer" className="hover:text-[#D4AF37] transition-colors">Zalo</a></li>
+              {whatsappUrl && (
+                <li>
+                  WhatsApp: <a href={whatsappUrl} target="_blank" rel="noreferrer" className="text-[#D4AF37] hover:text-[#f7ebc7] transition-colors font-medium">{whatsappDisplay}</a>
+                </li>
+              )}
+              {zaloUrl && (
+                <li>
+                  Zalo: <a href={zaloUrl} target="_blank" rel="noreferrer" className="text-[#D4AF37] hover:text-[#f7ebc7] transition-colors font-medium">{zaloDisplay}</a>
+                </li>
               )}
               {wechat && (
                 <li>
                   {wechat.startsWith('http') ? (
-                    <a href={wechat} target="_blank" rel="noreferrer" className="hover:text-[#D4AF37] transition-colors">WeChat</a>
+                    <>WeChat: <a href={wechat} target="_blank" rel="noreferrer" className="text-[#D4AF37] hover:text-[#f7ebc7] transition-colors font-medium">{wechat}</a></>
                   ) : (
                     <span>WeChat: <span className="text-[#D4AF37] font-medium">{wechat}</span></span>
                   )}
                 </li>
               )}
               {kakaotalkUrl && (
-                <li><a href={kakaotalkUrl} target="_blank" rel="noreferrer" className="hover:text-[#D4AF37] transition-colors">KakaoTalk</a></li>
+                <li>
+                  KakaoTalk: <a href={kakaotalkUrl} target="_blank" rel="noreferrer" className="text-[#D4AF37] hover:text-[#f7ebc7] transition-colors font-medium">{kakaotalkDisplay}</a>
+                </li>
               )}
-              {facebook && <li><a href={facebook} target="_blank" rel="noreferrer" className="hover:text-[#D4AF37] transition-colors">Facebook</a></li>}
+              {facebookUrl && (
+                <li>
+                  Facebook: <a href={facebookUrl} target="_blank" rel="noreferrer" className="text-[#D4AF37] hover:text-[#f7ebc7] transition-colors font-medium">{facebookDisplay}</a>
+                </li>
+              )}
             </ul>
           </div>
         </div>
