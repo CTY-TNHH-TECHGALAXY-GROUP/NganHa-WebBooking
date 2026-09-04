@@ -80,11 +80,13 @@ export async function POST(request: Request) {
       staffGender,
       customerGender,
       lang,
-      selectedServices,
+      selectedServices: rawSelectedServices,
+      services: rawServices,
       paymentMethod,
       amountPaid,
       changeDenominations,
     } = body;
+    const selectedServices = rawSelectedServices || rawServices || [];
 
     const idempotencyKey =
       body.idempotencyKey ||
