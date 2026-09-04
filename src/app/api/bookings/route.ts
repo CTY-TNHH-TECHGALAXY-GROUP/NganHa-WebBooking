@@ -119,23 +119,44 @@ export async function POST(request: Request) {
     if (note?.trim()) notesParts.push(`Ghi chú chung: ${note.trim()}`);
     const finalNotes = notesParts.join(' | ') || null;
 
+    const isEn = lang === 'en';
+    const isCn = lang === 'cn';
+    const isJp = lang === 'jp';
+    const isKr = lang === 'kr';
+
     const focusParts: string[] = [];
     selectedServices.forEach((svc: any) => {
       const opts = svc.options;
       if (opts) {
         const itemNotes = [];
-        if (opts.notes?.tag0) itemNotes.push('Phụ nữ có thai');
-        if (opts.notes?.tag1) itemNotes.push('Có dị ứng');
-        if (opts.bodyParts?.focus?.length) itemNotes.push(`Tập trung: ${opts.bodyParts.focus.join(', ')}`);
-        if (opts.bodyParts?.avoid?.length) itemNotes.push(`Tránh: ${opts.bodyParts.avoid.join(', ')}`);
-        if (opts.strength) {
-          const sMap: Record<string, string> = { soft: 'Nhẹ', medium: 'Vừa', strong: 'Mạnh' };
-          itemNotes.push(`Lực: ${sMap[opts.strength] || opts.strength}`);
+        if (opts.notes?.tag0) {
+          itemNotes.push(isEn ? 'Pregnant' : isCn ? '孕妇' : isJp ? '妊娠中' : isKr ? '임산부' : 'Phụ nữ có thai');
         }
-        if (opts.notes?.content) itemNotes.push(`Chú ý: ${opts.notes.content}`);
+        if (opts.notes?.tag1) {
+          itemNotes.push(isEn ? 'Allergies' : isCn ? '有过敏' : isJp ? 'アレルギーあり' : isKr ? '알레르기 있음' : 'Có dị ứng');
+        }
+        if (opts.bodyParts?.focus?.length) {
+          const lbl = isEn ? 'Focus' : isCn ? '重点' : isJp ? '集中' : isKr ? '집중' : 'Tập trung';
+          itemNotes.push(`${lbl}: ${opts.bodyParts.focus.join(', ')}`);
+        }
+        if (opts.bodyParts?.avoid?.length) {
+          const lbl = isEn ? 'Avoid' : isCn ? '避开' : isJp ? '避ける' : isKr ? '피할 부위' : 'Tránh';
+          itemNotes.push(`${lbl}: ${opts.bodyParts.avoid.join(', ')}`);
+        }
+        if (opts.strength) {
+          const sMapVi: Record<string, string> = { soft: 'Nhẹ', light: 'Nhẹ', medium: 'Vừa', normal: 'Vừa', strong: 'Mạnh', hard: 'Mạnh' };
+          const sMapEn: Record<string, string> = { soft: 'Light', light: 'Light', medium: 'Medium', normal: 'Medium', strong: 'Firm', hard: 'Firm' };
+          const strengthLabel = isEn ? 'Pressure' : isCn ? '力度' : isJp ? '強さ' : isKr ? '강도' : 'Lực';
+          const strengthVal = isEn ? (sMapEn[opts.strength] || opts.strength) : (sMapVi[opts.strength] || opts.strength);
+          itemNotes.push(`${strengthLabel}: ${strengthVal}`);
+        }
+        if (opts.notes?.content) {
+          const lbl = isEn ? 'Note' : isCn ? '备注' : isJp ? '備考' : isKr ? '메모' : 'Chú ý';
+          itemNotes.push(`${lbl}: ${opts.notes.content}`);
+        }
         
         if (itemNotes.length > 0) {
-          focusParts.push(`- ${svc.name}: ${itemNotes.join(' | ')}`);
+          focusParts.push(`• ${svc.name || 'Dịch vụ'}: ${itemNotes.join(' | ')}`);
         }
       }
     });
@@ -237,18 +258,11 @@ export async function POST(request: Request) {
 
     // ── 6. Gửi email xác nhận tự động cho khách ───────
     if (email && typeof email === 'string' && email.includes('@')) {
-      let therapistName: string | undefined = undefined;
       const explicitStaffGender = staffGender && staffGender !== 'any' ? staffGender : undefined;
       const explicitServiceTherapist = selectedServices.find(
         (s: any) => s.options?.therapist && s.options.therapist !== 'any'
       )?.options?.therapist;
-      const chosenGender = explicitStaffGender || explicitServiceTherapist;
-
-      if (chosenGender === 'female') {
-        therapistName = lang === 'vi' ? 'Nữ (Female Therapist)' : 'Female Therapist';
-      } else if (chosenGender === 'male') {
-        therapistName = lang === 'vi' ? 'Nam (Male Therapist)' : 'Male Therapist';
-      }
+      const chosenGender = explicitStaffGender || explicitServiceTherapist || 'any';
 
       sendBookingConfirmationEmail({
         bookingId,
@@ -257,12 +271,14 @@ export async function POST(request: Request) {
         customerPhone: phone || '',
         date: date || '',
         time: time || '',
+        guests: guests ? Number(guests) : 1,
         branchName: branchName || BRANCH_DEFAULT,
         services: selectedServices,
         totalAmount,
-        therapist: therapistName,
+        therapist: chosenGender,
         lang: lang || 'vi',
-        notes: finalNotes || undefined,
+        notes: note?.trim() || undefined,
+        focusAreaNote: finalFocusAreaNote || undefined,
       }).catch((mailErr) => {
         console.error('⚠️ [API Bookings] Lỗi gửi email xác nhận:', mailErr);
       });

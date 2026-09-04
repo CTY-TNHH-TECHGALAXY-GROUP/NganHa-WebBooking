@@ -1,4 +1,4 @@
-// src/lib/mailer.ts - Oria Spa Booking Received (Auto-confirmation) Email Template
+// src/lib/mailer.ts - Oria Spa Booking Received (Auto-confirmation) Email Service
 import nodemailer from 'nodemailer';
 
 export interface BookingEmailServiceItem {
@@ -16,12 +16,14 @@ export interface BookingEmailPayload {
   customerPhone: string;
   date: string;
   time: string;
+  guests?: number;
   branchName?: string;
   services: BookingEmailServiceItem[];
   totalAmount: number;
   therapist?: string;
   lang?: string;
   notes?: string;
+  focusAreaNote?: string;
 }
 
 const I18N_TEMPLATE_1: Record<string, {
@@ -33,14 +35,19 @@ const I18N_TEMPLATE_1: Record<string, {
   dateLabel: string;
   timeLabel: string;
   durationLabel: string;
+  guestsLabel: string;
+  guestsSuffix: (n: number) => string;
   therapistLabel: string;
+  therapistMap: Record<string, string>;
   locationLabel: string;
+  bookingCodeLabel: string;
+  totalLabel: string;
+  preferencesLabel: string;
+  notesLabel: string;
   followUp: string;
   questions: (phone: string) => string;
   signoffGreeting: string;
   signoffTeam: string;
-  bookingCodeLabel: string;
-  totalLabel: string;
 }> = {
   en: {
     subject: "We've received your booking request — Oria Spa",
@@ -51,14 +58,19 @@ const I18N_TEMPLATE_1: Record<string, {
     dateLabel: "Date",
     timeLabel: "Time",
     durationLabel: "Duration",
-    therapistLabel: "Therapist (if applicable)",
+    guestsLabel: "Number of Guests",
+    guestsSuffix: (n) => `${n} guest${n > 1 ? 's' : ''}`,
+    therapistLabel: "Therapist",
+    therapistMap: { female: 'Female', male: 'Male', any: 'Any Therapist' },
     locationLabel: "Location",
+    bookingCodeLabel: "Booking Code",
+    totalLabel: "Estimated Total",
+    preferencesLabel: "Treatment Preferences & Focus Areas",
+    notesLabel: "Special Requests / Notes",
     followUp: "You'll receive a confirmation email shortly once we've secured your appointment. If we need to adjust anything, we'll be in touch.",
     questions: (phone) => `Questions in the meantime? Just reply to this email or call us at ${phone}.`,
     signoffGreeting: "Warmly,",
     signoffTeam: "The Oria Spa Team",
-    bookingCodeLabel: "Booking Code",
-    totalLabel: "Estimated Total",
   },
   vi: {
     subject: "Chúng tôi đã nhận được yêu cầu đặt lịch của bạn — Oria Spa",
@@ -69,14 +81,19 @@ const I18N_TEMPLATE_1: Record<string, {
     dateLabel: "Ngày hẹn",
     timeLabel: "Giờ hẹn",
     durationLabel: "Thời lượng",
-    therapistLabel: "Kỹ thuật viên (nếu có)",
+    guestsLabel: "Số lượng khách",
+    guestsSuffix: (n) => `${n} khách`,
+    therapistLabel: "Kỹ thuật viên",
+    therapistMap: { female: 'Nữ', male: 'Nam', any: 'Ngẫu nhiên' },
     locationLabel: "Chi nhánh",
+    bookingCodeLabel: "Mã đặt lịch",
+    totalLabel: "Tổng thanh toán dự kiến",
+    preferencesLabel: "Yêu cầu & Lưu ý trị liệu",
+    notesLabel: "Ghi chú của khách hàng",
     followUp: "Bạn sẽ nhận được email xác nhận chính thức ngay sau khi lịch hẹn được sắp xếp hoàn tất. Nếu cần điều chỉnh bất kỳ điều gì, chúng tôi sẽ chủ động liên hệ với bạn.",
     questions: (phone) => `Trong thời gian chờ đợi, nếu có bất kỳ thắc mắc nào, bạn chỉ cần phản hồi email này hoặc gọi cho chúng tôi qua số ${phone}.`,
     signoffGreeting: "Thân ái,",
     signoffTeam: "Đội ngũ Oria Spa",
-    bookingCodeLabel: "Mã đặt lịch",
-    totalLabel: "Tổng thanh toán dự kiến",
   },
   cn: {
     subject: "我们已收到您的预约申请 — Oria Spa",
@@ -87,14 +104,19 @@ const I18N_TEMPLATE_1: Record<string, {
     dateLabel: "预约日期",
     timeLabel: "预约时间",
     durationLabel: "服务时长",
-    therapistLabel: "理疗师（如有）",
+    guestsLabel: "预约人数",
+    guestsSuffix: (n) => `${n} 位`,
+    therapistLabel: "理疗师",
+    therapistMap: { female: '女理疗师', male: '男理疗师', any: '随机安排' },
     locationLabel: "分店地址",
+    bookingCodeLabel: "预约编号",
+    totalLabel: "预计总额",
+    preferencesLabel: "理疗偏好与特别要求",
+    notesLabel: "客户特别备注",
     followUp: "确认您的预约时间后，我们将很快向您发送正式确认邮件。如需作任何调整，我们会主动与您联系。",
     questions: (phone) => `在此期间如有任何疑问，可直接回复此邮件，或致电联系我们：${phone}。`,
     signoffGreeting: "此致，",
     signoffTeam: "Oria Spa 团队敬上",
-    bookingCodeLabel: "预约编号",
-    totalLabel: "预计总额",
   },
   jp: {
     subject: "ご予約リクエストを受け付けました — Oria Spa",
@@ -105,14 +127,19 @@ const I18N_TEMPLATE_1: Record<string, {
     dateLabel: "日付",
     timeLabel: "時間",
     durationLabel: "所要時間",
-    therapistLabel: "セラピスト（希望ある場合）",
+    guestsLabel: "ご利用人数",
+    guestsSuffix: (n) => `${n} 名様`,
+    therapistLabel: "セラピスト",
+    therapistMap: { female: '女性', male: '男性', any: 'おまかせ' },
     locationLabel: "店舗所在地",
+    bookingCodeLabel: "予約番号",
+    totalLabel: "お支払い概算",
+    preferencesLabel: "施術のご要望・注意事項",
+    notesLabel: "お客様からの備考",
     followUp: "予約枠が確保され次第、確認メールをお送りいたします。調整が必要な場合はご連絡させていただきます。",
     questions: (phone) => `ご不明な点がございましたら、このメールにご返信いただくか、${phone} までお気軽にお電話ください。`,
     signoffGreeting: "敬具",
     signoffTeam: "Oria Spa チームより",
-    bookingCodeLabel: "予約番号",
-    totalLabel: "お支払い概算",
   },
   kr: {
     subject: "예약 요청이 정상 접수되었습니다 — Oria Spa",
@@ -123,14 +150,19 @@ const I18N_TEMPLATE_1: Record<string, {
     dateLabel: "날짜",
     timeLabel: "시간",
     durationLabel: "소요 시간",
-    therapistLabel: "테라피스트(해당 시)",
+    guestsLabel: "방문 인원",
+    guestsSuffix: (n) => `${n} 명`,
+    therapistLabel: "테라피스트",
+    therapistMap: { female: '여성', male: '남성', any: '지정 없음' },
     locationLabel: "지점 위치",
+    bookingCodeLabel: "예약 번호",
+    totalLabel: "예상 결제 금액",
+    preferencesLabel: "맞춤 요청 및 참고 사항",
+    notesLabel: "고객 요청 메모",
     followUp: "예약이 확정되는 대로 확인 이메일을 보내드리겠습니다. 변경 사항이 있을 경우 별도로 연락드리겠습니다.",
     questions: (phone) => `문의 사항이 있으시면 본 이메일에 답장해 주시거나 ${phone} 번으로 전화해 주시기 바랍니다.`,
     signoffGreeting: "감사합니다,",
     signoffTeam: "Oria Spa 팀 드림",
-    bookingCodeLabel: "예약 번호",
-    totalLabel: "예상 결제 금액",
   },
 };
 
@@ -167,12 +199,14 @@ export async function sendBookingConfirmationEmail(payload: BookingEmailPayload)
       customerPhone,
       date,
       time,
+      guests = 1,
       branchName = '11 Ngô Đức Kế, Q.1, TP.HCM & 6B Thi Sách, Q.1, TP.HCM',
       services = [],
       totalAmount = 0,
       therapist,
       lang = 'vi',
       notes,
+      focusAreaNote,
     } = payload;
 
     if (!customerEmail || !customerEmail.includes('@')) {
@@ -182,11 +216,11 @@ export async function sendBookingConfirmationEmail(payload: BookingEmailPayload)
 
     const transporter = getTransporter();
     if (!transporter) {
-      console.warn('[Mailer] Cannot send email: transporter not configured');
+      console.warn('[Mailer] Cannot send email: transporter not configured (check SMTP_USER and SMTP_PASS)');
       return { success: false, reason: 'Transporter not configured' };
     }
 
-    const t = I18N_TEMPLATE_1[lang] || I18N_TEMPLATE_1.en;
+    const t = I18N_TEMPLATE_1[lang] || I18N_TEMPLATE_1.vi;
     const fromName = process.env.SMTP_FROM_NAME || 'Oria Spa';
     const fromEmail = process.env.SMTP_FROM_EMAIL || process.env.SMTP_USER || 'info@techgalaxygroup.com';
     const replyTo = process.env.SMTP_REPLY_TO || fromEmail;
@@ -196,17 +230,25 @@ export async function sendBookingConfirmationEmail(payload: BookingEmailPayload)
     const serviceNames = services.map(s => s.name || 'Oria Spa Treatment').join(', ');
     const totalDuration = services.reduce((acc, s) => acc + (Number(s.duration) || 0), 0);
     const durationDisplay = totalDuration > 0 ? `${totalDuration} mins` : (services[0]?.duration ? `${services[0].duration} mins` : '-');
-    // Localized default for therapist when not specified
-    const defaultTherapistMap: Record<string, string> = {
-      vi: 'Ngẫu nhiên (Bất kỳ KTV)',
-      en: 'Any Available Therapist',
-      cn: '随机安排（任何可用理疗师）',
-      jp: 'おまかせ（指定なし）',
-      kr: '지정 없음 (임의 배정)',
-    };
-    const therapistDisplay = therapist || defaultTherapistMap[lang] || defaultTherapistMap.en;
 
-    // Plain Text Version (Exact match to Template 1 in PDF)
+    // Guests count formatted
+    const guestCount = guests && Number(guests) > 0 ? Number(guests) : 1;
+    const guestsDisplay = t.guestsSuffix(guestCount);
+
+    // Resolve therapist strictly in single language (no bilingual tags)
+    const rawTherapist = (therapist || '').toLowerCase().trim();
+    let therapistDisplay = '';
+    if (rawTherapist.includes('female') || rawTherapist.includes('nữ') || rawTherapist === 'female') {
+      therapistDisplay = t.therapistMap.female;
+    } else if (rawTherapist.includes('male') || rawTherapist.includes('nam') || rawTherapist === 'male') {
+      therapistDisplay = t.therapistMap.male;
+    } else if (rawTherapist && rawTherapist !== 'any' && rawTherapist !== 'ngẫu nhiên' && rawTherapist !== 'random') {
+      therapistDisplay = therapist!;
+    } else {
+      therapistDisplay = t.therapistMap.any;
+    }
+
+    // Plain Text Version (Exact structure matching Template 1 in PDF with guests & notes)
     const plainText = `
 ${t.greeting(customerName)}
 
@@ -218,11 +260,13 @@ ${t.heading}
 • ${t.dateLabel}: ${date}
 • ${t.timeLabel}: ${time}
 • ${t.durationLabel}: ${durationDisplay}
+• ${t.guestsLabel}: ${guestsDisplay}
 • ${t.therapistLabel}: ${therapistDisplay}
 • ${t.locationLabel}: ${branchName}
 • ${t.bookingCodeLabel}: ${bookingId}
 ${totalAmount > 0 ? `• ${t.totalLabel}: ${formatVND(totalAmount)}` : ''}
-${notes ? `• Special Requests: ${notes}` : ''}
+${focusAreaNote ? `\n• ${t.preferencesLabel}:\n${focusAreaNote}` : ''}
+${notes ? `\n• ${t.notesLabel}: ${notes}` : ''}
 
 ${t.followUp}
 
@@ -275,7 +319,7 @@ ${t.signoffTeam}
             
             <table width="100%" cellpadding="0" cellspacing="0" style="font-size: 14px; line-height: 1.7;">
               <tr>
-                <td style="padding: 5px 0; color: rgba(247, 235, 199, 0.6); width: 160px; vertical-align: top;">
+                <td style="padding: 5px 0; color: rgba(247, 235, 199, 0.6); width: 170px; vertical-align: top;">
                   • <strong>${t.serviceLabel}:</strong>
                 </td>
                 <td style="padding: 5px 0; color: #ffffff; font-weight: 500;">
@@ -308,9 +352,17 @@ ${t.signoffTeam}
               </tr>
               <tr>
                 <td style="padding: 5px 0; color: rgba(247, 235, 199, 0.6); vertical-align: top;">
+                  • <strong>${t.guestsLabel}:</strong>
+                </td>
+                <td style="padding: 5px 0; color: #ffffff; font-weight: 500;">
+                  ${guestsDisplay}
+                </td>
+              </tr>
+              <tr>
+                <td style="padding: 5px 0; color: rgba(247, 235, 199, 0.6); vertical-align: top;">
                   • <strong>${t.therapistLabel}:</strong>
                 </td>
-                <td style="padding: 5px 0; color: #ffffff;">
+                <td style="padding: 5px 0; color: #ffffff; font-weight: 500;">
                   ${therapistDisplay}
                 </td>
               </tr>
@@ -340,13 +392,29 @@ ${t.signoffTeam}
                 </td>
               </tr>
               ` : ''}
+
+              ${focusAreaNote ? `
+              <tr>
+                <td colspan="2" style="padding: 12px 0 6px; border-top: 1px dashed rgba(247, 235, 199, 0.15);">
+                  <div style="color: #D4AF37; font-size: 13px; font-weight: 600; margin-bottom: 6px;">
+                    • ${t.preferencesLabel}:
+                  </div>
+                  <div style="background-color: rgba(255, 255, 255, 0.03); border: 1px solid rgba(212, 175, 55, 0.2); border-radius: 8px; padding: 10px 14px; color: #f7ebc7; font-size: 13px; line-height: 1.6; white-space: pre-line;">
+${focusAreaNote}
+                  </div>
+                </td>
+              </tr>
+              ` : ''}
+
               ${notes ? `
               <tr>
-                <td style="padding: 5px 0; color: rgba(247, 235, 199, 0.6); vertical-align: top;">
-                  • <strong>Special Request:</strong>
-                </td>
-                <td style="padding: 5px 0; color: #f7ebc7; font-style: italic;">
-                  ${notes}
+                <td colspan="2" style="padding: 12px 0 6px; border-top: 1px dashed rgba(247, 235, 199, 0.15);">
+                  <div style="color: #D4AF37; font-size: 13px; font-weight: 600; margin-bottom: 6px;">
+                    • ${t.notesLabel}:
+                  </div>
+                  <div style="background-color: rgba(255, 255, 255, 0.03); border: 1px solid rgba(212, 175, 55, 0.2); border-radius: 8px; padding: 10px 14px; color: #f7ebc7; font-size: 13px; line-height: 1.6; white-space: pre-line; font-style: italic;">
+${notes}
+                  </div>
                 </td>
               </tr>
               ` : ''}
