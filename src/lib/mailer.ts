@@ -195,7 +195,83 @@ function getTransporter() {
 }
 
 function formatVND(amount: number) {
-  return new Intl.NumberFormat('vi-VN').format(amount) + ' ₫';
+  return new Intl.NumberFormat('vi-VN').format(amount) + '\u00A0₫';
+}
+
+function renderPreferenceItemHtml(item: string): string {
+  let text = item.trim();
+  if (!text) return '';
+
+  text = text.replace(/^[•\-\*]\s*/, '').trim();
+
+  // Header like [Service Name]
+  if (/^\[.*\]$/.test(text)) {
+    return `<div style="font-weight: 600; color: #D4AF37; margin-top: 8px; margin-bottom: 4px; font-size: 13px; letter-spacing: 0.3px;">${text}</div>`;
+  }
+
+  // Tag badge
+  const isTag = /^(Phòng riêng|Private Room|包间|個室|프라이빗 룸|Phụ nữ có thai|Pregnant|孕期|妊娠中|임산부|Có dị ứng|Allergies|过敏|アレルギー|알레르기)/i.test(text);
+  if (isTag && !text.includes(':')) {
+    return `<div style="margin-bottom: 6px;"><span style="display: inline-block; padding: 2px 10px; background-color: rgba(212, 175, 55, 0.15); border: 1px solid rgba(212, 175, 55, 0.45); border-radius: 12px; font-size: 12px; color: #f7ebc7; font-weight: 500;">🏷️ ${text}</span></div>`;
+  }
+
+  // Key: Value
+  const colonIdx = text.indexOf(':');
+  if (colonIdx > 0 && colonIdx < 30) {
+    const key = text.slice(0, colonIdx).trim();
+    const val = text.slice(colonIdx + 1).trim();
+    return `<div style="margin: 3px 0; font-size: 13px; line-height: 1.5;"><span style="color: rgba(247, 235, 199, 0.65); font-weight: 600;">• ${key}:</span> <span style="color: #ffffff; font-weight: 500;">${val}</span></div>`;
+  }
+
+  return `<div style="margin: 3px 0; font-size: 13px; line-height: 1.5; color: #f7ebc7;">• ${text}</div>`;
+}
+
+function renderPreferencesHtml(rawFocusNote?: string): string {
+  if (!rawFocusNote) return '';
+
+  const lines = rawFocusNote
+    .split(/\r?\n/)
+    .map(l => l.trim())
+    .filter(Boolean);
+
+  let itemsHtml = '';
+  lines.forEach(line => {
+    if (line.includes(' | ')) {
+      let prefix = '';
+      let remaining = line;
+      const firstColon = line.indexOf(':');
+      if (firstColon > 0 && firstColon < 40 && !line.slice(0, firstColon).toLowerCase().includes('tập trung') && !line.slice(0, firstColon).toLowerCase().includes('focus')) {
+        prefix = line.slice(0, firstColon).trim();
+        remaining = line.slice(firstColon + 1).trim();
+        itemsHtml += `<div style="font-weight: 600; color: #D4AF37; margin-top: 6px; margin-bottom: 4px; font-size: 13px;">${prefix}</div>`;
+      }
+      const parts = remaining.split(' | ').map(p => p.trim()).filter(Boolean);
+      parts.forEach(part => {
+        itemsHtml += renderPreferenceItemHtml(part);
+      });
+    } else {
+      itemsHtml += renderPreferenceItemHtml(line);
+    }
+  });
+
+  return `
+    <div style="background-color: rgba(255, 255, 255, 0.03); border: 1px solid rgba(212, 175, 55, 0.22); border-radius: 10px; padding: 12px 14px; color: #f7ebc7;">
+      ${itemsHtml}
+    </div>
+  `.trim();
+}
+
+function formatPreferencesText(rawNote: string): string {
+  if (!rawNote) return '';
+  return rawNote
+    .split(/\r?\n/)
+    .map(line => {
+      if (line.includes(' | ')) {
+        return line.split(' | ').map(p => `  - ${p.replace(/^[•\-\*]\s*/, '').trim()}`).join('\n');
+      }
+      return line.startsWith('•') || line.startsWith('-') ? `  ${line}` : `  - ${line}`;
+    })
+    .join('\n');
 }
 
 function formatDateByLang(dateStr: string, lang: string): string {
@@ -292,7 +368,7 @@ ${t.heading}
 • ${t.locationLabel}: ${branchName}
 • ${t.bookingCodeLabel}: ${bookingId}
 ${totalAmount > 0 ? `• ${t.totalLabel}: ${formatVND(totalAmount)}` : ''}
-${focusAreaNote ? `\n• ${t.preferencesLabel}:\n${focusAreaNote}` : ''}
+${focusAreaNote ? `\n• ${t.preferencesLabel}:\n${formatPreferencesText(focusAreaNote)}` : ''}
 ${notes ? `\n• ${t.notesLabel}: ${notes}` : ''}
 
 ${t.followUp}
@@ -348,10 +424,10 @@ ${t.signoffTeam}
             
             <table width="100%" cellpadding="0" cellspacing="0" style="font-size: 14px; line-height: 1.7;">
               <tr>
-                <td style="padding: 5px 0; color: rgba(247, 235, 199, 0.6); width: 180px; vertical-align: top;">
+                <td style="padding: 5px 0; color: rgba(247, 235, 199, 0.6); width: 38%; min-width: 110px; vertical-align: top;">
                   • <strong>${t.serviceLabel}:</strong>
                 </td>
-                <td style="padding: 5px 0; color: #ffffff; font-weight: 500;">
+                <td style="padding: 5px 0; color: #ffffff; font-weight: 500; vertical-align: top;">
                   ${serviceNames}
                 </td>
               </tr>
@@ -359,7 +435,7 @@ ${t.signoffTeam}
                 <td style="padding: 5px 0; color: rgba(247, 235, 199, 0.6); vertical-align: top;">
                   • <strong>${t.dateLabel}:</strong>
                 </td>
-                <td style="padding: 5px 0; color: #ffffff; font-weight: 500;">
+                <td style="padding: 5px 0; color: #ffffff; font-weight: 500; vertical-align: top;">
                   ${formattedDate}
                 </td>
               </tr>
@@ -367,7 +443,7 @@ ${t.signoffTeam}
                 <td style="padding: 5px 0; color: rgba(247, 235, 199, 0.6); vertical-align: top;">
                   • <strong>${t.timeLabel}:</strong>
                 </td>
-                <td style="padding: 5px 0; color: #D4AF37; font-weight: 600;">
+                <td style="padding: 5px 0; color: #D4AF37; font-weight: 600; vertical-align: top;">
                   ${time}
                 </td>
               </tr>
@@ -375,7 +451,7 @@ ${t.signoffTeam}
                 <td style="padding: 5px 0; color: rgba(247, 235, 199, 0.6); vertical-align: top;">
                   • <strong>${t.durationLabel}:</strong>
                 </td>
-                <td style="padding: 5px 0; color: #ffffff;">
+                <td style="padding: 5px 0; color: #ffffff; vertical-align: top;">
                   ${durationDisplay}
                 </td>
               </tr>
@@ -383,7 +459,7 @@ ${t.signoffTeam}
                 <td style="padding: 5px 0; color: rgba(247, 235, 199, 0.6); vertical-align: top;">
                   • <strong>${t.guestsLabel}:</strong>
                 </td>
-                <td style="padding: 5px 0; color: #ffffff; font-weight: 500;">
+                <td style="padding: 5px 0; color: #ffffff; font-weight: 500; vertical-align: top;">
                   ${guestsDisplay}
                 </td>
               </tr>
@@ -391,7 +467,7 @@ ${t.signoffTeam}
                 <td style="padding: 5px 0; color: rgba(247, 235, 199, 0.6); vertical-align: top;">
                   • <strong>${t.therapistLabel}:</strong>
                 </td>
-                <td style="padding: 5px 0; color: #ffffff; font-weight: 500;">
+                <td style="padding: 5px 0; color: #ffffff; font-weight: 500; vertical-align: top;">
                   ${therapistDisplay}
                 </td>
               </tr>
@@ -399,7 +475,7 @@ ${t.signoffTeam}
                 <td style="padding: 5px 0; color: rgba(247, 235, 199, 0.6); vertical-align: top;">
                   • <strong>${t.locationLabel}:</strong>
                 </td>
-                <td style="padding: 5px 0; color: #ffffff;">
+                <td style="padding: 5px 0; color: #ffffff; vertical-align: top;">
                   ${branchName}
                 </td>
               </tr>
@@ -407,16 +483,16 @@ ${t.signoffTeam}
                 <td style="padding: 5px 0; color: rgba(247, 235, 199, 0.6); vertical-align: top;">
                   • <strong>${t.bookingCodeLabel}:</strong>
                 </td>
-                <td style="padding: 5px 0; color: #D4AF37; font-weight: bold; letter-spacing: 0.5px;">
+                <td style="padding: 5px 0; color: #D4AF37; font-weight: bold; letter-spacing: 0.5px; vertical-align: top;">
                   ${bookingId}
                 </td>
               </tr>
               ${totalAmount > 0 ? `
               <tr>
-                <td style="padding: 5px 0; color: rgba(247, 235, 199, 0.6); vertical-align: top;">
+                <td style="padding: 7px 0; color: rgba(247, 235, 199, 0.6); vertical-align: middle;">
                   • <strong>${t.totalLabel}:</strong>
                 </td>
-                <td style="padding: 5px 0; color: #D4AF37; font-weight: bold;">
+                <td style="padding: 7px 0; color: #D4AF37; font-weight: bold; font-size: 16px; white-space: nowrap; vertical-align: middle;">
                   ${formatVND(totalAmount)}
                 </td>
               </tr>
@@ -425,12 +501,10 @@ ${t.signoffTeam}
               ${focusAreaNote ? `
               <tr>
                 <td colspan="2" style="padding: 12px 0 6px; border-top: 1px dashed rgba(247, 235, 199, 0.15);">
-                  <div style="color: #D4AF37; font-size: 13px; font-weight: 600; margin-bottom: 6px;">
+                  <div style="color: #D4AF37; font-size: 13px; font-weight: 600; margin-bottom: 8px;">
                     • ${t.preferencesLabel}:
                   </div>
-                  <div style="background-color: rgba(255, 255, 255, 0.03); border: 1px solid rgba(212, 175, 55, 0.2); border-radius: 8px; padding: 10px 14px; color: #f7ebc7; font-size: 13px; line-height: 1.6; white-space: pre-line;">
-${focusAreaNote}
-                  </div>
+                  ${renderPreferencesHtml(focusAreaNote)}
                 </td>
               </tr>
               ` : ''}

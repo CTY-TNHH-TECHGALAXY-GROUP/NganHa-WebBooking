@@ -202,11 +202,12 @@ export async function POST(request: Request) {
         }
         
         if (itemNotes.length > 0) {
-          focusParts.push(`• ${svc.name || 'Dịch vụ'}: ${itemNotes.join(' | ')}`);
+          const servicePrefix = selectedServices.length > 1 ? `[${svc.name || 'Dịch vụ'}]\n` : '';
+          focusParts.push(`${servicePrefix}${itemNotes.map(n => `• ${n}`).join('\n')}`);
         }
       }
     });
-    const finalFocusAreaNote = focusParts.length > 0 ? focusParts.join('\n') : null;
+    const finalFocusAreaNote = focusParts.length > 0 ? focusParts.join('\n\n') : null;
 
     // ── 4. INSERT Bookings ────────────────────────────
     const totalAmount = selectedServices.reduce(
