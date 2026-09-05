@@ -159,8 +159,10 @@ const translatePart = (key: string, lang: string) => {
     KNEE: { vi: 'Đầu gối', en: 'Knee', jp: '膝', kr: '무릎', cn: '膝盖' },
     CALF: { vi: 'Bắp chân', en: 'Calf', jp: 'ふくらはぎ', kr: '종아리', cn: '小腿' },
     FOOT: { vi: 'Bàn chân', en: 'Foot', jp: '足', kr: '발', cn: '脚' },
+    WHOLE_BODY: { vi: 'Toàn thân', en: 'Full Body', jp: '全身', kr: '전신', cn: '全身' },
+    FULL_BODY: { vi: 'Toàn thân', en: 'Full Body', jp: '全身', kr: '전신', cn: '全身' },
   };
-  return map[key]?.[lang] || key.toLowerCase();
+  return map[key]?.[lang] || map[(key || '').toUpperCase()]?.[lang] || key.toLowerCase();
 };
 
 const Header = () => {
@@ -399,11 +401,11 @@ const Header = () => {
             {/* Desktop Navigation removed as per request, using Mobile Menu Drawer instead */}
 
             {/* Right Section: Languages, Login, Cart */}
-            <div className="header-right relative z-10">
+            <div className="header-right relative z-10 flex items-center">
               {/* Book Button */}
               <Link 
                 href={`/${currentLang.code}/new-user/standard/checkout`}
-                className="text-[#f7ebc7] hover:text-[#f7ebc7]/80 active:opacity-50 font-bold text-xs sm:text-sm uppercase tracking-wider mr-3 lg:mr-6 transition-all duration-300"
+                className="text-[#f7ebc7] hover:text-[#f7ebc7]/80 active:opacity-50 font-bold text-[13px] sm:text-sm uppercase tracking-wider mr-2 sm:mr-3 lg:mr-6 transition-all duration-300 inline-flex items-center"
               >
                 {BOOK_COPY[currentLang.code] || 'Book'}
               </Link>
@@ -411,7 +413,7 @@ const Header = () => {
               {/* Cart Button */}
               <button 
                 type="button"
-                className="relative text-[#f7ebc7] hover:text-[#D4AF37] mr-4 lg:mr-6 transition-colors duration-300 flex items-center"
+                className="relative text-[#f7ebc7] hover:text-[#D4AF37] mr-3 sm:mr-4 lg:mr-6 transition-colors duration-300 flex items-center justify-center p-1"
                 onClick={handleCartClick}
                 aria-label={
                   currentLang.code === 'vi' ? `Giỏ hàng, đã chọn ${cartCount} dịch vụ` :
@@ -422,7 +424,7 @@ const Header = () => {
                 }
               >
                 <div 
-                  className="w-7 h-7 bg-[#f7ebc7]" 
+                  className="w-[30px] h-[30px] bg-[#f7ebc7]" 
                   style={{
                     maskImage: 'url(/icons/shopping-cart.png)',
                     WebkitMaskImage: 'url(/icons/shopping-cart.png)',
@@ -436,7 +438,7 @@ const Header = () => {
                   aria-hidden="true"
                 />
                 {cartCount > 0 && (
-                  <span className="absolute -top-1 -right-2 w-5 h-5 bg-[#e1272d] text-white text-[11px] font-bold rounded-full flex items-center justify-center shadow-md">
+                  <span className="absolute -top-1 -right-1.5 w-5 h-5 bg-[#e1272d] text-white text-[11px] font-bold rounded-full flex items-center justify-center shadow-md">
                     {cartCount}
                   </span>
                 )}
@@ -661,12 +663,12 @@ const Header = () => {
                                     )}
                                     {item.options?.bodyParts?.focus && item.options.bodyParts.focus.length > 0 && (
                                       <p className="font-sans text-[11px] text-gray-600">
-                                        <span className="text-gray-400 capitalize">{dict.checkout?.focus || (currentLang.code === 'vi' ? 'Tập trung:' : currentLang.code === 'cn' ? '重点部位:' : currentLang.code === 'jp' ? '重点部位:' : currentLang.code === 'kr' ? '집중 부위:' : 'Focus:')}</span> {item.options.bodyParts.focus.length >= 8 ? (dict.custom_for_you?.full_body || (currentLang.code === 'vi' ? 'Toàn thân' : currentLang.code === 'cn' ? '全身' : currentLang.code === 'jp' ? '全身' : currentLang.code === 'kr' ? '전신' : 'Full Body')) : item.options.bodyParts.focus.map(p => translatePart(p, currentLang.code)).join(', ')}
+                                        <span className="text-gray-400 capitalize">{dict.checkout?.focus || (currentLang.code === 'vi' ? 'Tập trung:' : currentLang.code === 'cn' ? '重点部位:' : currentLang.code === 'jp' ? '重点部位:' : currentLang.code === 'kr' ? '집중 부위:' : 'Focus:')}</span> {(item.options.bodyParts.focus.length >= 6 || item.options.bodyParts.focus.some(p => (p || '').toUpperCase().includes('WHOLE') || (p || '').toUpperCase().includes('FULL'))) ? (dict.custom_for_you?.full_body || (currentLang.code === 'vi' ? 'Toàn thân' : currentLang.code === 'cn' ? '全身' : currentLang.code === 'jp' ? '全身' : currentLang.code === 'kr' ? '전신' : 'Full Body')) : item.options.bodyParts.focus.map(p => translatePart(p, currentLang.code)).join(', ')}
                                       </p>
                                     )}
                                     {item.options?.bodyParts?.avoid && item.options.bodyParts.avoid.length > 0 && (
                                       <p className="font-sans text-[11px] text-gray-600">
-                                        <span className="text-gray-400 capitalize">{dict.checkout?.avoid || (currentLang.code === 'vi' ? 'Tránh:' : currentLang.code === 'cn' ? '避开部位:' : currentLang.code === 'jp' ? '避ける部位:' : currentLang.code === 'kr' ? '피할 부위:' : 'Avoid:')}</span> {item.options.bodyParts.avoid.map(p => translatePart(p, currentLang.code)).join(', ')}
+                                        <span className="text-gray-400 capitalize">{dict.checkout?.avoid || (currentLang.code === 'vi' ? 'Tránh:' : currentLang.code === 'cn' ? '避开部位:' : currentLang.code === 'jp' ? '避ける部位:' : currentLang.code === 'kr' ? '피할 부위:' : 'Avoid:')}</span> {(item.options.bodyParts.avoid.length >= 6 || item.options.bodyParts.avoid.some(p => (p || '').toUpperCase().includes('WHOLE') || (p || '').toUpperCase().includes('FULL'))) ? (dict.custom_for_you?.full_body || (currentLang.code === 'vi' ? 'Toàn thân' : currentLang.code === 'cn' ? '全身' : currentLang.code === 'jp' ? '全身' : currentLang.code === 'kr' ? '전신' : 'Full Body')) : item.options.bodyParts.avoid.map(p => translatePart(p, currentLang.code)).join(', ')}
                                       </p>
                                     )}
                                     {item.options?.addons?.privateRoom && (

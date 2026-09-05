@@ -747,16 +747,19 @@
 
   .header-right {
     flex: 0 0 auto;
-    gap: 5px;
+    gap: 12px;
   }
 
   .header-right > a:first-child {
     margin-right: 0 !important;
-    font-size: 11px;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    padding: 4px 2px;
   }
 
   .header-right > button {
     margin-right: 0 !important;
+    padding: 4px 2px;
   }
 
   .header-icon-btn {

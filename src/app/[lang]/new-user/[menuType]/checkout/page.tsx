@@ -121,8 +121,19 @@ const translatePart = (key: string, lang: string) => {
     KNEE: { vi: 'Đầu gối', en: 'Knee', jp: '膝', kr: '무릎', cn: '膝盖' },
     CALF: { vi: 'Bắp chân', en: 'Calf', jp: 'ふくらはぎ', kr: '종아리', cn: '小腿' },
     FOOT: { vi: 'Bàn chân', en: 'Foot', jp: '足', kr: '발', cn: '脚' },
+    WHOLE_BODY: { vi: 'Toàn thân', en: 'Full Body', jp: '全身', kr: '전신', cn: '全身' },
+    FULL_BODY: { vi: 'Toàn thân', en: 'Full Body', jp: '全身', kr: '전신', cn: '全身' },
   };
-  return map[key]?.[lang] || key.toLowerCase();
+  return map[key]?.[lang] || map[(key || '').toUpperCase()]?.[lang] || key.toLowerCase();
+};
+
+const isWholeBodyParts = (parts?: string[]) => {
+  if (!parts || parts.length === 0) return false;
+  if (parts.length >= 6) return true;
+  return parts.some(p => {
+    const u = (p || '').toUpperCase().trim();
+    return u === 'WHOLE_BODY' || u === 'FULL_BODY' || u === 'WHOLEBODY' || u === 'FULLBODY';
+  });
 };
 
 const displayDate = (iso: string, lang: string = 'en') => {
@@ -1482,13 +1493,13 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                       {item.options?.bodyParts?.focus && item.options.bodyParts.focus.length > 0 && (
                         <div className={styles.detail}>
                           <span style={{ fontSize: '12px' }}>{dict.checkout?.focus || (lang === 'vi' ? 'Vùng tập trung' : lang === 'cn' ? '重点部位' : lang === 'jp' ? '重点部位' : lang === 'kr' ? '집중 부위' : 'Focus Area')}</span>
-                          <strong style={{ fontSize: '12px', textAlign: 'right', maxWidth: '60%' }}>{item.options.bodyParts.focus.length >= 8 ? (dict.custom_for_you?.full_body || (lang === 'vi' ? 'Toàn thân' : lang === 'cn' ? '全身' : lang === 'jp' ? '全身' : lang === 'kr' ? '전신' : 'Full Body')) : item.options.bodyParts.focus.map(p => translatePart(p, lang)).join(', ')}</strong>
+                          <strong style={{ fontSize: '12px', textAlign: 'right', maxWidth: '60%' }}>{isWholeBodyParts(item.options.bodyParts.focus) ? (dict.custom_for_you?.full_body || (lang === 'vi' ? 'Toàn thân' : lang === 'cn' ? '全身' : lang === 'jp' ? '全身' : lang === 'kr' ? '전신' : 'Full Body')) : item.options.bodyParts.focus.map(p => translatePart(p, lang)).join(', ')}</strong>
                         </div>
                       )}
                       {item.options?.bodyParts?.avoid && item.options.bodyParts.avoid.length > 0 && (
                         <div className={styles.detail}>
                           <span style={{ fontSize: '12px' }}>{dict.checkout?.avoid || (lang === 'vi' ? 'Vùng cần tránh' : lang === 'cn' ? '避开部位' : lang === 'jp' ? '避ける部位' : lang === 'kr' ? '피할 부위' : 'Avoid Area')}</span>
-                          <strong style={{ fontSize: '12px', textAlign: 'right', maxWidth: '60%', color: '#ef4444' }}>{item.options.bodyParts.avoid.map(p => translatePart(p, lang)).join(', ')}</strong>
+                          <strong style={{ fontSize: '12px', textAlign: 'right', maxWidth: '60%', color: '#ef4444' }}>{isWholeBodyParts(item.options.bodyParts.avoid) ? (dict.custom_for_you?.full_body || (lang === 'vi' ? 'Toàn thân' : lang === 'cn' ? '全身' : lang === 'jp' ? '全身' : lang === 'kr' ? '전신' : 'Full Body')) : item.options.bodyParts.avoid.map(p => translatePart(p, lang)).join(', ')}</strong>
                         </div>
                       )}
                       {item.options?.addons?.privateRoom && (
@@ -1656,10 +1667,10 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                               <span>{lang === 'vi' ? 'Lực:' : lang === 'cn' ? '力度:' : lang === 'jp' ? '強さ:' : lang === 'kr' ? '강도:' : 'Strength:'} <strong className="text-[#f2d58d] capitalize">{(item.options?.strength && (dict.options?.strength_levels as any)?.[item.options.strength.toLowerCase()]) || item.options?.strength || 'Medium'}</strong></span>
                               <span>{lang === 'vi' ? 'KTV:' : lang === 'cn' ? '技师:' : lang === 'jp' ? 'セラピスト:' : lang === 'kr' ? '관리사:' : 'Therapist:'} <strong className="text-[#f2d58d] capitalize">{(item.options?.therapist && (dict.options?.therapist_options as any)?.[item.options.therapist.toLowerCase()]) || item.options?.therapist || 'Random'}</strong></span>
                               {item.options?.bodyParts?.focus?.length ? (
-                                <span>{lang === 'vi' ? 'Tập trung:' : lang === 'cn' ? '重点:' : lang === 'jp' ? '重点:' : lang === 'kr' ? '집중:' : 'Focus:'} <strong className="text-[#f2d58d]">{item.options.bodyParts.focus.length >= 8 ? (dict.custom_for_you?.full_body || (lang === 'vi' ? 'Toàn thân' : lang === 'cn' ? '全身' : lang === 'jp' ? '全身' : lang === 'kr' ? '전신' : 'Full Body')) : item.options.bodyParts.focus.map(p => translatePart(p, lang)).join(', ')}</strong></span>
+                                <span>{lang === 'vi' ? 'Tập trung:' : lang === 'cn' ? '重点:' : lang === 'jp' ? '重点:' : lang === 'kr' ? '집중:' : 'Focus:'} <strong className="text-[#f2d58d]">{isWholeBodyParts(item.options.bodyParts.focus) ? (dict.custom_for_you?.full_body || (lang === 'vi' ? 'Toàn thân' : lang === 'cn' ? '全身' : lang === 'jp' ? '全身' : lang === 'kr' ? '전신' : 'Full Body')) : item.options.bodyParts.focus.map(p => translatePart(p, lang)).join(', ')}</strong></span>
                               ) : null}
                               {item.options?.bodyParts?.avoid?.length ? (
-                                <span>{lang === 'vi' ? 'Tránh:' : lang === 'cn' ? '避开:' : lang === 'jp' ? '避ける:' : lang === 'kr' ? '피할:' : 'Avoid:'} <strong className="text-red-400">{item.options.bodyParts.avoid.map(p => translatePart(p, lang)).join(', ')}</strong></span>
+                                <span>{lang === 'vi' ? 'Tránh:' : lang === 'cn' ? '避开:' : lang === 'jp' ? '避ける:' : lang === 'kr' ? '피할:' : 'Avoid:'} <strong className="text-red-400">{isWholeBodyParts(item.options.bodyParts.avoid) ? (dict.custom_for_you?.full_body || (lang === 'vi' ? 'Toàn thân' : lang === 'cn' ? '全身' : lang === 'jp' ? '全身' : lang === 'kr' ? '전신' : 'Full Body')) : item.options.bodyParts.avoid.map(p => translatePart(p, lang)).join(', ')}</strong></span>
                               ) : null}
                             </div>
                           </div>

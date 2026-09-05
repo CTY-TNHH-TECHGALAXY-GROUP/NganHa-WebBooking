@@ -105,8 +105,10 @@ export default function CustomForYouModal({
                 return { ...prev, bodyParts: { focus: [], avoid: [] } };
             }
 
-            if (area === 'FULL_BODY' && type === 'focus') {
-                const allParts = Object.keys(serviceData.FOCUS_POSITION || {}).filter(k => serviceData.FOCUS_POSITION?.[k as keyof typeof serviceData.FOCUS_POSITION]);
+            if ((area === 'FULL_BODY' || area === 'WHOLE_BODY') && type === 'focus') {
+                const allParts = Object.keys(serviceData.FOCUS_POSITION || {})
+                    .filter(k => serviceData.FOCUS_POSITION?.[k as keyof typeof serviceData.FOCUS_POSITION])
+                    .filter(k => k.toUpperCase() !== 'WHOLE_BODY' && k.toUpperCase() !== 'FULL_BODY');
                 return { ...prev, bodyParts: { focus: allParts, avoid: [] } };
             }
 

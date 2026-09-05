@@ -121,7 +121,10 @@ const BodyMap: React.FC<BodyMapProps> = ({ focus, avoid, lang, serviceData, onTo
         return serviceData.FOCUS_POSITION[part.key] === true;
     });
 
-    const isFullBody = availableParts.length > 0 && focus.length === availableParts.length;
+    const isFullBody = availableParts.length > 0 && (
+        focus.length >= availableParts.length ||
+        focus.some(p => (p || '').toUpperCase() === 'WHOLE_BODY' || (p || '').toUpperCase() === 'FULL_BODY')
+    );
 
     const handleFullBodyToggle = () => {
         if (isFullBody) onToggle('focus', 'CLEAR_ALL');

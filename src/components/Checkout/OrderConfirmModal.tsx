@@ -487,8 +487,12 @@ export default function OrderConfirmModal({
 
     const formatParts = (parts: string[]) => {
         if (!parts || parts.length === 0) return '';
-        if (parts.length >= 8) return dict.custom_for_you?.full_body || (lang === 'vi' ? 'Toàn thân' : lang === 'cn' ? '全身' : lang === 'jp' ? '全身' : lang === 'kr' ? '전신' : 'Full Body');
-        return parts.map(p => dict.body_parts?.[p.toLowerCase()] || dict.body_parts?.[p] || p).join(', ');
+        const isWholeBody = parts.length >= 6 || parts.some(p => {
+            const u = (p || '').toUpperCase().trim();
+            return u === 'WHOLE_BODY' || u === 'FULL_BODY' || u === 'WHOLEBODY' || u === 'FULLBODY';
+        });
+        if (isWholeBody) return dict.custom_for_you?.full_body || (lang === 'vi' ? 'Toàn thân' : lang === 'cn' ? '全身' : lang === 'jp' ? '全身' : lang === 'kr' ? '전신' : 'Full Body');
+        return parts.map(p => dict.body_parts?.[p.toLowerCase()] || dict.body_parts?.[p] || dict.body_parts?.[p.toUpperCase()] || p).join(', ');
     };
 
     const handleConfirmBooking = async () => {

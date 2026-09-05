@@ -42,14 +42,14 @@ export default function Invoice({ cart, lang, dict, currency = 'VND', onCustomRe
                         const TOTAL_BODY_PARTS = 8; // HEAD, NECK, SHOULDER, ARM, BACK, THIGH, CALF, FOOT
 
                         const formatParts = (parts: string[]) => {
-                            // Task E1: Show "Full Body" if all parts selected
-                            if (parts.length >= TOTAL_BODY_PARTS) {
-                                return dict.custom_for_you?.full_body || 'Full Body';
+                            if (!parts || parts.length === 0) return '';
+                            if (parts.length >= 6 || parts.some(p => (p || '').toUpperCase().includes('WHOLE') || (p || '').toUpperCase().includes('FULL'))) {
+                                return dict.custom_for_you?.full_body || (lang === 'vi' ? 'Toàn thân' : lang === 'cn' ? '全身' : lang === 'jp' ? '全身' : lang === 'kr' ? '전신' : 'Full Body');
                             }
                             return parts.map(p => {
-                                const key = p.toLowerCase();
+                                const key = (p || '').toLowerCase();
                                 // @ts-ignore
-                                return dict.body_parts?.[key] || dict.body_parts?.[p] || p;
+                                return dict.body_parts?.[key] || dict.body_parts?.[p] || dict.body_parts?.[p.toUpperCase()] || p;
                             }).join(', ');
                         };
 

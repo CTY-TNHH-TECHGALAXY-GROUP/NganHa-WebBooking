@@ -222,7 +222,18 @@ function renderPreferenceItemHtml(item: string): string {
   const colonIdx = text.indexOf(':');
   if (colonIdx > 0 && colonIdx < 30) {
     const key = text.slice(0, colonIdx).trim();
-    const val = text.slice(colonIdx + 1).trim();
+    let val = text.slice(colonIdx + 1).trim();
+    if (/WHOLE_BODY|FULL_BODY/i.test(val)) {
+      const isEn = /focus|avoid/i.test(key);
+      const isCn = /重点|避开/i.test(key);
+      const isKr = /집중|제외/i.test(key);
+      const fullText = isEn ? 'Full Body' : isCn ? '全身' : isKr ? '전신' : 'Toàn thân';
+      if (val.includes(',') || val.includes(';')) {
+        val = fullText;
+      } else {
+        val = val.replace(/WHOLE_BODY|FULL_BODY/gi, fullText);
+      }
+    }
     return `<div style="margin: 3px 0; font-size: 13px; line-height: 1.5;"><span style="color: rgba(247, 235, 199, 0.65); font-weight: 600;">• ${key}:</span> <span style="color: #ffffff; font-weight: 500;">${val}</span></div>`;
   }
 
@@ -266,7 +277,8 @@ function renderPreferencesHtml(rawFocusNote?: string): string {
 
 function formatPreferencesText(rawNote: string): string {
   if (!rawNote) return '';
-  return rawNote
+  const cleanedNote = rawNote.replace(/WHOLE_BODY|FULL_BODY/gi, 'Toàn thân');
+  return cleanedNote
     .split(/\r?\n/)
     .map(line => {
       if (line.includes(' | ')) {

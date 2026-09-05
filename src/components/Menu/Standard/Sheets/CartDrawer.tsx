@@ -52,8 +52,8 @@ const CustomizationSummary = ({ item, lang, onClick }: { item: CartItem & { tota
     const options = item.options;
 
     const translatePart = (key: string) => {
-        const bodyPartsDict = dict.body_parts as Record<string, string>;
-        return bodyPartsDict[key] || key;
+        const bodyPartsDict = (dict.body_parts || {}) as Record<string, string>;
+        return bodyPartsDict[key] || bodyPartsDict[key.toLowerCase()] || bodyPartsDict[key.toUpperCase()] || key;
     };
 
     const getStrengthColor = (s?: string) => 'text-[#C9A96E]';
@@ -116,7 +116,7 @@ const CustomizationSummary = ({ item, lang, onClick }: { item: CartItem & { tota
                         <span className="text-gray-400">{dict.checkout?.avoid}</span>
                     </div>
                     <span className="font-bold text-[#C9A96E] text-right">
-                        {options.bodyParts.avoid.length === 8 
+                        {(options.bodyParts.avoid.length >= 6 || options.bodyParts.avoid.some(p => (p || '').toUpperCase().includes('WHOLE') || (p || '').toUpperCase().includes('FULL')))
                             ? (dict.custom_for_you?.full_body || (lang === 'vi' ? 'Toàn thân' : lang === 'cn' ? '全身' : lang === 'jp' ? '全身' : lang === 'kr' ? '전신' : 'Full Body'))
                             : options.bodyParts.avoid.map(translatePart).join(', ')}
                     </span>
@@ -131,7 +131,7 @@ const CustomizationSummary = ({ item, lang, onClick }: { item: CartItem & { tota
                         <span className="text-gray-400">{dict.checkout?.focus}</span>
                     </div>
                     <span className="font-bold text-[#C9A96E] text-right">
-                        {options.bodyParts.focus.length === 8 
+                        {(options.bodyParts.focus.length >= 6 || options.bodyParts.focus.some(p => (p || '').toUpperCase().includes('WHOLE') || (p || '').toUpperCase().includes('FULL')))
                             ? (dict.custom_for_you?.full_body || (lang === 'vi' ? 'Toàn thân' : lang === 'cn' ? '全身' : lang === 'jp' ? '全身' : lang === 'kr' ? '전신' : 'Full Body'))
                             : options.bodyParts.focus.map(translatePart).join(', ')}
                     </span>

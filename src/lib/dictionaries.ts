@@ -150,7 +150,11 @@ const dictionaries = {
             ARM: "Arm",
             THIGH: "Thigh",
             KNEE: "Knees",
-            CALF: "Calf"
+            CALF: "Calf",
+            whole_body: "Full Body",
+            WHOLE_BODY: "Full Body",
+            full_body: "Full Body",
+            FULL_BODY: "Full Body"
         },
         tags: {
             pregnant: "Pregnant",
@@ -312,7 +316,11 @@ const dictionaries = {
             ARM: "Tay",
             THIGH: "Đùi",
             KNEE: "Đầu gối",
-            CALF: "Bắp chân"
+            CALF: "Bắp chân",
+            whole_body: "Toàn thân",
+            WHOLE_BODY: "Toàn thân",
+            full_body: "Toàn thân",
+            FULL_BODY: "Toàn thân"
         },
         tags: {
             pregnant: "Mang thai",
@@ -474,7 +482,11 @@ const dictionaries = {
             ARM: "팔",
             THIGH: "허벅지",
             KNEE: "무릎",
-            CALF: "종아리"
+            CALF: "종아리",
+            whole_body: "전신",
+            WHOLE_BODY: "전신",
+            full_body: "전신",
+            FULL_BODY: "전신"
         },
         tags: {
             pregnant: "임산부",
@@ -636,7 +648,11 @@ const dictionaries = {
             ARM: "手臂",
             THIGH: "大腿",
             KNEE: "膝盖",
-            CALF: "小腿"
+            CALF: "小腿",
+            whole_body: "全身",
+            WHOLE_BODY: "全身",
+            full_body: "全身",
+            FULL_BODY: "全身"
         },
         tags: {
             pregnant: "孕妇",
@@ -798,7 +814,11 @@ const dictionaries = {
             ARM: "腕",
             THIGH: "太もも",
             KNEE: "膝",
-            CALF: "ふくらはぎ"
+            CALF: "ふくらはぎ",
+            whole_body: "全身",
+            WHOLE_BODY: "全身",
+            full_body: "全身",
+            FULL_BODY: "全身"
         },
         tags: {
             pregnant: "妊娠中",

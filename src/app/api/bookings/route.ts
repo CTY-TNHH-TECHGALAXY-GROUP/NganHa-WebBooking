@@ -348,6 +348,25 @@ export async function POST(request: Request) {
       KNEE: { vi: 'Đầu gối', en: 'Knees', cn: '膝盖', jp: '膝', kr: '무릎' },
       CALF: { vi: 'Bắp chân', en: 'Calves', cn: '小腿', jp: 'ふくらはぎ', kr: '종아리' },
       FOOT: { vi: 'Bàn chân', en: 'Feet', cn: '足部', jp: '足・足裏', kr: '발' },
+      WHOLE_BODY: { vi: 'Toàn thân', en: 'Full Body', cn: '全身', jp: '全身', kr: '전신' },
+      FULL_BODY: { vi: 'Toàn thân', en: 'Full Body', cn: '全身', jp: '全身', kr: '전신' },
+    };
+
+    const FULL_BODY_I18N: Record<string, string> = {
+      vi: 'Toàn thân',
+      en: 'Full Body',
+      cn: '全身',
+      jp: '全身',
+      kr: '전신',
+    };
+
+    const isWholeBodySelection = (parts?: string[]) => {
+      if (!parts || parts.length === 0) return false;
+      if (parts.length >= 6) return true;
+      return parts.some((p: string) => {
+        const u = (p || '').toUpperCase().trim();
+        return u === 'WHOLE_BODY' || u === 'FULL_BODY' || u === 'WHOLEBODY' || u === 'FULLBODY';
+      });
     };
 
     const translatePart = (p: string) => {
@@ -389,13 +408,21 @@ export async function POST(request: Request) {
         }
         if (opts.bodyParts?.focus?.length) {
           const lbl = isEn ? 'Focus' : isCn ? '重点部位' : isJp ? '重点部位' : isKr ? '집중 관리' : 'Tập trung';
-          const translated = opts.bodyParts.focus.map((p: string) => translatePart(p)).join(', ');
-          itemNotes.push(`${lbl}: ${translated}`);
+          if (isWholeBodySelection(opts.bodyParts.focus)) {
+            itemNotes.push(`${lbl}: ${FULL_BODY_I18N[lang] || FULL_BODY_I18N.en}`);
+          } else {
+            const translated = opts.bodyParts.focus.map((p: string) => translatePart(p)).join(', ');
+            itemNotes.push(`${lbl}: ${translated}`);
+          }
         }
         if (opts.bodyParts?.avoid?.length) {
           const lbl = isEn ? 'Avoid' : isCn ? '避开部位' : isJp ? '避ける部位' : isKr ? '제외 部位' : 'Tránh';
-          const translated = opts.bodyParts.avoid.map((p: string) => translatePart(p)).join(', ');
-          itemNotes.push(`${lbl}: ${translated}`);
+          if (isWholeBodySelection(opts.bodyParts.avoid)) {
+            itemNotes.push(`${lbl}: ${FULL_BODY_I18N[lang] || FULL_BODY_I18N.en}`);
+          } else {
+            const translated = opts.bodyParts.avoid.map((p: string) => translatePart(p)).join(', ');
+            itemNotes.push(`${lbl}: ${translated}`);
+          }
         }
         if (opts.strength) {
           const strengthMap = STRENGTH_I18N[String(opts.strength).toLowerCase()] || {
