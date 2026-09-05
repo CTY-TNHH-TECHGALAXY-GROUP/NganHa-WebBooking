@@ -50,7 +50,41 @@ export default function AlertModal({ isOpen, title, message, type = 'error', onC
         );
     }
 
-    const defaultTitle = type === 'error' ? (lang === 'vi' ? 'Thông báo' : 'Alert') : (lang === 'vi' ? 'Thông tin' : 'Information');
+    const TITLE_MAP: Record<string, Record<string, string>> = {
+        error: {
+            vi: 'Thông báo',
+            en: 'Notice',
+            cn: '提示',
+            jp: 'お知らせ',
+            kr: '알림',
+        },
+        success: {
+            vi: 'Thành công',
+            en: 'Success',
+            cn: '成功',
+            jp: '成功',
+            kr: '성공',
+        },
+        info: {
+            vi: 'Thông tin',
+            en: 'Information',
+            cn: '信息',
+            jp: 'ご案内',
+            kr: '안내',
+        },
+    };
+
+    const BUTTON_MAP: Record<string, string> = {
+        vi: 'Đã hiểu',
+        en: 'Got it',
+        cn: '知道了',
+        jp: '了解しました',
+        kr: '확인했습니다',
+    };
+
+    const currentTitleMap = TITLE_MAP[type] || TITLE_MAP.info;
+    const defaultTitle = currentTitleMap[lang] || currentTitleMap.en;
+    const buttonText = BUTTON_MAP[lang] || BUTTON_MAP.en;
 
     return (
         <div className="fixed inset-0 z-[300] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
@@ -64,7 +98,7 @@ export default function AlertModal({ isOpen, title, message, type = 'error', onC
                 </p>
                 <div className="flex w-full">
                     <button onClick={onClose} className={`w-full py-4 rounded-xl font-bold border-none shadow-lg transition-colors ${btnColors}`}>
-                        {lang === 'vi' ? 'Đã hiểu' : 'Got it'}
+                        {buttonText}
                     </button>
                 </div>
             </div>

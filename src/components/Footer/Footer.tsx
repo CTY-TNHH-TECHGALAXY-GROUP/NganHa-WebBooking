@@ -215,22 +215,44 @@ const Footer = () => {
     typeof rawAddress === 'string' ? rawAddress : (rawAddress?.vi || '11 Ngô Đức Kế, Sài Gòn, Hồ Chí Minh 700000, Vietnam')
   );
 
+  const DEFAULT_DESC: Record<string, string> = {
+    vi: 'Trải nghiệm dịch vụ chăm sóc sức khoẻ và làm đẹp đẳng cấp tại trung tâm Quận 1, TP.HCM.',
+    en: 'Experience premium wellness and beauty services in the heart of District 1, HCMC.',
+    cn: '在胡志明市第一郡中心体验顶级健康与美容护理服务。',
+    jp: 'ホーチミン市1区の中心で、最高峰のウェルネス＆ビューティーケアをご体験ください。',
+    kr: '호치민 1군 중심에서 프리미엄 웰니스 & 뷰티 케어 서비스를 경험해보세요.',
+  };
+
+  const DEFAULT_LOCATIONS: Record<string, string> = {
+    vi: 'Chi nhánh',
+    en: 'Locations',
+    cn: '分店',
+    jp: '店舗情報',
+    kr: '지점 안내',
+  };
+
+  const DEFAULT_CONTACT: Record<string, string> = {
+    vi: 'Liên hệ',
+    en: 'Contact',
+    cn: '联系我们',
+    jp: 'お問い合わせ',
+    kr: '문의하기',
+  };
+
   const descText = getLocalizedText(
     footerData?.description,
     currentLang as any,
-    currentLang === 'vi' 
-      ? 'Trải nghiệm dịch vụ chăm sóc sức khoẻ và làm đẹp đẳng cấp tại trung tâm Quận 1, TP.HCM.'
-      : 'Experience premium wellness and beauty services in the heart of District 1, HCMC.'
+    DEFAULT_DESC[currentLang] || DEFAULT_DESC.en
   );
 
   const locationsTitle = isLocationsTitleAnAddress
-    ? (currentLang === 'vi' ? 'Chi nhánh' : currentLang === 'cn' ? '分店' : currentLang === 'jp' ? '店舗情報' : currentLang === 'kr' ? '지점 안내' : 'Locations')
-    : getLocalizedText(footerData?.locationsTitle, currentLang as any, currentLang === 'vi' ? 'Chi nhánh' : 'Locations');
+    ? (DEFAULT_LOCATIONS[currentLang] || DEFAULT_LOCATIONS.en)
+    : getLocalizedText(footerData?.locationsTitle, currentLang as any, DEFAULT_LOCATIONS[currentLang] || DEFAULT_LOCATIONS.en);
 
   const contactTitle = getLocalizedText(
     footerData?.contactTitle,
     currentLang as any,
-    currentLang === 'vi' ? 'Liên hệ' : 'Contact'
+    DEFAULT_CONTACT[currentLang] || DEFAULT_CONTACT.en
   );
 
   const copyrightText = footerData?.copyright || `© ${new Date().getFullYear()} TECHGALAXY GROUP. All rights reserved.`;

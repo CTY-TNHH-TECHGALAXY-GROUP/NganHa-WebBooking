@@ -39,8 +39,8 @@ const TEXT = {
     close: { vi: 'ĐÓNG', en: 'CLOSE', cn: '关闭', jp: '閉じる', kr: '닫기' },
     continue: { vi: 'TIẾP TỤC', en: 'CONTINUE', cn: '继续', jp: '継続する', kr: '계속' },
     empty: { vi: 'Giỏ hàng trống', en: 'Your cart is empty', cn: '购物车为空', jp: 'カートは空です', kr: '장바구니가 비어 있습니다' },
-    alert_empty: { vi: 'Vui lòng chọn ít nhất 1 dịch vụ!', en: 'Please select at least 1 service!', cn: '请 ít nhất 1 dịch vụ!', jp: '少なくとも1つのサービスを選択してください！', kr: '최소 1개의 서비스를 chuyên vụ!' },
-    qty: { vi: 'Số lượng (Qty)', en: 'Quantity (Qty)', cn: '数量 (Qty)', jp: '数量 (Qty)', kr: '수량 (Qty)' },
+    alert_empty: { vi: 'Vui lòng chọn ít nhất 1 dịch vụ!', en: 'Please select at least 1 service!', cn: '请至少选择一项服务！', jp: '少なくとも1つのサービスを選択してください！', kr: '최소 1개 이상의 서비스를 선택해 주세요!' },
+    qty: { vi: 'Số lượng', en: 'Quantity', cn: '数量', jp: '数量', kr: '수량' },
 };
 
 /**
@@ -69,12 +69,12 @@ const CustomizationSummary = ({ item, lang, onClick }: { item: CartItem & { tota
                 <div className="flex justify-between items-center text-[12px]">
                     <div className="flex items-center gap-1.5">
                         <Clock size={13} className="text-gray-400" />
-                        <span className="text-gray-400">{dict.checkout?.time || (lang === 'en' ? 'Time' : 'Thời gian')}</span>
+                        <span className="text-gray-400">{dict.checkout?.time || (lang === 'vi' ? 'Thời gian' : lang === 'cn' ? '时间' : lang === 'jp' ? '時間' : lang === 'kr' ? '시간' : 'Time')}</span>
                     </div>
                     <span className="font-bold text-[#C9A96E]">
                         {item.timeDisplay 
-                            ? item.timeDisplay.replace('mins', dict.checkout?.mins || (lang === 'vi' ? 'phút' : 'mins'))
-                            : `${item.timeValue} ${dict.checkout?.mins || (lang === 'vi' ? 'phút' : 'mins')}`
+                            ? item.timeDisplay.replace('mins', dict.checkout?.mins || (lang === 'vi' ? 'phút' : lang === 'cn' ? '分钟' : lang === 'jp' ? '分' : lang === 'kr' ? '분' : 'mins'))
+                            : `${item.timeValue} ${dict.checkout?.mins || (lang === 'vi' ? 'phút' : lang === 'cn' ? '分钟' : lang === 'jp' ? '分' : lang === 'kr' ? '분' : 'mins')}`
                         }
                     </span>
                 </div>
@@ -117,7 +117,7 @@ const CustomizationSummary = ({ item, lang, onClick }: { item: CartItem & { tota
                     </div>
                     <span className="font-bold text-[#C9A96E] text-right">
                         {options.bodyParts.avoid.length === 8 
-                            ? (dict.custom_for_you?.full_body || 'Full Body')
+                            ? (dict.custom_for_you?.full_body || (lang === 'vi' ? 'Toàn thân' : lang === 'cn' ? '全身' : lang === 'jp' ? '全身' : lang === 'kr' ? '전신' : 'Full Body'))
                             : options.bodyParts.avoid.map(translatePart).join(', ')}
                     </span>
                 </div>
@@ -132,7 +132,7 @@ const CustomizationSummary = ({ item, lang, onClick }: { item: CartItem & { tota
                     </div>
                     <span className="font-bold text-[#C9A96E] text-right">
                         {options.bodyParts.focus.length === 8 
-                            ? (dict.custom_for_you?.full_body || 'Full Body')
+                            ? (dict.custom_for_you?.full_body || (lang === 'vi' ? 'Toàn thân' : lang === 'cn' ? '全身' : lang === 'jp' ? '全身' : lang === 'kr' ? '전신' : 'Full Body'))
                             : options.bodyParts.focus.map(translatePart).join(', ')}
                     </span>
                 </div>
@@ -155,7 +155,7 @@ const CustomizationSummary = ({ item, lang, onClick }: { item: CartItem & { tota
                     </div>
                     {options.notes?.content && (
                         <div className="flex justify-between gap-4 text-[11px] italic text-gray-400">
-                            <span className="shrink-0">{dict.history?.note_label || 'Note'}</span>
+                            <span className="shrink-0">{dict.history?.note_label || (lang === 'vi' ? 'Ghi chú' : lang === 'cn' ? '备注' : lang === 'jp' ? 'メモ' : lang === 'kr' ? '메모' : 'Note')}</span>
                             <span className="text-right text-[#C9A96E] font-medium not-italic">{options.notes.content}</span>
                         </div>
                     )}
@@ -327,7 +327,7 @@ export default function CartDrawer({ cart, services, lang, isOpen, onClose, onUp
                                     <div className="flex-1 flex flex-col justify-between py-0.5 min-w-0">
                                         {/* Row 1: Name and Price */}
                                         <div className="flex justify-between items-start">
-                                            <h4 className="font-bold text-white leading-tight text-[16px] pr-2">{item.names[lang]}</h4>
+                                            <h4 className="font-bold text-white leading-tight text-[16px] pr-2">{item.names?.[lang] || item.names?.en || item.names?.vi || ''}</h4>
                                             <div className="font-bold text-white text-[15px] shrink-0">
                                                 {formatMoney(item.priceVND * item.totalQty)} VND
                                             </div>

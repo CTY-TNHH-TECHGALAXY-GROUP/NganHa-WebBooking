@@ -15,6 +15,49 @@ import { X, Trash2, Minus, Plus } from 'lucide-react';
 import { Service, CartState } from '../../types'; // Dùng đường dẫn tương đối
 import { formatCurrency } from '../../utils';
 
+const REVIEW_COPY: Record<string, Record<'vi' | 'en' | 'cn' | 'jp' | 'kr', string>> = {
+    remove: {
+        vi: 'Xóa',
+        en: 'Remove',
+        cn: '删除',
+        jp: '削除',
+        kr: '삭제',
+    },
+    confirmRemove: {
+        vi: 'Xác nhận xóa',
+        en: 'Confirm Remove',
+        cn: '确认删除',
+        jp: '削除を確認',
+        kr: '삭제 확인',
+    },
+    updateCart: {
+        vi: 'Cập nhật giỏ hàng',
+        en: 'Update Cart',
+        cn: '更新购物车',
+        jp: 'カートを更新',
+        kr: '장바구니 업데이트',
+    },
+    quantity: {
+        vi: 'Số lượng',
+        en: 'Quantity',
+        cn: '数量',
+        jp: '数量',
+        kr: '수량',
+    },
+    mins: {
+        vi: 'phút',
+        en: 'mins',
+        cn: '分钟',
+        jp: '分',
+        kr: '분',
+    },
+};
+
+const getReviewText = (key: keyof typeof REVIEW_COPY, lang: string): string => {
+    const l = (['vi', 'en', 'cn', 'jp', 'kr'].includes(lang) ? lang : 'en') as 'vi' | 'en' | 'cn' | 'jp' | 'kr';
+    return REVIEW_COPY[key]?.[l] || REVIEW_COPY[key]?.en || '';
+};
+
 interface ReviewSheetProps {
     service: Service; // Nhận vào 1 món cụ thể (VD: Aroma Oil 60')
     cart: Record<string, number>;
@@ -79,7 +122,7 @@ export default function ReviewSheet({ service, cart, isOpen, lang, onClose, onUp
                         className="text-red-400 flex items-center gap-1 text-sm font-medium active:scale-95 transition-transform px-2 py-1 rounded hover:bg-red-500/10"
                     >
                         <Trash2 size={16} />
-                        <span>Remove</span>
+                        <span>{getReviewText('remove', lang)}</span>
                     </button>
 
                     {/* Thanh nắm kéo (trang trí) */}
@@ -108,7 +151,7 @@ export default function ReviewSheet({ service, cart, isOpen, lang, onClose, onUp
                             <h2 className="text-xl font-bold text-white leading-tight mb-1 font-luxury">{name}</h2>
                             <div className="flex items-center gap-2">
                                 <span className="px-2 py-0.5 rounded bg-gray-700 text-xs text-gray-300 border border-gray-600">
-                                    {service.timeValue} mins
+                                    {service.timeValue} {getReviewText('mins', lang)}
                                 </span>
                                 <span className="text-[#C9A96E] font-mono font-bold text-lg">
                                     {formatCurrency(service.priceVND)}
@@ -128,7 +171,7 @@ export default function ReviewSheet({ service, cart, isOpen, lang, onClose, onUp
 
                         <div className="flex flex-col items-center">
                             <span className="text-3xl font-bold text-white font-mono">{qty}</span>
-                            <span className="text-[10px] text-gray-400 uppercase tracking-widest">Quantity</span>
+                            <span className="text-[10px] text-gray-400 uppercase tracking-widest">{getReviewText('quantity', lang)}</span>
                         </div>
 
                         <button
@@ -152,11 +195,11 @@ export default function ReviewSheet({ service, cart, isOpen, lang, onClose, onUp
                     >
                         {qty === 0 ? (
                             <>
-                                <Trash2 size={18} /> Confirm Remove
+                                <Trash2 size={18} /> {getReviewText('confirmRemove', lang)}
                             </>
                         ) : (
                             <>
-                                Update Cart <span className="opacity-40">|</span> {formatCurrency(service.priceVND * qty)}
+                                {getReviewText('updateCart', lang)} <span className="opacity-40">|</span> {formatCurrency(service.priceVND * qty)}
                             </>
                         )}
                     </button>

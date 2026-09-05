@@ -144,7 +144,15 @@ const FloatingWidgets = () => {
     }
     const wechatId = wechat || 'OriaSpa_VN';
     navigator.clipboard?.writeText(wechatId);
-    showToast(lang === 'vi' ? `Đã sao chép WeChat ID: ${wechatId}` : `Copied WeChat ID: ${wechatId}`);
+    const copiedText: Record<string, (id: string) => string> = {
+      vi: (id) => `Đã sao chép WeChat ID: ${id}`,
+      en: (id) => `Copied WeChat ID: ${id}`,
+      cn: (id) => `已复制微信 ID：${id}`,
+      jp: (id) => `WeChat IDをコピーしました: ${id}`,
+      kr: (id) => `WeChat ID가 복사되었습니다: ${id}`,
+    };
+    const msgFn = copiedText[lang] || copiedText.en;
+    showToast(msgFn(wechatId));
   };
 
   const handleKakaoClick = () => {
@@ -154,7 +162,15 @@ const FloatingWidgets = () => {
     }
     const kakaoId = kakaotalk || 'OriaSpa';
     navigator.clipboard?.writeText(kakaoId);
-    showToast(lang === 'vi' ? `Đã sao chép KakaoTalk ID: ${kakaoId}` : `Copied KakaoTalk ID: ${kakaoId}`);
+    const copiedKakaoText: Record<string, (id: string) => string> = {
+      vi: (id) => `Đã sao chép KakaoTalk ID: ${id}`,
+      en: (id) => `Copied KakaoTalk ID: ${id}`,
+      cn: (id) => `已复制 KakaoTalk ID：${id}`,
+      jp: (id) => `KakaoTalk IDをコピーしました: ${id}`,
+      kr: (id) => `카카오톡 ID가 복사되었습니다: ${id}`,
+    };
+    const msgFn = copiedKakaoText[lang] || copiedKakaoText.en;
+    showToast(msgFn(kakaoId));
   };
 
   return (

@@ -125,7 +125,13 @@ export default function Header({ categories, activeCategory, lang, onSelectCateg
                 <ChevronRight size={20} />
             </div>
             <div className="text-[9px] text-center text-gray-500 uppercase tracking-widest mt-2 border-t border-gray-800 pt-1">
-                — Random Staff & Room —
+                {{
+                    vi: '— KTV & Phòng ngẫu nhiên —',
+                    en: '— Random Staff & Room —',
+                    cn: '— 随机技师与房间 —',
+                    jp: '— セラピスト・お部屋はおまかせ —',
+                    kr: '— 테라피스트 & 룸 랜덤 배정 —',
+                }[lang] || '— Random Staff & Room —'}
             </div>
         </div>
     );

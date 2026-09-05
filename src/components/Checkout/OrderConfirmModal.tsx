@@ -43,6 +43,312 @@ const UI_CONFIG = {
     JOURNEY_BASE_URL: 'https://nganha.vercel.app',
 };
 
+type SupportedLang = 'vi' | 'en' | 'cn' | 'jp' | 'kr';
+
+const MODAL_TEXTS: Record<string, Record<SupportedLang, string>> = {
+    bookingSchedule: {
+        vi: 'THÔNG TIN LỊCH HẸN',
+        en: 'BOOKING SCHEDULE',
+        cn: '预订时间与信息',
+        jp: '予約スケジュール',
+        kr: '예약 일정 정보',
+    },
+    editDirectly: {
+        vi: 'Chỉnh sửa trực tiếp trên popover',
+        en: 'Edit details directly',
+        cn: '直接编辑信息',
+        jp: '内容を直接編集',
+        kr: '정보 직접 수정',
+    },
+    done: {
+        vi: 'Xong',
+        en: 'Done',
+        cn: '完成',
+        jp: '完了',
+        kr: '완료',
+    },
+    edit: {
+        vi: 'Sửa',
+        en: 'Edit',
+        cn: '修改',
+        jp: '編集',
+        kr: '수정',
+    },
+    fullName: {
+        vi: 'Họ và tên',
+        en: 'Full Name',
+        cn: '姓名',
+        jp: '氏名',
+        kr: '성명',
+    },
+    phone: {
+        vi: 'Số điện thoại',
+        en: 'Phone Number',
+        cn: '电话号码',
+        jp: '電話番号',
+        kr: '전화번호',
+    },
+    guestsLabel: {
+        vi: 'Số khách:',
+        en: 'Guests:',
+        cn: '客人数：',
+        jp: '人数：',
+        kr: '인원수:',
+    },
+    date: {
+        vi: 'Ngày hẹn',
+        en: 'Date',
+        cn: '日期',
+        jp: '予約日',
+        kr: '예약일',
+    },
+    time: {
+        vi: 'Giờ hẹn',
+        en: 'Time',
+        cn: '时间',
+        jp: '予約時間',
+        kr: '예약 시간',
+    },
+    timePlaceholder: {
+        vi: 'VD: 14:00',
+        en: 'e.g. 14:00',
+        cn: '例：14:00',
+        jp: '例：14:00',
+        kr: '예: 14:00',
+    },
+    saveChanges: {
+        vi: 'Lưu thay đổi',
+        en: 'Save Changes',
+        cn: '保存更改',
+        jp: '変更を保存',
+        kr: '변경사항 저장',
+    },
+    guestCountLabel: {
+        vi: 'Số lượng khách',
+        en: 'Guests',
+        cn: '客人数量',
+        jp: 'ご予約人数',
+        kr: '예약 인원',
+    },
+    guestUnit: {
+        vi: 'khách',
+        en: 'guest(s)',
+        cn: '位客人',
+        jp: '名',
+        kr: '명',
+    },
+    guestFallback: {
+        vi: 'Khách',
+        en: 'Guest',
+        cn: '客人',
+        jp: 'お客様',
+        kr: '고객님',
+    },
+    yourExperience: {
+        vi: 'TRẢI NGHIỆM CỦA BẠN',
+        en: 'YOUR EXPERIENCE',
+        cn: '您的专属体验',
+        jp: 'お客様の体験',
+        kr: '고객님의 케어 프로그램',
+    },
+    defaultServiceName: {
+        vi: 'Dịch vụ Spa',
+        en: 'Spa Service',
+        cn: '水疗服务',
+        jp: 'スパサービス',
+        kr: '스파 서비스',
+    },
+    editService: {
+        vi: 'Chỉnh sửa dịch vụ này',
+        en: 'Edit this service',
+        cn: '修改此服务',
+        jp: 'このサービスを編集',
+        kr: '이 서비스 수정',
+    },
+    seeDetails: {
+        vi: 'Xem thêm chi tiết',
+        en: 'See details',
+        cn: '查看详情',
+        jp: '詳細を見る',
+        kr: '상세 정보 보기',
+    },
+    showLess: {
+        vi: 'Thu gọn',
+        en: 'Show less',
+        cn: '收起',
+        jp: '閉じる',
+        kr: '접기',
+    },
+    avoid: {
+        vi: 'Tránh',
+        en: 'Avoid',
+        cn: '避开',
+        jp: '避ける部位',
+        kr: '제외 부위',
+    },
+    privateRoom: {
+        vi: 'Phòng riêng',
+        en: 'Private Room',
+        cn: '独立包厢',
+        jp: '個室',
+        kr: '프라이빗 룸',
+    },
+    pregnant: {
+        vi: 'Mang thai',
+        en: 'Pregnant',
+        cn: '孕期',
+        jp: '妊娠中',
+        kr: '임신 중',
+    },
+    allergy: {
+        vi: 'Dị ứng',
+        en: 'Allergy',
+        cn: '过敏',
+        jp: 'アレルギー',
+        kr: '알레르기',
+    },
+    yes: {
+        vi: 'Có',
+        en: 'Yes',
+        cn: '是',
+        jp: 'あり',
+        kr: '예',
+    },
+    acceptedPayments: {
+        vi: 'Phương thức thanh toán chấp nhận:',
+        en: 'We accept payment methods:',
+        cn: '支持的支付方式：',
+        jp: 'ご利用可能なお支払い方法：',
+        kr: '이용 가능한 결제 수단:',
+    },
+    submitting: {
+        vi: 'Đang gửi...',
+        en: 'Processing...',
+        cn: '提交中...',
+        jp: '処理中...',
+        kr: '처리 중...',
+    },
+    submitBooking: {
+        vi: 'Xác nhận đặt lịch',
+        en: 'Confirm Booking',
+        cn: '确认预订',
+        jp: '予約を確定する',
+        kr: '예약 확정하기',
+    },
+    orderId: {
+        vi: 'Mã đơn:',
+        en: 'Order ID:',
+        cn: '订单号：',
+        jp: '注文番号：',
+        kr: '예약 번호:',
+    },
+    understood: {
+        vi: 'Đã hiểu',
+        en: 'Understood',
+        cn: '知道了',
+        jp: '了解しました',
+        kr: '확인했습니다',
+    },
+    cashVndTitle: {
+        vi: 'Tiền mặt tại Spa (VND)',
+        en: 'Cash at Spa (VND)',
+        cn: '门店现金支付 (VND)',
+        jp: '店頭現金払い (VND)',
+        kr: '스파 현장 현금 결제 (VND)',
+    },
+    cashVndSub: {
+        vi: 'Các mệnh giá tiền Polymer Việt Nam Đồng',
+        en: 'Accepted VND Polymer Denominations',
+        cn: '支持的越南盾塑料钞面额',
+        jp: '利用可能なベトナムドンのポリマー紙幣',
+        kr: '이용 가능한 베트남 동 폴리머 지폐 권종',
+    },
+    cashVndDesc: {
+        vi: 'Quý khách thanh toán tiền mặt trực tiếp tại quầy thu ngân. Spa chấp nhận tất cả các mệnh giá tiền polymer Việt Nam Đồng:',
+        en: 'Pay directly at the cashier desk. Oria Spa accepts all standard Vietnamese Dong polymer notes:',
+        cn: '请直接在前台收银台支付现金。水疗中心支持所有面额的越南盾塑料钞：',
+        jp: 'キャッシャーカウンターにて直接現金でお支払いいただけます。スパではすべてのベトナムドンポリマー紙幣をご利用いただけます：',
+        kr: '카운터에서 현금으로 직접 결제하실 수 있습니다. 모든 권종의 베트남 동 폴리머 지폐를 사용하실 수 있습니다:',
+    },
+    cashUsdTitle: {
+        vi: 'Tiền mặt USD',
+        en: 'Cash (USD)',
+        cn: '美元现金 (USD)',
+        jp: '米ドル現金 (USD)',
+        kr: '미국 달러 현금 (USD)',
+    },
+    cashUsdSub: {
+        vi: 'Quy định thu đổi & hoàn tiền',
+        en: 'Collection & Exchange Rules',
+        cn: '汇率与找零规定',
+        jp: '両替レートおよびお釣りに関する規定',
+        kr: '환율 및 잔돈 반환 규정',
+    },
+    exchangeRate: {
+        vi: 'Tỷ giá quy đổi',
+        en: 'Exchange Rate',
+        cn: '兑换汇率',
+        jp: '換算レート',
+        kr: '환율 안내',
+    },
+    refundNote: {
+        vi: 'Tiền thừa sẽ được thối lại bằng tiền mặt Việt Nam Đồng (VND).',
+        en: 'Change will be returned in VND cash.',
+        cn: '找零将以越南盾（VND）现金退还。',
+        jp: 'お釣りはベトナムドン（VND）の現金にてお返しいたします。',
+        kr: '잔돈은 베트남 동(VND) 현금으로 거슬러 드립니다.',
+    },
+    cardTitle: {
+        vi: 'Thẻ POS & Không tiếp xúc',
+        en: 'Credit / POS Card',
+        cn: 'POS刷卡与非接触支付',
+        jp: 'カード決済・タッチ決済',
+        kr: '신용/체크카드 및 컨택리스 결제',
+    },
+    cardSub: {
+        vi: 'Các loại thẻ và ví điện tử hỗ trợ',
+        en: 'Accepted Cards & Mobile Wallets',
+        cn: '支持的银行卡与移动支付',
+        jp: '対応カードおよびモバイルウォレット',
+        kr: '지원되는 카드 및 모바일 지갑',
+    },
+    cardDesc: {
+        vi: 'Thanh toán quẹt thẻ máy POS không phụ phí giao dịch. Hỗ trợ tất cả các thẻ quốc tế và ví thông minh:',
+        en: 'Zero surcharge card payment via POS terminal. Supports all major international cards and mobile wallets:',
+        cn: 'POS机刷卡无任何手续费。支持所有主流国际银行卡与移动钱包：',
+        jp: 'POS端末によるカード決済は手数料無料です。すべての主要な国際カードおよびスマートウォレットに対応しています：',
+        kr: 'POS 단말기를 통한 카드 결제 시 수수료가 부과되지 않습니다. 모든 주요 국제 카드 및 간편 결제를 지원합니다:',
+    },
+    transferTitle: {
+        vi: 'VietQR / Chuyển khoản 24/7',
+        en: 'VietQR Transfer',
+        cn: 'VietQR / 24/7 银行转账',
+        jp: 'VietQR / 24時間銀行振込',
+        kr: 'VietQR / 24시간 계좌이체',
+    },
+    transferSub: {
+        vi: 'Quét mã QR chuyển khoản nhanh',
+        en: 'Instant dynamic QR transfer',
+        cn: '扫码快速转账',
+        jp: 'QRコード即時送金',
+        kr: 'QR 코드 즉시 이체',
+    },
+    transferDesc: {
+        vi: 'Chúng tôi hỗ trợ chuyển khoản quốc tế và chuyển khoản nội địa nhanh 24/7 qua mã VietQR.',
+        en: 'We support 24/7 international and domestic instant transfers via VietQR.',
+        cn: '我们支持通过 VietQR 进行 24/7 国际及越南本地快速银行转账。',
+        jp: 'VietQRコードによる24時間365日の国内・国際即時銀行振込に対応しています。',
+        kr: 'VietQR 코드를 통해 24시간 국내외 즉시 계좌이체를 지원합니다.',
+    },
+};
+
+const getModalText = (key: keyof typeof MODAL_TEXTS, userLang: string): string => {
+    const l: SupportedLang = ['vi', 'en', 'cn', 'jp', 'kr'].includes(userLang as any)
+        ? (userLang as SupportedLang)
+        : 'en';
+    return MODAL_TEXTS[key]?.[l] || MODAL_TEXTS[key]?.en || '';
+};
+
 interface OrderConfirmModalProps {
     isOpen: boolean;
     onClose: () => void;
@@ -157,37 +463,41 @@ export default function OrderConfirmModal({
             id: 'cash_vnd',
             icon: Banknote,
             label: lang === 'vi' ? 'Tiền mặt (VND)' : lang === 'cn' ? '现金支付 (VND)' : lang === 'jp' ? '現地現金払い (VND)' : lang === 'kr' ? '현장 현금 결제 (VND)' : 'Cash (VND)',
-            desc: lang === 'vi' ? 'Thanh toán trực tiếp bằng VND khi đến quầy lễ tân' : 'Pay directly in cash at the reception desk',
+            desc: lang === 'vi' ? 'Thanh toán trực tiếp bằng VND khi đến quầy lễ tân' : lang === 'cn' ? '到店前台直接以越南盾现金支付' : lang === 'jp' ? 'ご来店時にフロントにてベトナムドン現金でお支払い' : lang === 'kr' ? '방문 시 프런트 데스크에서 베트남 동 현금으로 직접 결제' : 'Pay directly in cash at the reception desk',
         },
         {
             id: 'cash_usd',
             icon: DollarSign,
             label: lang === 'vi' ? 'Tiền mặt (USD)' : lang === 'cn' ? '美元现金 (USD)' : lang === 'jp' ? '米ドル現金 (USD)' : lang === 'kr' ? '미국 달러 현금 (USD)' : 'Cash (USD)',
-            desc: lang === 'vi' ? 'Thanh toán bằng tiền mặt USD tại quầy thu ngân' : 'Pay in cash USD at the cashier desk',
+            desc: lang === 'vi' ? 'Thanh toán bằng tiền mặt USD tại quầy thu ngân' : lang === 'cn' ? '在收银台以美元现金支付' : lang === 'jp' ? 'キャッシャーにて米ドル現金でお支払い' : lang === 'kr' ? '계산대에서 미국 달러 현금으로 결제' : 'Pay in cash USD at the cashier desk',
         },
         {
             id: 'card',
             icon: CreditCard,
             label: lang === 'vi' ? 'Thẻ POS / Visa' : lang === 'cn' ? '信用卡 / 借记卡' : lang === 'jp' ? 'クレジットカード' : lang === 'kr' ? '신용 / 체크카드' : 'Credit / POS Card',
-            desc: lang === 'vi' ? 'Hỗ trợ thẻ Visa, MasterCard, JCB, Napas qua máy POS' : 'Visa, MasterCard, JCB, Napas supported via POS',
+            desc: lang === 'vi' ? 'Hỗ trợ thẻ Visa, MasterCard, JCB, Napas qua máy POS' : lang === 'cn' ? '支持Visa、万事达卡、JCB及Napas刷卡机' : lang === 'jp' ? 'POS端末経由でVisa、MasterCard、JCB、Napasに対応' : lang === 'kr' ? 'POS기를 통해 Visa, MasterCard, JCB, Napas 카드 지원' : 'Visa, MasterCard, JCB, Napas supported via POS',
         },
         {
             id: 'transfer',
             icon: QrCode,
             label: lang === 'vi' ? 'VietQR / CK' : lang === 'cn' ? '银行转账 / 二维码' : lang === 'jp' ? '銀行振込 / QRコード' : lang === 'kr' ? '계좌이체 / QR결제' : 'VietQR Transfer',
-            desc: 'Chúng tôi hỗ trợ international transfer, domestic transfer',
+            desc: lang === 'vi' ? 'Hỗ trợ chuyển khoản nội địa và quốc tế nhanh chóng' : lang === 'cn' ? '支持国内及国际快速转账' : lang === 'jp' ? '国内および国際送金に対応' : lang === 'kr' ? '국내 및 해외 빠른 계좌이체 지원' : 'Instant dynamic QR & bank transfer',
         },
     ];
 
     const formatParts = (parts: string[]) => {
         if (!parts || parts.length === 0) return '';
-        if (parts.length >= 8) return dict.custom_for_you?.full_body || 'Full Body';
+        if (parts.length >= 8) return dict.custom_for_you?.full_body || (lang === 'vi' ? 'Toàn thân' : lang === 'cn' ? '全身' : lang === 'jp' ? '全身' : lang === 'kr' ? '전신' : 'Full Body');
         return parts.map(p => dict.body_parts?.[p.toLowerCase()] || dict.body_parts?.[p] || p).join(', ');
     };
 
     const handleConfirmBooking = async () => {
         if (cart.length === 0) {
-            setAlertState({ isOpen: true, message: lang === 'vi' ? 'Vui lòng chọn ít nhất 1 dịch vụ' : 'Please select at least 1 service', type: 'error' });
+            setAlertState({ 
+                isOpen: true, 
+                message: lang === 'vi' ? 'Vui lòng chọn ít nhất 1 dịch vụ' : lang === 'cn' ? '请至少选择1项服务' : lang === 'jp' ? 'サービスを1つ以上選択してください' : lang === 'kr' ? '서비스를 1개 이상 선택해 주세요' : 'Please select at least 1 service', 
+                type: 'error' 
+            });
             return;
         }
         if (!localName.trim()) {
@@ -284,18 +594,18 @@ export default function OrderConfirmModal({
                                             <div className="flex items-center gap-2">
                                                 <Calendar size={14} className="text-[#C9A96E]" />
                                                 <span className="text-[11px] font-bold text-[#C9A96E] uppercase tracking-wider">
-                                                    {lang === 'vi' ? 'THÔNG TIN LỊCH HẸN' : 'BOOKING SCHEDULE'}
+                                                    {getModalText('bookingSchedule', lang)}
                                                 </span>
                                             </div>
                                             <button
                                                 type="button"
                                                 onClick={() => setIsEditingSchedule(!isEditingSchedule)}
                                                 className="text-gray-400 hover:text-[#f2d58d] flex items-center gap-1 text-[11px] transition-colors group cursor-pointer"
-                                                title={lang === 'vi' ? 'Chỉnh sửa trực tiếp trên popover' : 'Edit details directly'}
+                                                title={getModalText('editDirectly', lang)}
                                             >
                                                 <Edit3 size={12} className="group-hover:scale-110 transition-transform" />
                                                 <span className="underline font-light">
-                                                    {isEditingSchedule ? (lang === 'vi' ? 'Xong' : 'Done') : (lang === 'vi' ? 'Sửa' : 'Edit')}
+                                                    {isEditingSchedule ? getModalText('done', lang) : getModalText('edit', lang)}
                                                 </span>
                                             </button>
                                         </div>
@@ -304,13 +614,13 @@ export default function OrderConfirmModal({
                                         {isEditingSchedule ? (
                                             <div className="space-y-2.5 p-3 rounded-2xl bg-white/[0.03] border border-[#c9a96e]/30 animate-in fade-in duration-200">
                                                 <div>
-                                                    <label className="text-[10px] text-gray-400 uppercase font-medium">{dict.checkout?.name || 'Họ và tên'}</label>
+                                                    <label className="text-[10px] text-gray-400 uppercase font-medium">{dict.checkout?.name || getModalText('fullName', lang)}</label>
                                                     <input
                                                         type="text"
                                                         value={localName}
                                                         onChange={(e) => setLocalName(e.target.value)}
                                                         className="w-full bg-black/40 border border-white/15 rounded-lg px-2.5 py-1.5 text-xs text-white focus:border-[#c9a96e] outline-none mt-0.5"
-                                                        placeholder="Họ và tên"
+                                                        placeholder={dict.checkout?.name || getModalText('fullName', lang)}
                                                     />
                                                 </div>
 
@@ -326,19 +636,19 @@ export default function OrderConfirmModal({
                                                         />
                                                     </div>
                                                     <div>
-                                                        <label className="text-[10px] text-gray-400 uppercase font-medium">Số điện thoại</label>
+                                                        <label className="text-[10px] text-gray-400 uppercase font-medium">{dict.checkout?.phone_label || getModalText('phone', lang)}</label>
                                                         <input
                                                             type="tel"
                                                             value={localPhone}
                                                             onChange={(e) => setLocalPhone(e.target.value)}
                                                             className="w-full bg-black/40 border border-white/15 rounded-lg px-2.5 py-1.5 text-xs text-white focus:border-[#c9a96e] outline-none mt-0.5"
-                                                            placeholder="Phone"
+                                                            placeholder={dict.checkout?.phone_label || getModalText('phone', lang)}
                                                         />
                                                     </div>
                                                 </div>
 
                                                 <div className="flex items-center justify-between pt-1">
-                                                    <span className="text-[11px] text-gray-400">{lang === 'vi' ? 'Số khách:' : 'Guests:'}</span>
+                                                    <span className="text-[11px] text-gray-400">{getModalText('guestsLabel', lang)}</span>
                                                     <div className="flex items-center gap-2">
                                                         <button
                                                             type="button"
@@ -362,7 +672,7 @@ export default function OrderConfirmModal({
                                                     <div>
                                                         <label className="text-[10px] text-gray-400 uppercase font-medium flex items-center gap-1">
                                                             <Calendar size={11} className="text-[#c9a96e]" />
-                                                            {lang === 'vi' ? 'Ngày hẹn' : 'Date'}
+                                                            {dict.checkout?.booking_date_label || getModalText('date', lang)}
                                                         </label>
                                                         <input
                                                             type="date"
@@ -374,14 +684,14 @@ export default function OrderConfirmModal({
                                                     <div>
                                                         <label className="text-[10px] text-gray-400 uppercase font-medium flex items-center gap-1">
                                                             <Clock size={11} className="text-[#c9a96e]" />
-                                                            {lang === 'vi' ? 'Giờ hẹn' : 'Time'}
+                                                            {dict.checkout?.booking_time_label || getModalText('time', lang)}
                                                         </label>
                                                         <input
                                                             type="text"
                                                             value={localTime}
                                                             onChange={(e) => setLocalTime(e.target.value)}
                                                             className="w-full bg-black/40 border border-white/15 rounded-lg px-2.5 py-1.5 text-xs text-white focus:border-[#c9a96e] outline-none mt-0.5"
-                                                            placeholder="VD: 14:00"
+                                                            placeholder={getModalText('timePlaceholder', lang)}
                                                         />
                                                     </div>
                                                 </div>
@@ -392,30 +702,30 @@ export default function OrderConfirmModal({
                                                     className="w-full py-1.5 bg-[#c9a96e]/20 border border-[#c9a96e]/40 rounded-lg text-xs font-bold text-[#f2d58d] mt-1 hover:bg-[#c9a96e]/30 transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
                                                 >
                                                     <Check size={12} />
-                                                    <span>{lang === 'vi' ? 'Lưu thay đổi' : 'Save Changes'}</span>
+                                                    <span>{getModalText('saveChanges', lang)}</span>
                                                 </button>
                                             </div>
                                         ) : (
                                             <div className="space-y-2 text-xs md:text-sm">
                                                 {localDate && (
                                                     <div className="flex justify-between items-center py-1 border-b border-white/[0.04]">
-                                                        <span className="text-gray-400">{lang === 'vi' ? 'Ngày hẹn' : 'Date'}</span>
+                                                        <span className="text-gray-400">{dict.checkout?.booking_date_label || getModalText('date', lang)}</span>
                                                         <span className="font-bold text-[#f2d58d]">{localDate}</span>
                                                     </div>
                                                 )}
                                                 {localTime && (
                                                     <div className="flex justify-between items-center py-1 border-b border-white/[0.04]">
-                                                        <span className="text-gray-400">{lang === 'vi' ? 'Giờ hẹn' : 'Time'}</span>
+                                                        <span className="text-gray-400">{dict.checkout?.booking_time_label || getModalText('time', lang)}</span>
                                                         <span className="font-bold text-[#f2d58d]">{localTime}</span>
                                                     </div>
                                                 )}
                                                 <div className="flex justify-between items-center py-1 border-b border-white/[0.04]">
-                                                    <span className="text-gray-400">{lang === 'vi' ? 'Số lượng khách' : 'Guests'}</span>
-                                                    <span className="font-bold text-[#f2d58d]">{localGuests} {lang === 'vi' ? 'khách' : 'guest(s)'}</span>
+                                                    <span className="text-gray-400">{getModalText('guestCountLabel', lang)}</span>
+                                                    <span className="font-bold text-[#f2d58d]">{localGuests} {getModalText('guestUnit', lang)}</span>
                                                 </div>
                                                 <div className="flex justify-between items-center py-1 border-b border-white/[0.04]">
-                                                    <span className="text-gray-400">{dict.checkout?.name || 'Họ và tên'}</span>
-                                                    <span className="font-bold text-white">{localName || 'Guest'}</span>
+                                                    <span className="text-gray-400">{dict.checkout?.name || getModalText('fullName', lang)}</span>
+                                                    <span className="font-bold text-white">{localName || getModalText('guestFallback', lang)}</span>
                                                 </div>
                                                 {localEmail && (
                                                     <div className="flex justify-between items-center py-1 border-b border-white/[0.04]">
@@ -425,7 +735,7 @@ export default function OrderConfirmModal({
                                                 )}
                                                 {localPhone && (
                                                     <div className="flex justify-between items-center py-1 border-b border-white/[0.04]">
-                                                        <span className="text-gray-400">{dict.checkout?.phone_label || 'Số điện thoại'}</span>
+                                                        <span className="text-gray-400">{dict.checkout?.phone_label || getModalText('phone', lang)}</span>
                                                         <span className="font-bold text-white">{localPhone}</span>
                                                     </div>
                                                 )}
@@ -440,7 +750,7 @@ export default function OrderConfirmModal({
                                         <div className="flex justify-between items-center pb-1.5 border-b border-white/10">
                                             <div className="flex items-center gap-2">
                                                 <span className="text-[11px] font-bold text-[#C9A96E] uppercase tracking-wider">
-                                                    {lang === 'vi' ? 'TRẢI NGHIỆM CỦA BẠN' : 'YOUR EXPERIENCE'}
+                                                    {getModalText('yourExperience', lang)}
                                                 </span>
                                             </div>
                                             <span className="bg-[#c9a96e]/15 text-[#f2d58d] text-[10px] font-bold px-2 py-0.5 rounded-full border border-[#c9a96e]/30">
@@ -479,7 +789,7 @@ export default function OrderConfirmModal({
                                                         <div className="flex justify-between items-start gap-2">
                                                             <div className="flex-1 pr-2">
                                                                 <span className="font-bold text-white text-sm capitalize">
-                                                                    {item.names?.[lang] || item.names?.en || 'Dịch vụ Spa'}
+                                                                    {item.names?.[lang] || item.names?.en || item.names?.vi || getModalText('defaultServiceName', lang)}
                                                                 </span>
                                                                 <div className="flex items-center gap-2 text-xs text-gray-400 mt-0.5">
                                                                     <span className="flex items-center gap-1">
@@ -498,10 +808,10 @@ export default function OrderConfirmModal({
                                                                         if (onEditService) onEditService(item);
                                                                     }}
                                                                     className="text-gray-400 hover:text-[#f2d58d] flex items-center gap-1 text-[10px] transition-colors cursor-pointer"
-                                                                    title={lang === 'vi' ? 'Chỉnh sửa dịch vụ này' : 'Edit this service'}
+                                                                    title={getModalText('editService', lang)}
                                                                 >
                                                                     <Edit3 size={11} />
-                                                                    <span>{lang === 'vi' ? 'Sửa' : 'Edit'}</span>
+                                                                    <span>{getModalText('edit', lang)}</span>
                                                                 </button>
                                                             </div>
                                                         </div>
@@ -516,7 +826,7 @@ export default function OrderConfirmModal({
                                                                             onClick={() => toggleExpand(idx)}
                                                                             className="w-full py-1.5 flex items-center justify-center gap-1 text-[10px] text-gray-400 hover:text-[#c9a96e] transition-colors cursor-pointer"
                                                                         >
-                                                                            <span>{lang === 'vi' ? 'Xem thêm chi tiết' : 'See details'}</span>
+                                                                            <span>{getModalText('seeDetails', lang)}</span>
                                                                             <ChevronDown size={12} />
                                                                         </button>
                                                                     </div>
@@ -553,7 +863,7 @@ export default function OrderConfirmModal({
                                                                             <div className="flex justify-between items-center bg-white/[0.02] p-2 rounded-lg border border-white/[0.02]">
                                                                                 <div className="flex items-center gap-2 text-gray-400">
                                                                                     <ShieldOff size={13} />
-                                                                                    <span>{dict.custom_for_you?.avoid_areas || (lang === 'vi' ? 'Tránh' : 'Avoid')}</span>
+                                                                                    <span>{dict.custom_for_you?.avoid_areas || getModalText('avoid', lang)}</span>
                                                                                 </div>
                                                                                 <span className="text-[#f2d58d] font-bold truncate ml-2 max-w-[150px] text-right">{formatParts(avoid)}</span>
                                                                             </div>
@@ -562,7 +872,7 @@ export default function OrderConfirmModal({
                                                                             <div className="flex justify-between items-center bg-white/[0.02] p-2 rounded-lg border border-white/[0.02]">
                                                                                 <div className="flex items-center gap-2 text-gray-400">
                                                                                     <Sparkles size={13} />
-                                                                                    <span>{dict.custom_for_you?.private_room || (lang === 'vi' ? 'Phòng riêng' : 'Private Room')}</span>
+                                                                                    <span>{dict.custom_for_you?.private_room || getModalText('privateRoom', lang)}</span>
                                                                                 </div>
                                                                                 <span className="text-[#f2d58d] font-bold">+105K</span>
                                                                             </div>
@@ -571,18 +881,18 @@ export default function OrderConfirmModal({
                                                                             <div className="flex justify-between items-center bg-white/[0.02] p-2 rounded-lg border border-white/[0.02]">
                                                                                 <div className="flex items-center gap-2 text-gray-400">
                                                                                     <Heart size={13} />
-                                                                                    <span>{dict.tags?.pregnant || (lang === 'vi' ? 'Mang thai' : 'Pregnant')}</span>
+                                                                                    <span>{dict.tags?.pregnant || getModalText('pregnant', lang)}</span>
                                                                                 </div>
-                                                                                <span className="text-[#f2d58d] font-bold">{lang === 'vi' ? 'Có' : 'Yes'}</span>
+                                                                                <span className="text-[#f2d58d] font-bold">{getModalText('yes', lang)}</span>
                                                                             </div>
                                                                         )}
                                                                         {isAllergy && (
                                                                             <div className="flex justify-between items-center bg-white/[0.02] p-2 rounded-lg border border-white/[0.02]">
                                                                                 <div className="flex items-center gap-2 text-gray-400">
                                                                                     <AlertTriangle size={13} />
-                                                                                    <span>{dict.tags?.allergy || (lang === 'vi' ? 'Dị ứng' : 'Allergy')}</span>
+                                                                                    <span>{dict.tags?.allergy || getModalText('allergy', lang)}</span>
                                                                                 </div>
-                                                                                <span className="text-[#f2d58d] font-bold">{lang === 'vi' ? 'Có' : 'Yes'}</span>
+                                                                                <span className="text-[#f2d58d] font-bold">{getModalText('yes', lang)}</span>
                                                                             </div>
                                                                         )}
                                                                         {noteContent && (
@@ -599,7 +909,7 @@ export default function OrderConfirmModal({
                                                                             onClick={() => toggleExpand(idx)}
                                                                             className="w-full py-1 mt-1 flex items-center justify-center gap-1 text-[10px] text-gray-400 hover:text-[#c9a96e] transition-colors cursor-pointer"
                                                                         >
-                                                                            <span>{lang === 'vi' ? 'Thu gọn' : 'Show less'}</span>
+                                                                            <span>{getModalText('showLess', lang)}</span>
                                                                             <ChevronUp size={12} />
                                                                         </button>
                                                                     </div>
@@ -623,7 +933,7 @@ export default function OrderConfirmModal({
                                         <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#c9a96e] uppercase tracking-wider">
                                             <Info size={13} />
                                             <span>
-                                                {lang === 'vi' ? 'Phương thức thanh toán chấp nhận:' : 'We accept payment methods:'}
+                                                {getModalText('acceptedPayments', lang)}
                                             </span>
                                         </div>
 
@@ -740,7 +1050,7 @@ export default function OrderConfirmModal({
                                             : 'bg-gradient-to-r from-[#ecd38f] to-[#c6a55f] text-[#2c2416] hover:brightness-105 active:scale-[0.98] cursor-pointer'
                                     }`}
                                 >
-                                    <span>{isSubmitting ? (lang === 'vi' ? 'Đang gửi...' : 'Processing...') : (dict.checkout?.submit || 'Xác nhận đặt lịch')}</span>
+                                    <span>{isSubmitting ? getModalText('submitting', lang) : (dict.checkout?.submit || getModalText('submitBooking', lang))}</span>
                                     {!isSubmitting && isTermsAgreed && <ArrowRight size={15} className="group-hover:translate-x-1 transition-transform" strokeWidth={3} />}
                                 </button>
                             </div>
@@ -762,7 +1072,7 @@ export default function OrderConfirmModal({
 
                                 {bookingId && (
                                     <div className="inline-flex items-center gap-1.5 bg-[#c9a96e]/15 border border-[#c9a96e]/30 px-3.5 py-1 rounded-full text-xs font-mono text-[#f2d58d] font-bold">
-                                        <span>{lang === 'vi' ? 'Mã đơn:' : 'Order ID:'}</span>
+                                        <span>{getModalText('orderId', lang)}</span>
                                         <span>#{bookingId}</span>
                                     </div>
                                 )}
@@ -838,16 +1148,16 @@ export default function OrderConfirmModal({
                                 </div>
                                 <div>
                                     <h4 className="font-bold text-white text-base">
-                                        {activeMethodId === 'cash_vnd' && (lang === 'vi' ? 'Tiền mặt tại Spa (VND)' : 'Cash at Spa (VND)')}
-                                        {activeMethodId === 'cash_usd' && (lang === 'vi' ? 'Tiền mặt USD' : 'Cash (USD)')}
-                                        {activeMethodId === 'card' && (lang === 'vi' ? 'Thẻ POS & Không tiếp xúc' : 'Credit / POS Card')}
-                                        {activeMethodId === 'transfer' && (lang === 'vi' ? 'VietQR / Chuyển khoản 24/7' : 'VietQR Transfer')}
+                                        {activeMethodId === 'cash_vnd' && getModalText('cashVndTitle', lang)}
+                                        {activeMethodId === 'cash_usd' && getModalText('cashUsdTitle', lang)}
+                                        {activeMethodId === 'card' && getModalText('cardTitle', lang)}
+                                        {activeMethodId === 'transfer' && getModalText('transferTitle', lang)}
                                     </h4>
                                     <p className="text-[11px] text-[#f2d58d]">
-                                        {activeMethodId === 'cash_vnd' && (lang === 'vi' ? 'Các mệnh giá tiền Polymer Việt Nam Đồng' : 'Accepted VND Polymer Denominations')}
-                                        {activeMethodId === 'cash_usd' && (lang === 'vi' ? 'Quy định thu đổi & hoàn tiền' : 'Collection & Exchange Rules')}
-                                        {activeMethodId === 'card' && (lang === 'vi' ? 'Các loại thẻ và ví điện tử hỗ trợ' : 'Accepted Cards & Mobile Wallets')}
-                                        {activeMethodId === 'transfer' && (lang === 'vi' ? 'Quét mã QR chuyển khoản nhanh' : 'Instant dynamic QR transfer')}
+                                        {activeMethodId === 'cash_vnd' && getModalText('cashVndSub', lang)}
+                                        {activeMethodId === 'cash_usd' && getModalText('cashUsdSub', lang)}
+                                        {activeMethodId === 'card' && getModalText('cardSub', lang)}
+                                        {activeMethodId === 'transfer' && getModalText('transferSub', lang)}
                                     </p>
                                 </div>
                             </div>
@@ -866,9 +1176,7 @@ export default function OrderConfirmModal({
                             {activeMethodId === 'cash_vnd' && (
                                 <div className="space-y-3">
                                     <p className="text-xs text-gray-300">
-                                        {lang === 'vi'
-                                            ? 'Quý khách thanh toán tiền mặt trực tiếp tại quầy thu ngân. Spa chấp nhận tất cả các mệnh giá tiền polymer Việt Nam Đồng:'
-                                            : 'Pay directly at the cashier desk. Oria Spa accepts all standard Vietnamese Dong polymer notes:'}
+                                        {getModalText('cashVndDesc', lang)}
                                     </p>
                                     <div className="grid grid-cols-2 gap-2.5">
                                         {VND_DENOMINATIONS.map((denom) => (
@@ -890,7 +1198,7 @@ export default function OrderConfirmModal({
                                     {/* Exchange Rate Box */}
                                     <div className="bg-black/50 border border-[#C9A96E]/40 rounded-2xl p-3.5 text-center">
                                         <div className="text-[11px] text-[#C9A96E] font-bold uppercase tracking-wider mb-0.5">
-                                            {lang === 'vi' ? 'Tỷ giá quy đổi' : 'Exchange Rate'}
+                                            {getModalText('exchangeRate', lang)}
                                         </div>
                                         <div className="text-xl font-black text-[#f2d58d]">
                                             1 USD = {formatCurrency(USD_INFO.exchangeRate)} VND
@@ -903,7 +1211,7 @@ export default function OrderConfirmModal({
                                             <ArrowRightLeft size={14} className="text-blue-400" />
                                         </div>
                                         <p className="text-xs text-blue-300 leading-snug font-medium">
-                                            {dict.payment_methods?.refund_note || (lang === 'vi' ? 'Tiền thừa sẽ được thối lại bằng tiền mặt Việt Nam Đồng (VND).' : 'Change will be returned in VND cash.')}
+                                            {dict.payment_methods?.refund_note || getModalText('refundNote', lang)}
                                         </p>
                                     </div>
 
@@ -919,9 +1227,7 @@ export default function OrderConfirmModal({
                             {activeMethodId === 'card' && (
                                 <div className="space-y-3">
                                     <p className="text-xs text-gray-300">
-                                        {lang === 'vi'
-                                            ? 'Thanh toán quẹt thẻ máy POS không phụ phí giao dịch. Hỗ trợ tất cả các thẻ quốc tế và ví thông minh:'
-                                            : 'Zero surcharge card payment via POS terminal. Supports all major international cards and mobile wallets:'}
+                                        {getModalText('cardDesc', lang)}
                                     </p>
                                     <div className="grid grid-cols-3 gap-2.5">
                                         {ACCEPTED_CARDS.map((card) => (
@@ -944,9 +1250,9 @@ export default function OrderConfirmModal({
                                         <div className="w-14 h-14 rounded-2xl bg-[#c9a96e]/15 border border-[#c9a96e]/30 flex items-center justify-center text-[#f2d58d]">
                                             <QrCode size={30} />
                                         </div>
-                                        <div className="text-sm font-bold text-[#f2d58d]">QR & Bank Transfer</div>
+                                        <div className="text-sm font-bold text-[#f2d58d]">VietQR / Transfer</div>
                                         <p className="text-sm text-gray-200 leading-relaxed font-medium">
-                                            Chúng tôi hỗ trợ international transfer, domestic transfer
+                                            {getModalText('transferDesc', lang)}
                                         </p>
                                     </div>
                                 </div>
@@ -960,7 +1266,7 @@ export default function OrderConfirmModal({
                                 onClick={() => setActiveMethodId(null)}
                                 className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#ecd38f] to-[#c6a55f] text-[#2c2416] text-xs font-bold uppercase tracking-wider hover:brightness-105 transition-all cursor-pointer"
                             >
-                                {lang === 'vi' ? 'Đã hiểu' : 'Understood'}
+                                {getModalText('understood', lang)}
                             </button>
                         </div>
                     </div>

@@ -14,7 +14,7 @@ import { useRouter } from 'next/navigation';
 import { CartItem } from '@/components/Menu/types';
 
 // 🔧 UI CONFIGURATION
-const DEFAULT_LANG = 'vn';
+const DEFAULT_LANG = 'vi';
 
 type BookingPhase = 'MENU' | 'CHECKOUT';
 

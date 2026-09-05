@@ -45,7 +45,7 @@ const COPY = {
   all: { vi: 'Tất cả', en: 'All', cn: '全部', jp: 'すべて', kr: '전체' },
   bookNow: { vi: 'Book now', en: 'Book now', cn: '立即预约', jp: '今すぐ予約', kr: '바로 예약' },
   add: { vi: 'Thêm', en: 'Add', cn: '添加', jp: '追加', kr: '추가' },
-  addServices: { vi: 'Mở + Add service(s)', en: 'Open + Add service(s)', cn: '打开 + 添加服务', jp: '開く + サービス追加', kr: '열기 + 서비스 추가' },
+  addServices: { vi: 'Mở + Thêm dịch vụ', en: 'Open + Add service(s)', cn: '打开 + 添加服务', jp: '開く + サービス追加', kr: '열기 + 서비스 추가' },
   addMoreTitle: { vi: 'Thêm dịch vụ', en: 'Add service(s)', cn: '添加服务', jp: 'サービス追加', kr: '서비스 추가' },
   invoice: { vi: 'Chi tiết hóa đơn', en: 'Invoice details', cn: '账单明细', jp: '明細', kr: '결제 내역' },
   emptyCart: { vi: 'Chưa chọn dịch vụ', en: 'No selected service', cn: '尚未选择服务', jp: 'サービスが選択されていません', kr: '선택된 서비스가 없습니다' },
@@ -61,6 +61,39 @@ const COPY = {
   selectService: { vi: 'Vui lòng chọn ít nhất 1 dịch vụ.', en: 'Please select at least 1 service.', cn: '请至少选择1项服务。', jp: 'サービスを1つ以上選択してください。', kr: '서비스를 1개 이상 선택해 주세요.' },
   showMoreTimes: { vi: 'Xem thêm', en: 'More', cn: '更多', jp: 'もっと見る', kr: '더 보기' },
   showLessTimes: { vi: 'Thu gọn', en: 'Less', cn: '收起', jp: '閉じる', kr: '접기' },
+  back: { vi: 'Quay lại', en: 'Back', cn: '返回', jp: '戻る', kr: '뒤로가기' },
+  openCalendar: { vi: 'Mở lịch chọn ngày bất kỳ', en: 'Open calendar to pick date', cn: '打开日历选择日期', jp: 'カレンダーを開く', kr: '달력 열기' },
+  resetToday: { vi: 'Quay về ngày hôm nay', en: 'Reset to today', cn: '回到今天', jp: '今日に戻る', kr: '오늘로 가기' },
+  pickAnotherDate: { vi: 'Mở lịch chọn ngày khác', en: 'Pick a date from calendar', cn: '从日历选择其他日期', jp: '別の日付を選択', kr: '다른 날짜 선택' },
+  more: { vi: 'Ngày khác', en: 'More', cn: '更多', jp: 'もっと見る', kr: '더보기' },
+  selectTime: { vi: 'Chưa chọn giờ', en: 'Select time', cn: '选择时间', jp: '時間を選択', kr: '시간 선택' },
+  editService: { vi: 'Chỉnh sửa dịch vụ', en: 'Edit service', cn: '修改服务', jp: 'サービス編集', kr: '서비스 수정' },
+  service: { vi: 'Dịch vụ', en: 'Service', cn: '服务', jp: 'サービス', kr: '서비스' },
+  updatedPrice: { vi: 'Giá cập nhật', en: 'Updated price', cn: '更新后价格', jp: '更新後の価格', kr: '업데이트된 가격' },
+  additionalNotes: { vi: 'Ghi chú thêm...', en: 'Additional notes...', cn: '补充备注...', jp: '追加メモ...', kr: '추가 메모...' },
+  save: { vi: 'Lưu', en: 'Save', cn: '保存', jp: '保存', kr: '저장' },
+  fromPrice: { vi: 'Từ', en: 'From', cn: '起', jp: '〜', kr: '~' },
+  optionsCount: { vi: 'lựa chọn', en: 'options', cn: '个选项', jp: 'つの選択肢', kr: '개 옵션' },
+  loadingServices: { vi: 'Đang tải dịch vụ...', en: 'Loading services...', cn: '正在加载服务...', jp: 'サービスを読み込み中...', kr: '서비스를 불러오는 중...' },
+  noServicesFound: { vi: 'Chưa có dịch vụ phù hợp.', en: 'No matching services found.', cn: '没有找到匹配的服务。', jp: '該当するサービスが見つかりません。', kr: '해당하는 서비스가 없습니다.' },
+  close: { vi: 'Đóng', en: 'Close', cn: '关闭', jp: '閉じる', kr: '닫기' },
+  chooseDuration: { vi: 'Chọn thời lượng phù hợp', en: 'Choose suitable duration', cn: '选择合适的时长', jp: '適切な時間を選択', kr: '적합한 시간을 선택하세요' },
+  yourSelection: { vi: 'Lựa chọn của bạn', en: 'Your selection', cn: '您的选择', jp: 'あなたの選択', kr: '선택 항목' },
+  gender: { vi: 'Giới tính', en: 'Gender', cn: '性别', jp: '性別', kr: '성별' },
+  cartRevalUnavailable: {
+    vi: 'Một số dịch vụ trong giỏ hàng đã ngừng hoạt động và được tự động cập nhật lại.',
+    en: 'Some unavailable services were refreshed or removed from your cart.',
+    cn: '购物车中的部分不可用服务已自动更新。',
+    jp: 'ご利用いただけない一部のサービスがカートから自動更新されました。',
+    kr: '장바구니의 일부 이용 불가 서비스가 자동으로 업데이트되었습니다.',
+  },
+  cartRevalPrice: {
+    vi: 'Giá một số dịch vụ trong giỏ hàng đã được đồng bộ chuẩn xác từ hệ thống.',
+    en: 'Your cart pricing has been refreshed with current system rates.',
+    cn: '购物车价格已根据系统最新费率更新。',
+    jp: 'カート内の料金が最新のシステム料金に更新されました。',
+    kr: '장바구니의 서비스 가격이 시스템 최신 요금으로 갱신되었습니다.',
+  },
 };
 
 const COLLAPSED_TIME_SLOT_COUNT = 16;
@@ -360,10 +393,10 @@ const DurationDrawer = ({
             <h2 className={styles.drawerTitle}>{serviceName(group[0], lang)}</h2>
             <div className={styles.drawerSub}>{serviceDescription(group[0], lang)}</div>
           </div>
-          <button className={styles.drawerClose} onClick={onClose} aria-label="Đóng">×</button>
+          <button className={styles.drawerClose} onClick={onClose} aria-label={t('close', lang)}>×</button>
         </div>
         <div className={styles.drawerBody}>
-          <div className={styles.drawerLabel}>{dict.checkout?.chooseDuration || 'Chọn thời lượng phù hợp'}</div>
+          <div className={styles.drawerLabel}>{dict.checkout?.chooseDuration || t('chooseDuration', lang)}</div>
           <div className={styles.drawerOptions}>
             {group.map((v) => (
               <button
@@ -378,7 +411,7 @@ const DurationDrawer = ({
           </div>
           <div className={styles.drawerFooter}>
             <div className={styles.drawerSelection}>
-              {dict.checkout?.yourSelection || 'Lựa chọn của bạn'}
+              {dict.checkout?.yourSelection || t('yourSelection', lang)}
               <strong>
                 {selectedVariant.timeValue} {dict.checkout?.mins || 'mins'} · {formatCurrency(selectedVariant.priceVND)} {lang === 'vi' ? 'đ' : 'VND'}
               </strong>
@@ -433,9 +466,9 @@ const CheckoutGroupedServiceCard = ({
         <div className={styles.serviceMeta} style={{ marginTop: '0.4rem', flexWrap: 'wrap', display: 'flex', alignItems: 'center', gap: '8px' }}>
           {group.length > 1 ? (
             <>
-              <span style={{ fontSize: '11px', textTransform: 'uppercase', color: '#9b978e' }}>Từ</span>
+              <span style={{ fontSize: '11px', textTransform: 'uppercase', color: '#9b978e' }}>{t('fromPrice', lang)}</span>
               <strong>{formatCurrency(group[0].priceVND)} {lang === 'vi' ? 'đ' : 'VND'}</strong>
-              <span style={{ fontSize: '11px', color: '#b29e5d', marginLeft: 'auto' }}>{group.length} lựa chọn</span>
+              <span style={{ fontSize: '11px', color: '#b29e5d', marginLeft: 'auto' }}>{group.length} {t('optionsCount', lang)}</span>
             </>
           ) : (
             <>
@@ -500,12 +533,19 @@ const isValidPhone = (phone: string) => {
 export default function CheckoutPage({ params }: { params: PageParams }) {
   const router = useRouter();
   const { lang: rawLang, menuType: rawMenuType } = use(params);
-  const { currentLang } = useTranslation();
-  const lang = langKey(currentLang || rawLang);
+  const { currentLang, setCurrentLang } = useTranslation();
+  const lang = langKey(rawLang || currentLang);
   const menuType = rawMenuType === 'vip' ? 'vip' : 'standard';
   const dict = getDictionary(lang);
   const { services, cart, loading: servicesLoading, addToCart, removeFromCart, updateCartItemOptions, replaceCartItemService, revalidateCart } = useMenuData();
   const [idempotencyKey] = useState(() => 'idemp_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 8));
+
+  // Sync route lang with global TranslationProvider
+  useEffect(() => {
+    if (rawLang && rawLang !== currentLang && ['vi', 'en', 'cn', 'jp', 'kr'].includes(rawLang)) {
+      setCurrentLang(rawLang);
+    }
+  }, [rawLang, currentLang, setCurrentLang]);
 
   // PHASE 4 & 6.B: Auto-revalidate cart with server canonical rates on mount
   useEffect(() => {
@@ -518,22 +558,18 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
         setAlertState({
           isOpen: true,
           type: 'info',
-          message: lang === 'vi'
-            ? 'Một số dịch vụ trong giỏ hàng đã ngừng hoạt động và được tự động cập nhật lại.'
-            : 'Some unavailable services were refreshed or removed from your cart.',
+          message: t('cartRevalUnavailable', lang),
         });
       } else if (res.hasPriceChanged) {
         setAlertState({
           isOpen: true,
           type: 'info',
-          message: lang === 'vi'
-            ? 'Giá một số dịch vụ trong giỏ hàng đã được đồng bộ chuẩn xác từ hệ thống.'
-            : 'Your cart pricing has been refreshed with current system rates.',
+          message: t('cartRevalPrice', lang),
         });
       }
     })();
     return () => { isMounted = false; };
-  }, []);
+  }, [lang]);
 
   const [editingCartId, setEditingCartId] = useState<string | null>(null);
   const [editServiceId, setEditServiceId] = useState<string | null>(null);
@@ -978,7 +1014,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
           onClick={() => router.back()}
         >
           <ChevronLeft size={18} />
-          <span className="text-base font-semibold uppercase tracking-[0.15em]">Back</span>
+          <span className="text-base font-semibold uppercase tracking-[0.15em]">{t('back', lang)}</span>
         </button>
         
         <SmartLogo theme="dark" className="h-20 md:h-28 lg:h-32 w-auto object-contain mb-5 drop-shadow-xl" />
@@ -1019,7 +1055,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                       onClick={() => setIsGenderOpen((open) => !open)}
                       aria-haspopup="listbox"
                       aria-expanded={isGenderOpen}
-                      aria-label="Gender"
+                      aria-label={t('gender', lang)}
                     >
                       <span>{t(genderKey, lang)}</span>
                       <span className={styles.genderChevron}>⌄</span>
@@ -1219,7 +1255,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                         transition: 'all 0.2s',
                         boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)',
                       }}
-                      title={lang === 'vi' ? 'Mở lịch chọn ngày bất kỳ' : 'Open calendar to pick date'}
+                      title={t('openCalendar', lang)}
                     >
                       <Calendar size={15} color="#f2d58d" />
                       <span>{lang === 'vi' ? 'Mở lịch' : lang === 'cn' ? '选日期' : lang === 'jp' ? 'カレンダー' : lang === 'kr' ? '달력' : 'Calendar'}</span>
@@ -1271,7 +1307,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                       </span>
                       <span style={{ color: 'rgba(255, 255, 255, 0.35)', fontSize: '16px' }}>·</span>
                       <span style={{ fontSize: '18px', fontWeight: 700, color: '#f2d58d', letterSpacing: '0.5px' }}>
-                        {bookingTime || (lang === 'vi' ? 'Chưa chọn giờ' : 'Select time')}
+                        {bookingTime || t('selectTime', lang)}
                       </span>
                     </div>
                   </div>
@@ -1298,7 +1334,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                       }}
                       onMouseEnter={(e) => (e.currentTarget.style.color = '#fff')}
                       onMouseLeave={(e) => (e.currentTarget.style.color = '#c9a96e')}
-                      title={lang === 'vi' ? 'Quay về ngày hôm nay' : 'Reset to today'}
+                      title={t('resetToday', lang)}
                     >
                       <RotateCcw size={12} />
                       <span>{lang === 'vi' ? 'Về hôm nay' : lang === 'cn' ? '回到今天' : lang === 'jp' ? '今日に戻る' : lang === 'kr' ? '오늘로 가기' : 'Back to today'}</span>
@@ -1340,11 +1376,11 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                       cursor: 'pointer',
                     }}
                     onClick={() => calendarInputRef.current?.showPicker?.() || calendarInputRef.current?.focus()}
-                    title={lang === 'vi' ? 'Mở lịch chọn ngày khác' : 'Pick a date from calendar'}
+                    title={t('pickAnotherDate', lang)}
                   >
                     <Calendar size={18} color="#f2d58d" style={{ marginBottom: '2px' }} />
                     <span className={styles.dow} style={{ color: '#f2d58d' }}>{lang === 'vi' ? 'Lịch' : lang === 'cn' ? '日历' : lang === 'jp' ? 'カレンダー' : lang === 'kr' ? '달력' : 'Calendar'}</span>
-                    <span style={{ fontSize: '10px', color: '#9ca3af', fontWeight: 500 }}>{lang === 'vi' ? 'Ngày khác' : 'More'}</span>
+                    <span style={{ fontSize: '10px', color: '#9ca3af', fontWeight: 500 }}>{t('more', lang)}</span>
                   </button>
                 </div>
 
@@ -1427,7 +1463,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                     <div style={{ marginTop: '8px', paddingTop: '8px', borderTop: '1px solid rgba(255, 255, 255, 0.05)' }}>
                       {item.options?.therapist && (
                         <div className={styles.detail}>
-                          <span style={{ fontSize: '12px' }}>{dict.checkout?.therapist || (lang === 'vi' ? 'KTV' : 'Therapist')}</span>
+                          <span style={{ fontSize: '12px' }}>{dict.checkout?.therapist || (lang === 'vi' ? 'KTV' : lang === 'cn' ? '技师' : lang === 'jp' ? 'セラピスト' : lang === 'kr' ? '관리사' : 'Therapist')}</span>
                           <strong style={{ fontSize: '12px', textTransform: 'capitalize' }}>
                             {/* @ts-ignore */}
                             {dict.options?.therapist_options?.[item.options.therapist?.toLowerCase()] || item.options.therapist}
@@ -1436,7 +1472,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                       )}
                       {item.options?.strength && (
                         <div className={styles.detail}>
-                          <span style={{ fontSize: '12px' }}>{dict.checkout?.strength || (lang === 'vi' ? 'Lực massage' : 'Strength')}</span>
+                          <span style={{ fontSize: '12px' }}>{dict.checkout?.strength || (lang === 'vi' ? 'Lực massage' : lang === 'cn' ? '按摩力度' : lang === 'jp' ? '強さ' : lang === 'kr' ? '강도' : 'Strength')}</span>
                           <strong style={{ fontSize: '12px', textTransform: 'capitalize' }}>
                             {/* @ts-ignore */}
                             {dict.options?.strength_levels?.[item.options.strength?.toLowerCase()] || item.options.strength}
@@ -1445,19 +1481,19 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                       )}
                       {item.options?.bodyParts?.focus && item.options.bodyParts.focus.length > 0 && (
                         <div className={styles.detail}>
-                          <span style={{ fontSize: '12px' }}>{dict.checkout?.focus || (lang === 'vi' ? 'Vùng tập trung' : 'Focus Area')}</span>
-                          <strong style={{ fontSize: '12px', textAlign: 'right', maxWidth: '60%' }}>{item.options.bodyParts.focus.length >= 8 ? (dict.custom_for_you?.full_body || (lang === 'vi' ? 'Toàn thân' : 'Full Body')) : item.options.bodyParts.focus.map(p => translatePart(p, lang)).join(', ')}</strong>
+                          <span style={{ fontSize: '12px' }}>{dict.checkout?.focus || (lang === 'vi' ? 'Vùng tập trung' : lang === 'cn' ? '重点部位' : lang === 'jp' ? '重点部位' : lang === 'kr' ? '집중 부위' : 'Focus Area')}</span>
+                          <strong style={{ fontSize: '12px', textAlign: 'right', maxWidth: '60%' }}>{item.options.bodyParts.focus.length >= 8 ? (dict.custom_for_you?.full_body || (lang === 'vi' ? 'Toàn thân' : lang === 'cn' ? '全身' : lang === 'jp' ? '全身' : lang === 'kr' ? '전신' : 'Full Body')) : item.options.bodyParts.focus.map(p => translatePart(p, lang)).join(', ')}</strong>
                         </div>
                       )}
                       {item.options?.bodyParts?.avoid && item.options.bodyParts.avoid.length > 0 && (
                         <div className={styles.detail}>
-                          <span style={{ fontSize: '12px' }}>{dict.checkout?.avoid || (lang === 'vi' ? 'Vùng cần tránh' : 'Avoid Area')}</span>
+                          <span style={{ fontSize: '12px' }}>{dict.checkout?.avoid || (lang === 'vi' ? 'Vùng cần tránh' : lang === 'cn' ? '避开部位' : lang === 'jp' ? '避ける部位' : lang === 'kr' ? '피할 부위' : 'Avoid Area')}</span>
                           <strong style={{ fontSize: '12px', textAlign: 'right', maxWidth: '60%', color: '#ef4444' }}>{item.options.bodyParts.avoid.map(p => translatePart(p, lang)).join(', ')}</strong>
                         </div>
                       )}
                       {item.options?.addons?.privateRoom && (
                         <div className={styles.detail}>
-                          <span style={{ fontSize: '12px' }}>Add-on</span>
+                          <span style={{ fontSize: '12px' }}>{lang === 'vi' ? 'Tiện ích' : lang === 'cn' ? '附加项目' : lang === 'jp' ? 'アドオン' : lang === 'kr' ? '추가 항목' : 'Add-on'}</span>
                           <strong style={{ fontSize: '12px', textAlign: 'right', maxWidth: '60%', color: '#c9a96e' }}>{lang === 'vi' ? 'Phòng riêng (+105K)' : lang === 'cn' ? '包间 (+105K)' : lang === 'kr' ? '프라이빗 룸 (+105K)' : lang === 'jp' ? '個室 (+105K)' : 'Private Room (+105K)'}</strong>
                         </div>
                       )}
@@ -1482,12 +1518,12 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                     return (
                       <div style={{ marginTop: '14px', borderRadius: '18px', background: 'linear-gradient(180deg, rgba(20,19,38,0.98), rgba(14,14,29,0.98))', border: '1px solid rgba(226,190,111,0.28)', overflow: 'hidden', boxShadow: '0 24px 60px rgba(0,0,0,0.35)' }}>
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '18px 20px', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-                          <strong style={{ fontSize: '16px', color: '#f2d58d' }}>Edit service</strong>
-                          <button onClick={() => { setEditingCartId(null); setEditServiceId(null); setEditBaseName(null); }} style={{ width: '34px', height: '34px', border: 0, background: 'transparent', color: '#e2be6f', cursor: 'pointer', fontSize: '18px', borderRadius: '9px', display: 'flex', alignItems: 'center', justifyContent: 'center' }} className="hover:bg-[#e2be6f]/10">×</button>
+                          <strong style={{ fontSize: '16px', color: '#f2d58d' }}>{t('editService', lang)}</strong>
+                          <button onClick={() => { setEditingCartId(null); setEditServiceId(null); setEditBaseName(null); }} style={{ width: '34px', height: '34px', border: 0, background: 'transparent', color: '#e2be6f', cursor: 'pointer', fontSize: '18px', borderRadius: '9px', display: 'flex', alignItems: 'center', justifyContent: 'center' }} className="hover:bg-[#e2be6f]/10" aria-label={t('close', lang)}>×</button>
                         </div>
                         
                         <div style={{ padding: '20px' }}>
-                          <div style={{ fontSize: '11px', letterSpacing: '0.14em', textTransform: 'uppercase', color: '#8e8b9a', marginBottom: '8px', fontWeight: 750 }}>Service</div>
+                          <div style={{ fontSize: '11px', letterSpacing: '0.14em', textTransform: 'uppercase', color: '#8e8b9a', marginBottom: '8px', fontWeight: 750 }}>{t('service', lang)}</div>
                           <div style={{ position: 'relative', marginBottom: '16px' }}>
                             <div 
                               onClick={() => {
@@ -1510,7 +1546,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                                   const f = group[0];
                                   const raw = f.names?.en?.trim() || f.id;
                                   const name = raw.replace(/\s*\d+\s*(mins?|'|phút).*$/i, '').trim();
-                                  const rawDisplay = lang === 'vi' ? (f.names?.vi?.replace(/\s*\d+\s*(mins?|'|phút).*$/i, '').trim() || name) : (f.names?.en?.replace(/\s*\d+\s*(mins?|'|phút).*$/i, '').trim() || name);
+                                  const rawDisplay = f.names?.[lang]?.replace(/\s*\d+\s*(mins?|'|phút).*$/i, '').trim() || f.names?.en?.replace(/\s*\d+\s*(mins?|'|phút).*$/i, '').trim() || name;
                                   return rawDisplay.replace(/\b\w/g, c => c.toUpperCase());
                                 })()}
                               </span>
@@ -1522,9 +1558,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                                  const f = g[0];
                                  const raw = f.names?.en?.trim().toLowerCase() || f.id;
                                  const name = raw.replace(/\s*\d+\s*(mins?|'|phút).*$/i, '').trim();
-                                 const rawDisplayName = lang === 'vi' 
-                                    ? (f.names?.vi?.replace(/\s*\d+\s*(mins?|'|phút).*$/i, '').trim() || name) 
-                                    : (f.names?.en?.replace(/\s*\d+\s*(mins?|'|phút).*$/i, '').trim() || name);
+                                 const rawDisplayName = f.names?.[lang]?.replace(/\s*\d+\s*(mins?|'|phút).*$/i, '').trim() || f.names?.en?.replace(/\s*\d+\s*(mins?|'|phút).*$/i, '').trim() || name;
                                  const displayName = rawDisplayName.replace(/\b\w/g, c => c.toUpperCase());
                                  const isSelected = activeBaseNameEn === name;
                                  
@@ -1564,7 +1598,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                             </div>
                           </div>
 
-                          <div style={{ fontSize: '11px', letterSpacing: '0.14em', textTransform: 'uppercase', color: '#8e8b9a', marginBottom: '8px', fontWeight: 750 }}>Duration</div>
+                          <div style={{ fontSize: '11px', letterSpacing: '0.14em', textTransform: 'uppercase', color: '#8e8b9a', marginBottom: '8px', fontWeight: 750 }}>{t('duration', lang)}</div>
                           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '14px' }}>
                             {sortedGroup.map(svc => {
                               const isActive = editServiceId === svc.id || currentEditService.id === svc.id;
@@ -1582,7 +1616,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                                     fontSize: '13px'
                                   }}
                                 >
-                                  {svc.timeValue} min
+                                  {svc.timeValue} {dict.checkout?.mins || 'min'}
                                 </button>
                               );
                             })}
@@ -1619,21 +1653,21 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                               </div>
                             </div>
                             <div className="text-xs text-[#d1cbbd] flex flex-wrap items-center gap-x-3 gap-y-1">
-                              <span>{lang === 'vi' ? 'Lực:' : 'Strength:'} <strong className="text-[#f2d58d] capitalize">{item.options?.strength || 'Medium'}</strong></span>
-                              <span>{lang === 'vi' ? 'KTV:' : 'Therapist:'} <strong className="text-[#f2d58d] capitalize">{item.options?.therapist || 'Random'}</strong></span>
+                              <span>{lang === 'vi' ? 'Lực:' : lang === 'cn' ? '力度:' : lang === 'jp' ? '強さ:' : lang === 'kr' ? '강도:' : 'Strength:'} <strong className="text-[#f2d58d] capitalize">{(item.options?.strength && (dict.options?.strength_levels as any)?.[item.options.strength.toLowerCase()]) || item.options?.strength || 'Medium'}</strong></span>
+                              <span>{lang === 'vi' ? 'KTV:' : lang === 'cn' ? '技师:' : lang === 'jp' ? 'セラピスト:' : lang === 'kr' ? '관리사:' : 'Therapist:'} <strong className="text-[#f2d58d] capitalize">{(item.options?.therapist && (dict.options?.therapist_options as any)?.[item.options.therapist.toLowerCase()]) || item.options?.therapist || 'Random'}</strong></span>
                               {item.options?.bodyParts?.focus?.length ? (
-                                <span>{lang === 'vi' ? 'Tập trung:' : 'Focus:'} <strong className="text-[#f2d58d]">{item.options.bodyParts.focus.join(', ')}</strong></span>
+                                <span>{lang === 'vi' ? 'Tập trung:' : lang === 'cn' ? '重点:' : lang === 'jp' ? '重点:' : lang === 'kr' ? '집중:' : 'Focus:'} <strong className="text-[#f2d58d]">{item.options.bodyParts.focus.length >= 8 ? (dict.custom_for_you?.full_body || (lang === 'vi' ? 'Toàn thân' : lang === 'cn' ? '全身' : lang === 'jp' ? '全身' : lang === 'kr' ? '전신' : 'Full Body')) : item.options.bodyParts.focus.map(p => translatePart(p, lang)).join(', ')}</strong></span>
                               ) : null}
                               {item.options?.bodyParts?.avoid?.length ? (
-                                <span>{lang === 'vi' ? 'Tránh:' : 'Avoid:'} <strong className="text-red-400">{item.options.bodyParts.avoid.join(', ')}</strong></span>
+                                <span>{lang === 'vi' ? 'Tránh:' : lang === 'cn' ? '避开:' : lang === 'jp' ? '避ける:' : lang === 'kr' ? '피할:' : 'Avoid:'} <strong className="text-red-400">{item.options.bodyParts.avoid.map(p => translatePart(p, lang)).join(', ')}</strong></span>
                               ) : null}
                             </div>
                           </div>
 
                           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '14px', paddingTop: '14px', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-                            <span style={{ color: '#858391' }}>Updated price</span>
+                            <span style={{ color: '#858391' }}>{t('updatedPrice', lang)}</span>
                             <strong style={{ color: '#f2d58d', fontSize: '25px' }}>
-                              {formatCurrency(currentEditService.priceVND)} VNĐ
+                              {formatCurrency(currentEditService.priceVND)} {lang === 'vi' ? 'đ' : 'VND'}
                             </strong>
                           </div>
                         </div>
@@ -1642,7 +1676,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                            <input 
                               value={editNote}
                               onChange={(e) => setEditNote(e.target.value)}
-                              placeholder={lang === 'vi' ? 'Ghi chú thêm...' : 'Additional notes...'}
+                              placeholder={t('additionalNotes', lang)}
                               className="h-[48px] flex-1 w-full rounded-[14px] bg-transparent border border-white/10 text-[#a3a1ad] px-4 outline-none focus:border-[#c9a96e]/50 text-base"
                            />
                            <button 
@@ -1654,7 +1688,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                              }}
                              className="h-[48px] px-6 rounded-[14px] font-bold text-[15px] bg-gradient-to-r from-[#ecd38f] to-[#c6a55f] text-[#2c2416] whitespace-nowrap shrink-0 w-full sm:w-auto"
                            >
-                             {lang === 'vi' ? 'Lưu' : 'Save'}
+                             {t('save', lang)}
                            </button>
                         </div>
                       </div>
@@ -1804,7 +1838,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
             aria-label={videoPreview.alt}
             onMouseDown={(event) => event.stopPropagation()}
           >
-            <button type="button" className={styles.videoPreviewClose} onClick={closeVideoPreview} aria-label="Close video">
+            <button type="button" className={styles.videoPreviewClose} onClick={closeVideoPreview} aria-label={t('close', lang)}>
               <X size={24} />
             </button>
             <video
@@ -1839,7 +1873,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                 <p className={styles.eyebrow}>{t('services', lang)}</p>
                 <h2>{t('addMoreTitle', lang)}</h2>
               </div>
-              <button type="button" className={styles.servicePickerClose} onClick={() => setIsServicePickerOpen(false)} aria-label="Close">
+              <button type="button" className={styles.servicePickerClose} onClick={() => setIsServicePickerOpen(false)} aria-label={t('close', lang)}>
                 <X size={22} />
               </button>
             </header>
@@ -1880,7 +1914,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
 
             <div className={styles.servicePickerList}>
               {servicesLoading ? (
-                <div className={styles.servicePickerState}>Đang tải dịch vụ...</div>
+                <div className={styles.servicePickerState}>{t('loadingServices', lang)}</div>
               ) : groupedVisibleServices.length ? (
                 groupedVisibleServices.map((group) => (
                   <CheckoutGroupedServiceCard
@@ -1894,7 +1928,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                   />
                 ))
               ) : (
-                <div className={styles.servicePickerState}>Chưa có dịch vụ phù hợp.</div>
+                <div className={styles.servicePickerState}>{t('noServicesFound', lang)}</div>
               )}
             </div>
           </section>

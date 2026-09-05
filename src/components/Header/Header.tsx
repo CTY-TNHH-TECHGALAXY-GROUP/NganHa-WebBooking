@@ -40,6 +40,39 @@ type NavItem = {
   children?: NavChildItem[];
 };
 
+const BOOK_COPY: Record<string, string> = {
+  vi: 'Đặt lịch',
+  en: 'Book',
+  cn: '预约',
+  jp: '予約',
+  kr: '예약',
+};
+
+const NAV_FALLBACKS: Record<string, Record<Locale, string>> = {
+  spaces: { vi: 'Không gian', en: 'Spaces', cn: '空间', jp: '空間', kr: '공간' },
+  area_lobby: { vi: 'Khu vực đón tiếp', en: 'Welcome area', cn: '接待区', jp: 'ウェルカムエリア', kr: '웰컴 구역' },
+  area_l1: { vi: 'Tầng 1', en: 'First Floor', cn: '一楼', jp: '1階', kr: '1층' },
+  area_l2: { vi: 'Tầng 2', en: 'Second Floor', cn: '二楼', jp: '2階', kr: '2층' },
+  services: { vi: 'Dịch vụ', en: 'Services', cn: '服务', jp: 'サービス', kr: '서비스' },
+  design_journey: { vi: 'Thiết kế hành trình', en: 'Design Your Journey', cn: '定制您的专属旅程', jp: 'ジャーニーをデザイン', kr: '나만의 여정 디자인' },
+  pure_relaxation: { vi: 'Thư giãn thuần túy', en: 'Pure relaxation', cn: '纯粹放松', jp: 'ピュアリラクゼーション', kr: '순수한 휴식' },
+  therapy: { vi: 'Trị liệu', en: 'Therapy', cn: '理疗', jp: 'セラピー', kr: '테라피' },
+  academy: { vi: 'Học viện', en: 'Academy', cn: '学院', jp: 'アカデミー', kr: '아카데미' },
+  academy_admissions: { vi: 'Tuyển dụng / Nhập học', en: 'Recruitment/Admission', cn: '招聘/入学', jp: '採用・入学', kr: '채용 / 입학' },
+  academy_training: { vi: 'Đào tạo / Trực tuyến', en: 'Training / Online', cn: '培训/在线', jp: 'トレーニング・オンライン', kr: '교육 / 온라인' },
+  academy_certification: { vi: 'Chứng nhận', en: 'Certification', cn: '认证', jp: '認定', kr: '인증' },
+  academy_understand: { vi: 'Thấu hiểu bản thân', en: 'Understand Yourself', cn: '了解自我', jp: '自分を知る', kr: '자신을 이해하기' },
+  local_tour: { vi: 'Tour địa phương', en: 'Local tour', cn: '当地旅游', jp: 'ローカルツアー', kr: '로컬 투어' },
+  lost_and_found: { vi: 'Thất lạc & Tìm kiếm', en: 'Lost & Found', cn: '失物招领', jp: '遺失物', kr: '분실물' },
+  blogs: { vi: 'Bài viết', en: 'Blogs', cn: '博客', jp: '블로그', kr: '블로그' },
+  privileges: { vi: 'Đặc quyền của bạn', en: 'Your privileges', cn: '专属特权', jp: '会員特典', kr: '회원 혜택' },
+  history: { vi: 'Lịch sử', en: 'History', cn: '历史', jp: '履歴', kr: '이용 내역' },
+};
+
+const getNavFallback = (id: string, currentLocale: Locale): string => {
+  return NAV_FALLBACKS[id]?.[currentLocale] || NAV_FALLBACKS[id]?.en || id;
+};
+
 // Navigation items matching Canva design
 const DEFAULT_NAV_ITEMS: NavItem[] = [
   {
@@ -95,6 +128,15 @@ const CART_COPY = {
   explore: { vi: 'Khám phá dịch vụ', en: 'Explore our services', cn: '探索我们的服务', jp: 'サービスを見る', kr: '서비스 살펴보기' },
   mins: { vi: 'phút', en: 'mins', cn: '分钟', jp: '分', kr: '분' },
   vipRoom: { vi: 'Phòng VIP', en: 'VIP Room', cn: '贵宾室', jp: 'VIPルーム', kr: 'VIP 룸' },
+  remove: { vi: 'XÓA', en: 'REMOVE', cn: '删除', jp: '削除', kr: '삭제' },
+  addon: { vi: 'Tiện ích bổ sung:', en: 'Add-on:', cn: '附加项目:', jp: 'アドオン:', kr: '추가 항목:' },
+  notePlaceholder: {
+    vi: 'Ghi chú cho dịch vụ này...',
+    en: 'Add a note...',
+    cn: '为此服务添加备注...',
+    jp: 'メモを追加...',
+    kr: '메모 추가...',
+  },
 };
 
 const cartText = (key: keyof typeof CART_COPY, lang: string) =>
@@ -127,23 +169,6 @@ const Header = () => {
   const [cartCount, setCartCount] = useState(0);
   const [activeBrandIndex, setActiveBrandIndex] = useState(0);
 
-  const BRANDS = useMemo(() => [
-    { name: 'Oria Spa', location: 'Ho Chi Minh', href: '/' },
-    { name: 'Oria Home', location: 'Ho Chi Minh', href: '/oriahome' },
-    { name: 'Oria Farm', sub: 'Store', location: 'Ho Chi Minh', href: '/oriafarm-store' },
-    { name: 'Oria Farm', sub: 'Retreat', location: 'Dong Nai', href: '/oriafarm-retreat' }
-  ], []);
-
-  const nextBrand = () => {
-    setActiveBrandIndex((prev) => (prev + 1) % BRANDS.length);
-  };
-  
-  const prevBrand = () => {
-    setActiveBrandIndex((prev) => (prev - 1 + BRANDS.length) % BRANDS.length);
-  };
-
-
-
   const { 
     isMobileMenuOpen, 
     isScrolled, 
@@ -161,44 +186,71 @@ const Header = () => {
   const lang = currentLang.code as Locale;
   const dict = getDictionary(lang);
 
+  const BRANDS = useMemo(() => {
+    const isVi = currentLang.code === 'vi';
+    const isCn = currentLang.code === 'cn';
+    const isJp = currentLang.code === 'jp';
+    const isKr = currentLang.code === 'kr';
+
+    const hcm = isVi ? 'TP. Hồ Chí Minh' : isCn ? '胡志明市' : isJp ? 'ホーチミン' : isKr ? '호치민' : 'Ho Chi Minh';
+    const dongNai = isVi ? 'Đồng Nai' : isCn ? '同奈' : isJp ? 'ドンナイ' : isKr ? '동나이' : 'Dong Nai';
+    const store = isVi ? 'Cửa hàng' : isCn ? '商店' : isJp ? 'ストア' : isKr ? '스토어' : 'Store';
+    const retreat = isVi ? 'Nghỉ dưỡng' : isCn ? '度假村' : isJp ? 'リトリート' : isKr ? '리트릿' : 'Retreat';
+
+    return [
+      { name: 'Oria Spa', location: hcm, href: '/' },
+      { name: 'Oria Home', location: hcm, href: '/oriahome' },
+      { name: 'Oria Farm', sub: store, location: hcm, href: '/oriafarm-store' },
+      { name: 'Oria Farm', sub: retreat, location: dongNai, href: '/oriafarm-retreat' }
+    ];
+  }, [currentLang.code]);
+
+  const nextBrand = () => {
+    setActiveBrandIndex((prev) => (prev + 1) % BRANDS.length);
+  };
+  
+  const prevBrand = () => {
+    setActiveBrandIndex((prev) => (prev - 1 + BRANDS.length) % BRANDS.length);
+  };
+
   const NAV_ITEMS = useMemo(() => {
     return [
       {
         id: 'spaces',
-        label: getLocalizedText(hpNav?.spaces, lang, 'Spaces'),
+        label: getLocalizedText(hpNav?.spaces, lang, getNavFallback('spaces', lang)),
         href: '/space',
         children: [
-          { id: 'area_lobby', label: getLocalizedText(hpNav?.welcomeArea, lang, 'Welcome area'), href: '/space#welcome' },
-          { id: 'area_l1', label: getLocalizedText(hpNav?.firstFloor, lang, 'First Floor'), href: '/space#floor1' },
-          { id: 'area_l2', label: getLocalizedText(hpNav?.secondFloor, lang, 'Second Floor'), href: '/space#floor2' }
+          { id: 'area_lobby', label: getLocalizedText(hpNav?.welcomeArea, lang, getNavFallback('area_lobby', lang)), href: '/space#welcome' },
+          { id: 'area_l1', label: getLocalizedText(hpNav?.firstFloor, lang, getNavFallback('area_l1', lang)), href: '/space#floor1' },
+          { id: 'area_l2', label: getLocalizedText(hpNav?.secondFloor, lang, getNavFallback('area_l2', lang)), href: '/space#floor2' }
         ]
       },
       {
         id: 'services',
-        label: getLocalizedText(hpNav?.services, lang, 'Services'),
+        label: getLocalizedText(hpNav?.services, lang, getNavFallback('services', lang)),
         isUnclickable: true,
         children: [
-          { id: 'design_journey', label: getLocalizedText(hpNav?.designJourney, lang, 'Design Your Journey'), href: '/design-your-journey', badge: '50%' },
-          { id: 'pure_relaxation', label: getLocalizedText(hpNav?.pureRelaxation, lang, 'Pure relaxation'), href: '/pure-relaxation', badge: '30%' },
-          { id: 'therapy', label: getLocalizedText(hpNav?.therapy, lang, 'Therapy'), href: '/therapy', badge: '20%' },
+          { id: 'design_journey', label: getLocalizedText(hpNav?.designJourney, lang, getNavFallback('design_journey', lang)), href: '/design-your-journey', badge: '50%' },
+          { id: 'pure_relaxation', label: getLocalizedText(hpNav?.pureRelaxation, lang, getNavFallback('pure_relaxation', lang)), href: '/pure-relaxation', badge: '30%' },
+          { id: 'therapy', label: getLocalizedText(hpNav?.therapy, lang, getNavFallback('therapy', lang)), href: '/therapy', badge: '20%' },
         ],
       },
       {
         id: 'academy',
-        label: getLocalizedText(hpNav?.academy, lang, 'Academy'),
+        label: getLocalizedText(hpNav?.academy, lang, getNavFallback('academy', lang)),
         isUnclickable: true,
         children: [
-          { id: 'academy_admissions', label: getLocalizedText(hpNav?.admissions, lang, 'Recruitment/Admission'), href: '/academy/admissions' },
-          { id: 'academy_training', label: getLocalizedText(hpNav?.training, lang, 'Training / Online'), href: '/academy/training' },
-          { id: 'academy_certification', label: getLocalizedText(hpNav?.certification, lang, 'Certification'), href: '/academy/certification' },
-          { id: 'academy_understand', label: 'Understand Yourself', href: '/academy/understand-yourself' },
+          { id: 'academy_admissions', label: getLocalizedText(hpNav?.admissions, lang, getNavFallback('academy_admissions', lang)), href: '/academy/admissions' },
+          { id: 'academy_training', label: getLocalizedText(hpNav?.training, lang, getNavFallback('academy_training', lang)), href: '/academy/training' },
+          { id: 'academy_certification', label: getLocalizedText(hpNav?.certification, lang, getNavFallback('academy_certification', lang)), href: '/academy/certification' },
+          { id: 'academy_understand', label: getLocalizedText(hpNav?.understandYourself, lang, getNavFallback('academy_understand', lang)), href: '/academy/understand-yourself' },
         ],
       },
-      { id: 'local_tour', label: getLocalizedText(hpNav?.localTour, lang, 'Local tour'), href: '/local-tour' },
-      { id: 'lost_and_found', label: getLocalizedText(hpNav?.lostAndFound, lang, 'Lost & Found'), href: '/lost-and-found' },
-      { id: 'blogs', label: getLocalizedText(hpNav?.blogs, lang, 'Blogs'), href: '/blogs' },
-      { id: 'privileges', label: getLocalizedText(hpNav?.privileges, lang, 'Your privileges'), href: '/privileges' },
-      { id: 'history', label: getLocalizedText(hpNav?.history, lang, 'History'), href: '/#history' },
+      { id: 'local_tour', label: getLocalizedText(hpNav?.localTour, lang, getNavFallback('local_tour', lang)), href: '/local-tour' },
+      { id: 'lost_and_found', label: getLocalizedText(hpNav?.lostAndFound, lang, getNavFallback('lost_and_found', lang)), href: '/lost-and-found' },
+      { id: 'blogs', label: getLocalizedText(hpNav?.blogs, lang, getNavFallback('blogs', lang)), href: '/blogs' },
+      { id: 'privileges', label: getLocalizedText(hpNav?.privileges, lang, getNavFallback('privileges', lang)), href: '/privileges' },
+      { id: 'history', label: getLocalizedText(hpNav?.history, lang, getNavFallback('history', lang)), href: '/#history' },
     ] as NavItem[];
   }, [hpNav, lang, getLocalizedText]);
 
@@ -353,7 +405,7 @@ const Header = () => {
                 href={`/${currentLang.code}/new-user/standard/checkout`}
                 className="text-[#f7ebc7] hover:text-[#f7ebc7]/80 active:opacity-50 font-bold text-xs sm:text-sm uppercase tracking-wider mr-3 lg:mr-6 transition-all duration-300"
               >
-                Book
+                {BOOK_COPY[currentLang.code] || 'Book'}
               </Link>
 
               {/* Cart Button */}
@@ -361,7 +413,13 @@ const Header = () => {
                 type="button"
                 className="relative text-[#f7ebc7] hover:text-[#D4AF37] mr-4 lg:mr-6 transition-colors duration-300 flex items-center"
                 onClick={handleCartClick}
-                aria-label={`Cart, ${cartCount} services selected`}
+                aria-label={
+                  currentLang.code === 'vi' ? `Giỏ hàng, đã chọn ${cartCount} dịch vụ` :
+                  currentLang.code === 'cn' ? `购物车，已选 ${cartCount} 项服务` :
+                  currentLang.code === 'jp' ? `カート、${cartCount} 件選択中` :
+                  currentLang.code === 'kr' ? `장바구니, ${cartCount}개 서비스 선택됨` :
+                  `Cart, ${cartCount} services selected`
+                }
               >
                 <div 
                   className="w-7 h-7 bg-[#f7ebc7]" 
@@ -603,17 +661,17 @@ const Header = () => {
                                     )}
                                     {item.options?.bodyParts?.focus && item.options.bodyParts.focus.length > 0 && (
                                       <p className="font-sans text-[11px] text-gray-600">
-                                        <span className="text-gray-400 capitalize">{dict.checkout?.focus || (currentLang.code === 'vi' ? 'Tập trung:' : 'Focus:')}</span> {item.options.bodyParts.focus.length >= 8 ? (dict.custom_for_you?.full_body || (currentLang.code === 'vi' ? 'Toàn thân' : 'Full Body')) : item.options.bodyParts.focus.map(p => translatePart(p, currentLang.code)).join(', ')}
+                                        <span className="text-gray-400 capitalize">{dict.checkout?.focus || (currentLang.code === 'vi' ? 'Tập trung:' : currentLang.code === 'cn' ? '重点部位:' : currentLang.code === 'jp' ? '重点部位:' : currentLang.code === 'kr' ? '집중 부위:' : 'Focus:')}</span> {item.options.bodyParts.focus.length >= 8 ? (dict.custom_for_you?.full_body || (currentLang.code === 'vi' ? 'Toàn thân' : currentLang.code === 'cn' ? '全身' : currentLang.code === 'jp' ? '全身' : currentLang.code === 'kr' ? '전신' : 'Full Body')) : item.options.bodyParts.focus.map(p => translatePart(p, currentLang.code)).join(', ')}
                                       </p>
                                     )}
                                     {item.options?.bodyParts?.avoid && item.options.bodyParts.avoid.length > 0 && (
                                       <p className="font-sans text-[11px] text-gray-600">
-                                        <span className="text-gray-400 capitalize">{dict.checkout?.avoid || (currentLang.code === 'vi' ? 'Tránh:' : 'Avoid:')}</span> {item.options.bodyParts.avoid.map(p => translatePart(p, currentLang.code)).join(', ')}
+                                        <span className="text-gray-400 capitalize">{dict.checkout?.avoid || (currentLang.code === 'vi' ? 'Tránh:' : currentLang.code === 'cn' ? '避开部位:' : currentLang.code === 'jp' ? '避ける部位:' : currentLang.code === 'kr' ? '피할 부위:' : 'Avoid:')}</span> {item.options.bodyParts.avoid.map(p => translatePart(p, currentLang.code)).join(', ')}
                                       </p>
                                     )}
                                     {item.options?.addons?.privateRoom && (
                                       <p className="font-sans text-[11px] text-gray-600">
-                                        <span className="text-gray-400 capitalize">Add-on:</span> <span className="text-[#c9a96e]">{currentLang.code === 'vi' ? 'Phòng riêng (+105K)' : currentLang.code === 'cn' ? '包间 (+105K)' : currentLang.code === 'kr' ? '프라이빗 룸 (+105K)' : currentLang.code === 'jp' ? '個室 (+105K)' : 'Private Room (+105K)'}</span>
+                                        <span className="text-gray-400 capitalize">{cartText('addon', currentLang.code)}</span> <span className="text-[#c9a96e]">{currentLang.code === 'vi' ? 'Phòng riêng (+105K)' : currentLang.code === 'cn' ? '包间 (+105K)' : currentLang.code === 'kr' ? '프라이빗 룸 (+105K)' : currentLang.code === 'jp' ? '個室 (+105K)' : 'Private Room (+105K)'}</span>
                                       </p>
                                     )}
                                   </div>
@@ -623,7 +681,7 @@ const Header = () => {
                         <div className="mt-3">
                           <input 
                             type="text" 
-                            placeholder={currentLang.code === 'vi' ? 'Ghi chú cho dịch vụ này...' : 'Add a note...'} 
+                            placeholder={cartText('notePlaceholder', currentLang.code)} 
                             className="w-full text-[12px] p-2 border border-gray-200 bg-white font-sans text-[#1a1a1a] outline-none focus:border-[#D4AF37] transition-colors placeholder-gray-400 rounded-none"
                             value={item.options?.notes?.content || ''}
                             onChange={(e) => handleNoteChange(item.cartId, e.target.value)}
@@ -641,9 +699,9 @@ const Header = () => {
                               type="button"
                               className="font-sans text-[10px] uppercase tracking-widest text-gray-400 hover:text-black transition-colors"
                               onClick={() => handleRemoveCartItem(item.cartId)}
-                              aria-label={`Remove ${itemName(item, currentLang.code)} from cart`}
+                              aria-label={currentLang.code === 'vi' ? `Xóa ${itemName(item, currentLang.code)} khỏi giỏ hàng` : `Remove ${itemName(item, currentLang.code)} from cart`}
                             >
-                              XÓA
+                              {cartText('remove', currentLang.code)}
                             </button>
                           </div>
                         </div>

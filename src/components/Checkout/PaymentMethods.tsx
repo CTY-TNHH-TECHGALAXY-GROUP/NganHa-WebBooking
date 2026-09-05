@@ -151,7 +151,15 @@ const PaymentMethods = ({ lang, dict, selected, onChange }: PaymentMethodsProps)
                             {modalContent === 'cash_usd' && (
                                 <div className="space-y-4">
                                     <div className="bg-[#0d0d0d] border border-[#C9A96E]/30 rounded-2xl p-4 text-center">
-                                        <div className="text-sm text-[#C9A96E] font-bold uppercase mb-1">Exchange Rate</div>
+                                        <div className="text-sm text-[#C9A96E] font-bold uppercase mb-1">
+                                            {{
+                                                vi: 'Tỷ giá quy đổi',
+                                                en: 'Exchange Rate',
+                                                cn: '兑换汇率',
+                                                jp: '換算レート',
+                                                kr: '환율 안내',
+                                            }[lang] || 'Exchange Rate'}
+                                        </div>
                                         <div className="text-2xl font-black text-[#C9A96E]">1 USD = {formatCurrency(USD_INFO.exchangeRate)} VND</div>
                                     </div>
 
@@ -193,7 +201,15 @@ const PaymentMethods = ({ lang, dict, selected, onChange }: PaymentMethodsProps)
                             {modalContent === 'transfer' && (
                                 <div className="text-center py-8 text-gray-400">
                                     <QrCode size={64} className="mx-auto mb-4 opacity-50" />
-                                    <p className="font-medium">Scan QR Code functionality coming soon.</p>
+                                    <p className="font-medium">
+                                        {{
+                                            vi: 'Quét mã VietQR để chuyển khoản nhanh 24/7',
+                                            en: 'Scan VietQR code for 24/7 instant bank transfer',
+                                            cn: '扫描 VietQR 码进行 24/7 快速银行转账',
+                                            jp: 'VietQRコードをスキャンして24時間即時銀行振込',
+                                            kr: 'VietQR 코드를 스캔하여 24시간 즉시 계좌이체',
+                                        }[lang] || 'Scan VietQR code for 24/7 instant bank transfer'}
+                                    </p>
                                 </div>
                             )}
 
