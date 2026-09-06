@@ -4,7 +4,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { 
   Save, ArrowLeft, Image as ImageIcon, Film, MapPin, Sparkles, 
-  Upload, CheckCircle2, AlertCircle, Plus, Trash2, Eye, ExternalLink 
+  Upload, CheckCircle2, AlertCircle, Plus, Trash2, Eye, ExternalLink,
+  ChevronUp, ChevronDown,
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase';
 import { Locale } from '@/lib/constants';
@@ -823,22 +824,53 @@ export default function OurStoryAdminPage() {
                       <span className="text-xs text-admin-text-faint font-normal">({frame.frameTag})</span>
                     </span>
 
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (confirm(`Xóa khung hình ${frame.id}?`)) {
-                          const newFrames = config.filmReel.frames.filter((_, i) => i !== index);
-                          setConfig({
-                            ...config,
-                            filmReel: { ...config.filmReel, frames: newFrames },
-                          });
-                        }
-                      }}
-                      className="text-red-500 hover:bg-red-500/10 p-1.5 rounded-lg transition-colors"
-                      title="Xóa khung hình"
-                    >
-                      <Trash2 size={16} />
-                    </button>
+                    <div className="flex items-center gap-1">
+                      <button
+                        type="button"
+                        disabled={index === 0}
+                        onClick={() => {
+                          const newFrames = [...config.filmReel.frames];
+                          [newFrames[index - 1], newFrames[index]] = [newFrames[index], newFrames[index - 1]];
+                          setConfig({ ...config, filmReel: { ...config.filmReel, frames: newFrames } });
+                        }}
+                        className="p-1.5 text-admin-text-dim hover:text-admin-gold disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                        title="Đưa khung hình lên trước"
+                        aria-label="Đưa khung hình lên trước"
+                      >
+                        <ChevronUp size={16} />
+                      </button>
+                      <button
+                        type="button"
+                        disabled={index === config.filmReel.frames.length - 1}
+                        onClick={() => {
+                          const newFrames = [...config.filmReel.frames];
+                          [newFrames[index], newFrames[index + 1]] = [newFrames[index + 1], newFrames[index]];
+                          setConfig({ ...config, filmReel: { ...config.filmReel, frames: newFrames } });
+                        }}
+                        className="p-1.5 text-admin-text-dim hover:text-admin-gold disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                        title="Đưa khung hình xuống sau"
+                        aria-label="Đưa khung hình xuống sau"
+                      >
+                        <ChevronDown size={16} />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (confirm(`Xóa khung hình ${frame.id}?`)) {
+                            const newFrames = config.filmReel.frames.filter((_, i) => i !== index);
+                            setConfig({
+                              ...config,
+                              filmReel: { ...config.filmReel, frames: newFrames },
+                            });
+                          }
+                        }}
+                        className="text-red-500 hover:bg-red-500/10 p-1.5 rounded-lg transition-colors"
+                        title="Xóa khung hình"
+                        aria-label="Xóa khung hình"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
@@ -960,13 +992,13 @@ export default function OurStoryAdminPage() {
               <button
                 type="button"
                 onClick={() => {
-                  const newId = config.filmReel.frames.length + 1;
+                  const newId = Math.max(0, ...config.filmReel.frames.map((frame) => frame.id)) + 1;
                   const newFrame: OurStoryFilmFrame = {
                     id: newId,
-                    frameTag: `KODAK 500T • ${newId}A ▶`,
-                    badge: { vi: `Trải nghiệm #${newId}`, en: `Experience #${newId}` },
-                    title: { vi: `Khung Hình 0${newId} • Tiêu đề mới`, en: `Frame 0${newId} • New Title` },
-                    desc: { vi: 'Mô tả khung phim...', en: 'Film frame description...' },
+                    frameTag: `FRAME ${String(newId).padStart(2, '0')}`,
+                    badge: { vi: '', en: '', cn: '', jp: '', kr: '' },
+                    title: { vi: '', en: '', cn: '', jp: '', kr: '' },
+                    desc: { vi: '', en: '', cn: '', jp: '', kr: '' },
                     image: '/images/story/photo-bus.jpg',
                   };
                   setConfig({

@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, type CSSProperties } from 'react';
 import Link from 'next/link';
 import { ArrowUpRight } from 'lucide-react';
 import { useTranslation } from '@/components/TranslationProvider';
@@ -8,29 +8,6 @@ import { useSystemSettings } from '@/components/SystemSettingsProvider';
 import type { Locale } from '@/lib/constants';
 import { hydrateOurStoryConfig, hasValidOurStoryContent } from './OurStory.data';
 import styles from './OurStory.module.css';
-
-const FilmRibbon = () => (
-  <div className={styles.filmRibbon} aria-hidden="true">
-    <svg viewBox="0 0 720 150" role="presentation">
-      <path
-        className={styles.filmRibbonFill}
-        d="M22 40 C128 88 211 18 326 55 C442 93 538 29 698 66 L695 105 C541 68 443 132 323 94 C211 58 126 126 19 78 Z"
-      />
-      <path className={styles.filmRibbonEdge} d="M22 40 C128 88 211 18 326 55 C442 93 538 29 698 66" />
-      <path className={styles.filmRibbonEdge} d="M19 78 C126 126 211 58 323 94 C443 132 541 68 695 105" />
-      <path className={styles.filmRibbonHoles} d="M24 48 C128 96 211 27 325 63 C442 101 538 37 697 74" />
-      <path className={styles.filmRibbonHoles} d="M20 70 C126 118 211 50 324 86 C443 124 541 60 696 97" />
-      <g className={styles.filmRibbonFrames}>
-        <path d="M112 65 L110 101" />
-        <path d="M210 54 L214 89" />
-        <path d="M315 54 L313 91" />
-        <path d="M424 72 L425 109" />
-        <path d="M536 67 L540 103" />
-        <path d="M641 61 L644 98" />
-      </g>
-    </svg>
-  </div>
-);
 
 const OurStory = () => {
   const { currentLang } = useTranslation();
@@ -141,26 +118,37 @@ const OurStory = () => {
             <p>{getLocalizedText(config.architectureSection.activityHint, lang)}</p>
           </div>
 
-          <FilmRibbon />
-
-          <div className={styles.imageEditorial}>
-            {config.filmReel.frames.map((frame, index) => (
-              <figure key={frame.id} className={styles.journeyFigure}>
-                <div className={styles.journeyImage}>
-                  <img
-                    src={frame.image}
-                    alt={getLocalizedText(frame.title, lang)}
-                    loading="lazy"
-                  />
-                  <span>{String(index + 1).padStart(2, '0')}</span>
+          <div
+            className={styles.journeyScroller}
+            style={{ '--film-frame-count': Math.max(config.filmReel.frames.length, 1) } as CSSProperties}
+          >
+            <div className={styles.journeyTrack}>
+              <div className={styles.filmStrip}>
+                <div className={styles.filmFrames}>
+                  {config.filmReel.frames.map((frame, index) => (
+                    <figure key={'film-' + frame.id} className={styles.filmFrame}>
+                      <img
+                        src={frame.image}
+                        alt={getLocalizedText(frame.title, lang)}
+                        loading="lazy"
+                      />
+                      <span>{String(index + 1).padStart(2, '0')}</span>
+                    </figure>
+                  ))}
                 </div>
-                <figcaption>
-                  <small>{getLocalizedText(frame.badge, lang)}</small>
-                  <strong>{getLocalizedText(frame.title, lang)}</strong>
-                  <p>{getLocalizedText(frame.desc, lang)}</p>
-                </figcaption>
-              </figure>
-            ))}
+              </div>
+
+              <div className={styles.filmCaptions}>
+                {config.filmReel.frames.map((frame, index) => (
+                  <article key={'caption-' + frame.id}>
+                    <small>{getLocalizedText(frame.badge, lang)}</small>
+                    <strong>{getLocalizedText(frame.title, lang)}</strong>
+                    <p>{getLocalizedText(frame.desc, lang)}</p>
+                    <span aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+                  </article>
+                ))}
+              </div>
+            </div>
           </div>
         </section>
 
