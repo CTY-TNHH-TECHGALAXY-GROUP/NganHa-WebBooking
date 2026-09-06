@@ -287,7 +287,7 @@
   height: 72vh;
   max-height: 760px;
   overflow: hidden;
-  background: #211f1d;
+  background: #000000;
   border-radius: 3px 140px 3px 3px;
   box-shadow: 0 26px 70px rgba(44, 34, 24, 0.11);
 }

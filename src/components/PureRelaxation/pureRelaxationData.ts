@@ -46,16 +46,16 @@ export type PureRelaxationSection = {
 };
 
 export const getPureRelaxationSections = (contentMedia: any = {}, currentLang: string = 'vi'): PureRelaxationSection[] => {
-  const spaVideo = contentMedia.spaVideo?.src || '/images/services/aroma-oil.png';
-  const massageVideo = contentMedia.massageVideo?.src || '/images/services/aroma-oil.png';
-  const headSpaVideo = contentMedia.headSpaVideo?.src || '/images/services/hairwash.png';
-  const barberVideo = contentMedia.barberVideo?.src || '/images/services/barber.JPG';
-  const footVideo = contentMedia.footVideo?.src || '/images/services/foot-massage.png';
+  const spaVideo = contentMedia.spaVideo?.src || '';
+  const massageVideo = contentMedia.massageVideo?.src || '';
+  const headSpaVideo = contentMedia.headSpaVideo?.src || '';
+  const barberVideo = contentMedia.barberVideo?.src || '';
+  const footVideo = contentMedia.footVideo?.src || '';
 
-  const fallbackImg = contentMedia.fallbackImg?.src || 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=1600&q=80';
-  const footImg = contentMedia.footImg?.src || 'https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&w=1400&q=80';
-  const teaImg = contentMedia.teaImg?.src || 'https://images.unsplash.com/photo-1544787219-7f47ccb76574?auto=format&fit=crop&w=900&q=80';
-  const herbalImg = contentMedia.herbalImg?.src || 'https://images.unsplash.com/photo-1519823551278-64ac92734fb1?auto=format&fit=crop&w=900&q=80';
+  const fallbackImg = contentMedia.fallbackImg?.src || '';
+  const footImg = contentMedia.footImg?.src || '';
+  const teaImg = contentMedia.teaImg?.src || '';
+  const herbalImg = contentMedia.herbalImg?.src || '';
 
   const type = (key: string, def: string) => contentMedia[key]?.type || def;
 
@@ -138,7 +138,7 @@ const pureRelaxationSections: PureRelaxationSection[] = [
       {
         name: 'Mix',
         description: 'Balanced pressure and flowing relaxation techniques.',
-        media: { type: type('massageVideo', 'image'), src: massageVideo, poster: fallbackImg, tag: 'Body massage' },
+        media: { type: type('massageVideo', 'image'), src: massageVideo, tag: 'Body massage' },
         durations: [
           { label: "70'", price: 685000, id: 'NHS0040' },
           { label: "90'", price: 840000, id: 'NHS0041' },
@@ -149,7 +149,7 @@ const pureRelaxationSections: PureRelaxationSection[] = [
       {
         name: 'Aroma Coconut',
         description: 'Warm coconut aroma with a smooth, slow-paced ritual.',
-        media: { type: type('spaVideo', 'image'), src: spaVideo, poster: fallbackImg, tag: 'Aroma' },
+        media: { type: type('spaVideo', 'image'), src: spaVideo, tag: 'Aroma' },
         durations: [
           { label: "60'", price: 580000, id: 'NHS0008' },
           { label: "90'", price: 790000, id: 'NHS0010' },
@@ -160,7 +160,7 @@ const pureRelaxationSections: PureRelaxationSection[] = [
       {
         name: 'Hotstone',
         description: 'Heat-supported relaxation for a deeper release.',
-        media: { type: type('spaVideo', 'image'), src: spaVideo, poster: fallbackImg, tag: 'Hotstone' },
+        media: { type: type('spaVideo', 'image'), src: spaVideo, tag: 'Hotstone' },
         durations: [
           { label: "70'", price: 685000, id: 'NHS0022' },
           { label: "90'", price: 840000, id: 'NHS0023' },
@@ -171,7 +171,7 @@ const pureRelaxationSections: PureRelaxationSection[] = [
       {
         name: 'No Oil',
         description: 'Dry technique for guests who prefer an oil-free treatment.',
-        media: { type: type('massageVideo', 'image'), src: massageVideo, poster: fallbackImg, tag: 'No oil' },
+        media: { type: type('massageVideo', 'image'), src: massageVideo, tag: 'No oil' },
         durations: [
           { label: "70'", price: 685000, id: 'NHS0047' },
           { label: "90'", price: 840000, id: 'NHS0048' },
@@ -193,7 +193,7 @@ const pureRelaxationSections: PureRelaxationSection[] = [
       {
         name: 'Foot',
         description: 'Relax tired feet and lower legs with focused pressure and release.',
-        media: { type: type('footVideo', 'image'), src: footVideo, poster: footImg, tag: 'Foot ritual' },
+        media: { type: type('footVideo', 'image'), src: footVideo, tag: 'Foot ritual' },
         durations: [
           { label: "45'", price: 315000, id: 'NHS0100' },
           { label: "60'", price: 395000, id: 'NHS0101' },
@@ -234,7 +234,7 @@ const pureRelaxationSections: PureRelaxationSection[] = [
       {
         name: 'Ear · Hair Wash · Head Neck Shoulder',
         description: 'Ear care followed by a soothing hair wash and upper-body release.',
-        media: { type: type('headSpaVideo', 'image'), src: headSpaVideo, poster: fallbackImg, tag: 'Head spa' },
+        media: { type: type('headSpaVideo', 'image'), src: headSpaVideo, tag: 'Head spa' },
         durations: [
           { label: "70'", price: 685000, id: 'NHS1001' },
           { label: "90'", price: 790000, id: 'NHS1002' },
@@ -244,7 +244,7 @@ const pureRelaxationSections: PureRelaxationSection[] = [
       {
         name: 'Ear · Head Neck Shoulder · Foot',
         description: 'A balanced sequence for ear care, shoulder comfort, and foot relaxation.',
-        media: { type: type('footVideo', 'image'), src: footVideo, poster: footImg, tag: 'Foot add-on' },
+        media: { type: type('footVideo', 'image'), src: footVideo, tag: 'Foot add-on' },
         durations: [
           { label: "70'", price: 685000, id: 'NHS1003' },
           { label: "90'", price: 790000, id: 'NHS1004' },
@@ -254,7 +254,7 @@ const pureRelaxationSections: PureRelaxationSection[] = [
       {
         name: 'Ear · Head Neck Shoulder · Body',
         description: 'Ear care extended into a fuller body relaxation session.',
-        media: { type: type('massageVideo', 'image'), src: massageVideo, poster: fallbackImg, tag: 'Body add-on' },
+        media: { type: type('massageVideo', 'image'), src: massageVideo, tag: 'Body add-on' },
         durations: [
           { label: "70'", price: 705000, id: 'NHS1005' },
           { label: "90'", price: 810000, id: 'NHS1006' },
@@ -264,7 +264,7 @@ const pureRelaxationSections: PureRelaxationSection[] = [
       {
         name: 'Ear · Body · Head Neck Shoulder · Hair Wash',
         description: 'A longer complete sequence for guests who want everything handled in one visit.',
-        media: { type: type('headSpaVideo', 'image'), src: headSpaVideo, poster: fallbackImg, tag: 'Complete' },
+        media: { type: type('headSpaVideo', 'image'), src: headSpaVideo, tag: 'Complete' },
         durations: [{ label: "120'", price: 1105000, id: 'NHS1007' }],
         privilege: eyePillow,
       },
@@ -278,13 +278,13 @@ const pureRelaxationSections: PureRelaxationSection[] = [
     mediaLabel: 'Barber',
     description: 'A minimal grooming section with direct selections and no crowded menu wall.',
     services: [
-      { name: 'Shave', description: 'Clean facial grooming with a warm finish.', media: { type: type('barberVideo', 'image'), src: barberVideo, poster: fallbackImg, tag: 'Shave' }, durations: [{ label: "30'", price: 210000, id: 'NHS0700' }], privilege: hotTowel },
-      { name: 'Hair Cut', description: 'A neat haircut service paced for everyday grooming.', media: { type: type('barberVideo', 'image'), src: barberVideo, poster: fallbackImg, tag: 'Hair cut' }, durations: [{ label: "45'", price: 265000, id: 'NHS0701' }], privilege: hotTowel },
-      { name: 'Barber 1', description: 'A focused barber combination for a clean refresh.', media: { type: type('barberVideo', 'image'), src: barberVideo, poster: fallbackImg, tag: 'Barber 1' }, durations: [{ label: "45'", price: 370000, id: 'NHS0702' }], privilege: hotTowel },
-      { name: 'Barber 2', description: 'A balanced grooming ritual.', media: { type: type('barberVideo', 'image'), src: barberVideo, poster: fallbackImg, tag: 'Barber 2' }, durations: [{ label: "60'", price: 570000, id: 'NHS0703' }], privilege: hotTowel },
-      { name: 'Barber 3', description: 'A longer grooming ritual with extra finishing time.', media: { type: type('barberVideo', 'image'), src: barberVideo, poster: fallbackImg, tag: 'Barber 3' }, durations: [{ label: "90'", price: 915000, id: 'NHS0704' }], privilege: hotTowel },
-      { name: 'Barber 4', description: 'A complete grooming session for a polished look.', media: { type: type('barberVideo', 'image'), src: barberVideo, poster: fallbackImg, tag: 'Barber 4' }, durations: [{ label: "90'", price: 630000, id: 'NHS0705' }], privilege: hotTowel },
-      { name: 'Barber 5', description: 'The most complete barber sequence in this service family.', media: { type: type('barberVideo', 'image'), src: barberVideo, poster: fallbackImg, tag: 'Barber 5' }, durations: [{ label: "120'", price: 840000, id: 'NHS0706' }], privilege: hotTowel },
+      { name: 'Shave', description: 'Clean facial grooming with a warm finish.', media: { type: type('barberVideo', 'image'), src: barberVideo, tag: 'Shave' }, durations: [{ label: "30'", price: 210000, id: 'NHS0700' }], privilege: hotTowel },
+      { name: 'Hair Cut', description: 'A neat haircut service paced for everyday grooming.', media: { type: type('barberVideo', 'image'), src: barberVideo, tag: 'Hair cut' }, durations: [{ label: "45'", price: 265000, id: 'NHS0701' }], privilege: hotTowel },
+      { name: 'Barber 1', description: 'A focused barber combination for a clean refresh.', media: { type: type('barberVideo', 'image'), src: barberVideo, tag: 'Barber 1' }, durations: [{ label: "45'", price: 370000, id: 'NHS0702' }], privilege: hotTowel },
+      { name: 'Barber 2', description: 'A balanced grooming ritual.', media: { type: type('barberVideo', 'image'), src: barberVideo, tag: 'Barber 2' }, durations: [{ label: "60'", price: 570000, id: 'NHS0703' }], privilege: hotTowel },
+      { name: 'Barber 3', description: 'A longer grooming ritual with extra finishing time.', media: { type: type('barberVideo', 'image'), src: barberVideo, tag: 'Barber 3' }, durations: [{ label: "90'", price: 915000, id: 'NHS0704' }], privilege: hotTowel },
+      { name: 'Barber 4', description: 'A complete grooming session for a polished look.', media: { type: type('barberVideo', 'image'), src: barberVideo, tag: 'Barber 4' }, durations: [{ label: "90'", price: 630000, id: 'NHS0705' }], privilege: hotTowel },
+      { name: 'Barber 5', description: 'The most complete barber sequence in this service family.', media: { type: type('barberVideo', 'image'), src: barberVideo, tag: 'Barber 5' }, durations: [{ label: "120'", price: 840000, id: 'NHS0706' }], privilege: hotTowel },
     ],
   },
   {
@@ -299,10 +299,10 @@ const pureRelaxationSections: PureRelaxationSection[] = [
         name: 'Hair Wash & Facial',
         description: 'Choose a hair-wash package variation first. The preview and price both respond to the selected sub-package.',
         variants: [
-          { name: 'Hair Wash · Head Neck Shoulder · Foot', subtitle: 'Gội đầu - Cổ vai gáy - Mát-xa chân', privilege: silkMask, media: { type: type('headSpaVideo', 'image'), src: headSpaVideo, poster: fallbackImg, tag: 'Hair wash' }, durations: [{ label: "70'", price: 685000, id: 'NHS1009' }, { label: "90'", price: 790000, id: 'NHS1010' }] },
-          { name: 'Hair Wash · Head Neck Shoulder · Body', subtitle: 'Gội đầu - Cổ vai gáy - Body', privilege: silkMask, media: { type: type('headSpaVideo', 'image'), src: headSpaVideo, poster: fallbackImg, tag: 'Body' }, durations: [{ label: "70'", price: 705000, id: 'NHS1011' }, { label: "90'", price: 810000, id: 'NHS1012' }] },
-          { name: 'Hair Wash · Facial · Head Neck Shoulder · Foot · Body', subtitle: 'Gội đầu - Facial - Cổ vai gáy - Chân - Body', privilege: silkMask, media: { type: type('headSpaVideo', 'image'), src: headSpaVideo, poster: fallbackImg, tag: 'Complete' }, durations: [{ label: "120'", price: 1105000, id: 'NHS1013' }] },
-          { name: 'Facial · Machine Shave · Head Neck Shoulder · Body · Quick Hair Wash', subtitle: 'Facial - Cạo râu - Cổ vai gáy - Body - Gội nhanh', privilege: silkMask, media: { type: type('headSpaVideo', 'image'), src: headSpaVideo, poster: fallbackImg, tag: 'Facial' }, durations: [{ label: "90'", price: 840000, id: 'NHS1014' }, { label: "120'", price: 1105000, id: 'NHS1015' }] },
+          { name: 'Hair Wash · Head Neck Shoulder · Foot', subtitle: 'Gội đầu - Cổ vai gáy - Mát-xa chân', privilege: silkMask, media: { type: type('headSpaVideo', 'image'), src: headSpaVideo, tag: 'Hair wash' }, durations: [{ label: "70'", price: 685000, id: 'NHS1009' }, { label: "90'", price: 790000, id: 'NHS1010' }] },
+          { name: 'Hair Wash · Head Neck Shoulder · Body', subtitle: 'Gội đầu - Cổ vai gáy - Body', privilege: silkMask, media: { type: type('headSpaVideo', 'image'), src: headSpaVideo, tag: 'Body' }, durations: [{ label: "70'", price: 705000, id: 'NHS1011' }, { label: "90'", price: 810000, id: 'NHS1012' }] },
+          { name: 'Hair Wash · Facial · Head Neck Shoulder · Foot · Body', subtitle: 'Gội đầu - Facial - Cổ vai gáy - Chân - Body', privilege: silkMask, media: { type: type('headSpaVideo', 'image'), src: headSpaVideo, tag: 'Complete' }, durations: [{ label: "120'", price: 1105000, id: 'NHS1013' }] },
+          { name: 'Facial · Machine Shave · Head Neck Shoulder · Body · Quick Hair Wash', subtitle: 'Facial - Cạo râu - Cổ vai gáy - Body - Gội nhanh', privilege: silkMask, media: { type: type('headSpaVideo', 'image'), src: headSpaVideo, tag: 'Facial' }, durations: [{ label: "90'", price: 840000, id: 'NHS1014' }, { label: "120'", price: 1105000, id: 'NHS1015' }] },
         ],
       },
       {
@@ -310,7 +310,7 @@ const pureRelaxationSections: PureRelaxationSection[] = [
         description: 'A smaller package family focused on grooming with foot or body add-ons.',
         variants: [
           { name: 'Heel · Nail Cut · Foot', subtitle: 'Chà gót - Cắt móng - Mát-xa chân', privilege: refreshingTea, media: { type: type('footImg', 'image'), src: footImg, tag: 'Foot' }, durations: [{ label: "90'", price: 790000, id: 'NHS1016' }, { label: "120'", price: 1085000, id: 'NHS1017' }] },
-          { name: 'Heel · Nail Cut · Body', subtitle: 'Chà gót - Cắt móng - Body', privilege: refreshingTea, media: { type: type('massageVideo', 'image'), src: massageVideo, poster: fallbackImg, tag: 'Body' }, durations: [{ label: "90'", price: 810000, id: 'NHS1018' }, { label: "120'", price: 1105000, id: 'NHS1019' }] },
+          { name: 'Heel · Nail Cut · Body', subtitle: 'Chà gót - Cắt móng - Body', privilege: refreshingTea, media: { type: type('massageVideo', 'image'), src: massageVideo, tag: 'Body' }, durations: [{ label: "90'", price: 810000, id: 'NHS1018' }, { label: "120'", price: 1105000, id: 'NHS1019' }] },
         ],
       },
 
@@ -380,7 +380,7 @@ const pureRelaxationSections: PureRelaxationSection[] = [
       {
         name: 'King Combo',
         description: 'Razor Shave · Ear Clean · Facial · Heel Skin Shave · Hair Wash · 4-Hand Body Massage.',
-        media: { type: type('spaVideo', 'image'), src: spaVideo, poster: fallbackImg, tag: 'Signature' },
+        media: { type: type('spaVideo', 'image'), src: spaVideo, tag: 'Signature' },
         durations: [
           { label: "120'", price: 1575000, id: 'NHS0800' },
         ],

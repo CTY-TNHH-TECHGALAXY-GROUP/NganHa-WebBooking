@@ -76,13 +76,14 @@ const getActiveItem = (service: PureRelaxationService, variantIndex: number, con
       active.privilege = { ...active.privilege, ...langData.privilege };
     }
     const mediaSrc = langData.src || override.src;
-    const mediaType = langData.type || override.type;
+    const isVideoFile = typeof mediaSrc === 'string' && /\.(mp4|webm|mov|m4v)(\?.*)?$/i.test(mediaSrc);
+    const mediaType = langData.type || override.type || (isVideoFile ? 'video' : undefined);
     const objectPosition = langData.objectPosition || override.objectPosition;
     
     if (mediaSrc) {
       active.media = {
         ...active.media,
-        type: mediaType as 'image' | 'video',
+        type: (mediaType || (isVideoFile ? 'video' : 'image')) as 'image' | 'video',
         src: mediaSrc,
         ...(objectPosition ? { objectPosition } : {})
       } as any;
@@ -93,50 +94,76 @@ const getActiveItem = (service: PureRelaxationService, variantIndex: number, con
 };
 
 const MediaPreview = ({ media, label }: { media: any; label: string }) => {
-  const objPos = media.objectPosition || 'center';
-  const [isVideoLoading, setIsVideoLoading] = useState(true);
+  const objPos = media?.objectPosition || 'center';
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (media.type === 'video') {
-      setIsVideoLoading(true);
+    setIsLoading(true);
+    if (media?.type === 'video' && videoRef.current && media?.src) {
+      videoRef.current.load();
+      videoRef.current.play().catch(() => {});
     }
-  }, [media.src, media.type]);
-  
+  }, [media?.src, media?.type]);
+
+  if (!media || !media.src) {
+    return (
+      <div className={styles.mediaFrame}>
+        <div className="absolute inset-0 flex items-center justify-center bg-black z-20 pointer-events-none">
+          <div className="w-8 h-8 border-[2.5px] border-[var(--gold-soft,#e6ca91)] border-t-transparent rounded-full animate-spin" />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.mediaFrame}>
       <div className={styles.mediaFade} key={media.src}>
         {media.type === 'video' ? (
           <>
             <video
+              ref={videoRef}
               className={styles.media}
               src={media.src}
-              poster={media.poster}
               muted
               autoPlay
               loop
               playsInline
-              preload="metadata"
+              preload="auto"
               style={{ objectPosition: objPos }}
-              onPlaying={() => setIsVideoLoading(false)}
-              onCanPlay={() => setIsVideoLoading(false)}
-              onWaiting={() => setIsVideoLoading(true)}
+              onPlaying={() => setIsLoading(false)}
+              onTimeUpdate={(e) => {
+                if (e.currentTarget.currentTime > 0) setIsLoading(false);
+              }}
+              onWaiting={() => setIsLoading(true)}
             />
-            {isVideoLoading && (
-              <div className="absolute inset-0 flex items-center justify-center bg-black/10 z-10 pointer-events-none transition-opacity duration-300">
-                <div className="flex flex-col items-center gap-2 text-white/90">
-                  <div className="w-8 h-8 border-[2.5px] border-[var(--gold-soft)] border-t-transparent rounded-full animate-spin"></div>
-                  <span className="text-[9px] uppercase tracking-[0.2em] font-medium opacity-80" style={{ color: 'var(--gold-soft)' }}>Loading Video</span>
-                </div>
+            {isLoading && (
+              <div className="absolute inset-0 flex items-center justify-center bg-black z-20 pointer-events-none transition-opacity duration-300">
+                <div className="w-8 h-8 border-[2.5px] border-[var(--gold-soft,#e6ca91)] border-t-transparent rounded-full animate-spin" />
               </div>
             )}
           </>
         ) : (
-          <img className={styles.media} src={media.src} alt={label} loading="lazy" style={{ objectPosition: objPos }} />
+          <>
+            <img
+              className={styles.media}
+              src={media.src}
+              alt={label}
+              style={{ objectPosition: objPos }}
+              onLoad={() => setIsLoading(false)}
+              onError={() => setIsLoading(false)}
+            />
+            {isLoading && (
+              <div className="absolute inset-0 flex items-center justify-center bg-black z-20 pointer-events-none transition-opacity duration-300">
+                <div className="w-8 h-8 border-[2.5px] border-[var(--gold-soft,#e6ca91)] border-t-transparent rounded-full animate-spin" />
+              </div>
+            )}
+          </>
         )}
       </div>
       <div className={styles.mediaOverlay} />
       <div className="media-watermark" />
-      <span className={styles.mediaCaption}>{media.tag}</span>
+      {media.tag && <span className={styles.mediaCaption}>{media.tag}</span>}
     </div>
   );
 };
