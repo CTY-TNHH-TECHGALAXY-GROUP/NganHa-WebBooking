@@ -4,17 +4,11 @@ import React, { useEffect, useState } from 'react';
 import { useSystemSettings } from '@/components/SystemSettingsProvider';
 import { useTranslation } from '@/components/TranslationProvider';
 import SmartLogo from '@/components/SmartLogo';
-import { HeartPulse, ShieldCheck, QrCode, Facebook, Instagram, X, Check, Copy } from 'lucide-react';
+import { HeartPulse, ShieldCheck, X, Check, Copy } from 'lucide-react';
 
 const WeChatIcon = ({ size = 18, className = "" }: { size?: number; className?: string }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" className={className}>
     <path d="M8.691 2.188C3.891 2.188 0 5.478 0 9.53c0 2.212 1.17 4.203 3.002 5.55a.59.59 0 0 1 .213.665l-.39 1.48c-.019.07-.048.141-.048.213 0 .163.13.295.294.295a.33.33 0 0 0 .166-.046l1.902-1.1c.14-.082.308-.108.468-.073.966.246 1.996.38 3.084.38.309 0 .614-.012.915-.034-.216-.62-.338-1.28-.338-1.967 0-3.662 3.493-6.63 7.8-6.63.262 0 .52.012.775.034C16.924 5.066 13.167 2.188 8.691 2.188zm-2.09 4.204a1.077 1.077 0 1 1 0 2.154 1.077 1.077 0 0 1 0-2.154zm5.18 0a1.077 1.077 0 1 1 0 2.154 1.077 1.077 0 0 1 0-2.154zm4.78 4.717c-3.993 0-7.23 2.74-7.23 6.12 0 1.844.975 3.504 2.503 4.626.115.084.188.217.177.359l-.325 1.234a.247.247 0 0 0 .343.279l1.585-.917a.64.64 0 0 1 .39-.061c.805.205 1.663.317 2.567.317 3.993 0 7.23-2.74 7.23-6.12 0-3.38-3.237-6.12-7.24-6.12zm-2.39 3.505a.898.898 0 1 1 0 1.795.898.898 0 0 1 0-1.795zm4.78 0a.898.898 0 1 1 0 1.795.898.898 0 0 1 0-1.795z" />
-  </svg>
-);
-
-const TikTokIcon = ({ size = 18, className = "" }: { size?: number; className?: string }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" className={className}>
-    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64c.29 0 .58.04.85.12V9.38a6.34 6.34 0 0 0-.85-.06A6.34 6.34 0 0 0 3.1 15.66a6.34 6.34 0 0 0 10.82 4.47V12.9a8.27 8.27 0 0 0 5.67 2.25v-3.46a4.84 4.84 0 0 1-3.77-1.42V6.69z" />
   </svg>
 );
 
@@ -375,19 +369,14 @@ const Footer = () => {
                 </li>
               )}
               {wechat && (
-                <li className="flex items-center gap-2 flex-wrap">
-                  <span>WeChat ID:</span>
-                  <button
+                <li>
+                  WeChat ID: <button
                     type="button"
                     onClick={() => setIsWechatModalOpen(true)}
-                    className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-[rgba(212,175,55,0.08)] border border-[rgba(212,175,55,0.3)] hover:bg-[rgba(212,175,55,0.2)] hover:border-[#D4AF37] text-[#D4AF37] hover:text-[#f7ebc7] transition-all font-medium text-sm cursor-pointer group shadow-sm"
-                    title="Bấm để xem mã QR và WeChat ID"
+                    className="text-[#D4AF37] hover:text-[#f7ebc7] hover:underline transition-colors font-medium cursor-pointer"
+                    title="Bấm để xem mã QR"
                   >
-                    <span className="font-mono tracking-wide">{wechatId}</span>
-                    <span className="inline-flex items-center gap-1 text-xs opacity-85 group-hover:opacity-100">
-                      <QrCode size={13} className="text-[#D4AF37] group-hover:scale-110 transition-transform" />
-                      <span className="text-[11px] uppercase tracking-wider font-sans">Mã QR</span>
-                    </span>
+                    {wechatId}
                   </button>
                 </li>
               )}
@@ -419,65 +408,9 @@ const Footer = () => {
             </ul>
           </div>
         </div>
-        
-        {/* Social Media Row */}
-        <div className="max-w-6xl mx-auto mt-14 pt-8 border-t border-[rgba(212,175,55,0.15)] flex flex-col sm:flex-row items-center justify-between gap-5">
-          <div className="flex items-center gap-3">
-            <span className="text-xs uppercase tracking-[0.2em] text-[#D4AF37] font-medium">
-              {currentLang === 'vi' ? 'Theo dõi chúng tôi' : currentLang === 'cn' ? '关注我们' : currentLang === 'kr' ? '소셜 미디어' : currentLang === 'jp' ? '公式SNS' : 'Connect with Us'}
-            </span>
-          </div>
-          <div className="flex items-center gap-3 sm:gap-4 flex-wrap justify-center">
-            {facebookUrl && (
-              <a
-                href={facebookUrl}
-                target="_blank"
-                rel="noreferrer"
-                aria-label="Facebook Oria Spa"
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[rgba(212,175,55,0.25)] bg-[rgba(247,235,199,0.04)] hover:bg-[#D4AF37] hover:border-[#D4AF37] text-[#f7ebc7] hover:text-[#281b15] text-xs font-medium tracking-wide transition-all duration-300 hover:scale-105 shadow-sm group"
-              >
-                <Facebook size={15} className="text-[#D4AF37] group-hover:text-[#281b15] transition-colors" />
-                <span>Facebook</span>
-              </a>
-            )}
-            {instagramUrl && (
-              <a
-                href={instagramUrl}
-                target="_blank"
-                rel="noreferrer"
-                aria-label="Instagram Oria Spa"
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[rgba(212,175,55,0.25)] bg-[rgba(247,235,199,0.04)] hover:bg-[#D4AF37] hover:border-[#D4AF37] text-[#f7ebc7] hover:text-[#281b15] text-xs font-medium tracking-wide transition-all duration-300 hover:scale-105 shadow-sm group"
-              >
-                <Instagram size={15} className="text-[#D4AF37] group-hover:text-[#281b15] transition-colors" />
-                <span>Instagram</span>
-              </a>
-            )}
-            {tiktokUrl && (
-              <a
-                href={tiktokUrl}
-                target="_blank"
-                rel="noreferrer"
-                aria-label="TikTok Oria Spa"
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[rgba(212,175,55,0.25)] bg-[rgba(247,235,199,0.04)] hover:bg-[#D4AF37] hover:border-[#D4AF37] text-[#f7ebc7] hover:text-[#281b15] text-xs font-medium tracking-wide transition-all duration-300 hover:scale-105 shadow-sm group"
-              >
-                <TikTokIcon size={15} className="text-[#D4AF37] group-hover:text-[#281b15] transition-colors" />
-                <span>TikTok</span>
-              </a>
-            )}
-            <button
-              type="button"
-              onClick={() => setIsWechatModalOpen(true)}
-              aria-label="WeChat QR Code"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[rgba(212,175,55,0.25)] bg-[rgba(247,235,199,0.04)] hover:bg-[#D4AF37] hover:border-[#D4AF37] text-[#f7ebc7] hover:text-[#281b15] text-xs font-medium tracking-wide transition-all duration-300 hover:scale-105 shadow-sm group cursor-pointer"
-            >
-              <WeChatIcon size={15} className="text-[#D4AF37] group-hover:text-[#281b15] transition-colors" />
-              <span>WeChat QR</span>
-            </button>
-          </div>
-        </div>
 
         {/* Copyright */}
-        <div className="max-w-6xl mx-auto mt-8 pt-6 border-t border-[rgba(212,175,55,0.1)] text-center">
+        <div className="max-w-6xl mx-auto mt-20 pt-8 border-t border-[rgba(212,175,55,0.15)] text-center">
           <p className="text-xs text-[#f7ebc7]/40 tracking-[0.2em] uppercase">
             {copyrightText}
           </p>
