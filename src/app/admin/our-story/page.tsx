@@ -201,7 +201,7 @@ export default function OurStoryAdminPage() {
         {/* Category Tabs */}
         <div className="mt-4 flex flex-wrap gap-2 border-b border-admin-line-strong pb-2">
           {[
-            { id: 'location', label: '1. Vị Trí Vàng & Biển Báo', icon: MapPin },
+            { id: 'location', label: '1. Tiêu Đề & Vị Trí Vàng', icon: MapPin },
             { id: 'architecture', label: '2. Kiến Trúc & Thương Mại', icon: Sparkles },
             { id: 'film', label: '3. Thước Phim 35mm Film Reel', icon: Film },
             { id: 'atmosphere', label: '4. Không Khí Đêm Sài Gòn', icon: ImageIcon },
@@ -231,10 +231,247 @@ export default function OurStoryAdminPage() {
       {/* TAB 1: VỊ TRÍ VÀNG VÀ KẾT NỐI */}
       {activeTab === 'location' && (
         <div className="space-y-6">
+          {/* Masthead Header & Address */}
+          <div className="bg-admin-card border border-admin-line-strong rounded-2xl p-6 shadow-sm space-y-4">
+            <h2 className="text-lg font-bold text-admin-text mb-4 flex items-center gap-2">
+              <Sparkles className="text-admin-gold" size={20} />
+              Tiêu Đề Đầu Trang &amp; Địa Chỉ (Masthead &amp; Address)
+            </h2>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label className="block text-sm font-semibold text-admin-text mb-2">
+                  Badge Nhỏ Trên Cùng ({activeLang.toUpperCase()})
+                </label>
+                <input
+                  type="text"
+                  className="w-full px-3.5 py-2 bg-admin-bg border border-admin-line rounded-xl text-sm text-admin-text focus:outline-none focus:border-admin-gold"
+                  value={config.header?.badge?.[activeLang] || ''}
+                  onChange={(e) =>
+                    setConfig({
+                      ...config,
+                      header: {
+                        ...config.header,
+                        badge: updateField(config.header?.badge, e.target.value),
+                      },
+                    })
+                  }
+                  placeholder="Ví dụ: OUR STORY"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-admin-text mb-2">
+                  Tiêu Đề Lớn ({activeLang.toUpperCase()})
+                </label>
+                <input
+                  type="text"
+                  className="w-full px-3.5 py-2 bg-admin-bg border border-admin-line rounded-xl text-sm text-admin-text focus:outline-none focus:border-admin-gold"
+                  value={config.header?.title?.[activeLang] || ''}
+                  onChange={(e) =>
+                    setConfig({
+                      ...config,
+                      header: {
+                        ...config.header,
+                        title: updateField(config.header?.title, e.target.value),
+                      },
+                    })
+                  }
+                  placeholder="Ví dụ: VỊ TRÍ VÀNG VÀ KẾT NỐI"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-admin-text mb-2">
+                  Chữ Nét Viết Script ({activeLang.toUpperCase()})
+                </label>
+                <input
+                  type="text"
+                  className="w-full px-3.5 py-2 bg-admin-bg border border-admin-line rounded-xl text-sm text-admin-text focus:outline-none focus:border-admin-gold"
+                  value={config.header?.script?.[activeLang] || ''}
+                  onChange={(e) =>
+                    setConfig({
+                      ...config,
+                      header: {
+                        ...config.header,
+                        script: updateField(config.header?.script, e.target.value),
+                      },
+                    })
+                  }
+                  placeholder="Ví dụ: Our Story"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 border-t border-admin-line">
+              <div>
+                <label className="block text-sm font-semibold text-admin-text mb-2">
+                  Nhãn Số Nhà &amp; Đường ({activeLang.toUpperCase()})
+                </label>
+                <input
+                  type="text"
+                  className="w-full px-3.5 py-2 bg-admin-bg border border-admin-line rounded-xl text-sm text-admin-text focus:outline-none focus:border-admin-gold"
+                  value={config.header?.addressLabel?.[activeLang] || ''}
+                  onChange={(e) =>
+                    setConfig({
+                      ...config,
+                      header: {
+                        ...config.header,
+                        addressLabel: updateField(config.header?.addressLabel, e.target.value),
+                      },
+                    })
+                  }
+                  placeholder="Ví dụ: 11 Ngô Đức Kế / 11 Ngo Duc Ke"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-admin-text mb-2">
+                  Nhãn Thành Phố &amp; Quốc Gia ({activeLang.toUpperCase()})
+                </label>
+                <input
+                  type="text"
+                  className="w-full px-3.5 py-2 bg-admin-bg border border-admin-line rounded-xl text-sm text-admin-text focus:outline-none focus:border-admin-gold"
+                  value={config.header?.cityLabel?.[activeLang] || ''}
+                  onChange={(e) =>
+                    setConfig({
+                      ...config,
+                      header: {
+                        ...config.header,
+                        cityLabel: updateField(config.header?.cityLabel, e.target.value),
+                      },
+                    })
+                  }
+                  placeholder="Ví dụ: Sài Gòn, Việt Nam / Saigon, Vietnam"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* City Rhythm Image & Captions */}
+          <div className="bg-admin-card border border-admin-line-strong rounded-2xl p-6 shadow-sm">
+            <h2 className="text-lg font-bold text-admin-text mb-4 flex items-center gap-2">
+              <ImageIcon className="text-admin-gold" size={20} />
+              Hình Ảnh Lớn: Nhịp Sống Thành Phố (City Rhythm)
+            </h2>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-semibold text-admin-text mb-2">
+                  Đường dẫn ảnh thành phố (URL hoặc nội bộ)
+                </label>
+                <input
+                  type="text"
+                  className="w-full px-3.5 py-2.5 bg-admin-bg border border-admin-line rounded-xl text-sm text-admin-text focus:outline-none focus:border-admin-gold mb-3"
+                  value={config.locationSection.cityImage || ''}
+                  onChange={(e) =>
+                    setConfig({
+                      ...config,
+                      locationSection: { ...config.locationSection, cityImage: e.target.value },
+                    })
+                  }
+                  placeholder="Ví dụ: /images/about-street.png hoặc https://..."
+                />
+
+                <div className="flex items-center gap-3">
+                  <label className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 bg-admin-line hover:bg-admin-line-strong text-admin-text rounded-lg text-xs font-bold transition-all">
+                    <Upload size={14} />
+                    {uploadingTarget === 'cityImage' ? 'Đang tải ảnh lên...' : 'Tải Ảnh Mới Lên'}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      disabled={uploadingTarget === 'cityImage'}
+                      onChange={(e) =>
+                        handleFileUpload(
+                          e,
+                          (url) =>
+                            setConfig({
+                              ...config,
+                              locationSection: { ...config.locationSection, cityImage: url },
+                            }),
+                          'cityImage'
+                        )
+                      }
+                    />
+                  </label>
+                  <span className="text-xs text-admin-text-faint">Hỗ trợ JPG, PNG, WEBP</span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-admin-text mb-1">
+                      Chú thích bên trái ({activeLang.toUpperCase()})
+                    </label>
+                    <input
+                      type="text"
+                      className="w-full px-3 py-1.5 bg-admin-bg border border-admin-line rounded-lg text-xs text-admin-text focus:outline-none focus:border-admin-gold"
+                      value={config.locationSection.cityCaptionLeft?.[activeLang] || ''}
+                      onChange={(e) =>
+                        setConfig({
+                          ...config,
+                          locationSection: {
+                            ...config.locationSection,
+                            cityCaptionLeft: updateField(config.locationSection.cityCaptionLeft, e.target.value),
+                          },
+                        })
+                      }
+                      placeholder="Ví dụ: Saigon district 01"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-admin-text mb-1">
+                      Chú thích bên phải ({activeLang.toUpperCase()})
+                    </label>
+                    <input
+                      type="text"
+                      className="w-full px-3 py-1.5 bg-admin-bg border border-admin-line rounded-lg text-xs text-admin-text focus:outline-none focus:border-admin-gold"
+                      value={config.locationSection.cityCaptionRight?.[activeLang] || ''}
+                      onChange={(e) =>
+                        setConfig({
+                          ...config,
+                          locationSection: {
+                            ...config.locationSection,
+                            cityCaptionRight: updateField(config.locationSection.cityCaptionRight, e.target.value),
+                          },
+                        })
+                      }
+                      placeholder="Ví dụ: City rhythm"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Preview */}
+              <div className="flex flex-col items-center justify-center p-4 bg-admin-bg rounded-xl border border-admin-line">
+                <span className="text-xs font-bold text-admin-text-faint uppercase mb-2">Xem Trước Ảnh Thành Phố:</span>
+                {config.locationSection.cityImage ? (
+                  <div className="max-w-[280px] w-full rounded-lg overflow-hidden border border-admin-line shadow-md">
+                    <img
+                      src={config.locationSection.cityImage}
+                      alt="City preview"
+                      className="w-full h-44 object-cover"
+                    />
+                    <div className="p-2 text-[11px] flex justify-between text-admin-text-dim italic bg-black/60">
+                      <span>{config.locationSection.cityCaptionLeft?.[activeLang] || config.locationSection.cityCaptionLeft?.vi}</span>
+                      <span>{config.locationSection.cityCaptionRight?.[activeLang] || config.locationSection.cityCaptionRight?.vi}</span>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="w-48 h-44 flex items-center justify-center text-admin-text-faint border border-dashed border-admin-line rounded-lg">
+                    Chưa có ảnh
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Street Sign Image & Caption */}
           <div className="bg-admin-card border border-admin-line-strong rounded-2xl p-6 shadow-sm">
             <h2 className="text-lg font-bold text-admin-text mb-4 flex items-center gap-2">
               <MapPin className="text-admin-gold" size={20} />
-              Hình Ảnh Vị Trí / Biển Báo Đường (Street Sign)
+              Hình Ảnh Biển Báo Đường (Street Sign)
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -383,6 +620,27 @@ export default function OurStoryAdminPage() {
                     },
                   })
                 }
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-admin-text mb-2">
+                Tiêu đề kết nối quan trọng ({activeLang.toUpperCase()})
+              </label>
+              <input
+                type="text"
+                className="w-full px-3.5 py-2.5 bg-admin-bg border border-admin-line rounded-xl text-sm text-admin-text focus:outline-none focus:border-admin-gold"
+                value={config.locationSection.connectionsTitle?.[activeLang] || ''}
+                onChange={(e) =>
+                  setConfig({
+                    ...config,
+                    locationSection: {
+                      ...config.locationSection,
+                      connectionsTitle: updateField(config.locationSection.connectionsTitle, e.target.value),
+                    },
+                  })
+                }
+                placeholder="Ví dụ: Kết nối quan trọng: Đường Ngô Đức Kế kéo dài..."
               />
             </div>
 
@@ -1025,6 +1283,61 @@ export default function OurStoryAdminPage() {
                       }}
                       placeholder="Mô tả..."
                     />
+
+                    <div className="pt-2 space-y-2">
+                      <label className="block text-xs font-semibold text-admin-text-dim">
+                        Ảnh minh họa trụ cột
+                      </label>
+                      <div className="flex flex-col sm:flex-row gap-2">
+                        <input
+                          type="text"
+                          className="flex-1 min-w-0 px-3 py-1.5 bg-admin-card border border-admin-line rounded-lg text-xs text-admin-text focus:outline-none focus:border-admin-gold"
+                          value={pillar.image || ''}
+                          onChange={(e) => {
+                            const newPillars = config.specialtySection.pillars.map((item, pillarIndex) =>
+                              pillarIndex === idx ? { ...item, image: e.target.value } : item,
+                            );
+                            setConfig({
+                              ...config,
+                              specialtySection: { ...config.specialtySection, pillars: newPillars },
+                            });
+                          }}
+                          placeholder="/images/... hoặc URL ảnh"
+                        />
+                        <label className="inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 px-3 py-1.5 bg-admin-card border border-admin-line rounded-lg text-xs font-semibold text-admin-text hover:border-admin-gold transition-colors">
+                          <Upload size={14} />
+                          {uploadingTarget === `pillar-${idx}` ? 'Đang tải...' : 'Tải ảnh'}
+                          <input
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            disabled={uploadingTarget === `pillar-${idx}`}
+                            onChange={(e) =>
+                              handleFileUpload(
+                                e,
+                                (url) => {
+                                  const newPillars = config.specialtySection.pillars.map((item, pillarIndex) =>
+                                    pillarIndex === idx ? { ...item, image: url } : item,
+                                  );
+                                  setConfig({
+                                    ...config,
+                                    specialtySection: { ...config.specialtySection, pillars: newPillars },
+                                  });
+                                },
+                                `pillar-${idx}`,
+                              )
+                            }
+                          />
+                        </label>
+                      </div>
+                      {pillar.image ? (
+                        <img
+                          src={pillar.image}
+                          alt=""
+                          className="w-full h-28 object-cover rounded-lg border border-admin-line"
+                        />
+                      ) : null}
+                    </div>
                   </div>
                 ))}
               </div>

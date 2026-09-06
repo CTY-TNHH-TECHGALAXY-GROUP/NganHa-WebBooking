@@ -134,6 +134,8 @@ export const POST = withAuth(async (request: NextRequest, { supabase, user }) =>
     try {
       const { revalidatePath } = require('next/cache');
       revalidatePath('/', 'layout');
+      revalidatePath('/');
+      revalidatePath('/[lang]', 'layout');
     } catch (e) {
       console.error('Revalidation error:', e);
     }

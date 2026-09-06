@@ -13,6 +13,7 @@ export interface OurStoryFilmFrame {
 
 export interface OurStoryPillar {
   icon: string;
+  image?: string;
   title: LocalizedString;
   desc: LocalizedString;
 }
@@ -28,6 +29,8 @@ export interface OurStoryConfig {
     badge: LocalizedString;
     title: LocalizedString;
     script: LocalizedString;
+    addressLabel: LocalizedString;
+    cityLabel: LocalizedString;
   };
   locationSection: {
     title: LocalizedString;
@@ -35,6 +38,9 @@ export interface OurStoryConfig {
     strategicPosition: LocalizedString;
     connectionsTitle: LocalizedString;
     connections: LocalizedString[];
+    cityImage: string;
+    cityCaptionLeft: LocalizedString;
+    cityCaptionRight: LocalizedString;
     streetSignImage: string;
     imageCaption: LocalizedString;
   };
@@ -67,6 +73,16 @@ export interface OurStoryConfig {
   };
 }
 
+export const hasValidOurStoryContent = (obj: any): boolean => {
+  return Boolean(
+    obj &&
+    typeof obj === 'object' &&
+    !Array.isArray(obj) &&
+    Object.keys(obj).length > 0 &&
+    (obj.header || obj.locationSection || obj.architectureSection || obj.filmReel || obj.atmosphereSection || obj.specialtySection)
+  );
+};
+
 export const createDefaultOurStoryConfig = (): OurStoryConfig => ({
   header: {
     badge: {
@@ -89,6 +105,20 @@ export const createDefaultOurStoryConfig = (): OurStoryConfig => ({
       cn: '我们的故事',
       jp: '私たちの物語',
       kr: '우리의 이야기',
+    },
+    addressLabel: {
+      vi: '11 Ngô Đức Kế',
+      en: '11 Ngo Duc Ke',
+      cn: '吴德计街11号',
+      jp: 'ゴ・ドゥック・ケ通り11番地',
+      kr: '응오득께 11번지',
+    },
+    cityLabel: {
+      vi: 'Sài Gòn, Việt Nam',
+      en: 'Saigon, Vietnam',
+      cn: '西贡，越南',
+      jp: 'サイゴン、ベトナム',
+      kr: '사이공, 베트남',
     },
   },
   locationSection: {
@@ -150,6 +180,21 @@ export const createDefaultOurStoryConfig = (): OurStoryConfig => ({
         kr: '호뚱마우 및 하이찌에우 교차로(비텍스코 파이낸셜 타워 인근)에서 마무리.',
       },
     ],
+    cityImage: '/images/about-street.png',
+    cityCaptionLeft: {
+      vi: 'Saigon district 01',
+      en: 'Saigon district 01',
+      cn: '西贡第一郡',
+      jp: 'サイゴン1区',
+      kr: '사이공 1군',
+    },
+    cityCaptionRight: {
+      vi: 'City rhythm',
+      en: 'City rhythm',
+      cn: '城市律动',
+      jp: '都市のリズム',
+      kr: '도시의 리듬',
+    },
     streetSignImage: '/images/story/street-sign.jpg',
     imageCaption: {
       vi: 'Trục đường Ngô Đức Kế giao cắt đường Đồng Khởi • Trung tâm Quận 1',
@@ -446,6 +491,7 @@ export const createDefaultOurStoryConfig = (): OurStoryConfig => ({
     pillars: [
       {
         icon: '👥',
+        image: '/images/about-treatment.png',
         title: {
           vi: 'Công Suất 27 Khách',
           en: 'Capacity: 27 Guests',
@@ -463,6 +509,7 @@ export const createDefaultOurStoryConfig = (): OurStoryConfig => ({
       },
       {
         icon: '🚪',
+        image: '/images/about-cruise.png',
         title: {
           vi: 'Không Gian Linh Hoạt',
           en: 'Flexible Spaces',
@@ -480,6 +527,7 @@ export const createDefaultOurStoryConfig = (): OurStoryConfig => ({
       },
       {
         icon: '🌿',
+        image: '/images/story/photo-foot.jpg',
         title: {
           vi: 'Menu Chuẩn & Nâng Cao',
           en: 'Standard & Signature Menu',
@@ -497,6 +545,7 @@ export const createDefaultOurStoryConfig = (): OurStoryConfig => ({
       },
       {
         icon: '🔥',
+        image: '/images/about-treatment.png',
         title: {
           vi: 'Xông Hơi Khô Tinh Dầu',
           en: 'Aroma Cedar Dry Sauna',
@@ -533,6 +582,8 @@ export const hydrateOurStoryConfig = (saved: any): OurStoryConfig => {
       badge: { ...defaults.header.badge, ...(saved.header?.badge || {}) },
       title: { ...defaults.header.title, ...(saved.header?.title || {}) },
       script: { ...defaults.header.script, ...(saved.header?.script || {}) },
+      addressLabel: { ...defaults.header.addressLabel, ...(saved.header?.addressLabel || {}) },
+      cityLabel: { ...defaults.header.cityLabel, ...(saved.header?.cityLabel || {}) },
     },
     locationSection: {
       title: { ...defaults.locationSection.title, ...(saved.locationSection?.title || {}) },
@@ -545,6 +596,9 @@ export const hydrateOurStoryConfig = (saved: any): OurStoryConfig => {
             ...item,
           }))
         : defaults.locationSection.connections,
+      cityImage: saved.locationSection?.cityImage || defaults.locationSection.cityImage,
+      cityCaptionLeft: { ...defaults.locationSection.cityCaptionLeft, ...(saved.locationSection?.cityCaptionLeft || {}) },
+      cityCaptionRight: { ...defaults.locationSection.cityCaptionRight, ...(saved.locationSection?.cityCaptionRight || {}) },
       streetSignImage: saved.locationSection?.streetSignImage || defaults.locationSection.streetSignImage,
       imageCaption: { ...defaults.locationSection.imageCaption, ...(saved.locationSection?.imageCaption || {}) },
     },
@@ -593,6 +647,7 @@ export const hydrateOurStoryConfig = (saved: any): OurStoryConfig => {
         ? saved.specialtySection.pillars.map((item: any, idx: number) => ({
             ...(defaults.specialtySection.pillars[idx] || {}),
             ...item,
+            image: item.image || defaults.specialtySection.pillars[idx]?.image,
             title: { ...(defaults.specialtySection.pillars[idx]?.title || {}), ...(item.title || {}) },
             desc: { ...(defaults.specialtySection.pillars[idx]?.desc || {}), ...(item.desc || {}) },
           }))
