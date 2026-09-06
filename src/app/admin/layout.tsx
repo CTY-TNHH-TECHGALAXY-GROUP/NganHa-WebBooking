@@ -14,6 +14,7 @@ const SIDEBAR_WIDTH = '260px';
 
 const NAV_ITEMS = [
   { label: 'Tổng quan', href: '/admin', icon: LayoutDashboard },
+  { label: 'Câu chuyện (Our Story)', href: '/admin/our-story', icon: BookOpen },
   { label: 'Lịch sử Thương hiệu', href: '/admin/history', icon: BookOpen },
   { label: 'Lost & Found', href: '/admin/lost-and-found', icon: ArchiveRestore },
   { label: 'Video Trang chủ', href: '/admin/hero-videos', icon: Film },

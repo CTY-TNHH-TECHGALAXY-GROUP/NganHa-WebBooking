@@ -12,7 +12,9 @@ export interface SystemSettings {
   zalo?: string;
   facebook?: string;
   whatsapp?: string;
+  line?: string;
   wechat?: string;
+  wechatQr?: string;
   kakaotalk?: string;
   homepage_content?: any;
   blog_content?: any;
@@ -41,6 +43,7 @@ export interface AboutStoryContent {
     detail: Record<string, string>;
   };
   gallery?: AboutStoryGalleryItem[];
+  [key: string]: any;
 }
 
 export interface BrandHistoryScene {
