@@ -15,6 +15,7 @@ export interface SystemSettings {
   wechat?: string;
   kakaotalk?: string;
   homepage_content?: any;
+  blog_content?: any;
   lost_and_found?: any;
 }
 

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Film, BookOpen, FileText, Wrench, ArrowRight, Globe, Settings, Search, ArchiveRestore } from 'lucide-react';
+import { Film, BookOpen, FileText, Wrench, ArrowRight, Globe, Settings, ArchiveRestore } from 'lucide-react';
 
 const QUICK_ACTIONS = [
   {
@@ -13,24 +13,6 @@ const QUICK_ACTIONS = [
     color: 'from-admin-purple-a to-admin-purple-b',
     borderColor: 'border-admin-line-strong',
     iconBg: 'bg-admin-purple',
-  },
-  {
-    title: 'Quản Lý Đặt Lịch',
-    description: 'Theo dõi, xác nhận các đơn đặt lịch hẹn mới từ khách hàng.',
-    href: '/admin/bookings',
-    icon: FileText,
-    color: 'from-admin-gold-a to-admin-gold-b',
-    borderColor: 'border-admin-line-strong',
-    iconBg: 'bg-admin-gold',
-  },
-  {
-    title: 'Tra Cứu Khách Hàng',
-    description: 'Xem lịch sử các đơn đã hoàn thành và tra cứu theo SĐT.',
-    href: '/admin/customers',
-    icon: Search,
-    color: 'from-admin-copper-a to-admin-copper-b',
-    borderColor: 'border-admin-line-strong',
-    iconBg: 'bg-admin-copper',
   },
   {
     title: 'Lịch Sử Thương Hiệu',

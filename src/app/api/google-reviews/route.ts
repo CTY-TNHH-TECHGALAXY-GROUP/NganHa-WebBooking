@@ -3,9 +3,8 @@ import { NextResponse } from 'next/server';
 export const revalidate = 86400; // Cache for 24 hours (86400 seconds)
 
 export async function GET() {
-  // Lấy từ Vercel Env, nếu không có thì dùng luôn key bạn vừa cung cấp (hardcode)
   const PLACE_ID = process.env.GOOGLE_PLACE_ID || 'ChIJ2ULTMCAvdTERA4I7Sei7vyY';
-  const API_KEY = process.env.GOOGLE_PLACES_API_KEY || 'AIzaSyBnDLPbnJa56HHZi7iH7y-GhelBRhfalwo';
+  const API_KEY = process.env.GOOGLE_PLACES_API_KEY;
 
   const cacheHeaders = {
     'Cache-Control': 'public, s-maxage=86400, stale-while-revalidate=43200'

@@ -24,6 +24,8 @@ interface ServiceListProps {
     selectedTags?: string[]; // [NEW] Truyền tag khách chọn xuống để List biết cách sort
     direction?: number; // Hướng trượt (1 là -> trái, -1 là <- phải)
     onItemClick: (services: Service[]) => void; // Thay đổi: Truyền vào 1 mảng các biến thể
+    onQuickAdd: (services: Service[]) => void;
+    onQuickRemove: (services: Service[]) => void;
 }
 
 // 🔧 UI CONFIGURATION
@@ -77,7 +79,7 @@ const gridItemVariants = {
     },
 };
 
-export default function ServiceList({ categories, services, cart, lang, selectedTags = [], direction = 1, onItemClick }: ServiceListProps) {
+export default function ServiceList({ categories, services, cart, lang, selectedTags = [], direction = 1, onItemClick, onQuickAdd, onQuickRemove }: ServiceListProps) {
 
     // 1. Hàm Gộp nhóm: Gom các món có cùng Tên Tiếng Anh (names.en) vào chung 1 mảng
     const groupedServices: Record<string, Service[]> = useMemo(() => {
@@ -147,6 +149,8 @@ export default function ServiceList({ categories, services, cart, lang, selected
                                                 lang={lang}
                                                 isBestSeller={isBestSellerGroup} // Truyền prop mới
                                                 onClick={() => onItemClick(group)} // Quan trọng: Truyền CẢ NHÓM vào để MainSheet xử lý
+                                                onQuickAdd={() => onQuickAdd(group)}
+                                                onQuickRemove={() => onQuickRemove(group)}
                                             />
                                         </motion.div>
                                     );

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { ArrowLeft, Plus, Trash2, FileText, X } from 'lucide-react';
+import { ArrowLeft, CalendarClock, FileText, Image as ImageIcon, Plus, Trash2, Video, X } from 'lucide-react';
 import Link from 'next/link';
 
 const BlogAdminPage = () => {
@@ -13,8 +13,15 @@ const BlogAdminPage = () => {
   // Form
   const [activeLang, setActiveLang] = useState('vi');
   const [slug, setSlug] = useState('');
-  const [titles, setTitles] = useState<Record<string, string>>({ vi: '', en: '', cn: '', ko: '', ja: '' });
-  const [contents, setContents] = useState<Record<string, string>>({ vi: '', en: '', cn: '', ko: '', ja: '' });
+  const [titles, setTitles] = useState<Record<string, string>>({ vi: '', en: '', cn: '', kr: '', jp: '' });
+  const [excerpts, setExcerpts] = useState<Record<string, string>>({ vi: '', en: '', cn: '', kr: '', jp: '' });
+  const [contents, setContents] = useState<Record<string, string>>({ vi: '', en: '', cn: '', kr: '', jp: '' });
+  const [categories, setCategories] = useState<Record<string, string>>({ vi: 'Kien thuc Oria', en: 'Oria Knowledge', cn: '', kr: '', jp: '' });
+  const [coverImage, setCoverImage] = useState('');
+  const [coverType, setCoverType] = useState<'image' | 'video'>('image');
+  const [coverAlts, setCoverAlts] = useState<Record<string, string>>({ vi: '', en: '', cn: '', kr: '', jp: '' });
+  const [readTimes, setReadTimes] = useState<Record<string, string>>({ vi: '3 phut', en: '3 min', cn: '', kr: '', jp: '' });
+  const [publishedAt, setPublishedAt] = useState(() => new Date().toISOString().slice(0, 16));
 
   useEffect(() => {
     fetchPosts();
@@ -57,8 +64,14 @@ const BlogAdminPage = () => {
       slug: slug || slugify(titles.vi),
       title: titles,
       content: contents,
-      excerpt: { vi: '', en: '', ko: '', ja: '', cn: '' },
-      status: 'published',
+      excerpt: excerpts,
+      category_i18n: categories,
+      cover_image: coverImage || null,
+      cover_type: coverType,
+      read_time_i18n: readTimes,
+      cover_alt: coverAlts,
+      published_at: new Date(publishedAt || Date.now()).toISOString(),
+      status: new Date(publishedAt || Date.now()) > new Date() ? 'scheduled' : 'published',
     };
 
     const res = await fetch('/api/admin/posts', {
@@ -69,8 +82,15 @@ const BlogAdminPage = () => {
 
     if (res.ok) {
       setSlug('');
-      setTitles({ vi: '', en: '', cn: '', ko: '', ja: '' });
-      setContents({ vi: '', en: '', cn: '', ko: '', ja: '' });
+      setTitles({ vi: '', en: '', cn: '', kr: '', jp: '' });
+      setExcerpts({ vi: '', en: '', cn: '', kr: '', jp: '' });
+      setContents({ vi: '', en: '', cn: '', kr: '', jp: '' });
+      setCategories({ vi: 'Kien thuc Oria', en: 'Oria Knowledge', cn: '', kr: '', jp: '' });
+      setCoverImage('');
+      setCoverType('image');
+      setCoverAlts({ vi: '', en: '', cn: '', kr: '', jp: '' });
+      setReadTimes({ vi: '3 phut', en: '3 min', cn: '', kr: '', jp: '' });
+      setPublishedAt(new Date().toISOString().slice(0, 16));
       setIsAdding(false);
       setSuccessMessage('✅ Đã thêm bài viết thành công!');
       setTimeout(() => setSuccessMessage(''), 3000);
@@ -90,7 +110,7 @@ const BlogAdminPage = () => {
   };
 
   return (
-    <div className="p-6 lg:p-10 max-w-4xl mx-auto">
+    <div className="p-6 lg:p-10 max-w-6xl mx-auto">
       {/* Header */}
       <div className="mb-8">
         <Link href="/admin" className="inline-flex items-center gap-2 text-admin-text-dim hover:text-admin-text text-sm mb-4 transition-colors">
@@ -127,7 +147,7 @@ const BlogAdminPage = () => {
       {/* Form Thêm Bài */}
       {isAdding && (
         <div className="bg-admin-panel border border-admin-line rounded-2xl p-6 mb-8 shadow-[var(--shadow)]">
-          <h2 className="text-lg font-semibold text-admin-text mb-5">✍️ Viết bài mới</h2>
+          <div className="flex items-start justify-between gap-4 mb-5"><div><p className="text-[12px] font-bold tracking-[0.16em] uppercase text-admin-gold">Daily publishing</p><h2 className="text-xl font-semibold text-admin-text mt-1">Viết bài mới</h2></div><p className="max-w-xs text-right text-sm text-admin-text-dim">Hoàn thiện nội dung theo từng ngôn ngữ, sau đó chọn media và thời điểm xuất hiện.</p></div>
           
           <div className="flex gap-2 overflow-x-auto pb-4 mb-4 scrollbar-hide border-b border-admin-line-strong">
             {[
@@ -172,6 +192,21 @@ const BlogAdminPage = () => {
               />
             </div>
 
+            <div>
+              <label className="block text-sm font-semibold text-admin-text-dim mb-1.5">Tóm tắt bài viết</label>
+              <textarea rows={3} value={excerpts[activeLang] || ''} onChange={e => setExcerpts(prev => ({ ...prev, [activeLang]: e.target.value }))} placeholder="Đoạn giới thiệu ngắn hiển thị ở trang Blog..." className="w-full bg-white border border-admin-line-strong rounded-xl px-4 py-3 text-admin-text leading-relaxed focus:border-admin-gold focus:ring-1 focus:ring-admin-gold transition-colors resize-y" />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div><label className="block text-sm font-semibold text-admin-text-dim mb-1.5">Chuyen muc</label><input value={categories[activeLang] || ''} onChange={e => setCategories(prev => ({ ...prev, [activeLang]: e.target.value }))} placeholder="Blog category" className="w-full bg-white border border-admin-line-strong rounded-xl px-4 py-3 text-admin-text focus:border-admin-gold focus:ring-1 focus:ring-admin-gold" /></div>
+              <div><label className="block text-sm font-semibold text-admin-text-dim mb-1.5">Thoi gian doc</label><input value={readTimes[activeLang] || ''} onChange={e => setReadTimes(prev => ({ ...prev, [activeLang]: e.target.value }))} placeholder="3 min" className="w-full bg-white border border-admin-line-strong rounded-xl px-4 py-3 text-admin-text focus:border-admin-gold focus:ring-1 focus:ring-admin-gold" /></div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-admin-text-dim mb-1.5">Mo ta media cho SEO</label>
+              <input value={coverAlts[activeLang] || ''} onChange={e => setCoverAlts(prev => ({ ...prev, [activeLang]: e.target.value }))} placeholder="Mo ta ngan cho anh hoac video" className="w-full bg-white border border-admin-line-strong rounded-xl px-4 py-3 text-admin-text focus:border-admin-gold focus:ring-1 focus:ring-admin-gold" />
+            </div>
+
             <div className={activeLang !== 'vi' ? 'hidden' : 'block'}>
               <label className="block text-sm font-semibold text-admin-text-dim mb-1.5">
                 Đường dẫn <span className="text-admin-text-faint">(tự tạo từ tiêu đề tiếng Việt)</span>
@@ -199,6 +234,19 @@ const BlogAdminPage = () => {
               />
               <p className="text-[12px] text-admin-text-faint mt-1">Hỗ trợ HTML cơ bản.</p>
             </div>
+
+            {activeLang === 'vi' && (
+              <section className="rounded-2xl border border-admin-line-strong bg-admin-panel p-5 space-y-5">
+                <div className="flex items-center gap-2"><CalendarClock size={17} className="text-admin-gold" /><h3 className="font-bold text-admin-text">Publish setup</h3></div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div><label className="block text-sm font-semibold text-admin-text-dim mb-1.5">Ngày giờ xuất hiện</label><input type="datetime-local" value={publishedAt} onChange={e => setPublishedAt(e.target.value)} className="w-full bg-white border border-admin-line-strong rounded-xl px-4 py-3 text-admin-text focus:border-admin-gold focus:ring-1 focus:ring-admin-gold" /><p className="mt-1.5 text-xs text-admin-text-faint">Tương lai: scheduled. Thời điểm hiện tại/quá khứ: publish ngay.</p></div>
+                </div>
+                <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_220px] gap-4 items-start">
+                  <div><label className="block text-sm font-semibold text-admin-text-dim mb-2">Media dai dien</label><div className="inline-flex rounded-xl border border-admin-line-strong overflow-hidden mb-3"><button type="button" onClick={() => setCoverType('image')} className={`inline-flex items-center gap-2 px-4 py-2.5 text-sm font-bold ${coverType === 'image' ? 'bg-admin-gold text-[#241804]' : 'bg-admin-bg text-admin-text-dim'}`}><ImageIcon size={16} />Image</button><button type="button" onClick={() => setCoverType('video')} className={`inline-flex items-center gap-2 px-4 py-2.5 text-sm font-bold ${coverType === 'video' ? 'bg-admin-gold text-[#241804]' : 'bg-admin-bg text-admin-text-dim'}`}><Video size={16} />Video</button></div><input type="url" value={coverImage} onChange={e => setCoverImage(e.target.value)} placeholder={coverType === 'video' ? 'Video URL (.mp4, .webm)' : 'Image URL'} className="w-full bg-white border border-admin-line-strong rounded-xl px-4 py-3 text-admin-text focus:border-admin-gold focus:ring-1 focus:ring-admin-gold" /></div>
+                  <div className="aspect-[4/3] overflow-hidden rounded-xl bg-admin-bg border border-admin-line-strong">{coverImage ? coverType === 'video' ? <video src={coverImage} muted controls className="h-full w-full object-cover" /> : <img src={coverImage} alt="Cover preview" className="h-full w-full object-cover" /> : <div className="h-full w-full grid place-items-center text-admin-text-faint"><div className="text-center"><ImageIcon size={24} className="mx-auto mb-2" /><span className="text-xs">Media preview</span></div></div>}</div>
+                </div>
+              </section>
+            )}
 
             <button
               type="submit"
@@ -237,9 +285,7 @@ const BlogAdminPage = () => {
             {posts.map((post) => (
               <div key={post.id} className="bg-admin-panel border border-admin-line rounded-xl p-4 flex items-center gap-4 group hover:border-admin-line-strong transition-colors shadow-sm">
                 {/* Icon */}
-                <div className="w-10 h-10 rounded-lg bg-admin-green-a border border-admin-green-b flex items-center justify-center flex-shrink-0">
-                  <FileText size={18} className="text-admin-green" />
-                </div>
+                <div className="w-12 h-12 overflow-hidden rounded-lg bg-admin-green-a border border-admin-green-b flex items-center justify-center flex-shrink-0">{post.cover_image ? post.cover_type === 'video' ? <Video size={18} className="text-admin-green" /> : <img src={post.cover_image} alt="" className="h-full w-full object-cover" /> : <FileText size={18} className="text-admin-green" />}</div>
 
                 {/* Info */}
                 <div className="flex-1 min-w-0">
@@ -251,7 +297,7 @@ const BlogAdminPage = () => {
 
                 {/* Status */}
                 <span className="hidden sm:inline-flex items-center gap-1 bg-admin-green-a text-admin-green px-2.5 py-1 rounded-full text-[11px] border border-admin-green-b font-bold tracking-wide uppercase">
-                  Đang hiển thị
+                  {post.status === 'scheduled' ? 'Đã lên lịch' : post.status === 'draft' ? 'Bản nháp' : 'Đang hiển thị'}
                 </span>
 
                 {/* Delete */}

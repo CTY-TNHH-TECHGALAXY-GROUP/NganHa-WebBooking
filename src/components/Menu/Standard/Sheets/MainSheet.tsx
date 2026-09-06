@@ -12,19 +12,21 @@
  */
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Minus, Plus, ChevronDown, List, Pencil, PlusCircle } from 'lucide-react';
-import { Service, CartState } from '../../types';
+import { CartItem, Service } from '../../types';
 import { formatCurrency } from '../../utils';
+import { getCartSelectionKey } from '../../cartSelection';
 
 interface MainSheetProps {
     group: Service[]; // Nhận vào cả nhóm món ăn
-    cart: Record<string, number>;  // Nhận vào Lookup Map
+    cart: CartItem[];
     isOpen: boolean;
     lang: string;
     onClose: () => void;
     onAddToCart: (id: string, quantity: number, options?: any) => void;
+    onSetSelectionQuantity: (reference: CartItem, quantity: number) => void;
 }
 
 // 🔧 UI CONFIGURATION
@@ -66,7 +68,7 @@ const TEXT = {
     recommended: { vi: 'Gợi ý', en: 'Recommended', cn: '推荐', jp: 'おすすめ', kr: '추천' }
 };
 
-export default function MainSheet({ group, cart, isOpen, lang, onClose, onAddToCart }: MainSheetProps) {
+export default function MainSheet({ group, cart, isOpen, lang, onClose, onAddToCart, onSetSelectionQuantity }: MainSheetProps) {
     // Helper translate
     const t = (key: Exclude<keyof typeof TEXT, 'selected_msg'>) => {
         const dict = TEXT[key] as Record<string, string>;
@@ -87,6 +89,22 @@ export default function MainSheet({ group, cart, isOpen, lang, onClose, onAddToC
 
     // MODE: 'LIST' (Xem danh sách đã chọn) | 'ADD' (Thêm mới)
     const [viewMode, setViewMode] = useState<'LIST' | 'ADD'>('ADD');
+    const [editingSelection, setEditingSelection] = useState<CartItem | null>(null);
+
+    const purchasedSelections = useMemo(() => {
+        const serviceIds = new Set(group.map(service => service.id));
+        const grouped = new Map<string, CartItem & { totalQty: number }>();
+        cart.filter(item => serviceIds.has(item.id)).forEach(item => {
+            const key = getCartSelectionKey(item);
+            const existing = grouped.get(key);
+            if (existing) existing.totalQty += item.qty;
+            else grouped.set(key, { ...item, totalQty: item.qty });
+        });
+        return Array.from(grouped.values());
+    }, [cart, group]);
+
+    const serviceQuantity = (serviceId: string) =>
+        cart.filter(item => item.id === serviceId).reduce((total, item) => total + item.qty, 0);
 
     useEffect(() => {
         if (isOpen && group.length > 0) {
@@ -94,9 +112,9 @@ export default function MainSheet({ group, cart, isOpen, lang, onClose, onAddToC
             const sortedGroup = [...group].sort((a, b) => a.timeValue - b.timeValue);
 
             // 2. Kiểm tra xem trong cart đã có món nào thuộc group này chưa
-            const purchasedItems = sortedGroup.filter(svc => cart[svc.id] && cart[svc.id] > 0);
+            const hasPurchasedItems = purchasedSelections.length > 0;
 
-            if (purchasedItems.length > 0) {
+            if (hasPurchasedItems) {
                 // Nếu có -> Chuyển sang chế độ xem danh sách
                 setViewMode('LIST');
             } else {
@@ -106,6 +124,7 @@ export default function MainSheet({ group, cart, isOpen, lang, onClose, onAddToC
                 setQty(1);
             }
 
+            setEditingSelection(null);
             setShowAll(false);
             setIsClosing(false);
 
@@ -114,17 +133,9 @@ export default function MainSheet({ group, cart, isOpen, lang, onClose, onAddToC
             const timer = setTimeout(() => setIsVisible(true), 10);
             return () => clearTimeout(timer);
         }
-    }, [isOpen, group, cart]); // Thêm cart vào dependencies để cập nhật realtime
+    }, [isOpen, group, purchasedSelections.length]);
 
     if (!isOpen) return null;
-
-    // Lọc ra danh sách các món đã mua trong group này
-    const purchasedServices = group.filter(svc => cart[svc.id] && cart[svc.id] > 0);
-
-    // Nếu đang ở mode LIST mà user lại xóa hết item trong cart -> Tự back về ADD
-    if (viewMode === 'LIST' && purchasedServices.length === 0 && isOpen) {
-        setViewMode('ADD');
-    }
 
     const handleClose = () => {
         setIsClosing(true);
@@ -133,15 +144,21 @@ export default function MainSheet({ group, cart, isOpen, lang, onClose, onAddToC
 
     const handleConfirm = () => {
         if (selectedService) {
-            onAddToCart(selectedService.id, qty);
-            // logic đóng sheet sẽ được StandardMenu quản lý (chuyển sang CUSTOM hoặc đóng)
+            if (editingSelection) {
+                onSetSelectionQuantity(editingSelection, qty);
+                setEditingSelection(null);
+                setViewMode('LIST');
+            } else {
+                onAddToCart(selectedService.id, qty);
+            }
         }
     };
 
     // Chuyển sang sửa 1 món cụ thể
-    const handleEditItem = (svc: Service) => {
-        setSelectedService(svc);
-        setQty(cart[svc.id]); // Load số lượng hiện tại
+    const handleEditItem = (selection: CartItem & { totalQty: number }) => {
+        setSelectedService(selection);
+        setQty(selection.totalQty);
+        setEditingSelection(selection);
         setViewMode('ADD');
     };
 
@@ -188,38 +205,37 @@ export default function MainSheet({ group, cart, isOpen, lang, onClose, onAddToC
                                 <List className="text-[#C9A96E]" size={24} />
                                 <div>
                                     <h2 className="text-xl font-bold text-white">{t('selected_options')}</h2>
-                                    <p className="text-sm text-gray-400">{tMsg(purchasedServices.length, groupName)}</p>
+                                    <p className="text-sm text-gray-400">{tMsg(purchasedSelections.length, groupName)}</p>
                                 </div>
                             </div>
 
                             <div className="flex flex-col gap-3">
-                                {purchasedServices.map(svc => (
-                                    <div key={svc.id} className="bg-[#1c1c1e]/80 p-4 rounded-xl border border-gray-700 flex justify-between items-center group hover:border-gray-500 transition-colors">
+                                {purchasedSelections.map(selection => (
+                                    <div key={getCartSelectionKey(selection)} className="bg-[#1c1c1e]/80 p-4 rounded-xl border border-gray-700 flex justify-between items-center gap-3 group hover:border-gray-500 transition-colors">
                                         <div>
                                             <div className="flex items-baseline gap-2">
-                                                {svc.timeValue > 0 && (
+                                                {selection.timeValue > 0 && (
                                                     <>
-                                                        <span className="text-[#C9A96E] font-bold text-xl">{svc.timeValue}{t('mins')}</span>
+                                                        <span className="text-[#C9A96E] font-bold text-xl">{selection.timeValue}{t('mins')}</span>
                                                         <span className="text-gray-500 text-xs uppercase tracking-wider">{t('duration')}</span>
                                                     </>
                                                 )}
                                             </div>
                                             <div className="text-white font-medium mt-1">
-                                                {formatCurrency(svc.priceVND)} VND <span className="text-gray-600">/</span> <span className="text-emerald-600">{svc.priceUSD} USD</span>
+                                                {formatCurrency(selection.priceVND)} VND <span className="text-gray-600">/</span> <span className="text-emerald-600">{selection.priceUSD} USD</span>
                                             </div>
                                             <div className="text-sm text-gray-400 mt-1 flex items-center gap-1">
                                                 <span>{t('qty')}:</span>
-                                                <span className="text-white font-bold">{cart[svc.id]}</span>
+                                                <span className="text-white font-bold">{selection.totalQty}</span>
                                                 <span>{t('pax')}</span>
                                             </div>
                                         </div>
 
-                                        <button
-                                            onClick={() => handleEditItem(svc)}
-                                            className="w-10 h-10 rounded-full bg-gray-700 text-white flex items-center justify-center hover:bg-[#C9A96E] hover:text-black transition-all shadow-lg"
-                                        >
-                                            <Pencil size={18} />
-                                        </button>
+                                        <div className="flex items-center gap-1">
+                                            <button onClick={() => onSetSelectionQuantity(selection, selection.totalQty - 1)} className="w-9 h-9 rounded-full bg-gray-800 text-white flex items-center justify-center hover:bg-gray-700" aria-label="Decrease quantity"><Minus size={16} /></button>
+                                            <button onClick={() => onSetSelectionQuantity(selection, selection.totalQty + 1)} className="w-9 h-9 rounded-full bg-[#C9A96E] text-black flex items-center justify-center hover:bg-[#dfc599]" aria-label="Increase quantity"><Plus size={16} /></button>
+                                            <button onClick={() => handleEditItem(selection)} className="w-10 h-10 rounded-full bg-gray-700 text-white flex items-center justify-center hover:bg-[#C9A96E] hover:text-black transition-all shadow-lg" aria-label="Edit option"><Pencil size={18} /></button>
+                                        </div>
                                     </div>
                                 ))}
                             </div>
@@ -228,6 +244,7 @@ export default function MainSheet({ group, cart, isOpen, lang, onClose, onAddToC
                             <button
                                 onClick={() => {
                                     setViewMode('ADD');
+                                    setEditingSelection(null);
                                     // Reset về cái đầu tiên chưa chọn hoặc cái đầu list
                                     const sorted = [...group].sort((a, b) => a.timeValue - b.timeValue);
                                     setSelectedService(sorted[0]);
@@ -248,7 +265,7 @@ export default function MainSheet({ group, cart, isOpen, lang, onClose, onAddToC
                             {/* KHU VỰC CHỌN THỜI GIAN */}
                             <div className="mb-6">
                                 {/* Nếu list có item -> Cho nút Back to list */}
-                                {purchasedServices.length > 0 && (
+                                {purchasedSelections.length > 0 && (
                                     <div className="flex justify-end mb-3">
                                         <button onClick={() => setViewMode('LIST')} className="text-xs text-[#C9A96E] font-bold hover:underline">
                                             {t('back_to_list')}
@@ -278,7 +295,11 @@ export default function MainSheet({ group, cart, isOpen, lang, onClose, onAddToC
                                         .map((svc) => (
                                             <motion.button
                                                 key={svc.id}
-                                                onClick={() => setSelectedService(svc)}
+                                                onClick={() => {
+                                                    setSelectedService(svc);
+                                                    setEditingSelection(null);
+                                                    setQty(1);
+                                                }}
                                                 variants={{
                                                     hidden: { opacity: 0, scale: 0.85, y: 10 },
                                                     visible: {
@@ -318,9 +339,9 @@ export default function MainSheet({ group, cart, isOpen, lang, onClose, onAddToC
                                                 </div>
 
                                                 {/* Badge số lượng nếu đã có trong giỏ (khi đang chọn món khác) */}
-                                                {cart[svc.id] > 0 && selectedService.id !== svc.id && (
+                                                {serviceQuantity(svc.id) > 0 && selectedService.id !== svc.id && (
                                                     <div className="absolute top-2 right-2 w-5 h-5 bg-[#C9A96E] text-white text-[10px] font-bold rounded-full flex items-center justify-center">
-                                                        {cart[svc.id]}
+                                                        {serviceQuantity(svc.id)}
                                                     </div>
                                                 )}
                                             </motion.button>
@@ -335,7 +356,11 @@ export default function MainSheet({ group, cart, isOpen, lang, onClose, onAddToC
                                             .map((svc, idx) => (
                                                 <motion.button
                                                     key={`extra-${svc.id}`}
-                                                    onClick={() => setSelectedService(svc)}
+                                                    onClick={() => {
+                                                        setSelectedService(svc);
+                                                        setEditingSelection(null);
+                                                        setQty(1);
+                                                    }}
                                                     initial={{ opacity: 0, scale: 0.85, y: 10 }}
                                                     animate={{
                                                         opacity: 1,
@@ -371,9 +396,9 @@ export default function MainSheet({ group, cart, isOpen, lang, onClose, onAddToC
                                                         <span className="text-gray-500">/</span>
                                                         <span className="text-emerald-600 font-bold">{svc.priceUSD} USD</span>
                                                     </div>
-                                                    {cart[svc.id] > 0 && selectedService.id !== svc.id && (
+                                                    {serviceQuantity(svc.id) > 0 && selectedService.id !== svc.id && (
                                                         <div className="absolute top-2 right-2 w-5 h-5 bg-[#C9A96E] text-white text-[10px] font-bold rounded-full flex items-center justify-center">
-                                                            {cart[svc.id]}
+                                                        {serviceQuantity(svc.id)}
                                                         </div>
                                                     )}
                                                 </motion.button>
@@ -420,7 +445,7 @@ export default function MainSheet({ group, cart, isOpen, lang, onClose, onAddToC
                         </div>
 
                         <button onClick={handleConfirm} className="w-full py-3.5 bg-gradient-to-r from-[#b6965b] to-[#C9A96E] text-white font-bold rounded-xl shadow-lg flex items-center justify-center gap-2 text-base uppercase hover:brightness-110 transition-all">
-                            <span>{cart[selectedService.id] ? t('update_cart') : t('add_to_cart')}</span>
+                            <span>{editingSelection ? t('update_cart') : t('add_to_cart')}</span>
                             <span className="opacity-40">|</span>
                             <span>{formatCurrency(selectedService.priceVND * qty)} VND</span>
                             <span className="opacity-40">/</span>

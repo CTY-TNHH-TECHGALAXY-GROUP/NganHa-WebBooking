@@ -10,6 +10,7 @@ import CustomForYouModal from '@/components/CustomForYou';
 import { ServiceData, CustomPreferences, LanguageCode } from '@/components/CustomForYou/types';
 import { getDictionary } from '@/lib/dictionaries';
 import AlertModal from '@/components/Shared/AlertModal';
+import { getCartSelectionKey } from '../../cartSelection';
 
 interface CartDrawerProps {
     cart: CartState;
@@ -174,7 +175,7 @@ export default function CartDrawer({ cart, services, lang, isOpen, onClose, onUp
     const [isCustomModalOpen, setIsCustomModalOpen] = useState(false);
     const [alertState, setAlertState] = useState<{ isOpen: boolean; message: string; type?: 'error' | 'success' | 'info' }>({ isOpen: false, message: '' });
 
-    const { addToCart, removeFromCart, updateCartItemOptions } = useMenuData();
+    const { setSelectionQuantity, updateCartItemOptions } = useMenuData();
 
     useEffect(() => {
         if (isOpen) {
@@ -200,9 +201,7 @@ export default function CartDrawer({ cart, services, lang, isOpen, onClose, onUp
         const groups: { [key: string]: CartItem & { totalQty: number; displayKey: string } } = {};
 
         cart.forEach(item => {
-            // Create a unique key based on ID and serialized options
-            const optionsKey = JSON.stringify(item.options || {});
-            const displayKey = `${item.id}-${optionsKey}`;
+            const displayKey = getCartSelectionKey(item);
 
             if (!groups[displayKey]) {
                 groups[displayKey] = { ...item, totalQty: 0, displayKey };
@@ -247,23 +246,8 @@ export default function CartDrawer({ cart, services, lang, isOpen, onClose, onUp
         };
     };
 
-    const handlePlus = (item: CartItem) => {
-        // [MODIFIED] Preserve options when adding quantity
-        addToCart(item as any, 1, item.options);
-    };
-
-    const handleMinus = (displayKey: string) => {
-        // Find the last instance in the cart that matches this group's displayKey
-        // In grouped view, the "displayKey" identifies items with same ID and Options.
-        const instance = cart.find(c => {
-            const optionsKey = JSON.stringify(c.options || {});
-            return `${c.id}-${optionsKey}` === displayKey;
-        });
-
-        if (instance) {
-            removeFromCart(instance.cartId);
-        }
-    };
+    const handlePlus = (item: CartItem & { totalQty: number }) => setSelectionQuantity(item, item.totalQty + 1);
+    const handleMinus = (item: CartItem & { totalQty: number }) => setSelectionQuantity(item, item.totalQty - 1);
 
     // Restore missing logic
     const { totalVND, totalUSD } = useMemo(() => {
@@ -339,7 +323,7 @@ export default function CartDrawer({ cart, services, lang, isOpen, onClose, onUp
                                             {/* Quantity Controls (Condensed Pill Shape) */}
                                             <div className="flex items-center gap-2 bg-white/5 rounded-full px-2 py-0.5 border border-white/5">
                                                 <button
-                                                    onClick={() => handleMinus(item.displayKey)}
+                                                    onClick={() => handleMinus(item)}
                                                     className="w-7 h-7 flex items-center justify-center text-gray-400 hover:text-white transition-colors"
                                                 >
                                                     <Minus size={12} />

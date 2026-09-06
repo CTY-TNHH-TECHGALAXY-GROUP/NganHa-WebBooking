@@ -21,8 +21,12 @@ export default function AdminLoginPage() {
     setLoading(true);
     setError('');
 
+    const loginEmail = email.trim().toLowerCase() === 'admin'
+      ? 'admin@nganhaspa.internal'
+      : email.trim();
+
     const { error } = await supabase.auth.signInWithPassword({
-      email,
+      email: loginEmail,
       password,
     });
 
@@ -53,12 +57,13 @@ export default function AdminLoginPage() {
           <div>
             <label className="block text-sm font-medium text-gray-400 mb-2">Email</label>
             <input
-              type="email"
-              required
+                type="text"
+                required
+                inputMode="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-colors"
-              placeholder="admin@nganhaspa.com"
+              placeholder="admin"
             />
           </div>
 

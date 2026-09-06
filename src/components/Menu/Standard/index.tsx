@@ -47,9 +47,10 @@ import CategoryPicker from './CategoryPicker';
 
 // 2. Import Logic & Data
 import { CATEGORIES } from '@/components/Menu/constants';
-import { Service, CartState, SheetState } from '@/components/Menu/types';
+import { CartItem, Service, ServiceOptions, SheetState } from '@/components/Menu/types';
 import { getServices } from '@/components/Menu/getServices'; // Đảm bảo đường dẫn đúng
 import { useMenuData } from '@/components/Menu/MenuContext'; // Import Hook Context
+import { getCartSelectionKey } from '@/components/Menu/cartSelection';
 
 interface StandardMenuProps {
     lang: string;
@@ -79,7 +80,7 @@ export default function StandardMenu({ lang, onBack, onCheckout }: StandardMenuP
     const [lastAddedCartIds, setLastAddedCartIds] = useState<string[]>([]);
 
     // --- 1. LẤY DATA TỪ CONTEXT ---
-    const { services: allServices, loading: contextLoading, cart, addToCart: contextAddToCart, updateCartItem, updateCartItemOptions, removeFromCart } = useMenuData();
+    const { services: allServices, loading: contextLoading, cart, addToCart: contextAddToCart, updateCartItem, setSelectionQuantity, updateCartItemOptions } = useMenuData();
 
     useEffect(() => {
         if (!contextLoading && allServices.length > 0) {
@@ -126,31 +127,41 @@ export default function StandardMenu({ lang, onBack, onCheckout }: StandardMenuP
         setSheet({ isOpen: true, type: 'MAIN', data: group });
     };
 
+    const getGroupSelections = (group: Service[]) => {
+        const serviceIds = new Set(group.map(service => service.id));
+        const selections = new Map<string, CartItem & { totalQty: number }>();
+        cart.filter(item => serviceIds.has(item.id)).forEach(item => {
+            const key = getCartSelectionKey(item);
+            const existing = selections.get(key);
+            if (existing) existing.totalQty += item.qty;
+            else selections.set(key, { ...item, totalQty: item.qty });
+        });
+        return Array.from(selections.values());
+    };
+
+    const handleQuickQuantity = (group: Service[], delta: 1 | -1) => {
+        const selections = getGroupSelections(group);
+        if (selections.length !== 1) {
+            handleServiceClick(group);
+            return;
+        }
+        const selection = selections[0];
+        setSelectionQuantity(selection, selection.totalQty + delta);
+    };
+
     // Hàm cập nhật Cart (Dùng cho cả MainSheet và ReviewSheet)
     const handleUpdateCart = (cartId: string, qty: number) => {
         updateCartItem(cartId, qty);
     };
 
-    const handleAddToCart = (id: string, qty: number, options?: any) => {
+    const handleAddToCart = (id: string, qty: number, options?: ServiceOptions) => {
         const service = services.find(s => s.id === id);
         if (service) {
-            // 1. Tìm các item cũ trong cart có cùng id (để replace logic)
-            const existingItems = cart.filter(item => item.id === id);
+            // Never replace other durations or customised selections of this service.
+            const newAddedId = contextAddToCart(service, qty, options);
 
-            // 2. Xóa hết chúng đi
-            existingItems.forEach(item => {
-                removeFromCart(item.cartId);
-            });
-
-            // 3. Thêm mới: Chạy vòng lặp để thêm từng item lẻ (qty = 1)
-            const newAddedIds: string[] = [];
-            for (let i = 0; i < qty; i++) {
-                const newId = contextAddToCart(service, 1, options);
-                newAddedIds.push(newId);
-            }
-
-            // 4. CHUYỂN SANG BƯỚC CUSTOM (hoặc skip nếu không cần)
-            setLastAddedCartIds(newAddedIds);
+            // Custom For You is completed once for this quantity selection.
+            setLastAddedCartIds([newAddedId]);
 
             // Task E2: Skip Custom modal for services that don't need it (e.g., Private Room)
             if (service.SHOW_CUSTOM_FOR_YOU === false) {
@@ -244,6 +255,8 @@ export default function StandardMenu({ lang, onBack, onCheckout }: StandardMenuP
                         direction={slideDirection}
                         lang={lang}
                         onItemClick={handleServiceClick}
+                        onQuickAdd={(group) => handleQuickQuantity(group, 1)}
+                        onQuickRemove={(group) => handleQuickQuantity(group, -1)}
                     />
 
                     {/* C. FOOTER */}
@@ -263,11 +276,12 @@ export default function StandardMenu({ lang, onBack, onCheckout }: StandardMenuP
                     {sheet.isOpen && sheet.type === 'MAIN' && Array.isArray(sheet.data) && (
                         <MainSheet
                             group={sheet.data} // Truyền data (là mảng) vào prop group
-                            cart={cartLookup} // Truyền Lookup Map để check sl
+                            cart={cart}
                             isOpen={sheet.isOpen}
                             lang={lang}
                             onClose={closeSheet}
                             onAddToCart={handleAddToCart}
+                            onSetSelectionQuantity={setSelectionQuantity}
                         />
                     )}
 

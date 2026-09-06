@@ -2,25 +2,24 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { 
+import { usePathname, useRouter } from 'next/navigation';
+import { createBrowserClient } from '@supabase/ssr';
+import {
   LayoutDashboard, BookOpen, FileText, Wrench, Film, Search, Globe, Settings, ArchiveRestore,
-  Menu, X, ChevronRight, LogOut, ImagePlus, Clock
+  Menu, X, ChevronRight, LogOut, ImagePlus
 } from 'lucide-react';
-import BookingBell from '@/components/Admin/BookingBell';
 
 // 🔧 UI CONFIGURATION
 const SIDEBAR_WIDTH = '260px';
 
 const NAV_ITEMS = [
   { label: 'Tổng quan', href: '/admin', icon: LayoutDashboard },
-  { label: 'Quản lý Đặt Lịch', href: '/admin/bookings', icon: Clock },
-  { label: 'Tra Cứu Khách Hàng', href: '/admin/customers', icon: Search },
   { label: 'Lịch sử Thương hiệu', href: '/admin/history', icon: BookOpen },
   { label: 'Lost & Found', href: '/admin/lost-and-found', icon: ArchiveRestore },
   { label: 'Video Trang chủ', href: '/admin/hero-videos', icon: Film },
   { label: 'Sách Lật (Flipbook)', href: '/admin/flipbook-pages', icon: BookOpen },
   { label: 'Bài viết (Blog)', href: '/admin/posts', icon: FileText },
+  { label: 'Nội dung Blog', href: '/admin/content/blogs', icon: Globe },
   { label: 'Dịch vụ (Media & Giá)', href: '/admin/services', icon: Wrench },
   { label: 'Kho Media', href: '/admin/media-library', icon: ImagePlus },
   { label: 'Nội dung Đa Ngôn Ngữ', href: '/admin/content/homepage', icon: Globe },
@@ -31,7 +30,18 @@ const NAV_ITEMS = [
 
 const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
+  const router = useRouter();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+
+  const handleLogout = async () => {
+    const supabase = createBrowserClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    );
+    await supabase.auth.signOut();
+    router.replace('/admin/login');
+    router.refresh();
+  };
 
   // Close sidebar on route change (mobile)
   useEffect(() => {
@@ -42,6 +52,11 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
     if (href === '/admin') return pathname === '/admin';
     return pathname?.startsWith(href);
   };
+
+  // The login route must not inherit any authenticated admin chrome.
+  if (pathname === '/admin/login') {
+    return <>{children}</>;
+  }
 
   return (
     <div className="min-h-screen bg-admin-bg text-admin-text">
@@ -55,7 +70,6 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
           {isMobileOpen ? <X size={22} /> : <Menu size={22} />}
         </button>
         <span className="flex-1 text-admin-text font-bold text-lg"><span className="text-admin-gold mr-1">✦</span> Quản Trị NganHa</span>
-        <BookingBell />
       </div>
 
       {/* Overlay for mobile */}
@@ -84,7 +98,6 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
               <p className="text-[11px] text-admin-text-faint mt-0.5">Hệ thống quản trị nội dung</p>
             </div>
           </div>
-          <BookingBell />
         </div>
 
         {/* Navigation */}
@@ -118,7 +131,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
           <Link href="/" className="flex items-center gap-2 text-[13px] text-admin-text-faint hover:text-admin-text-dim hover:bg-admin-line px-3 py-2.5 rounded-[9px] transition-colors">
             ← Về trang chủ
           </Link>
-          <button className="w-full flex items-center gap-2 text-[13px] text-admin-text-faint hover:text-[#c85a5a] hover:bg-admin-line px-3 py-2.5 rounded-[9px] transition-colors">
+          <button onClick={handleLogout} className="w-full flex items-center gap-2 text-[13px] text-admin-text-faint hover:text-[#c85a5a] hover:bg-admin-line px-3 py-2.5 rounded-[9px] transition-colors">
             <LogOut size={16} className="opacity-80" />
             Đăng xuất
           </button>

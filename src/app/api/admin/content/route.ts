@@ -1,32 +1,32 @@
-import { NextResponse } from 'next/server';
-import { getSupabaseAdmin } from '@/lib/supabase-server';
+import { NextRequest } from 'next/server';
+import { withAuth } from '@/lib/api/withAuth';
+import { apiResponse } from '@/lib/api/apiResponse';
+import { recordContentRevisions } from '@/lib/api/contentRevision';
 
-export async function GET() {
+export const GET = withAuth(async (_request, { supabase }) => {
   try {
-    const supabase = getSupabaseAdmin();
     const { data, error } = await supabase
       .from('WebBookingContent')
       .select('key, value');
 
     if (error) {
-      return NextResponse.json({ success: false, message: error.message }, { status: 500 });
+      return apiResponse.error(error.message, 'DB_ERROR', 500);
     }
 
     // Convert array of {key, value} to an object
-    const contentData = data?.reduce((acc: Record<string, any>, item) => {
+    const contentData = data?.reduce((acc: Record<string, any>, item: { key: string; value: unknown }) => {
       acc[item.key] = item.value;
       return acc;
     }, {});
 
-    return NextResponse.json({ success: true, data: contentData });
+    return apiResponse.success(contentData);
   } catch (error: any) {
-    return NextResponse.json({ success: false, message: error.message }, { status: 500 });
+    return apiResponse.error(error.message, 'INTERNAL_ERROR', 500);
   }
-}
+});
 
-export async function POST(request: Request) {
+export const POST = withAuth(async (request: NextRequest, { supabase, user }) => {
   try {
-    const supabase = getSupabaseAdmin();
     const payload = await request.json(); // Expected format: Record<string, any> where key is table key, value is jsonb
 
     // Convert payload to array of {key, value}
@@ -36,8 +36,19 @@ export async function POST(request: Request) {
     }));
 
     if (updates.length === 0) {
-      return NextResponse.json({ success: true, message: 'Nothing to update' });
+      return apiResponse.success({ message: 'Nothing to update' });
     }
+
+    const { data: currentContent } = await supabase
+      .from('WebBookingContent')
+      .select('key, value')
+      .in('key', updates.map(update => update.key));
+
+    await recordContentRevisions(supabase, (currentContent || []).map((item: { key: string; value: Record<string, unknown> | unknown[] }) => ({
+      content_key: `WebBookingContent:${item.key}`,
+      payload: item.value,
+      changed_by: user.id,
+    })));
 
     // Upsert to table
     const { error } = await supabase
@@ -45,11 +56,11 @@ export async function POST(request: Request) {
       .upsert(updates, { onConflict: 'key' });
 
     if (error) {
-      return NextResponse.json({ success: false, message: error.message }, { status: 500 });
+      return apiResponse.error(error.message, 'DB_ERROR', 500);
     }
 
-    return NextResponse.json({ success: true, message: 'Updated successfully' });
+    return apiResponse.success({ message: 'Updated successfully' });
   } catch (error: any) {
-    return NextResponse.json({ success: false, message: error.message }, { status: 500 });
+    return apiResponse.error(error.message, 'INTERNAL_ERROR', 500);
   }
-}
+});

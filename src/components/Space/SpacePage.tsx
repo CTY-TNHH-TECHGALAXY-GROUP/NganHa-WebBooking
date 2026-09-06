@@ -174,11 +174,11 @@ export default function SpacePage() {
   const [isDarkNav, setIsDarkNav] = useState(false);
 
   useEffect(() => {
-    fetch('/api/admin/content')
+    fetch('/api/public/site-content')
       .then(res => res.json())
       .then(json => {
-        if (json.success && json.data.space_media) {
-          setContentMedia(json.data.space_media);
+        if (json.content?.space_media) {
+          setContentMedia(json.content.space_media);
         }
       })
       .catch(console.error);

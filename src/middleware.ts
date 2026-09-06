@@ -46,18 +46,11 @@ export async function middleware(request: NextRequest) {
   const isAdminRoute = request.nextUrl.pathname.startsWith('/admin') && request.nextUrl.pathname !== '/admin/login';
 
   if (isAdminRoute) {
-    // ⚠️ TẠM THỜI BYPASS AUTH ĐỂ TEST GIAO DIỆN — BẬT LẠI TRƯỚC KHI DEPLOY!
-    // if (!user) {
-    //   const url = request.nextUrl.clone();
-    //   url.pathname = '/admin/login';
-    //   return NextResponse.redirect(url);
-    // }
-    // const isAdmin = user.user_metadata?.role === 'admin' || user.email === 'admin@nganhaspa.com';
-    // if (!isAdmin) {
-    //   const url = request.nextUrl.clone();
-    //   url.pathname = '/';
-    //   return NextResponse.redirect(url);
-    // }
+    if (!user) {
+      const url = request.nextUrl.clone();
+      url.pathname = '/admin/login';
+      return NextResponse.redirect(url);
+    }
   }
 
   return supabaseResponse;

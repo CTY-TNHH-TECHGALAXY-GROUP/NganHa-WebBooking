@@ -104,7 +104,7 @@ const Footer = () => {
 
   // Client-side fetch on mount to guarantee fresh real-time data from admin
   useEffect(() => {
-    fetch('/api/admin/system-settings')
+    fetch('/api/public/site-content')
       .then(res => res.json())
       .then(data => {
         if (data?.footer_content && Object.keys(data.footer_content).length > 0) {

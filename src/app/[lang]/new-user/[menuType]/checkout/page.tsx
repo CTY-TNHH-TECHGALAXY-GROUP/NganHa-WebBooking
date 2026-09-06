@@ -1,7 +1,7 @@
 'use client';
 
 import React, { use, useEffect, useMemo, useRef, useState } from 'react';
-import { ChevronDown, ChevronLeft, Plus, X, Edit2, Edit3, Trash2, Calendar, RotateCcw, Clock } from 'lucide-react';
+import { ChevronDown, ChevronLeft, Minus, Plus, X, Edit2, Edit3, Trash2, Calendar, RotateCcw, Clock } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import SmartLogo from '@/components/SmartLogo';
 import AlertModal from '@/components/Shared/AlertModal';
@@ -79,6 +79,10 @@ const COPY = {
   close: { vi: 'Đóng', en: 'Close', cn: '关闭', jp: '閉じる', kr: '닫기' },
   chooseDuration: { vi: 'Chọn thời lượng phù hợp', en: 'Choose suitable duration', cn: '选择合适的时长', jp: '適切な時間を選択', kr: '적합한 시간을 선택하세요' },
   yourSelection: { vi: 'Lựa chọn của bạn', en: 'Your selection', cn: '您的选择', jp: 'あなたの選択', kr: '선택 항목' },
+  quantity: { vi: 'Số lượng', en: 'Quantity', cn: '数量', jp: '数量', kr: '수량' },
+  selectedServices: { vi: 'dịch vụ đã chọn', en: 'service(s) selected', cn: '项服务已选择', jp: '件のサービスを選択', kr: '개 서비스 선택됨' },
+  selectedOptions: { vi: 'Lựa chọn đã thêm', en: 'Selected options', cn: '已添加的选项', jp: '追加済みの選択', kr: '추가한 옵션' },
+  addAnotherOption: { vi: 'Thêm lựa chọn khác', en: 'Add another option', cn: '添加其他选项', jp: '別のオプションを追加', kr: '다른 옵션 추가' },
   gender: { vi: 'Giới tính', en: 'Gender', cn: '性别', jp: '性別', kr: '성별' },
   cartRevalUnavailable: {
     vi: 'Một số dịch vụ trong giỏ hàng đã ngừng hoạt động và được tự động cập nhật lại.',
@@ -358,23 +362,35 @@ const DurationDrawer = ({
   isOpen,
   onClose,
   onConfirm,
+  cart,
+  onUpdateCartItem,
   lang,
   dict,
 }: {
   group: Service[] | null;
   isOpen: boolean;
   onClose: () => void;
-  onConfirm: (service: Service) => void;
+  onConfirm: (service: Service, quantity: number) => void;
+  cart: CartItem[];
+  onUpdateCartItem: (cartId: string, quantity: number) => void;
   lang: SupportedLanguage;
   dict: any;
 }) => {
   const [selectedVariantId, setSelectedVariantId] = useState<string>('');
+  const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
     if (group && group.length > 0) {
       setSelectedVariantId(group[0].id);
+      setQuantity(1);
     }
   }, [group]);
+
+  const selectedOptions = useMemo(() => {
+    if (!group) return [];
+    const serviceIds = new Set(group.map((service) => service.id));
+    return cart.filter((item) => serviceIds.has(item.id));
+  }, [cart, group]);
 
   if (!group || group.length === 0) return null;
 
@@ -413,23 +429,59 @@ const DurationDrawer = ({
               <button
                 key={v.id}
                 className={`${styles.drawerOption} ${v.id === selectedVariantId ? styles.drawerOptionActive : ''}`}
-                onClick={() => setSelectedVariantId(v.id)}
+                onClick={() => {
+                  setSelectedVariantId(v.id);
+                  setQuantity(1);
+                }}
               >
                 <span>{v.timeValue} {dict.checkout?.mins || 'mins'}</span>
                 <strong>{formatCurrency(v.priceVND)} {lang === 'vi' ? 'đ' : 'VND'}</strong>
               </button>
             ))}
           </div>
+          {selectedOptions.length > 0 && (
+            <div className={styles.drawerSavedOptions}>
+              <div className={styles.drawerLabel}>{t('selectedOptions', lang)}</div>
+              {selectedOptions.map((item) => (
+                <div className={styles.drawerSavedOption} key={item.cartId}>
+                  <div>
+                    <strong>{item.timeValue} {dict.checkout?.mins || 'mins'}</strong>
+                    <span>{item.options?.therapist || ''}{item.options?.strength ? ` · ${item.options.strength}` : ''}</span>
+                  </div>
+                  <div className={styles.drawerQuantityControl}>
+                    <button type="button" onClick={() => onUpdateCartItem(item.cartId, item.qty - 1)} aria-label="Decrease quantity"><Minus size={14} /></button>
+                    <span>{item.qty}</span>
+                    <button type="button" onClick={() => onUpdateCartItem(item.cartId, item.qty + 1)} aria-label="Increase quantity"><Plus size={14} /></button>
+                  </div>
+                </div>
+              ))}
+              <button
+                type="button"
+                className={styles.drawerAddAnother}
+                onClick={() => {
+                  setSelectedVariantId(group[0].id);
+                  setQuantity(1);
+                }}
+              >
+                {t('addAnotherOption', lang)} <Plus size={14} />
+              </button>
+            </div>
+          )}
           <div className={styles.drawerFooter}>
             <div className={styles.drawerSelection}>
               {dict.checkout?.yourSelection || t('yourSelection', lang)}
               <strong>
-                {selectedVariant.timeValue} {dict.checkout?.mins || 'mins'} · {formatCurrency(selectedVariant.priceVND)} {lang === 'vi' ? 'đ' : 'VND'}
+                {selectedVariant.timeValue} {dict.checkout?.mins || 'mins'} · {formatCurrency(selectedVariant.priceVND * quantity)} {lang === 'vi' ? 'đ' : 'VND'}
               </strong>
+            </div>
+            <div className={styles.drawerQuantityControl}>
+              <button type="button" onClick={() => setQuantity((current) => Math.max(1, current - 1))} aria-label="Decrease quantity"><Minus size={14} /></button>
+              <span>{quantity}</span>
+              <button type="button" onClick={() => setQuantity((current) => current + 1)} aria-label="Increase quantity"><Plus size={14} /></button>
             </div>
             <button 
               className={styles.drawerConfirm} 
-              onClick={() => onConfirm(selectedVariant)}
+              onClick={() => onConfirm(selectedVariant, quantity)}
             >
               {t('select', lang)}
             </button>
@@ -447,22 +499,25 @@ const CheckoutGroupedServiceCard = ({
   addService,
   openDurationDrawer,
   openVideoPreview,
+  cart,
+  onUpdateCartItem,
 }: {
   group: Service[];
   lang: SupportedLanguage;
   dict: any;
-  addService: (service: Service) => void;
+  addService: (service: Service, quantity?: number) => void;
   openDurationDrawer: (group: Service[]) => void;
   openVideoPreview: (media: any) => void;
+  cart: CartItem[];
+  onUpdateCartItem: (cartId: string, quantity: number) => void;
 }) => {
   const selectedVariant = group[0];
+  const groupSelections = cart.filter((item) => group.some((service) => service.id === item.id));
+  const singleSelection = groupSelections.length === 1 ? groupSelections[0] : null;
+  const totalSelectedQuantity = groupSelections.reduce((total, item) => total + item.qty, 0);
 
   const handleCardClick = () => {
-    if (group.length > 1) {
-      openDurationDrawer(group);
-    } else {
-      addService(selectedVariant);
-    }
+    openDurationDrawer(group);
   };
 
   return (
@@ -488,18 +543,60 @@ const CheckoutGroupedServiceCard = ({
             </>
           )}
         </div>
+        {totalSelectedQuantity > 0 && (
+          <div className={styles.pickerSelectionSummary} onClick={(event) => event.stopPropagation()}>
+            <div className={styles.pickerSelectionSummaryHead}>
+              <span>{totalSelectedQuantity} {t('selectedServices', lang)}</span>
+              <button type="button" onClick={handleCardClick}>
+                {t('addAnotherOption', lang)} <Plus size={13} />
+              </button>
+            </div>
+            <div className={styles.pickerSelectedOptions} aria-label={t('selectedOptions', lang)}>
+              {groupSelections.map((item) => (
+                <span key={item.cartId}>
+                  {item.timeValue} {dict.checkout?.mins || 'mins'}
+                  {item.options?.therapist ? ` · ${item.options.therapist}` : ''}
+                  {item.options?.strength ? ` · ${item.options.strength}` : ''}
+                  <strong>×{item.qty}</strong>
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
-      <button 
-        type="button" 
-        className={styles.pickerAddButton} 
-        onClick={(e) => {
-          e.stopPropagation();
-          handleCardClick();
-        }} 
-        aria-label={`${t('add', lang)} ${serviceName(selectedVariant, lang)}`}
-      >
-        <Plus size={16} />
-      </button>
+      {totalSelectedQuantity > 0 ? (
+        <div className={styles.pickerCardActions} onClick={(event) => event.stopPropagation()}>
+          {singleSelection ? (
+            <div className={styles.pickerQuantityControl}>
+              <button type="button" onClick={() => onUpdateCartItem(singleSelection.cartId, singleSelection.qty - 1)} aria-label="Decrease quantity"><Minus size={14} /></button>
+              <span>{singleSelection.qty}</span>
+              <button type="button" onClick={() => onUpdateCartItem(singleSelection.cartId, singleSelection.qty + 1)} aria-label="Increase quantity"><Plus size={14} /></button>
+            </div>
+          ) : (
+            <span className={styles.pickerSelectedBadge}>{totalSelectedQuantity}</span>
+          )}
+          <button
+            type="button"
+            className={styles.pickerAddButton}
+            onClick={handleCardClick}
+            aria-label={`${t('addAnotherOption', lang)} ${serviceName(selectedVariant, lang)}`}
+          >
+            <Plus size={16} />
+          </button>
+        </div>
+      ) : (
+        <button
+          type="button"
+          className={styles.pickerAddButton}
+          onClick={(e) => {
+            e.stopPropagation();
+            handleCardClick();
+          }}
+          aria-label={`${t('add', lang)} ${serviceName(selectedVariant, lang)}`}
+        >
+          <Plus size={16} />
+        </button>
+      )}
     </article>
   );
 };
@@ -548,7 +645,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
   const lang = langKey(rawLang || currentLang);
   const menuType = rawMenuType === 'vip' ? 'vip' : 'standard';
   const dict = getDictionary(lang);
-  const { services, cart, loading: servicesLoading, addToCart, removeFromCart, updateCartItemOptions, replaceCartItemService, revalidateCart } = useMenuData();
+  const { services, cart, loading: servicesLoading, addToCart, removeFromCart, updateCartItem, updateCartItemOptions, replaceCartItemService, revalidateCart } = useMenuData();
   const [idempotencyKey] = useState(() => 'idemp_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 8));
 
   // Sync route lang with global TranslationProvider
@@ -603,6 +700,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
   const [note, setNote] = useState('');
   const [activeCategory, setActiveCategory] = useState('');
   const [customizingService, setCustomizingService] = useState<Service | null>(null);
+  const [pendingServiceQuantity, setPendingServiceQuantity] = useState(1);
   const [isServicePickerOpen, setIsServicePickerOpen] = useState(false);
   const [returnToServicePickerOnCancel, setReturnToServicePickerOnCancel] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('');
@@ -814,10 +912,11 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
   const currentContactValue = contactMethod === 'email' ? customerInfo.email : customerInfo.phone;
   const genderOptions = [t('male', lang), t('female', lang), t('other', lang)];
 
-  const addService = (service: Service, jumpToCart = false) => {
+  const addService = (service: Service, quantity = 1) => {
     setActiveDrawerGroup(null);
     setIsServicePickerOpen(false);
     setReturnToServicePickerOnCancel(true);
+    setPendingServiceQuantity(Math.max(1, quantity));
     setCustomizingService(service);
   };
 
@@ -833,6 +932,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
       setEditingCustomCartId(null);
       setEditingCustomInitialData(null);
       setReturnToServicePickerOnCancel(false);
+      setPendingServiceQuantity(1);
       setCustomizingService(null);
       if (returnToConfirmAfterEdit) {
         setReturnToConfirmAfterEdit(false);
@@ -843,13 +943,14 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
 
     if (!customizingService) return;
     setReturnToServicePickerOnCancel(false);
-    addToCart(customizingService, 1, {
+    addToCart(customizingService, pendingServiceQuantity, {
       strength: prefs.strength,
       therapist: prefs.therapist,
       notes: prefs.notes,
       bodyParts: prefs.bodyParts,
       addons: prefs.addons
     });
+    setPendingServiceQuantity(1);
     setCustomizingService(null);
     if (returnToConfirmAfterEdit) {
       setReturnToConfirmAfterEdit(false);
@@ -1754,6 +1855,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
             isOpen={!!customizingService}
             onClose={() => {
               setCustomizingService(null);
+              setPendingServiceQuantity(1);
               setEditingCustomCartId(null);
               setEditingCustomInitialData(null);
               if (returnToConfirmAfterEdit) {
@@ -1829,9 +1931,11 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
         group={activeDrawerGroup}
         isOpen={!!activeDrawerGroup}
         onClose={() => setActiveDrawerGroup(null)}
-        onConfirm={(service) => {
-          addService(service);
+        onConfirm={(service, quantity) => {
+          addService(service, quantity);
         }}
+        cart={cart}
+        onUpdateCartItem={updateCartItem}
         lang={lang}
         dict={dict}
       />
@@ -1936,6 +2040,8 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                     addService={addService}
                     openDurationDrawer={setActiveDrawerGroup}
                     openVideoPreview={openVideoPreview}
+                    cart={cart}
+                    onUpdateCartItem={updateCartItem}
                   />
                 ))
               ) : (

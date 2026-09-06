@@ -1,15 +1,15 @@
-import { NextResponse } from 'next/server';
-import { getSupabaseAdmin } from '@/lib/supabase-server';
+import { NextRequest, NextResponse } from 'next/server';
+import { withAuth } from '@/lib/api/withAuth';
+import { recordContentRevisions } from '@/lib/api/contentRevision';
 
-export async function GET() {
+export const GET = withAuth(async (_request, { supabase }) => {
   try {
-    const supabase = getSupabaseAdmin();
     
-    // Fetch system_settings, about_story_content, brand_history, homepage_content
+    // Fetch editable site-content collections.
     const { data, error } = await supabase
       .from('SystemConfigs')
       .select('key, value')
-      .in('key', ['system_settings', 'about_story_content', 'brand_history', 'homepage_content', 'footer_content']);
+      .in('key', ['system_settings', 'about_story_content', 'brand_history', 'homepage_content', 'footer_content', 'blog_content']);
 
     if (error) {
       console.error('Error fetching system settings:', error);
@@ -21,16 +21,18 @@ export async function GET() {
       about_story_content: {},
       brand_history: [],
       homepage_content: {},
-      footer_content: {}
+      footer_content: {},
+      blog_content: {}
     };
 
     if (data) {
-      data.forEach(item => {
+      data.forEach((item: { key: string; value: any }) => {
         if (item.key === 'system_settings') result.system_settings = item.value;
         if (item.key === 'about_story_content') result.about_story_content = item.value;
         if (item.key === 'brand_history') result.brand_history = item.value;
         if (item.key === 'homepage_content') result.homepage_content = item.value;
         if (item.key === 'footer_content') result.footer_content = item.value;
+        if (item.key === 'blog_content') result.blog_content = item.value;
       });
     }
 
@@ -39,12 +41,11 @@ export async function GET() {
     console.error('API Error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
-}
+});
 
-export async function POST(request: Request) {
+export const POST = withAuth(async (request: NextRequest, { supabase, user }) => {
   try {
-    const { system_settings, about_story_content, brand_history, homepage_content, footer_content } = await request.json();
-    const supabase = getSupabaseAdmin();
+    const { system_settings, about_story_content, brand_history, homepage_content, footer_content, blog_content } = await request.json();
 
     const upsertData = [];
 
@@ -100,7 +101,26 @@ export async function POST(request: Request) {
       });
     }
 
+    if (blog_content !== undefined) {
+      upsertData.push({
+        key: 'blog_content',
+        value: blog_content,
+        updated_at: new Date().toISOString()
+      });
+    }
+
     if (upsertData.length > 0) {
+      const { data: previous } = await supabase
+        .from('SystemConfigs')
+        .select('key, value')
+        .in('key', upsertData.map(item => item.key));
+
+      await recordContentRevisions(supabase, (previous || []).map((item: { key: string; value: Record<string, unknown> | unknown[] }) => ({
+        content_key: `SystemConfigs:${item.key}`,
+        payload: item.value,
+        changed_by: user.id,
+      })));
+
       const { error } = await supabase
         .from('SystemConfigs')
         .upsert(upsertData, { onConflict: 'key' });
@@ -123,4 +143,4 @@ export async function POST(request: Request) {
     console.error('API Error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
-}
+});

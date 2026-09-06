@@ -965,10 +965,10 @@ const PureRelaxationPage = () => {
   const [contentMedia, setContentMedia] = useState<any>({});
   
   useEffect(() => {
-    fetch('/api/admin/content')
+    fetch('/api/public/site-content')
       .then(res => res.json())
       .then(json => {
-        if (json.success) setContentMedia(json.data.pure_relaxation_media || {});
+        if (json.content) setContentMedia(json.content.pure_relaxation_media || {});
       })
       .catch(console.error);
   }, []);

@@ -8,10 +8,13 @@ export interface BlogPost {
   content: Record<string, string>;
   excerpt: Record<string, string>;
   cover_image: string | null;
-  category: string;
-  status: 'draft' | 'published';
+  cover_type?: 'image' | 'video' | null;
+  category_i18n: Record<string, string>;
+  status: 'draft' | 'scheduled' | 'published';
   author: string | null;
-  read_time: string | null;
+  read_time_i18n: Record<string, string>;
+  cover_alt: Record<string, string>;
+  published_at?: string | null;
   seo_metadata: Record<string, any>;
   created_at: string;
   updated_at: string;
@@ -22,8 +25,8 @@ export class PostsService {
 
   async getPosts() {
     const { data, error } = await this.supabase
-      .from('content_posts')
-      .select('id, slug, title, excerpt, cover_image, category, status, author, read_time, seo_metadata, created_at, updated_at')
+      .from('WebbookingBlogPosts')
+      .select('id, slug, title, excerpt, cover_image, cover_type, category_i18n, status, author, read_time_i18n, cover_alt, seo_metadata, published_at, created_at, updated_at')
       .order('created_at', { ascending: false });
 
     if (error) {
@@ -34,7 +37,7 @@ export class PostsService {
 
   async getPostById(id: string) {
     const { data, error } = await this.supabase
-      .from('content_posts')
+      .from('WebbookingBlogPosts')
       .select('*')
       .eq('id', id)
       .single();
@@ -48,7 +51,7 @@ export class PostsService {
 
   async createPost(payload: Partial<BlogPost>) {
     const { data, error } = await this.supabase
-      .from('content_posts')
+      .from('WebbookingBlogPosts')
       .insert([payload])
       .select()
       .single();
@@ -59,7 +62,7 @@ export class PostsService {
 
   async updatePost(id: string, payload: Partial<BlogPost>) {
     const { data, error } = await this.supabase
-      .from('content_posts')
+      .from('WebbookingBlogPosts')
       .update(payload)
       .eq('id', id)
       .select()
@@ -71,7 +74,7 @@ export class PostsService {
 
   async deletePost(id: string) {
     const { error } = await this.supabase
-      .from('content_posts')
+      .from('WebbookingBlogPosts')
       .delete()
       .eq('id', id);
 

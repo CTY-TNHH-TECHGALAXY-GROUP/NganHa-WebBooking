@@ -1,10 +1,14 @@
-import { NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 import { sendBookingConfirmationEmail } from '@/lib/mailer';
+import { withAuth } from '@/lib/api/withAuth';
 
 export const dynamic = 'force-dynamic';
 
-export async function GET(request: Request) {
+export const GET = withAuth(async (request) => {
+  if (process.env.VERCEL_ENV === 'production') {
+    return new Response(null, { status: 404 });
+  }
+
   const url = new URL(request.url);
   const targetEmail = url.searchParams.get('email');
 
@@ -23,8 +27,8 @@ export async function GET(request: Request) {
   };
 
   let verifyResult: any = null;
-  const user = process.env.SMTP_USER || 'info@techgalaxygroup.com';
-  const pass = process.env.SMTP_PASS || 'FSwZfz5vLUyc';
+  const user = process.env.SMTP_USER;
+  const pass = process.env.SMTP_PASS;
 
   if (user && pass) {
     try {
@@ -89,10 +93,10 @@ export async function GET(request: Request) {
     }
   }
 
-  return NextResponse.json({
+  return Response.json({
     timestamp: new Date().toISOString(),
     envStatus,
     verifyResult,
     sendResult,
   });
-}
+}, ['owner']);

@@ -178,8 +178,8 @@ function getTransporter(portOverride?: number) {
   const host = process.env.SMTP_HOST || 'smtp.zoho.com';
   const port = portOverride || parseInt(process.env.SMTP_PORT || '465', 10);
   const secure = port === 465;
-  const user = process.env.SMTP_USER || 'info@techgalaxygroup.com';
-  const pass = process.env.SMTP_PASS || 'FSwZfz5vLUyc';
+  const user = process.env.SMTP_USER;
+  const pass = process.env.SMTP_PASS;
 
   if (!user || !pass) {
     console.warn('[Mailer] Missing SMTP_USER or SMTP_PASS in environment variables.');
@@ -304,102 +304,60 @@ function formatDateByLang(dateStr: string, lang: string): string {
   return !isNaN(dateObj.getTime()) ? `${mNames[dateObj.getMonth()]} ${Number(day)}, ${year}` : dateStr;
 }
 
-export async function sendBookingConfirmationEmail(payload: BookingEmailPayload) {
-  try {
-    const {
-      bookingId,
-      customerName,
-      customerEmail,
-      customerPhone,
-      date,
-      time,
-      guests = 1,
-      branchName = '11 Ngô Đức Kế, Q.1, TP.HCM & 6B Thi Sách, Q.1, TP.HCM',
-      services = [],
-      totalAmount = 0,
-      therapist,
-      lang = 'vi',
-      notes,
-      focusAreaNote,
-    } = payload;
+export function generateBookingConfirmationHtml(
+  payload: BookingEmailPayload,
+  options: { embedCid?: boolean } = {}
+): string {
+  const {
+    bookingId,
+    customerName,
+    date,
+    time,
+    guests = 1,
+    branchName = '11 Ngô Đức Kế, Q.1, TP.HCM & 6B Thi Sách, Q.1, TP.HCM',
+    services = [],
+    totalAmount = 0,
+    therapist,
+    lang = 'vi',
+    notes,
+    focusAreaNote,
+  } = payload;
 
-    if (!customerEmail || !customerEmail.includes('@')) {
-      console.log('[Mailer] Skipped email: invalid or missing customer email');
-      return { success: false, reason: 'Invalid email' };
-    }
+  const t = I18N_TEMPLATE_1[lang] || I18N_TEMPLATE_1.vi;
+  const phoneDisplay = '+84 964 090 277';
 
-    const transporter = getTransporter();
-    if (!transporter) {
-      console.warn('[Mailer] Cannot send email: transporter not configured (check SMTP_USER and SMTP_PASS)');
-      return { success: false, reason: 'Transporter not configured' };
-    }
+  // Calculate total duration & construct service string
+  const serviceNames = services.map(s => s.name || 'Oria Spa Treatment').join(', ');
+  const totalDuration = services.reduce((acc, s) => acc + (Number(s.duration) || 0), 0);
+  const durationDisplay = totalDuration > 0
+    ? t.durationFormat(totalDuration)
+    : (services[0]?.duration ? t.durationFormat(Number(services[0].duration)) : '-');
 
-    const t = I18N_TEMPLATE_1[lang] || I18N_TEMPLATE_1.vi;
-    const fromName = process.env.SMTP_FROM_NAME || 'Oria Spa';
-    const fromEmail = process.env.SMTP_FROM_EMAIL || process.env.SMTP_USER || 'info@techgalaxygroup.com';
-    const replyTo = process.env.SMTP_REPLY_TO || fromEmail;
-    const phoneDisplay = '+84 964 090 277';
+  const formattedDate = formatDateByLang(date, lang);
 
-    // Calculate total duration & construct service string
-    const serviceNames = services.map(s => s.name || 'Oria Spa Treatment').join(', ');
-    const totalDuration = services.reduce((acc, s) => acc + (Number(s.duration) || 0), 0);
-    const durationDisplay = totalDuration > 0
-      ? t.durationFormat(totalDuration)
-      : (services[0]?.duration ? t.durationFormat(Number(services[0].duration)) : '-');
+  // Guests count formatted
+  const guestCount = guests && Number(guests) > 0 ? Number(guests) : 1;
+  const guestsDisplay = t.guestsSuffix(guestCount);
 
-    const formattedDate = formatDateByLang(date, lang);
+  // Resolve therapist strictly in single language (no bilingual tags)
+  const rawTherapist = (therapist || '').toLowerCase().trim();
+  let therapistDisplay = '';
+  if (rawTherapist.includes('female') || rawTherapist.includes('nữ') || rawTherapist === 'female') {
+    therapistDisplay = t.therapistMap.female;
+  } else if (rawTherapist.includes('male') || rawTherapist.includes('nam') || rawTherapist === 'male') {
+    therapistDisplay = t.therapistMap.male;
+  } else if (rawTherapist && rawTherapist !== 'any' && rawTherapist !== 'ngẫu nhiên' && rawTherapist !== 'random') {
+    therapistDisplay = therapist!;
+  } else {
+    therapistDisplay = t.therapistMap.any;
+  }
 
-    // Guests count formatted
-    const guestCount = guests && Number(guests) > 0 ? Number(guests) : 1;
-    const guestsDisplay = t.guestsSuffix(guestCount);
+  const logoUrl = 'https://oria-spa.vercel.app/images/oria-logo-email.png';
+  const logoPath = path.join(process.cwd(), 'public/images/oria-logo-email.png');
+  const hasLocalLogo = fs.existsSync(logoPath);
+  const logoSrc = options.embedCid && hasLocalLogo ? 'cid:orialogo' : logoUrl;
 
-    // Resolve therapist strictly in single language (no bilingual tags)
-    const rawTherapist = (therapist || '').toLowerCase().trim();
-    let therapistDisplay = '';
-    if (rawTherapist.includes('female') || rawTherapist.includes('nữ') || rawTherapist === 'female') {
-      therapistDisplay = t.therapistMap.female;
-    } else if (rawTherapist.includes('male') || rawTherapist.includes('nam') || rawTherapist === 'male') {
-      therapistDisplay = t.therapistMap.male;
-    } else if (rawTherapist && rawTherapist !== 'any' && rawTherapist !== 'ngẫu nhiên' && rawTherapist !== 'random') {
-      therapistDisplay = therapist!;
-    } else {
-      therapistDisplay = t.therapistMap.any;
-    }
-
-    // Plain Text Version (Exact structure matching Template 1 in PDF with guests & notes)
-    const plainText = `
-${t.greeting(customerName)}
-
-${t.thankYou}
-
-${t.heading}
-
-• ${t.serviceLabel}: ${serviceNames}
-• ${t.dateLabel}: ${formattedDate}
-• ${t.timeLabel}: ${time}
-• ${t.durationLabel}: ${durationDisplay}
-• ${t.guestsLabel}: ${guestsDisplay}
-• ${t.therapistLabel}: ${therapistDisplay}
-• ${t.locationLabel}: ${branchName}
-• ${t.bookingCodeLabel}: ${bookingId}
-${totalAmount > 0 ? `• ${t.totalLabel}: ${formatVND(totalAmount)}` : ''}
-${focusAreaNote ? `\n• ${t.preferencesLabel}:\n${formatPreferencesText(focusAreaNote)}` : ''}
-${notes ? `\n• ${t.notesLabel}: ${notes}` : ''}
-
-${t.followUp}
-
-${t.questions(phoneDisplay)}
-
-${t.signoffGreeting}
-${t.signoffTeam}
-    `.trim();
-
-    const logoUrl = 'https://oria-spa.vercel.app/images/oria-logo-email.png';
-    const logoPath = path.join(process.cwd(), 'public/images/oria-logo-email.png');
-    const hasLocalLogo = fs.existsSync(logoPath);
-
-    // Luxurious Brand HTML Version (Matching Oria Spa aesthetic & Template 1 text)
-    const html = `
+  return `
 <!DOCTYPE html>
 <html lang="${lang}">
 <head>
@@ -416,7 +374,7 @@ ${t.signoffTeam}
         <td align="center" style="padding: 28px 24px 20px; background: linear-gradient(180deg, #1f140f 0%, #281b15 100%); border-bottom: 1px solid #422f25;">
           <a href="https://oria-spa.vercel.app" target="_blank" style="text-decoration: none; display: inline-block;">
             <img 
-              src="${hasLocalLogo ? 'cid:orialogo' : logoUrl}" 
+              src="${logoSrc}"
               alt="ORIA SPA - Wellness & Beauty Sanctuary" 
               width="145" 
               style="display: block; margin: 0 auto; max-width: 145px; width: 145px; height: auto; border: 0; outline: none; text-decoration: none;" 
@@ -579,7 +537,103 @@ ${notes}
   </div>
 </body>
 </html>
-    `;
+  `.trim();
+}
+
+export async function sendBookingConfirmationEmail(payload: BookingEmailPayload) {
+  try {
+    const {
+      bookingId,
+      customerName,
+      customerEmail,
+      date,
+      time,
+      guests = 1,
+      branchName = '11 Ngô Đức Kế, Q.1, TP.HCM & 6B Thi Sách, Q.1, TP.HCM',
+      services = [],
+      totalAmount = 0,
+      therapist,
+      lang = 'vi',
+      notes,
+      focusAreaNote,
+    } = payload;
+
+    if (!customerEmail || !customerEmail.includes('@')) {
+      console.log('[Mailer] Skipped email: invalid or missing customer email');
+      return { success: false, reason: 'Invalid email' };
+    }
+
+    const transporter = getTransporter();
+    if (!transporter) {
+      console.warn('[Mailer] Cannot send email: transporter not configured (check SMTP_USER and SMTP_PASS)');
+      return { success: false, reason: 'Transporter not configured' };
+    }
+
+    const t = I18N_TEMPLATE_1[lang] || I18N_TEMPLATE_1.vi;
+    const fromName = process.env.SMTP_FROM_NAME || 'Oria Spa';
+    const fromEmail = process.env.SMTP_FROM_EMAIL || process.env.SMTP_USER || 'info@techgalaxygroup.com';
+    const replyTo = process.env.SMTP_REPLY_TO || fromEmail;
+    const phoneDisplay = '+84 964 090 277';
+
+    // Calculate total duration & construct service string
+    const serviceNames = services.map(s => s.name || 'Oria Spa Treatment').join(', ');
+    const totalDuration = services.reduce((acc, s) => acc + (Number(s.duration) || 0), 0);
+    const durationDisplay = totalDuration > 0
+      ? t.durationFormat(totalDuration)
+      : (services[0]?.duration ? t.durationFormat(Number(services[0].duration)) : '-');
+
+    const formattedDate = formatDateByLang(date, lang);
+
+    // Guests count formatted
+    const guestCount = guests && Number(guests) > 0 ? Number(guests) : 1;
+    const guestsDisplay = t.guestsSuffix(guestCount);
+
+    // Resolve therapist strictly in single language (no bilingual tags)
+    const rawTherapist = (therapist || '').toLowerCase().trim();
+    let therapistDisplay = '';
+    if (rawTherapist.includes('female') || rawTherapist.includes('nữ') || rawTherapist === 'female') {
+      therapistDisplay = t.therapistMap.female;
+    } else if (rawTherapist.includes('male') || rawTherapist.includes('nam') || rawTherapist === 'male') {
+      therapistDisplay = t.therapistMap.male;
+    } else if (rawTherapist && rawTherapist !== 'any' && rawTherapist !== 'ngẫu nhiên' && rawTherapist !== 'random') {
+      therapistDisplay = therapist!;
+    } else {
+      therapistDisplay = t.therapistMap.any;
+    }
+
+    // Plain Text Version (Exact structure matching Template 1 in PDF with guests & notes)
+    const plainText = `
+${t.greeting(customerName)}
+
+${t.thankYou}
+
+${t.heading}
+
+• ${t.serviceLabel}: ${serviceNames}
+• ${t.dateLabel}: ${formattedDate}
+• ${t.timeLabel}: ${time}
+• ${t.durationLabel}: ${durationDisplay}
+• ${t.guestsLabel}: ${guestsDisplay}
+• ${t.therapistLabel}: ${therapistDisplay}
+• ${t.locationLabel}: ${branchName}
+• ${t.bookingCodeLabel}: ${bookingId}
+${totalAmount > 0 ? `• ${t.totalLabel}: ${formatVND(totalAmount)}` : ''}
+${focusAreaNote ? `\n• ${t.preferencesLabel}:\n${formatPreferencesText(focusAreaNote)}` : ''}
+${notes ? `\n• ${t.notesLabel}: ${notes}` : ''}
+
+${t.followUp}
+
+${t.questions(phoneDisplay)}
+
+${t.signoffGreeting}
+${t.signoffTeam}
+    `.trim();
+
+    const logoPath = path.join(process.cwd(), 'public/images/oria-logo-email.png');
+    const hasLocalLogo = fs.existsSync(logoPath);
+
+    // Generate HTML Version
+    const html = generateBookingConfirmationHtml(payload, { embedCid: true });
 
     const attachments = hasLocalLogo
       ? [

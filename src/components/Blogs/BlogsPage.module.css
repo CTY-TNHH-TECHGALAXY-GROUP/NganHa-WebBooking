@@ -85,7 +85,9 @@
 .city-grid{display:grid;grid-template-columns:repeat(12,1fr);grid-auto-rows:90px;gap:12px}
 .city-card{position:relative;border-radius:26px;overflow:hidden;cursor:pointer;background:#d8cbbc}
 .city-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:.6s}
+.city-card video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:.6s}
 .city-card:hover img{transform:scale(1.035)}
+.city-card:hover video{transform:scale(1.035)}
 .city-card:after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.62),transparent 65%)}
 .city-card .txt{position:absolute;z-index:2;left:20px;right:20px;bottom:18px;color:#fff}
 .city-card .txt small{text-transform:uppercase;letter-spacing:.11em;opacity:.72}

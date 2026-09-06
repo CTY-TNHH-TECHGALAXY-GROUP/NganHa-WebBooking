@@ -10,7 +10,7 @@
  */
 'use client';
 import React from 'react';
-import { Plus } from 'lucide-react';
+import { Minus, Plus } from 'lucide-react';
 import { Service } from '@/components/Menu/types';
 import { formatCurrency } from '@/components/Menu/utils';
 
@@ -20,9 +20,11 @@ interface ServiceItemProps {
     lang: string;
     isBestSeller?: boolean; // Prop mới
     onClick: () => void;
+    onQuickAdd: () => void;
+    onQuickRemove: () => void;
 }
 
-export default function ServiceItem({ service, quantity, lang, isBestSeller, onClick }: ServiceItemProps) {
+export default function ServiceItem({ service, quantity, lang, isBestSeller, onClick, onQuickAdd, onQuickRemove }: ServiceItemProps) {
     const name = service.names[lang as keyof typeof service.names] || service.names['en'];
     const desc = service.descriptions[lang as keyof typeof service.descriptions] || service.descriptions['en'];
     const isSelected = quantity > 0;
@@ -97,18 +99,18 @@ export default function ServiceItem({ service, quantity, lang, isBestSeller, onC
 
 
 
-            {/* 3. Nút Cộng / Badge số lượng (Góc dưới phải tuyệt đối) */}
+            {/* 3. Quick quantity controls. Events stay inside the control, not the card. */}
             <div className="absolute bottom-3 right-3 z-10">
                 {isSelected ? (
-                    // Nếu đã chọn: Hiện số lượng màu vàng
-                    <div className="w-9 h-9 rounded-full bg-[#D4AF37] text-white font-extrabold text-sm flex items-center justify-center shadow-lg shadow-[#C9A96E]/20 animate-[pop_0.2s_ease-out]">
-                        {quantity}
+                    <div className="flex items-center gap-1 rounded-full bg-[#1c1c1e] border border-[#C9A96E]/60 p-1 shadow-lg shadow-[#C9A96E]/20 animate-[pop_0.2s_ease-out]">
+                        <button onClick={(event) => { event.stopPropagation(); onQuickRemove(); }} className="w-7 h-7 rounded-full text-gray-200 hover:bg-white/10 flex items-center justify-center" aria-label="Decrease quantity"><Minus size={14} /></button>
+                        <span className="min-w-5 text-center text-[#f2dc9f] font-extrabold text-sm">{quantity}</span>
+                        <button onClick={(event) => { event.stopPropagation(); onQuickAdd(); }} className="w-7 h-7 rounded-full bg-[#D4AF37] text-[#17120c] hover:bg-[#e8c96d] flex items-center justify-center" aria-label="Increase quantity"><Plus size={14} /></button>
                     </div>
                 ) : (
-                    // Chưa chọn: Hiện nút Plus xám tròn
-                    <div className="w-9 h-9 rounded-full bg-gray-700/80 text-[#C9A96E] flex items-center justify-center backdrop-blur-sm hover:bg-gray-600 hover:text-white transition-colors">
+                    <button onClick={(event) => { event.stopPropagation(); onQuickAdd(); }} className="w-9 h-9 rounded-full bg-gray-700/80 text-[#C9A96E] flex items-center justify-center backdrop-blur-sm hover:bg-gray-600 hover:text-white transition-colors" aria-label="Add service">
                         <Plus size={18} strokeWidth={2.5} />
-                    </div>
+                    </button>
                 )}
             </div>
         </div>

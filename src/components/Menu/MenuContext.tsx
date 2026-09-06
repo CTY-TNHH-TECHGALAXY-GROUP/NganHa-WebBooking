@@ -13,6 +13,7 @@ import React, { createContext, useContext, useEffect, useState, ReactNode } from
 import { Service, ServiceOptions, CartItem, Category } from '@/components/Menu/types';
 import { getServices } from '@/components/Menu/getServices';
 import { readBookingCart, serviceToCartItem, writeBookingCart, revalidateCartWithServer } from '@/lib/bookingCartStorage';
+import { getCartSelectionKey } from '@/components/Menu/cartSelection';
 
 interface MenuContextType {
     services: Service[];
@@ -25,6 +26,7 @@ interface MenuContextType {
     cart: CartItem[];
     addToCart: (service: Service, qty: number, options?: ServiceOptions) => string;
     updateCartItem: (cartId: string, qty: number) => void;
+    setSelectionQuantity: (reference: CartItem, qty: number) => void;
     updateCartItemOptions: (cartId: string, options: ServiceOptions) => void;
     updateAllCartItemOptions: (options: ServiceOptions) => void;
     replaceCartItemService: (cartId: string, newService: Service, options?: ServiceOptions) => void;
@@ -92,6 +94,21 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
                 return prev.filter(item => item.cartId !== cartId);
             }
             return prev.map(item => item.cartId === cartId ? { ...item, qty } : item);
+        });
+    };
+
+    // A selection is a service plus its saved customisation, not merely a service id.
+    const setSelectionQuantity = (reference: CartItem, qty: number) => {
+        setCart(prev => {
+            const selectionKey = getCartSelectionKey(reference);
+            const matching = prev.filter(item => getCartSelectionKey(item) === selectionKey);
+            if (matching.length === 0) return prev;
+            if (qty <= 0) return prev.filter(item => getCartSelectionKey(item) !== selectionKey);
+
+            const primary = matching[0];
+            return prev
+                .filter(item => item.cartId === primary.cartId || getCartSelectionKey(item) !== selectionKey)
+                .map(item => item.cartId === primary.cartId ? { ...item, qty } : item);
         });
     };
 
@@ -169,7 +186,7 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
     return (
         <MenuContext.Provider value={{
             services, categories, loading, error, refreshData: fetchData,
-            cart, addToCart, updateCartItem, updateCartItemOptions, updateAllCartItemOptions, replaceCartItemService, removeFromCart, clearCart, getQty, revalidateCart
+            cart, addToCart, updateCartItem, setSelectionQuantity, updateCartItemOptions, updateAllCartItemOptions, replaceCartItemService, removeFromCart, clearCart, getQty, revalidateCart
         }}>
             {children}
         </MenuContext.Provider>

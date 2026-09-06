@@ -12,13 +12,13 @@ export default function DesignYourJourneyPage() {
   const [content, setContent] = useState<any>(DEFAULT_JOURNEY_CONTENT);
 
   useEffect(() => {
-    fetch('/api/admin/content')
+    fetch('/api/public/site-content')
       .then(res => res.json())
       .then(json => {
-        if (json.success && json.data?.design_journey_content) {
+        if (json.content?.design_journey_content) {
           setContent((prev: any) => ({
             ...prev,
-            ...json.data.design_journey_content
+            ...json.content.design_journey_content
           }));
         }
       })

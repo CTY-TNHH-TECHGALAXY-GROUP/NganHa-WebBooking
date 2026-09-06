@@ -119,7 +119,7 @@ const RootLayout = async ({
     const supabase = getSupabaseAdmin();
     const { data } = await supabase.from('SystemConfigs')
       .select('key, value')
-      .in('key', ['system_settings', 'about_story_content', 'brand_history', 'homepage_styling', 'homepage_content', 'footer_content']);
+      .in('key', ['system_settings', 'about_story_content', 'brand_history', 'homepage_styling', 'homepage_content', 'footer_content', 'blog_content']);
       
     if (data) {
       data.forEach(item => {
@@ -129,6 +129,9 @@ const RootLayout = async ({
         if (item.key === 'homepage_styling') homepageStyling = item.value;
         if (item.key === 'homepage_content') {
            (systemSettings as any).homepage_content = item.value;
+        }
+        if (item.key === 'blog_content') {
+           (systemSettings as any).blog_content = item.value;
         }
         if (item.key === 'footer_content') {
            footerContent = item.value || {};
