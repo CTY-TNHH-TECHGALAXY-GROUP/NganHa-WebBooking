@@ -66,6 +66,7 @@ const NAV_FALLBACKS: Record<string, Record<Locale, string>> = {
   lost_and_found: { vi: 'Thất lạc & Tìm kiếm', en: 'Lost & Found', cn: '失物招领', jp: '遺失物', kr: '분실물' },
   blogs: { vi: 'Bài viết', en: 'Blogs', cn: '博客', jp: '블로그', kr: '블로그' },
   privileges: { vi: 'Đặc quyền của bạn', en: 'Your privileges', cn: '专属特权', jp: '会員特典', kr: '회원 혜택' },
+  our_story: { vi: 'Câu chuyện của chúng tôi', en: 'Our story', cn: '品牌故事', jp: '私たちの物語', kr: '브랜드 이야기' },
   history: { vi: 'Lịch sử', en: 'History', cn: '历史', jp: '履歴', kr: '이용 내역' },
 };
 
@@ -110,6 +111,7 @@ const DEFAULT_NAV_ITEMS: NavItem[] = [
   { id: 'lost_and_found', label: 'Lost & Found', href: '/lost-and-found' },
   { id: 'blogs', label: 'Blogs', href: '/blogs' },
   { id: 'privileges', label: 'Your privileges', href: '/privileges' },
+  { id: 'our_story', label: 'Our story', href: '/#our-story' },
   { id: 'history', label: 'History', href: '/#history' },
 ];
 
@@ -252,6 +254,7 @@ const Header = () => {
       { id: 'lost_and_found', label: getLocalizedText(hpNav?.lostAndFound, lang, getNavFallback('lost_and_found', lang)), href: '/lost-and-found' },
       { id: 'blogs', label: getLocalizedText(hpNav?.blogs, lang, getNavFallback('blogs', lang)), href: '/blogs' },
       { id: 'privileges', label: getLocalizedText(hpNav?.privileges, lang, getNavFallback('privileges', lang)), href: '/privileges' },
+      { id: 'our_story', label: getLocalizedText(hpNav?.ourStory, lang, getNavFallback('our_story', lang)), href: '/#our-story' },
       { id: 'history', label: getLocalizedText(hpNav?.history, lang, getNavFallback('history', lang)), href: '/#history' },
     ] as NavItem[];
   }, [hpNav, lang, getLocalizedText]);

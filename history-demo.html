@@ -1,0 +1,1391 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Hệ Thống Oria Barbershop & Spa - Our Story</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cinzel:wght@500;600;700;800&family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg-deep: #0c0806;
+      --bg-card: #18110b;
+      --bg-card-hover: #221811;
+      --gold-primary: #d4af37;
+      --gold-light: #f5df97;
+      --gold-dark: #9c7a28;
+      --text-creme: #f7f1e5;
+      --text-muted: #bfa58a;
+      --text-dim: #7f6e5e;
+      --border-gold: rgba(212, 175, 55, 0.25);
+      --border-gold-bright: rgba(212, 175, 55, 0.7);
+      --film-bg: #090909;
+      --film-border: #1f1f1f;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg-deep);
+      background-image: 
+        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(212, 175, 55, 0.08), transparent),
+        radial-gradient(ellipse 60% 40% at 50% 100%, rgba(212, 175, 55, 0.05), transparent),
+        linear-gradient(180deg, #0c0806 0%, #150e09 50%, #0c0806 100%);
+      color: var(--text-creme);
+      font-family: 'Montserrat', sans-serif;
+      line-height: 1.68;
+      font-size: 15px;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    /* Elegant Grain Overlay */
+    body::after {
+      content: "";
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none;
+      opacity: 0.025;
+      background: radial-gradient(#fff, transparent 1px);
+      background-size: 3px 3px;
+      z-index: 999;
+    }
+
+    .container {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 36px 20px 80px;
+    }
+
+    /* Top Bar Navigation / Home Link */
+    .top-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 28px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+    }
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--gold-light);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      transition: all 0.3s ease;
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 1px solid rgba(212, 175, 55, 0.25);
+      background: rgba(212, 175, 55, 0.06);
+    }
+    .back-btn:hover {
+      background: rgba(212, 175, 55, 0.18);
+      border-color: var(--gold-primary);
+      transform: translateX(-3px);
+    }
+    .lang-badge {
+      font-size: 12px;
+      color: var(--gold-light);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    /* Header Section */
+    .story-header {
+      text-align: center;
+      margin-bottom: 44px;
+      position: relative;
+    }
+    .header-sub-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Cinzel', serif;
+      font-size: 13px;
+      letter-spacing: 4px;
+      color: var(--gold-primary);
+      text-transform: uppercase;
+      padding: 6px 18px;
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      background: rgba(212, 175, 55, 0.04);
+      border-radius: 30px;
+      margin-bottom: 14px;
+    }
+    .story-title {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(24px, 4.2vw, 42px);
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: #fff;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+      text-shadow: 0 4px 20px rgba(0,0,0,0.8);
+    }
+    .story-script {
+      font-family: 'Alex Brush', cursive;
+      font-size: clamp(38px, 6vw, 64px);
+      color: var(--gold-light);
+      line-height: 1;
+      display: block;
+      margin-top: -6px;
+      margin-bottom: 14px;
+      filter: drop-shadow(0 2px 8px rgba(212, 175, 55, 0.3));
+    }
+    .header-divider {
+      width: 140px;
+      height: 2px;
+      margin: 0 auto;
+      background: linear-gradient(90deg, transparent, var(--gold-primary), transparent);
+      position: relative;
+    }
+    .header-divider::after {
+      content: "◆";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 10px;
+      color: var(--gold-primary);
+      background: var(--bg-deep);
+      padding: 0 6px;
+    }
+
+    /* Main Editorial Grid (2 Columns matching sample layout) */
+    .editorial-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 36px;
+      margin-bottom: 48px;
+    }
+
+    @media (max-width: 860px) {
+      .editorial-grid {
+        grid-template-columns: 1fr;
+        gap: 28px;
+      }
+    }
+
+    /* Editorial Card */
+    .editorial-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-gold);
+      border-radius: 12px;
+      padding: 28px 24px;
+      position: relative;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+      transition: border-color 0.3s ease;
+    }
+    .editorial-card:hover {
+      border-color: rgba(212, 175, 55, 0.5);
+    }
+
+    /* Section Headings */
+    .section-headline {
+      font-family: 'Cinzel', serif;
+      font-size: 19px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      color: var(--gold-light);
+      text-transform: uppercase;
+      margin-bottom: 18px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(212, 175, 55, 0.18);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-headline span.icon {
+      color: var(--gold-primary);
+      font-size: 18px;
+    }
+
+    /* Typography & Bullet Points */
+    .story-text {
+      color: var(--text-creme);
+      margin-bottom: 16px;
+      font-size: 14.5px;
+      line-height: 1.7;
+    }
+
+    .bullet-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .bullet-list > li {
+      position: relative;
+      padding-left: 20px;
+      font-size: 14.5px;
+      color: var(--text-creme);
+    }
+    .bullet-list > li::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      top: -1px;
+      color: var(--gold-primary);
+      font-size: 20px;
+    }
+
+    /* Sub-bullets (Circle) */
+    .sub-bullet-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin: 10px 0 6px 12px;
+      border-left: 1px solid rgba(212, 175, 55, 0.2);
+      padding-left: 14px;
+    }
+    .sub-bullet-list > li {
+      position: relative;
+      padding-left: 18px;
+      font-size: 13.5px;
+      color: #e5dac6;
+    }
+    .sub-bullet-list > li::before {
+      content: "○";
+      position: absolute;
+      left: 0;
+      top: 0px;
+      color: var(--gold-primary);
+      font-size: 13px;
+    }
+
+    /* Interactive Activity Bullet Points */
+    .activity-item {
+      cursor: pointer;
+      padding: 10px 14px;
+      border-radius: 8px;
+      background: rgba(212, 175, 55, 0.04);
+      border: 1px solid rgba(212, 175, 55, 0.15);
+      transition: all 0.25s ease;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .activity-item:hover, .activity-item.active {
+      background: rgba(212, 175, 55, 0.14);
+      border-color: var(--gold-primary);
+      transform: translateX(4px);
+    }
+    .activity-item .bullet-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .activity-item .badge-cta {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: var(--gold-light);
+      background: rgba(0, 0, 0, 0.4);
+      padding: 4px 8px;
+      border-radius: 4px;
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      white-space: nowrap;
+    }
+
+    /* Inline Image Embed */
+    .editorial-image-wrap {
+      margin-top: 18px;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--border-gold);
+      position: relative;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.5);
+    }
+    .editorial-image-wrap img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.5s ease;
+    }
+    .editorial-image-wrap:hover img {
+      transform: scale(1.03);
+    }
+    .image-caption {
+      padding: 8px 12px;
+      font-size: 12px;
+      color: var(--text-muted);
+      background: rgba(12, 8, 6, 0.85);
+      border-top: 1px solid rgba(212, 175, 55, 0.15);
+      font-style: italic;
+    }
+
+    /* -------------------------------------------------------------
+       THƯỚC PHIM (35MM VINTAGE FILM STRIP REEL)
+       Interactive, swipeable, drag-to-scroll, sprocket holes, authentic
+    ------------------------------------------------------------- */
+    .film-strip-section {
+      margin: 50px 0;
+      position: relative;
+      background: #000;
+      border-top: 2px solid var(--gold-primary);
+      border-bottom: 2px solid var(--gold-primary);
+      padding: 28px 0 24px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.8);
+      overflow: hidden;
+    }
+
+    .film-section-header {
+      text-align: center;
+      margin-bottom: 20px;
+      padding: 0 20px;
+    }
+    .film-section-title {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(17px, 2.5vw, 24px);
+      font-weight: 700;
+      letter-spacing: 3px;
+      color: var(--gold-light);
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+    .film-section-desc {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      margin-top: 6px;
+      font-style: italic;
+    }
+
+    /* Reel Controls (Prev / Next Buttons & Touch Hint) */
+    .film-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1100px;
+      margin: 0 auto 14px;
+      padding: 0 20px;
+    }
+    .swipe-hint {
+      font-size: 12px;
+      color: var(--gold-light);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      opacity: 0.85;
+      animation: pulseHint 2.4s infinite ease-in-out;
+    }
+    @keyframes pulseHint {
+      0%, 100% { opacity: 0.6; transform: translateX(0); }
+      50% { opacity: 1; transform: translateX(4px); }
+    }
+    .film-btn-group {
+      display: flex;
+      gap: 8px;
+    }
+    .film-nav-btn {
+      background: rgba(212, 175, 55, 0.12);
+      border: 1px solid var(--gold-primary);
+      color: var(--gold-light);
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 16px;
+      transition: all 0.2s ease;
+      user-select: none;
+    }
+    .film-nav-btn:hover {
+      background: var(--gold-primary);
+      color: #000;
+      transform: scale(1.08);
+    }
+    .film-nav-btn:active {
+      transform: scale(0.95);
+    }
+
+    /* The Continuous 35mm Film Ribbon Container */
+    .film-track-container {
+      width: 100%;
+      overflow-x: auto;
+      overflow-y: hidden;
+      cursor: grab;
+      user-select: none;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      padding: 10px 0;
+      position: relative;
+    }
+    .film-track-container::-webkit-scrollbar {
+      display: none;
+    }
+    .film-track-container.is-dragging {
+      cursor: grabbing;
+      scroll-behavior: auto;
+    }
+
+    .film-track {
+      display: inline-flex;
+      background: #090909;
+      position: relative;
+      padding: 0 40px;
+      border-top: 1px solid #222;
+      border-bottom: 1px solid #222;
+    }
+
+    /* Sprocket holes ribbons (Top & Bottom) */
+    .sprocket-ribbon {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      overflow: hidden;
+      pointer-events: none;
+      background: #0a0a0a;
+      z-index: 10;
+    }
+    .sprocket-ribbon.top {
+      top: 0;
+      border-bottom: 1px solid #1c1c1c;
+    }
+    .sprocket-ribbon.bottom {
+      bottom: 0;
+      border-top: 1px solid #1c1c1c;
+    }
+
+    /* Custom Sprocket Holes with Authentic Square Punch */
+    .sprocket-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      width: 100%;
+      padding: 0 10px;
+    }
+    .sprocket-hole {
+      flex: 0 0 13px;
+      height: 10px;
+      background: #1e1e1e;
+      border: 1px solid #333;
+      border-radius: 2.5px;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.9);
+    }
+    .film-edge-code {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 9.5px;
+      color: #9c7a28;
+      letter-spacing: 1px;
+      white-space: nowrap;
+      margin: 0 14px;
+      font-weight: 700;
+      user-select: none;
+    }
+
+    /* Individual Film Frames */
+    .film-frame {
+      flex: 0 0 320px;
+      margin: 34px 14px 34px;
+      background: #000;
+      border: 3px solid #181818;
+      border-radius: 4px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.8);
+      position: relative;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    @media (max-width: 600px) {
+      .film-frame {
+        flex: 0 0 280px;
+        margin: 30px 10px 30px;
+      }
+    }
+
+    .film-frame:hover {
+      transform: translateY(-6px) scale(1.02);
+      border-color: var(--gold-primary);
+      box-shadow: 0 12px 28px rgba(212, 175, 55, 0.25);
+    }
+    .film-frame.highlighted {
+      border-color: var(--gold-light);
+      box-shadow: 0 0 25px rgba(212, 175, 55, 0.6), 0 12px 30px rgba(0,0,0,0.9);
+      transform: translateY(-8px) scale(1.03);
+    }
+
+    /* Frame Numbering Stamp (e.g. 11A, 12, 13) */
+    .frame-badge {
+      position: absolute;
+      top: -24px;
+      right: 8px;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 11px;
+      color: var(--gold-primary);
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .frame-badge::after {
+      content: "▶";
+      font-size: 8px;
+      color: var(--gold-primary);
+    }
+
+    .film-image-box {
+      width: 100%;
+      height: 200px;
+      overflow: hidden;
+      position: relative;
+      background: #111;
+    }
+    .film-image-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.4s ease;
+      filter: saturate(1.05) contrast(1.05);
+    }
+    .film-frame:hover .film-image-box img {
+      transform: scale(1.06);
+    }
+
+    .film-caption-box {
+      padding: 14px 16px;
+      background: #110d0a;
+      border-top: 1px solid rgba(212, 175, 55, 0.2);
+    }
+    .frame-number-tag {
+      font-size: 11px;
+      color: var(--gold-primary);
+      font-weight: 700;
+      letter-spacing: 1px;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+    }
+    .frame-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #fff;
+      line-height: 1.4;
+      margin-bottom: 6px;
+    }
+    .frame-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* -------------------------------------------------------------
+       SECTION: KHÔNG KHÍ VÀ PHONG CÁCH
+    ------------------------------------------------------------- */
+    .atmosphere-section {
+      background: linear-gradient(135deg, rgba(24, 17, 11, 0.9) 0%, rgba(14, 10, 7, 0.95) 100%);
+      border: 1px solid var(--border-gold);
+      border-radius: 12px;
+      padding: 32px 28px;
+      margin-bottom: 40px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    }
+    .atmosphere-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 32px;
+      align-items: center;
+    }
+    @media (max-width: 800px) {
+      .atmosphere-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+    }
+
+    /* -------------------------------------------------------------
+       SECTION: ĐẶC SẢN ĐỊA PHƯƠNG (ORIA SPA)
+    ------------------------------------------------------------- */
+    .specialty-section {
+      background: radial-gradient(circle at top, rgba(212, 175, 55, 0.08) 0%, transparent 70%), var(--bg-card);
+      border: 1px solid var(--border-gold);
+      border-radius: 14px;
+      padding: 36px 30px;
+      margin-bottom: 44px;
+      position: relative;
+    }
+    .specialty-title-group {
+      text-align: center;
+      max-width: 780px;
+      margin: 0 auto 28px;
+    }
+    .specialty-headline {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(20px, 3.5vw, 30px);
+      font-weight: 700;
+      color: var(--gold-light);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    
+    /* Luxury Feature Badges (27 Khách, Phòng Nhóm, Menu Chuẩn/Nâng Cao) */
+    .amenities-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+      margin: 28px 0;
+    }
+    .amenity-card {
+      background: rgba(12, 8, 6, 0.75);
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      border-radius: 10px;
+      padding: 20px 18px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+    .amenity-card:hover {
+      border-color: var(--gold-primary);
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+    }
+    .amenity-icon {
+      font-size: 26px;
+      margin-bottom: 8px;
+      display: block;
+      color: var(--gold-primary);
+    }
+    .amenity-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--gold-light);
+      margin-bottom: 4px;
+      letter-spacing: 0.5px;
+    }
+    .amenity-detail {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    /* Bottom Footnotes / Photo Captions */
+    .photo-captions-section {
+      background: #0a0705;
+      border: 1px solid rgba(212, 175, 55, 0.15);
+      border-radius: 10px;
+      padding: 24px 22px;
+      margin-top: 36px;
+    }
+    .captions-title {
+      font-family: 'Cinzel', serif;
+      font-size: 14px;
+      letter-spacing: 2px;
+      color: var(--gold-primary);
+      text-transform: uppercase;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .captions-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 14px;
+      list-style: none;
+    }
+    .captions-list li {
+      font-size: 13px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      cursor: pointer;
+      padding: 6px 8px;
+      border-radius: 4px;
+      transition: background 0.2s ease;
+    }
+    .captions-list li:hover {
+      background: rgba(212, 175, 55, 0.08);
+      color: var(--gold-light);
+    }
+    .caption-num {
+      color: var(--gold-primary);
+      font-weight: 700;
+      font-family: 'Cinzel', serif;
+    }
+
+    /* Modal / Lightbox for Fullscreen Frame Viewing */
+    .film-lightbox {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(5, 3, 2, 0.94);
+      backdrop-filter: blur(12px);
+      z-index: 10000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .film-lightbox.active {
+      display: flex;
+      opacity: 1;
+    }
+    .lightbox-card {
+      max-width: 820px;
+      width: 100%;
+      background: #140e0a;
+      border: 2px solid var(--gold-primary);
+      border-radius: 12px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.9);
+      animation: modalZoom 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes modalZoom {
+      from { transform: scale(0.92); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .lightbox-close {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      background: rgba(0, 0, 0, 0.7);
+      border: 1px solid var(--gold-primary);
+      color: var(--gold-light);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 20;
+      transition: transform 0.2s ease;
+    }
+    .lightbox-close:hover {
+      transform: scale(1.1);
+      background: var(--gold-primary);
+      color: #000;
+    }
+    .lightbox-img-wrap {
+      width: 100%;
+      max-height: 480px;
+      overflow: hidden;
+      background: #000;
+    }
+    .lightbox-img-wrap img {
+      width: 100%;
+      height: 100%;
+      max-height: 480px;
+      object-fit: contain;
+      display: block;
+    }
+    .lightbox-details {
+      padding: 20px 24px;
+    }
+    .lightbox-tag {
+      color: var(--gold-primary);
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .lightbox-title {
+      font-family: 'Cinzel', serif;
+      font-size: 19px;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+    .lightbox-desc {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* Floating Quick Action CTA */
+    .cta-float {
+      text-align: center;
+      margin-top: 48px;
+    }
+    .btn-book-now {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: linear-gradient(135deg, #d4af37 0%, #aa820a 100%);
+      color: #0c0806;
+      font-family: 'Cinzel', serif;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 14px 34px;
+      border-radius: 30px;
+      text-decoration: none;
+      box-shadow: 0 8px 24px rgba(212, 175, 55, 0.4);
+      transition: all 0.3s ease;
+    }
+    .btn-book-now:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 30px rgba(212, 175, 55, 0.6);
+      filter: brightness(1.1);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    
+    <!-- Top Navigation Bar -->
+    <nav class="top-nav">
+      <a href="/history" class="back-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        Quay lại Trang Lịch Sử
+      </a>
+      <div class="lang-badge">
+        <span>🇻🇳</span>
+        <span>Saigon • Vietnam</span>
+      </div>
+    </nav>
+
+    <!-- Header Section -->
+    <header class="story-header">
+      <div class="header-sub-badge">Heritage & Destination</div>
+      <h1 class="story-title">Hệ Thống Oria Barbershop & Spa</h1>
+      <span class="story-script">Our story</span>
+      <div class="header-divider"></div>
+    </header>
+
+    <!-- Main Editorial Two-Column Grid -->
+    <main class="editorial-grid">
+
+      <!-- COLUMN LEFT: Vị Trí Vàng Và Kết Nối -->
+      <section class="editorial-card">
+        <h2 class="section-headline">
+          <span class="icon">📍</span>
+          Vị Trí Vàng Và Kết Nối
+        </h2>
+
+        <p class="story-text">
+          Tọa lạc ngay bên sông Sài Gòn, khu vực đường <strong>Ngô Đức Kế, Quận 1</strong> là một trong những tuyến phố có vị trí đắc địa và mang tính biểu tượng cao tại trung tâm Thành phố Hồ Chí Minh.
+        </p>
+
+        <ul class="bullet-list">
+          <li>
+            <strong>Vị trí chiến lược:</strong> Đường Ngô Đức Kế nằm trọn vẹn tại Phường Sài Gòn, Quận 1, khu vực trung tâm kinh tế và thương mại của thành phố. Tuyến đường có chiều dài khoảng 403m, lưu thông hai chiều thuận tiện.
+          </li>
+          <li>
+            <strong>Kết nối quan trọng:</strong> Đường Ngô Đức Kế kéo dài và giao cắt với các trục đường “vàng” khác của Quận 1, tạo nên một tam giác kinh doanh sầm uất bậc nhất:
+            <ul class="sub-bullet-list">
+              <li>Nối từ <strong>Công Trường Mê Linh</strong> (gần sông Sài Gòn và tượng Trần Hưng Đạo).</li>
+              <li>Cắt ngang đường <strong>Đồng Khởi</strong> (trục đường thương mại xa xỉ bậc nhất Sài Gòn).</li>
+              <li>Giao với đường <strong>Nguyễn Huệ</strong> (phố đi bộ biểu tượng của thành phố).</li>
+              <li>Giao với đường <strong>Hồ Tùng Mậu</strong> và kết thúc tại đoạn giao cắt với <strong>Hải Triều</strong> (sát cạnh tòa tháp Bitexco Financial Tower).</li>
+            </ul>
+          </li>
+        </ul>
+
+        <!-- Image: Street Sign (Optimized & Minimized) -->
+        <div class="editorial-image-wrap" style="max-width: 340px; margin: 18px auto 0;">
+          <img src="/images/story/street-sign.jpg" alt="Đường Ngô Đức Kế giao lộ Đồng Khởi" style="height: 190px;" />
+          <div class="image-caption">Trục đường Ngô Đức Kế giao cắt đường Đồng Khởi - Trung tâm Quận 1</div>
+        </div>
+      </section>
+
+      <!-- COLUMN RIGHT: Đặc Điểm Kiến Trúc Và Thương Mại -->
+      <section class="editorial-card">
+        <h2 class="section-headline">
+          <span class="icon">🏛️</span>
+          Đặc Điểm Kiến Trúc & Thương Mại
+        </h2>
+
+        <ul class="bullet-list">
+          <li>
+            Khu vực đặt nhiều trụ sở văn phòng cao cấp như: <strong>Melinh Point Tower</strong>, cùng với hàng loạt khách sạn 5 sao quốc tế và các tòa nhà tài chính danh tiếng hàng đầu.
+          </li>
+          <li>
+            Nơi hội tụ các thương hiệu thời trang, ẩm thực cao cấp, thu hút lượng lớn khách du lịch quốc tế, giới chuyên gia và doanh nhân toàn cầu.
+          </li>
+        </ul>
+
+        <!-- Highlight & Interactive Trigger for Film Strip -->
+        <div style="margin-top: 14px; margin-bottom: 18px;">
+          <h3 style="font-family: 'Cinzel', serif; font-size: 15px; color: var(--gold-light); margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+            <span>🎞️</span> Các hoạt động du lịch hấp dẫn:
+          </h3>
+          <p style="font-size: 12.5px; color: var(--text-muted); margin-bottom: 10px;">
+            <em>(Nhấp vào từng hoạt động để cuộn đến thước phim tương ứng)</em>
+          </p>
+
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <div class="activity-item" onclick="scrollToFilmFrame(1)" id="act-btn-1">
+              <span class="bullet-label">
+                <span style="color: var(--gold-primary)">○</span>
+                <span>Nhìn toàn cảnh thành phố trên xe buýt 2 tầng</span>
+              </span>
+              <span class="badge-cta">Xem phim #1 ▷</span>
+            </div>
+
+            <div class="activity-item" onclick="scrollToFilmFrame(4)" id="act-btn-4">
+              <span class="bullet-label">
+                <span style="color: var(--gold-primary)">○</span>
+                <span>Tham quan thành phố dưới Saigon Waterbus</span>
+              </span>
+              <span class="badge-cta">Xem phim #4 ▷</span>
+            </div>
+
+            <div class="activity-item" onclick="scrollToFilmFrame(2)" id="act-btn-2">
+              <span class="bullet-label">
+                <span style="color: var(--gold-primary)">○</span>
+                <span>Buổi tối trên tàu Saigon Princess (bữa tối sang trọng ven sông)</span>
+              </span>
+              <span class="badge-cta">Xem phim #2 ▷</span>
+            </div>
+
+            <div class="activity-item" onclick="scrollToFilmFrame(3)" id="act-btn-3">
+              <span class="bullet-label">
+                <span style="color: var(--gold-primary)">○</span>
+                <span>Bấm huyệt chân tại Oria sau một ngày dài trải nghiệm</span>
+              </span>
+              <span class="badge-cta">Xem phim #3 ▷</span>
+            </div>
+      </section>
+
+    </main>
+
+    <!-- =============================================================
+         THƯỚC PHIM CUỘN (35MM VINTAGE FILM REEL COMPONENT)
+         Vuốt ngang / Drag / Click tương tác
+    ============================================================== -->
+    <section class="film-strip-section" id="film-strip-reel">
+      <div class="film-section-header">
+        <h2 class="film-section-title">
+          <span>🎬</span>
+          Thước Phim: Trải Nghiệm Sài Gòn & Oria
+          <span>🎞️</span>
+        </h2>
+        <p class="film-section-desc">
+          Bốn khoảnh khắc biểu tượng của nhịp sống Sài Gòn và phút giây hồi phục tại Oria Spa. Chạm và vuốt qua lại trên thước phim để khám phá.
+        </p>
+      </div>
+
+      <!-- Controls & Swipe Hint -->
+      <div class="film-controls">
+        <div class="swipe-hint">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+          <span>Vuốt hoặc kéo thả thước phim qua lại</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </div>
+
+        <div class="film-btn-group">
+          <button class="film-nav-btn" onclick="stepFilm(-1)" title="Cuộn sang trái" aria-label="Previous frame">❮</button>
+          <button class="film-nav-btn" onclick="stepFilm(1)" title="Cuộn sang phải" aria-label="Next frame">❯</button>
+        </div>
+      </div>
+
+      <!-- Film Strip Container -->
+      <div class="film-track-container" id="filmContainer">
+        
+        <!-- Top Sprockets Ribbon -->
+        <div class="sprocket-ribbon top" id="topSprockets">
+          <!-- Dynamically populated holes + film labels -->
+        </div>
+
+        <!-- The Film Strip Track -->
+        <div class="film-track" id="filmTrack">
+
+          <!-- FRAME 1: Xe Buýt 2 Tầng -->
+          <article class="film-frame" id="frame-1" onclick="openLightbox(1)">
+            <div class="frame-badge">11A</div>
+            <div class="film-image-box">
+              <img src="/images/story/photo-bus.jpg" alt="Nhìn toàn cảnh thành phố trên xe buýt 2 tầng" loading="lazy" />
+            </div>
+            <div class="film-caption-box">
+              <div class="frame-number-tag">Khung Hình 01 • City Tour</div>
+              <h3 class="frame-title">Nhìn toàn cảnh thành phố trên xe buýt 2 tầng</h3>
+              <p class="frame-desc">Khám phá các di sản văn hóa và góc nhìn ngoạn mục từ tầng nóc xe bus mui trần.</p>
+            </div>
+          </article>
+
+          <!-- FRAME 2: Saigon Princess Cruise -->
+          <article class="film-frame" id="frame-2" onclick="openLightbox(2)">
+            <div class="frame-badge">12</div>
+            <div class="film-image-box">
+              <img src="/images/story/photo-cruise.jpg" alt="Buổi tối trên tàu Saigon Princess" loading="lazy" />
+            </div>
+            <div class="film-caption-box">
+              <div class="frame-number-tag">Khung Hình 02 • River Cruise</div>
+              <h3 class="frame-title">Buổi tối trên tàu Saigon Princess</h3>
+              <p class="frame-desc">Thưởng thức ẩm thực cao cấp và ngắm nhìn hoàng hôn rực rỡ bên dòng sông Sài Gòn.</p>
+            </div>
+          </article>
+
+          <!-- FRAME 3: Bấm Huyệt Chân Tại Oria -->
+          <article class="film-frame" id="frame-3" onclick="openLightbox(3)">
+            <div class="frame-badge">13</div>
+            <div class="film-image-box">
+              <img src="/images/story/photo-foot.jpg" alt="Bấm huyệt chân tại Oria" loading="lazy" />
+            </div>
+            <div class="film-caption-box">
+              <div class="frame-number-tag">Khung Hình 03 • Oria Wellness</div>
+              <h3 class="frame-title">Bấm huyệt chân tại Oria</h3>
+              <p class="frame-desc">Liệu trình giải phóng mọi mỏi mệt sau ngày dài khám phá trung tâm Sài Gòn hoa lệ.</p>
+            </div>
+          </article>
+
+          <!-- FRAME 4: Saigon Waterbus -->
+          <article class="film-frame" id="frame-4" onclick="openLightbox(4)">
+            <div class="frame-badge">14</div>
+            <div class="film-image-box">
+              <img src="/images/story/photo-waterbus.jpg" alt="Tham quan thành phố dưới Saigon Waterbus" loading="lazy" />
+            </div>
+            <div class="film-caption-box">
+              <div class="frame-number-tag">Khung Hình 04 • Waterbus Experience</div>
+              <h3 class="frame-title">Tham quan thành phố dưới Saigon Waterbus</h3>
+              <p class="frame-desc">Lướt trên sóng nước, ngắm nhìn skyline hiện đại từ bến Bạch Đằng lộng gió.</p>
+            </div>
+          </article>
+
+        </div>
+
+        <!-- Bottom Sprockets Ribbon -->
+        <div class="sprocket-ribbon bottom" id="bottomSprockets">
+          <!-- Dynamically populated holes + film labels -->
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- =============================================================
+         SECTION: KHÔNG KHÍ VÀ PHONG CÁCH
+    ============================================================== -->
+    <section class="atmosphere-section">
+      <div class="atmosphere-grid">
+        <div>
+          <h2 class="section-headline">
+            <span class="icon">✨</span>
+            Không Khí Và Phong Cách
+          </h2>
+          <ul class="bullet-list">
+            <li>
+              <strong>Ban ngày:</strong> Mang nhịp sống năng động, chuyên nghiệp của một trung tâm tài chính và thương mại hàng đầu cả nước.
+            </li>
+            <li>
+              <strong>Buổi tối:</strong> Biến chuyển thành không gian giải trí sang trọng, lung linh ánh đèn từ các khách sạn danh tiếng, nhà hàng cao cấp và dòng người dạo phố rộn rã.
+            </li>
+            <li>
+              <strong>Điểm hẹn biểu tượng:</strong> Là một trong những điểm “check-in” nổi tiếng nhờ sự pha trộn hài hòa giữa kiến trúc hiện đại và nét cổ kính, hoa lệ của Sài Gòn xưa.
+            </li>
+          </ul>
+        </div>
+
+        <div class="editorial-image-wrap" style="margin-top: 0;">
+          <img src="/images/story/night-street.jpg" alt="Không khí lung linh về đêm tại trung tâm Quận 1" />
+          <div class="image-caption">Đêm Sài Gòn lung linh ánh đèn nhìn về phía Nhà Hát Thành Phố & Đồng Khởi</div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- =============================================================
+         SECTION: ĐẶC SẢN ĐỊA PHƯƠNG (ORIA SPA)
+    ============================================================== -->
+    <section class="specialty-section">
+      <div class="specialty-title-group">
+        <div style="color: var(--gold-primary); font-family: 'Cinzel', serif; font-size: 13px; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 6px;">
+          Đích Đến Của Sự Phục Hồi
+        </div>
+        <h2 class="specialty-headline">Đặc Sản Địa Phương • Oria Barbershop & Spa</h2>
+        <div class="header-divider"></div>
+      </div>
+
+      <p class="story-text" style="font-size: 15.5px; text-align: center; max-width: 860px; margin: 0 auto 20px;">
+        Oria Spa nằm ngay cạnh khách sạn Riverside thơ mộng và sông Sài Gòn lộng gió, là điểm dừng chân lý tưởng để bạn tận hưởng những giây phút thư giãn tuyệt đối.
+      </p>
+
+      <!-- 4 Pillars Grid -->
+      <div class="amenities-grid">
+        <div class="amenity-card">
+          <span class="amenity-icon">👥</span>
+          <div class="amenity-name">Công Suất 27 Khách</div>
+          <div class="amenity-detail">Phục vụ cùng lúc lên đến 27 khách với quy trình chuẩn mực và phục vụ chu đáo.</div>
+        </div>
+
+        <div class="amenity-card">
+          <span class="amenity-icon">🚪</span>
+          <div class="amenity-name">Không Gian Linh Hoạt</div>
+          <div class="amenity-detail">Phòng đôi lãng mạn, phòng riêng tư và phòng nhóm lớn cho bạn bè, gia đình.</div>
+        </div>
+
+        <div class="amenity-card">
+          <span class="amenity-icon">🌿</span>
+          <div class="amenity-name">Menu Chuẩn & Nâng Cao</div>
+          <div class="amenity-detail">Bấm huyệt chân chuyên sâu, massage tinh dầu thảo dược giải tỏa hoàn toàn căng thẳng.</div>
+        </div>
+
+        <div class="amenity-card">
+          <span class="amenity-icon">🧖‍♂️</span>
+          <div class="amenity-name">Xông Hơi Khô Tinh Dầu</div>
+          <div class="amenity-detail">Dry Sauna giúp đào thải độc tố, kích thích tuần hoàn máu và tái tạo năng lượng.</div>
+        </div>
+      </div>
+
+      <p class="story-text" style="font-size: 14.5px; text-align: center; max-width: 820px; margin: 20px auto 0; font-style: italic; color: #eeddc2;">
+        “Tận hưởng dịch vụ cao cấp, lắng nghe tiếng sóng nước nhẹ nhàng và để cơ thể được phục hồi trọn vẹn tại Oria Spa.”
+      </p>
+
+      <div class="cta-float">
+        <a href="/new-user/select-menu" class="btn-book-now">
+          <span>Đặt Lịch Trải Nghiệm Ngay</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </a>
+      </div>
+    </section>
+
+
+    <!-- =============================================================
+         SECTION: CHÚ THÍCH HÌNH ẢNH (Image Captions Reference)
+    ============================================================== -->
+    <footer class="photo-captions-section">
+      <div class="captions-title">
+        <span>📷</span> Chú Thích Hình Ảnh
+      </div>
+      <ul class="captions-list">
+        <li onclick="scrollToFilmFrame(1)">
+          <span class="caption-num">1.</span>
+          <span>Nhìn toàn cảnh thành phố trên xe buýt 2 tầng.</span>
+        </li>
+        <li onclick="scrollToFilmFrame(2)">
+          <span class="caption-num">2.</span>
+          <span>Buổi tối trên tàu Saigon Princess.</span>
+        </li>
+        <li onclick="scrollToFilmFrame(3)">
+          <span class="caption-num">3.</span>
+          <span>Bấm huyệt chân tại Oria.</span>
+        </li>
+        <li onclick="scrollToFilmFrame(4)">
+          <span class="caption-num">4.</span>
+          <span>Tham quan thành phố dưới Saigon Waterbus.</span>
+        </li>
+      </ul>
+    </footer>
+
+  </div>
+
+
+  <!-- =============================================================
+       LIGHTBOX MODAL (Xem chi tiết ảnh thước phim)
+  ============================================================== -->
+  <div class="film-lightbox" id="filmLightbox" onclick="closeLightbox(event)">
+    <div class="lightbox-card" onclick="event.stopPropagation()">
+      <button class="lightbox-close" onclick="closeLightbox()" aria-label="Close modal">×</button>
+      <div class="lightbox-img-wrap">
+        <img id="lightboxImg" src="" alt="Chi tiết hình ảnh" />
+      </div>
+      <div class="lightbox-details">
+        <div class="lightbox-tag" id="lightboxTag">Khung Hình 35mm</div>
+        <h3 class="lightbox-title" id="lightboxTitle">Tiêu đề hình ảnh</h3>
+        <p class="lightbox-desc" id="lightboxDesc">Mô tả chi tiết của hoạt động</p>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- =============================================================
+       INTERACTION SCRIPT: SWIPE, DRAG, SPROCKETS & SCROLL
+  ============================================================== -->
+  <script>
+    // Data definition for frames
+    const framesData = {
+      1: {
+        tag: 'Khung Hình 01 • City Tour 35mm',
+        title: 'Nhìn Toàn Cảnh Thành Phố Trên Xe Buýt 2 Tầng',
+        desc: 'Tuyến xe buýt mui trần Hop-on Hop-off đưa bạn lướt qua các công trình kiến trúc lịch sử như Bưu Điện Trung Tâm, Nhà Thờ Đức Bà, Dinh Độc Lập và các đại lộ rợp bóng cây cổ thụ của Sài Gòn.',
+        image: '/images/story/photo-bus.jpg'
+      },
+      2: {
+        tag: 'Khung Hình 02 • Saigon Princess Cruise',
+        title: 'Buổi Tối Trên Tàu Saigon Princess Ven Sông Sài Gòn',
+        desc: 'Du thuyền ẩm thực sang trọng 5 sao trên sông Sài Gòn. Tận hưởng bữa tối đẳng cấp phong cách Âu - Á, ngắm nhìn skyline lung linh với tòa Bitexco và Landmark 81 khi thành phố lên đèn.',
+        image: '/images/story/photo-cruise.jpg'
+      },
+      3: {
+        tag: 'Khung Hình 03 • Oria Wellness & Spa',
+        title: 'Bấm Huyệt Chân Chuyên Sâu Tại Oria Barbershop & Spa',
+        desc: 'Sau những bước chân dạo phố qua các tuyến đường Ngô Đức Kế, Đồng Khởi và Nguyễn Huệ, Oria Spa là ốc đảo thư thái phục hồi cơ thể với bài bấm huyệt chân cổ truyền và tinh dầu thiên nhiên.',
+        image: '/images/story/photo-foot.jpg'
+      },
+      4: {
+        tag: 'Khung Hình 04 • Saigon Waterbus',
+        title: 'Tham Quan Thành Phố Dưới Saigon Waterbus',
+        desc: 'Hành trình lướt trên mặt nước từ bến Bạch Đằng lộng gió, chiêm ngưỡng hai bên bờ sông Sài Gòn thơ mộng với những nhịp cầu nối liền quá khứ và tương lai của đô thị phồn hoa.',
+        image: '/images/story/photo-waterbus.jpg'
+      }
+    };
+
+    // Render Sprockets Holes dynamically to fit screen width
+    function generateSprockets() {
+      const topRibbon = document.getElementById('topSprockets');
+      const bottomRibbon = document.getElementById('bottomSprockets');
+      if (!topRibbon || !bottomRibbon) return;
+
+      const totalHoles = 50;
+      let holesHTML = '<div class="sprocket-row">';
+      for (let i = 0; i < totalHoles; i++) {
+        if (i % 8 === 0) {
+          const frameCode = 11 + Math.floor(i / 8);
+          holesHTML += `<span class="film-edge-code">KODAK 500T • ${frameCode}A ▶</span>`;
+        }
+        holesHTML += '<div class="sprocket-hole"></div>';
+      }
+      holesHTML += '</div>';
+
+      topRibbon.innerHTML = holesHTML;
+      bottomRibbon.innerHTML = holesHTML;
+    }
+    generateSprockets();
+
+    // Scroll to specific film frame and spotlight it
+    function scrollToFilmFrame(frameId) {
+      const targetFrame = document.getElementById(`frame-${frameId}`);
+      const container = document.getElementById('filmContainer');
+      const reelSection = document.getElementById('film-strip-reel');
+
+      if (!targetFrame || !container) return;
+
+      // Smoothly scroll page to the film reel section
+      reelSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+      // Smoothly scroll horizontal container to center the frame
+      const frameLeft = targetFrame.offsetLeft;
+      const frameWidth = targetFrame.offsetWidth;
+      const containerWidth = container.offsetWidth;
+      const scrollToX = frameLeft - (containerWidth / 2) + (frameWidth / 2);
+
+      container.scrollTo({
+        left: scrollToX,
+        behavior: 'smooth'
+      });
+
+      // Highlight frame and active button
+      document.querySelectorAll('.film-frame').forEach(f => f.classList.remove('highlighted'));
+      targetFrame.classList.add('highlighted');
+
+      document.querySelectorAll('.activity-item').forEach(b => b.classList.remove('active'));
+      const activeBtn = document.getElementById(`act-btn-${frameId}`);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      setTimeout(() => {
+        targetFrame.classList.remove('highlighted');
+      }, 3500);
+    }
+
+    // Step next/prev with nav buttons
+    function stepFilm(direction) {
+      const container = document.getElementById('filmContainer');
+      if (!container) return;
+      const stepAmount = 340; // Approx frame width + margin
+      container.scrollBy({
+        left: direction * stepAmount,
+        behavior: 'smooth'
+      });
+    }
+
+    // Drag-to-scroll implementation (Desktop mouse drag & momentum)
+    const filmContainer = document.getElementById('filmContainer');
+    let isDown = false;
+    let startX = 0;
+    let scrollLeft = 0;
+    let hasMoved = false;
+
+    filmContainer.addEventListener('mousedown', (e) => {
+      isDown = true;
+      hasMoved = false;
+      filmContainer.classList.add('is-dragging');
+      startX = e.pageX - filmContainer.offsetLeft;
+      scrollLeft = filmContainer.scrollLeft;
+    });
+
+    filmContainer.addEventListener('mouseleave', () => {
+      isDown = false;
+      filmContainer.classList.remove('is-dragging');
+    });
+
+    filmContainer.addEventListener('mouseup', () => {
+      isDown = false;
+      filmContainer.classList.remove('is-dragging');
+    });
+
+    filmContainer.addEventListener('mousemove', (e) => {
+      if (!isDown) return;
+      e.preventDefault();
+      const x = e.pageX - filmContainer.offsetLeft;
+      const walk = (x - startX) * 1.6; // Scroll speed factor
+      if (Math.abs(walk) > 5) {
+        hasMoved = true;
+      }
+      filmContainer.scrollLeft = scrollLeft - walk;
+    });
+
+    // Lightbox modal logic
+    function openLightbox(frameId) {
+      if (hasMoved) return; // Ignore click if user was dragging
+      const data = framesData[frameId];
+      if (!data) return;
+
+      document.getElementById('lightboxImg').src = data.image;
+      document.getElementById('lightboxTag').textContent = data.tag;
+      document.getElementById('lightboxTitle').textContent = data.title;
+      document.getElementById('lightboxDesc').textContent = data.desc;
+
+      const lightbox = document.getElementById('filmLightbox');
+      lightbox.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox(e) {
+      const lightbox = document.getElementById('filmLightbox');
+      lightbox.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    // Close on Escape key
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeLightbox();
+      }
+    });
+  </script>
+</body>
+</html>
