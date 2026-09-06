@@ -898,33 +898,10 @@ export const History = () => {
           <p>
             {getLocalizedText(hydratedHistory.hero?.body, locale, HISTORY_HERO_DEFAULTS[locale].body)}
           </p>
-          <div style={{ display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap', marginTop: '12px' }}>
-            <a className={styles.scrollCue} href="#history-2015">
-              <span />
-              {copy.scrollCue}
-            </a>
-            <a 
-              href="/history-demo.html"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                padding: '10px 18px',
-                borderRadius: '30px',
-                background: 'rgba(212, 175, 55, 0.15)',
-                border: '1px solid rgba(212, 175, 55, 0.45)',
-                color: '#f5df97',
-                fontSize: '13px',
-                fontWeight: 600,
-                letterSpacing: '0.5px',
-                textDecoration: 'none',
-                backdropFilter: 'blur(8px)',
-              }}
-            >
-              <span>🎞️</span>
-              <span>Bản Demo Thước Phim (Our Story)</span>
-            </a>
-          </div>
+          <a className={styles.scrollCue} href="#history-2015">
+            <span />
+            {copy.scrollCue}
+          </a>
         </div>
       </motion.header>
 
