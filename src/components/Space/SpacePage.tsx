@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useMemo } from 'react';
 import Link from 'next/link';
 import { useTranslation } from '@/components/TranslationProvider';
 import styles from './SpacePage.module.css';
@@ -140,9 +140,9 @@ const capacityContent = {
   }
 };
 
-export default function SpacePage() {
+export default function SpacePage({ initialMedia }: { initialMedia?: any } = {}) {
   const { currentLang } = useTranslation();
-  const [contentMedia, setContentMedia] = useState<any>({});
+  const [contentMedia, setContentMedia] = useState<any>(initialMedia || {});
   
   const getTabsForSection = (section: 'welcome' | 'floor1' | 'floor2') => {
     const customData = contentMedia[section];
@@ -174,7 +174,7 @@ export default function SpacePage() {
   const [isDarkNav, setIsDarkNav] = useState(false);
 
   useEffect(() => {
-    fetch('/api/public/site-content')
+    fetch('/api/public/site-content?t=' + Date.now(), { cache: 'no-store' })
       .then(res => res.json())
       .then(json => {
         if (json.content?.space_media) {
@@ -209,6 +209,56 @@ export default function SpacePage() {
     }
     return val?.title || defaultTitle;
   };
+
+  const galleryData = useMemo(() => {
+    const customGallery = contentMedia?.gallery;
+    if (customGallery && typeof customGallery === 'object' && Object.keys(customGallery).length > 0) {
+      const keys = Object.keys(customGallery);
+      const mainKey = keys.find(k => k.toLowerCase() === 'main') || keys[0];
+      const mainMedia = getMedia(`gallery.${mainKey}`, defaultMedia.gallery.main);
+      const sideKeys = keys.filter(k => k !== mainKey);
+
+      sideKeys.sort((a, b) => {
+        const la = a.toLowerCase();
+        const lb = b.toLowerCase();
+        if (la.includes('top') && lb.includes('bottom')) return -1;
+        if (la.includes('bottom') && lb.includes('top')) return 1;
+        return 0;
+      });
+
+      const sideMediaList = sideKeys.map(k => ({
+        key: k,
+        media: getMedia(`gallery.${k}`, ''),
+        title: getMediaTitle(`gallery.${k}`, k)
+      })).filter(item => Boolean(item.media.src));
+
+      if (sideMediaList.length === 0) {
+        return {
+          main: mainMedia,
+          mainTitle: getMediaTitle(`gallery.${mainKey}`, 'Massage detail'),
+          sideList: [
+            { key: 'sideTop', media: getMedia('gallery.sideTop', defaultMedia.gallery.sideTop), title: 'Treatment' },
+            { key: 'sideBottom', media: getMedia('gallery.sideBottom', defaultMedia.gallery.sideBottom), title: 'Spa room' }
+          ]
+        };
+      }
+
+      return {
+        main: mainMedia,
+        mainTitle: getMediaTitle(`gallery.${mainKey}`, 'Massage detail'),
+        sideList: sideMediaList
+      };
+    }
+
+    return {
+      main: getMedia('gallery.main', defaultMedia.gallery.main),
+      mainTitle: 'Massage detail',
+      sideList: [
+        { key: 'sideTop', media: getMedia('gallery.sideTop', defaultMedia.gallery.sideTop), title: 'Treatment' },
+        { key: 'sideBottom', media: getMedia('gallery.sideBottom', defaultMedia.gallery.sideBottom), title: 'Spa room' }
+      ]
+    };
+  }, [contentMedia]);
 
 // Move MediaRenderer outside to prevent remounts on every SpacePage render
 const MediaRenderer = ({ mediaObj, className, alt, onEnded }: { mediaObj: {src: string, type: string, objectPosition?: string}, className?: string, alt?: string, onEnded?: () => void }) => {
@@ -434,18 +484,19 @@ const MediaRenderer = ({ mediaObj, className, alt, onEnded }: { mediaObj: {src: 
 
         <div className={`${styles.galleryRow} ${styles.reveal}`}>
           <div className={styles.galleryMain}>
-            <MediaRenderer mediaObj={getMedia('gallery.main', defaultMedia.gallery.main)} alt="Massage detail"  />
+            <MediaRenderer mediaObj={galleryData.main} alt={galleryData.mainTitle} />
             <div className={styles['media-watermark']}></div>
           </div>
-          <div className={styles.gallerySide}>
-            <div className={styles.gallerySideImg}>
-              <MediaRenderer mediaObj={getMedia('gallery.sideTop', defaultMedia.gallery.sideTop)} alt="Treatment"  />
-              <div className={styles['media-watermark']}></div>
-            </div>
-            <div className={styles.gallerySideImg}>
-              <MediaRenderer mediaObj={getMedia('gallery.sideBottom', defaultMedia.gallery.sideBottom)} alt="Spa room"  />
-              <div className={styles['media-watermark']}></div>
-            </div>
+          <div 
+            className={styles.gallerySide}
+            style={galleryData.sideList.length ? { gridTemplateRows: `repeat(${galleryData.sideList.length}, 1fr)` } : undefined}
+          >
+            {galleryData.sideList.map((item) => (
+              <div key={item.key} className={styles.gallerySideImg}>
+                <MediaRenderer mediaObj={item.media} alt={item.title} />
+                <div className={styles['media-watermark']}></div>
+              </div>
+            ))}
           </div>
         </div>
       </section>

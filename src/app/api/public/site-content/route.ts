@@ -41,7 +41,7 @@ export async function GET() {
       blog_content: systemConfigs.blog_content || {},
       content: webBookingContent,
     }, {
-      headers: { 'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300' },
+      headers: { 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate' },
     });
   } catch (error) {
     console.error('[public/site-content] Failed to load:', error);

@@ -105,13 +105,13 @@
 .latestCard{position:relative;min-height:clamp(300px,34vw,520px);overflow:hidden;border-radius:6px;background:#302a24;color:#fff;cursor:pointer}
 .latestMedia,.latestMedia img,.latestMedia video,.latestScrim{position:absolute;inset:0;width:100%;height:100%}
 .latestMedia{overflow:hidden;background:#302a24}
-.latestMedia img,.latestMedia video{object-fit:cover;filter:blur(2px) saturate(.76) brightness(.78);transform:scale(1.025);transition:filter .55s ease,transform .75s ease}
-.latestCard:hover .latestMedia img,.latestCard:hover .latestMedia video{filter:blur(.7px) saturate(.86) brightness(.74);transform:scale(1.045)}
-.latestScrim{background:linear-gradient(90deg,rgba(10,8,6,.76),rgba(10,8,6,.28) 64%,rgba(10,8,6,.12))}
-.latestCopy{position:absolute;z-index:2;left:clamp(24px,5vw,70px);right:clamp(24px,5vw,70px);bottom:clamp(26px,5vw,64px);max-width:820px}
-.latestCopy small{font-size:11px;text-transform:uppercase;opacity:.8}
-.latestCopy h3{max-width:780px;margin:14px 0 0;font-family:Georgia,serif;font-size:clamp(36px,5vw,72px);font-weight:400;line-height:1.04;letter-spacing:0;text-wrap:balance}
-.latestCopy p{max-width:620px;margin:16px 0 0;font-size:15px;line-height:1.65;opacity:.78}
+.latestMedia img,.latestMedia video{object-fit:cover;filter:saturate(.88) brightness(.85);transform:scale(1);transition:filter .55s ease,transform .75s ease}
+.latestCard:hover .latestMedia img,.latestCard:hover .latestMedia video{filter:saturate(1) brightness(.92);transform:scale(1.03)}
+.latestScrim{background:linear-gradient(to top,rgba(10,8,6,.88) 0%,rgba(10,8,6,.35) 35%,transparent 65%)}
+.latestCopy{position:absolute;z-index:2;left:clamp(20px,4vw,48px);right:clamp(20px,4vw,48px);bottom:clamp(20px,3.5vw,36px);max-width:none;display:flex;flex-direction:column;justify-content:flex-end}
+.latestCopy small{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;opacity:.85;margin-bottom:8px}
+.latestCopy h3{max-width:100%;margin:0;font-family:Georgia,serif;font-size:clamp(20px,2.8vw,38px);font-weight:400;line-height:1.22;letter-spacing:-.01em;text-wrap:balance}
+.latestCopy p{display:none !important}
 .footer{padding:90px 4vw 40px;border-top:1px solid var(--line);display:grid;grid-template-columns:1fr 1fr;gap:30px}
 .footer h2{font-family:Georgia,serif;font-size:clamp(55px,8vw,120px);font-weight:400;line-height:1.05;letter-spacing:-.05em;margin:0}
 .footer .right{display:flex;flex-direction:column;justify-content:space-between;align-items:flex-end}

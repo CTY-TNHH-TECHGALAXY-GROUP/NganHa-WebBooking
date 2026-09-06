@@ -1,4 +1,5 @@
 import { NextRequest } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { withAuth } from '@/lib/api/withAuth';
 import { apiResponse } from '@/lib/api/apiResponse';
 import { recordContentRevisions } from '@/lib/api/contentRevision';
@@ -57,6 +58,13 @@ export const POST = withAuth(async (request: NextRequest, { supabase, user }) =>
 
     if (error) {
       return apiResponse.error(error.message, 'DB_ERROR', 500);
+    }
+
+    try {
+      revalidatePath('/space');
+      revalidatePath('/api/public/site-content');
+    } catch (e) {
+      console.warn('Revalidate error:', e);
     }
 
     return apiResponse.success({ message: 'Updated successfully' });
