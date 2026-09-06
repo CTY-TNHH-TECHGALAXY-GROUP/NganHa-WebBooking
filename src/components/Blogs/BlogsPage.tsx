@@ -23,6 +23,29 @@ type PublishedPost = {
 const localized = (value: Record<string, string> | undefined, lang: string, fallback = '') =>
   value?.[lang] || value?.en || value?.vi || fallback;
 
+const normalizeArticleText = (value: string) => value
+  .replace(/\r\n?/g, '\n')
+  .replace(/<br\s*\/?>/gi, '\n')
+  .replace(/<li[^>]*>/gi, '\n• ')
+  .replace(/<\/(p|div|h[1-6]|blockquote|ul|ol)>/gi, '\n\n')
+  .replace(/<[^>]+>/g, '')
+  .replace(/&nbsp;/gi, ' ')
+  .replace(/&amp;/gi, '&')
+  .replace(/&lt;/gi, '<')
+  .replace(/&gt;/gi, '>')
+  .replace(/&quot;/gi, '"')
+  .replace(/&#0?39;/gi, "'")
+  .trim();
+
+const ArticleBody = ({ body }: { body: string }) => {
+  const paragraphs = normalizeArticleText(body).split(/\n\s*\n+/).filter(Boolean);
+  return (
+    <div className={styles.articleContent}>
+      {paragraphs.map((paragraph, index) => <p key={`${index}-${paragraph.slice(0, 24)}`}>{paragraph}</p>)}
+    </div>
+  );
+};
+
 const BlogCardView = ({ card, className, onOpen }: { card: BlogCard; className: string; onOpen: (card: BlogCard) => void }) => (
   <article className={`${className} ${styles['open-story']}`} onClick={() => onOpen(card)}>
     {card.image && <img src={card.image} alt="" />}
@@ -121,13 +144,13 @@ const BlogsPage = () => {
         {content.city.cards.map((card, index) => <article key={card.id} className={`${index < 2 ? styles['city-card'] : styles.minicard} ${styles['open-story']} ${styles[`c${index + 1}`] || ''}`} onClick={() => openStory(card)}>{card.image && <img src={card.image} alt="" />}<div className={styles['media-watermark']} /><div className={styles.txt}><small>{card.eyebrow} · {card.meta}</small><strong>{card.title}</strong></div></article>)}
       </div></section>
 
-      <section className={styles.section} aria-labelledby="latest-from-oria"><div className={styles['section-head']}><div><div className={styles.eyebrow}>{content.latest.eyebrow}</div><h2 id="latest-from-oria">{content.latest.title}</h2></div></div><div className={styles['city-grid']}>
-        {posts.map((post, index) => { const category = localized(post.category_i18n, currentLang, content.latest.eyebrow); const readTime = localized(post.read_time_i18n, currentLang, content.latest.minutes); const imageAlt = localized(post.cover_alt, currentLang, localized(post.title, currentLang)); return <article key={post.id} className={`${index === 0 ? styles['city-card'] : styles.minicard} ${styles['open-story']}`} onClick={() => openStory({ id: post.id, eyebrow: category, title: localized(post.title, currentLang), body: localized(post.content, currentLang, localized(post.excerpt, currentLang)), meta: readTime, image: post.cover_image || undefined })}>{post.cover_image && (post.cover_type === 'video' ? <video src={post.cover_image} muted playsInline preload="metadata" aria-label={imageAlt} /> : <img src={post.cover_image} alt={imageAlt} />)}<div className={styles['media-watermark']} /><div className={styles.txt}><small>{category} · {readTime}</small><strong>{localized(post.title, currentLang)}</strong></div></article>; })}
+      <section className={styles.section} aria-labelledby="latest-from-oria"><div className={styles['section-head']}><div><div className={styles.eyebrow}>{content.latest.eyebrow}</div><h2 id="latest-from-oria">{content.latest.title}</h2></div></div><div className={styles.latestGrid}>
+        {posts.map((post) => { const category = localized(post.category_i18n, currentLang, content.latest.eyebrow); const readTime = localized(post.read_time_i18n, currentLang, content.latest.minutes); const title = localized(post.title, currentLang); const excerpt = localized(post.excerpt, currentLang); const imageAlt = localized(post.cover_alt, currentLang, title); return <article key={post.id} className={`${styles.latestCard} ${styles['open-story']}`} onClick={() => openStory({ id: post.id, eyebrow: category, title, body: localized(post.content, currentLang, excerpt), meta: readTime, image: post.cover_image || undefined })}><div className={styles.latestMedia}>{post.cover_image && (post.cover_type === 'video' ? <video src={post.cover_image} muted playsInline preload="metadata" aria-label={imageAlt} /> : <img src={post.cover_image} alt={imageAlt} />)}</div><div className={styles.latestScrim} /><div className={styles.latestCopy}><small>{category} · {readTime}</small><h3>{title}</h3>{excerpt && <p>{excerpt}</p>}</div></article>; })}
       </div>{posts.length === 0 && <p className={styles['section-intro']}>{content.latest.empty}</p>}</section>
 
       <footer className={styles.footer}><div><div className={styles.eyebrow}>{content.footer.eyebrow}</div><h2>{content.footer.title.split('\n').map((line) => <React.Fragment key={line}>{line}<br /></React.Fragment>)}</h2></div><div className={styles.right}><div>{content.footer.topics}</div><small>{content.footer.credit}</small></div></footer>
 
-      {activeStory && <div className={`${styles.modal} ${styles.open}`} onClick={(event) => { if (event.target === event.currentTarget) closeStory(); }}><div className={styles['modal-card']}><button className={styles.close} onClick={closeStory}>×</button><div className={styles.eyebrow}>{activeStory.eyebrow} · {activeStory.meta}</div><h3>{activeStory.title}</h3><p className={styles.lead}>{activeStory.body}</p><button className={styles.chip} onClick={closeStory}>{content.latest.readMore} <ArrowUpRight size={14} /></button></div></div>}
+      {activeStory && <div className={`${styles.modal} ${styles.open}`} onClick={(event) => { if (event.target === event.currentTarget) closeStory(); }}><div className={styles['modal-card']}><button type="button" className={`${styles.close} ${activeStory.image ? styles.closeOnMedia : ''}`} onClick={closeStory} aria-label="Close">×</button>{activeStory.image ? <div className={styles.articleHero}><img src={activeStory.image} alt="" /><div className={styles.articleHeroScrim} /><div className={styles.articleHeroCopy}><div>{activeStory.eyebrow} · {activeStory.meta}</div><h3>{activeStory.title}</h3></div></div> : <><div className={styles.eyebrow}>{activeStory.eyebrow} · {activeStory.meta}</div><h3>{activeStory.title}</h3></>}<ArticleBody body={activeStory.body} /><button type="button" className={styles.chip} onClick={closeStory}>{content.latest.readMore} <ArrowUpRight size={14} /></button></div></div>}
     </div>
   );
 };

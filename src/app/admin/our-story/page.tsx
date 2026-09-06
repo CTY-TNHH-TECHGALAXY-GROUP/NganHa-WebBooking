@@ -25,6 +25,28 @@ const LANGUAGES = [
   { code: 'kr', label: '한국어', flag: '🇰🇷' },
 ];
 
+const WatermarkToggle = ({ checked, onChange }: { checked: boolean; onChange: (checked: boolean) => void }) => (
+  <div className="flex items-center justify-between gap-3 rounded-lg border border-admin-line bg-admin-card/70 px-3 py-2.5">
+    <div>
+      <p className="text-xs font-bold text-admin-text">Logo mờ trên khung này</p>
+      <p className="mt-0.5 text-[10px] text-admin-text-faint">{checked ? 'Đang hiển thị' : 'Đang ẩn'}</p>
+    </div>
+    <button
+      type="button"
+      role="switch"
+      aria-checked={checked}
+      onClick={() => onChange(!checked)}
+      className={`relative inline-flex h-7 w-12 shrink-0 items-center rounded-full border transition-colors focus:outline-none focus:ring-2 focus:ring-admin-gold/50 ${
+        checked ? 'border-green-500 bg-green-500' : 'border-admin-line-strong bg-admin-line'
+      }`}
+      title={checked ? 'Tắt logo mờ cho khung này' : 'Bật logo mờ cho khung này'}
+    >
+      <span className={`block h-5 w-5 rounded-full bg-white shadow transition-transform ${checked ? 'translate-x-[22px]' : 'translate-x-1'}`} />
+      <span className="sr-only">Bật hoặc tắt logo mờ cho khung media này</span>
+    </button>
+  </div>
+);
+
 export default function OurStoryAdminPage() {
   const [config, setConfig] = useState<OurStoryConfig>(createDefaultOurStoryConfig());
   const [loading, setLoading] = useState(true);
@@ -399,6 +421,18 @@ export default function OurStoryAdminPage() {
                   <span className="text-xs text-admin-text-faint">Hỗ trợ JPG, PNG, WEBP</span>
                 </div>
 
+                <div className="mt-3">
+                  <WatermarkToggle
+                    checked={config.locationSection.cityImageWatermarkEnabled !== false}
+                    onChange={(checked) =>
+                      setConfig({
+                        ...config,
+                        locationSection: { ...config.locationSection, cityImageWatermarkEnabled: checked },
+                      })
+                    }
+                  />
+                </div>
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
                   <div>
                     <label className="block text-xs font-semibold text-admin-text mb-1">
@@ -516,6 +550,18 @@ export default function OurStoryAdminPage() {
                     />
                   </label>
                   <span className="text-xs text-admin-text-faint">Hỗ trợ JPG, PNG, WEBP</span>
+                </div>
+
+                <div className="mt-3">
+                  <WatermarkToggle
+                    checked={config.locationSection.streetSignImageWatermarkEnabled !== false}
+                    onChange={(checked) =>
+                      setConfig({
+                        ...config,
+                        locationSection: { ...config.locationSection, streetSignImageWatermarkEnabled: checked },
+                      })
+                    }
+                  />
                 </div>
 
                 <div className="mt-4">
@@ -919,6 +965,21 @@ export default function OurStoryAdminPage() {
                         />
                       </label>
 
+                      <div className="mt-2">
+                        <WatermarkToggle
+                          checked={frame.watermarkEnabled !== false}
+                          onChange={(checked) => {
+                            const newFrames = config.filmReel.frames.map((item, frameIndex) =>
+                              frameIndex === index ? { ...item, watermarkEnabled: checked } : item,
+                            );
+                            setConfig({
+                              ...config,
+                              filmReel: { ...config.filmReel, frames: newFrames },
+                            });
+                          }}
+                        />
+                      </div>
+
                       {frame.image && (
                         <div className="mt-2 h-28 rounded-lg overflow-hidden border border-admin-line">
                           <img src={frame.image} alt={frame.title?.vi} className="w-full h-full object-cover" />
@@ -1000,6 +1061,7 @@ export default function OurStoryAdminPage() {
                     title: { vi: '', en: '', cn: '', jp: '', kr: '' },
                     desc: { vi: '', en: '', cn: '', jp: '', kr: '' },
                     image: '/images/story/photo-bus.jpg',
+                    watermarkEnabled: true,
                   };
                   setConfig({
                     ...config,
@@ -1065,6 +1127,21 @@ export default function OurStoryAdminPage() {
                     />
                   </label>
                   <span className="text-xs text-admin-text-faint">Khuyên dùng ảnh ngang (tỷ lệ 16:9 hoặc 4:3)</span>
+                </div>
+
+                <div className="mt-3">
+                  <WatermarkToggle
+                    checked={config.atmosphereSection.nightStreetImageWatermarkEnabled !== false}
+                    onChange={(checked) =>
+                      setConfig({
+                        ...config,
+                        atmosphereSection: {
+                          ...config.atmosphereSection,
+                          nightStreetImageWatermarkEnabled: checked,
+                        },
+                      })
+                    }
+                  />
                 </div>
 
                 <div className="mt-4">
@@ -1362,6 +1439,18 @@ export default function OurStoryAdminPage() {
                           />
                         </label>
                       </div>
+                      <WatermarkToggle
+                        checked={pillar.watermarkEnabled !== false}
+                        onChange={(checked) => {
+                          const newPillars = config.specialtySection.pillars.map((item, pillarIndex) =>
+                            pillarIndex === idx ? { ...item, watermarkEnabled: checked } : item,
+                          );
+                          setConfig({
+                            ...config,
+                            specialtySection: { ...config.specialtySection, pillars: newPillars },
+                          });
+                        }}
+                      />
                       {pillar.image ? (
                         <img
                           src={pillar.image}

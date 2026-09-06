@@ -259,6 +259,11 @@ body,
   pointer-events: none;
 }
 
+html[data-media-watermark='off'] .media-watermark,
+html[data-media-watermark='off'] [class*='media-watermark'] {
+  display: none !important;
+}
+
 
 body.modal-open .floating-widgets,
 body.modal-open .google-review-widget {

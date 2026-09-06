@@ -229,10 +229,10 @@ const BlogAdminPage = () => {
                 rows={8}
                 value={contents[activeLang] || ''}
                 onChange={e => setContents(prev => ({ ...prev, [activeLang]: e.target.value }))}
-                placeholder="Viết nội dung bài viết ở đây...&#10;&#10;Bạn có thể dùng HTML cơ bản: <b>in đậm</b>, <i>in nghiêng</i>, <br> xuống dòng"
+                placeholder="Viết nội dung bài viết ở đây...&#10;&#10;Dùng một dòng trống để bắt đầu đoạn văn mới."
                 className="w-full bg-white border border-admin-line-strong rounded-xl px-4 py-3 text-admin-text leading-relaxed focus:border-admin-gold focus:ring-1 focus:ring-admin-gold transition-colors resize-y"
               />
-              <p className="text-[12px] text-admin-text-faint mt-1">Hỗ trợ HTML cơ bản.</p>
+              <p className="text-[12px] text-admin-text-faint mt-1">Khoảng cách giữa các đoạn trên website sẽ giữ theo các dòng trống tại đây.</p>
             </div>
 
             {activeLang === 'vi' && (

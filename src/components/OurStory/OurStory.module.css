@@ -205,6 +205,7 @@
 }
 
 .cityFigure {
+  position: relative;
   width: calc(100% - 58px);
   margin: 0 0 0 auto;
 }
@@ -499,6 +500,7 @@
 }
 
 .atmosphereSection > figure {
+  position: relative;
   margin: 0;
 }
 
@@ -572,8 +574,13 @@
 }
 
 .pillarMedia {
+  position: relative;
   min-width: 0;
   margin: 0;
+}
+
+.sectionRoot :global(.media-watermark) {
+  z-index: 1;
 }
 
 .pillarMedia img {

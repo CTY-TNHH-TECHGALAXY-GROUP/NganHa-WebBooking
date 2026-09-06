@@ -3,7 +3,7 @@
 
 import { Z } from '@/lib/zIndex';
 import { useEffect, useState } from 'react';
-import { Phone, Bot, X, Sparkles } from 'lucide-react';
+import { Phone, Bot, MessageCircle, ScanLine, X, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SOCIAL_LINKS } from '@/lib/constants';
 import AIChatBot from '@/components/AIChatBot/AIChatBot';
@@ -21,20 +21,29 @@ const GREETING_TEXT: Record<string, string> = {
   kr: 'Oria 안녕하세요. 저희 팀이 지금 답변해 드릴 수 있습니다 ✨'
 };
 
+const WECHAT_QR_COPY: Record<string, { title: string; body: string; hint: string }> = {
+  vi: { title: 'Quét để kết nối', body: 'Mở WeChat và quét mã QR này để liên hệ với Oria.', hint: 'Dùng WeChat Scan để tiếp tục' },
+  en: { title: 'Scan to connect', body: 'Open WeChat, then scan this QR code to contact Oria.', hint: 'Use WeChat Scan to continue' },
+  cn: { title: '扫码联系', body: '打开微信并扫描此二维码，即可联系 Oria。', hint: '请使用微信扫一扫继续' },
+  jp: { title: 'スキャンして連絡', body: 'WeChatを開き、このQRコードをスキャンしてOriaへご連絡ください。', hint: 'WeChatのスキャン機能をご利用ください' },
+  kr: { title: '스캔하여 연결', body: 'WeChat을 열고 이 QR 코드를 스캔하여 Oria에 문의해 주세요.', hint: 'WeChat 스캔 기능을 사용해 주세요' },
+};
+
 const LABELS: Record<string, {
   call: string;
   whatsapp: string;
   zalo: string;
+  line: string;
   wechat: string;
   kakaotalk: string;
   aiChat: string;
   comingSoon: string;
 }> = {
-  vi: { call: 'Gọi Hotline', whatsapp: 'WhatsApp', zalo: 'Zalo', wechat: 'WeChat', kakaotalk: 'KakaoTalk', aiChat: 'Chat với AI', comingSoon: 'Sắp ra mắt' },
-  en: { call: 'Call Hotline', whatsapp: 'WhatsApp', zalo: 'Zalo', wechat: 'WeChat', kakaotalk: 'KakaoTalk', aiChat: 'Chat with AI', comingSoon: 'Coming Soon' },
-  cn: { call: '拨打热线', whatsapp: 'WhatsApp', zalo: 'Zalo', wechat: '微信 WeChat', kakaotalk: 'KakaoTalk', aiChat: 'AI 客服', comingSoon: '敬请期待' },
-  jp: { call: '電話する', whatsapp: 'WhatsApp', zalo: 'Zalo', wechat: 'WeChat', kakaotalk: 'KakaoTalk', aiChat: 'AI チャット', comingSoon: '近日公開' },
-  kr: { call: '전화 걸기', whatsapp: 'WhatsApp', zalo: 'Zalo', wechat: 'WeChat', kakaotalk: '카카오톡', aiChat: 'AI 챗봇', comingSoon: '출시 예정' },
+  vi: { call: 'Gọi Hotline', whatsapp: 'WhatsApp', zalo: 'Zalo', line: 'LINE', wechat: 'WeChat', kakaotalk: 'KakaoTalk', aiChat: 'Chat với AI', comingSoon: 'Sắp ra mắt' },
+  en: { call: 'Call Hotline', whatsapp: 'WhatsApp', zalo: 'Zalo', line: 'LINE', wechat: 'WeChat', kakaotalk: 'KakaoTalk', aiChat: 'Chat with AI', comingSoon: 'Coming Soon' },
+  cn: { call: '拨打热线', whatsapp: 'WhatsApp', zalo: 'Zalo', line: 'LINE', wechat: '微信 WeChat', kakaotalk: 'KakaoTalk', aiChat: 'AI 客服', comingSoon: '敬请期待' },
+  jp: { call: '電話する', whatsapp: 'WhatsApp', zalo: 'Zalo', line: 'LINE', wechat: 'WeChat', kakaotalk: 'KakaoTalk', aiChat: 'AI チャット', comingSoon: '近日公開' },
+  kr: { call: '전화 걸기', whatsapp: 'WhatsApp', zalo: 'Zalo', line: 'LINE', wechat: 'WeChat', kakaotalk: '카카오톡', aiChat: 'AI 챗봇', comingSoon: '출시 예정' },
 };
 
 const WhatsAppIcon = ({ size = 18, className = "" }: { size?: number; className?: string }) => (
@@ -65,9 +74,12 @@ const FloatingWidgets = () => {
   const { currentLang } = useTranslation();
   const lang = currentLang || 'vi';
   const labels = LABELS[lang] || LABELS.vi;
+  const wechatQrCopy = WECHAT_QR_COPY[lang] || WECHAT_QR_COPY.vi;
   const { systemSettings, getLocalizedText } = useSystemSettings();
   
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isGreetingDismissed, setIsGreetingDismissed] = useState(false);
+  const [isWechatQrOpen, setIsWechatQrOpen] = useState(false);
   const [isFooterVisible, setIsFooterVisible] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
@@ -98,6 +110,12 @@ const FloatingWidgets = () => {
     : `https://zalo.me/${cleanPhone || '0964090277'}`;
 
   const wechat = systemSettings?.wechat;
+  const wechatQr = typeof systemSettings?.wechatQr === 'string' ? systemSettings.wechatQr.trim() : '';
+  const rawLine = systemSettings?.line;
+  const line = typeof rawLine === 'string' ? rawLine.trim() : '';
+  const lineUrl = line
+    ? (line.startsWith('http') || line.startsWith('line:') ? line : `https://line.me/ti/p/~${line.replace(/^@/, '')}`)
+    : '';
   const kakaotalk = systemSettings?.kakaotalk;
 
   const chatGreeting = getLocalizedText(
@@ -119,6 +137,15 @@ const FloatingWidgets = () => {
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    setIsGreetingDismissed(window.sessionStorage.getItem('oria-greeting-dismissed') === 'true');
+  }, []);
+
+  const dismissGreeting = () => {
+    window.sessionStorage.setItem('oria-greeting-dismissed', 'true');
+    setIsGreetingDismissed(true);
+  };
+
   const showToast = (msg: string) => {
     setToastMessage(msg);
     setTimeout(() => {
@@ -138,6 +165,10 @@ const FloatingWidgets = () => {
   };
 
   const handleWechatClick = () => {
+    if (wechatQr) {
+      setIsWechatQrOpen(true);
+      return;
+    }
     if (wechat && (wechat.startsWith('http') || wechat.startsWith('weixin'))) {
       window.open(wechat, '_blank');
       return;
@@ -193,6 +224,26 @@ const FloatingWidgets = () => {
         )}
       </AnimatePresence>
 
+      <AnimatePresence>
+        {isWechatQrOpen && wechatQr && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.96 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.96 }}
+            className="fixed inset-0 grid place-items-center bg-black/60 p-6 backdrop-blur-sm"
+            style={{ zIndex: Z.FLOATING + 5 }}
+            onClick={() => setIsWechatQrOpen(false)}
+          >
+            <section className="relative w-full max-w-[280px] bg-[#f7ebc7] p-5 text-[#1a1a1a] shadow-2xl" onClick={(event) => event.stopPropagation()}>
+              <button type="button" onClick={() => setIsWechatQrOpen(false)} aria-label="Close WeChat QR" className="absolute right-3 top-3 grid h-8 w-8 place-items-center rounded-full text-black/60 hover:bg-black/10 hover:text-black"><X size={17} /></button>
+              <div className="pr-8"><p className="text-xs font-bold uppercase tracking-[0.16em] text-[#638c4b]">WeChat</p><h2 className="mt-1 font-serif text-2xl">{wechatQrCopy.title}</h2><p className="mt-2 text-sm leading-relaxed text-black/65">{wechatQrCopy.body}</p></div>
+              <img src={wechatQr} alt="Oria Spa WeChat QR code" className="mt-5 aspect-square w-full bg-white object-contain p-2" />
+              <div className="mt-4 flex items-center gap-2 text-xs text-black/55"><ScanLine size={15} /> {wechatQrCopy.hint}</div>
+            </section>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Backdrop */}
       <AnimatePresence>
         {isMenuOpen && (
@@ -220,15 +271,23 @@ const FloatingWidgets = () => {
 
         {/* Floating Greeting Bubble (Visible when menu is closed) */}
         <AnimatePresence>
-          {!isMenuOpen && !isFooterVisible && (
+          {!isMenuOpen && !isFooterVisible && !isGreetingDismissed && (
             <motion.div
               initial={{ opacity: 0, y: 10, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 10, scale: 0.95 }}
               transition={{ duration: 0.4 }}
-              className="relative mb-3 mr-1 bg-[#f7ebc7] text-[#1a1a1a] p-3 sm:p-4 rounded-2xl shadow-xl max-w-[280px] sm:max-w-[350px] cursor-pointer pointer-events-auto after:absolute after:content-[''] after:-bottom-3 after:right-8 after:border-[7px] after:border-transparent after:border-t-[#f7ebc7]"
+              className="relative mb-3 mr-1 bg-[#f7ebc7] text-[#1a1a1a] py-3 pl-3 pr-9 sm:py-4 sm:pl-4 sm:pr-10 rounded-2xl shadow-xl max-w-[280px] sm:max-w-[350px] cursor-pointer pointer-events-auto after:absolute after:content-[''] after:-bottom-3 after:right-8 after:border-[7px] after:border-transparent after:border-t-[#f7ebc7]"
               onClick={() => setIsMenuOpen(true)}
             >
+              <button
+                type="button"
+                onClick={(event) => { event.stopPropagation(); dismissGreeting(); }}
+                className="absolute right-2 top-2 grid h-6 w-6 place-items-center rounded-full text-[#1a1a1a]/55 transition-colors hover:bg-black/10 hover:text-[#1a1a1a]"
+                aria-label="Dismiss greeting"
+              >
+                <X size={15} />
+              </button>
               <p className="text-[12px] sm:text-[14px] leading-relaxed font-medium whitespace-normal">
                 {chatGreeting}
               </p>
@@ -280,6 +339,19 @@ const FloatingWidgets = () => {
                   <span className="text-[14px] font-medium tracking-wide">{labels.zalo}</span>
                   <ZaloIcon size={18} className="text-[#0068FF]" />
                 </a>
+
+                {lineUrl && (
+                  <a
+                    href={lineUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="bg-[#1c1815] text-white border border-[#06C755]/40 hover:border-[#06C755] hover:bg-[#06C755]/10 px-4 py-2.5 rounded-2xl rounded-br-sm flex items-center justify-between gap-3 shadow-lg hover:-translate-y-0.5 transition-all w-full min-w-[200px] max-w-[225px]"
+                    aria-label="LINE"
+                  >
+                    <span className="text-[14px] font-medium tracking-wide">{labels.line}</span>
+                    <MessageCircle size={18} className="text-[#06C755]" />
+                  </a>
+                )}
 
                 {/* 4. WeChat */}
                 <button

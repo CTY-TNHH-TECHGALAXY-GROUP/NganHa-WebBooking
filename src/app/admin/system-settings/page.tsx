@@ -152,7 +152,46 @@ export default function SystemSettingsPage() {
       <div className="space-y-8">
         {/* TAB 1: GENERAL SETTINGS */}
         {activeTab === 'general' && (
-          <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+          <div className="space-y-6">
+            <section className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5">
+                <div>
+                  <h2 className="text-xl font-bold text-gray-800">Logo mờ trên ảnh và video</h2>
+                  <p className="mt-1 text-sm text-gray-500">
+                    Hiển thị watermark Oria trên các khung media của website.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  role="switch"
+                  aria-checked={systemSettings.mediaWatermarkEnabled !== false}
+                  onClick={() =>
+                    setSystemSettings({
+                      ...systemSettings,
+                      mediaWatermarkEnabled: systemSettings.mediaWatermarkEnabled === false,
+                    })
+                  }
+                  className={`relative inline-flex h-10 w-[76px] shrink-0 items-center rounded-full border transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 ${
+                    systemSettings.mediaWatermarkEnabled !== false
+                      ? 'border-green-500 bg-green-500'
+                      : 'border-gray-300 bg-gray-200'
+                  }`}
+                  title={systemSettings.mediaWatermarkEnabled !== false ? 'Đang hiển thị logo mờ' : 'Đang ẩn logo mờ'}
+                >
+                  <span
+                    className={`block h-8 w-8 rounded-full bg-white shadow-md transition-transform ${
+                      systemSettings.mediaWatermarkEnabled !== false ? 'translate-x-[38px]' : 'translate-x-1'
+                    }`}
+                  />
+                  <span className="sr-only">Bật hoặc tắt logo mờ trên ảnh và video</span>
+                </button>
+              </div>
+              <p className={`mt-4 text-xs font-semibold ${systemSettings.mediaWatermarkEnabled !== false ? 'text-green-600' : 'text-gray-500'}`}>
+                {systemSettings.mediaWatermarkEnabled !== false ? 'Đang bật' : 'Đang tắt'}
+              </p>
+            </section>
+
+            <section className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
             <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
               <span className="w-1.5 h-6 bg-blue-500 rounded-full"></span>
               Liên hệ & Mạng xã hội
@@ -210,6 +249,16 @@ export default function SystemSettingsPage() {
                 />
               </div>
               <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">LINE ID / Link</label>
+                <input
+                  type="text"
+                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500"
+                  value={systemSettings.line || ''}
+                  onChange={e => setSystemSettings({ ...systemSettings, line: e.target.value })}
+                  placeholder="Ví dụ: @oriaspa hoặc https://line.me/..."
+                />
+              </div>
+              <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">WeChat ID / Link</label>
                 <input
                   type="text"
@@ -217,6 +266,16 @@ export default function SystemSettingsPage() {
                   value={systemSettings.wechat || ''}
                   onChange={e => setSystemSettings({ ...systemSettings, wechat: e.target.value })}
                   placeholder="Ví dụ: OriaSpa_SG hoặc link QR"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">WeChat QR image URL</label>
+                <input
+                  type="url"
+                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500"
+                  value={systemSettings.wechatQr || ''}
+                  onChange={e => setSystemSettings({ ...systemSettings, wechatQr: e.target.value })}
+                  placeholder="URL ảnh QR từ Kho Media"
                 />
               </div>
               <div>
@@ -247,6 +306,7 @@ export default function SystemSettingsPage() {
               onChange={val => setSystemSettings({ ...systemSettings, address: val })}
               multiline
             />
+            </section>
           </div>
         )}
 
@@ -338,6 +398,19 @@ export default function SystemSettingsPage() {
                     setSystemSettings({ ...systemSettings, whatsapp: e.target.value });
                   }}
                   placeholder="Ví dụ: +84964090277 hoặc https://wa.me/84964090277"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">LINE ID / Link</label>
+                <input
+                  type="text"
+                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500"
+                  value={footerContent.line ?? systemSettings.line ?? ''}
+                  onChange={e => {
+                    setFooterContent({ ...footerContent, line: e.target.value });
+                    setSystemSettings({ ...systemSettings, line: e.target.value });
+                  }}
+                  placeholder="Ví dụ: @oriaspa hoặc https://line.me/..."
                 />
               </div>
               <div>

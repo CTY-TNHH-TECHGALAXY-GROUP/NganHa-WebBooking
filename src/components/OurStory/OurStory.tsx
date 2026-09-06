@@ -64,6 +64,9 @@ const OurStory = () => {
                 src={config.locationSection.cityImage || '/images/about-street.png'}
                 alt={getLocalizedText(config.locationSection.title, lang)}
               />
+              {config.locationSection.cityImageWatermarkEnabled !== false && (
+                <div className="media-watermark" aria-hidden="true" />
+              )}
               <figcaption>
                 <span>{getLocalizedText(config.locationSection.cityCaptionLeft, lang)}</span>
                 <span>{getLocalizedText(config.locationSection.cityCaptionRight, lang)}</span>
@@ -76,6 +79,9 @@ const OurStory = () => {
                 alt={getLocalizedText(config.locationSection.imageCaption, lang)}
                 loading="lazy"
               />
+              {config.locationSection.streetSignImageWatermarkEnabled !== false && (
+                <div className="media-watermark" aria-hidden="true" />
+              )}
               <figcaption>{getLocalizedText(config.locationSection.imageCaption, lang)}</figcaption>
             </figure>
           </div>
@@ -132,6 +138,9 @@ const OurStory = () => {
                         alt={getLocalizedText(frame.title, lang)}
                         loading="lazy"
                       />
+                      {frame.watermarkEnabled !== false && (
+                        <div className="media-watermark" aria-hidden="true" />
+                      )}
                       <span>{String(index + 1).padStart(2, '0')}</span>
                     </figure>
                   ))}
@@ -159,6 +168,9 @@ const OurStory = () => {
               alt={getLocalizedText(config.atmosphereSection.imageCaption, lang)}
               loading="lazy"
             />
+            {config.atmosphereSection.nightStreetImageWatermarkEnabled !== false && (
+              <div className="media-watermark" aria-hidden="true" />
+            )}
             <figcaption>{getLocalizedText(config.atmosphereSection.imageCaption, lang)}</figcaption>
           </figure>
           <div className={styles.atmosphereCopy}>
@@ -190,6 +202,9 @@ const OurStory = () => {
                     alt={getLocalizedText(pillar.title, lang)}
                     loading="lazy"
                   />
+                  {pillar.watermarkEnabled !== false && (
+                    <div className="media-watermark" aria-hidden="true" />
+                  )}
                 </figure>
                 <div className={styles.pillarCopy}>
                   <span>{String(index + 1).padStart(2, '0')}</span>

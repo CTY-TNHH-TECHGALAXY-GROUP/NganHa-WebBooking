@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext } from 'react';
+import React, { createContext, useContext, useEffect } from 'react';
 import { Locale } from '@/lib/constants';
 
 // Interfaces
@@ -16,6 +16,7 @@ export interface SystemSettings {
   wechat?: string;
   wechatQr?: string;
   kakaotalk?: string;
+  mediaWatermarkEnabled?: boolean;
   homepage_content?: any;
   blog_content?: any;
   lost_and_found?: any;
@@ -114,6 +115,15 @@ export const SystemSettingsProvider = ({
   brandHistory?: any;
   footerContent?: any;
 }) => {
+  const mediaWatermarkEnabled = systemSettings?.mediaWatermarkEnabled !== false;
+
+  useEffect(() => {
+    document.documentElement.dataset.mediaWatermark = mediaWatermarkEnabled ? 'on' : 'off';
+
+    return () => {
+      delete document.documentElement.dataset.mediaWatermark;
+    };
+  }, [mediaWatermarkEnabled]);
   
   const getLocalizedText = (textObj: Record<string, string> | string | undefined, locale: Locale, fallback = '') => {
     if (!textObj) return fallback;

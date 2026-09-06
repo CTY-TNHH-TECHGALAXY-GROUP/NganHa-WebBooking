@@ -9,6 +9,7 @@ export interface OurStoryFilmFrame {
   title: LocalizedString;
   desc: LocalizedString;
   image: string;
+  watermarkEnabled?: boolean;
 }
 
 export interface OurStoryPillar {
@@ -16,6 +17,7 @@ export interface OurStoryPillar {
   image?: string;
   title: LocalizedString;
   desc: LocalizedString;
+  watermarkEnabled?: boolean;
 }
 
 export interface OurStoryActivity {
@@ -25,6 +27,7 @@ export interface OurStoryActivity {
 }
 
 export interface OurStoryConfig {
+  contentVersion: number;
   header: {
     badge: LocalizedString;
     title: LocalizedString;
@@ -39,9 +42,11 @@ export interface OurStoryConfig {
     connectionsTitle: LocalizedString;
     connections: LocalizedString[];
     cityImage: string;
+    cityImageWatermarkEnabled?: boolean;
     cityCaptionLeft: LocalizedString;
     cityCaptionRight: LocalizedString;
     streetSignImage: string;
+    streetSignImageWatermarkEnabled?: boolean;
     imageCaption: LocalizedString;
   };
   architectureSection: {
@@ -61,6 +66,7 @@ export interface OurStoryConfig {
     evening: LocalizedString;
     landmark: LocalizedString;
     nightStreetImage: string;
+    nightStreetImageWatermarkEnabled?: boolean;
     imageCaption: LocalizedString;
   };
   specialtySection: {
@@ -84,6 +90,7 @@ export const hasValidOurStoryContent = (obj: any): boolean => {
 };
 
 export const createDefaultOurStoryConfig = (): OurStoryConfig => ({
+  contentVersion: 3,
   header: {
     badge: {
       vi: 'Heritage & Destination',
@@ -181,6 +188,7 @@ export const createDefaultOurStoryConfig = (): OurStoryConfig => ({
       },
     ],
     cityImage: '/images/about-street.png',
+    cityImageWatermarkEnabled: true,
     cityCaptionLeft: {
       vi: 'Saigon district 01',
       en: 'Saigon district 01',
@@ -196,6 +204,7 @@ export const createDefaultOurStoryConfig = (): OurStoryConfig => ({
       kr: '도시의 리듬',
     },
     streetSignImage: '/images/story/street-sign.jpg',
+    streetSignImageWatermarkEnabled: true,
     imageCaption: {
       vi: 'Trục đường Ngô Đức Kế giao cắt đường Đồng Khởi • Trung tâm Quận 1',
       en: 'Ngo Duc Ke Street intersecting with Dong Khoi • District 1 Center',
@@ -347,6 +356,7 @@ export const createDefaultOurStoryConfig = (): OurStoryConfig => ({
           kr: '오픈탑 버스를 타고 사이공의 역사적 유산과 현대적인 도시미를 한눈에 담아보세요.',
         },
         image: '/images/story/photo-bus.jpg',
+        watermarkEnabled: true,
       },
       {
         id: 2,
@@ -373,6 +383,7 @@ export const createDefaultOurStoryConfig = (): OurStoryConfig => ({
           kr: '감미로운 음악과 함께 밤의 사이공 강과 화려한 스카이라인을 만끽하는 디너 크루즈.',
         },
         image: '/images/story/photo-cruise.jpg',
+        watermarkEnabled: true,
       },
       {
         id: 3,
@@ -398,7 +409,8 @@ export const createDefaultOurStoryConfig = (): OurStoryConfig => ({
           jp: '伝統的な指圧技法と天然ハーブが、歩き疲れた体を芯からリフレッシュさせます。',
           kr: '도심 속 완벽한 쉼터. 전통 지압과 천연 허브 테라피로 하루의 피로를 말끔히 풀어드립니다.',
         },
-        image: '/images/story/photo-foot.jpg',
+        image: '/images/services/foot-massage.png',
+        watermarkEnabled: true,
       },
       {
         id: 4,
@@ -425,6 +437,7 @@ export const createDefaultOurStoryConfig = (): OurStoryConfig => ({
           kr: '시원한 강바람을 맞으며 색다른 물길 시선에서 사이공의 활기를 느껴보세요.',
         },
         image: '/images/story/photo-waterbus.jpg',
+        watermarkEnabled: true,
       },
     ],
   },
@@ -458,6 +471,7 @@ export const createDefaultOurStoryConfig = (): OurStoryConfig => ({
       kr: '상징적인 명소: 클래식한 헤리티지와 현대 건축이 어우러져 어디서나 돋보이는 포토제닉한 장소.',
     },
     nightStreetImage: '/images/story/night-street.jpg',
+    nightStreetImageWatermarkEnabled: true,
     imageCaption: {
       vi: 'Đêm Sài Gòn lung linh ánh đèn nhìn về phía Nhà Hát Thành Phố & Đồng Khởi',
       en: 'Illuminated Saigon Nightscape facing the Opera House & Dong Khoi',
@@ -482,83 +496,87 @@ export const createDefaultOurStoryConfig = (): OurStoryConfig => ({
       kr: '로컬 스페셜티 • Oria 바버샵 & 스파',
     },
     lead: {
-      vi: 'Nằm tại vị trí kim cương của trung tâm Sài Gòn, Oria không chỉ là một tiệm chăm sóc mà là một điểm chạm văn hóa phục hồi toàn diện, nơi mỗi bước chân mệt mỏi được tái tạo nguồn sinh khí mới.',
-      en: 'Situated in the diamond heart of Saigon, Oria is more than a wellness destination—it is a cultural touchpoint of restorative healing, where tired footsteps find renewed vitality.',
-      cn: '坐落于西贡钻石地段，Oria 不仅是一处水疗中心，更是让疲惫身心得以全然修复与重生的文化养生体验地。',
-      jp: 'サイゴンの一等地に佇む Oria は、単なるスパにとどまらず、旅の疲れを癒し新たな活力を満たす文化的なオアシスです。',
-      kr: '사이공의 다이아몬드 입지에 자리한 Oria는 지친 몸과 마음에 새로운 생기를 불어넣는 토탈 힐링 공간입니다.',
+      vi: '• Bên cạnh những trải nghiệm thị giác và ẩm thực du khách có thể tản bộ dọc theo bờ sông Sài Gòn và không nên bỏ lỡ Oria Spa nằm ngay cạnh khách sạn Riverside, sát bên sông Sài Gòn - một khu vực an ninh rất tốt, để mỗi lần ghé qua, bạn chỉ cần nghĩ đến việc thư giãn mà không phải lo nghĩ gì khác.',
+      en: '• Alongside the city’s visual and culinary experiences, visitors can stroll along the Saigon River and should not miss Oria Spa, located right beside the Riverside Hotel and close to the river in a very safe area. Each time you visit, all you need to think about is relaxing, without worrying about anything else.',
+      cn: '• 除了视觉与美食体验，游客还可以沿着西贡河悠闲漫步，也不要错过紧邻 Riverside Hotel、坐落于西贡河畔的 Oria Spa。这里治安良好，每次到访，您只需安心放松，无须为其他事情担忧。',
+      jp: '• 視覚やグルメの体験に加え、旅行者はサイゴン川沿いを散策できます。そして、Riverside Hotelのすぐ隣、サイゴン川のそばに位置するOria Spaもぜひお見逃しなく。治安の良いエリアにあるため、訪れるたびに余計な心配をせず、ただリラックスすることだけを考えていただけます。',
+      kr: '• 시각과 미식의 즐거움을 경험한 뒤에는 사이공강을 따라 산책해 보세요. Riverside Hotel 바로 옆, 사이공강 가까이의 안전한 지역에 자리한 Oria Spa도 놓치지 마세요. 방문할 때마다 다른 걱정 없이 오직 휴식에만 집중하실 수 있습니다.',
     },
     pillars: [
       {
         icon: '👥',
         image: '/images/about-treatment.png',
+        watermarkEnabled: true,
         title: {
-          vi: 'Công Suất 27 Khách',
-          en: 'Capacity: 27 Guests',
-          cn: '接待能力：27位宾客',
-          jp: '収容人数：27名様',
-          kr: '수용 인원: 27명',
+          vi: 'Oria Spa Luôn Có Chỗ Cho Tất Cả Mọi Người',
+          en: 'A Place for Everyone at Oria Spa',
+          cn: 'Oria Spa 始终为每个人留有一席之地',
+          jp: 'Oria Spaには誰もがくつろげる場所があります',
+          kr: 'Oria Spa에는 모두를 위한 자리가 있습니다',
         },
         desc: {
-          vi: 'Phục vụ đồng thời chu đáo cho cá nhân, cặp đôi và nhóm khách du lịch trong không gian sang trọng, riêng tư.',
-          en: 'Seamlessly hosts individuals, couples, and tour groups in luxurious, private sanctuaries.',
-          cn: '在优雅私密的空间内，为个人、情侣及旅行团队提供细致入微的专业款待。',
-          jp: '個人、カップル、グループのお客様を、贅沢でプライベートな空間でおもてなし。',
-          kr: '개인, 커플, 단체 여행객 모두를 프라이빗하고 고급스러운 공간에서 정성껏 맞이합니다.',
+          vi: 'Không gian ở đây đủ rộng để đón cùng lúc 27 khách, nên dù bạn đi một mình, đi cùng người thương, hay kéo cả nhóm bạn đông đủ, Oria Spa vẫn luôn có chỗ cho tất cả mọi người. Dịch vụ tại Oria Spa được thiết kế cho đủ mọi đổi tượng - nam, nữ, người trẻ, trung niên hay cao tuổi, ai đến cũng tìm được thứ phù hợp với mình.',
+          en: 'The space is large enough to welcome 27 guests at once, so whether you come alone, with someone you love, or with a full group of friends, Oria Spa always has room for everyone. Services at Oria Spa are designed for every kind of guest - men, women, younger visitors, middle-aged guests, and seniors alike can all find something that suits them.',
+          cn: '这里的空间宽敞，可同时接待27位宾客。无论您独自前来、与爱人同行，还是和一大群朋友结伴而来，Oria Spa始终能为每个人提供舒适的位置。Oria Spa的服务为不同人群而设计，无论男女、年轻人、中年人或长者，每位宾客都能找到适合自己的项目。',
+          jp: '館内は一度に27名のお客様をお迎えできる広さがあり、お一人でも、大切な方とでも、大勢のご友人とでも、Oria Spaには皆様のための場所があります。Oria Spaのサービスは、男性・女性、若い方から中高年の方まで、あらゆるお客様が自分に合ったものを見つけられるよう設計されています。',
+          kr: '이곳은 한 번에 27명의 고객을 맞이할 만큼 넓어 혼자 오셔도, 사랑하는 사람과 함께 오셔도, 많은 친구와 방문하셔도 Oria Spa에는 모두를 위한 자리가 있습니다. Oria Spa의 서비스는 남녀, 청년층, 중년층, 어르신까지 누구나 자신에게 맞는 관리를 찾을 수 있도록 설계되었습니다.',
         },
       },
       {
         icon: '🚪',
         image: '/images/about-cruise.png',
+        watermarkEnabled: true,
         title: {
-          vi: 'Không Gian Linh Hoạt',
-          en: 'Flexible Spaces',
-          cn: '多功能灵动空间',
-          jp: 'フレキシブルな空間',
-          kr: '유연한 공간 구성',
+          vi: 'Mỗi Người Có Trải Nghiệm Riêng',
+          en: 'A Personal Experience for Each Guest',
+          cn: '每个人都有自己的体验',
+          jp: '一人ひとりに合わせた体験',
+          kr: '각자를 위한 개별적인 경험',
         },
         desc: {
-          vi: 'Bố trí phòng đôi ấm cúng, phòng riêng biệt lập và phòng nhóm gia đình với hương thơm tinh dầu tự nhiên.',
-          en: 'Cozy couple suites, secluded VIP rooms, and family areas suffused with natural aromatics.',
-          cn: '温馨的双人房、尊享独立包间及宽敞的家庭套房，洋溢纯净天然植物精油香氛。',
-          jp: '居心地の良いカップルルーム、VIP個室、ファミリールームを完備。天然アロマが香ります。',
-          kr: '아늑한 커플룸, 독립된 프라이빗룸, 패밀리룸에 천연 에센셜 오일의 향이 가득합니다.',
+          vi: 'Nếu đi cùng nhau hai người, một nam một nữ, thử kết hợp này xem: nam cắt tóc và lấy ráy tai, nữ gội đầu và massage chân - vừa đủ khác nhau để mỗi người có trải nghiệm riêng, vừa đủ gần để cùng kết thúc một lúc.',
+          en: 'If two people come together, one man and one woman, try this combination: a haircut and ear cleaning for him, and a hair wash and foot massage for her - different enough for each person to enjoy an individual experience, yet close enough for both to finish at the same time.',
+          cn: '如果两人同行，一位男士与一位女士，不妨尝试这样的组合：男士剪发并洁耳，女士洗发并享受足部按摩。项目各有不同，让每个人都拥有自己的体验，同时安排又足够接近，可以在差不多同一时间结束。',
+          jp: '男女お二人でお越しなら、男性はヘアカットと耳掃除、女性はシャンプーとフットマッサージという組み合わせはいかがでしょう。それぞれが自分らしい体験を楽しめるほど異なりながら、同じ頃に終えられるほど近い時間でご案内できます。',
+          kr: '남녀 두 분이 함께 방문한다면 이런 조합을 추천합니다. 남성은 헤어 커트와 귀 청소를, 여성은 헤어 워시와 발 마사지를 받아 보세요. 각자만의 경험을 즐길 만큼 다르면서도 비슷한 시간에 함께 마칠 수 있도록 조화롭게 구성할 수 있습니다.',
         },
       },
       {
         icon: '🌿',
-        image: '/images/story/photo-foot.jpg',
+        image: '/images/services/foot-massage.png',
+        watermarkEnabled: true,
         title: {
-          vi: 'Menu Chuẩn & Nâng Cao',
-          en: 'Standard & Signature Menu',
-          cn: '经典与定制疗程',
-          jp: 'スタンダード＆シグネチャー',
-          kr: '스탠다드 & 시그니처 메뉴',
+          vi: 'Đầy Đủ Lựa Chọn Cho Từng Nhu Câu',
+          en: 'A Complete Choice for Every Need',
+          cn: '满足不同需求的完整选择',
+          jp: 'あらゆるニーズに応える選択肢',
+          kr: '모든 필요에 맞춘 다양한 선택',
         },
         desc: {
-          vi: 'Từ bấm huyệt chân cổ truyền, massage thảo dược giải mỏi đến các liệu trình gội đầu dưỡng sinh chuyên sâu.',
-          en: 'From ancestral foot reflexology and herbal bodywork to holistic nourishing hair and scalp treatments.',
-          cn: '涵盖经典足底穴位推拿、草本理疗减压到深度滋养洗头养生护理。',
-          jp: '伝統的な足つぼマッサージからハーブトリートメント、ヘッドスパまで多彩なメニュー。',
-          kr: '전통 발 지압부터 허브 바디 테라피, 프리미엄 두피 샴푸 케어까지 폭넓게 제공합니다.',
+          vi: 'Về không gian, Oria Spa có đầy đủ lựa chọn cho từng nhu câu: phòng lớn cho các nhóm đông người, phòng đôi cho hai người muôn ở gần nhau, và phòng riêng cho ai thích sự yên tĩnh một mình. Với menu phổ thông, bạn sẽ được sắp xếp thợ và phòng phù hợp với dịch vụ mình chọn - nhanh gọn, không mất thời gian lựa chọn thêm. Còn với menu cao cấp, mặc định bạn sẽ được vào phòng riêng, được xem hình và tự chọn kỹ thuật viên theo đúng sở thích của mình.',
+          en: 'For the setting, Oria Spa offers a complete choice for every need: large rooms for bigger groups, couple rooms for two people who want to stay close, and private rooms for anyone who prefers peaceful time alone. With the standard menu, a suitable therapist and room are arranged according to your selected service - quick, simple, and without extra choices. With the premium menu, a private room is provided by default, and you can view profiles and choose the therapist who best matches your preference.',
+          cn: '在空间选择上，Oria Spa可以满足不同需求：大型房间适合多人团体，双人房适合希望彼此相伴的两位宾客，独立包间则留给喜欢安静独处的人。选择标准菜单时，我们会根据您所选的服务安排合适的技师与房间，快捷省心，无须再花时间挑选。选择高级菜单时，默认安排独立包间，您还可以查看照片，并依照个人喜好自行选择技师。',
+          jp: '空間についても、Oria Spaはそれぞれのニーズに応える選択肢をご用意しています。大人数のグループには広い部屋、近くで過ごしたいお二人にはペアルーム、一人で静かに過ごしたい方には個室があります。スタンダードメニューでは、お選びのサービスに合うスタッフと部屋をこちらで手早く手配するため、追加の選択に時間を取られません。プレミアムメニューでは個室が標準となり、写真を見ながらお好みのセラピストを選べます。',
+          kr: '공간 또한 필요에 따라 다양하게 선택할 수 있습니다. 많은 인원이 함께하는 그룹을 위한 대형 룸, 가까이 머물고 싶은 두 분을 위한 커플 룸, 혼자만의 고요함을 원하는 분을 위한 프라이빗 룸이 준비되어 있습니다. 스탠다드 메뉴는 선택한 서비스에 맞는 관리사와 룸을 빠르게 배정해 드려 추가 선택에 시간을 들일 필요가 없습니다. 프리미엄 메뉴는 기본적으로 프라이빗 룸이 제공되며, 사진을 보고 원하는 관리사를 직접 선택할 수 있습니다.',
         },
       },
       {
         icon: '🔥',
         image: '/images/about-treatment.png',
+        watermarkEnabled: true,
         title: {
-          vi: 'Xông Hơi Khô Tinh Dầu',
-          en: 'Aroma Cedar Dry Sauna',
-          cn: '雪松精油干蒸桑拿',
-          jp: 'アロマドライサウナ',
-          kr: '아로마 건식 사우나',
+          vi: 'Một Hành Trình Phục Hồi Năng Lượng Toàn Diện',
+          en: 'A Complete Journey of Renewal',
+          cn: '一场全面恢复能量的旅程',
+          jp: '心身のエネルギーを満たす回復の旅',
+          kr: '온전한 에너지 회복의 여정',
         },
         desc: {
-          vi: 'Hệ thống Dry Sauna gỗ tuyết tùng giúp thải độc, kích thích tuần hoàn máu và hồi phục cơ thể tức thì.',
-          en: 'Cedarwood dry sauna that purifies toxins, boosts circulation, and re-energizes your physical vitality.',
-          cn: '天然雪松木干蒸桑拿，促进血液循环与深度排毒，令身心迅速重焕活力。',
-          jp: 'シダーウッドの香るドライサウナでデトックスを促し、血行を促進して疲労回復。',
-          kr: '삼나무 건식 사우나로 노폐물을 배출하고 혈액순환을 촉진하여 즉각적인 활력을 충전합니다.',
+          vi: 'Dù bạn đến Oria Spa vì lý do gì - muôn thư giãn sau một ngày dài, muôn dành thời gian cho người thân, hay chỉ đơn giản là muốn thử điêu gì đó mới - chúng tôi luôn có một chỗ và một cách phù hợp để đón bạn. Đó chính là bấm huyệt chân và Aroma toàn thân được thực hiện bằng đôi bàn tay của các nghệ nhân, nơi mọi giác quan được đánh thức, một tách trà nóng, một âm điệu spa du dương như bản giao hưởng nâng từng nhịp xoa bóp trở thành một điệu nhạc cơ thể, mùi xông tinh dầu thiên nhiên, không gian yên tĩnh chìm vào giấc ngủ, một hành trình phục hồi năng lượng toàn diện. Đó là linh hồn của sự trải nghiệm mà Hệ Thống Oria Barbershop & Spa luôn hướng đến.',
+          en: 'Whatever brings you to Oria Spa - the wish to relax after a long day, to spend time with loved ones, or simply to try something new - we always have a fitting place and a thoughtful way to welcome you. Here, foot reflexology and full-body Aroma treatments are performed by the hands of skilled artisans, awakening every sense: a warm cup of tea, soothing spa melodies like a symphony that turns each massage rhythm into music for the body, the scent of natural essential oils, and a quiet space that lets you drift into sleep. It is a complete journey of renewed energy. That is the soul of the experience toward which the Oria Barbershop & Spa System always aspires.',
+          cn: '无论您因何来到Oria Spa——想在漫长的一天后放松身心、想陪伴挚爱亲友，或只是想尝试一些新鲜事物——我们总有合适的空间与方式迎接您。足底穴位按摩与全身Aroma护理由经验丰富的匠人双手完成，在这里，所有感官都会被唤醒：一杯热茶、如交响乐般悠扬的水疗旋律，让每一下按摩节奏化作身体的乐章；天然精油的香气、令人安然入睡的静谧空间，共同构成一场全面恢复能量的旅程。这正是Oria Barbershop & Spa连锁始终追求的体验灵魂。',
+          jp: 'どのような理由でOria Spaを訪れるとしても、長い一日の終わりにくつろぎたいとき、大切な人と時間を過ごしたいとき、あるいはただ新しい何かを試してみたいとき、私たちはいつでもお客様に合った場所と迎え方をご用意しています。熟練した職人の手による足つぼと全身アロマトリートメントがすべての感覚を呼び覚まします。温かいお茶、マッサージの一つひとつのリズムを身体の音楽へと変える交響曲のような穏やかなスパ音楽、天然精油の香り、そして眠りへと誘う静かな空間。それは、心身のエネルギーを総合的に回復する旅です。これこそが、Oria Barbershop & Spaが常に目指している体験の真髄です。',
+          kr: 'Oria Spa를 찾는 이유가 무엇이든, 긴 하루 끝에 쉬고 싶을 때, 소중한 사람과 시간을 보내고 싶을 때, 또는 그저 새로운 것을 경험하고 싶을 때, 저희는 언제나 고객에게 알맞은 공간과 방식으로 맞이합니다. 숙련된 장인의 손길로 진행되는 발 지압과 전신 아로마 관리는 모든 감각을 깨웁니다. 따뜻한 차 한 잔, 마사지의 리듬 하나하나를 몸을 위한 음악으로 바꾸는 교향곡 같은 잔잔한 스파 선율, 천연 에센셜 오일의 향기, 잠에 빠져들게 하는 고요한 공간이 어우러져 온전한 에너지 회복의 여정을 완성합니다. 이것이 바로 Oria Barbershop & Spa가 언제나 추구하는 경험의 본질입니다.',
         },
       },
     ],
@@ -577,7 +595,30 @@ export const hydrateOurStoryConfig = (saved: any): OurStoryConfig => {
   const defaults = createDefaultOurStoryConfig();
   if (!saved || typeof saved !== 'object') return defaults;
 
+  const migrateSpecialtyCopy = Number(saved.contentVersion || 0) < 3;
+  const specialtyLead = { ...defaults.specialtySection.lead, ...(saved.specialtySection?.lead || {}) };
+  const specialtyPillars = Array.isArray(saved.specialtySection?.pillars) && saved.specialtySection.pillars.length > 0
+    ? saved.specialtySection.pillars.map((item: any, idx: number) => ({
+        ...(defaults.specialtySection.pillars[idx] || {}),
+        ...item,
+        watermarkEnabled: item.watermarkEnabled !== false,
+        image: item.image || defaults.specialtySection.pillars[idx]?.image,
+        title: { ...(defaults.specialtySection.pillars[idx]?.title || {}), ...(item.title || {}) },
+        desc: { ...(defaults.specialtySection.pillars[idx]?.desc || {}), ...(item.desc || {}) },
+      }))
+    : defaults.specialtySection.pillars;
+
+  if (migrateSpecialtyCopy) {
+    Object.assign(specialtyLead, defaults.specialtySection.lead);
+    defaults.specialtySection.pillars.forEach((pillar, idx) => {
+      if (!specialtyPillars[idx]) return;
+      Object.assign(specialtyPillars[idx].title, pillar.title);
+      Object.assign(specialtyPillars[idx].desc, pillar.desc);
+    });
+  }
+
   return {
+    contentVersion: 3,
     header: {
       badge: { ...defaults.header.badge, ...(saved.header?.badge || {}) },
       title: { ...defaults.header.title, ...(saved.header?.title || {}) },
@@ -597,9 +638,11 @@ export const hydrateOurStoryConfig = (saved: any): OurStoryConfig => {
           }))
         : defaults.locationSection.connections,
       cityImage: saved.locationSection?.cityImage || defaults.locationSection.cityImage,
+      cityImageWatermarkEnabled: saved.locationSection?.cityImageWatermarkEnabled !== false,
       cityCaptionLeft: { ...defaults.locationSection.cityCaptionLeft, ...(saved.locationSection?.cityCaptionLeft || {}) },
       cityCaptionRight: { ...defaults.locationSection.cityCaptionRight, ...(saved.locationSection?.cityCaptionRight || {}) },
       streetSignImage: saved.locationSection?.streetSignImage || defaults.locationSection.streetSignImage,
+      streetSignImageWatermarkEnabled: saved.locationSection?.streetSignImageWatermarkEnabled !== false,
       imageCaption: { ...defaults.locationSection.imageCaption, ...(saved.locationSection?.imageCaption || {}) },
     },
     architectureSection: {
@@ -625,6 +668,7 @@ export const hydrateOurStoryConfig = (saved: any): OurStoryConfig => {
         ? saved.filmReel.frames.map((item: any, idx: number) => ({
             ...(defaults.filmReel.frames[idx] || { id: idx + 1, frameTag: `KODAK 500T • ${idx + 1}A ▶` }),
             ...item,
+            watermarkEnabled: item.watermarkEnabled !== false,
             badge: { ...(defaults.filmReel.frames[idx]?.badge || {}), ...(item.badge || {}) },
             title: { ...(defaults.filmReel.frames[idx]?.title || {}), ...(item.title || {}) },
             desc: { ...(defaults.filmReel.frames[idx]?.desc || {}), ...(item.desc || {}) },
@@ -637,21 +681,14 @@ export const hydrateOurStoryConfig = (saved: any): OurStoryConfig => {
       evening: { ...defaults.atmosphereSection.evening, ...(saved.atmosphereSection?.evening || {}) },
       landmark: { ...defaults.atmosphereSection.landmark, ...(saved.atmosphereSection?.landmark || {}) },
       nightStreetImage: saved.atmosphereSection?.nightStreetImage || defaults.atmosphereSection.nightStreetImage,
+      nightStreetImageWatermarkEnabled: saved.atmosphereSection?.nightStreetImageWatermarkEnabled !== false,
       imageCaption: { ...defaults.atmosphereSection.imageCaption, ...(saved.atmosphereSection?.imageCaption || {}) },
     },
     specialtySection: {
       badge: { ...defaults.specialtySection.badge, ...(saved.specialtySection?.badge || {}) },
       headline: { ...defaults.specialtySection.headline, ...(saved.specialtySection?.headline || {}) },
-      lead: { ...defaults.specialtySection.lead, ...(saved.specialtySection?.lead || {}) },
-      pillars: Array.isArray(saved.specialtySection?.pillars) && saved.specialtySection.pillars.length > 0
-        ? saved.specialtySection.pillars.map((item: any, idx: number) => ({
-            ...(defaults.specialtySection.pillars[idx] || {}),
-            ...item,
-            image: item.image || defaults.specialtySection.pillars[idx]?.image,
-            title: { ...(defaults.specialtySection.pillars[idx]?.title || {}), ...(item.title || {}) },
-            desc: { ...(defaults.specialtySection.pillars[idx]?.desc || {}), ...(item.desc || {}) },
-          }))
-        : defaults.specialtySection.pillars,
+      lead: specialtyLead,
+      pillars: specialtyPillars,
       ctaText: { ...defaults.specialtySection.ctaText, ...(saved.specialtySection?.ctaText || {}) },
       ctaLink: saved.specialtySection?.ctaLink || defaults.specialtySection.ctaLink,
     },
