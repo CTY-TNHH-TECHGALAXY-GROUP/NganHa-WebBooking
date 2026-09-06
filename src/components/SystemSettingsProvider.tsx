@@ -11,6 +11,8 @@ export interface SystemSettings {
   phone?: string;
   zalo?: string;
   facebook?: string;
+  instagram?: string;
+  tiktok?: string;
   whatsapp?: string;
   line?: string;
   wechat?: string;

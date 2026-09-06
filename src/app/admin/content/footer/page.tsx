@@ -35,6 +35,8 @@ const DEFAULT_CONTENT = {
   kakaotalk: 'https://pf.kakao.com/_xjVyxaX',
   line: '',
   facebook: '',
+  instagram: '',
+  tiktok: '',
   copyright: `© ${new Date().getFullYear()} TECHGALAXY GROUP. All rights reserved.`,
 };
 
@@ -64,6 +66,8 @@ export default function FooterContentPage() {
           kakaotalk: fc.kakaotalk ?? ss.kakaotalk ?? DEFAULT_CONTENT.kakaotalk,
           line: fc.line ?? ss.line ?? DEFAULT_CONTENT.line,
           facebook: fc.facebook ?? ss.facebook ?? '',
+          instagram: fc.instagram ?? ss.instagram ?? '',
+          tiktok: fc.tiktok ?? ss.tiktok ?? '',
           copyright: fc.copyright || DEFAULT_CONTENT.copyright,
         });
         setLoading(false);
@@ -91,6 +95,8 @@ export default function FooterContentPage() {
             kakaotalk: content.kakaotalk,
             line: content.line,
             facebook: content.facebook,
+            instagram: content.instagram,
+            tiktok: content.tiktok,
             address: content.address,
           }
         }),
@@ -299,6 +305,26 @@ export default function FooterContentPage() {
                 value={content.facebook || ''}
                 onChange={e => handleChange('facebook', e.target.value)}
                 placeholder="https://facebook.com/..."
+                className="w-full bg-admin-bg border border-admin-line-strong rounded-xl px-4 py-3 text-admin-text text-sm focus:border-admin-gold focus:ring-1 focus:ring-admin-gold outline-none transition-colors"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-admin-text-dim mb-2">Link Instagram (Để trống nếu không dùng)</label>
+              <input
+                type="text"
+                value={content.instagram || ''}
+                onChange={e => handleChange('instagram', e.target.value)}
+                placeholder="https://instagram.com/... hoặc @oriaspa.sg"
+                className="w-full bg-admin-bg border border-admin-line-strong rounded-xl px-4 py-3 text-admin-text text-sm focus:border-admin-gold focus:ring-1 focus:ring-admin-gold outline-none transition-colors"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-admin-text-dim mb-2">Link TikTok (Để trống nếu không dùng)</label>
+              <input
+                type="text"
+                value={content.tiktok || ''}
+                onChange={e => handleChange('tiktok', e.target.value)}
+                placeholder="https://tiktok.com/@... hoặc @oriaspa.sg"
                 className="w-full bg-admin-bg border border-admin-line-strong rounded-xl px-4 py-3 text-admin-text text-sm focus:border-admin-gold focus:ring-1 focus:ring-admin-gold outline-none transition-colors"
               />
             </div>

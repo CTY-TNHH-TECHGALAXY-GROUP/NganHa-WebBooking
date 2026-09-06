@@ -225,7 +225,27 @@ export default function SystemSettingsPage() {
                   className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500"
                   value={systemSettings.facebook || ''}
                   onChange={e => setSystemSettings({ ...systemSettings, facebook: e.target.value })}
-                  placeholder="Ví dụ: https://m.me/..."
+                  placeholder="Ví dụ: https://facebook.com/..."
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Link Instagram</label>
+                <input
+                  type="text"
+                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500"
+                  value={systemSettings.instagram || ''}
+                  onChange={e => setSystemSettings({ ...systemSettings, instagram: e.target.value })}
+                  placeholder="Ví dụ: https://instagram.com/... hoặc @oriaspa.sg"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Link TikTok</label>
+                <input
+                  type="text"
+                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500"
+                  value={systemSettings.tiktok || ''}
+                  onChange={e => setSystemSettings({ ...systemSettings, tiktok: e.target.value })}
+                  placeholder="Ví dụ: https://tiktok.com/@... hoặc @oriaspa.sg"
                 />
               </div>
               <div>
@@ -372,6 +392,32 @@ export default function SystemSettingsPage() {
                     setSystemSettings({ ...systemSettings, facebook: e.target.value });
                   }}
                   placeholder="https://facebook.com/..."
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Link Instagram</label>
+                <input
+                  type="text"
+                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500"
+                  value={footerContent.instagram ?? systemSettings.instagram ?? ''}
+                  onChange={e => {
+                    setFooterContent({ ...footerContent, instagram: e.target.value });
+                    setSystemSettings({ ...systemSettings, instagram: e.target.value });
+                  }}
+                  placeholder="https://instagram.com/... hoặc @oriaspa.sg"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Link TikTok</label>
+                <input
+                  type="text"
+                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500"
+                  value={footerContent.tiktok ?? systemSettings.tiktok ?? ''}
+                  onChange={e => {
+                    setFooterContent({ ...footerContent, tiktok: e.target.value });
+                    setSystemSettings({ ...systemSettings, tiktok: e.target.value });
+                  }}
+                  placeholder="https://tiktok.com/@... hoặc @oriaspa.sg"
                 />
               </div>
               <div>
