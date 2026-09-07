@@ -62,6 +62,7 @@ export const POST = withAuth(async (request: NextRequest, { supabase, user }) =>
 
     try {
       revalidatePath('/space');
+      revalidatePath('/design-your-journey');
       revalidatePath('/api/public/site-content');
     } catch (e) {
       console.warn('Revalidate error:', e);

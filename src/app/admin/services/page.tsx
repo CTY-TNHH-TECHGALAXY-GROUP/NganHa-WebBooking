@@ -1,8 +1,12 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Save, CheckCircle } from 'lucide-react';
-import { DEFAULT_JOURNEY_CONTENT } from '@/components/DesignYourJourney/designJourneyData';
+import { Save, CheckCircle, ImageIcon } from 'lucide-react';
+import {
+  JOURNEY_COPY,
+  JOURNEY_MEDIA_DEFAULTS,
+  type JourneyCopy,
+} from '@/components/DesignYourJourney/DesignYourJourneyDemoPage';
 
 const LANGUAGES = [
   { id: 'vi', label: 'VI' },
@@ -15,6 +19,7 @@ const LANGUAGES = [
 export default function DesignJourneyAdminPage() {
   const [contentData, setContentData] = useState<any>({});
   const [localOverrides, setLocalOverrides] = useState<any>({});
+  const [mediaOverrides, setMediaOverrides] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
   const [successId, setSuccessId] = useState<string | null>(null);
   const [activeLang, setActiveLang] = useState('vi');
@@ -41,7 +46,11 @@ export default function DesignJourneyAdminPage() {
     try {
       const newMediaData = {
         ...contentData,
-        ...localOverrides
+        ...localOverrides,
+        media: {
+          ...(contentData.media || {}),
+          ...mediaOverrides,
+        },
       };
       
       const res = await fetch('/api/admin/content', {
@@ -54,6 +63,7 @@ export default function DesignJourneyAdminPage() {
       if (json.success) {
         setContentData(newMediaData);
         setLocalOverrides({});
+        setMediaOverrides({});
         setSuccessId('save');
         setTimeout(() => setSuccessId(null), 3000);
       } else {
@@ -72,7 +82,7 @@ export default function DesignJourneyAdminPage() {
         ...prev,
         [key]: {
           ...fieldData,
-          [lang]: value
+          [lang]: key === 'questions' ? value.split('\n').map((item) => item.trim()).filter(Boolean) : value
         }
       };
     });
@@ -80,15 +90,16 @@ export default function DesignJourneyAdminPage() {
 
   if (loading) return <div className="p-8 text-center text-admin-text-dim">Đang tải cấu hình...</div>;
 
-  const keys = Object.keys(DEFAULT_JOURNEY_CONTENT);
-  const hasChanges = Object.keys(localOverrides).length > 0;
+  const keys = Object.keys(JOURNEY_COPY.vi) as Array<keyof JourneyCopy>;
+  const mediaKeys = Object.keys(JOURNEY_MEDIA_DEFAULTS) as Array<keyof typeof JOURNEY_MEDIA_DEFAULTS>;
+  const hasChanges = Object.keys(localOverrides).length > 0 || Object.keys(mediaOverrides).length > 0;
 
   return (
     <div className="p-6 lg:p-10 max-w-5xl mx-auto">
       <div className="mb-8 flex justify-between items-center">
         <div>
-          <h1 className="text-2xl lg:text-3xl font-bold text-admin-text">✨ Quản Lý Text "Design Your Journey"</h1>
-          <p className="text-admin-text-dim mt-2">Chỉnh sửa nội dung chữ đa ngôn ngữ của trang Design Your Journey.</p>
+          <h1 className="text-2xl lg:text-3xl font-bold text-admin-text">Design Your Journey</h1>
+          <p className="text-admin-text-dim mt-2">Chỉnh nội dung và hình ảnh đang hiển thị trên trang dịch vụ.</p>
         </div>
         
         <button 
@@ -99,6 +110,33 @@ export default function DesignJourneyAdminPage() {
           {successId === 'save' ? <CheckCircle size={20} /> : <Save size={20} />}
           {successId === 'save' ? 'Đã Lưu Thành Công' : 'Lưu Thay Đổi'}
         </button>
+      </div>
+
+      <div className="bg-admin-panel border border-admin-line rounded-2xl overflow-hidden shadow-sm p-6 mb-6">
+        <div className="flex items-center gap-2 mb-5">
+          <ImageIcon size={18} className="text-admin-gold" />
+          <h2 className="font-bold text-admin-text">Hình ảnh trang</h2>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          {mediaKeys.map((key) => {
+            const value = mediaOverrides[key] ?? contentData.media?.[key] ?? JOURNEY_MEDIA_DEFAULTS[key];
+            return (
+              <div key={key} className="bg-admin-bg p-4 rounded-xl border border-admin-line">
+                <div className="aspect-[16/9] overflow-hidden rounded-lg bg-black mb-3">
+                  {value && <img src={value} alt="" className="w-full h-full object-cover" />}
+                </div>
+                <label className="text-xs uppercase font-bold text-admin-gold mb-2 block">{key}</label>
+                <input
+                  type="text"
+                  className="w-full bg-admin-panel border border-admin-line-strong rounded-lg p-3 text-sm text-admin-text focus:border-admin-gold focus:outline-none"
+                  value={value}
+                  onChange={(event) => setMediaOverrides((previous) => ({ ...previous, [key]: event.target.value }))}
+                  placeholder="/images/... hoặc URL media"
+                />
+              </div>
+            );
+          })}
+        </div>
       </div>
 
       <div className="bg-admin-panel border border-admin-line rounded-2xl overflow-hidden shadow-sm p-6">
@@ -117,32 +155,32 @@ export default function DesignJourneyAdminPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {keys.map((key) => {
-            const defaultEntry = (DEFAULT_JOURNEY_CONTENT as any)[key] || {};
-            const defaultVal = defaultEntry[activeLang] || '';
-            const currentVal = localOverrides[key]?.[activeLang] !== undefined 
+            const defaultVal = JOURNEY_COPY[activeLang]?.[key] || JOURNEY_COPY.en[key] || '';
+            const currentVal = localOverrides[key]?.[activeLang] !== undefined
               ? localOverrides[key][activeLang] 
               : (contentData[key]?.[activeLang] !== undefined ? contentData[key][activeLang] : defaultVal);
-            
-            const isHtml = currentVal.includes('<br>');
+            const displayVal = Array.isArray(currentVal) ? currentVal.join('\n') : currentVal;
+            const defaultDisplay = Array.isArray(defaultVal) ? defaultVal.join(' / ') : defaultVal;
+            const isHtml = typeof currentVal === 'string' && currentVal.includes('<br>');
             
             return (
               <div key={key} className="bg-admin-bg p-4 rounded-xl border border-admin-line">
                 <label className="text-xs uppercase font-bold text-admin-gold mb-2 block">{key}</label>
-                {isHtml || currentVal.length > 60 ? (
+                {key === 'questions' || isHtml || (typeof currentVal === 'string' && currentVal.length > 60) ? (
                   <textarea 
                     className="w-full bg-admin-panel border border-admin-line-strong rounded-lg p-3 text-sm text-admin-text focus:border-admin-gold focus:outline-none min-h-[100px]"
-                    value={currentVal}
+                    value={displayVal}
                     onChange={(e) => handleChange(key, activeLang, e.target.value)}
                   />
                 ) : (
                   <input 
                     type="text"
                     className="w-full bg-admin-panel border border-admin-line-strong rounded-lg p-3 text-sm text-admin-text focus:border-admin-gold focus:outline-none"
-                    value={currentVal}
+                    value={displayVal}
                     onChange={(e) => handleChange(key, activeLang, e.target.value)}
                   />
                 )}
-                <div className="mt-2 text-[10px] text-admin-text-faint">Mặc định: {defaultVal}</div>
+                <div className="mt-2 text-[10px] text-admin-text-faint">Mặc định: {defaultDisplay}</div>
               </div>
             );
           })}

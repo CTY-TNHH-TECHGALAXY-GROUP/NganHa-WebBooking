@@ -1,4 +1,4 @@
-import DesignYourJourneyPage from '@/components/DesignYourJourney/DesignYourJourneyPage';
+import DesignYourJourneyPage from '@/components/DesignYourJourney/DesignYourJourneyDemoPage';
 
 export const metadata = {
   title: 'Design Your Journey | OriaSpa',

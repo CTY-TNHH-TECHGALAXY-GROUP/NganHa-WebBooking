@@ -21,7 +21,7 @@ const NAV_ITEMS = [
   { label: 'Sách Lật (Flipbook)', href: '/admin/flipbook-pages', icon: BookOpen },
   { label: 'Bài viết (Blog)', href: '/admin/posts', icon: FileText },
   { label: 'Nội dung Blog', href: '/admin/content/blogs', icon: Globe },
-  { label: 'Dịch vụ (Media & Giá)', href: '/admin/services', icon: Wrench },
+  { label: 'Dịch vụ (Media & content)', href: '/admin/services', icon: Wrench },
   { label: 'Kho Media', href: '/admin/media-library', icon: ImagePlus },
   { label: 'Nội dung Đa Ngôn Ngữ', href: '/admin/content/homepage', icon: Globe },
   { label: 'Cấu hình Giao diện', href: '/admin/homepage-styling', icon: LayoutDashboard },

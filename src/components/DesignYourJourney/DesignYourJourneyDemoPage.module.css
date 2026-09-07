@@ -1,0 +1,384 @@
+.page {
+  --ink: #171310;
+  --paper: #f2ede4;
+  --gold: #b8924f;
+  --muted: #746d64;
+  overflow: hidden;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body), Arial, sans-serif;
+}
+
+.hero {
+  position: relative;
+  height: 86svh;
+  min-height: 620px;
+  max-height: 860px;
+  overflow: hidden;
+  background: #0d0b0a;
+}
+
+.heroImage,
+.closing > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.heroImage {
+  object-position: center 45%;
+  animation: heroReveal 1.2s ease-out both;
+}
+
+.heroShade,
+.closingShade {
+  position: absolute;
+  inset: 0;
+  background: rgba(13, 10, 8, 0.52);
+}
+
+.heroCopy {
+  position: absolute;
+  z-index: 2;
+  right: 5vw;
+  bottom: 64px;
+  left: 5vw;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 380px);
+  align-items: end;
+  gap: 48px;
+  color: #f8f0df;
+}
+
+.heroCopy p,
+.index {
+  margin: 0 0 16px;
+  color: var(--gold);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.heroCopy h1 {
+  grid-row: 2;
+  margin: 0;
+  font-family: var(--font-heading), Georgia, serif;
+  font-size: 82px;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 0.92;
+}
+
+.heroCopy span {
+  grid-column: 2;
+  grid-row: 2;
+  color: rgba(248, 240, 223, 0.82);
+  font-size: 15px;
+  line-height: 1.75;
+}
+
+.opening {
+  display: grid;
+  grid-template-columns: 180px minmax(0, 930px);
+  gap: 48px;
+  padding: 110px 5vw 126px;
+}
+
+.opening blockquote {
+  margin: 0;
+  max-width: 860px;
+  font-family: var(--font-body), Arial, sans-serif;
+  font-size: 25px;
+  font-weight: 400;
+  line-height: 1.65;
+}
+
+.score {
+  padding: 94px 5vw 118px;
+  background: #181411;
+  color: #f4ead8;
+}
+
+.score header {
+  display: grid;
+  grid-template-columns: 180px minmax(0, 760px);
+  gap: 48px;
+  margin-bottom: 70px;
+}
+
+.score h2,
+.decisions h2 {
+  margin: 0;
+  font-family: var(--font-heading), Georgia, serif;
+  font-size: 52px;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.08;
+}
+
+.scoreLine {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  height: 1px;
+  margin-bottom: 34px;
+  background: rgba(238, 219, 180, 0.18);
+}
+
+.scoreLine span {
+  position: relative;
+}
+
+.scoreLine span::before {
+  position: absolute;
+  top: -5px;
+  left: 0;
+  width: 11px;
+  height: 11px;
+  border: 1px solid var(--gold);
+  border-radius: 50%;
+  background: #181411;
+  content: '';
+}
+
+.moment {
+  display: grid;
+  grid-template-columns: minmax(300px, 0.88fr) minmax(0, 1.12fr);
+  align-items: center;
+  gap: 7vw;
+  padding: 34px 0 68px;
+}
+
+.moment + .moment {
+  padding-top: 68px;
+  border-top: 1px solid rgba(238, 219, 180, 0.14);
+}
+
+.moment.reverse figure {
+  order: 2;
+}
+
+.moment figure {
+  position: relative;
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+}
+
+.moment img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+}
+
+.momentCopy {
+  max-width: 610px;
+}
+
+.momentCopy > p {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0 0 22px;
+  color: var(--gold);
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.momentCopy h3 {
+  margin: 0 0 22px;
+  font-family: var(--font-heading), Georgia, serif;
+  font-size: 42px;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.1;
+}
+
+.momentCopy > span {
+  color: rgba(244, 234, 216, 0.7);
+  font-size: 15px;
+  line-height: 1.85;
+}
+
+.decisions {
+  padding: 112px 5vw 128px;
+}
+
+.decisions h2 {
+  max-width: 900px;
+  margin-bottom: 62px;
+}
+
+.decisions ol {
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid rgba(23, 19, 16, 0.2);
+  list-style: none;
+}
+
+.decisions li {
+  display: grid;
+  grid-template-columns: 90px minmax(0, 1fr);
+  align-items: center;
+  min-height: 112px;
+  border-bottom: 1px solid rgba(23, 19, 16, 0.2);
+}
+
+.decisions li > span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.decisions strong {
+  font-family: var(--font-body), Arial, sans-serif;
+  font-size: 30px;
+  font-weight: 400;
+  line-height: 1.35;
+}
+
+.manifesto {
+  padding: 118px 7vw;
+  background: #a5824b;
+  color: #17110c;
+}
+
+.manifesto p {
+  max-width: 980px;
+  margin: 0 auto;
+  font-family: var(--font-body), Arial, sans-serif;
+  font-size: 34px;
+  font-weight: 500;
+  line-height: 1.45;
+  text-align: center;
+}
+
+.closing {
+  position: relative;
+  height: 68svh;
+  min-height: 540px;
+  background: #0d0b0a;
+}
+
+.closing > img {
+  object-position: center;
+}
+
+.closingCopy {
+  position: absolute;
+  z-index: 2;
+  right: 5vw;
+  bottom: 58px;
+  left: 5vw;
+  max-width: 750px;
+  color: #f8f0df;
+}
+
+.closingCopy p {
+  margin: 0;
+  font-family: var(--font-body), Arial, sans-serif;
+  font-size: 26px;
+  line-height: 1.5;
+}
+
+.closingActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 26px;
+  margin-top: 30px;
+}
+
+.closingActions a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--gold);
+  color: #f8f0df;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.closingActions a > span {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.closingActions small {
+  color: rgba(248, 240, 223, 0.68);
+  font-size: 12px;
+  font-weight: 400;
+}
+
+@keyframes heroReveal {
+  from { opacity: 0; transform: scale(1.035); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@media (max-width: 960px) {
+  .heroCopy h1 { font-size: 58px; }
+  .opening,
+  .score header { grid-template-columns: 130px minmax(0, 1fr); }
+  .opening blockquote { font-size: 23px; }
+  .score h2,
+  .decisions h2 { font-size: 44px; }
+  .moment { gap: 42px; }
+  .manifesto p { font-size: 30px; }
+}
+
+@media (max-width: 720px) {
+  .hero {
+    height: 78svh;
+    min-height: 570px;
+  }
+  .heroCopy {
+    right: 22px;
+    bottom: 34px;
+    left: 22px;
+    display: block;
+  }
+  .heroCopy h1 { font-size: 44px; }
+  .heroCopy span {
+    display: block;
+    margin-top: 22px;
+    font-size: 14px;
+  }
+  .opening,
+  .score,
+  .decisions { padding-right: 22px; padding-left: 22px; }
+  .opening,
+  .score header { display: block; }
+  .opening { padding-top: 70px; padding-bottom: 78px; }
+  .opening blockquote { font-size: 19px; }
+  .score { padding-top: 72px; padding-bottom: 84px; }
+  .score header { margin-bottom: 46px; }
+  .score h2,
+  .decisions h2 { font-size: 36px; }
+  .moment,
+  .moment.reverse {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+  .moment.reverse figure { order: 0; }
+  .momentCopy h3 { font-size: 32px; }
+  .decisions { padding-top: 76px; padding-bottom: 84px; }
+  .decisions h2 { margin-bottom: 42px; }
+  .decisions li { grid-template-columns: 46px minmax(0, 1fr); min-height: 94px; }
+  .decisions strong { font-size: 24px; }
+  .manifesto { padding: 80px 22px; }
+  .manifesto p { font-size: 26px; }
+  .closing { min-height: 520px; }
+  .closingCopy { right: 22px; bottom: 40px; left: 22px; }
+  .closingCopy p { font-size: 21px; }
+  .closingActions { gap: 18px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .heroImage { animation: none; }
+}
