@@ -91,9 +91,9 @@ const DEFAULT_NAV_ITEMS: NavItem[] = [
     label: 'Services',
     isUnclickable: true,
     children: [
-      { id: 'design_journey', label: 'Design Your Journey', href: '/design-your-journey', badge: '50%' },
-      { id: 'pure_relaxation', label: 'Pure relaxation', href: '/pure-relaxation', badge: '30%' },
-      { id: 'therapy', label: 'Therapy', href: '/therapy', badge: '20%' },
+      { id: 'design_journey', label: 'Design Your Journey', href: '/design-your-journey' },
+      { id: 'pure_relaxation', label: 'Pure relaxation', href: '/pure-relaxation' },
+      { id: 'therapy', label: 'Therapy', href: '/therapy' },
     ],
   },
   {
@@ -234,9 +234,9 @@ const Header = () => {
         label: getLocalizedText(hpNav?.services, lang, getNavFallback('services', lang)),
         isUnclickable: true,
         children: [
-          { id: 'design_journey', label: getLocalizedText(hpNav?.designJourney, lang, getNavFallback('design_journey', lang)), href: '/design-your-journey', badge: '50%' },
-          { id: 'pure_relaxation', label: getLocalizedText(hpNav?.pureRelaxation, lang, getNavFallback('pure_relaxation', lang)), href: '/pure-relaxation', badge: '30%' },
-          { id: 'therapy', label: getLocalizedText(hpNav?.therapy, lang, getNavFallback('therapy', lang)), href: '/therapy', badge: '20%' },
+          { id: 'design_journey', label: getLocalizedText(hpNav?.designJourney, lang, getNavFallback('design_journey', lang)), href: '/design-your-journey' },
+          { id: 'pure_relaxation', label: getLocalizedText(hpNav?.pureRelaxation, lang, getNavFallback('pure_relaxation', lang)), href: '/pure-relaxation' },
+          { id: 'therapy', label: getLocalizedText(hpNav?.therapy, lang, getNavFallback('therapy', lang)), href: '/therapy' },
         ],
       },
       {
@@ -368,7 +368,7 @@ const Header = () => {
 
   const pathname = usePathname();
   const isCheckoutPage = pathname.includes('/checkout');
-  const isHomepage = pathname === '/' || pathname === '/vi' || pathname === '/en';
+  const isHomepage = pathname === '/' || ['/vi', '/en', '/cn', '/jp', '/kr'].includes(pathname);
   const isPageWithTopLogo = isHomepage || isCheckoutPage;
   const showLogo = !isPageWithTopLogo || isScrolled;
 
@@ -716,9 +716,9 @@ const Header = () => {
                 ) : (
                   <div className="py-12 flex flex-col items-center text-center">
                     <p className="font-sans text-[12px] uppercase tracking-widest text-gray-500 mb-6">{cartText('empty', currentLang.code)}</p>
-                    <a href="/#services" className="font-sans text-[11px] uppercase tracking-[0.2em] border-b border-[#D4AF37] pb-1 text-[#1a1a1a] hover:text-[#D4AF37] transition-colors" onClick={() => setIsCartOpen(false)}>
+                    <Link href="/pure-relaxation" className="font-sans text-[11px] uppercase tracking-[0.2em] border-b border-[#D4AF37] pb-1 text-[#1a1a1a] hover:text-[#D4AF37] transition-colors" onClick={() => setIsCartOpen(false)}>
                       {cartText('explore', currentLang.code)}
-                    </a>
+                    </Link>
                   </div>
                 )}
               </div>

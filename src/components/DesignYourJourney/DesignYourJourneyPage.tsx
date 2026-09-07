@@ -3,12 +3,16 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useTranslation } from '@/components/TranslationProvider';
+import { useSystemSettings } from '@/components/SystemSettingsProvider';
 import styles from './DesignYourJourneyPage.module.css';
 import { DEFAULT_JOURNEY_CONTENT } from './designJourneyData';
 
 export default function DesignYourJourneyPage() {
   const router = useRouter();
   const { currentLang, setCurrentLang } = useTranslation();
+  const { systemSettings } = useSystemSettings();
+  const phone = systemSettings?.phone || '+84964090277';
+  const hotlineUrl = `tel:${phone.replace(/[^\d+]/g, '')}`;
   const [content, setContent] = useState<any>(DEFAULT_JOURNEY_CONTENT);
 
   useEffect(() => {
@@ -118,10 +122,10 @@ export default function DesignYourJourneyPage() {
           <h5 dangerouslySetInnerHTML={{ __html: getLoc('finalTitle') }} />
           <p>{getLoc('finalDesc')}</p>
           <div style={{ display: 'flex', gap: '20px', alignItems: 'center', flexWrap: 'wrap' }}>
-            <Link href={`/${currentLang || 'en'}/menu`} className={styles.finalLink}>
+            <Link href={`/${currentLang || 'en'}/new-user/standard/checkout`} className={styles.finalLink}>
               {getLoc('finalLink')}
             </Link>
-            <a href="tel:+84" className={styles.finalLink} style={{ color: '#d3c2a8', borderColor: '#d3c2a8' }}>
+            <a href={hotlineUrl} className={styles.finalLink} style={{ color: '#d3c2a8', borderColor: '#d3c2a8' }}>
               {getLoc('ctaContact')} ↗
             </a>
           </div>

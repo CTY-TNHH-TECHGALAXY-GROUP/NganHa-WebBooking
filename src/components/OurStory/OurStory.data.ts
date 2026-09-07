@@ -75,7 +75,7 @@ export interface OurStoryConfig {
     lead: LocalizedString;
     pillars: OurStoryPillar[];
     ctaText: LocalizedString;
-    ctaLink: string;
+    ctaLink: string | null;
   };
 }
 
@@ -587,7 +587,7 @@ export const createDefaultOurStoryConfig = (): OurStoryConfig => ({
       jp: '今すぐ体験を予約する',
       kr: '지금 바로 예약하기',
     },
-    ctaLink: '/new-user/standard/checkout',
+    ctaLink: null,
   },
 });
 
@@ -690,7 +690,7 @@ export const hydrateOurStoryConfig = (saved: any): OurStoryConfig => {
       lead: specialtyLead,
       pillars: specialtyPillars,
       ctaText: { ...defaults.specialtySection.ctaText, ...(saved.specialtySection?.ctaText || {}) },
-      ctaLink: saved.specialtySection?.ctaLink || defaults.specialtySection.ctaLink,
+      ctaLink: saved.specialtySection?.ctaLink === '/new-user/standard/checkout' ? null : (saved.specialtySection?.ctaLink || defaults.specialtySection.ctaLink),
     },
   };
 };

@@ -13,6 +13,7 @@ import SplashScreen from '@/components/SplashScreen/SplashScreen';
 const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
   const isBookingPage = pathname === '/booking' || pathname.startsWith('/admin');
+  const hideFloatingWidgets = pathname.includes('/checkout') || pathname === '/booking' || pathname.startsWith('/admin');
 
   return (
     <>
@@ -20,7 +21,7 @@ const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
       {!isBookingPage && <Header />}
       {children}
       {!isBookingPage && <Footer />}
-      {!isBookingPage && <FloatingWidgets />}
+      {!hideFloatingWidgets && <FloatingWidgets />}
     </>
   );
 };

@@ -1098,7 +1098,7 @@ export default function OrderConfirmModal({
                             {isTabletDevice && bookingId && (
                                 <div className="bg-white p-4 rounded-2xl shadow-xl">
                                     <QRCodeSVG
-                                        value={`${typeof window !== 'undefined' ? window.location.origin : UI_CONFIG.JOURNEY_BASE_URL}/${lang}/journey/${bookingId}`}
+                                        value={`${typeof window !== 'undefined' ? window.location.origin : UI_CONFIG.JOURNEY_BASE_URL}/${lang}`}
                                         size={UI_CONFIG.QR_SIZE}
                                         level="H"
                                         includeMargin={true}
