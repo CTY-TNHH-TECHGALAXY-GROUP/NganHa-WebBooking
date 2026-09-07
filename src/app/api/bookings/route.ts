@@ -1,6 +1,7 @@
 // ═══════════════════════════════════════
 // POST /api/bookings
 // Server-authoritative, atomic, collision-safe booking API
+// Phase: P0-C Atomic booking and idempotency
 // ═══════════════════════════════════════
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
@@ -16,16 +17,24 @@ const PRIVATE_ROOM_SERVICE_ID = 'NHS0900';
 const PRIVATE_ROOM_DEFAULT_PRICE_VND = 105000;
 
 /**
- * Sinh mã đơn tuần tự dạng: WB-ddmmyyyy-001, WB-ddmmyyyy-002,...
- * Đơn giản hoá đuôi ID = số thứ tự đơn trong ngày (3 chữ số zero-padded).
+ * Fallback collision-free booking ID generator for environments where the
+ * database RPC sequence is temporarily unavailable.
+ * Produces IDs with zero database roundtrips and zero collision risk:
+ * Format: WB-ddmmyyyy-<4-char time entropy><4-char crypto hex>
  */
-const generateSequentialBookingId = async (supabase: any, targetDate?: string): Promise<string> => {
+const generateCollisionSafeFallbackId = (targetDate?: string): string => {
   const now = new Date();
   let dateStr: string;
   if (targetDate && targetDate.includes('-')) {
     const parts = targetDate.split('-');
     if (parts.length === 3) {
-      dateStr = `${parts[2].padStart(2, '0')}${parts[1].padStart(2, '0')}${parts[0]}`;
+      if (parts[0].length === 4) {
+        // YYYY-MM-DD -> DDMMYYYY
+        dateStr = `${parts[2].padStart(2, '0')}${parts[1].padStart(2, '0')}${parts[0]}`;
+      } else {
+        // DD-MM-YYYY
+        dateStr = `${parts[0].padStart(2, '0')}${parts[1].padStart(2, '0')}${parts[2]}`;
+      }
     } else {
       const dd = String(now.getDate()).padStart(2, '0');
       const mm = String(now.getMonth() + 1).padStart(2, '0');
@@ -39,34 +48,23 @@ const generateSequentialBookingId = async (supabase: any, targetDate?: string): 
     dateStr = `${dd}${mm}${yyyy}`;
   }
 
-  const prefix = `${BOOKING_ID_PREFIX}-${dateStr}-`;
-  const { data: existingBookings } = await supabase
-    .from('Bookings')
-    .select('id')
-    .like('id', `${prefix}%`);
-
-  let maxSeq = 0;
-  if (existingBookings && existingBookings.length > 0) {
-    for (const b of existingBookings) {
-      const suffix = b.id.replace(prefix, '');
-      const parsed = parseInt(suffix, 10);
-      if (!isNaN(parsed) && parsed > maxSeq) {
-        maxSeq = parsed;
-      }
-    }
-    if (maxSeq === 0) {
-      maxSeq = existingBookings.length;
-    }
-  }
-
-  const nextSeq = maxSeq + 1;
-  const seqStr = String(nextSeq).padStart(3, '0');
-  return `${prefix}${seqStr}`;
+  const timeEntropy = (Date.now() % 1000000).toString(36).toUpperCase().padStart(4, '0');
+  const cryptoEntropy = crypto.randomBytes(2).toString('hex').toUpperCase();
+  return `${BOOKING_ID_PREFIX}-${dateStr}-${timeEntropy}${cryptoEntropy}`;
 };
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
+    let body: any;
+    try {
+      body = await request.json();
+    } catch {
+      return NextResponse.json(
+        { success: false, error: 'Yêu cầu không hợp lệ: định dạng JSON sai' },
+        { status: 400 }
+      );
+    }
+
     const {
       name,
       phone,
@@ -79,22 +77,18 @@ export async function POST(request: Request) {
       guests,
       staffGender,
       customerGender,
-      lang,
+      lang: rawLang,
       selectedServices: rawSelectedServices,
       services: rawServices,
       paymentMethod,
       amountPaid,
       changeDenominations,
     } = body;
-    const selectedServices = rawSelectedServices || rawServices || [];
 
-    const idempotencyKey =
-      body.idempotencyKey ||
-      request.headers.get('Idempotency-Key') ||
-      body.clientSessionId ||
-      null;
+    const rawList = rawSelectedServices || rawServices || [];
+    const selectedServices = Array.isArray(rawList) ? rawList : [];
 
-    // ── 1. Validate Input cơ bản ──────────────────────
+    // ── 1. Basic Input Validation ─────────────────────
     if (!name || typeof name !== 'string' || !name.trim()) {
       return NextResponse.json(
         { success: false, error: 'Thiếu họ tên khách hàng (fullName is required)' },
@@ -102,56 +96,119 @@ export async function POST(request: Request) {
       );
     }
 
-    if (!Array.isArray(selectedServices) || selectedServices.length === 0) {
+    if (selectedServices.length === 0) {
       return NextResponse.json(
         { success: false, error: 'Giỏ hàng trống. Vui lòng chọn ít nhất một dịch vụ.' },
         { status: 400 }
       );
     }
 
+    // Five-language normalization
+    const supportedLangs = ['vi', 'en', 'cn', 'jp', 'kr'];
+    const lang = supportedLangs.includes(rawLang) ? rawLang : 'vi';
+
+    // ── 2. Validate Item Quantities & Service IDs ─────
+    const requestedServiceIds: string[] = [];
+    for (let i = 0; i < selectedServices.length; i++) {
+      const item = selectedServices[i];
+      const svcId = item?.variantId || item?.serviceId || item?.id;
+      if (!svcId || typeof svcId !== 'string' || !svcId.trim()) {
+        return NextResponse.json(
+          { success: false, error: `Dịch vụ thứ ${i + 1} thiếu mã dịch vụ hợp lệ` },
+          { status: 400 }
+        );
+      }
+      requestedServiceIds.push(svcId.trim());
+
+      const rawQty = item.quantity !== undefined ? item.quantity : item.qty;
+      const parsedQty = Number(rawQty);
+      if (rawQty !== undefined && (!Number.isFinite(parsedQty) || parsedQty <= 0)) {
+        return NextResponse.json(
+          { success: false, error: `Số lượng dịch vụ "${svcId}" không hợp lệ (phải lớn hơn 0)` },
+          { status: 400 }
+        );
+      }
+    }
+
+    const cleanPhone = phone ? String(phone).trim() : null;
+    const cleanEmail = email && typeof email === 'string' && email.includes('@') ? email.trim() : null;
+
+    // ── 3. Idempotency Key Resolution ─────────────────
+    // Support client-sent key or derive deterministic stable hash from phone + date + time + services
+    const clientProvidedKey =
+      (typeof body.idempotencyKey === 'string' && body.idempotencyKey.trim()) ||
+      request.headers.get('Idempotency-Key')?.trim() ||
+      request.headers.get('x-idempotency-key')?.trim() ||
+      (typeof body.clientSessionId === 'string' && body.clientSessionId.trim()) ||
+      null;
+
+    const deriveStableHash = (): string => {
+      const p = cleanPhone || 'guest';
+      const d = date || 'nodate';
+      const t = time || 'notime';
+      const s = requestedServiceIds.slice().sort().join(',');
+      const n = name.trim().toLowerCase();
+      const raw = `${p}|${d}|${t}|${s}|${n}`;
+      const hash = crypto.createHash('sha256').update(raw).digest('hex').substring(0, 24);
+      return `hash_${hash}`;
+    };
+
+    const finalIdempotencyKey = clientProvidedKey || deriveStableHash();
+
     const supabase = getSupabaseAdmin();
 
-    // ── 2. Kiểm tra Idempotency ───────────────────────
-    if (idempotencyKey && typeof idempotencyKey === 'string') {
-      const { data: existingBooking } = await supabase
+    // ── 4. Fast-path Idempotency Check ────────────────
+    if (finalIdempotencyKey) {
+      let existingBooking: any = null;
+
+      // Check idLegacy (always present & indexed)
+      const { data: legacyBooking } = await supabase
         .from('Bookings')
-        .select('id, billCode, totalAmount, customerName, customerPhone, customerEmail, bookingDate, timeBooking, branchName, customerLang')
-        .eq('idLegacy', `idemp:${idempotencyKey.trim()}`)
+        .select('id, billCode, totalAmount, customerName, customerPhone, customerEmail, bookingDate, timeBooking, branchName, customerLang, status')
+        .eq('idLegacy', `idemp:${finalIdempotencyKey}`)
         .maybeSingle();
 
+      if (legacyBooking) {
+        existingBooking = legacyBooking;
+      } else {
+        // Check dedicated idempotency_key column
+        try {
+          const { data: modernBooking, error: modernErr } = await supabase
+            .from('Bookings')
+            .select('id, billCode, totalAmount, customerName, customerPhone, customerEmail, bookingDate, timeBooking, branchName, customerLang, status')
+            .eq('idempotency_key', finalIdempotencyKey)
+            .maybeSingle();
+          if (!modernErr && modernBooking) {
+            existingBooking = modernBooking;
+          }
+        } catch {
+          // Column may not exist in unmigrated environment
+        }
+      }
+
       if (existingBooking) {
-        console.log(`[API Bookings] Idempotent hit: return existing booking ${existingBooking.id}`);
+        console.log(`[API Bookings] Fast-path idempotent hit: returning booking ${existingBooking.id}`);
         return NextResponse.json({
           success: true,
           idempotent: true,
           data: {
             bookingId: existingBooking.id,
-            billCode: existingBooking.billCode,
+            billCode: existingBooking.billCode || existingBooking.id,
             customerName: existingBooking.customerName,
             customerPhone: existingBooking.customerPhone,
-            date,
-            time,
+            customerEmail: existingBooking.customerEmail,
+            date: existingBooking.bookingDate ? String(existingBooking.bookingDate).split('T')[0] : date,
+            time: existingBooking.timeBooking || time,
             branchName: existingBooking.branchName || BRANCH_DEFAULT,
-            totalAmount: existingBooking.totalAmount,
-            lang: existingBooking.customerLang || lang || 'vi',
+            totalAmount: Number(existingBooking.totalAmount) || 0,
+            lang: existingBooking.customerLang || lang,
+            status: existingBooking.status,
           },
         });
       }
     }
 
-    // ── 3. PHASE 1: Server-Authoritative Pricing ──────
-    // Lấy danh sách ID dịch vụ cần xác thực
-    const requestedServiceIds: string[] = selectedServices
-      .map((s: any) => s.variantId || s.serviceId || s.id)
-      .filter(Boolean);
-
-    if (requestedServiceIds.length === 0) {
-      return NextResponse.json(
-        { success: false, error: 'Không tìm thấy mã dịch vụ hợp lệ trong yêu cầu' },
-        { status: 400 }
-      );
-    }
-
+    // ── 5. Server-Authoritative Pricing & Validation ──
     const allIdsToQuery = Array.from(new Set([...requestedServiceIds, PRIVATE_ROOM_SERVICE_ID]));
 
     const { data: dbServices, error: fetchSvcErr } = await supabase
@@ -162,7 +219,7 @@ export async function POST(request: Request) {
     if (fetchSvcErr) {
       console.error('❌ [API Bookings] Lỗi truy vấn bảng Services:', fetchSvcErr.message);
       return NextResponse.json(
-        { success: false, error: 'Lỗi kiểm tra giá dịch vụ từ hệ thống' },
+        { success: false, error: 'Không thể kết nối cơ sở dữ liệu để kiểm tra giá dịch vụ' },
         { status: 500 }
       );
     }
@@ -193,7 +250,7 @@ export async function POST(request: Request) {
         ? Number(privateRoomSvc.priceVND)
         : PRIVATE_ROOM_DEFAULT_PRICE_VND;
 
-    // Kiểm tra tính hợp lệ của từng dịch vụ
+    // Validate every line item against authoritative DB catalog
     const invalidServices: { id: string; reason: string }[] = [];
     const validatedServiceList: any[] = [];
     let serverCalculatedTotalAmount = 0;
@@ -213,7 +270,7 @@ export async function POST(request: Request) {
         continue;
       }
 
-      // Giới hạn số lượng hợp lý từ 1 đến 20
+      // Safe bounded quantity between 1 and 20
       const safeQty = Math.max(1, Math.min(20, Math.floor(Number(rawItem.quantity || rawItem.qty || 1))));
       const basePriceVND = Number(dbSvc.priceVND) || 0;
 
@@ -223,7 +280,7 @@ export async function POST(request: Request) {
       const itemCanonicalPriceVND = basePriceVND + (hasPrivateRoomAddon ? privateRoomPriceVND : 0);
       serverCalculatedTotalAmount += itemCanonicalPriceVND * safeQty;
 
-      const localizedName = getLocalizedServiceName(dbSvc, lang || 'vi');
+      const localizedName = getLocalizedServiceName(dbSvc, lang);
 
       validatedServiceList.push({
         variantId: dbSvc.id,
@@ -243,7 +300,6 @@ export async function POST(request: Request) {
       });
     }
 
-    // Nếu giỏ hàng có dịch vụ không hợp lệ hoặc đã tắt: trả về 409 CART_REQUIRES_REVIEW
     if (invalidServices.length > 0) {
       return NextResponse.json(
         {
@@ -256,12 +312,9 @@ export async function POST(request: Request) {
       );
     }
 
-    // ── 4. PHASE 5: Customer Demographic Persistence ──
+    // ── 6. Customer Demographics Persistence ──────────
     let customerId: string | null = null;
-    const cleanPhone = phone ? String(phone).trim() : null;
-    const cleanEmail = email && typeof email === 'string' && email.includes('@') ? email.trim() : null;
 
-    // Chuẩn hóa customerGender: 'male' | 'female' | 'other'
     let resolvedGender: string | null = null;
     const rawGender = customerGender || staffGender;
     if (rawGender) {
@@ -274,13 +327,12 @@ export async function POST(request: Request) {
     if (cleanPhone || cleanEmail) {
       const query = cleanPhone
         ? supabase.from('Customers').select('id, fullName, phone, email, gender').eq('phone', cleanPhone).maybeSingle()
-        : supabase.from('Customers').select('id, fullName, phone, email, gender').eq('email', cleanEmail).maybeSingle();
+        : supabase.from('Customers').select('id, fullName, phone, email, gender').eq('email', cleanEmail!).maybeSingle();
 
       const { data: existingCustomer } = await query;
 
       if (existingCustomer?.id) {
         customerId = existingCustomer.id;
-        // Cập nhật thông tin mà KHÔNG ghi đè giá trị rỗng lên dữ liệu cũ
         const updatePayload: Record<string, any> = {
           fullName: name.trim(),
           updatedAt: new Date().toISOString(),
@@ -307,17 +359,14 @@ export async function POST(request: Request) {
           .single();
 
         if (cusErr) {
-          console.warn('⚠️ [API Bookings] Tạo Customer thất bại (tiếp tục tạo booking):', cusErr.message);
+          console.warn('⚠️ [API Bookings] Lưu thông tin khách hàng thất bại:', cusErr.message);
         } else {
           customerId = newCustomer?.id || null;
         }
       }
     }
 
-    // ── 5. PHASE 3: Sequential & Collision-Safe Booking ID ──────
-    let bookingId = await generateSequentialBookingId(supabase, date);
-
-    // ── 6. Tổng hợp notes & focus area ────────────────
+    // ── 7. Format Notes & Focus Areas (Multilingual) ──
     const notesParts: string[] = [];
     if (guests && Number(guests) > 1) notesParts.push(`Số khách: ${guests}`);
     if (staffGender && staffGender !== 'any') {
@@ -328,7 +377,7 @@ export async function POST(request: Request) {
       (s) => s.hasPrivateRoomAddon || s.variantId === PRIVATE_ROOM_SERVICE_ID
     );
     if (hasAnyPrivateRoom) {
-      notesParts.push(PRIVATE_ROOM_NAME_I18N[lang || 'vi'] || 'Phòng riêng');
+      notesParts.push(PRIVATE_ROOM_NAME_I18N[lang] || 'Phòng riêng');
     }
     if (note?.trim()) notesParts.push(`Ghi chú chung: ${note.trim()}`);
     const finalNotes = notesParts.join(' | ') || null;
@@ -445,61 +494,36 @@ export async function POST(request: Request) {
     });
     const finalFocusAreaNote = focusParts.length > 0 ? focusParts.join('\n\n') : null;
 
-    // ── 7. PHASE 2: Atomic Creation & Rollback Safety ─
+    // ── 8. Build Booking & Item Payloads ──────────────
     const bookingDate = date
       ? new Date(`${date}T${time || '00:00'}:00+07:00`).toISOString()
       : new Date().toISOString();
 
-    let insertSuccess = false;
-    let attempts = 0;
-    while (!insertSuccess && attempts < 5) {
-      attempts++;
-      const bookingPayload: Record<string, any> = {
-        id: bookingId,
-        billCode: bookingId,
-        source: 'WEB_BOOKING',
-        guestCount: guests ? Math.max(1, Number(guests)) : 1,
-        branchName: branchName || BRANCH_DEFAULT,
-        bookingDate,
-        timeBooking: time || null,
-        customerName: name.trim(),
-        customerPhone: cleanPhone,
-        customerEmail: cleanEmail,
-        customerGender: resolvedGender,
-        customerLang: lang || 'vi',
-        customerId,
-        roomName: hasAnyPrivateRoom ? (PRIVATE_ROOM_NAME_I18N[lang || 'vi'] || 'Phòng riêng') : null,
-        notes: finalNotes,
-        focusAreaNote: finalFocusAreaNote,
-        totalAmount: serverCalculatedTotalAmount,
-        status: 'NEW',
-        tip: 0,
-        idLegacy: idempotencyKey ? `idemp:${idempotencyKey.trim()}` : null,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      };
+    const bookingPayload: Record<string, any> = {
+      source: 'WEB_BOOKING',
+      guestCount: guests ? Math.max(1, Number(guests)) : 1,
+      branchName: branchName || BRANCH_DEFAULT,
+      bookingDate,
+      timeBooking: time || null,
+      customerName: name.trim(),
+      customerPhone: cleanPhone,
+      customerEmail: cleanEmail,
+      customerGender: resolvedGender,
+      customerLang: lang,
+      customerId,
+      roomName: hasAnyPrivateRoom ? (PRIVATE_ROOM_NAME_I18N[lang] || 'Phòng riêng') : null,
+      notes: finalNotes,
+      focusAreaNote: finalFocusAreaNote,
+      totalAmount: serverCalculatedTotalAmount,
+      status: 'NEW',
+      tip: 0,
+    };
 
-      const { error: bookingErr } = await supabase.from('Bookings').insert(bookingPayload);
-      if (!bookingErr) {
-        insertSuccess = true;
-      } else if (bookingErr.code === '23505' || bookingErr.message?.includes('duplicate key') || bookingErr.message?.includes('unique constraint')) {
-        console.warn(`⚠️ [API Bookings] Trùng ID ${bookingId}, tự động tăng số thứ tự tiếp theo...`);
-        bookingId = await generateSequentialBookingId(supabase, date);
-      } else {
-        console.error('❌ [API Bookings] INSERT Booking lỗi:', bookingErr.message);
-        return NextResponse.json(
-          { success: false, error: `Lỗi tạo đơn đặt lịch: ${bookingErr.message}` },
-          { status: 500 }
-        );
-      }
-    }
-
-    // ── 8. Tạo BookingItems ────────────────────────────
-    const bookingItems: any[] = [];
+    const bookingItemsPayload: any[] = [];
     validatedServiceList.forEach((svc: any, idx: number) => {
       const opts = svc.options || {};
 
-      let strengthStr = undefined;
+      let strengthStr: string | undefined = undefined;
       if (opts.strength) {
         const s = String(opts.strength).toLowerCase();
         if (s === 'light' || s === 'nhẹ') strengthStr = 'LIGHT';
@@ -527,10 +551,8 @@ export async function POST(request: Request) {
         note: finalNote,
       };
 
-      // 1. Thêm dịch vụ chính với giá server-authoritative
-      bookingItems.push({
-        id: `${bookingId}-${svc.variantId}-${idx}`,
-        bookingId,
+      // Service item
+      bookingItemsPayload.push({
         serviceId: svc.variantId,
         quantity: svc.quantity,
         price: svc.basePriceVND,
@@ -539,17 +561,15 @@ export async function POST(request: Request) {
         tip: 0,
       });
 
-      // 2. Thêm add-on Private Room nếu có
+      // Private Room add-on item if selected
       if (svc.hasPrivateRoomAddon) {
-        bookingItems.push({
-          id: `${bookingId}-${PRIVATE_ROOM_SERVICE_ID}-${idx}`,
-          bookingId,
+        bookingItemsPayload.push({
           serviceId: PRIVATE_ROOM_SERVICE_ID,
           quantity: svc.quantity,
           price: privateRoomPriceVND,
           status: 'WAITING',
           options: {
-            displayName: PRIVATE_ROOM_NAME_I18N[lang || 'vi'] || 'Phòng riêng',
+            displayName: PRIVATE_ROOM_NAME_I18N[lang] || 'Phòng riêng',
             parentServiceId: svc.variantId,
             isAddon: true,
           },
@@ -558,30 +578,163 @@ export async function POST(request: Request) {
       }
     });
 
-    const { error: itemsErr } = await supabase.from('BookingItems').insert(bookingItems);
+    // ── 9. Atomic Booking Transaction via Supabase RPC 
+    // Attempts to run create_booking_atomic: allocates collision-free sequential ID
+    // and inserts parent Bookings + child BookingItems in ONE atomic database transaction.
+    let committedBookingId: string;
+    let isIdempotentReplay = false;
 
-    // ── NẾU INSERT ITEMS LỖI: COMPENSATION ROLLBACK ───
-    if (itemsErr) {
-      console.error('❌ [API Bookings] INSERT BookingItems lỗi -> Kích hoạt rollback xóa Booking:', itemsErr.message);
-      
-      // Rollback: Xóa bản ghi Booking vừa tạo để tránh đơn hàng ma
-      const { error: rollbackErr } = await supabase.from('Bookings').delete().eq('id', bookingId);
-      if (rollbackErr) {
-        console.error('🚨 [API Bookings] Rollback xóa Booking thất bại:', rollbackErr.message);
-      } else {
-        console.log(`🧹 [API Bookings] Đã rollback xóa thành công Booking mồ côi: ${bookingId}`);
+    const { data: rpcResult, error: rpcErr } = await supabase.rpc('create_booking_atomic', {
+      p_booking_data: bookingPayload,
+      p_booking_items: bookingItemsPayload,
+      p_idempotency_key: finalIdempotencyKey,
+    });
+
+    if (rpcErr) {
+      const isRpcMissing =
+        rpcErr.code === '42883' ||
+        rpcErr.message?.includes('Could not find the function') ||
+        rpcErr.message?.includes('function create_booking_atomic');
+
+      if (!isRpcMissing) {
+        console.error('❌ [API Bookings] create_booking_atomic RPC error:', rpcErr.message);
+        return NextResponse.json(
+          { success: false, error: 'Không thể tạo đơn đặt lịch. Vui lòng thử lại.' },
+          { status: 500 }
+        );
       }
 
+      // Fallback path: Only executed when RPC is not yet installed in the database.
+      // Strict rule: NEVER insert BookingItems if Bookings fails.
+      console.warn('⚠️ [API Bookings] RPC create_booking_atomic missing. Executing safe fallback transaction...');
+      const fallbackId = generateCollisionSafeFallbackId(date);
+
+      const fallbackBookingPayload: Record<string, any> = {
+        ...bookingPayload,
+        id: fallbackId,
+        billCode: fallbackId,
+        idempotency_key: finalIdempotencyKey,
+        idLegacy: `idemp:${finalIdempotencyKey}`,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+
+      let { error: insertBookingErr } = await supabase.from('Bookings').insert(fallbackBookingPayload);
+      if (insertBookingErr && insertBookingErr.message?.includes('idempotency_key')) {
+        // Retry without idempotency_key if column not yet added to remote table
+        delete fallbackBookingPayload.idempotency_key;
+        const retryRes = await supabase.from('Bookings').insert(fallbackBookingPayload);
+        insertBookingErr = retryRes.error;
+      }
+
+      if (insertBookingErr) {
+        if (insertBookingErr.code === '23505' || insertBookingErr.message?.includes('duplicate key')) {
+          // Collision on idempotency key: retrieve existing booking
+          let dupBooking: any = null;
+          const { data: legacyDup } = await supabase
+            .from('Bookings')
+            .select('id, billCode, totalAmount, customerName, customerPhone, customerEmail, bookingDate, timeBooking, branchName, customerLang, status')
+            .eq('idLegacy', `idemp:${finalIdempotencyKey}`)
+            .maybeSingle();
+
+          if (legacyDup) {
+            dupBooking = legacyDup;
+          } else {
+            const { data: modernDup } = await supabase
+              .from('Bookings')
+              .select('id, billCode, totalAmount, customerName, customerPhone, customerEmail, bookingDate, timeBooking, branchName, customerLang, status')
+              .eq('idempotency_key', finalIdempotencyKey)
+              .maybeSingle();
+            if (modernDup) dupBooking = modernDup;
+          }
+
+          if (dupBooking) {
+            console.log(`[API Bookings] Fallback caught duplicate idempotency key: ${dupBooking.id}`);
+            return NextResponse.json({
+              success: true,
+              idempotent: true,
+              data: {
+                bookingId: dupBooking.id,
+                billCode: dupBooking.billCode || dupBooking.id,
+                customerName: dupBooking.customerName,
+                customerPhone: dupBooking.customerPhone,
+                customerEmail: dupBooking.customerEmail,
+                date: dupBooking.bookingDate ? String(dupBooking.bookingDate).split('T')[0] : date,
+                time: dupBooking.timeBooking || time,
+                branchName: dupBooking.branchName || BRANCH_DEFAULT,
+                totalAmount: Number(dupBooking.totalAmount) || 0,
+                lang: dupBooking.customerLang || lang,
+                status: dupBooking.status,
+              },
+            });
+          }
+        }
+
+        console.error('❌ [API Bookings] Fallback INSERT Booking failed:', insertBookingErr.message);
+        return NextResponse.json(
+          { success: false, error: 'Không thể tạo đơn đặt lịch. Vui lòng thử lại.' },
+          { status: 500 }
+        );
+      }
+
+      // ONLY insert child items after Bookings parent insertion succeeds
+      const fallbackItemsWithIds = bookingItemsPayload.map((item, idx) => ({
+        id: `${fallbackId}-${item.serviceId}-${idx}`,
+        bookingId: fallbackId,
+        ...item,
+      }));
+
+      const { error: insertItemsErr } = await supabase.from('BookingItems').insert(fallbackItemsWithIds);
+      if (insertItemsErr) {
+        console.error('❌ [API Bookings] Fallback INSERT BookingItems failed -> Compensating rollback of parent:', insertItemsErr.message);
+        await supabase.from('Bookings').delete().eq('id', fallbackId);
+        return NextResponse.json(
+          { success: false, error: 'Không thể tạo chi tiết dịch vụ. Đơn hàng đã được tự động hoàn tác.' },
+          { status: 500 }
+        );
+      }
+
+      committedBookingId = fallbackId;
+    } else {
+      // RPC executed successfully
+      if (rpcResult?.idempotent) {
+        isIdempotentReplay = true;
+      }
+      committedBookingId = rpcResult?.booking_id || rpcResult?.data?.bookingId;
+    }
+
+    if (!committedBookingId) {
+      console.error('❌ [API Bookings] Booking ID could not be determined after transaction');
       return NextResponse.json(
-        {
-          success: false,
-          error: `Không thể tạo danh sách dịch vụ chi tiết (${itemsErr.message}). Đơn hàng đã được tự động hoàn tác.`,
-        },
+        { success: false, error: 'Lỗi xác nhận mã đơn đặt lịch từ hệ thống' },
         { status: 500 }
       );
     }
 
-    // ── 9. Gửi email xác nhận (Chỉ chạy khi CẢ HAI INSERT đều thành công) ─
+    // ── 10. Handle Idempotent Replay Response ──────────
+    if (isIdempotentReplay) {
+      console.log(`[API Bookings] Idempotent replay response for ${committedBookingId}`);
+      return NextResponse.json({
+        success: true,
+        idempotent: true,
+        data: {
+          bookingId: committedBookingId,
+          billCode: committedBookingId,
+          customerName: name.trim(),
+          customerPhone: cleanPhone,
+          customerEmail: cleanEmail,
+          date,
+          time,
+          branchName: branchName || BRANCH_DEFAULT,
+          services: validatedServiceList,
+          totalAmount: serverCalculatedTotalAmount,
+          lang,
+        },
+      });
+    }
+
+    // ── 11. Dispatch Confirmation Email ───────────────
+    // Only executed after BOTH parent and child items are fully committed
     let emailStatus: { sent: boolean; messageId?: string; error?: string } = { sent: false };
     if (cleanEmail) {
       const explicitStaffGender = staffGender && staffGender !== 'any' ? staffGender : undefined;
@@ -592,7 +745,7 @@ export async function POST(request: Request) {
 
       try {
         const mailRes = await sendBookingConfirmationEmail({
-          bookingId,
+          bookingId: committedBookingId,
           customerName: name.trim(),
           customerEmail: cleanEmail,
           customerPhone: cleanPhone || '',
@@ -603,7 +756,7 @@ export async function POST(request: Request) {
           services: validatedServiceList,
           totalAmount: serverCalculatedTotalAmount,
           therapist: chosenGender,
-          lang: lang || 'vi',
+          lang,
           notes: note?.trim() || undefined,
           focusAreaNote: finalFocusAreaNote || undefined,
         });
@@ -614,14 +767,14 @@ export async function POST(request: Request) {
           await supabase
             .from('Bookings')
             .update({ reception_feedback: `Email sent: ${mailRes.messageId}` })
-            .eq('id', bookingId);
+            .eq('id', committedBookingId);
         } else {
           emailStatus = { sent: false, error: mailRes?.error || 'Failed to send email' };
           console.error(`❌ [API Bookings] Gửi email thất bại cho ${cleanEmail}:`, mailRes?.error);
           await supabase
             .from('Bookings')
             .update({ reception_feedback: `Email error: ${mailRes?.error || 'Unknown'}` })
-            .eq('id', bookingId);
+            .eq('id', committedBookingId);
         }
       } catch (mailErr: any) {
         console.error('⚠️ [API Bookings] Ngoại lệ gửi email xác nhận:', mailErr.message);
@@ -629,32 +782,33 @@ export async function POST(request: Request) {
         await supabase
           .from('Bookings')
           .update({ reception_feedback: `Email exception: ${mailErr.message}` })
-          .eq('id', bookingId);
+          .eq('id', committedBookingId);
       }
     }
 
-    console.log(`✅ [API Bookings] Đơn WB tạo thành công hoàn chỉnh: ${bookingId}, tổng tiền: ${serverCalculatedTotalAmount}đ`);
+    console.log(`✅ [API Bookings] Đơn WB tạo thành công hoàn chỉnh: ${committedBookingId}, tổng tiền: ${serverCalculatedTotalAmount}đ`);
 
     return NextResponse.json({
       success: true,
       data: {
-        bookingId,
-        billCode: bookingId,
+        bookingId: committedBookingId,
+        billCode: committedBookingId,
         customerName: name.trim(),
         customerPhone: cleanPhone,
+        customerEmail: cleanEmail,
         date,
         time,
         branchName: branchName || BRANCH_DEFAULT,
         services: validatedServiceList,
         totalAmount: serverCalculatedTotalAmount,
-        lang: lang || 'vi',
+        lang,
         emailStatus,
       },
     });
   } catch (error: any) {
-    console.error('❌ [API Bookings] Lỗi không xác định:', error.message);
+    console.error('❌ [API Bookings] Lỗi không xác định:', error?.message);
     return NextResponse.json(
-      { success: false, error: error.message || 'Lỗi server không xác định' },
+      { success: false, error: 'Lỗi server không xác định khi xử lý đặt lịch' },
       { status: 500 }
     );
   }

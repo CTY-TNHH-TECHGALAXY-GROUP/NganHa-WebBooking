@@ -18,6 +18,7 @@ export interface RepriceItemInput {
   qty?: number;
   priceVND?: number;
   priceUSD?: number;
+  duration?: number;
   options?: any;
 }
 
@@ -39,10 +40,25 @@ export async function POST(request: Request) {
 
     const supabase = getSupabaseAdmin();
 
-    // 1. Collect all service IDs
+    // 1. Collect all valid service IDs
     const serviceIds = Array.from(
-      new Set(items.map((i) => i.id).filter(Boolean))
+      new Set(items.map((i) => i?.id).filter((id): id is string => typeof id === 'string' && id.trim().length > 0))
     );
+
+    if (serviceIds.length === 0) {
+      return NextResponse.json({
+        valid: false,
+        items: [],
+        totalAmountVND: 0,
+        totalAmountUSD: 0,
+        hasPriceChanged: true,
+        unavailableItems: items.map((i) => ({
+          id: i?.id || 'UNKNOWN',
+          cartId: i?.cartId,
+          reason: 'SERVICE_NOT_FOUND',
+        })),
+      });
+    }
 
     // Also fetch private room add-on price from DB if available
     const allIdsToFetch = Array.from(new Set([...serviceIds, PRIVATE_ROOM_ADDON_ID]));
@@ -55,7 +71,7 @@ export async function POST(request: Request) {
     if (dbErr) {
       console.error('[API /bookings/reprice] Supabase error:', dbErr.message);
       return NextResponse.json(
-        { error: 'Failed to fetch services for repricing' },
+        { valid: false, error: 'Không thể kết nối cơ sở dữ liệu để định giá' },
         { status: 500 }
       );
     }
@@ -83,8 +99,31 @@ export async function POST(request: Request) {
     let totalAmountUSD = 0;
 
     for (const item of items) {
+      if (!item || !item.id) {
+        unavailableItems.push({
+          id: item?.id || 'UNKNOWN',
+          cartId: item?.cartId,
+          reason: 'SERVICE_NOT_FOUND',
+        });
+        hasPriceChanged = true;
+        continue;
+      }
+
+      // Check quantity: reject non-numeric, zero, or negative values
+      const rawQty = item.quantity !== undefined ? item.quantity : item.qty;
+      const parsedQty = Number(rawQty);
+      if (rawQty !== undefined && (!Number.isFinite(parsedQty) || parsedQty <= 0)) {
+        unavailableItems.push({
+          id: item.id,
+          cartId: item.cartId,
+          reason: 'INVALID_QUANTITY',
+        });
+        hasPriceChanged = true;
+        continue;
+      }
+
+      const quantity = Math.max(1, Math.min(20, Math.floor(parsedQty || 1)));
       const dbSvc = dbServiceMap.get(item.id);
-      const quantity = Math.max(1, Math.min(20, Math.floor(Number(item.quantity || item.qty || 1))));
 
       if (!dbSvc) {
         unavailableItems.push({
@@ -153,9 +192,9 @@ export async function POST(request: Request) {
       items: repricedItems,
     });
   } catch (error: any) {
-    console.error('[API /bookings/reprice] Error:', error.message);
+    console.error('[API /bookings/reprice] Error:', error?.message);
     return NextResponse.json(
-      { error: error.message || 'Internal server error' },
+      { valid: false, error: 'Lỗi kiểm tra giá dịch vụ từ hệ thống' },
       { status: 500 }
     );
   }
