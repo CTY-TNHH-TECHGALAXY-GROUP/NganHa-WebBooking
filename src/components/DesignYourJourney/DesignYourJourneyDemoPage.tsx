@@ -245,9 +245,9 @@ export default function DesignYourJourneyDemoPage() {
         <div className={styles.closingCopy}>
           <p>{copy.availability}</p>
           <div className={styles.closingActions}>
-            <a href={hotlineUrl} aria-label={`${copy.call}: ${phone}`}>
+            <a href={hotlineUrl} aria-label={copy.call}>
               <Phone size={18} aria-hidden="true" />
-              <span>{copy.call}<small>{phone}</small></span>
+              <span>{copy.call}</span>
             </a>
             <a href={locationUrl} target="_blank" rel="noopener noreferrer">
               <MapPin size={18} aria-hidden="true" />
