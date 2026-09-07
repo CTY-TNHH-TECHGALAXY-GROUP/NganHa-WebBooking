@@ -1,5 +1,24 @@
+import fs from 'fs';
+import path from 'path';
 import { createClient } from '@supabase/supabase-js';
 import { sendBookingConfirmationEmail } from '../src/lib/mailer';
+
+// Automatically load .env.local in standalone CLI environment if not already in process.env
+const envPath = path.resolve(process.cwd(), '.env.local');
+if (fs.existsSync(envPath)) {
+  const envContent = fs.readFileSync(envPath, 'utf8');
+  for (const line of envContent.split('\n')) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith('#')) continue;
+    const [k, ...v] = trimmed.split('=');
+    if (k && v.length) {
+      const key = k.trim();
+      if (!process.env[key]) {
+        process.env[key] = v.join('=').trim().replace(/^['"]|['"]$/g, '');
+      }
+    }
+  }
+}
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;

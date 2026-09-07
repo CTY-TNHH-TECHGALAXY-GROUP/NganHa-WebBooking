@@ -24,6 +24,7 @@ export interface ValidateUploadOptions {
   allowedKinds?: UploadKind[];
   maxSizeBytes?: number;
   folder?: string;
+  fileName?: string;
   originalFileName?: string;
   declaredMimeType?: string;
 }
@@ -294,9 +295,12 @@ export async function validateUpload(
     );
   }
 
-  // 7. Generate unguessable, secure random object key and path
-  // NEVER include applicant name, email, phone, or raw client filename
-  const safeFileName = `${crypto.randomUUID()}.${detected.extension}`;
+  // 7. Generate safe object key and path
+  // If a descriptive fileName is provided (e.g. 'anh-chan-dung'), sanitize and use it; otherwise generate UUID
+  const baseName = options.fileName
+    ? options.fileName.replace(/[^a-zA-Z0-9_-]/g, '')
+    : crypto.randomUUID();
+  const safeFileName = `${baseName || crypto.randomUUID()}.${detected.extension}`;
   const safeFolder = sanitizeStorageFolderPath(options.folder);
   const storagePath = `${safeFolder}/${safeFileName}`;
 
