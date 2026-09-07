@@ -26,6 +26,9 @@ const dictionaries = {
             change_title: "Change:",
             insufficient: "Insufficient",
             confirm_order_btn: "CONFIRM ORDER",
+            note: "Note",
+            payment_method_title: "Payment Method",
+            continue: "Continue",
 
             // Modal Specific
             modal_title: "Confirming Order",
@@ -120,7 +123,12 @@ const dictionaries = {
             full_body: "Full Body",
             partly: "Partly",
             tab_area: "Area",
-            tab_preferences: "Therapist / Strength"
+            tab_preferences: "Therapist / Strength",
+            strength_label: "Pressure",
+            therapist_gender: "Therapist",
+            focus_areas: "Focus areas",
+            avoid_areas: "Avoid areas",
+            private_room: "Private Room"
         },
         body_parts: {
             foot: "Foot",
@@ -192,6 +200,9 @@ const dictionaries = {
             change_title: "Tiền thừa:",
             insufficient: "Thiếu",
             confirm_order_btn: "XÁC NHẬN ĐƠN",
+            note: "Ghi chú",
+            payment_method_title: "Phương thức thanh toán",
+            continue: "Tiếp tục",
 
             // Modal Specific
             modal_title: "Xác nhận yêu cầu",
@@ -286,7 +297,12 @@ const dictionaries = {
             full_body: "Toàn thân",
             partly: "Một phần",
             tab_area: "Vị trí",
-            tab_preferences: "Kỹ thuật viên / Lực"
+            tab_preferences: "Kỹ thuật viên / Lực",
+            strength_label: "Lực",
+            therapist_gender: "KTV",
+            focus_areas: "Tập trung",
+            avoid_areas: "Tránh",
+            private_room: "Phòng riêng"
         },
         body_parts: {
             foot: "Chân",
@@ -358,6 +374,9 @@ const dictionaries = {
             change_title: "거스름돈:",
             insufficient: "부족",
             confirm_order_btn: "주문 확인",
+            note: "메모",
+            payment_method_title: "결제 수단",
+            continue: "계속",
 
             // Modal Specific
             modal_title: "주문 확인",
@@ -452,7 +471,12 @@ const dictionaries = {
             full_body: "전신",
             partly: "부분",
             tab_area: "부위",
-            tab_preferences: "테라피스트 / 강도"
+            tab_preferences: "테라피스트 / 강도",
+            strength_label: "강도",
+            therapist_gender: "테라피스트",
+            focus_areas: "집중 부위",
+            avoid_areas: "피할 부위",
+            private_room: "개인실"
         },
         body_parts: {
             foot: "발",
@@ -524,6 +548,9 @@ const dictionaries = {
             change_title: "找零:",
             insufficient: "不足",
             confirm_order_btn: "确认订单",
+            note: "备注",
+            payment_method_title: "支付方式",
+            continue: "继续",
 
             // Modal Specific
             modal_title: "确认订单",
@@ -618,7 +645,12 @@ const dictionaries = {
             full_body: "全身",
             partly: "部分",
             tab_area: "部位",
-            tab_preferences: "技师 / 力度"
+            tab_preferences: "技师 / 力度",
+            strength_label: "力度",
+            therapist_gender: "技师",
+            focus_areas: "重点部位",
+            avoid_areas: "避开部位",
+            private_room: "包间"
         },
         body_parts: {
             foot: "脚",
@@ -690,6 +722,9 @@ const dictionaries = {
             change_title: "お釣り:",
             insufficient: "不足",
             confirm_order_btn: "注文を確定",
+            note: "備考",
+            payment_method_title: "支払い方法",
+            continue: "次へ",
 
             // Modal Specific
             modal_title: "注文の確認",
@@ -784,7 +819,12 @@ const dictionaries = {
             full_body: "全身",
             partly: "部分",
             tab_area: "部位",
-            tab_preferences: "セラピスト / 強さ"
+            tab_preferences: "セラピスト / 強さ",
+            strength_label: "強さ",
+            therapist_gender: "施術者",
+            focus_areas: "重点部位",
+            avoid_areas: "避ける部位",
+            private_room: "個室"
         },
         body_parts: {
             foot: "足",

@@ -15,7 +15,7 @@ type TranslationContextType = {
   currentLang: string;
   setCurrentLang: (lang: string) => void;
   translations: Record<string, any>;
-  t: (section: string, field: string) => string;
+  t: (section: string, field: string, fallback?: string) => string;
 };
 
 const TranslationContext = createContext<TranslationContextType | undefined>(undefined);
@@ -43,8 +43,14 @@ export const TranslationProvider = ({
   };
 
   // Translation helper function
-  const t = (section: string, field: string) => {
-    return initialTranslations[section]?.[currentLang]?.[field] || '';
+  const t = (section: string, field: string, fallback?: string) => {
+    return (
+      initialTranslations?.[section]?.[currentLang]?.[field] ||
+      initialTranslations?.[section]?.['en']?.[field] ||
+      initialTranslations?.[section]?.['vi']?.[field] ||
+      fallback ||
+      ''
+    );
   };
 
   return (
