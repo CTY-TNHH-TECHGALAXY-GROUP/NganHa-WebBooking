@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { createBrowserClient } from '@supabase/ssr';
@@ -8,6 +8,7 @@ import {
   LayoutDashboard, BookOpen, FileText, Wrench, Film, Search, Globe, Settings, ArchiveRestore,
   Menu, X, ChevronRight, LogOut, ImagePlus
 } from 'lucide-react';
+import { verifyAdminSessionAction } from '@/lib/auth/adminAction';
 
 // 🔧 UI CONFIGURATION
 const SIDEBAR_WIDTH = '260px';
@@ -33,13 +34,96 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
   const router = useRouter();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [authStatus, setAuthStatus] = useState<'loading' | 'authorized' | 'unauthorized'>('loading');
+
+  const isLoginPage = pathname === '/admin/login' || pathname?.startsWith('/admin/login/');
+
+  const verifyAccess = useCallback(async () => {
+    if (isLoginPage) {
+      return;
+    }
+
+    try {
+      const supabase = createBrowserClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+      );
+
+      const {
+        data: { user },
+        error: userError,
+      } = await supabase.auth.getUser();
+
+      if (userError || !user) {
+        setAuthStatus('unauthorized');
+        router.replace('/admin/login');
+        return;
+      }
+
+      // Server-side check against WebbookingAdminUsers table
+      const res = await verifyAdminSessionAction();
+
+      if (!res.ok) {
+        setAuthStatus('unauthorized');
+        try {
+          await supabase.auth.signOut();
+          localStorage.clear();
+          sessionStorage.clear();
+        } catch {
+          // ignore storage clearing errors
+        }
+        router.replace('/admin/login');
+      } else {
+        setAuthStatus('authorized');
+      }
+    } catch (err) {
+      console.error('[AdminLayout Auth Check]', err);
+      setAuthStatus('unauthorized');
+      router.replace('/admin/login');
+    }
+  }, [isLoginPage, router]);
+
+  useEffect(() => {
+    if (isLoginPage) {
+      return;
+    }
+
+    verifyAccess();
+
+    // Prevent Back button from displaying cached admin shell (bfcache)
+    const handlePageShow = (event: PageTransitionEvent) => {
+      if (event.persisted) {
+        verifyAccess();
+      }
+    };
+    window.addEventListener('pageshow', handlePageShow);
+
+    return () => {
+      window.removeEventListener('pageshow', handlePageShow);
+    };
+  }, [isLoginPage, verifyAccess]);
 
   const handleLogout = async () => {
-    const supabase = createBrowserClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    );
-    await supabase.auth.signOut();
+    // Immediately drop authorization state so sidebar unmounts synchronously
+    setAuthStatus('unauthorized');
+
+    try {
+      const supabase = createBrowserClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      );
+      await supabase.auth.signOut();
+    } catch (err) {
+      console.error('[Admin Logout Error]:', err);
+    }
+
+    try {
+      localStorage.clear();
+      sessionStorage.clear();
+    } catch {
+      // ignore storage errors
+    }
+
     router.replace('/admin/login');
     router.refresh();
   };
@@ -54,9 +138,21 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
     return pathname?.startsWith(href);
   };
 
-  // The login route must not inherit any authenticated admin chrome.
-  if (pathname === '/admin/login') {
+  // The login route must never inherit any authenticated admin chrome.
+  if (isLoginPage) {
     return <>{children}</>;
+  }
+
+  // Render loading state until authorization is fully confirmed. Never flash the sidebar.
+  if (authStatus !== 'authorized') {
+    return (
+      <div className="min-h-screen bg-admin-bg flex items-center justify-center text-admin-text-dim">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-8 h-8 border-2 border-admin-gold/30 border-t-admin-gold rounded-full animate-spin" />
+          <span className="text-sm font-medium tracking-wide">Đang xác thực quyền truy cập...</span>
+        </div>
+      </div>
+    );
   }
 
   return (
