@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getSupabaseAdmin } from '@/lib/supabase-server';
+import { sanitizePublicSiteContent } from '@/lib/config/siteContentSanitizer';
 
 export const dynamic = 'force-dynamic';
 
@@ -10,6 +11,7 @@ const SYSTEM_CONFIG_KEYS = [
   'homepage_content',
   'footer_content',
   'blog_content',
+  'homepage_styling',
 ] as const;
 
 export async function GET() {
@@ -32,15 +34,12 @@ export async function GET() {
       return result;
     }, {});
 
-    return NextResponse.json({
-      system_settings: systemConfigs.system_settings || {},
-      about_story_content: systemConfigs.about_story_content || {},
-      brand_history: systemConfigs.brand_history || [],
-      homepage_content: systemConfigs.homepage_content || {},
-      footer_content: systemConfigs.footer_content || {},
-      blog_content: systemConfigs.blog_content || {},
-      content: webBookingContent,
-    }, {
+    const sanitizedPayload = sanitizePublicSiteContent({
+      systemConfigs,
+      webBookingContent,
+    });
+
+    return NextResponse.json(sanitizedPayload, {
       headers: { 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate' },
     });
   } catch (error) {

@@ -4,6 +4,11 @@ import LayoutWrapper from "@/components/LayoutWrapper";
 import { TranslationProvider } from "@/components/TranslationProvider";
 import { SystemSettingsProvider } from "@/components/SystemSettingsProvider";
 import { getSupabaseAdmin } from "@/lib/supabase-server";
+import {
+  sanitizeHomepageStyling,
+  generateSanitizedCss,
+  getSafeGoogleFontUrl,
+} from "@/lib/config/stylingSanitizer";
 import "./globals.css";
 
 // 🔧 FONT CONFIGURATION
@@ -142,14 +147,15 @@ const RootLayout = async ({
     console.error('Error fetching system settings', e);
   }
 
-  const headingFont = homepageStyling?.headingFont || 'Playfair Display';
-  const bodyFont = homepageStyling?.bodyFont || 'Inter';
-  const baseFontSize = homepageStyling?.baseFontSize || '16px';
-  const heroHeadingSize = homepageStyling?.heroHeadingSize || '5rem';
-  const headingWeight = homepageStyling?.headingWeight || '600';
-
-  // Construct Google Fonts URL
-  const gFontUrl = `https://fonts.googleapis.com/css2?family=${headingFont.replace(/ /g, '+')}:ital,wght@0,400;0,${headingWeight};1,400&family=${bodyFont.replace(/ /g, '+')}:wght@300;400;500;600&display=swap`;
+  // Strictly sanitize homepage styling. If missing or invalid, falls back safely to default Next.js fonts without throwing or injecting raw strings.
+  const sanitizedStyling = sanitizeHomepageStyling(homepageStyling);
+  const gFontUrl = sanitizedStyling ? getSafeGoogleFontUrl(sanitizedStyling) : null;
+  const sanitizedCss = sanitizedStyling
+    ? generateSanitizedCss(sanitizedStyling, {
+        headingFontFamily: playfair.style.fontFamily,
+        bodyFontFamily: inter.style.fontFamily,
+      })
+    : null;
 
   return (
     <html lang="vi" className={`${playfair.variable} ${inter.variable}`}>
@@ -159,29 +165,9 @@ const RootLayout = async ({
         <link rel="icon" href="/icon-16.png?v=3" type="image/png" sizes="16x16" />
         <link rel="shortcut icon" href="/favicon.ico?v=3" />
         <link rel="apple-touch-icon" href="/apple-icon.png?v=3" sizes="180x180" />
-        {homepageStyling && <link href={gFontUrl} rel="stylesheet" />}
-        {homepageStyling && (
-          <style dangerouslySetInnerHTML={{
-            __html: `
-              :root {
-                --font-heading: '${headingFont}', ${playfair.style.fontFamily}, serif;
-                --font-body: '${bodyFont}', ${inter.style.fontFamily}, sans-serif;
-                font-size: ${baseFontSize};
-              }
-              .hero-title, h1, h2, h3, h4, h5, h6 {
-                font-family: var(--font-heading);
-                font-weight: ${headingWeight};
-              }
-              @media (min-width: 768px) {
-                .hero-title {
-                  font-size: ${heroHeadingSize} !important;
-                }
-              }
-              body {
-                font-family: var(--font-body);
-              }
-            `
-          }} />
+        {gFontUrl && <link href={gFontUrl} rel="stylesheet" />}
+        {sanitizedCss && (
+          <style dangerouslySetInnerHTML={{ __html: sanitizedCss }} />
         )}
       </head>
       <body className="w-full min-h-full antialiased font-sans" suppressHydrationWarning>

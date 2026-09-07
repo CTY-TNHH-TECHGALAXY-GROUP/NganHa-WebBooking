@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { withAuth } from '@/lib/api/withAuth';
 import { recordContentRevisions } from '@/lib/api/contentRevision';
+import { validateHomepageStyling, sanitizeHomepageStyling } from '@/lib/config/stylingSanitizer';
 
 export const GET = withAuth(async (_request, { supabase }) => {
   try {
@@ -9,7 +10,7 @@ export const GET = withAuth(async (_request, { supabase }) => {
     const { data, error } = await supabase
       .from('SystemConfigs')
       .select('key, value')
-      .in('key', ['system_settings', 'about_story_content', 'brand_history', 'homepage_content', 'footer_content', 'blog_content']);
+      .in('key', ['system_settings', 'about_story_content', 'brand_history', 'homepage_content', 'footer_content', 'blog_content', 'homepage_styling']);
 
     if (error) {
       console.error('Error fetching system settings:', error);
@@ -22,7 +23,8 @@ export const GET = withAuth(async (_request, { supabase }) => {
       brand_history: [],
       homepage_content: {},
       footer_content: {},
-      blog_content: {}
+      blog_content: {},
+      homepage_styling: null as unknown,
     };
 
     if (data) {
@@ -33,6 +35,7 @@ export const GET = withAuth(async (_request, { supabase }) => {
         if (item.key === 'homepage_content') result.homepage_content = item.value;
         if (item.key === 'footer_content') result.footer_content = item.value;
         if (item.key === 'blog_content') result.blog_content = item.value;
+        if (item.key === 'homepage_styling') result.homepage_styling = sanitizeHomepageStyling(item.value) ?? item.value;
       });
     }
 
@@ -45,7 +48,7 @@ export const GET = withAuth(async (_request, { supabase }) => {
 
 export const POST = withAuth(async (request: NextRequest, { supabase, user }) => {
   try {
-    const { system_settings, about_story_content, brand_history, homepage_content, footer_content, blog_content } = await request.json();
+    const { system_settings, about_story_content, brand_history, homepage_content, footer_content, blog_content, homepage_styling } = await request.json();
 
     const upsertData = [];
 
@@ -107,6 +110,30 @@ export const POST = withAuth(async (request: NextRequest, { supabase, user }) =>
         value: blog_content,
         updated_at: new Date().toISOString()
       });
+    }
+
+    if (homepage_styling !== undefined) {
+      if (homepage_styling === null) {
+        upsertData.push({
+          key: 'homepage_styling',
+          value: null,
+          updated_at: new Date().toISOString()
+        });
+      } else {
+        const validation = validateHomepageStyling(homepage_styling);
+        if (!validation.isValid || !validation.sanitized) {
+          return NextResponse.json(
+            { error: `Invalid homepage_styling: ${validation.errors.join(', ')}` },
+            { status: 400 }
+          );
+        }
+
+        upsertData.push({
+          key: 'homepage_styling',
+          value: validation.sanitized,
+          updated_at: new Date().toISOString()
+        });
+      }
     }
 
     if (upsertData.length > 0) {

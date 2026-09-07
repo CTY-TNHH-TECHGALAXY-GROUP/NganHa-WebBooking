@@ -8,9 +8,27 @@ export const dynamic = 'force-dynamic';
 const fetchSystemSettings = async () => {
   try {
     const supabase = getSupabaseAdmin();
-    const { data } = await supabase.from('WebBookingContent').select('value').eq('key', 'system_settings').single();
-    return data?.value || {};
+    // Primary: SystemConfigs table (where admin saves system_settings)
+    const { data: configData, error: configError } = await supabase
+      .from('SystemConfigs')
+      .select('value')
+      .eq('key', 'system_settings')
+      .maybeSingle();
+
+    if (!configError && configData?.value && typeof configData.value === 'object' && Object.keys(configData.value).length > 0) {
+      return configData.value;
+    }
+
+    // Fallback: WebBookingContent table if not yet migrated
+    const { data: fallbackData } = await supabase
+      .from('WebBookingContent')
+      .select('value')
+      .eq('key', 'system_settings')
+      .maybeSingle();
+
+    return fallbackData?.value || {};
   } catch (e) {
+    console.error('[AI Chat] Error fetching system settings:', e);
     return {};
   }
 };
@@ -20,7 +38,7 @@ const LANGUAGE_INSTRUCTIONS: Record<string, string> = {
   vi: 'Trả lời bằng tiếng Việt. Dùng giọng văn thân thiện, lịch sự như nhân viên spa chuyên nghiệp.',
   en: 'Reply in English. Use a friendly, professional spa receptionist tone.',
   cn: '用中文回答。使用友好、专业的水疗接待员语气。',
-  jp: '日本語で返答してください。フレンドリーでプロフェッショナルなスパ受付の口調を使ってください。',
+  jp: '日本語で返答してください。フレンドリーでプロフェッショナルなスパ受付の口调を使ってください。',
   kr: '한국어로 답변해 주세요. 친절하고 전문적인 스파 안내원의 어조를 사용하세요.',
 };
 
@@ -31,11 +49,24 @@ const buildSystemPrompt = (locale: string, systemSettings: any): string => {
   const mapsUrl = systemSettings?.googleMaps || 'https://maps.app.goo.gl/8XBkjsJicXqdNsZk7';
   const hours = systemSettings?.hours || '9:00 AM - 12:00 AM (Last order 11:30 PM)';
 
+  // Resolve address from system settings (supports localized record or string)
+  let address = '11 Ngô Đức Kế, P. Sài Gòn, Quận 1, TP.HCM';
+  if (systemSettings?.address) {
+    if (typeof systemSettings.address === 'string' && systemSettings.address.trim()) {
+      address = systemSettings.address.trim();
+    } else if (typeof systemSettings.address === 'object' && systemSettings.address !== null) {
+      const localized = systemSettings.address[locale] || systemSettings.address['vi'] || systemSettings.address['en'];
+      if (localized && typeof localized === 'string' && localized.trim()) {
+        address = localized.trim();
+      }
+    }
+  }
+
   const SPA_KNOWLEDGE = `
 ## ORIA SPA - Thông tin
 
 ### Chi nhánh
-- **ORIA SPA Barbershop**: 11 Ngô Đức Kế, P. Sài Gòn, Quận 1, TP.HCM
+- **ORIA SPA Barbershop**: ${address}
   - Hotline/SĐT: ${phone}
   - Giờ mở cửa: ${hours}
   - Google Maps: ${mapsUrl}
