@@ -47,7 +47,7 @@ const ArticleBody = ({ body }: { body: string }) => {
 
 const BlogCardView = ({ card, className, onOpen }: { card: BlogCard; className: string; onOpen: (card: BlogCard) => void }) => (
   <article className={`${className} ${styles['open-story']}`} onClick={() => onOpen(card)}>
-    {card.image && <img src={card.image} alt="" />}
+    {card.image && <img src={card.image} alt={card.title || "Blog cover"} />}
     <div className={styles['media-watermark']} />
     <div className={styles.scrim} />
     <div className={styles['story-copy']}>
@@ -140,7 +140,7 @@ const BlogsPage = () => {
       </div></div></section>
 
       <section className={styles.section}><div className={styles['section-head']}><div><div className={styles.eyebrow}>{content.city.eyebrow}</div><h2>{content.city.title}</h2></div><p className={styles['section-intro']}>{content.city.intro}</p></div><div className={styles['city-grid']}>
-        {content.city.cards.map((card, index) => <article key={card.id} className={`${index < 2 ? styles['city-card'] : styles.minicard} ${styles['open-story']} ${styles[`c${index + 1}`] || ''}`} onClick={() => openStory(card)}>{card.image && <img src={card.image} alt="" />}<div className={styles['media-watermark']} /><div className={styles.txt}><small>{card.eyebrow} · {card.meta}</small><strong>{card.title}</strong></div></article>)}
+        {content.city.cards.map((card, index) => <article key={card.id} className={`${index < 2 ? styles['city-card'] : styles.minicard} ${styles['open-story']} ${styles[`c${index + 1}`] || ''}`} onClick={() => openStory(card)}>{card.image && <img src={card.image} alt={card.title || "City card"} />}<div className={styles['media-watermark']} /><div className={styles.txt}><small>{card.eyebrow} · {card.meta}</small><strong>{card.title}</strong></div></article>)}
       </div></section>
 
       <section className={styles.section} aria-labelledby="latest-from-oria"><div className={styles['section-head']}><div><div className={styles.eyebrow}>{content.latest.eyebrow}</div><h2 id="latest-from-oria">{content.latest.title}</h2></div></div><div className={styles.latestGrid}>
@@ -149,7 +149,7 @@ const BlogsPage = () => {
 
       <footer className={styles.footer}><div><div className={styles.eyebrow}>{content.footer.eyebrow}</div><h2>{content.footer.title.split('\n').map((line) => <React.Fragment key={line}>{line}<br /></React.Fragment>)}</h2></div><div className={styles.right}><div>{content.footer.topics}</div><small>{content.footer.credit}</small></div></footer>
 
-      {activeStory && <div className={`${styles.modal} ${styles.open}`} onClick={(event) => { if (event.target === event.currentTarget) closeStory(); }}><div className={styles['modal-card']}><button type="button" className={`${styles.close} ${activeStory.image ? styles.closeOnMedia : ''}`} onClick={closeStory} aria-label="Close">×</button>{activeStory.image ? <div className={styles.articleHero}><img src={activeStory.image} alt="" /><div className={styles.articleHeroScrim} /><div className={styles.articleHeroCopy}><div>{activeStory.eyebrow} · {activeStory.meta}</div><h3>{activeStory.title}</h3></div></div> : <><div className={styles.eyebrow}>{activeStory.eyebrow} · {activeStory.meta}</div><h3>{activeStory.title}</h3></>}<ArticleBody body={activeStory.body} /></div></div>}
+      {activeStory && <div className={`${styles.modal} ${styles.open}`} onClick={(event) => { if (event.target === event.currentTarget) closeStory(); }}><div className={styles['modal-card']}><button type="button" className={`${styles.close} ${activeStory.image ? styles.closeOnMedia : ''}`} onClick={closeStory} aria-label="Close">×</button>{activeStory.image ? <div className={styles.articleHero}><img src={activeStory.image} alt={activeStory.title || "Story hero"} /><div className={styles.articleHeroScrim} /><div className={styles.articleHeroCopy}><div>{activeStory.eyebrow} · {activeStory.meta}</div><h3>{activeStory.title}</h3></div></div> : <><div className={styles.eyebrow}>{activeStory.eyebrow} · {activeStory.meta}</div><h3>{activeStory.title}</h3></>}<ArticleBody body={activeStory.body} /></div></div>}
     </div>
   );
 };

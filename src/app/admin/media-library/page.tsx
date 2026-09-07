@@ -239,7 +239,7 @@ export default function MediaLibraryAdmin() {
                     selectedFile?.type.startsWith('video') ? (
                       <video src={previewUrl} className="w-full h-32 object-cover rounded-lg" />
                     ) : (
-                      <img src={previewUrl} className="w-full h-32 object-cover rounded-lg" />
+                      <img src={previewUrl} alt="Preview" className="w-full h-32 object-cover rounded-lg" />
                     )
                   ) : (
                     <>

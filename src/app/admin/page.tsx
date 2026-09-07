@@ -10,9 +10,9 @@ const QUICK_ACTIONS = [
     description: 'Thay đổi video nền hiển thị khi khách truy cập website.',
     href: '/admin/hero-videos',
     icon: Film,
-    color: 'from-admin-purple-a to-admin-purple-b',
+    color: 'from-admin-amber-a to-admin-amber-b',
     borderColor: 'border-admin-line-strong',
-    iconBg: 'bg-admin-purple',
+    iconBg: 'bg-admin-amber',
   },
   {
     title: 'Lịch Sử Thương Hiệu',
@@ -46,9 +46,9 @@ const QUICK_ACTIONS = [
     description: 'Thêm hoặc xóa trang ảnh/video trong cuốn sách dịch vụ.',
     href: '/admin/flipbook-pages',
     icon: BookOpen,
-    color: 'from-admin-purple-a to-admin-purple-b',
+    color: 'from-admin-amber-a to-admin-amber-b',
     borderColor: 'border-admin-line-strong',
-    iconBg: 'bg-admin-purple',
+    iconBg: 'bg-admin-amber',
   },
   {
     title: 'Bài Viết Blog',

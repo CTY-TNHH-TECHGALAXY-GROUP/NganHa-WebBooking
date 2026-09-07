@@ -278,7 +278,7 @@ const HeroVideosAdmin = () => {
             {videos.map((video, idx) => (
               <div key={video.id} className="bg-admin-panel border border-admin-line rounded-xl p-4 flex items-center gap-4 group hover:border-admin-line-strong transition-colors shadow-[var(--shadow)]">
                 {/* Order Badge */}
-                <div className="w-10 h-10 rounded-lg bg-admin-purple-a border border-admin-purple-b flex items-center justify-center font-bold text-admin-purple flex-shrink-0 shadow-sm">
+                <div className="w-10 h-10 rounded-lg bg-admin-amber-a border border-admin-amber-b flex items-center justify-center font-bold text-admin-amber flex-shrink-0 shadow-sm">
                   {idx + 1}
                 </div>
 

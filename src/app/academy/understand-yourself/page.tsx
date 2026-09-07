@@ -92,6 +92,7 @@ export default function UnderstandYourselfApp() {
             type="range" 
             min="0" max="100" 
             value={val} 
+            aria-label={`${leftLabel} - ${rightLabel}`}
             onChange={(e) => handleSlider(key, parseInt(e.target.value))}
             className={`${styles['live-range']} ${styles.rangeInput}`} 
             style={{background: `linear-gradient(to right, var(--ink) ${val}%, #e5e7eb ${val}%)`}}

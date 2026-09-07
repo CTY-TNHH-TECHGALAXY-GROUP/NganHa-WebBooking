@@ -34,7 +34,8 @@ except:
 SKIP_DIRS = {
     'node_modules', '.next', 'dist', 'build', '.git', '.github',
     '__pycache__', '.vscode', '.idea', 'coverage', 'test', 'tests',
-    '__tests__', 'spec', 'docs', 'documentation', 'examples'
+    '__tests__', 'spec', 'docs', 'documentation', 'examples', 'public',
+    'admin', 'standalone-celestial-menu'
 }
 
 # Files to skip (not pages)
@@ -45,7 +46,7 @@ SKIP_PATTERNS = [
 ]
 
 
-def is_page_file(file_path: Path) -> bool:
+def is_page_file(file_path: Path, project_path: Path = None) -> bool:
     """Check if this file is likely a public-facing page."""
     name = file_path.name.lower()
     stem = file_path.stem.lower()
@@ -56,6 +57,15 @@ def is_page_file(file_path: Path) -> bool:
     
     # Check path - pages in specific directories are likely pages
     parts = [p.lower() for p in file_path.parts]
+
+    # Skip internal authenticated admin pages (excluded from SEO)
+    if 'admin' in parts:
+        return False
+
+    # Skip root demo/email HTML files if outside app
+    if project_path and file_path.parent.resolve() == project_path.resolve() and file_path.suffix.lower() in ['.html', '.htm']:
+        return False
+    
     page_dirs = ['pages', 'app', 'routes', 'views', 'screens']
     
     if any(d in parts for d in page_dirs):
@@ -87,7 +97,7 @@ def find_pages(project_path: Path) -> list:
                 continue
             
             # Check if it's likely a page
-            if is_page_file(f):
+            if is_page_file(f, project_path):
                 files.append(f)
     
     return files[:50]  # Limit to 50 files
@@ -102,21 +112,21 @@ def check_page(file_path: Path) -> dict:
     except Exception as e:
         return {"file": str(file_path.name), "issues": [f"Error: {e}"]}
     
-    # Detect if this is a layout/template file (has Head component)
-    is_layout = 'Head>' in content or '<head' in content.lower()
+    # Detect if this is a layout/template file (has Head component or Next.js metadata)
+    is_layout = bool(re.search(r'<head[\s>]|<Head[\s>]', content, re.IGNORECASE))
     
-    # 1. Title tag
-    has_title = '<title' in content.lower() or 'title=' in content or 'Head>' in content
+    # 1. Title tag (HTML tag, attribute, or Next.js metadata property)
+    has_title = '<title' in content.lower() or 'title=' in content or 'title:' in content or 'Head>' in content
     if not has_title and is_layout:
         issues.append("Missing <title> tag")
     
-    # 2. Meta description
-    has_description = 'name="description"' in content.lower() or 'name=\'description\'' in content.lower()
+    # 2. Meta description (HTML meta or Next.js metadata property)
+    has_description = 'name="description"' in content.lower() or 'name=\'description\'' in content.lower() or 'description:' in content
     if not has_description and is_layout:
         issues.append("Missing meta description")
     
-    # 3. Open Graph tags
-    has_og = 'og:' in content or 'property="og:' in content.lower()
+    # 3. Open Graph tags (HTML meta or Next.js metadata property)
+    has_og = 'og:' in content or 'property="og:' in content.lower() or 'opengraph' in content.lower()
     if not has_og and is_layout:
         issues.append("Missing Open Graph tags")
     

@@ -104,6 +104,9 @@ export default function Scene() {
       }, 0);
     }
 
+    return () => {
+      tl.kill();
+    };
   }, [phase, activeCategory, cameraZ]);
 
   // Adjust particles based on quality

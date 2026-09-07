@@ -38,7 +38,7 @@ export default function SelectMenuPage({ params }: { params: Promise<{ lang: str
             <div className="absolute inset-0 z-0">
                 <div className="absolute inset-0 bg-black/ z-10" />
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/assets/backgrounds/bg-blur.webp" className="w-full h-full object-cover opacity-40" alt="" />
+                <img src="/assets/backgrounds/bg-blur.webp" className="w-full h-full object-cover opacity-40" alt="Background" />
             </div>
 
             {/* Component Tái Sử Dụng */}

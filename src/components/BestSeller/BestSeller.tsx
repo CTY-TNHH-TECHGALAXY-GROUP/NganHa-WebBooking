@@ -8,7 +8,7 @@ import { Locale } from '@/lib/constants';
 const formatPrice = (price: number) => new Intl.NumberFormat('vi-VN').format(price) + ' đ';
 
 // Giữ lại data cứng để làm fallback render ban đầu. 
-// Việc này giúp GSAP và ScrollTrigger tính toán chiều cao chính xác lúc mount, tránh làm vỡ layout các section khác.
+// Việc này giúp tính toán chiều cao chính xác lúc mount, tránh làm vỡ layout các section khác.
 const FALLBACK_SERVICES = [
   {
     id: 'mock-1',

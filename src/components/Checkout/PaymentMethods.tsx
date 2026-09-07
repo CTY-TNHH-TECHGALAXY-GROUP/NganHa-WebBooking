@@ -58,9 +58,9 @@ const PaymentMethods = ({ lang, dict, selected, onChange }: PaymentMethodsProps)
             id: 'card',
             icon: CreditCard,
             label: dict.payment_methods.card,
-            color: 'text-purple-600',
-            bgColor: 'bg-purple-50',
-            borderColor: 'border-purple-500'
+            color: 'text-amber-600',
+            bgColor: 'bg-amber-50',
+            borderColor: 'border-amber-500'
         },
         {
             id: 'transfer',
