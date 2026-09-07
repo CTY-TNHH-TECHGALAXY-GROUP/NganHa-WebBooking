@@ -1,39 +1,58 @@
 import { NextRequest } from 'next/server';
 import { withAuth } from '@/lib/api/withAuth';
 import { apiResponse } from '@/lib/api/apiResponse';
-import { ApiError } from '@/lib/api/apiError';
 import { MediaService } from '@/lib/services/media.service';
+import { validateUpload, UploadValidationError } from '@/lib/uploads/validateUpload';
 
 export const POST = withAuth(async (req, { supabase }) => {
-  const formData = await req.formData();
-  const file = formData.get('file') as File | null;
-  const folder = formData.get('folder') as string || 'general';
+  try {
+    const formData = await req.formData();
+    const file = formData.get('file') as File | null;
+    const rawFolder = formData.get('folder')?.toString() || 'general';
 
-  if (!file) {
-    return apiResponse.error('No file provided', 'BAD_REQUEST', 400);
+    if (!file || !(file instanceof Blob) || file.size === 0) {
+      return apiResponse.error('No file provided', 'BAD_REQUEST', 400);
+    }
+
+    // Comprehensive validation: magic bytes, extension, size, and unguessable path
+    const validated = await validateUpload(file, {
+      folder: rawFolder,
+      allowedKinds: ['image', 'video'],
+    });
+
+    const service = new MediaService(supabase);
+    const publicUrl = await service.uploadFile(file, validated.storagePath);
+
+    return apiResponse.success({ url: publicUrl, path: validated.storagePath });
+  } catch (err: any) {
+    if (err instanceof UploadValidationError) {
+      return apiResponse.error(err.message, err.code, err.status);
+    }
+    console.error('[API /admin/media POST] Upload error:', err);
+    return apiResponse.error(err.message || 'Lỗi tải tệp lên', 'UPLOAD_ERROR', 500);
   }
-
-  // Create unique filename
-  const fileExt = file.name.split('.').pop();
-  const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
-  const filePath = `${folder}/${fileName}`;
-
-  const service = new MediaService(supabase);
-  const publicUrl = await service.uploadFile(file, filePath);
-  
-  return apiResponse.success({ url: publicUrl, path: filePath });
-});
+}, ['owner', 'editor']);
 
 export const DELETE = withAuth(async (req, { supabase }) => {
-  const { searchParams } = new URL(req.url);
-  const path = searchParams.get('path');
+  try {
+    const { searchParams } = new URL(req.url);
+    const path = searchParams.get('path');
 
-  if (!path) {
-    return apiResponse.error('No path provided', 'BAD_REQUEST', 400);
+    if (!path) {
+      return apiResponse.error('No path provided', 'BAD_REQUEST', 400);
+    }
+
+    // Sanitize path against directory traversal
+    if (path.includes('..') || path.startsWith('/') || path.includes('\\') || path.includes('\0')) {
+      return apiResponse.error('Invalid file path', 'BAD_REQUEST', 400);
+    }
+
+    const service = new MediaService(supabase);
+    await service.deleteFile(path);
+
+    return apiResponse.success({ success: true });
+  } catch (err: any) {
+    console.error('[API /admin/media DELETE] Delete error:', err);
+    return apiResponse.error(err.message || 'Lỗi xóa tệp', 'DELETE_ERROR', 500);
   }
-
-  const service = new MediaService(supabase);
-  await service.deleteFile(path);
-  
-  return apiResponse.success({ success: true });
-});
+}, ['owner', 'editor']);

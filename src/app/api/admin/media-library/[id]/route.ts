@@ -6,6 +6,10 @@ import { MediaService } from '@/lib/services/media.service';
 export const DELETE = withAuth(async (req, { supabase }, params) => {
   const { id } = await params;
 
+  if (!id) {
+    return apiResponse.error('Thiếu ID', 'BAD_REQUEST', 400);
+  }
+
   // 1. Fetch the media record to get the URL
   const { data: media, error: fetchError } = await supabase
     .from('MarketingMedia')
@@ -17,20 +21,21 @@ export const DELETE = withAuth(async (req, { supabase }, params) => {
     return apiResponse.error('Không tìm thấy file', 'NOT_FOUND', 404);
   }
 
-  // 2. If the source is 'supabase', we delete the physical file
+  // 2. If the source is 'supabase', we delete the physical file safely
   if (media.source === 'supabase' && media.url) {
     try {
       const parts = media.url.split('/media-uploads/');
       if (parts.length > 1) {
         const filePath = parts[1].split('?')[0]; // Remove query params if any
-        if (filePath) {
+        // Sanitize against directory traversal
+        if (filePath && !filePath.includes('..') && !filePath.startsWith('/') && !filePath.includes('\\')) {
           const service = new MediaService(supabase);
           await service.deleteFile(filePath);
         }
       }
     } catch (e) {
       console.error('[DELETE MEDIA] Failed to delete physical file:', e);
-      // We continue to delete the DB record even if file deletion fails
+      // We continue to delete the DB record even if physical file deletion fails
     }
   }
 
@@ -45,4 +50,4 @@ export const DELETE = withAuth(async (req, { supabase }, params) => {
   }
 
   return apiResponse.success({ success: true });
-});
+}, ['owner', 'editor']);

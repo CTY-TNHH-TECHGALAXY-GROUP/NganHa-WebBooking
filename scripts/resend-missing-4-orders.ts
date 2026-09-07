@@ -5,15 +5,30 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-const orderIds = [
-  'WB-04092026-6C4Y82580E', // Watashidmm - minhthu14122811@gmail.com
-  'WB-04092026-ISTO40193D', // nghi - nghik22@gmail.com
-  'WB-04092026-D386366DF8', // test - nghik22@gmail.com
-  'WB-04092026-66OZFE604A', // Philip Shepard - philipwshepard@gmail.com
-];
+// Parse order IDs from CLI arguments or environment variable; never hardcode customer PII or production IDs
+const cliArgs = process.argv.slice(2).filter((arg) => !arg.startsWith('--'));
+const envIds = process.env.RESEND_ORDER_IDS
+  ? process.env.RESEND_ORDER_IDS.split(',').map((id) => id.trim()).filter(Boolean)
+  : [];
+
+// Default clean placeholder IDs if none supplied
+const defaultPlaceholderIds: string[] = [];
+
+const orderIds = cliArgs.length > 0
+  ? cliArgs
+  : envIds.length > 0
+    ? envIds
+    : defaultPlaceholderIds;
 
 async function resendAll() {
-  console.log('🚀 Bắt đầu gửi bù email cho 4 đơn hàng gần nhất...\n');
+  if (orderIds.length === 0) {
+    console.log('ℹ️ Không có mã đơn hàng nào được cung cấp.');
+    console.log('   Cách dùng: npx tsx scripts/resend-missing-4-orders.ts <orderId1> <orderId2> ...');
+    console.log('   Hoặc qua biến môi trường: RESEND_ORDER_IDS=WB-01,WB-02 npx tsx scripts/resend-missing-4-orders.ts');
+    return;
+  }
+
+  console.log(`🚀 Bắt đầu gửi bù email cho ${orderIds.length} đơn hàng...\n`);
 
   for (const id of orderIds) {
     console.log(`📦 Đang xử lý đơn: ${id}...`);
