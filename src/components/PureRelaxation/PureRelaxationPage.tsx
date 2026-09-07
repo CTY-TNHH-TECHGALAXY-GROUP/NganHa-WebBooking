@@ -938,20 +938,6 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
   );
 };
 
-const bgImages = [
-  '/images/services/aroma-oil.png',
-  '/images/services/barber.JPG',
-  '/images/services/coconut-oil.png',
-  '/images/services/earclean.png',
-  '/images/services/facial.png',
-  '/images/services/foot-massage.png',
-  '/images/services/hairwash.png',
-  '/images/services/hotstone.png',
-  '/images/services/shave.JPG',
-  '/images/services/shiatsu.png',
-  '/images/services/thai.png'
-];
-
 const TRANSLATIONS = {
   en: {
     randomRoom: "Random Room",
@@ -1005,9 +991,14 @@ const PureRelaxationPage = () => {
   
   const [activeSection, setActiveSection] = useState(pureRelaxationSections[0]?.id || 'body-care');
 
-  const displayBgImages = contentMedia.slideshow && contentMedia.slideshow.length > 0 ? contentMedia.slideshow : bgImages;
+  const displayBgImages = Array.isArray(contentMedia.slideshow) ? contentMedia.slideshow.filter(Boolean) : [];
 
   useEffect(() => {
+    if (displayBgImages.length < 2) {
+      setBgIndex(0);
+      return;
+    }
+
     const interval = setInterval(() => {
       setBgIndex((prev) => (prev + 1) % displayBgImages.length);
     }, 6000);
@@ -1046,6 +1037,11 @@ const PureRelaxationPage = () => {
           style={{ backgroundImage: `url(${src})` }}
         />
       ))}
+      {displayBgImages.length === 0 && (
+        <div className={styles.backgroundLoading} aria-label="Loading media">
+          <span aria-hidden="true" />
+        </div>
+      )}
 
       <div className={styles.topPanel}>
         <div className={styles.heroContent}>

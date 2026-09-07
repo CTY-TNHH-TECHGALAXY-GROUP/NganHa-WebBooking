@@ -3,6 +3,7 @@
 import { useMemo, type CSSProperties } from 'react';
 import Link from 'next/link';
 import { ArrowUpRight } from 'lucide-react';
+import { motion, useReducedMotion } from 'framer-motion';
 import { useTranslation } from '@/components/TranslationProvider';
 import { useSystemSettings } from '@/components/SystemSettingsProvider';
 import type { Locale } from '@/lib/constants';
@@ -13,6 +14,7 @@ const OurStory = () => {
   const { currentLang } = useTranslation();
   const { systemSettings, aboutStoryContent, getLocalizedText } = useSystemSettings();
   const lang = (currentLang || 'vi') as Locale;
+  const reduceMotion = useReducedMotion();
 
   const rawData = useMemo(() => {
     if (hasValidOurStoryContent(aboutStoryContent)) return aboutStoryContent;
@@ -128,11 +130,28 @@ const OurStory = () => {
             className={styles.journeyScroller}
             style={{ '--film-frame-count': Math.max(config.filmReel.frames.length, 1) } as CSSProperties}
           >
-            <div className={styles.journeyTrack}>
+            <motion.div
+              className={styles.journeyTrack}
+              initial={reduceMotion ? false : { opacity: 0.45, x: 54 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, amount: 0.18 }}
+              transition={{ duration: 1.05, ease: [0.22, 1, 0.36, 1] }}
+            >
               <div className={styles.filmStrip}>
                 <div className={styles.filmFrames}>
                   {config.filmReel.frames.map((frame, index) => (
-                    <figure key={'film-' + frame.id} className={styles.filmFrame}>
+                    <motion.figure
+                      key={'film-' + frame.id}
+                      className={styles.filmFrame}
+                      initial={reduceMotion ? false : { opacity: 0.55, y: 18 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      whileHover={reduceMotion ? undefined : { y: -5 }}
+                      viewport={{ once: true, amount: 0.3 }}
+                      transition={{
+                        opacity: { duration: 0.55, delay: index * 0.07 },
+                        y: { type: 'spring', stiffness: 150, damping: 22, delay: index * 0.07 },
+                      }}
+                    >
                       <img
                         src={frame.image}
                         alt={getLocalizedText(frame.title, lang)}
@@ -142,22 +161,28 @@ const OurStory = () => {
                         <div className="media-watermark" aria-hidden="true" />
                       )}
                       <span>{String(index + 1).padStart(2, '0')}</span>
-                    </figure>
+                    </motion.figure>
                   ))}
                 </div>
               </div>
 
               <div className={styles.filmCaptions}>
                 {config.filmReel.frames.map((frame, index) => (
-                  <article key={'caption-' + frame.id}>
+                  <motion.article
+                    key={'caption-' + frame.id}
+                    initial={reduceMotion ? false : { opacity: 0, y: 12 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, amount: 0.4 }}
+                    transition={{ duration: 0.55, delay: 0.16 + index * 0.07, ease: 'easeOut' }}
+                  >
                     <small>{getLocalizedText(frame.badge, lang)}</small>
                     <strong>{getLocalizedText(frame.title, lang)}</strong>
                     <p>{getLocalizedText(frame.desc, lang)}</p>
                     <span aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
-                  </article>
+                  </motion.article>
                 ))}
               </div>
-            </div>
+            </motion.div>
           </div>
         </section>
 

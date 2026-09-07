@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useEffect, useMemo, useState } from 'react';
-import { ArrowUpRight } from 'lucide-react';
 import { useSystemSettings } from '@/components/SystemSettingsProvider';
 import { useTranslation } from '@/components/TranslationProvider';
 import { type BlogCard, resolveBlogContent } from './blogContent';
@@ -150,7 +149,7 @@ const BlogsPage = () => {
 
       <footer className={styles.footer}><div><div className={styles.eyebrow}>{content.footer.eyebrow}</div><h2>{content.footer.title.split('\n').map((line) => <React.Fragment key={line}>{line}<br /></React.Fragment>)}</h2></div><div className={styles.right}><div>{content.footer.topics}</div><small>{content.footer.credit}</small></div></footer>
 
-      {activeStory && <div className={`${styles.modal} ${styles.open}`} onClick={(event) => { if (event.target === event.currentTarget) closeStory(); }}><div className={styles['modal-card']}><button type="button" className={`${styles.close} ${activeStory.image ? styles.closeOnMedia : ''}`} onClick={closeStory} aria-label="Close">×</button>{activeStory.image ? <div className={styles.articleHero}><img src={activeStory.image} alt="" /><div className={styles.articleHeroScrim} /><div className={styles.articleHeroCopy}><div>{activeStory.eyebrow} · {activeStory.meta}</div><h3>{activeStory.title}</h3></div></div> : <><div className={styles.eyebrow}>{activeStory.eyebrow} · {activeStory.meta}</div><h3>{activeStory.title}</h3></>}<ArticleBody body={activeStory.body} /><button type="button" className={styles.chip} onClick={closeStory}>{content.latest.readMore} <ArrowUpRight size={14} /></button></div></div>}
+      {activeStory && <div className={`${styles.modal} ${styles.open}`} onClick={(event) => { if (event.target === event.currentTarget) closeStory(); }}><div className={styles['modal-card']}><button type="button" className={`${styles.close} ${activeStory.image ? styles.closeOnMedia : ''}`} onClick={closeStory} aria-label="Close">×</button>{activeStory.image ? <div className={styles.articleHero}><img src={activeStory.image} alt="" /><div className={styles.articleHeroScrim} /><div className={styles.articleHeroCopy}><div>{activeStory.eyebrow} · {activeStory.meta}</div><h3>{activeStory.title}</h3></div></div> : <><div className={styles.eyebrow}>{activeStory.eyebrow} · {activeStory.meta}</div><h3>{activeStory.title}</h3></>}<ArticleBody body={activeStory.body} /></div></div>}
     </div>
   );
 };

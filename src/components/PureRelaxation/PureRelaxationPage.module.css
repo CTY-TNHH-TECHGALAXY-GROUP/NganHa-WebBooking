@@ -23,12 +23,34 @@
   width: 100vw;
   height: 100vh;
   z-index: 0;
-  background-image: url('/images/body-treatment-full.png');
+  background-color: #000;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   opacity: 0;
   transition: opacity 1.5s ease-in-out;
+}
+
+.backgroundLoading {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  background: #000;
+}
+
+.backgroundLoading span {
+  width: 34px;
+  height: 34px;
+  border: 2px solid rgba(230, 202, 145, 0.36);
+  border-top-color: #e6ca91;
+  border-radius: 50%;
+  animation: backgroundSpin 800ms linear infinite;
+}
+
+@keyframes backgroundSpin {
+  to { transform: rotate(360deg); }
 }
 
 .activeBg {
