@@ -736,18 +736,41 @@ export async function POST(request: Request) {
     // ── 11. Dispatch Confirmation Email ───────────────
     // Only executed after BOTH parent and child items are fully committed
     let emailStatus: { sent: boolean; messageId?: string; error?: string } = { sent: false };
-    if (cleanEmail) {
+
+    // Resolve reception notification email (SystemConfigs -> env var -> default)
+    let receptionEmail: string = process.env.RECEPTION_NOTIFICATION_EMAIL || 'info@techgalaxygroup.com';
+    try {
+      const { data: configData } = await supabase
+        .from('SystemConfigs')
+        .select('value')
+        .eq('key', 'system_settings')
+        .maybeSingle();
+
+      if (
+        configData?.value?.receptionEmail &&
+        typeof configData.value.receptionEmail === 'string' &&
+        configData.value.receptionEmail.trim().includes('@')
+      ) {
+        receptionEmail = configData.value.receptionEmail.trim();
+      }
+    } catch {
+      // safe fallback to env var or default
+    }
+
+    if (cleanEmail || receptionEmail) {
       const explicitStaffGender = staffGender && staffGender !== 'any' ? staffGender : undefined;
       const explicitServiceTherapist = validatedServiceList.find(
         (s: any) => s.options?.therapist && s.options.therapist !== 'any'
       )?.options?.therapist;
       const chosenGender = explicitStaffGender || explicitServiceTherapist || 'any';
 
+      const targetLog = cleanEmail ? `${cleanEmail} (BCC: ${receptionEmail})` : `Lễ tân: ${receptionEmail}`;
+
       try {
         const mailRes = await sendBookingConfirmationEmail({
           bookingId: committedBookingId,
           customerName: name.trim(),
-          customerEmail: cleanEmail,
+          customerEmail: cleanEmail || null,
           customerPhone: cleanPhone || '',
           date: date || '',
           time: time || '',
@@ -759,18 +782,19 @@ export async function POST(request: Request) {
           lang,
           notes: note?.trim() || undefined,
           focusAreaNote: finalFocusAreaNote || undefined,
+          receptionEmail,
         });
 
         if (mailRes?.success) {
           emailStatus = { sent: true, messageId: mailRes.messageId };
-          console.log(`✅ [API Bookings] Email đã gửi thành công cho ${cleanEmail}: ${mailRes.messageId}`);
+          console.log(`✅ [API Bookings] Email đã gửi thành công tới ${targetLog}: ${mailRes.messageId}`);
           await supabase
             .from('Bookings')
             .update({ reception_feedback: `Email sent: ${mailRes.messageId}` })
             .eq('id', committedBookingId);
         } else {
           emailStatus = { sent: false, error: mailRes?.error || 'Failed to send email' };
-          console.error(`❌ [API Bookings] Gửi email thất bại cho ${cleanEmail}:`, mailRes?.error);
+          console.error(`❌ [API Bookings] Gửi email thất bại tới ${targetLog}:`, mailRes?.error);
           await supabase
             .from('Bookings')
             .update({ reception_feedback: `Email error: ${mailRes?.error || 'Unknown'}` })

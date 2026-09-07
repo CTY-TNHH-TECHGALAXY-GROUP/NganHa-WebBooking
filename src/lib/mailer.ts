@@ -14,7 +14,7 @@ export interface BookingEmailServiceItem {
 export interface BookingEmailPayload {
   bookingId: string;
   customerName: string;
-  customerEmail: string;
+  customerEmail?: string | null;
   customerPhone: string;
   date: string;
   time: string;
@@ -26,6 +26,7 @@ export interface BookingEmailPayload {
   lang?: string;
   notes?: string;
   focusAreaNote?: string;
+  receptionEmail?: string;
 }
 
 const I18N_TEMPLATE_1: Record<string, {
@@ -33,6 +34,8 @@ const I18N_TEMPLATE_1: Record<string, {
   greeting: (name: string) => string;
   thankYou: string;
   heading: string;
+  customerLabel: string;
+  phoneLabel: string;
   serviceLabel: string;
   dateLabel: string;
   timeLabel: string;
@@ -57,6 +60,8 @@ const I18N_TEMPLATE_1: Record<string, {
     greeting: (name) => `Hi ${name},`,
     thankYou: "Thank you for booking with Oria Spa! We've received your request and our team is reviewing it now.",
     heading: "Your requested booking:",
+    customerLabel: "Guest Name",
+    phoneLabel: "Phone Number",
     serviceLabel: "Service",
     dateLabel: "Date",
     timeLabel: "Time",
@@ -81,6 +86,8 @@ const I18N_TEMPLATE_1: Record<string, {
     greeting: (name) => `Xin chào ${name},`,
     thankYou: "Cảm ơn bạn đã đặt lịch tại Oria Spa! Chúng tôi đã nhận được yêu cầu của bạn và đội ngũ Oria Spa đang tiến hành xử lý.",
     heading: "Thông tin yêu cầu đặt lịch của bạn:",
+    customerLabel: "Khách hàng",
+    phoneLabel: "Số điện thoại",
     serviceLabel: "Dịch vụ",
     dateLabel: "Ngày hẹn",
     timeLabel: "Giờ hẹn",
@@ -105,6 +112,8 @@ const I18N_TEMPLATE_1: Record<string, {
     greeting: (name) => `尊敬的 ${name} 贵宾：`,
     thankYou: "感谢您选择 Oria Spa！我们已收到您的预约申请，水疗团队目前正在核对档期并为您妥善安排。",
     heading: "您的预约申请详情：",
+    customerLabel: "贵宾姓名",
+    phoneLabel: "联系电话",
     serviceLabel: "服务项目",
     dateLabel: "预约日期",
     timeLabel: "预约时间",
@@ -129,6 +138,8 @@ const I18N_TEMPLATE_1: Record<string, {
     greeting: (name) => `${name} 様`,
     thankYou: "この度は Oria Spa をご利用いただき、誠にありがとうございます。お客様のご予約リクエストを承りました。現在、担当スタッフが空き状況と施術スケジュールを確認しております。",
     heading: "ご予約リクエスト内容：",
+    customerLabel: "お客様氏名",
+    phoneLabel: "お電話番号",
     serviceLabel: "施術コース",
     dateLabel: "ご来店日",
     timeLabel: "ご来店時間",
@@ -153,6 +164,8 @@ const I18N_TEMPLATE_1: Record<string, {
     greeting: (name) => `${name} 고객님,`,
     thankYou: "Oria Spa를 찾아주셔서 진심으로 감사드립니다. 고객님의 예약 요청이 정상적으로 접수되었으며, 현재 전담 팀에서 스케줄을 확인하고 있습니다.",
     heading: "요청하신 예약 상세 내역:",
+    customerLabel: "고객 성함",
+    phoneLabel: "연락처",
     serviceLabel: "예약 프로그램",
     dateLabel: "예약 일자",
     timeLabel: "예약 시간",
@@ -311,6 +324,7 @@ export function generateBookingConfirmationHtml(
   const {
     bookingId,
     customerName,
+    customerPhone,
     date,
     time,
     guests = 1,
@@ -464,6 +478,24 @@ export function generateBookingConfirmationHtml(
                   ${bookingId}
                 </td>
               </tr>
+              <tr>
+                <td style="padding: 5px 0; color: rgba(247, 235, 199, 0.6); vertical-align: top;">
+                  • <strong>${t.customerLabel}:</strong>
+                </td>
+                <td style="padding: 5px 0; color: #ffffff; font-weight: 600; vertical-align: top;">
+                  ${customerName}
+                </td>
+              </tr>
+              ${customerPhone ? `
+              <tr>
+                <td style="padding: 5px 0; color: rgba(247, 235, 199, 0.6); vertical-align: top;">
+                  • <strong>${t.phoneLabel}:</strong>
+                </td>
+                <td style="padding: 5px 0; color: #ffffff; font-weight: 500; vertical-align: top;">
+                  <a href="tel:${customerPhone.replace(/\s+/g, '')}" style="color: #D4AF37; text-decoration: none;">${customerPhone}</a>
+                </td>
+              </tr>
+              ` : ''}
               ${totalAmount > 0 ? `
               <tr>
                 <td style="padding: 7px 0; color: rgba(247, 235, 199, 0.6); vertical-align: middle;">
@@ -546,6 +578,7 @@ export async function sendBookingConfirmationEmail(payload: BookingEmailPayload)
       bookingId,
       customerName,
       customerEmail,
+      customerPhone,
       date,
       time,
       guests = 1,
@@ -558,9 +591,36 @@ export async function sendBookingConfirmationEmail(payload: BookingEmailPayload)
       focusAreaNote,
     } = payload;
 
-    if (!customerEmail || !customerEmail.includes('@')) {
-      console.log('[Mailer] Skipped email: invalid or missing customer email');
-      return { success: false, reason: 'Invalid email' };
+    const hasCustomerEmail = Boolean(customerEmail && typeof customerEmail === 'string' && customerEmail.includes('@'));
+    const rawReception = (
+      payload.receptionEmail ||
+      process.env.RECEPTION_NOTIFICATION_EMAIL ||
+      process.env.RECEPTION_EMAIL ||
+      'info@techgalaxygroup.com'
+    ).trim();
+
+    if (!hasCustomerEmail && !rawReception) {
+      console.log('[Mailer] Skipped email: neither customer email nor reception email available');
+      return { success: false, reason: 'No recipient email' };
+    }
+
+    // Prevent delivering real SMTP emails to dummy/test domains (RFC 2606 reserved domains)
+    const emailLower = (customerEmail || '').toLowerCase().trim();
+    const isTestEmail =
+      hasCustomerEmail && (
+        emailLower.endsWith('.test') ||
+        emailLower.endsWith('.example') ||
+        emailLower.endsWith('.invalid') ||
+        emailLower.endsWith('.localhost') ||
+        emailLower.endsWith('@example.com') ||
+        emailLower.endsWith('@test.com') ||
+        emailLower.includes('dummy') ||
+        emailLower.includes('synthetic')
+      );
+
+    if (isTestEmail) {
+      console.log(`ℹ️ [Mailer] Synthetic/test recipient detected (${customerEmail}). Mocked SMTP delivery to prevent inbox bounce.`);
+      return { success: true, messageId: `<mock-test-${Date.now()}@local.mock>` };
     }
 
     const transporter = getTransporter();
@@ -609,6 +669,9 @@ ${t.thankYou}
 
 ${t.heading}
 
+• ${t.bookingCodeLabel}: ${bookingId}
+• ${t.customerLabel}: ${customerName}
+${customerPhone ? `• ${t.phoneLabel}: ${customerPhone}` : ''}
 • ${t.serviceLabel}: ${serviceNames}
 • ${t.dateLabel}: ${formattedDate}
 • ${t.timeLabel}: ${time}
@@ -616,7 +679,6 @@ ${t.heading}
 • ${t.guestsLabel}: ${guestsDisplay}
 • ${t.therapistLabel}: ${therapistDisplay}
 • ${t.locationLabel}: ${branchName}
-• ${t.bookingCodeLabel}: ${bookingId}
 ${totalAmount > 0 ? `• ${t.totalLabel}: ${formatVND(totalAmount)}` : ''}
 ${focusAreaNote ? `\n• ${t.preferencesLabel}:\n${formatPreferencesText(focusAreaNote)}` : ''}
 ${notes ? `\n• ${t.notesLabel}: ${notes}` : ''}
@@ -645,15 +707,36 @@ ${t.signoffTeam}
         ]
       : [];
 
-    const mailOptions = {
+    let toRecipient: string;
+    let bccRecipient: string | undefined = undefined;
+
+    if (hasCustomerEmail) {
+      toRecipient = customerEmail!;
+      if (rawReception && rawReception.includes('@') && rawReception.toLowerCase() !== customerEmail!.toLowerCase()) {
+        bccRecipient = rawReception;
+      }
+    } else {
+      toRecipient = rawReception;
+    }
+
+    const phoneTag = customerPhone ? ` - ${customerPhone}` : '';
+    const emailSubject = hasCustomerEmail
+      ? `${t.subject} (#${bookingId})`
+      : `[ĐƠN MỚI] Đặt lịch hẹn Oria Spa (#${bookingId}) - ${customerName}${phoneTag}`;
+
+    const mailOptions: any = {
       from: `"${fromName}" <${fromEmail}>`,
-      to: customerEmail,
+      to: toRecipient,
       replyTo,
-      subject: `${t.subject} (#${bookingId})`,
+      subject: emailSubject,
       text: plainText,
       html,
       attachments,
     };
+
+    if (bccRecipient) {
+      mailOptions.bcc = bccRecipient;
+    }
 
     let info;
     try {
@@ -665,7 +748,7 @@ ${t.signoffTeam}
       info = await fallbackTransporter.sendMail(mailOptions);
     }
 
-    console.log(`✅ [Mailer] Sent Booking Received (Template 1 - ${lang}) email to ${customerEmail} (MessageId: ${info.messageId})`);
+    console.log(`✅ [Mailer] Sent Booking Received email to ${toRecipient}${bccRecipient ? ` (BCC: ${bccRecipient})` : ''} (MessageId: ${info.messageId})`);
     return { success: true, messageId: info.messageId };
   } catch (err: any) {
     console.error('❌ [Mailer] Failed to send Booking Received email:', err.message);

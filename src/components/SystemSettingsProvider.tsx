@@ -18,6 +18,7 @@ export interface SystemSettings {
   wechat?: string;
   wechatQr?: string;
   kakaotalk?: string;
+  receptionEmail?: string;
   mediaWatermarkEnabled?: boolean;
   homepage_content?: any;
   blog_content?: any;

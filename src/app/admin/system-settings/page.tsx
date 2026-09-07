@@ -209,6 +209,16 @@ export default function SystemSettingsPage() {
                 />
               </div>
               <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Email Lễ tân nhận thông báo (BCC / Nhận bản sao đơn mới)</label>
+                <input
+                  type="email"
+                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500"
+                  value={systemSettings.receptionEmail || ''}
+                  onChange={e => setSystemSettings({ ...systemSettings, receptionEmail: e.target.value })}
+                  placeholder="Ví dụ: info@techgalaxygroup.com"
+                />
+              </div>
+              <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">Link Zalo</label>
                 <input
                   type="text"
