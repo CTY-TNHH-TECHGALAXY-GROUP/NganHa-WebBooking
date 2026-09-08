@@ -19,6 +19,7 @@ export type PureRelaxationPrivilege = {
 };
 
 export type PureRelaxationVariant = {
+  contentKey?: string;
   name: string;
   subtitle: string;
   media: PureRelaxationMedia;
@@ -27,6 +28,7 @@ export type PureRelaxationVariant = {
 };
 
 export type PureRelaxationService = {
+  contentKey?: string;
   name: string;
   description: string;
   media?: PureRelaxationMedia;
@@ -479,5 +481,17 @@ const pureRelaxationSections: PureRelaxationSection[] = [
     ]
   }
 ];
-  return pureRelaxationSections;
+  const readCategoryText = (section: PureRelaxationSection, field: 'title' | 'description' | 'mediaLabel') => {
+    const category = contentMedia?.categories?.[section.id];
+    const localized = category?.[currentLang];
+    if (localized && Object.prototype.hasOwnProperty.call(localized, field)) return localized[field];
+    return section[field];
+  };
+
+  return pureRelaxationSections.map(section => ({
+    ...section,
+    title: readCategoryText(section, 'title'),
+    description: readCategoryText(section, 'description'),
+    mediaLabel: readCategoryText(section, 'mediaLabel'),
+  }));
 };

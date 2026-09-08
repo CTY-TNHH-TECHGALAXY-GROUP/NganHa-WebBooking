@@ -7,7 +7,7 @@ export const HISTORY_LANGUAGE_TABS: Array<{ code: HistoryLocale; label: string; 
   { code: 'en', label: 'EN', flag: '🇬🇧' },
   { code: 'jp', label: 'JP', flag: '🇯🇵' },
   { code: 'kr', label: 'KR', flag: '🇰🇷' },
-  { code: 'cn', label: 'ZH', flag: '🇨🇳' },
+  { code: 'cn', label: 'CN', flag: '🇨🇳' },
 ];
 
 export const HISTORY_HERO_DEFAULTS: Record<HistoryLocale, { eyebrow: string; title1: string; title2: string; body: string }> = {

@@ -37,6 +37,56 @@ const processGoogleDriveLink = (url: string) => {
     return url;
   };
 
+const CategoryEditCard = ({
+  section,
+  contentData = {},
+  localCategoryOverrides = {},
+  successId,
+  handleCategoryChange,
+  saveCategoryChanges,
+}: any) => {
+  const [activeLang, setActiveLang] = useState('vi');
+  const localizedDefault = getPureRelaxationSections({}, activeLang).find(item => item.id === section.id) || section;
+  const saved = contentData.categories?.[section.id]?.[activeLang] || {};
+  const draft = localCategoryOverrides?.[section.id]?.[activeLang] || {};
+  const value = (field: 'title' | 'description' | 'mediaLabel') => {
+    if (Object.prototype.hasOwnProperty.call(draft, field)) return draft[field];
+    if (Object.prototype.hasOwnProperty.call(saved, field)) return saved[field];
+    return localizedDefault[field] || '';
+  };
+  const hasChanges = Boolean(localCategoryOverrides?.[section.id]);
+
+  return (
+    <div className="mb-8 rounded-xl border border-admin-line p-4 bg-admin-panel/50">
+      <div className="flex gap-1 border-b border-admin-line pb-2 mb-3">
+        {LANGUAGES.map(lang => (
+          <button key={lang.id} type="button" onClick={() => setActiveLang(lang.id)} className={`px-3 py-1 rounded-md text-[10px] font-bold ${activeLang === lang.id ? 'bg-admin-gold text-[#241804]' : 'bg-admin-panel text-admin-text-dim'}`}>
+            {lang.label}
+          </button>
+        ))}
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div>
+          <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Category title ({activeLang})</label>
+          <input className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text" value={value('title')} onChange={e => handleCategoryChange?.(section.id, activeLang, 'title', e.target.value)} />
+        </div>
+        <div>
+          <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Media label ({activeLang})</label>
+          <input className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text" value={value('mediaLabel')} onChange={e => handleCategoryChange?.(section.id, activeLang, 'mediaLabel', e.target.value)} />
+        </div>
+        <div className="md:col-span-2">
+          <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Category description ({activeLang})</label>
+          <textarea className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text min-h-[70px]" value={value('description')} onChange={e => handleCategoryChange?.(section.id, activeLang, 'description', e.target.value)} />
+        </div>
+      </div>
+      <button type="button" onClick={() => saveCategoryChanges?.(section.id)} disabled={!hasChanges} className={`mt-3 flex items-center justify-center gap-2 py-2 px-4 rounded-lg text-sm font-bold ${hasChanges ? 'bg-admin-gold text-[#241804]' : 'bg-admin-line text-admin-text-dim cursor-not-allowed'}`}>
+        {successId === `category-${section.id}` ? <CheckCircle size={16} /> : <Save size={16} />}
+        {successId === `category-${section.id}` ? 'Đã lưu' : 'Lưu category'}
+      </button>
+    </div>
+  );
+};
+
 // 1. Service Edit Card component (defined outside parent to prevent re-mounting on state updates)
 const ServiceEditCard = ({
   service,
@@ -46,6 +96,11 @@ const ServiceEditCard = ({
   successId,
   handleTextChange,
   saveTextChanges,
+  catalogService,
+  catalogDraft,
+  catalogNameDraft,
+  handleCatalogTextChange,
+  saveCatalogTextChanges,
   handleFileUpload,
   setContentData,
   saveContent,
@@ -67,15 +122,23 @@ const ServiceEditCard = ({
   const objPos = cData.objectPosition || 'center';
 
   const langData = cData[activeLang] || {};
+  const mediaTag = langData.tag !== undefined ? langData.tag : (cData.tag || service.media?.tag || '');
+  const mediaPoster = langData.poster !== undefined ? langData.poster : (cData.poster || service.media?.poster || '');
 
-  const desc = langData.description !== undefined ? langData.description : (service.description || '');
+  const catalogDescription = catalogDraft?.[activeLang] !== undefined
+    ? catalogDraft[activeLang]
+    : (catalogService?.descriptions?.[activeLang] !== undefined ? catalogService.descriptions[activeLang] : '');
+  const desc = catalogService ? catalogDescription : (langData.description !== undefined ? langData.description : (service.description || ''));
+  const catalogName = catalogNameDraft?.[activeLang] !== undefined
+    ? catalogNameDraft[activeLang]
+    : (catalogService?.names?.[activeLang] !== undefined ? catalogService.names[activeLang] : service.name);
   const defaultPriv = service.privilege || {};
   const privTitle = langData.privilege?.title !== undefined ? langData.privilege.title : (defaultPriv.title || '');
   const privCopy = langData.privilege?.copy !== undefined ? langData.privilege.copy : (defaultPriv.copy || '');
   const privTime = langData.privilege?.time !== undefined ? langData.privilege.time : (defaultPriv.time || '');
   const privImage = langData.privilege?.image !== undefined ? langData.privilege.image : (defaultPriv.image || '');
 
-  const hasChanges = !!localTextOverrides?.[serviceName];
+  const hasChanges = !!localTextOverrides?.[serviceName] || !!catalogDraft || !!catalogNameDraft;
 
   const handleServiceLink = async () => {
     const url = window.prompt('Nhập đường link (URL) ảnh hoặc video:');
@@ -221,13 +284,35 @@ const ServiceEditCard = ({
         </div>
 
         <div>
+          <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Tên dịch vụ ({activeLang})</label>
+          <input
+            className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none"
+            value={catalogService ? catalogName : service.name}
+            onChange={(e) => catalogService && handleCatalogTextChange?.(catalogService.id, activeLang, e.target.value, true)}
+            readOnly={!catalogService}
+          />
+        </div>
+        <div>
           <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Mô tả dịch vụ ({activeLang})</label>
           <textarea 
             className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none min-h-[60px]"
             value={desc}
-            onChange={(e) => handleTextChange?.(serviceName, activeLang, 'description', e.target.value)}
-            placeholder={`Mô tả (${activeLang.toUpperCase()})...`}
+            onChange={(e) => catalogService
+              ? handleCatalogTextChange?.(catalogService.id, activeLang, e.target.value)
+              : handleTextChange?.(serviceName, activeLang, 'description', e.target.value)}
+            placeholder={catalogService ? `Mô tả trong Services (${activeLang.toUpperCase()})...` : `Mô tả (${activeLang.toUpperCase()})...`}
           />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div>
+            <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Media caption / tag ({activeLang})</label>
+            <input className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text" value={mediaTag} onChange={(e) => handleTextChange?.(serviceName, activeLang, 'tag', e.target.value)} />
+          </div>
+          <div>
+            <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Poster URL ({activeLang})</label>
+            <input className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text" value={mediaPoster} onChange={(e) => handleTextChange?.(serviceName, activeLang, 'poster', e.target.value)} />
+          </div>
         </div>
 
         <div className="border-t border-admin-line pt-2 mt-1">
@@ -272,7 +357,10 @@ const ServiceEditCard = ({
       </div>
 
       <button 
-        onClick={() => saveTextChanges?.(serviceName)}
+        onClick={async () => {
+          await saveTextChanges?.(serviceName);
+          if (catalogService && (catalogDraft || catalogNameDraft)) await saveCatalogTextChanges?.(catalogService.id, catalogDraft || {}, catalogNameDraft || {});
+        }}
         disabled={!hasChanges}
         className={`mt-2 flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-bold transition-colors ${hasChanges ? 'bg-admin-gold text-[#241804] hover:bg-[#a67433]' : 'bg-admin-line text-admin-text-dim cursor-not-allowed'}`}
       >
@@ -310,6 +398,14 @@ const NarrativeEditCard = ({
   };
 
   const isVip = sectionId === 'vip-package';
+  const isBodyCare = sectionId === 'body-care';
+  const getText = (field: string) => {
+    const value = getValue(field);
+    return Array.isArray(value) ? value.join('\n') : String(value ?? '');
+  };
+  const rows = Array.isArray(langData.rows) ? langData.rows : (Array.isArray(defaults.rows) ? defaults.rows : []);
+  const chips = Array.isArray(langData.chips) ? langData.chips : (Array.isArray(defaults.chips) ? defaults.chips : []);
+  const points = Array.isArray(langData.points) ? langData.points : (Array.isArray(defaults.points) ? defaults.points : []);
 
   return (
     <div className="bg-admin-bg p-5 rounded-xl border border-admin-line flex flex-col gap-4">
@@ -414,6 +510,68 @@ const NarrativeEditCard = ({
               </div>
             </>
           )}
+
+          {isBodyCare && (
+            <>
+              <div>
+                <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Signature (mỗi dòng một nhãn)</label>
+                <textarea className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text min-h-[80px]" value={getText('signature')} onChange={(e) => handleNarrativeChange?.(sectionId, activeLang, 'signature', e.target.value.split('\n'))} />
+              </div>
+              <div>
+                <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Pull quote</label>
+                <textarea className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text min-h-[70px]" value={getText('pullQuote') || getText('quote')} onChange={(e) => handleNarrativeChange?.(sectionId, activeLang, 'pullQuote', e.target.value)} />
+              </div>
+              <div>
+                <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Pull quote sign</label>
+                <input className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text" value={getText('pullSign')} onChange={(e) => handleNarrativeChange?.(sectionId, activeLang, 'pullSign', e.target.value)} />
+              </div>
+              {rows.map((row: any, index: number) => (
+                <div key={index} className="border border-admin-line rounded-lg p-3 space-y-2">
+                  <label className="text-[10px] uppercase font-bold text-admin-gold block">Rendered row {index + 1}</label>
+                  <input className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text" value={row.title || ''} onChange={(e) => {
+                    const next = rows.map((item: any, itemIndex: number) => itemIndex === index ? { ...item, title: e.target.value } : item);
+                    handleNarrativeChange?.(sectionId, activeLang, 'rows', next);
+                  }} />
+                  <textarea className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text min-h-[70px]" value={row.text || ''} onChange={(e) => {
+                    const next = rows.map((item: any, itemIndex: number) => itemIndex === index ? { ...item, text: e.target.value } : item);
+                    handleNarrativeChange?.(sectionId, activeLang, 'rows', next);
+                  }} />
+                </div>
+              ))}
+              <div>
+                <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Final large text</label>
+                <textarea className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text min-h-[60px]" value={getText('finalBig')} onChange={(e) => handleNarrativeChange?.(sectionId, activeLang, 'finalBig', e.target.value)} />
+              </div>
+              <div>
+                <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Final supporting text</label>
+                <textarea className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text min-h-[60px]" value={getText('finalSmall')} onChange={(e) => handleNarrativeChange?.(sectionId, activeLang, 'finalSmall', e.target.value)} />
+              </div>
+            </>
+          )}
+
+          {!isVip && !isBodyCare && (
+            <>
+              <div>
+                <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Closing</label>
+                <textarea className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text min-h-[60px]" value={getText('closing')} onChange={(e) => handleNarrativeChange?.(sectionId, activeLang, 'closing', e.target.value)} />
+              </div>
+              <div>
+                <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Caption / tags (mỗi dòng một nhãn)</label>
+                <textarea className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text min-h-[60px]" value={chips.join('\n')} onChange={(e) => handleNarrativeChange?.(sectionId, activeLang, 'chips', e.target.value.split('\n'))} />
+              </div>
+              <div>
+                <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Panel title</label>
+                <input className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text" value={getText('panelTitle')} onChange={(e) => handleNarrativeChange?.(sectionId, activeLang, 'panelTitle', e.target.value)} />
+              </div>
+              {points.map((point: any, index: number) => (
+                <div key={index} className="border border-admin-line rounded-lg p-3 space-y-2">
+                  <label className="text-[10px] uppercase font-bold text-admin-gold block">Rendered point {index + 1}</label>
+                  <input className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text" value={point.title || ''} onChange={(e) => handleNarrativeChange?.(sectionId, activeLang, 'points', points.map((item: any, itemIndex: number) => itemIndex === index ? { ...item, title: e.target.value } : item))} />
+                  <textarea className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text min-h-[60px]" value={point.desc || ''} onChange={(e) => handleNarrativeChange?.(sectionId, activeLang, 'points', points.map((item: any, itemIndex: number) => itemIndex === index ? { ...item, desc: e.target.value } : item))} />
+                </div>
+              ))}
+            </>
+          )}
         </div>
         
         <div className="w-full xl:w-[280px] shrink-0">
@@ -461,6 +619,11 @@ const NarrativeEditCard = ({
 
 const PureAdminPage = () => {
   const [contentData, setContentData] = useState<any>({});
+  const [contentRevision, setContentRevision] = useState<string | null>(null);
+  const [catalogServices, setCatalogServices] = useState<any[]>([]);
+  const [catalogDrafts, setCatalogDrafts] = useState<Record<string, Record<string, string>>>({});
+  const [catalogNameDrafts, setCatalogNameDrafts] = useState<Record<string, Record<string, string>>>({});
+  const [localCategoryOverrides, setLocalCategoryOverrides] = useState<any>({});
   const [loading, setLoading] = useState(true);
   const [uploadingId, setUploadingId] = useState<string | null>(null);
   const [successId, setSuccessId] = useState<string | null>(null);
@@ -482,10 +645,18 @@ const PureAdminPage = () => {
 
   const fetchContent = async () => {
     try {
-      const res = await fetch('/api/admin/content');
-      const json = await res.json();
+      const [contentRes, catalogRes] = await Promise.all([
+        fetch('/api/admin/content'),
+        fetch('/api/services'),
+      ]);
+      const json = await contentRes.json();
       if (json.success) {
         setContentData(json.data.pure_relaxation_media || {});
+        setContentRevision(json.meta?.revisions?.pure_relaxation_media || null);
+      }
+      if (catalogRes.ok) {
+        const catalog = await catalogRes.json();
+        if (Array.isArray(catalog)) setCatalogServices(catalog);
       }
     } catch (err) {
       console.error(err);
@@ -499,16 +670,60 @@ const PureAdminPage = () => {
       const res = await fetch('/api/admin/content', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ pure_relaxation_media: newMediaData }),
+        body: JSON.stringify({
+          pure_relaxation_media: newMediaData,
+          _expectedRevisions: { pure_relaxation_media: contentRevision },
+        }),
       });
       const json = await res.json();
       if (!json.success) {
-        alert('Lỗi khi lưu dữ liệu!');
+        if (res.status === 409) alert('Nội dung đã thay đổi ở cửa sổ khác. Bản nháp hiện tại vẫn được giữ lại; hãy tải lại để so sánh.');
+        else alert('Lỗi khi lưu dữ liệu!');
+      } else {
+        setContentRevision(json.data?.revisions?.pure_relaxation_media || contentRevision);
       }
     } catch (err) {
       console.error(err);
       alert('Lỗi hệ thống khi lưu');
     }
+  };
+
+  const handleCatalogTextChange = (id: string, lang: string, value: string, isName = false) => {
+    const setter = isName ? setCatalogNameDrafts : setCatalogDrafts;
+    setter(previous => ({
+      ...previous,
+      [id]: { ...(previous[id] || {}), [lang]: value },
+    }));
+  };
+
+  const saveCatalogTextChanges = async (id: string, draft: Record<string, string>, nameDraft: Record<string, string> = {}) => {
+    const current = catalogServices.find(service => service.id === id);
+    const description = { ...(current?.descriptions || {}), ...draft };
+    const names = { ...(current?.names || {}), ...nameDraft };
+    const response = await fetch(`/api/admin/services/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ description, names, expectedDescription: current?.descriptions || {}, expectedNames: current?.names || {} }),
+    });
+    const json = await response.json();
+    if (!response.ok || !json.success) {
+      if (response.status === 409) alert('Mô tả dịch vụ đã thay đổi ở cửa sổ khác. Bản nháp hiện tại vẫn được giữ lại.');
+      else alert(json.error?.message || 'Không thể lưu mô tả dịch vụ.');
+      return;
+    }
+    setCatalogServices(previous => previous.map(service => service.id === id
+      ? { ...service, descriptions: json.data.description, names: json.data.names || service.names }
+      : service));
+    setCatalogDrafts(previous => {
+      const next = { ...previous };
+      delete next[id];
+      return next;
+    });
+    setCatalogNameDrafts(previous => {
+      const next = { ...previous };
+      delete next[id];
+      return next;
+    });
   };
 
   const handleFileUpload = async (keyPath: string, file: File, isArray = false) => {
@@ -596,6 +811,37 @@ const PureAdminPage = () => {
       }
       return { ...prev, [serviceName]: newS };
     });
+  };
+
+  const handleCategoryChange = (sectionId: string, lang: string, field: string, value: string) => {
+    setLocalCategoryOverrides((previous: any) => {
+      const section = previous[sectionId] || contentData.categories?.[sectionId] || {};
+      return {
+        ...previous,
+        [sectionId]: {
+          ...section,
+          [lang]: { ...(section[lang] || {}), [field]: value },
+        },
+      };
+    });
+  };
+
+  const saveCategoryChanges = async (sectionId: string) => {
+    if (!localCategoryOverrides[sectionId]) return;
+    const newMediaData = {
+      ...contentData,
+      categories: {
+        ...(contentData.categories || {}),
+        [sectionId]: {
+          ...(contentData.categories?.[sectionId] || {}),
+          ...localCategoryOverrides[sectionId],
+        },
+      },
+    };
+    setContentData(newMediaData);
+    setSuccessId(`category-${sectionId}`);
+    await saveContent(newMediaData);
+    setTimeout(() => setSuccessId(null), 3000);
   };
 
   const saveTextChanges = async (serviceName: string) => {
@@ -740,6 +986,15 @@ const PureAdminPage = () => {
                     {section.title}
                   </h3>
 
+                  <CategoryEditCard
+                    section={section}
+                    contentData={contentData}
+                    localCategoryOverrides={localCategoryOverrides}
+                    successId={successId}
+                    handleCategoryChange={handleCategoryChange}
+                    saveCategoryChanges={saveCategoryChanges}
+                  />
+
                   {/* 1. Category Narrative Editor */}
                   <div className="mb-8">
                     <h4 className="text-xs font-bold text-admin-text-dim mb-3 uppercase tracking-widest">I. Bài viết giới thiệu danh mục (Perspective)</h4>
@@ -763,6 +1018,11 @@ const PureAdminPage = () => {
                            <ServiceEditCard 
                              key={`${service.name}-${idx}`} 
                              service={item}
+                             catalogService={catalogServices.find((catalog) => catalog.id === item.durations?.[0]?.id)}
+                             catalogDraft={catalogDrafts[item.durations?.[0]?.id || '']}
+                             catalogNameDraft={catalogNameDrafts[item.durations?.[0]?.id || '']}
+                             handleCatalogTextChange={handleCatalogTextChange}
+                             saveCatalogTextChanges={saveCatalogTextChanges}
                              contentData={contentData}
                              localTextOverrides={localTextOverrides}
                              uploadingId={uploadingId}
@@ -790,4 +1050,3 @@ const PureAdminPage = () => {
 };
 
 export default PureAdminPage;
-

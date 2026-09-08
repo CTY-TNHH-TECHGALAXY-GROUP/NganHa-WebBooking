@@ -86,12 +86,14 @@ export default function BrandHistoryPage() {
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
   const [expandedChapter, setExpandedChapter] = useState<string | null>(null);
+  const [revision, setRevision] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch('/api/admin/system-settings')
+    fetch('/api/admin/history')
       .then(res => res.json())
       .then(data => {
-        setConfig(hydrateBrandHistoryConfig(data.brand_history));
+        setConfig(hydrateBrandHistoryConfig(data.data?.brand_history));
+        setRevision(data.data?.revision || null);
         setLoading(false);
       })
       .catch(err => {
@@ -107,11 +109,15 @@ export default function BrandHistoryPage() {
       const res = await fetch('/api/admin/system-settings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ brand_history: config }),
+        body: JSON.stringify({ brand_history: config, expectedRevision: revision }),
       });
       if (res.ok) {
+        const data = await res.json();
+        setRevision(data.data?.revision || revision);
         setMessage('Lưu Lịch sử thương hiệu thành công!');
         setTimeout(() => setMessage(''), 3000);
+      } else if (res.status === 409) {
+        setMessage('Nội dung đã đổi ở cửa sổ khác. Bản nháp hiện tại vẫn được giữ lại.');
       } else {
         setMessage('Có lỗi xảy ra khi lưu.');
       }
@@ -324,6 +330,15 @@ export default function BrandHistoryPage() {
                   />
                   <div className="md:col-span-2">
                     <MultiLangInput
+                      label="Nhãn meta (mỗi dòng một mục)"
+                      value={Object.fromEntries(Object.entries(chapter.meta || {}).map(([key, val]) => [key, Array.isArray(val) ? val.join('\n') : String(val || '')]))}
+                      multiline
+                      onChange={val => updateChapter(chapIdx, { ...chapter, meta: Object.fromEntries(Object.entries(val).map(([key, value]) => [key, String(value).split('\n')])) })}
+                    />
+                  </div>
+
+                  <div className="md:col-span-2">
+                    <MultiLangInput
                       label="Mô tả nội dung (Body)"
                       value={chapter.body}
                       multiline
@@ -377,6 +392,34 @@ export default function BrandHistoryPage() {
                             value={scene.body}
                             multiline
                             onChange={val => updateScene(chapIdx, sceneIdx, { ...scene, body: val })}
+                          />
+                        </div>
+                        <div className="md:col-span-2">
+                          <MultiLangInput
+                            label="Alt text (văn bản thay thế ảnh)"
+                            value={scene.alt}
+                            multiline
+                            onChange={val => updateScene(chapIdx, sceneIdx, { ...scene, alt: val })}
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-semibold text-gray-700 mb-2">Cách hiển thị ảnh</label>
+                          <select
+                            className="w-full px-4 py-2 border border-gray-200 rounded-lg text-sm"
+                            value={scene.imageFit || 'cover'}
+                            onChange={e => updateScene(chapIdx, sceneIdx, { ...scene, imageFit: e.target.value })}
+                          >
+                            <option value="cover">Cover</option>
+                            <option value="contain">Contain</option>
+                          </select>
+                        </div>
+                        <div>
+                          <label className="block text-sm font-semibold text-gray-700 mb-2">Vị trí ảnh (object-position)</label>
+                          <input
+                            type="text"
+                            className="w-full px-4 py-2 border border-gray-200 rounded-lg text-sm"
+                            value={scene.imagePosition || 'center'}
+                            onChange={e => updateScene(chapIdx, sceneIdx, { ...scene, imagePosition: e.target.value })}
                           />
                         </div>
                       </div>

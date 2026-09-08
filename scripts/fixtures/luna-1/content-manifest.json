@@ -1,0 +1,27 @@
+{
+  "worker": "Luna-1",
+  "locales": ["vi", "en", "jp", "kr", "cn"],
+  "contentSources": {
+    "pureNarrative": "src/components/PureRelaxation/pureRelaxationDefaults.ts + WebBookingContent:pure_relaxation_media.narratives",
+    "pureCatalog": "Services (nameVN/nameEN/nameJP/nameKR/nameCN, description JSON, priceVND, priceUSD, duration)",
+    "history": "src/components/History/History.tsx defaults + SystemConfigs:brand_history"
+  },
+  "pureSections": {
+    "body-care": ["eyebrow", "headline", "lead", "signature[]", "rows[].index", "rows[].title", "rows[].text", "pullQuote", "pullSign", "finalBig", "finalSmall"],
+    "foot-care": ["eyebrow", "headline", "lead", "quote", "body1", "body2", "body3", "chips[]", "closing", "panelTitle", "points[].title", "points[].desc"],
+    "ear-clean": ["eyebrow", "headline", "lead", "quote", "body1", "body2", "body3", "chips[]", "closing", "panelTitle", "points[].title", "points[].desc"],
+    "barber": ["eyebrow", "headline", "lead", "quote", "body1", "body2", "body3", "chips[]", "closing", "panelTitle", "points[].title", "points[].desc"],
+    "package": ["eyebrow", "headline", "lead", "quote", "body1", "body2", "body3", "chips[]", "closing", "panelTitle", "points[].title", "points[].desc"],
+    "adds-on": ["service.name", "service.description", "service.media.tag", "service.media.src", "service.media.type", "service.media.poster", "service.media.objectPosition", "privilege.title", "privilege.copy", "privilege.time", "privilege.image"],
+    "vip-package": ["headline", "lead", "paragraphs[]", "specialText"]
+  },
+  "historyFields": ["hero.image", "hero.eyebrow", "hero.title1", "hero.title2", "hero.body", "chapter.year", "chapter.eyebrow", "chapter.title", "chapter.body", "chapter.meta[]", "scene.image", "scene.title", "scene.label", "scene.body", "scene.alt", "scene.imageFit", "scene.imagePosition", "finale.eyebrow", "finale.title", "finale.body"],
+  "catalogRules": {
+    "descriptionPersistedIn": "Services.description",
+    "legacyDescriptionKeys": ["vi", "vn", "VN", "en", "EN", "jp", "JP", "kr", "KR", "cn", "CN"],
+    "priceFieldsUntouched": ["priceVND", "priceUSD"],
+    "identityFieldsUntouched": ["id", "duration", "isActive"]
+  },
+  "seedPolicy": "Fill only missing/null JSON paths. Never replace an existing custom value, intentional empty string, media setting, ID, price, duration, or status.",
+  "knownDataGap": "NHP0001-NHP0014 CN/JP/KR descriptions are not present in the repository source. The admin Services editor and API support them; a staging catalog export with the effective VI/EN copy is required before producing source-grounded translations or a seed for those 14 records."
+}

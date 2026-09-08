@@ -14,6 +14,13 @@ import {
 import CustomForYouModal from '@/components/CustomForYou';
 import { CustomPreferences } from '@/components/CustomForYou/types';
 import { getPureRelaxationSections } from './pureRelaxationData';
+import { PURE_RELAXATION_DEFAULTS } from './pureRelaxationDefaults';
+import {
+  applyPureRelaxationCatalog,
+  PURE_RELAXATION_LOCALES,
+  mergePureRelaxationNarrative,
+  type PureRelaxationLocale,
+} from './pureRelaxationResolvers';
 import type {
   PureRelaxationDuration,
   PureRelaxationMedia,
@@ -25,6 +32,7 @@ import type {
 import styles from './PureRelaxationPage.module.css';
 
 type ActiveItem = {
+  contentKey: string;
   name: string;
   subtitle: string;
   media: PureRelaxationMedia;
@@ -51,6 +59,7 @@ const getActiveItem = (service: PureRelaxationService, variantIndex: number, con
   if (hasVariants(service)) {
     const variant = service.variants[Math.min(variantIndex, service.variants.length - 1)];
     active = {
+      contentKey: variant.contentKey || variant.name,
       name: currentLang === 'vi' ? (variant.subtitle || variant.name) : variant.name,
       subtitle: '',
       media: variant.media,
@@ -59,6 +68,7 @@ const getActiveItem = (service: PureRelaxationService, variantIndex: number, con
     };
   } else {
     active = {
+      contentKey: service.contentKey || service.name,
       name: service.name,
       subtitle: service.description,
       media: service.media!,
@@ -68,24 +78,36 @@ const getActiveItem = (service: PureRelaxationService, variantIndex: number, con
   }
 
   // Apply admin overrides
-  const override = contentMedia[active.name];
+  const override = contentMedia[active.contentKey] || contentMedia[active.name];
   if (override) {
     const langData = override[currentLang] || {};
-    if (langData.description) active.subtitle = langData.description;
+    if (Object.prototype.hasOwnProperty.call(langData, 'description')) active.subtitle = langData.description;
     if (langData.privilege) {
       active.privilege = { ...active.privilege, ...langData.privilege };
     }
-    const mediaSrc = langData.src || override.src;
+    const mediaSrc = Object.prototype.hasOwnProperty.call(langData, 'src') ? langData.src : override.src;
     const isVideoFile = typeof mediaSrc === 'string' && /\.(mp4|webm|mov|m4v)(\?.*)?$/i.test(mediaSrc);
     const mediaType = langData.type || override.type || (isVideoFile ? 'video' : undefined);
-    const objectPosition = langData.objectPosition || override.objectPosition;
+    const objectPosition = Object.prototype.hasOwnProperty.call(langData, 'objectPosition') ? langData.objectPosition : override.objectPosition;
+    const tag = Object.prototype.hasOwnProperty.call(langData, 'tag') ? langData.tag : override.tag;
+    const poster = Object.prototype.hasOwnProperty.call(langData, 'poster') ? langData.poster : override.poster;
+
+    if (tag !== undefined || poster !== undefined) {
+      active.media = {
+        ...active.media,
+        ...(tag !== undefined ? { tag } : {}),
+        ...(poster !== undefined ? { poster } : {}),
+      } as any;
+    }
     
     if (mediaSrc) {
       active.media = {
         ...active.media,
         type: (mediaType || (isVideoFile ? 'video' : 'image')) as 'image' | 'video',
         src: mediaSrc,
-        ...(objectPosition ? { objectPosition } : {})
+        ...(objectPosition ? { objectPosition } : {}),
+        ...(tag !== undefined ? { tag } : {}),
+        ...(poster !== undefined ? { poster } : {})
       } as any;
     }
   }
@@ -190,6 +212,15 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
   const [pendingCheckout, setPendingCheckout] = useState(false);
   const router = useRouter();
   const { currentLang } = useTranslation();
+  const noticeCopy = {
+    vi: { added: 'Đã thêm vào giỏ', updated: 'Đã cập nhật giỏ', removed: 'Đã xóa khỏi giỏ' },
+    en: { added: 'Added to cart', updated: 'Updated cart', removed: 'Removed from cart' },
+    cn: { added: '已加入购物车', updated: '购物车已更新', removed: '已从购物车移除' },
+    jp: { added: 'カートに追加しました', updated: 'カートを更新しました', removed: 'カートから削除しました' },
+    kr: { added: '장바구니에 추가했습니다', updated: '장바구니를 업데이트했습니다', removed: '장바구니에서 삭제했습니다' },
+  }[currentLang as 'vi' | 'en' | 'cn' | 'jp' | 'kr'] || {
+    added: 'Added to cart', updated: 'Updated cart', removed: 'Removed from cart'
+  };
 
   const humanTouchContent = currentLang === 'vi' ? {
     eyebrow: 'Body Massage Perspective',
@@ -352,11 +383,15 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
                          section.id === 'vip-package' ? vipPackagesContent : 
                          humanTouchContent;
 
+  const localeDefaultNarrative = PURE_RELAXATION_DEFAULTS[section.id]?.[currentLang || 'vi'] || {};
+  // The authored VI/EN template remains the structural fallback, while the
+  // reviewed locale defaults provide real copy for CN/JP/KR.
+  const localeSource = currentLang === 'vi' || currentLang === 'en'
+    ? sectionContent
+    : { ...sectionContent, ...localeDefaultNarrative };
+  const resolvedNarrative = mergePureRelaxationNarrative(localeSource, localeDefaultNarrative);
   const adminNarrative = contentMedia?.narratives?.[section.id]?.[currentLang || 'vi'];
-  const finalSectionContent = {
-    ...sectionContent,
-    ...adminNarrative
-  };
+  const finalSectionContent = mergePureRelaxationNarrative(resolvedNarrative, adminNarrative);
 
   // Fetch dynamic services and content from admin panel
   const [dbServices, setDbServices] = useState<any[]>([]);
@@ -377,24 +412,11 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
   
   const filteredServices = useMemo(() => {
     if (!isDbLoaded) return section.services;
-    return section.services.map(svc => {
-      let newSvc = { ...svc };
-      if (newSvc.variants) {
-         newSvc.variants = newSvc.variants.map((v: any) => ({
-             ...v,
-             durations: v.durations?.filter((d: any) => dbServices.some(db => db.id === d.id))
-         })).filter((v: any) => v.durations && v.durations.length > 0);
-      }
-      if (newSvc.durations) {
-         newSvc.durations = newSvc.durations.filter((d: any) => dbServices.some(db => db.id === d.id));
-      }
-      return newSvc;
-    }).filter(svc => {
-      if (svc.variants) return svc.variants.length > 0;
-      if (svc.durations) return svc.durations.some((d: any) => dbServices.some(db => db.id === d.id));
-      return false;
-    });
-  }, [section.services, dbServices, isDbLoaded]);
+    const locale = (PURE_RELAXATION_LOCALES.includes(currentLang as PureRelaxationLocale)
+      ? currentLang
+      : 'vi') as PureRelaxationLocale;
+    return applyPureRelaxationCatalog([section], dbServices, locale, true)[0]?.services || [];
+  }, [section, dbServices, isDbLoaded, currentLang]);
 
   useEffect(() => {
     if (filteredServices.length > 0 && serviceIndex >= filteredServices.length) {
@@ -406,15 +428,16 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
 
   const selectedService = filteredServices[serviceIndex] || filteredServices[0];
   
-  if (!selectedService) {
-    return (
-       <section className={styles.serviceSection} id={section.id}>
-         <div className="text-center py-20 opacity-60">Coming soon / Đang cập nhật</div>
-       </section>
-    );
-  }
-
-  const active = useMemo(() => getActiveItem(selectedService, variantIndex, contentMedia, currentLang), [selectedService, variantIndex, contentMedia, currentLang]);
+  const active = useMemo(() => selectedService
+    ? getActiveItem(selectedService, variantIndex, contentMedia, currentLang)
+    : {
+        contentKey: `${section.id}-empty`,
+        name: '',
+        subtitle: '',
+        media: { type: 'image' as const, src: '', tag: '' },
+        durations: [],
+        privilege: { title: '', copy: '', image: '', time: '' },
+      }, [selectedService, variantIndex, contentMedia, currentLang, section.id]);
   
   const displayDurations = useMemo(() => {
     return (active.durations || []).map(duration => {
@@ -427,7 +450,12 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
     });
   }, [active.durations, dbServices]);
 
-  const activeDuration = displayDurations[Math.min(durationIndex, displayDurations.length - 1)];
+  const activeDuration = displayDurations[Math.min(durationIndex, displayDurations.length - 1)] || {
+    label: '0',
+    price: 0,
+    priceUSD: 0,
+    id: undefined,
+  };
 
   const selectedCartServiceId = useMemo(
     () => activeDuration.id || `pure-relaxation-${section.id}-${slugify(active.name)}-${slugify(activeDuration.label)}`,
@@ -465,7 +493,7 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
     if (!defaultMedia) return null;
     
     // Find matching media from contentMedia
-    const adminMedia = contentMedia[active.name];
+    const adminMedia = contentMedia[active.contentKey] || contentMedia[active.name];
 
     if (adminMedia && adminMedia.src) {
       return {
@@ -565,7 +593,7 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
       setShowCustomForYou(true);
       if (typeof onSuccess === 'function') setPendingCheckout(true);
     } else {
-      setNotice('Added to cart');
+      setNotice(noticeCopy.added);
       window.setTimeout(() => setNotice(''), 2200);
       if (typeof onSuccess === 'function') onSuccess();
     }
@@ -575,7 +603,7 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
   const decreaseQuantity = useCallback(() => {
     const cart = removeOneBookingCartItem(selectedCartServiceId);
     syncCart(cart);
-    setNotice(cart.some((item) => item.id === selectedCartServiceId) ? 'Updated cart' : 'Removed from cart');
+    setNotice(cart.some((item) => item.id === selectedCartServiceId) ? noticeCopy.updated : noticeCopy.removed);
     window.setTimeout(() => setNotice(''), 2200);
     return cart;
   }, [selectedCartServiceId, syncCart]);
@@ -605,6 +633,16 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
     }
     return active.subtitle;
   }, [active.subtitle, active.durations, dbServices, currentLang]);
+
+  if (!selectedService) {
+    return (
+      <section className={styles.serviceSection} id={section.id}>
+        <div className="text-center py-20 opacity-60">
+          {{ vi: 'Đang cập nhật', en: 'Coming soon', cn: '即将推出', jp: '近日公開', kr: '준비 중' }[currentLang] || 'Coming soon'}
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className={styles.serviceSection} id={section.id}>
@@ -814,19 +852,19 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
       {section.id === 'body-care' ? (
         <div className={styles.humanTouchSection} style={{ padding: 0, border: 'none', background: 'transparent' }}>
           <div className={styles.narrativeHero}>
-            <div className={styles.narrativeKicker}>{(sectionContent as any).eyebrow}</div>
-            <h2 className={styles.narrativeHeadline}>{(sectionContent as any).headline}</h2>
-            <p className={styles.narrativeIntro}>{(sectionContent as any).lead}</p>
-            {(sectionContent as any).signature && (sectionContent as any).signature.length > 0 && (
+            <div className={styles.narrativeKicker}>{(finalSectionContent as any).eyebrow}</div>
+            <h2 className={styles.narrativeHeadline}>{(finalSectionContent as any).headline}</h2>
+            <p className={styles.narrativeIntro}>{(finalSectionContent as any).lead}</p>
+            {(finalSectionContent as any).signature && (finalSectionContent as any).signature.length > 0 && (
               <div className={styles.narrativeSignature}>
-                {(sectionContent as any).signature.map((item: string, i: number) => (
+                {(finalSectionContent as any).signature.map((item: string, i: number) => (
                   <span key={i}>{item}</span>
                 ))}
               </div>
             )}
           </div>
           <div className={styles.narrativeStory}>
-            {(sectionContent as any).rows?.map((row: any, i: number) => (
+            {(finalSectionContent as any).rows?.map((row: any, i: number) => (
               <div key={i} className={styles.narrativeRow}>
                 <div className={styles.narrativeIndex}>{row.index}</div>
                 <div className={styles.narrativeContent}>
@@ -836,17 +874,17 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
               </div>
             ))}
             
-            {(sectionContent as any).pullQuote && (
+            {(finalSectionContent as any).pullQuote && (
               <div className={styles.narrativePull}>
-                <div className={styles.narrativePullQuote}>{(sectionContent as any).pullQuote}</div>
-                {(sectionContent as any).pullSign && <div className={styles.narrativePullSign}>{(sectionContent as any).pullSign}</div>}
+                <div className={styles.narrativePullQuote}>{(finalSectionContent as any).pullQuote}</div>
+                {(finalSectionContent as any).pullSign && <div className={styles.narrativePullSign}>{(finalSectionContent as any).pullSign}</div>}
               </div>
             )}
 
-            {(sectionContent as any).finalBig && (
+            {(finalSectionContent as any).finalBig && (
               <div className={styles.narrativeFinal}>
-                <div className={styles.narrativeFinalBig}>{(sectionContent as any).finalBig}</div>
-                <div className={styles.narrativeFinalSmall}>{(sectionContent as any).finalSmall}</div>
+                <div className={styles.narrativeFinalBig}>{(finalSectionContent as any).finalBig}</div>
+                <div className={styles.narrativeFinalSmall}>{(finalSectionContent as any).finalSmall}</div>
               </div>
             )}
           </div>
@@ -1038,14 +1076,16 @@ const PureRelaxationPage = () => {
         />
       ))}
       {displayBgImages.length === 0 && (
-        <div className={styles.backgroundLoading} aria-label="Loading media">
+        <div className={styles.backgroundLoading} aria-label={
+          ({ vi: 'Đang tải hình ảnh', en: 'Loading media', cn: '正在加载媒体', jp: 'メディアを読み込み中', kr: '미디어 로딩 중' }[currentLang] || 'Loading media')
+        }>
           <span aria-hidden="true" />
         </div>
       )}
 
       <div className={styles.topPanel}>
         <div className={styles.heroContent}>
-          <h1>Pure Relaxation</h1>
+          <h1>{{ vi: 'Thư giãn thuần túy', en: 'Pure Relaxation', cn: '纯粹放松', jp: 'ピュア・リラクゼーション', kr: '순수한 휴식' }[currentLang] || 'Pure Relaxation'}</h1>
 
           <div className={styles.preferenceWrap}>
             <PreferenceNote icon={<DoorOpen size={18} />} title={t.randomRoom} copy={t.roomSub} />

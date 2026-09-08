@@ -507,6 +507,27 @@ export const normalizeHistoryLocale = (locale: string): HistoryLocale => {
   return HISTORY_LOCALES.includes(locale as HistoryLocale) ? locale as HistoryLocale : 'vi';
 };
 
+const DEFAULT_HISTORY_IMAGE_PATHS = new Set(
+  chaptersVi.flatMap(chapter => chapter.scenes.map(scene => scene.image)).filter(Boolean),
+);
+
+/** Keep confirmed custom media intact, but repair the old extension used by the bundled history assets. */
+export const normalizeHistoryImagePath = (value: string) => {
+  if (!value || !value.startsWith('/images/history/')) return value;
+  const candidate = value.replace(/\.(jpe?g)(?=\?|$)/i, '.png');
+  const knownPng = Array.from(DEFAULT_HISTORY_IMAGE_PATHS).some(path => path === candidate.split('?')[0]);
+  return knownPng ? candidate : value;
+};
+
+export const resolveHistoryText = (value: Record<string, string> | string | undefined, locale: HistoryLocale, fallback = '') => {
+  if (typeof value === 'string') return value;
+  if (!value) return fallback;
+  if (Object.prototype.hasOwnProperty.call(value, locale)) return value[locale];
+  if (Object.prototype.hasOwnProperty.call(value, 'en')) return value.en;
+  if (Object.prototype.hasOwnProperty.call(value, 'vi')) return value.vi;
+  return fallback;
+};
+
 type LocalizedText = Record<HistoryLocale, string>;
 type LocalizedMeta = Record<HistoryLocale, string[]>;
 
@@ -682,30 +703,30 @@ export const History = () => {
   const { currentLang } = useTranslation();
   const locale = normalizeHistoryLocale(currentLang);
   const copy = HISTORY_INTERFACE_COPY[locale];
-  const { brandHistory, getLocalizedText } = useSystemSettings();
+  const { brandHistory } = useSystemSettings();
   const hydratedHistory = useMemo(() => hydrateBrandHistoryConfig(brandHistory), [brandHistory]);
 
   const chapters = useMemo(() => {
     if (hydratedHistory.chapters.length > 0) {
       return hydratedHistory.chapters.map((chapter: any) => ({
         year: chapter.year || '',
-        eyebrow: getLocalizedText(chapter.eyebrow, locale, ''),
-        title: getLocalizedText(chapter.title, locale, ''),
-        body: getLocalizedText(chapter.body, locale, ''),
+        eyebrow: resolveHistoryText(chapter.eyebrow, locale, ''),
+        title: resolveHistoryText(chapter.title, locale, ''),
+        body: resolveHistoryText(chapter.body, locale, ''),
         meta: chapter.meta?.[locale] || [],
         scenes: chapter.scenes?.map((scene: any) => ({
-          title: getLocalizedText(scene.title, locale, ''),
-          label: getLocalizedText(scene.label, locale, ''),
-          body: getLocalizedText(scene.body, locale, ''),
+          title: resolveHistoryText(scene.title, locale, ''),
+          label: resolveHistoryText(scene.label, locale, ''),
+          body: resolveHistoryText(scene.body, locale, ''),
           image: scene.image || '',
-          alt: getLocalizedText(scene.alt, locale, getLocalizedText(scene.title, locale, '')),
+          alt: resolveHistoryText(scene.alt, locale, resolveHistoryText(scene.title, locale, '')),
           imageFit: scene.imageFit,
           imagePosition: scene.imagePosition,
         })) || []
       }));
     }
     return chaptersVi;
-  }, [hydratedHistory, locale, getLocalizedText]);
+  }, [hydratedHistory, locale]);
   const [activeChapter, setActiveChapter] = useState(0);
   const [activeScenes, setActiveScenes] = useState<Record<string, number>>({});
   const [cacheBuster, setCacheBuster] = useState('');
@@ -715,9 +736,10 @@ export const History = () => {
   }, []);
 
   const getBustedUrl = useCallback((url: string) => {
-    if (!url) return '';
-    if (!cacheBuster) return url;
-    return url.includes('?') ? `${url}&${cacheBuster}` : `${url}?${cacheBuster}`;
+    const normalizedUrl = normalizeHistoryImagePath(url);
+    if (!normalizedUrl) return '';
+    if (!cacheBuster) return normalizedUrl;
+    return normalizedUrl.includes('?') ? `${normalizedUrl}&${cacheBuster}` : `${normalizedUrl}?${cacheBuster}`;
   }, [cacheBuster]);
 
   const shellRef = useRef<HTMLElement | null>(null);
@@ -881,7 +903,7 @@ export const History = () => {
         <div className={styles.heroMedia}>
           <Image
             src={getBustedUrl(hydratedHistory.hero?.image || "/images/about-bg.png")}
-            alt={getLocalizedText(hydratedHistory.hero?.title2, locale, 'Oria Spa')}
+            alt={resolveHistoryText(hydratedHistory.hero?.title2, locale, 'Oria Spa')}
             fill
             unoptimized
             priority
@@ -890,13 +912,13 @@ export const History = () => {
         </div>
         <div className={styles.heroCopy}>
           <span className={styles.eyebrow}>
-            {getLocalizedText(hydratedHistory.hero?.eyebrow, locale, HISTORY_HERO_DEFAULTS[locale].eyebrow)}
+            {resolveHistoryText(hydratedHistory.hero?.eyebrow, locale, HISTORY_HERO_DEFAULTS[locale].eyebrow)}
           </span>
           <h1>
-            {getLocalizedText(hydratedHistory.hero?.title1, locale, HISTORY_HERO_DEFAULTS[locale].title1)} <em>{getLocalizedText(hydratedHistory.hero?.title2, locale, HISTORY_HERO_DEFAULTS[locale].title2)}</em>
+            {resolveHistoryText(hydratedHistory.hero?.title1, locale, HISTORY_HERO_DEFAULTS[locale].title1)} <em>{resolveHistoryText(hydratedHistory.hero?.title2, locale, HISTORY_HERO_DEFAULTS[locale].title2)}</em>
           </h1>
           <p>
-            {getLocalizedText(hydratedHistory.hero?.body, locale, HISTORY_HERO_DEFAULTS[locale].body)}
+            {resolveHistoryText(hydratedHistory.hero?.body, locale, HISTORY_HERO_DEFAULTS[locale].body)}
           </p>
           <a className={styles.scrollCue} href="#history-2015">
             <span />
@@ -1088,6 +1110,20 @@ export const History = () => {
           );
         })}
       </div>
+
+      <motion.footer
+        className={styles.finale}
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.35 }}
+        transition={{ duration: 0.9, ease: [0.22, 0.8, 0.22, 1] }}
+      >
+        <div>
+          <span className={styles.eyebrow}>{resolveHistoryText(hydratedHistory.finale?.eyebrow, locale, HISTORY_FINALE_DEFAULTS[locale].eyebrow)}</span>
+          <h2>{resolveHistoryText(hydratedHistory.finale?.title, locale, HISTORY_FINALE_DEFAULTS[locale].title)}</h2>
+          <p>{resolveHistoryText(hydratedHistory.finale?.body, locale, HISTORY_FINALE_DEFAULTS[locale].body)}</p>
+        </div>
+      </motion.footer>
 
       <nav 
         className={styles.yearNav} 

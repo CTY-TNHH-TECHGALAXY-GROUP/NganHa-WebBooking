@@ -17,6 +17,13 @@ export const ServiceEditModal: React.FC<ServiceEditModalProps> = ({ service, onC
     nameKR: service.names?.kr || '',
     nameJP: service.names?.jp || '',
     nameCN: service.names?.cn || '',
+    description: {
+      vi: service.descriptions?.vi || '',
+      en: service.descriptions?.en || '',
+      jp: service.descriptions?.jp || '',
+      kr: service.descriptions?.kr || '',
+      cn: service.descriptions?.cn || '',
+    },
     priceVND: service.priceVND || 0,
     duration: service.timeValue || 0,
     category: service.cat || '',
@@ -34,6 +41,10 @@ export const ServiceEditModal: React.FC<ServiceEditModalProps> = ({ service, onC
     } else {
       setFormData(prev => ({ ...prev, [name]: value }));
     }
+  };
+
+  const handleDescriptionChange = (locale: string, value: string) => {
+    setFormData(prev => ({ ...prev, description: { ...prev.description, [locale]: value } }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -103,6 +114,19 @@ export const ServiceEditModal: React.FC<ServiceEditModalProps> = ({ service, onC
                 <label className="block text-[13px] font-semibold text-admin-text-dim mb-1.5">Danh mục (Category)</label>
                 <input required type="text" name="category" value={formData.category} onChange={handleChange} className="w-full bg-white border border-admin-line-strong rounded-xl px-4 py-2.5 text-sm outline-none focus:border-admin-gold" />
               </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {(['vi', 'en', 'jp', 'kr', 'cn'] as const).map(locale => (
+                <div key={locale}>
+                  <label className="block text-[13px] font-semibold text-admin-text-dim mb-1.5">Mô tả dịch vụ ({locale.toUpperCase()})</label>
+                  <textarea
+                    value={formData.description[locale]}
+                    onChange={e => handleDescriptionChange(locale, e.target.value)}
+                    className="w-full bg-white border border-admin-line-strong rounded-xl px-4 py-2.5 text-sm outline-none focus:border-admin-gold min-h-[76px]"
+                  />
+                </div>
+              ))}
             </div>
 
             <hr className="border-admin-line-strong" />

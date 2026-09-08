@@ -10,6 +10,17 @@ import type { Service } from '@/components/Menu/types';
 // export const revalidate = 60; // Cache for 60 seconds to save Egress
 export const dynamic = 'force-dynamic';
 
+const readLocalized = (value: unknown, locale: string, aliases: string[] = []) => {
+  if (!value || typeof value !== 'object') return '';
+  const record = value as Record<string, unknown>;
+  for (const key of [locale, locale.toUpperCase(), ...aliases]) {
+    if (Object.prototype.hasOwnProperty.call(record, key)) {
+      return typeof record[key] === 'string' ? record[key] : '';
+    }
+  }
+  return '';
+};
+
 /** Determine menuType from service ID prefix */
 const getMenuTypeFromId = (id: string): 'standard' | 'vip' => {
   if (id.startsWith('NHS')) return 'standard';
@@ -20,62 +31,8 @@ const getMenuTypeFromId = (id: string): 'standard' | 'vip' => {
 export const GET = async () => {
   try {
     if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
-      
-      console.warn('[API /services] Missing Supabase env vars, returning mock service list for local dev.');
-      return NextResponse.json([
-        {
-          id: 'NHS001',
-          cat: 'Body Massage',
-          names: { en: 'Aroma coconut oil', vi: 'Aroma coconut oil', cn: 'Aroma coconut oil', jp: 'Aroma coconut oil', kr: 'Aroma coconut oil' },
-          descriptions: { en: 'Full-body care with coconut oil', vi: 'Full-body care with coconut oil' },
-          img: '/images/services/aroma-oil.png',
-          priceVND: 580000,
-          priceUSD: 24,
-          timeValue: 60,
-          timeDisplay: '60 mins',
-          menuType: 'standard',
-          TAGS: ['body', 'oil'],
-          ACTIVE: true,
-          BEST_SELLER: true
-        },
-        {
-          id: 'NHS002',
-          cat: 'Body Massage',
-          names: { en: 'Aroma coconut oil 90 mins', vi: 'Aroma coconut oil 90 mins' },
-          descriptions: { en: 'Full-body care with coconut oil' },
-          priceVND: 790000,
-          priceUSD: 33,
-          timeValue: 90,
-          timeDisplay: '90 mins',
-          menuType: 'standard',
-          ACTIVE: true
-        },
-        {
-          id: 'NHS003',
-          cat: 'Foot Massage',
-          names: { en: 'Foot & Leg Massage', vi: 'Massage chân' },
-          descriptions: { en: 'Relaxing foot massage' },
-          priceVND: 350000,
-          priceUSD: 15,
-          timeValue: 45,
-          timeDisplay: '45 mins',
-          menuType: 'standard',
-          ACTIVE: true
-        },
-        {
-          id: 'NHS004',
-          cat: 'Ear Clean',
-          names: { en: 'Ear Cleaning & Head Massage', vi: 'Lấy ráy tai' },
-          descriptions: { en: 'Traditional ear cleaning' },
-          priceVND: 250000,
-          priceUSD: 10,
-          timeValue: 30,
-          timeDisplay: '30 mins',
-          menuType: 'standard',
-          ACTIVE: true
-        }
-      ]);
-
+      console.error('[API /services] Missing Supabase env vars; catalog is unavailable.');
+      return NextResponse.json([], { status: 503 });
     }
 
     const supabase = getSupabaseAdmin();
@@ -122,17 +79,18 @@ export const GET = async () => {
         kr: item.nameKR,
       },
       descriptions: {
-        en: item.description?.en || item.description?.EN || '',
-        vi: item.description?.vn || item.description?.VN || '',
-        cn: item.description?.cn || item.description?.CN,
-        jp: item.description?.jp || item.description?.JP,
-        kr: item.description?.kr || item.description?.KR,
+        en: readLocalized(item.description, 'en'),
+        vi: readLocalized(item.description, 'vi', ['vn', 'VN']),
+        cn: readLocalized(item.description, 'cn'),
+        jp: readLocalized(item.description, 'jp'),
+        kr: readLocalized(item.description, 'kr'),
       },
-      img: item.imageUrl || 'https://placehold.co/300x200?text=No+Image',
+      // Missing media stays empty so the UI can show its intentional loading/empty state.
+      img: item.imageUrl || '',
       priceVND: Number(item.priceVND) || 0,
       priceUSD: Number(item.priceUSD) || 0,
       timeValue: Number(item.duration) || 0,
-      timeDisplay: `${item.duration || 0} mins`,
+      timeDisplay: `${Number(item.duration) || 0} mins`,
       menuType: getMenuTypeFromId(item.id),
       TAGS: item.tags || [],
       FOCUS_POSITION: item.focusConfig,
