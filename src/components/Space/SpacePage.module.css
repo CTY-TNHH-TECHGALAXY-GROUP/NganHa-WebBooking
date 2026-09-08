@@ -716,6 +716,29 @@ img.heroMedia {
   max-width: 480px;
 }
 
+.capacityMiddleBanner {
+  width: 100%;
+  margin: clamp(16px, 3vw, 36px) 0;
+}
+
+.capacityMiddleImageFrame {
+  position: relative;
+  width: 100%;
+  height: clamp(240px, 36vw, 500px);
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+  background: #1a120e;
+  transition: transform 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+.capacityMiddleImageFrame:hover {
+  transform: translateY(-3px);
+  border-color: rgba(212, 175, 55, 0.5);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+}
+
 .facilitiesRow {
   display: grid;
   grid-template-columns: 1fr 1.5fr;
@@ -752,10 +775,13 @@ img.heroMedia {
 }
 
 .facilityItem {
-  display: flex;
-  gap: 40px;
-  padding: 32px 0;
+  display: grid;
+  grid-template-columns: auto 1fr clamp(170px, 20vw, 240px);
+  gap: clamp(20px, 3vw, 36px);
+  align-items: center;
+  padding: 28px 0;
   border-bottom: 1px solid rgba(247, 235, 199, 0.15);
+  transition: background-color 0.3s ease;
 }
 
 .facNum {
@@ -767,7 +793,32 @@ img.heroMedia {
 .facText {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
+}
+
+.facilityImageWrap {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.facilityImageFrame {
+  position: relative;
+  width: 100%;
+  max-width: 240px;
+  aspect-ratio: 16/10;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  background: #1a120e;
+  transition: transform 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+.facilityImageFrame:hover {
+  transform: scale(1.03);
+  border-color: rgba(212, 175, 55, 0.45);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
 }
 
 .facText h4 {
@@ -827,9 +878,19 @@ img.heroMedia {
   }
   
   .facilityItem {
+    grid-template-columns: 1fr;
     gap: 16px;
-    flex-direction: column;
     padding: 24px 0;
+  }
+  
+  .facilityImageWrap {
+    justify-content: flex-start;
+  }
+  
+  .facilityImageFrame {
+    max-width: 100%;
+    aspect-ratio: 16/9;
+    max-height: 240px;
   }
   
   .facNum {

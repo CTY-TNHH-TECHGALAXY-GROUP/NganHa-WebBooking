@@ -73,7 +73,7 @@ const IntentSelector = ({ lang, onSelectIntent }: IntentSelectorProps) => {
           <div className="absolute inset-0 z-0">
             <img
               src={SERVICE_BG}
-              alt=""
+              alt="Oria Spa Treatment Service"
               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-60"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-[#131315] via-[#131315]/40 to-transparent" />
@@ -100,7 +100,7 @@ const IntentSelector = ({ lang, onSelectIntent }: IntentSelectorProps) => {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.45, duration: 0.5 }}
+          transition={{ delay: 0.4, duration: 0.5 }}
           onClick={() => onSelectIntent('staff_led')}
           className="relative group h-[260px] w-full rounded-[2rem] overflow-hidden bg-[#1b1b1d] shadow-2xl cursor-pointer active:scale-[0.98] transition-transform duration-200"
         >
@@ -108,7 +108,7 @@ const IntentSelector = ({ lang, onSelectIntent }: IntentSelectorProps) => {
           <div className="absolute inset-0 z-0">
             <img
               src={STAFF_BG}
-              alt=""
+              alt="Oria Spa Preferred Therapist"
               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-60"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-[#131315] via-[#131315]/40 to-transparent" />

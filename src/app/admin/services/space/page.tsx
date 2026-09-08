@@ -11,8 +11,43 @@ const spaceStructure = [
   { id: 'floor1', title: '02 / First Floor', keys: ['floor1.body', 'floor1.foot', 'floor1.private'] },
   { id: 'floor2', title: '03 / Second Floor', keys: ['floor2.suite', 'floor2.headSpa', 'floor2.quiet'] },
   { id: 'gallery', title: 'Gallery Details', keys: ['gallery.main', 'gallery.sideTop', 'gallery.sideBottom'] },
-  { id: 'cta', title: 'Call To Action', keys: ['cta'] }
+  {
+    id: 'capacity',
+    title: '04 / Cùng nhau (Sức chứa & Tiện ích Không gian)',
+    keys: [
+      'capacity.middle',
+      'capacity.footChair',
+      'capacity.haircutChair',
+      'capacity.bodyBed',
+      'capacity.shampooBed',
+      'capacity.facialArea',
+    ],
+  },
+  { id: 'cta', title: 'Call To Action', keys: ['cta'] },
 ];
+
+const KEY_LABELS: Record<string, string> = {
+  'hero': 'Hero Video / Ảnh chính đầu trang',
+  'welcome.reception': '01 / Quầy lễ tân',
+  'welcome.lounge': '01 / Sảnh chờ',
+  'welcome.ritual': '01 / Nghi thức trà',
+  'floor1.body': '02 / Chăm sóc cơ thể',
+  'floor1.foot': '02 / Chăm sóc chân',
+  'floor1.private': '02 / Phòng riêng',
+  'floor2.suite': '03 / Phòng VIP Suite',
+  'floor2.headSpa': '03 / Gội đầu dưỡng sinh',
+  'floor2.quiet': '03 / Khu tĩnh lặng',
+  'gallery.main': 'Gallery / Ảnh lớn chính',
+  'gallery.sideTop': 'Gallery / Ảnh phụ góc trên',
+  'gallery.sideBottom': 'Gallery / Ảnh phụ góc dưới',
+  'cta': 'CTA / Ảnh banner chân trang',
+  'capacity.middle': '04 / Khung ảnh giữa 2 đoạn (Sức chứa & Nhiều nhu cầu)',
+  'capacity.footChair': '04.1 / Ghế chăm sóc chân',
+  'capacity.haircutChair': '04.2 / Ghế cắt tóc',
+  'capacity.bodyBed': '04.3 / Giường chăm sóc cơ thể',
+  'capacity.shampooBed': '04.4 / Giường gội đầu',
+  'capacity.facialArea': '04.5 / Khu vực chăm sóc da mặt',
+};
 
 const SpaceAdminPage = () => {
   const [contentData, setContentData] = useState<any>({});
@@ -285,8 +320,48 @@ const SpaceAdminPage = () => {
         </div>
 
         <div className="p-5 flex flex-col flex-1">
-          <h3 className="text-base font-bold text-admin-text mb-2 uppercase tracking-wider text-[11px]">{keyPath.replace('.', ' / ')}</h3>
-          
+          <div className="mb-3">
+            <h3 className="text-sm font-bold text-admin-text tracking-wide">
+              {KEY_LABELS[keyPath] || keyPath.replace('.', ' / ')}
+            </h3>
+            <span className="text-[11px] text-admin-text-faint font-mono">{keyPath}</span>
+          </div>
+
+          <div className="mb-3">
+            <label className="text-[11px] text-admin-text-faint uppercase tracking-wider mb-1 block">
+              Đường dẫn ảnh / video (URL trực tiếp)
+            </label>
+            <input
+              type="text"
+              placeholder="Dán link ảnh (https://... hoặc /images/...)"
+              defaultValue={currentMedia?.src || ''}
+              key={currentMedia?.src || 'empty'}
+              onBlur={async (e) => {
+                const newSrc = processGoogleDriveLink(e.target.value.trim());
+                if (newSrc === (currentMedia?.src || '')) return;
+                setUploadingId(keyPath);
+                try {
+                  const isVideo = !!newSrc.match(/\.(mp4|mov|webm)$/i);
+                  const updatedMedia = {
+                    ...(currentMedia || {}),
+                    src: newSrc,
+                    type: isVideo ? 'video' : (currentMedia?.type || 'image'),
+                  };
+                  const newMediaData = setNestedValue(contentData, keyPath, updatedMedia);
+                  setContentData(newMediaData);
+                  await saveContent(newMediaData);
+                  setSuccessId(keyPath);
+                  setTimeout(() => setSuccessId(null), 3000);
+                } catch (err) {
+                  console.error(err);
+                } finally {
+                  setUploadingId(null);
+                }
+              }}
+              className="w-full bg-admin-panel-2 border border-admin-line-strong text-admin-text text-xs font-mono rounded-lg px-3 py-2 outline-none focus:border-admin-gold transition-colors"
+            />
+          </div>
+
           <div className="mb-4">
             <label className="text-[11px] text-admin-text-faint uppercase tracking-wider mb-1 block">Tên hiển thị trên Web</label>
             <input
@@ -389,7 +464,9 @@ const SpaceAdminPage = () => {
     if (sectionId === 'hero' || sectionId === 'cta') return defaultKeys;
     const customData = contentData[sectionId];
     if (customData && typeof customData === 'object' && Object.keys(customData).length > 0) {
-      return Object.keys(customData).map(k => `${sectionId}.${k}`);
+      const customKeyPaths = Object.keys(customData).map(k => `${sectionId}.${k}`);
+      const merged = Array.from(new Set([...defaultKeys, ...customKeyPaths]));
+      return merged;
     }
     return defaultKeys;
   };

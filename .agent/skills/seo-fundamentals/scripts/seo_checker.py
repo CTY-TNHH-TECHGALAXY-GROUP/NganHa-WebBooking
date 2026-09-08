@@ -32,7 +32,7 @@ except:
 
 # Directories to skip
 SKIP_DIRS = {
-    'node_modules', '.next', 'dist', 'build', '.git', '.github',
+    'node_modules', '.next', '.next-go-live', 'dist', 'build', '.git', '.github',
     '__pycache__', '.vscode', '.idea', 'coverage', 'test', 'tests',
     '__tests__', 'spec', 'docs', 'documentation', 'examples', 'public',
     'admin', 'standalone-celestial-menu'

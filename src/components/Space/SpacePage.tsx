@@ -31,8 +31,24 @@ const defaultMedia = {
     sideTop: 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=900&q=86',
     sideBottom: 'https://images.unsplash.com/photo-1600334129128-685c5582fd35?auto=format&fit=crop&w=900&q=86'
   },
-  cta: 'https://images.unsplash.com/photo-1600334089648-b0d9d3028eb2?auto=format&fit=crop&w=2200&q=90'
+  cta: 'https://images.unsplash.com/photo-1600334089648-b0d9d3028eb2?auto=format&fit=crop&w=2200&q=90',
+  capacity: {
+    middle: '/images/about-spa.png',
+    footChair: '/images/heel-care.png',
+    haircutChair: '/images/barbershop.png',
+    bodyBed: '/images/body-treatment-full.png',
+    shampooBed: '/images/hair-wash.png',
+    facialArea: '/images/facial.png',
+  },
 };
+
+const facilityMediaKeys = [
+  'capacity.footChair',
+  'capacity.haircutChair',
+  'capacity.bodyBed',
+  'capacity.shampooBed',
+  'capacity.facialArea',
+] as const;
 
 export default function SpacePage({ initialMedia }: { initialMedia?: any } = {}) {
   const { currentLang } = useTranslation();
@@ -424,21 +440,43 @@ const MediaRenderer = ({ mediaObj, className, alt, onEnded }: { mediaObj: {src: 
                 </div>
               </div>
 
+              {/* Khung ảnh ở giữa 2 đoạn: Sức chứa & Nhiều nhu cầu */}
+              <div className={`${styles.capacityMiddleBanner} ${styles.reveal}`}>
+                <div className={styles.capacityMiddleImageFrame}>
+                  <MediaRenderer
+                    mediaObj={getMedia('capacity.middle', defaultMedia.capacity.middle)}
+                    alt={t.capacityTitle}
+                  />
+                  <div className={styles['media-watermark']}></div>
+                </div>
+              </div>
+
               <div className={`${styles.facilitiesRow} ${styles.reveal}`}>
                 <div className={styles.facilitiesIntro}>
                   <h3>{t.facilityTitle}</h3>
                   <p>{t.facilityDescription}</p>
                 </div>
                 <div className={styles.facilitiesList}>
-                  {t.facilities.map((fac, idx) => (
-                    <div key={idx} className={styles.facilityItem}>
-                      <div className={styles.facNum}>0{idx + 1}</div>
-                      <div className={styles.facText}>
-                        <h4>{fac.title}</h4>
-                        <p>{fac.description}</p>
+                  {t.facilities.map((fac, idx) => {
+                    const mediaKey = facilityMediaKeys[idx] || `capacity.facility${idx}`;
+                    const defaultSrc = (defaultMedia.capacity as any)[mediaKey.replace('capacity.', '')] || defaultMedia.capacity.middle;
+                    const mediaObj = getMedia(mediaKey, defaultSrc);
+                    return (
+                      <div key={idx} className={styles.facilityItem}>
+                        <div className={styles.facNum}>0{idx + 1}</div>
+                        <div className={styles.facText}>
+                          <h4>{fac.title}</h4>
+                          <p>{fac.description}</p>
+                        </div>
+                        <div className={styles.facilityImageWrap}>
+                          <div className={styles.facilityImageFrame}>
+                            <MediaRenderer mediaObj={mediaObj} alt={fac.title} />
+                            <div className={styles['media-watermark']}></div>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
 
