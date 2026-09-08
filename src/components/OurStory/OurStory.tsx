@@ -8,6 +8,7 @@ import { useTranslation } from '@/components/TranslationProvider';
 import { useSystemSettings } from '@/components/SystemSettingsProvider';
 import type { Locale } from '@/lib/constants';
 import { hydrateOurStoryConfig, hasValidOurStoryContent } from './OurStory.data';
+import { resolveConfigUrl } from '@/lib/config/urlSettings';
 import styles from './OurStory.module.css';
 
 const OurStory = () => {
@@ -241,7 +242,7 @@ const OurStory = () => {
           </div>
 
           <Link
-            href={config.specialtySection.ctaLink || '/' + lang + '/new-user/standard/checkout'}
+            href={resolveConfigUrl(config.specialtySection.ctaLink, lang, `/${lang}/new-user/standard/checkout`)}
             className={styles.textLink}
           >
             {getLocalizedText(config.specialtySection.ctaText, lang)}

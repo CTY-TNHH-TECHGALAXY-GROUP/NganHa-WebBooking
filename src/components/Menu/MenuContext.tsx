@@ -33,7 +33,7 @@ interface MenuContextType {
     removeFromCart: (cartId: string) => void;
     clearCart: () => void;
     getQty: (serviceId: string) => number; // Helper lấy tổng số lượng của 1 service ID
-    revalidateCart: () => Promise<{ valid: boolean; hasPriceChanged: boolean; unavailableItems: any[]; updatedCart: CartItem[] }>;
+    revalidateCart: () => ReturnType<typeof revalidateCartWithServer>;
 }
 
 const MenuContext = createContext<MenuContextType | undefined>(undefined);

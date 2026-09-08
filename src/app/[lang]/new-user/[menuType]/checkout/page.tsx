@@ -237,7 +237,7 @@ const buildTimeSlots = () => {
   const slots: string[] = [];
   for (let hour = 9; hour <= 22; hour += 1) {
     slots.push(`${String(hour).padStart(2, '0')}:00`);
-    if (hour < 22) slots.push(`${String(hour).padStart(2, '0')}:30`);
+    slots.push(`${String(hour).padStart(2, '0')}:30`);
   }
   return slots;
 };
@@ -663,6 +663,8 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
   const dict = getDictionary(lang);
   const { services, cart, loading: servicesLoading, error: servicesError, addToCart, removeFromCart, updateCartItem, updateCartItemOptions, replaceCartItemService, revalidateCart } = useMenuData();
   const [idempotencyKey] = useState(() => 'idemp_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 8));
+  const [bookingQuote, setBookingQuote] = useState<string>();
+  const quoteLoading = useRef(false);
 
   // Sync route lang with global TranslationProvider
   useEffect(() => {
@@ -770,9 +772,11 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
     refreshSpaClock();
     const interval = window.setInterval(refreshSpaClock, 30_000);
     window.addEventListener('focus', refreshSpaClock);
+    document.addEventListener('visibilitychange', refreshSpaClock);
     return () => {
       window.clearInterval(interval);
       window.removeEventListener('focus', refreshSpaClock);
+      document.removeEventListener('visibilitychange', refreshSpaClock);
     };
   }, []);
 
@@ -797,6 +801,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
     setStripAnchorDate(todayISO);
   };
   const allSlots = useMemo(() => {
+    if (!spaToday || !spaClockKey || !bookingDate || bookingDate < spaToday) return [];
     const slots = buildTimeSlots();
     const spaNow = getSpaDateTime();
     const todayISO = spaToday || spaTodayISO();
@@ -810,10 +815,10 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
   const availableSlots = useMemo(() => allSlots.filter((slot) => !busySlots.includes(slot)), [allSlots, busySlots]);
 
   useEffect(() => {
-    if (!bookingTime || busySlots.includes(bookingTime)) {
-      setBookingTime(availableSlots[0] || '');
+    if (bookingTime && !availableSlots.includes(bookingTime)) {
+      setBookingTime('');
     }
-  }, [availableSlots, bookingTime, busySlots]);
+  }, [availableSlots, bookingTime]);
 
   useEffect(() => {
     if (window.location.hash === '#cart') {
@@ -1003,7 +1008,10 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
     const emailMissing = !customerInfo.email.trim();
     const emailInvalid = !emailMissing && !isValidEmail(customerInfo.email);
     const errors: Partial<Record<'name' | 'phone' | 'email' | 'time', string>> = {};
-    if (!bookingTime || !availableSlots.includes(bookingTime)) errors.time = t('timeRequired', lang);
+    const now = getSpaDateTime();
+    const today = spaTodayISO();
+    if (!bookingTime || !availableSlots.includes(bookingTime) || bookingDate < today ||
+      (bookingDate === today && bookingTime <= `${now.hour}:${now.minute}`)) errors.time = t('timeRequired', lang);
     if (nameMissing) errors.name = lang === 'vi' ? 'Vui lòng nhập họ và tên của bạn.' : lang === 'cn' ? '请输入您的全名。' : lang === 'jp' ? 'お名前を入力してください。' : lang === 'kr' ? '성함을 입력해 주세요.' : 'Please enter your full name.';
     if (phoneMissing && emailMissing) {
       errors.phone = lang === 'vi' ? 'Vui lòng nhập số điện thoại.' : lang === 'cn' ? '请输入电话号码。' : lang === 'jp' ? '電話番号を入力してください。' : lang === 'kr' ? '전화번호를 입력해 주세요.' : 'Please enter your phone number.';
@@ -1057,9 +1065,25 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
     });
   };
 
-  const handleConfirmOrder = () => {
+  const handleConfirmOrder = async () => {
     if (!validate()) return;
-    setIsConfirmOpen(true);
+    if (quoteLoading.current) return;
+    quoteLoading.current = true;
+    try {
+      const result = await revalidateCart();
+      if (!result.valid || !result.quote) {
+        setAlertState({ isOpen: true, type: 'error', message: t(result.unavailableItems.length ? 'reviewCart' : 'temporaryUnavailable', lang) });
+        return;
+      }
+      if (result.hasPriceChanged) {
+        setAlertState({ isOpen: true, type: 'info', message: t('cartRevalPrice', lang) });
+        return;
+      }
+      setBookingQuote(result.quote);
+      setIsConfirmOpen(true);
+    } finally {
+      quoteLoading.current = false;
+    }
   };
 
   const handleFinalSubmit = async (data?: {
@@ -1107,6 +1131,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
         signal: controller.signal,
         body: JSON.stringify({
           idempotencyKey,
+          quote: bookingQuote,
           name: effectiveName,
           phone: phoneWithCountry,
           email: effectiveEmail,
@@ -1136,8 +1161,10 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
 
     const resData = await response.json().catch(() => ({}));
     if (!response.ok || resData?.success === false) {
-      if (resData?.code === 'CART_REQUIRES_REVIEW') {
+      if (resData?.code === 'CART_REQUIRES_REVIEW' || resData?.code === 'PRICE_CHANGED') {
         await revalidateCart();
+        setIsConfirmOpen(false);
+        setBookingQuote(undefined);
       }
       if (response.status === 409 || resData?.code === 'PRICE_CHANGED') {
         throw new Error(t('reviewCart', lang));
@@ -1577,7 +1604,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
               cart.map((item, index) => (
                 <article key={item.cartId} className={styles.invoiceItem}>
                   <div className={styles.invoiceRow1}>
-                    <span>{index + 1}. {serviceName(item, lang)}</span>
+                    <span>{index + 1}. {serviceName(item, lang)} <small className="whitespace-nowrap text-[#c9a96e]">x{item.qty}</small></span>
                     <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
                       <span className={styles.pricePair}>
                         <span>{formatCurrency(item.priceVND * item.qty)} VND</span>

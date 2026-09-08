@@ -6,6 +6,7 @@
 import { useState, useCallback, useMemo, useEffect } from 'react';
 import { Service } from '@/types';
 import { fetchServices } from '@/data/services';
+import { fetchBookingQuote } from '@/lib/bookingQuote';
 import { BRANCH_LIST } from '@/data/branches';
 import {
   GroupedService,
@@ -423,6 +424,7 @@ export const useBookingForm = () => {
       try {
         const selectedBranch = BRANCH_LIST.find(b => b.id === formData.branchId);
         const payload = {
+          quote: await fetchBookingQuote(formData.selectedServices, formData.lang),
           name: formData.name,
           phone: formData.phone || null,
           email: formData.email || null,

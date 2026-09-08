@@ -97,10 +97,6 @@ const ServiceEditCard = ({
   handleTextChange,
   saveTextChanges,
   catalogService,
-  catalogDraft,
-  catalogNameDraft,
-  handleCatalogTextChange,
-  saveCatalogTextChanges,
   handleFileUpload,
   setContentData,
   saveContent,
@@ -125,20 +121,16 @@ const ServiceEditCard = ({
   const mediaTag = langData.tag !== undefined ? langData.tag : (cData.tag || service.media?.tag || '');
   const mediaPoster = langData.poster !== undefined ? langData.poster : (cData.poster || service.media?.poster || '');
 
-  const catalogDescription = catalogDraft?.[activeLang] !== undefined
-    ? catalogDraft[activeLang]
-    : (catalogService?.descriptions?.[activeLang] !== undefined ? catalogService.descriptions[activeLang] : '');
+  const catalogDescription = catalogService?.descriptions?.[activeLang] || '';
   const desc = catalogService ? catalogDescription : (langData.description !== undefined ? langData.description : (service.description || ''));
-  const catalogName = catalogNameDraft?.[activeLang] !== undefined
-    ? catalogNameDraft[activeLang]
-    : (catalogService?.names?.[activeLang] !== undefined ? catalogService.names[activeLang] : service.name);
+  const catalogName = catalogService?.names?.[activeLang] || service.name;
   const defaultPriv = service.privilege || {};
   const privTitle = langData.privilege?.title !== undefined ? langData.privilege.title : (defaultPriv.title || '');
   const privCopy = langData.privilege?.copy !== undefined ? langData.privilege.copy : (defaultPriv.copy || '');
   const privTime = langData.privilege?.time !== undefined ? langData.privilege.time : (defaultPriv.time || '');
   const privImage = langData.privilege?.image !== undefined ? langData.privilege.image : (defaultPriv.image || '');
 
-  const hasChanges = !!localTextOverrides?.[serviceName] || !!catalogDraft || !!catalogNameDraft;
+  const hasChanges = !!localTextOverrides?.[serviceName];
 
   const handleServiceLink = async () => {
     const url = window.prompt('Nhập đường link (URL) ảnh hoặc video:');
@@ -288,8 +280,7 @@ const ServiceEditCard = ({
           <input
             className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none"
             value={catalogService ? catalogName : service.name}
-            onChange={(e) => catalogService && handleCatalogTextChange?.(catalogService.id, activeLang, e.target.value, true)}
-            readOnly={!catalogService}
+            readOnly
           />
         </div>
         <div>
@@ -297,9 +288,8 @@ const ServiceEditCard = ({
           <textarea 
             className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none min-h-[60px]"
             value={desc}
-            onChange={(e) => catalogService
-              ? handleCatalogTextChange?.(catalogService.id, activeLang, e.target.value)
-              : handleTextChange?.(serviceName, activeLang, 'description', e.target.value)}
+            onChange={(e) => !catalogService && handleTextChange?.(serviceName, activeLang, 'description', e.target.value)}
+            readOnly={Boolean(catalogService)}
             placeholder={catalogService ? `Mô tả trong Services (${activeLang.toUpperCase()})...` : `Mô tả (${activeLang.toUpperCase()})...`}
           />
         </div>
@@ -359,7 +349,6 @@ const ServiceEditCard = ({
       <button 
         onClick={async () => {
           await saveTextChanges?.(serviceName);
-          if (catalogService && (catalogDraft || catalogNameDraft)) await saveCatalogTextChanges?.(catalogService.id, catalogDraft || {}, catalogNameDraft || {});
         }}
         disabled={!hasChanges}
         className={`mt-2 flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-bold transition-colors ${hasChanges ? 'bg-admin-gold text-[#241804] hover:bg-[#a67433]' : 'bg-admin-line text-admin-text-dim cursor-not-allowed'}`}
@@ -621,8 +610,6 @@ const PureAdminPage = () => {
   const [contentData, setContentData] = useState<any>({});
   const [contentRevision, setContentRevision] = useState<string | null>(null);
   const [catalogServices, setCatalogServices] = useState<any[]>([]);
-  const [catalogDrafts, setCatalogDrafts] = useState<Record<string, Record<string, string>>>({});
-  const [catalogNameDrafts, setCatalogNameDrafts] = useState<Record<string, Record<string, string>>>({});
   const [localCategoryOverrides, setLocalCategoryOverrides] = useState<any>({});
   const [loading, setLoading] = useState(true);
   const [uploadingId, setUploadingId] = useState<string | null>(null);
@@ -686,44 +673,6 @@ const PureAdminPage = () => {
       console.error(err);
       alert('Lỗi hệ thống khi lưu');
     }
-  };
-
-  const handleCatalogTextChange = (id: string, lang: string, value: string, isName = false) => {
-    const setter = isName ? setCatalogNameDrafts : setCatalogDrafts;
-    setter(previous => ({
-      ...previous,
-      [id]: { ...(previous[id] || {}), [lang]: value },
-    }));
-  };
-
-  const saveCatalogTextChanges = async (id: string, draft: Record<string, string>, nameDraft: Record<string, string> = {}) => {
-    const current = catalogServices.find(service => service.id === id);
-    const description = { ...(current?.descriptions || {}), ...draft };
-    const names = { ...(current?.names || {}), ...nameDraft };
-    const response = await fetch(`/api/admin/services/${id}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ description, names, expectedDescription: current?.descriptions || {}, expectedNames: current?.names || {} }),
-    });
-    const json = await response.json();
-    if (!response.ok || !json.success) {
-      if (response.status === 409) alert('Mô tả dịch vụ đã thay đổi ở cửa sổ khác. Bản nháp hiện tại vẫn được giữ lại.');
-      else alert(json.error?.message || 'Không thể lưu mô tả dịch vụ.');
-      return;
-    }
-    setCatalogServices(previous => previous.map(service => service.id === id
-      ? { ...service, descriptions: json.data.description, names: json.data.names || service.names }
-      : service));
-    setCatalogDrafts(previous => {
-      const next = { ...previous };
-      delete next[id];
-      return next;
-    });
-    setCatalogNameDrafts(previous => {
-      const next = { ...previous };
-      delete next[id];
-      return next;
-    });
   };
 
   const handleFileUpload = async (keyPath: string, file: File, isArray = false) => {
@@ -1019,10 +968,6 @@ const PureAdminPage = () => {
                              key={`${service.name}-${idx}`} 
                              service={item}
                              catalogService={catalogServices.find((catalog) => catalog.id === item.durations?.[0]?.id)}
-                             catalogDraft={catalogDrafts[item.durations?.[0]?.id || '']}
-                             catalogNameDraft={catalogNameDrafts[item.durations?.[0]?.id || '']}
-                             handleCatalogTextChange={handleCatalogTextChange}
-                             saveCatalogTextChanges={saveCatalogTextChanges}
                              contentData={contentData}
                              localTextOverrides={localTextOverrides}
                              uploadingId={uploadingId}

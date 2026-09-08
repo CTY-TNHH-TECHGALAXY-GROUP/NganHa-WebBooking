@@ -1,0 +1,57 @@
+{
+  "version": 1,
+  "purpose": "Post-merge API validation contract. Execute against a mock RPC/mail boundary; no fixture may call a real database or SMTP server.",
+  "cases": [
+    {
+      "id": "invalid-json",
+      "rawBody": "{",
+      "expect": { "status": 400, "sideEffects": false }
+    },
+    {
+      "id": "body-null",
+      "body": null,
+      "expect": { "status": 400, "sideEffects": false }
+    },
+    {
+      "id": "body-array",
+      "body": [],
+      "expect": { "status": 400, "sideEffects": false }
+    },
+    {
+      "id": "unicode-name-valid",
+      "body": {
+        "name": "O'Neil Nguyễn 美咲 김민준",
+        "phone": "+84964090277",
+        "email": "guest@example.com",
+        "date": "2026-09-18",
+        "time": "14:00",
+        "selectedServices": [{ "variantId": "NHS1002", "quantity": 1 }]
+      },
+      "expect": { "status": 200, "sideEffects": "atomic-rpc-only" }
+    },
+    {
+      "id": "name-control-character",
+      "body": {
+        "name": "Nguyen\u0000An",
+        "phone": "+84964090277",
+        "selectedServices": [{ "variantId": "NHS1002", "quantity": 1 }]
+      },
+      "expect": { "status": 400, "sideEffects": false }
+    },
+    {
+      "id": "replay-no-mail",
+      "rpc": { "booking_id": "WB-07092026-001", "idempotent": true },
+      "expect": { "status": 200, "response": { "idempotent": true }, "mailCalls": 0 }
+    },
+    {
+      "id": "idempotency-conflict",
+      "rpcError": { "message": "IDEMPOTENCY_CONFLICT" },
+      "expect": { "status": 409, "code": "IDEMPOTENCY_CONFLICT", "mailCalls": 0 }
+    },
+    {
+      "id": "atomic-schema-unavailable",
+      "rpcError": { "code": "PGRST202", "message": "Could not find the function" },
+      "expect": { "status": 503, "code": "BOOKING_TEMPORARILY_UNAVAILABLE", "mailCalls": 0, "sideEffects": false }
+    }
+  ]
+}

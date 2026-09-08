@@ -1,6 +1,9 @@
--- OUT OF SCOPE FOR THE CURRENT WEB RELEASE. DO NOT APPLY FROM THIS PROJECT.
--- Shared booking schema is owned by the separate operations system.
--- See plans/GO_LIVE_FINAL_STEPS_20260908.md. Historical proposal retained below.
+-- WITHDRAWN FROM THE WEB RELEASE PLAN. DO NOT PASTE OR APPLY THIS FILE.
+-- The shared booking schema belongs to the separate operations system.
+-- This historical proposal alters shared tables/constraints and installs an RPC.
+-- Retained for review only; its filename no longer indicates approval to run.
+-- See plans/GO_LIVE_FINAL_STEPS_20260908.md for the current integration plan.
+-- ==============================================================================
 -- ==============================================================================
 -- Migration: 20260907_p0_atomic_booking_idempotency.sql
 -- Phase: P0-C Atomic booking and idempotency

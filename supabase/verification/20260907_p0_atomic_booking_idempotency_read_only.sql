@@ -72,7 +72,7 @@ WITH checks(check_name, passed, actual, expected) AS (
             WHERE con.conrelid = to_regclass('public."WebbookingBookingDailyCounters"')
               AND con.contype = 'p'
             GROUP BY con.oid
-            HAVING array_agg(a.attname ORDER BY array_position(con.conkey, a.attnum)) = ARRAY['date_key']
+            HAVING array_agg(a.attname::text ORDER BY array_position(con.conkey, a.attnum)) = ARRAY['date_key']::text[]
         ),
         COALESCE((SELECT pg_get_constraintdef(con.oid) FROM pg_constraint con WHERE con.conrelid = to_regclass('public."WebbookingBookingDailyCounters"') AND con.contype = 'p'), 'primary key missing'),
         'PRIMARY KEY (date_key)'
@@ -84,7 +84,7 @@ ORDER BY check_name;
 -- Required indexes. This checks uniqueness, target table/key, and partial predicate.
 WITH expected_indexes(check_name, index_name, column_name, expected_predicate) AS (
     VALUES
-        ('index.idempotency_key', 'public.idx_bookings_idempotency_key', 'idempotency_key', '("idempotency_key" IS NOT NULL)'),
+        ('index.idempotency_key', 'public.idx_bookings_idempotency_key', 'idempotency_key', '(idempotency_key IS NOT NULL)'),
         ('index.bill_code', 'public.idx_bookings_billcode_unique', 'billCode', NULL),
         ('index.legacy_idempotency', 'public.idx_bookings_idlegacy_idempotency', 'idLegacy', '(("idLegacy" IS NOT NULL) AND ("idLegacy" ~~ ''idemp:%''::text))')
 ), inspected AS (
@@ -94,7 +94,7 @@ WITH expected_indexes(check_name, index_name, column_name, expected_predicate) A
         i.indisunique,
         pg_get_expr(i.indpred, i.indrelid) AS predicate,
         ARRAY(
-            SELECT a.attname
+            SELECT a.attname::text
             FROM unnest(i.indkey) WITH ORDINALITY key_col(attnum, ordinality)
             JOIN pg_attribute a ON a.attrelid = i.indrelid AND a.attnum = key_col.attnum
             ORDER BY key_col.ordinality
@@ -136,7 +136,7 @@ WITH functions AS (
     SELECT *
     FROM functions
     WHERE type_arguments = 'jsonb, jsonb, text, text'
-      AND proargnames = ARRAY['p_booking_data', 'p_booking_items', 'p_idempotency_key', 'p_booking_id']::name[]
+      AND proargnames = ARRAY['p_booking_data', 'p_booking_items', 'p_idempotency_key', 'p_booking_id']::text[]
 )
 SELECT
     'function.supported_signature' AS check_name,
@@ -154,7 +154,7 @@ SELECT
     '<none>'
 FROM functions
 WHERE type_arguments <> 'jsonb, jsonb, text, text'
-   OR proargnames IS DISTINCT FROM ARRAY['p_booking_data', 'p_booking_items', 'p_idempotency_key', 'p_booking_id']::name[]
+   OR proargnames IS DISTINCT FROM ARRAY['p_booking_data', 'p_booking_items', 'p_idempotency_key', 'p_booking_id']::text[]
 
 UNION ALL
 

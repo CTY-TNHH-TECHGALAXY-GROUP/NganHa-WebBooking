@@ -33,7 +33,7 @@ const ServiceBook = () => {
   const { t, currentLang: lang } = useTranslation();
 
   const CHECKOUT_URL = `/${lang}/new-user/standard/checkout`;
-  const SELECT_MENU_URL = `/${lang}/new-user/select-menu`;
+  const PURE_RELAXATION_URL = `/${lang}/pure-relaxation`;
 
   const dispatchCartUpdate = useCallback((cart: CartItem[]) => {
     window.dispatchEvent(new CustomEvent('nganha:cart-updated', { detail: { count: cart.length } }));
@@ -67,7 +67,7 @@ const ServiceBook = () => {
     iframeRef,
     headerHeight: HEADER_HEIGHT_PX,
     isServicePayload,
-    onMenuBack: () => router.push(SELECT_MENU_URL),
+    onMenuBack: () => router.push(PURE_RELAXATION_URL),
     onAddService: ({ service, sourceRect }) => {
       const nextCart = addServiceToCart(service);
       animateFlowerToCart(sourceRect);

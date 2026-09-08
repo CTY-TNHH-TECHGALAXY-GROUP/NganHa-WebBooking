@@ -45,7 +45,7 @@ const jsonError = (code: string, message: string, status: number, fieldErrors?: 
 function schemaUnavailable(error: any): boolean {
   const message = String(error?.message || '');
   return ['42P01', '42703', '42501', '42883', 'PGRST202', 'PGRST204'].includes(error?.code) ||
-    /does not exist|schema cache|could not find the function|function create_booking_atomic/i.test(message);
+    /schema cache|could not find the function|function create_booking_atomic/i.test(message);
 }
 
 function mapRpcError(error: any): NextResponse {
@@ -53,8 +53,9 @@ function mapRpcError(error: any): NextResponse {
   if (/IDEMPOTENCY_CONFLICT/i.test(message)) return jsonError('IDEMPOTENCY_CONFLICT', 'This idempotency key was already used for a different booking intent.', 409);
   if (/IDEMPOTENCY_LEGACY_REVIEW/i.test(message)) return jsonError('IDEMPOTENCY_REVIEW_REQUIRED', 'This older booking needs review before it can be replayed.', 409);
   if (/PRICE_CHANGED|QUOTE/i.test(message)) return jsonError('PRICE_CHANGED', 'The service catalog changed. Please review your booking again.', 409);
-  if (/inactive|does not exist|service/i.test(message)) return jsonError('CART_REQUIRES_REVIEW', 'A selected service is no longer available.', 409);
+  if (/CUSTOMER_IDENTITY_CONFLICT/i.test(message)) return jsonError('CONTACT_REQUIRES_REVIEW', 'Please review your contact details or contact the spa.', 409);
   if (schemaUnavailable(error) || /timeout|temporarily|connection/i.test(message)) return jsonError('BOOKING_TEMPORARILY_UNAVAILABLE', 'Booking is temporarily unavailable. Please try again later.', 503);
+  if (/inactive|does not exist|service/i.test(message)) return jsonError('CART_REQUIRES_REVIEW', 'A selected service is no longer available.', 409);
   return jsonError('BOOKING_FAILED', 'The booking could not be created.', 500);
 }
 
@@ -86,6 +87,20 @@ function dateOnly(value: unknown): string {
   return value.slice(0, 10);
 }
 
+function servicesFromItems(items: any[]): unknown[] {
+  return items.filter(item => !item.options?.isAddon).map(item => {
+    const saved = item.options?._booking;
+    const addon = saved ? items.find(candidate => candidate.options?.isAddon && candidate.options?.parentLine === saved.line) : undefined;
+    return {
+      id: item.serviceId, name: saved?.name || item.options?.displayName || item.serviceId,
+      duration: saved?.duration || 0, quantity: Number(item.quantity),
+      priceVND: Number(item.price) + Number(addon?.price || 0),
+      priceUSD: saved ? Number(saved.priceUSD) + Number(addon?.options?._booking?.priceUSD || 0) : undefined,
+      options: saved?.options || item.options || {},
+    };
+  });
+}
+
 function snapshotFromRow(row: any, items: unknown[] = [], services: unknown[] = []): BookingSnapshot {
   return {
     bookingId: String(row?.id || row?.bookingId || ''),
@@ -101,7 +116,7 @@ function snapshotFromRow(row: any, items: unknown[] = [], services: unknown[] = 
     lang: String(row?.customerLang || row?.lang || 'vi'),
     status: row?.status || 'NEW',
     items,
-    services,
+    services: items.length ? servicesFromItems(items) : services,
     notes: row?.notes ?? null,
     focusAreaNote: row?.focusAreaNote ?? null,
   };
@@ -187,10 +202,11 @@ function buildRpcPayload(booking: NormalizedBooking, pricing: CanonicalPricing):
     notes: preferenceNotes.notes, focusAreaNote: preferenceNotes.focusAreaNote,
     totalAmount: pricing.totalAmountVND, status: 'NEW', tip: 0, requestFingerprint: booking.intentFingerprint,
   };
-  const items = pricing.items.flatMap((item) => {
-    const options = { strength: item.options.strength, focus: item.options.bodyParts?.focus || [], avoid: item.options.bodyParts?.avoid || [], therapist: item.options.therapist || 'random', note: item.options.notes?.content || '' };
+  const items = pricing.items.flatMap((item, line) => {
+    const options = { strength: item.options.strength, focus: item.options.bodyParts?.focus || [], avoid: item.options.bodyParts?.avoid || [], therapist: item.options.therapist || 'random', note: item.options.notes?.content || '',
+      _booking: { line, name: serviceName(item.catalog, booking.lang), duration: item.duration, priceUSD: item.basePriceUSD, options: item.options } };
     const rows: Record<string, unknown>[] = [{ serviceId: item.id, quantity: item.quantity, price: item.basePriceVND, status: 'WAITING', options, tip: 0 }];
-    if (item.hasPrivateRoom) rows.push({ serviceId: PRIVATE_ROOM_SERVICE_ID, quantity: item.quantity, price: item.addonPriceVND, status: 'WAITING', options: { displayName: 'Private Room', parentServiceId: item.id, isAddon: true }, tip: 0 });
+    if (item.hasPrivateRoom) rows.push({ serviceId: PRIVATE_ROOM_SERVICE_ID, quantity: item.quantity, price: item.addonPriceVND, status: 'WAITING', options: { displayName: 'Private Room', parentServiceId: item.id, parentLine: line, isAddon: true, _booking: { priceUSD: item.addonPriceUSD } }, tip: 0 });
     return rows;
   });
   return { booking: bookingPayload, items };
@@ -243,6 +259,7 @@ export async function POST(request: Request) {
   if (replay?.conflict === 'IDEMPOTENCY_CONFLICT') return jsonError('IDEMPOTENCY_CONFLICT', 'This idempotency key was already used for a different booking intent.', 409);
   if (replay?.conflict === 'IDEMPOTENCY_REVIEW_REQUIRED') return jsonError('IDEMPOTENCY_REVIEW_REQUIRED', 'This older booking needs review before it can be replayed.', 409);
   if (replay?.snapshot) return responseForSnapshot(replay.snapshot, true);
+  if (!booking.quote) return jsonError('PRICE_CHANGED', 'Please review current pricing before confirming.', 409, [{ field: 'quote', code: 'QUOTE_REQUIRED', message: 'A current quote is required.' }]);
   if (isBookingTimeInPast(booking.date, booking.time)) return jsonError('VALIDATION_ERROR', 'Please choose a future booking time.', 400, [{ field: 'time', code: 'BOOKING_TIME_IN_PAST', message: 'Booking time must be in the future.' }]);
 
   const ids = Array.from(new Set([...booking.selectedServices.map((item) => item.id), PRIVATE_ROOM_SERVICE_ID]));
@@ -273,14 +290,16 @@ export async function POST(request: Request) {
   const quoteCheck = verifyQuote(booking.quote, [booking.intentFingerprint, cartIntentFingerprint(booking.selectedServices)], catalogDigest(catalog));
   if (!quoteCheck.ok) return jsonError('PRICE_CHANGED', 'The service catalog changed. Please review your booking again.', 409, [{ field: 'quote', code: quoteCheck.reason, message: 'The quote is no longer current.' }]);
 
-  // Close the read-to-write window without changing the atomic SQL contract.
-  // Terra-1 still rechecks active VND prices inside the RPC transaction.
+  // Detect changes early; the RPC also locks and checks this snapshot at commit.
   const { data: latestCatalogRows, error: latestCatalogError } = await supabase.from('Services').select('id, nameVN, nameEN, nameCN, nameJP, nameKR, priceVND, priceUSD, duration, isActive, showPreferences, showNotes, showGender, showStrength, showFocus, focusConfig').in('id', ids);
   if (latestCatalogError) return jsonError('BOOKING_TEMPORARILY_UNAVAILABLE', 'Booking is temporarily unavailable. Please try again later.', 503);
   if (catalogDigest((latestCatalogRows || []) as CatalogService[]) !== catalogDigest(catalog)) return jsonError('PRICE_CHANGED', 'The service catalog changed. Please review your booking again.', 409, [{ field: 'quote', code: 'PRICE_CHANGED', message: 'The catalog changed before commit.' }]);
 
   const { booking: bookingPayload, items } = buildRpcPayload(booking, pricing);
-  const { data: rpcResult, error: rpcError } = await supabase.rpc('create_booking_atomic', { p_booking_data: bookingPayload, p_booking_items: items, p_idempotency_key: finalKey });
+  const expectedCatalog = catalog.filter((service) => items.some((item) => item.serviceId === service.id)).map((service) => ({
+    id: service.id, priceVND: Number(service.priceVND), priceUSD: Number(service.priceUSD), duration: Number(service.duration), isActive: service.isActive,
+  }));
+  const { data: rpcResult, error: rpcError } = await supabase.rpc('create_booking_atomic', { p_booking_data: { ...bookingPayload, expectedCatalog }, p_booking_items: items, p_idempotency_key: finalKey });
   if (rpcError) return mapRpcError(rpcError);
   const committedId = String(rpcResult?.booking_id || rpcResult?.data?.bookingId || '');
   if (!committedId) return jsonError('BOOKING_TEMPORARILY_UNAVAILABLE', 'Booking was not acknowledged by the booking service.', 503);
@@ -291,6 +310,14 @@ export async function POST(request: Request) {
   // atomic resolve/link behavior; this route keeps the booking snapshot only.
   const receptionEmail = await resolveReceptionEmail(supabase);
   let emailStatus: { sent: boolean; messageId?: string; pending?: boolean } = { sent: false, pending: true };
+  const markEmail = async (status: string) => {
+    try {
+      const { error } = await supabase.from('Bookings').update({ reception_feedback: status }).eq('id', committedSnapshot.bookingId);
+      if (error) console.error('[API Bookings] Email status update failed:', error.code || 'unknown');
+    } catch {
+      console.error('[API Bookings] Email status update unavailable');
+    }
+  };
   try {
     const mail = await sendBookingConfirmationEmail({
       bookingId: committedSnapshot.bookingId, customerName: committedSnapshot.customerName, customerEmail: committedSnapshot.customerEmail,
@@ -302,12 +329,12 @@ export async function POST(request: Request) {
     });
     if (mail.success) {
       emailStatus = { sent: true, messageId: mail.messageId };
-      await supabase.from('Bookings').update({ reception_feedback: 'EMAIL_SENT' }).eq('id', committedSnapshot.bookingId);
+      await markEmail('EMAIL_SENT');
     } else {
-      await supabase.from('Bookings').update({ reception_feedback: 'EMAIL_PENDING' }).eq('id', committedSnapshot.bookingId);
+      await markEmail('EMAIL_PENDING');
     }
   } catch {
-    await supabase.from('Bookings').update({ reception_feedback: 'EMAIL_PENDING' }).eq('id', committedSnapshot.bookingId);
+    await markEmail('EMAIL_PENDING');
   }
 
   return NextResponse.json({ success: true, idempotent: false, data: { ...committedSnapshot, emailStatus } });

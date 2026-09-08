@@ -72,12 +72,19 @@ const tests = [
     assert.equal(priced.totalAmountUSD, 37);
     assert.ok(!routeSource.includes('PRIVATE_ROOM_DEFAULT_PRICE'));
     assert.ok(!repriceSource.includes('PRIVATE_ROOM_DEFAULT_PRICE'));
+    const zeroDuration = buildCanonicalPricing([{ id: 'NHS0900', quantity: 1, options: {} }], catalog, catalog[1]);
+    assert.equal(zeroDuration.items[0].duration, 0);
+    assert.equal(zeroDuration.totalAmountVND, 105000);
+    assert.throws(() => buildCanonicalPricing([{ id: 'NHS0900', quantity: 1, options: {} }], [{ ...catalog[1], duration: null }], catalog[1]), /CATALOG_INVALID/);
   }],
   ['API08 calendar and spa-time validation', () => {
     expectInvalid(validBody({ date: '2099-02-29' }), 'date', 'INVALID_DATE');
     expectInvalid(validBody({ date: '2099-02-30' }), 'date', 'INVALID_DATE');
     expectInvalid(validBody({ time: '08:30' }), 'time', 'INVALID_TIME');
-    assert.equal(parse(validBody({ time: '23:00' })).ok, true);
+    assert.equal(parse(validBody({ time: '22:00' })).ok, true);
+    assert.equal(parse(validBody({ time: '22:30' })).ok, true);
+    expectInvalid(validBody({ time: '22:31' }), 'time', 'INVALID_TIME');
+    expectInvalid(validBody({ time: '23:00' }), 'time', 'INVALID_TIME');
   }],
   ['API09 browser cannot choose status/payment/branch identity or price', () => {
     const result = parse(validBody({ status: 'PAID', amountPaid: 790000, bookingId: 'client-id', branchName: 'ORIA SPA' }));

@@ -9,6 +9,7 @@ import {
   generateSanitizedCss,
   getSafeGoogleFontUrl,
 } from "@/lib/config/stylingSanitizer";
+import { sanitizePublicAboutStoryContent, sanitizePublicSystemSettings } from "@/lib/config/siteContentSanitizer";
 import "./globals.css";
 
 // 🔧 FONT CONFIGURATION
@@ -149,6 +150,8 @@ const RootLayout = async ({
 
   // Strictly sanitize homepage styling. If missing or invalid, falls back safely to default Next.js fonts without throwing or injecting raw strings.
   const sanitizedStyling = sanitizeHomepageStyling(homepageStyling);
+  const publicSystemSettings = sanitizePublicSystemSettings(systemSettings);
+  const publicAboutStoryContent = sanitizePublicAboutStoryContent(aboutStoryContent);
   const gFontUrl = sanitizedStyling ? getSafeGoogleFontUrl(sanitizedStyling) : null;
   const sanitizedCss = sanitizedStyling
     ? generateSanitizedCss(sanitizedStyling, {
@@ -171,7 +174,7 @@ const RootLayout = async ({
         )}
       </head>
       <body className="w-full min-h-full antialiased font-sans" suppressHydrationWarning>
-        <SystemSettingsProvider systemSettings={systemSettings} aboutStoryContent={aboutStoryContent} brandHistory={brandHistory} footerContent={footerContent}>
+        <SystemSettingsProvider systemSettings={publicSystemSettings} aboutStoryContent={publicAboutStoryContent} brandHistory={brandHistory} footerContent={footerContent}>
           <TranslationProvider initialTranslations={translations}>
             <LayoutWrapper>{children}</LayoutWrapper>
           </TranslationProvider>

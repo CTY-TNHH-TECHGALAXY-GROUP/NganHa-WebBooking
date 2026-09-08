@@ -6,13 +6,14 @@ import { useTranslation } from '@/components/TranslationProvider';
 import { useSystemSettings } from '@/components/SystemSettingsProvider';
 import styles from './DesignYourJourneyPage.module.css';
 import { DEFAULT_JOURNEY_CONTENT } from './designJourneyData';
+import { buildHotlineUrl } from '@/lib/config/urlSettings';
 
 export default function DesignYourJourneyPage() {
   const router = useRouter();
   const { currentLang, setCurrentLang } = useTranslation();
   const { systemSettings } = useSystemSettings();
   const phone = systemSettings?.phone || '+84964090277';
-  const hotlineUrl = `tel:${phone.replace(/[^\d+]/g, '')}`;
+  const hotlineUrl = buildHotlineUrl(phone);
   const [content, setContent] = useState<any>(DEFAULT_JOURNEY_CONTENT);
 
   useEffect(() => {

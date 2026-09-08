@@ -299,6 +299,8 @@ export const revalidateCartWithServer = async (): Promise<{
   hasPriceChanged: boolean;
   unavailableItems: { id: string; cartId?: string; reason: string }[];
   updatedCart: CartItem[];
+  quote?: string;
+  error?: string;
 }> => {
   const currentCart = readBookingCart();
   if (currentCart.length === 0) {
@@ -322,10 +324,14 @@ export const revalidateCartWithServer = async (): Promise<{
     });
 
     if (!res.ok) {
-      return { valid: true, hasPriceChanged: false, unavailableItems: [], updatedCart: currentCart };
+      const failure = await res.json().catch(() => ({}));
+      return { valid: false, hasPriceChanged: false, unavailableItems: failure.unavailableItems || [], updatedCart: currentCart, error: failure.code || 'BOOKING_TEMPORARILY_UNAVAILABLE' };
     }
 
     const data = await res.json();
+    if (data.valid !== true || !Array.isArray(data.items)) {
+      return { valid: false, hasPriceChanged: false, unavailableItems: data.unavailableItems || [], updatedCart: currentCart, error: data.code || 'CART_REQUIRES_REVIEW' };
+    }
     const unavailableSet = new Set(
       (data.unavailableItems || []).map((u: any) => u.cartId || u.id)
     );
@@ -350,7 +356,10 @@ export const revalidateCartWithServer = async (): Promise<{
       if (fresh) {
         if (
           item.priceVND !== fresh.priceVND ||
-          item.basePriceVND !== fresh.basePriceVND
+          item.basePriceVND !== fresh.basePriceVND ||
+          item.priceUSD !== fresh.priceUSD ||
+          item.basePriceUSD !== fresh.basePriceUSD ||
+          item.timeValue !== fresh.duration
         ) {
           modified = true;
         }
@@ -360,7 +369,7 @@ export const revalidateCartWithServer = async (): Promise<{
           basePriceUSD: fresh.basePriceUSD,
           priceVND: fresh.priceVND,
           priceUSD: fresh.priceUSD,
-          timeValue: fresh.duration || item.timeValue,
+          timeValue: fresh.duration ?? item.timeValue,
         });
       } else {
         nextCart.push(item);
@@ -377,9 +386,10 @@ export const revalidateCartWithServer = async (): Promise<{
       hasPriceChanged: data.hasPriceChanged || modified,
       unavailableItems: data.unavailableItems || [],
       updatedCart: nextCart,
+      quote: data.quote,
     };
   } catch (err) {
     console.warn('[bookingCartStorage] Server reprice request failed:', err);
-    return { valid: true, hasPriceChanged: false, unavailableItems: [], updatedCart: currentCart };
+    return { valid: false, hasPriceChanged: false, unavailableItems: [], updatedCart: currentCart, error: 'BOOKING_TEMPORARILY_UNAVAILABLE' };
   }
 };

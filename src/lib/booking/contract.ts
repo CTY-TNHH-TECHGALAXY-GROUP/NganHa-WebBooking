@@ -273,7 +273,7 @@ export function parseBookingRequest(body: unknown, request: Request, options: { 
   if (date.error) errors.push(date.error);
   if (timeValue.error) errors.push(timeValue.error);
   if (date.value && !validDate(date.value)) errors.push(error('date', 'INVALID_DATE', 'Date does not exist.'));
-  if (timeValue.value && (!/^\d{2}:\d{2}$/.test(timeValue.value) || !['00', '30'].includes(timeValue.value.slice(3)) || Number(timeValue.value.slice(0, 2)) < 9 || Number(timeValue.value.slice(0, 2)) > 23 || Number(timeValue.value.slice(0, 2)) === 23 && timeValue.value.slice(3) !== '00')) {
+  if (timeValue.value && (!/^\d{2}:\d{2}$/.test(timeValue.value) || !['00', '30'].includes(timeValue.value.slice(3)) || Number(timeValue.value.slice(0, 2)) < 9 || Number(timeValue.value.slice(0, 2)) > 22 || Number(timeValue.value.slice(0, 2)) === 22 && timeValue.value.slice(3) !== '00' && timeValue.value.slice(3) !== '30')) {
     errors.push(error('time', 'INVALID_TIME', 'Time is outside the booking window.'));
   }
 
@@ -422,7 +422,7 @@ export function buildCanonicalPricing(selected: NormalizedService[], catalog: Ca
     const basePriceVND = Number(service.priceVND);
     const basePriceUSD = Number(service.priceUSD);
     const duration = Number(service.duration);
-    if (service.priceVND === null || service.priceVND === undefined || service.priceVND === '' || service.priceUSD === null || service.priceUSD === undefined || service.priceUSD === '' || !Number.isFinite(basePriceVND) || basePriceVND < 0 || !Number.isFinite(basePriceUSD) || basePriceUSD < 0 || !Number.isInteger(duration) || duration < 1) throw new Error(`CATALOG_INVALID:${item.id}`);
+    if (service.priceVND === null || service.priceVND === undefined || service.priceVND === '' || service.priceUSD === null || service.priceUSD === undefined || service.priceUSD === '' || service.duration === null || service.duration === undefined || service.duration === '' || !Number.isFinite(basePriceVND) || basePriceVND < 0 || !Number.isFinite(basePriceUSD) || basePriceUSD < 0 || !Number.isInteger(duration) || duration < 0) throw new Error(`CATALOG_INVALID:${item.id}`);
     const hasPrivateRoom = item.options.addons?.privateRoom === true;
     const priceVND = basePriceVND + (hasPrivateRoom ? addonVND : 0);
     const priceUSD = basePriceUSD + (hasPrivateRoom ? addonUSD : 0);

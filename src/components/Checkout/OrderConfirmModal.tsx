@@ -556,7 +556,7 @@ export default function OrderConfirmModal({
     return (
         <div 
             className={`fixed inset-0 flex ${currentStep === 3 ? 'items-center' : 'items-end sm:items-center'} justify-center bg-black/80 backdrop-blur-md transition-opacity duration-300 animate-in fade-in pb-0 sm:pb-0 p-0 sm:p-4`} style={{ zIndex: Z.MODAL }}
-            onClick={onClose}
+            onClick={(event) => { if (event.target === event.currentTarget) onClose(); }}
         >
             <div
                 className="bg-black/60 backdrop-blur-3xl border border-[#c9a96e]/30 w-full max-h-[92dvh] md:max-h-[88vh] sm:rounded-[28px] rounded-t-[28px] shadow-[0_25px_60px_rgba(0,0,0,0.85)] flex flex-col overflow-hidden relative animate-in slide-in-from-bottom-10 sm:zoom-in-95 duration-300 md:max-w-4xl"
@@ -810,6 +810,7 @@ export default function OrderConfirmModal({
                                                                         <Clock size={12} className="text-gray-400" />
                                                                         {item.timeValue || item.timeDisplay} {dict.checkout?.mins || 'phút'}
                                                                     </span>
+                                                                    <span className="text-[#e2be6f] whitespace-nowrap">x{item.qty}</span>
                                                                 </div>
                                                             </div>
                                                             <div className="flex flex-col items-end gap-1 shrink-0">
