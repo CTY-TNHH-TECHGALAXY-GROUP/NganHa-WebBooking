@@ -29,6 +29,11 @@ export interface BookingEmailPayload {
   receptionEmail?: string;
 }
 
+export interface BookingEmailSendOptions {
+  /** Test-only seam for exercising delivery behavior without opening SMTP connections. */
+  createTransporter?: typeof getTransporter;
+}
+
 const I18N_TEMPLATE_1: Record<string, {
   subject: string;
   greeting: (name: string) => string;
@@ -210,6 +215,41 @@ function getTransporter(portOverride?: number) {
   });
 }
 
+const DEFAULT_RECEPTION_EMAIL = 'info@techgalaxygroup.com';
+
+function escapeHtml(value: unknown): string {
+  return String(value ?? '').replace(/[&<>'"]/g, (character) => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    "'": '&#39;',
+    '"': '&quot;',
+  })[character] || character);
+}
+
+function sanitizeHeaderText(value: unknown): string {
+  return String(value ?? '').replace(/[\r\n\0]/g, ' ').trim();
+}
+
+function normalizeEmailRecipient(value: unknown): string | null {
+  if (typeof value !== 'string') return null;
+
+  const email = value.trim();
+  if (!email || /[\r\n\0]/.test(email)) return null;
+
+  // A single mailbox only: no display names, recipient lists, or header injection.
+  return /^[^\s@<>,;:]+@[^\s@<>,;:]+\.[^\s@<>,;:]+$/.test(email) ? email : null;
+}
+
+function resolveReceptionEmail(value: unknown): string | null {
+  return (
+    normalizeEmailRecipient(value) ||
+    normalizeEmailRecipient(process.env.RECEPTION_NOTIFICATION_EMAIL) ||
+    normalizeEmailRecipient(process.env.RECEPTION_EMAIL) ||
+    DEFAULT_RECEPTION_EMAIL
+  );
+}
+
 function formatVND(amount: number) {
   return new Intl.NumberFormat('vi-VN').format(amount) + '\u00A0₫';
 }
@@ -222,13 +262,13 @@ function renderPreferenceItemHtml(item: string): string {
 
   // Header like [Service Name]
   if (/^\[.*\]$/.test(text)) {
-    return `<div style="font-weight: 600; color: #D4AF37; margin-top: 8px; margin-bottom: 4px; font-size: 13px; letter-spacing: 0.3px;">${text}</div>`;
+    return `<div style="font-weight: 600; color: #D4AF37; margin-top: 8px; margin-bottom: 4px; font-size: 13px; letter-spacing: 0.3px;">${escapeHtml(text)}</div>`;
   }
 
   // Tag badge
   const isTag = /^(Phòng riêng|Private Room|包间|個室|프라이빗 룸|Phụ nữ có thai|Pregnant|孕期|妊娠中|임산부|Có dị ứng|Allergies|过敏|アレルギー|알레르기)/i.test(text);
   if (isTag && !text.includes(':')) {
-    return `<div style="margin-bottom: 6px;"><span style="display: inline-block; padding: 2px 10px; background-color: rgba(212, 175, 55, 0.15); border: 1px solid rgba(212, 175, 55, 0.45); border-radius: 12px; font-size: 12px; color: #f7ebc7; font-weight: 500;">🏷️ ${text}</span></div>`;
+    return `<div style="margin-bottom: 6px;"><span style="display: inline-block; padding: 2px 10px; background-color: rgba(212, 175, 55, 0.15); border: 1px solid rgba(212, 175, 55, 0.45); border-radius: 12px; font-size: 12px; color: #f7ebc7; font-weight: 500;">🏷️ ${escapeHtml(text)}</span></div>`;
   }
 
   // Key: Value
@@ -247,10 +287,10 @@ function renderPreferenceItemHtml(item: string): string {
         val = val.replace(/WHOLE_BODY|FULL_BODY/gi, fullText);
       }
     }
-    return `<div style="margin: 3px 0; font-size: 13px; line-height: 1.5;"><span style="color: rgba(247, 235, 199, 0.65); font-weight: 600;">• ${key}:</span> <span style="color: #ffffff; font-weight: 500;">${val}</span></div>`;
+    return `<div style="margin: 3px 0; font-size: 13px; line-height: 1.5;"><span style="color: rgba(247, 235, 199, 0.65); font-weight: 600;">• ${escapeHtml(key)}:</span> <span style="color: #ffffff; font-weight: 500;">${escapeHtml(val)}</span></div>`;
   }
 
-  return `<div style="margin: 3px 0; font-size: 13px; line-height: 1.5; color: #f7ebc7;">• ${text}</div>`;
+  return `<div style="margin: 3px 0; font-size: 13px; line-height: 1.5; color: #f7ebc7;">• ${escapeHtml(text)}</div>`;
 }
 
 function renderPreferencesHtml(rawFocusNote?: string): string {
@@ -270,7 +310,7 @@ function renderPreferencesHtml(rawFocusNote?: string): string {
       if (firstColon > 0 && firstColon < 40 && !line.slice(0, firstColon).toLowerCase().includes('tập trung') && !line.slice(0, firstColon).toLowerCase().includes('focus')) {
         prefix = line.slice(0, firstColon).trim();
         remaining = line.slice(firstColon + 1).trim();
-        itemsHtml += `<div style="font-weight: 600; color: #D4AF37; margin-top: 6px; margin-bottom: 4px; font-size: 13px;">${prefix}</div>`;
+        itemsHtml += `<div style="font-weight: 600; color: #D4AF37; margin-top: 6px; margin-bottom: 4px; font-size: 13px;">${escapeHtml(prefix)}</div>`;
       }
       const parts = remaining.split(' | ').map(p => p.trim()).filter(Boolean);
       parts.forEach(part => {
@@ -337,17 +377,18 @@ export function generateBookingConfirmationHtml(
     focusAreaNote,
   } = payload;
 
-  const t = I18N_TEMPLATE_1[lang] || I18N_TEMPLATE_1.vi;
+  const resolvedLang = I18N_TEMPLATE_1[lang] ? lang : 'vi';
+  const t = I18N_TEMPLATE_1[resolvedLang];
   const phoneDisplay = '+84 964 090 277';
 
   // Calculate total duration & construct service string
-  const serviceNames = services.map(s => s.name || 'Oria Spa Treatment').join(', ');
+  const serviceNames = services.map(s => escapeHtml(s.name || 'Oria Spa Treatment')).join(', ');
   const totalDuration = services.reduce((acc, s) => acc + (Number(s.duration) || 0), 0);
   const durationDisplay = totalDuration > 0
     ? t.durationFormat(totalDuration)
     : (services[0]?.duration ? t.durationFormat(Number(services[0].duration)) : '-');
 
-  const formattedDate = formatDateByLang(date, lang);
+  const formattedDate = escapeHtml(formatDateByLang(date, resolvedLang));
 
   // Guests count formatted
   const guestCount = guests && Number(guests) > 0 ? Number(guests) : 1;
@@ -366,6 +407,15 @@ export function generateBookingConfirmationHtml(
     therapistDisplay = t.therapistMap.any;
   }
 
+  const safeCustomerName = escapeHtml(customerName);
+  const safeCustomerPhone = escapeHtml(customerPhone);
+  const safePhoneHref = escapeHtml(String(customerPhone ?? '').replace(/[^+\d]/g, ''));
+  const safeTime = escapeHtml(time);
+  const safeBranchName = escapeHtml(branchName);
+  const safeBookingId = escapeHtml(bookingId);
+  const safeTherapistDisplay = escapeHtml(therapistDisplay);
+  const safeNotes = escapeHtml(notes);
+
   const logoUrl = 'https://oria-spa.vercel.app/images/oria-logo-email.png';
   const logoPath = path.join(process.cwd(), 'public/images/oria-logo-email.png');
   const hasLocalLogo = fs.existsSync(logoPath);
@@ -373,7 +423,7 @@ export function generateBookingConfirmationHtml(
 
   return `
 <!DOCTYPE html>
-<html lang="${lang}">
+<html lang="${escapeHtml(resolvedLang)}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -401,7 +451,7 @@ export function generateBookingConfirmationHtml(
       <tr>
         <td style="padding: 32px 28px 28px;">
           <p style="margin: 0 0 16px; font-size: 16px; font-weight: 600; color: #ffffff;">
-            ${t.greeting(customerName)}
+            ${t.greeting(safeCustomerName)}
           </p>
           <p style="margin: 0 0 24px; font-size: 14px; line-height: 1.7; color: rgba(247, 235, 199, 0.9);">
             ${t.thankYou}
@@ -435,7 +485,7 @@ export function generateBookingConfirmationHtml(
                   • <strong>${t.timeLabel}:</strong>
                 </td>
                 <td style="padding: 5px 0; color: #D4AF37; font-weight: 600; vertical-align: top;">
-                  ${time}
+                  ${safeTime}
                 </td>
               </tr>
               <tr>
@@ -459,7 +509,7 @@ export function generateBookingConfirmationHtml(
                   • <strong>${t.therapistLabel}:</strong>
                 </td>
                 <td style="padding: 5px 0; color: #ffffff; font-weight: 500; vertical-align: top;">
-                  ${therapistDisplay}
+                  ${safeTherapistDisplay}
                 </td>
               </tr>
               <tr>
@@ -467,7 +517,7 @@ export function generateBookingConfirmationHtml(
                   • <strong>${t.locationLabel}:</strong>
                 </td>
                 <td style="padding: 5px 0; color: #ffffff; vertical-align: top;">
-                  ${branchName}
+                  ${safeBranchName}
                 </td>
               </tr>
               <tr>
@@ -475,7 +525,7 @@ export function generateBookingConfirmationHtml(
                   • <strong>${t.bookingCodeLabel}:</strong>
                 </td>
                 <td style="padding: 5px 0; color: #D4AF37; font-weight: bold; letter-spacing: 0.5px; vertical-align: top;">
-                  ${bookingId}
+                  ${safeBookingId}
                 </td>
               </tr>
               <tr>
@@ -483,7 +533,7 @@ export function generateBookingConfirmationHtml(
                   • <strong>${t.customerLabel}:</strong>
                 </td>
                 <td style="padding: 5px 0; color: #ffffff; font-weight: 600; vertical-align: top;">
-                  ${customerName}
+                  ${safeCustomerName}
                 </td>
               </tr>
               ${customerPhone ? `
@@ -492,7 +542,7 @@ export function generateBookingConfirmationHtml(
                   • <strong>${t.phoneLabel}:</strong>
                 </td>
                 <td style="padding: 5px 0; color: #ffffff; font-weight: 500; vertical-align: top;">
-                  <a href="tel:${customerPhone.replace(/\s+/g, '')}" style="color: #D4AF37; text-decoration: none;">${customerPhone}</a>
+                  <a href="tel:${safePhoneHref}" style="color: #D4AF37; text-decoration: none;">${safeCustomerPhone}</a>
                 </td>
               </tr>
               ` : ''}
@@ -525,7 +575,7 @@ export function generateBookingConfirmationHtml(
                     • ${t.notesLabel}:
                   </div>
                   <div style="background-color: rgba(255, 255, 255, 0.03); border: 1px solid rgba(212, 175, 55, 0.2); border-radius: 8px; padding: 10px 14px; color: #f7ebc7; font-size: 13px; line-height: 1.6; white-space: pre-line; font-style: italic;">
-${notes}
+${safeNotes}
                   </div>
                 </td>
               </tr>
@@ -572,7 +622,10 @@ ${notes}
   `.trim();
 }
 
-export async function sendBookingConfirmationEmail(payload: BookingEmailPayload) {
+export async function sendBookingConfirmationEmail(
+  payload: BookingEmailPayload,
+  options: BookingEmailSendOptions = {}
+) {
   try {
     const {
       bookingId,
@@ -591,13 +644,9 @@ export async function sendBookingConfirmationEmail(payload: BookingEmailPayload)
       focusAreaNote,
     } = payload;
 
-    const hasCustomerEmail = Boolean(customerEmail && typeof customerEmail === 'string' && customerEmail.includes('@'));
-    const rawReception = (
-      payload.receptionEmail ||
-      process.env.RECEPTION_NOTIFICATION_EMAIL ||
-      process.env.RECEPTION_EMAIL ||
-      'info@techgalaxygroup.com'
-    ).trim();
+    const customerRecipient = normalizeEmailRecipient(customerEmail);
+    const hasCustomerEmail = Boolean(customerRecipient);
+    const rawReception = resolveReceptionEmail(payload.receptionEmail);
 
     if (!hasCustomerEmail && !rawReception) {
       console.log('[Mailer] Skipped email: neither customer email nor reception email available');
@@ -605,7 +654,7 @@ export async function sendBookingConfirmationEmail(payload: BookingEmailPayload)
     }
 
     // Prevent delivering real SMTP emails to dummy/test domains (RFC 2606 reserved domains)
-    const emailLower = (customerEmail || '').toLowerCase().trim();
+    const emailLower = (customerRecipient || '').toLowerCase();
     const isTestEmail =
       hasCustomerEmail && (
         emailLower.endsWith('.test') ||
@@ -619,11 +668,12 @@ export async function sendBookingConfirmationEmail(payload: BookingEmailPayload)
       );
 
     if (isTestEmail) {
-      console.log(`ℹ️ [Mailer] Synthetic/test recipient detected (${customerEmail}). Mocked SMTP delivery to prevent inbox bounce.`);
+      console.log('[Mailer] Synthetic/test recipient detected; SMTP delivery skipped.');
       return { success: true, messageId: `<mock-test-${Date.now()}@local.mock>` };
     }
 
-    const transporter = getTransporter();
+    const createTransporter = options.createTransporter || getTransporter;
+    const transporter = createTransporter();
     if (!transporter) {
       console.warn('[Mailer] Cannot send email: transporter not configured (check SMTP_USER and SMTP_PASS)');
       return { success: false, reason: 'Transporter not configured' };
@@ -711,12 +761,12 @@ ${t.signoffTeam}
     let bccRecipient: string | undefined = undefined;
 
     if (hasCustomerEmail) {
-      toRecipient = customerEmail!;
-      if (rawReception && rawReception.includes('@') && rawReception.toLowerCase() !== customerEmail!.toLowerCase()) {
+      toRecipient = customerRecipient!;
+      if (rawReception && rawReception.toLowerCase() !== customerRecipient!.toLowerCase()) {
         bccRecipient = rawReception;
       }
     } else {
-      toRecipient = rawReception;
+      toRecipient = rawReception!;
     }
 
     const phoneTag = customerPhone ? ` - ${customerPhone}` : '';
@@ -725,10 +775,10 @@ ${t.signoffTeam}
       : `[ĐƠN MỚI] Đặt lịch hẹn Oria Spa (#${bookingId}) - ${customerName}${phoneTag}`;
 
     const mailOptions: any = {
-      from: `"${fromName}" <${fromEmail}>`,
+      from: `"${sanitizeHeaderText(fromName)}" <${normalizeEmailRecipient(fromEmail) || DEFAULT_RECEPTION_EMAIL}>`,
       to: toRecipient,
-      replyTo,
-      subject: emailSubject,
+      replyTo: normalizeEmailRecipient(replyTo) || normalizeEmailRecipient(fromEmail) || DEFAULT_RECEPTION_EMAIL,
+      subject: sanitizeHeaderText(emailSubject),
       text: plainText,
       html,
       attachments,
@@ -743,15 +793,15 @@ ${t.signoffTeam}
       info = await transporter.sendMail(mailOptions);
     } catch (primaryErr: any) {
       console.warn(`⚠️ [Mailer] Lỗi gửi qua cổng 465 (${primaryErr.message}), thử lại tự động qua cổng 587 STARTTLS...`);
-      const fallbackTransporter = getTransporter(587);
+      const fallbackTransporter = createTransporter(587);
       if (!fallbackTransporter) throw primaryErr;
       info = await fallbackTransporter.sendMail(mailOptions);
     }
 
-    console.log(`✅ [Mailer] Sent Booking Received email to ${toRecipient}${bccRecipient ? ` (BCC: ${bccRecipient})` : ''} (MessageId: ${info.messageId})`);
+    console.log(`[Mailer] Booking notification sent (MessageId: ${info.messageId || 'unknown'}).`);
     return { success: true, messageId: info.messageId };
   } catch (err: any) {
-    console.error('❌ [Mailer] Failed to send Booking Received email:', err.message);
-    return { success: false, error: err.message };
+    console.error('[Mailer] Booking notification failed.');
+    return { success: false, error: 'Notification delivery failed.' };
   }
 }
