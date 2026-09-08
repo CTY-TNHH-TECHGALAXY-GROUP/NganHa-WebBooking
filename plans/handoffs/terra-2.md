@@ -4,7 +4,7 @@
 
 - Worker: Terra-2
 - Baseline HEAD: `05fce624831c47efa057c9349a026d05ea0b50ac`
-- Final commit: `821adc8` (amended once to record this SHA in the handoff)
+- Final Terra-2 commit: `06d58ea` plus the handoff-only follow-up below
 - Owned areas: API validation, read-only catalog pricing, quote/replay/conflict handling, customer privacy, post-commit mail hardening.
 - No production RPC, real database write, price update, seed, migration apply, or email dispatch was performed.
 
