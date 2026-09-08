@@ -30,7 +30,6 @@ export const VND_DENOMINATIONS = [
 ];
 
 export const USD_INFO = {
-    exchangeRate: 24000,
     imgUrl: "/assets/payment/usd-info.webp"
 };
 

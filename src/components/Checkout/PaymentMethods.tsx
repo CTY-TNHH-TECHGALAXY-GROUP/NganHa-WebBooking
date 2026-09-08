@@ -160,7 +160,7 @@ const PaymentMethods = ({ lang, dict, selected, onChange }: PaymentMethodsProps)
                                                 kr: '환율 안내',
                                             }[lang] || 'Exchange Rate'}
                                         </div>
-                                        <div className="text-2xl font-black text-[#C9A96E]">1 USD = {formatCurrency(USD_INFO.exchangeRate)} VND</div>
+                                        <div className="text-sm font-medium text-gray-300">{dict.payment_methods.refund_note}</div>
                                     </div>
 
                                     <div className="bg-[#1c1c1e] border border-blue-500/30 rounded-2xl p-3 flex gap-3 items-center">
@@ -203,12 +203,12 @@ const PaymentMethods = ({ lang, dict, selected, onChange }: PaymentMethodsProps)
                                     <QrCode size={64} className="mx-auto mb-4 opacity-50" />
                                     <p className="font-medium">
                                         {{
-                                            vi: 'Quét mã VietQR để chuyển khoản nhanh 24/7',
-                                            en: 'Scan VietQR code for 24/7 instant bank transfer',
-                                            cn: '扫描 VietQR 码进行 24/7 快速银行转账',
-                                            jp: 'VietQRコードをスキャンして24時間即時銀行振込',
-                                            kr: 'VietQR 코드를 스캔하여 24시간 즉시 계좌이체',
-                                        }[lang] || 'Scan VietQR code for 24/7 instant bank transfer'}
+                                            vi: 'Quét mã QR TRANSFER để chuyển khoản nhanh 24/7',
+                                            en: 'Scan QR TRANSFER code for 24/7 instant bank transfer',
+                                            cn: '扫描 QR TRANSFER 码进行 24/7 快速银行转账',
+                                            jp: 'QR TRANSFERコードをスキャンして24時間即時銀行振込',
+                                            kr: 'QR TRANSFER 코드를 스캔하여 24시간 즉시 계좌이체',
+                                        }[lang] || 'Scan QR TRANSFER code for 24/7 instant bank transfer'}
                                     </p>
                                 </div>
                             )}

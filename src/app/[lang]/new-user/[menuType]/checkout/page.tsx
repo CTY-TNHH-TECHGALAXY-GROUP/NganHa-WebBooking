@@ -6,7 +6,6 @@ import { useRouter } from 'next/navigation';
 import SmartLogo from '@/components/SmartLogo';
 import AlertModal from '@/components/Shared/AlertModal';
 import OrderConfirmModal from '@/components/Checkout/OrderConfirmModal';
-import PaymentModal from '@/components/Checkout/PaymentModal';
 import CustomForYouModal from '@/components/CustomForYou';
 import { CustomPreferences } from '@/components/CustomForYou/types';
 import { CATEGORIES } from '@/components/Menu/constants';
@@ -98,20 +97,45 @@ const COPY = {
     jp: 'カート内の料金が最新のシステム料金に更新されました。',
     kr: '장바구니의 서비스 가격이 시스템 최신 요금으로 갱신되었습니다.',
   },
+  timeRequired: { vi: 'Vui lòng chọn giờ hẹn còn khả dụng.', en: 'Please choose an available booking time.', cn: '请选择可用的预约时间。', jp: '利用可能な予約時間を選択してください。', kr: '예약 가능한 시간을 선택해 주세요.' },
+  reviewCart: { vi: 'Giá hoặc dịch vụ đã thay đổi. Vui lòng kiểm tra lại giỏ hàng trước khi xác nhận.', en: 'A price or service changed. Please review your cart before confirming.', cn: '价格或服务已发生变化，请确认购物车后再提交。', jp: '料金またはサービスが変更されました。カートを確認してから確定してください。', kr: '가격 또는 서비스가 변경되었습니다. 확인 전에 장바구니를 검토해 주세요.' },
+  temporaryUnavailable: { vi: 'Hệ thống đang bận. Thông tin của bạn và giỏ hàng vẫn được giữ lại, vui lòng thử lại.', en: 'The booking system is temporarily unavailable. Your details and cart are kept; please try again.', cn: '预约系统暂时不可用，您的信息和购物车已保留，请稍后重试。', jp: '予約システムが一時的に利用できません。入力内容とカートは保持されています。もう一度お試しください。', kr: '예약 시스템을 잠시 사용할 수 없습니다. 입력 내용과 장바구니는 보존됩니다. 다시 시도해 주세요.' },
+  submitTimeout: { vi: 'Kết nối hết thời gian. Thông tin của bạn và giỏ hàng vẫn được giữ lại, vui lòng thử lại.', en: 'The request timed out. Your details and cart are kept; please try again.', cn: '请求超时，您的信息和购物车已保留，请重试。', jp: '接続がタイムアウトしました。入力内容とカートは保持されています。もう一度お試しください。', kr: '요청 시간이 초과되었습니다. 입력 내용과 장바구니는 보존됩니다. 다시 시도해 주세요.' },
 };
 
 const COLLAPSED_TIME_SLOT_COUNT = 16;
+const SPA_TIME_ZONE = 'Asia/Ho_Chi_Minh';
 
 
 const t = (key: keyof typeof COPY, lang: string) => (COPY[key] as Record<string, string>)[lang] || COPY[key].en;
 const langKey = (lang: string): SupportedLanguage =>
   ['vi', 'en', 'cn', 'jp', 'kr'].includes(lang) ? (lang as SupportedLanguage) : 'en';
 
+const getSpaDateTime = (date = new Date()) => {
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone: SPA_TIME_ZONE,
+    year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', hourCycle: 'h23',
+  }).formatToParts(date);
+  return Object.fromEntries(parts.map(({ type, value }) => [type, value])) as Record<string, string>;
+};
+
+const spaTodayISO = () => {
+  const parts = getSpaDateTime();
+  return `${parts.year}-${parts.month}-${parts.day}`;
+};
+
 const localISODate = (date: Date) => {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
+  const year = date.getUTCFullYear();
+  const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(date.getUTCDate()).padStart(2, '0');
   return `${year}-${month}-${day}`;
+};
+
+const addDaysToISO = (iso: string, days: number) => {
+  const date = new Date(`${iso}T00:00:00Z`);
+  date.setUTCDate(date.getUTCDate() + days);
+  return localISODate(date);
 };
 
 const translatePart = (key: string, lang: string) => {
@@ -146,23 +170,15 @@ const displayDate = (iso: string, lang: string = 'en') => {
   if (lang === 'cn' || lang === 'jp') return `${year}年${month}月${day}日`;
   if (lang === 'kr') return `${year}년 ${month}월 ${day}일`;
   
-  const date = new Date(`${iso}T00:00:00`);
-  const m = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][date.getMonth()];
-  return `${m} ${Number(day)}, ${year}`;
+  const [, monthValue, dayValue] = iso.split('-');
+  const m = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][Number(monthValue) - 1];
+  return `${m} ${Number(dayValue)}, ${year}`;
 };
 
-const nextDates = (count = 7) => {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  return Array.from({ length: count }, (_, index) => {
-    const date = new Date(today);
-    date.setDate(today.getDate() + index);
-    return localISODate(date);
-  });
-};
+const formatUSD = (amount: number) => `$${(Number(amount) || 0).toFixed(2)} USD`;
 
 const isDateToday = (isoOrDate: string | Date) => {
-  const todayISO = localISODate(new Date());
+  const todayISO = spaTodayISO();
   const targetISO = typeof isoOrDate === 'string' ? isoOrDate : localISODate(isoOrDate);
   return targetISO === todayISO;
 };
@@ -170,7 +186,7 @@ const isDateToday = (isoOrDate: string | Date) => {
 const formatFullDate = (iso: string, lang: string = 'en') => {
   if (!iso) return '';
   const [yearStr, monthStr, dayStr] = iso.split('-');
-  const date = new Date(Number(yearStr), Number(monthStr) - 1, Number(dayStr));
+  const date = new Date(Date.UTC(Number(yearStr), Number(monthStr) - 1, Number(dayStr)));
 
   const dowsFull: Record<string, string[]> = {
     vi: ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'],
@@ -180,18 +196,18 @@ const formatFullDate = (iso: string, lang: string = 'en') => {
     kr: ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'],
   };
 
-  const dow = (dowsFull[lang] || dowsFull.en)[date.getDay()];
+  const dow = (dowsFull[lang] || dowsFull.en)[date.getUTCDay()];
 
   if (lang === 'vi') return `${dow}, ${dayStr}/${monthStr}/${yearStr}`;
   if (lang === 'cn' || lang === 'jp') return `${dow}, ${yearStr}年${monthStr}月${dayStr}日`;
   if (lang === 'kr') return `${dow}, ${yearStr}년 ${monthStr}월 ${dayStr}일`;
 
   const monthsEn = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  return `${dow}, ${monthsEn[date.getMonth()]} ${Number(dayStr)}, ${yearStr}`;
+  return `${dow}, ${monthsEn[date.getUTCMonth()]} ${Number(dayStr)}, ${yearStr}`;
 };
 
-const getFormattedDow = (date: Date, lang: string) => {
-  if (isDateToday(date)) {
+const getFormattedDow = (iso: string, lang: string) => {
+  if (isDateToday(iso)) {
     const todayMap: Record<string, string> = {
       vi: 'Hôm nay', en: 'Today', cn: '今天', jp: '今日', kr: '오늘'
     };
@@ -204,11 +220,11 @@ const getFormattedDow = (date: Date, lang: string) => {
     jp: ['日', '月', '火', '水', '木', '金', '土'],
     kr: ['일', '월', '화', '수', '목', '금', '토']
   };
-  return (dows[lang] || dows.en)[date.getDay()];
+  return (dows[lang] || dows.en)[new Date(`${iso}T00:00:00Z`).getUTCDay()];
 };
 
-const getFormattedMonth = (date: Date, lang: string) => {
-  const m = date.getMonth();
+const getFormattedMonth = (iso: string, lang: string) => {
+  const m = Number(iso.split('-')[1]) - 1;
   const monthsEn = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   if (lang === 'en') return monthsEn[m];
   if (lang === 'vi') return `Tháng ${m + 1}`;
@@ -226,8 +242,7 @@ const buildTimeSlots = () => {
   return slots;
 };
 
-const busySlotsForDate = (iso: string) => {
-  const day = Number(iso.slice(-2));
+const busySlotsForDate = (_iso: string) => {
   return [] as string[]; // Temporarily open all slots until real API is connected
 };
 
@@ -435,7 +450,7 @@ const DurationDrawer = ({
                 }}
               >
                 <span>{v.timeValue} {dict.checkout?.mins || 'mins'}</span>
-                <strong>{formatCurrency(v.priceVND)} {lang === 'vi' ? 'đ' : 'VND'}</strong>
+                <strong>{formatCurrency(v.priceVND)} VND <small>{formatUSD(v.priceUSD)}</small></strong>
               </button>
             ))}
           </div>
@@ -471,7 +486,7 @@ const DurationDrawer = ({
             <div className={styles.drawerSelection}>
               {dict.checkout?.yourSelection || t('yourSelection', lang)}
               <strong>
-                {selectedVariant.timeValue} {dict.checkout?.mins || 'mins'} · {formatCurrency(selectedVariant.priceVND * quantity)} {lang === 'vi' ? 'đ' : 'VND'}
+                {selectedVariant.timeValue} {dict.checkout?.mins || 'mins'} · {formatCurrency(selectedVariant.priceVND * quantity)} VND · {formatUSD(selectedVariant.priceUSD * quantity)}
               </strong>
             </div>
             <div className={styles.drawerQuantityControl}>
@@ -533,13 +548,13 @@ const CheckoutGroupedServiceCard = ({
           {group.length > 1 ? (
             <>
               <span style={{ fontSize: '11px', textTransform: 'uppercase', color: '#9b978e' }}>{t('fromPrice', lang)}</span>
-              <strong>{formatCurrency(group[0].priceVND)} {lang === 'vi' ? 'đ' : 'VND'}</strong>
+              <strong>{formatCurrency(group[0].priceVND)} VND <small>{formatUSD(group[0].priceUSD)}</small></strong>
               <span style={{ fontSize: '11px', color: '#b29e5d', marginLeft: 'auto' }}>{group.length} {t('optionsCount', lang)}</span>
             </>
           ) : (
             <>
               <span>{selectedVariant.timeValue} {dict.checkout?.mins || 'mins'}</span>
-              <strong>{formatCurrency(selectedVariant.priceVND)} {lang === 'vi' ? 'đ' : 'VND'}</strong>
+              <strong>{formatCurrency(selectedVariant.priceVND)} VND <small>{formatUSD(selectedVariant.priceUSD)}</small></strong>
             </>
           )}
         </div>
@@ -634,8 +649,9 @@ const isValidEmail = (email: string) => {
 };
 
 const isValidPhone = (phone: string) => {
-  const digits = phone.replace(/\D/g, '');
-  return digits.length >= 8 && digits.length <= 15;
+  const value = phone.trim();
+  const digits = value.replace(/\D/g, '');
+  return /^\+?[0-9\s().-]+$/.test(value) && digits.length >= 8 && digits.length <= 15;
 };
 
 export default function CheckoutPage({ params }: { params: PageParams }) {
@@ -645,7 +661,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
   const lang = langKey(rawLang || currentLang);
   const menuType = rawMenuType === 'vip' ? 'vip' : 'standard';
   const dict = getDictionary(lang);
-  const { services, cart, loading: servicesLoading, addToCart, removeFromCart, updateCartItem, updateCartItemOptions, replaceCartItemService, revalidateCart } = useMenuData();
+  const { services, cart, loading: servicesLoading, error: servicesError, addToCart, removeFromCart, updateCartItem, updateCartItemOptions, replaceCartItemService, revalidateCart } = useMenuData();
   const [idempotencyKey] = useState(() => 'idemp_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 8));
 
   // Sync route lang with global TranslationProvider
@@ -690,12 +706,15 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
   const [genderKey, setGenderKey] = useState<'male' | 'female' | 'other'>('male');
   const [customerInfo, setCustomerInfo] = useState({ name: '', email: '', phone: '', gender: t('male', lang) });
   const [hasAttemptedSubmit, setHasAttemptedSubmit] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState<Partial<Record<'name' | 'phone' | 'email' | 'time', string>>>({});
 
   const [phoneCountry, setPhoneCountry] = useState(() => phoneCountryForLang(lang));
   const [isGenderOpen, setIsGenderOpen] = useState(false);
   const [isPhoneCountryOpen, setIsPhoneCountryOpen] = useState(false);
   const [isTimeExpanded, setIsTimeExpanded] = useState(false);
-  const [bookingDate, setBookingDate] = useState(() => localISODate(new Date()));
+  const [spaToday, setSpaToday] = useState<string | null>(null);
+  const [spaClockKey, setSpaClockKey] = useState<string | null>(null);
+  const [bookingDate, setBookingDate] = useState('');
   const [bookingTime, setBookingTime] = useState('');
   const [note, setNote] = useState('');
   const [activeCategory, setActiveCategory] = useState('');
@@ -704,9 +723,6 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
   const [isServicePickerOpen, setIsServicePickerOpen] = useState(false);
   const [returnToServicePickerOnCancel, setReturnToServicePickerOnCancel] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('');
-  const [amountPaid, setAmountPaid] = useState('');
-  const [changeDenominations, setChangeDenominations] = useState<number[]>([]);
-  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [returnToConfirmAfterEdit, setReturnToConfirmAfterEdit] = useState(false);
   const [videoPreview, setVideoPreview] = useState<ReturnType<typeof resolveServiceMedia> | null>(null);
@@ -740,22 +756,34 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
 
   const calendarInputRef = useRef<HTMLInputElement>(null);
   // Dải 7 ngày hiển thị linh hoạt bắt đầu từ stripAnchorDate (mặc định là hôm nay)
-  const [stripAnchorDate, setStripAnchorDate] = useState<string>(() => localISODate(new Date()));
+  const [stripAnchorDate, setStripAnchorDate] = useState<string | null>(null);
+
+  useEffect(() => {
+    const refreshSpaClock = () => {
+      const today = spaTodayISO();
+      const now = getSpaDateTime();
+      setSpaToday(today);
+      setSpaClockKey(`${today}T${now.hour}:${now.minute}`);
+      setBookingDate((current) => current || today);
+      setStripAnchorDate((current) => current || today);
+    };
+    refreshSpaClock();
+    const interval = window.setInterval(refreshSpaClock, 30_000);
+    window.addEventListener('focus', refreshSpaClock);
+    return () => {
+      window.clearInterval(interval);
+      window.removeEventListener('focus', refreshSpaClock);
+    };
+  }, []);
 
   const dateOptions = useMemo(() => {
-    const [y, m, d] = stripAnchorDate.split('-').map(Number);
-    const base = new Date(y, m - 1, d);
-    base.setHours(0, 0, 0, 0);
-    return Array.from({ length: 7 }, (_, index) => {
-      const dObj = new Date(base);
-      dObj.setDate(base.getDate() + index);
-      return localISODate(dObj);
-    });
+    if (!stripAnchorDate) return [];
+    return Array.from({ length: 7 }, (_, index) => addDaysToISO(stripAnchorDate, index));
   }, [stripAnchorDate]);
 
   const handleCustomDateSelect = (pickedDate: string) => {
     if (!pickedDate) return;
-    const todayISO = localISODate(new Date());
+    const todayISO = spaToday || spaTodayISO();
     const validDate = pickedDate < todayISO ? todayISO : pickedDate;
     setBookingDate(validDate);
     // Khi chọn ngày qua calendar, dải 7 ngày chuyển sang hiển thị bắt đầu từ ngày được chọn
@@ -764,22 +792,20 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
   };
 
   const handleResetToToday = () => {
-    const todayISO = localISODate(new Date());
+    const todayISO = spaToday || spaTodayISO();
     setBookingDate(todayISO);
     setStripAnchorDate(todayISO);
   };
   const allSlots = useMemo(() => {
     const slots = buildTimeSlots();
-    const now = new Date();
-    const todayISO = localISODate(now);
+    const spaNow = getSpaDateTime();
+    const todayISO = spaToday || spaTodayISO();
     if (bookingDate === todayISO) {
-      const currentHour = now.getHours();
-      const currentMinute = now.getMinutes();
-      const currentTimeStr = `${String(currentHour).padStart(2, '0')}:${String(currentMinute).padStart(2, '0')}`;
+      const currentTimeStr = `${spaNow.hour}:${spaNow.minute}`;
       return slots.filter((slot) => slot > currentTimeStr);
     }
     return slots;
-  }, [bookingDate]);
+  }, [bookingDate, spaToday, spaClockKey]);
   const busySlots = useMemo(() => busySlotsForDate(bookingDate), [bookingDate]);
   const availableSlots = useMemo(() => allSlots.filter((slot) => !busySlots.includes(slot)), [allSlots, busySlots]);
 
@@ -788,10 +814,6 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
       setBookingTime(availableSlots[0] || '');
     }
   }, [availableSlots, bookingTime, busySlots]);
-
-  useEffect(() => {
-    setPhoneCountry(phoneCountryForLang(lang));
-  }, [lang]);
 
   useEffect(() => {
     if (window.location.hash === '#cart') {
@@ -829,6 +851,11 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
   const serviceOptions = useMemo(
     () => apiServices,
     [apiServices, menuType]
+  );
+
+  const privateRoomAddon = useMemo(
+    () => services.find((service) => service.id === 'NHS0900' && service.ACTIVE !== false),
+    [services]
   );
 
   const categoryIds = useMemo(
@@ -897,12 +924,15 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
   };
 
   const totalVND = useMemo(() => cart.reduce((sum, item) => sum + item.priceVND * item.qty, 0), [cart]);
-  const totalUSD = useMemo(() => cart.reduce((sum, item) => sum + item.priceUSD * item.qty, 0), [cart]);
+  const totalUSD = useMemo(() => cart.reduce((sum, item) => sum + (Number(item.priceUSD) || 0) * item.qty, 0), [cart]);
   const visibleTimeSlots = isTimeExpanded ? allSlots : allSlots.slice(0, COLLAPSED_TIME_SLOT_COUNT);
   const hasMoreTimeSlots = allSlots.length > COLLAPSED_TIME_SLOT_COUNT;
 
   const updateCustomer = (field: keyof typeof customerInfo, value: string) => {
     setCustomerInfo((prev) => ({ ...prev, [field]: value }));
+    if (field === 'name' || field === 'phone' || field === 'email') {
+      setFieldErrors((prev) => ({ ...prev, [field]: undefined }));
+    }
   };
 
   const updateContact = (value: string) => {
@@ -972,31 +1002,26 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
     const phoneInvalid = !phoneMissing && !isValidPhone(customerInfo.phone);
     const emailMissing = !customerInfo.email.trim();
     const emailInvalid = !emailMissing && !isValidEmail(customerInfo.email);
+    const errors: Partial<Record<'name' | 'phone' | 'email' | 'time', string>> = {};
+    if (!bookingTime || !availableSlots.includes(bookingTime)) errors.time = t('timeRequired', lang);
+    if (nameMissing) errors.name = lang === 'vi' ? 'Vui lòng nhập họ và tên của bạn.' : lang === 'cn' ? '请输入您的全名。' : lang === 'jp' ? 'お名前を入力してください。' : lang === 'kr' ? '성함을 입력해 주세요.' : 'Please enter your full name.';
+    if (phoneMissing && emailMissing) {
+      errors.phone = lang === 'vi' ? 'Vui lòng nhập số điện thoại.' : lang === 'cn' ? '请输入电话号码。' : lang === 'jp' ? '電話番号を入力してください。' : lang === 'kr' ? '전화번호를 입력해 주세요.' : 'Please enter your phone number.';
+      errors.email = lang === 'vi' ? 'Vui lòng nhập địa chỉ email.' : lang === 'cn' ? '请输入电子邮件。' : lang === 'jp' ? 'メールアドレスを入力してください。' : lang === 'kr' ? '이메일 주소를 입력해 주세요.' : 'Please enter your email address.';
+    } else if (phoneMissing) {
+      errors.phone = lang === 'vi' ? 'Vui lòng nhập số điện thoại.' : lang === 'cn' ? '请输入电话号码。' : lang === 'jp' ? '電話番号を入力してください。' : lang === 'kr' ? '전화번호를 입력해 주세요.' : 'Please enter your phone number.';
+    } else if (phoneInvalid) {
+      errors.phone = lang === 'vi' ? 'Số điện thoại không hợp lệ (tối thiểu 8 chữ số).' : lang === 'cn' ? '电话号码无效（至少8位数字）。' : lang === 'jp' ? '無効な電話番号です（8桁以上）。' : lang === 'kr' ? '유효하지 않은 전화번호입니다 (8자리 이상).' : 'Invalid phone number (minimum 8 digits).';
+    }
+    if (emailMissing && !phoneMissing) errors.email = lang === 'vi' ? 'Vui lòng nhập địa chỉ email.' : lang === 'cn' ? '请输入电子邮件。' : lang === 'jp' ? 'メールアドレスを入力してください。' : lang === 'kr' ? '이메일 주소를 입력해 주세요.' : 'Please enter your email address.';
+    if (emailInvalid) errors.email = lang === 'vi' ? 'Định dạng email không hợp lệ.' : lang === 'cn' ? '电子邮件格式无效。' : lang === 'jp' ? '無効なメールアドレス形式です。' : lang === 'kr' ? '이메일 형식이 유효하지 않습니다.' : 'Invalid email format.';
 
-    if (nameMissing || phoneMissing || emailMissing || phoneInvalid || emailInvalid) {
-      let msg = '';
-      if (nameMissing) {
-        msg = lang === 'vi' ? 'Vui lòng điền họ và tên của bạn.' : lang === 'cn' ? '请输入您的全名。' : lang === 'jp' ? 'お名前を入力してください。' : lang === 'kr' ? '성함을 입력해 주세요.' : 'Please enter your Full Name.';
-      } else if (phoneMissing && emailMissing) {
-        msg = lang === 'vi' ? 'Bắt buộc phải điền cả số điện thoại và email.' : lang === 'cn' ? '电话号码和电子邮件均为必填项。' : lang === 'jp' ? '電話番号とメールアドレスの両方を入力してください。' : lang === 'kr' ? '전화번호와 이메일을 모두 입력해 주세요.' : 'Both phone number and email are required.';
-      } else if (phoneMissing) {
-        msg = lang === 'vi' ? 'Vui lòng điền số điện thoại liên hệ.' : lang === 'cn' ? '请输入您的联系电话。' : lang === 'jp' ? 'ご連絡先電話番号を入力してください。' : lang === 'kr' ? '연락처 전화번호를 입력해 주세요.' : 'Please enter your phone number.';
-      } else if (phoneInvalid) {
-        msg = lang === 'vi' ? 'Số điện thoại không hợp lệ (tối thiểu 8 chữ số).' : lang === 'cn' ? '电话号码无效（至少8位数字）。' : lang === 'jp' ? '無効な電話番号です（8桁以上）。' : lang === 'kr' ? '유효하지 않은 전화번호입니다 (8자리 이상).' : 'Invalid phone number (minimum 8 digits).';
-      } else if (emailMissing) {
-        msg = lang === 'vi' ? 'Vui lòng điền địa chỉ email của bạn.' : lang === 'cn' ? '请输入您的电子邮件。' : lang === 'jp' ? 'メールアドレスを入力してください。' : lang === 'kr' ? '이메일 주소를 입력해 주세요.' : 'Please enter your email address.';
-      } else if (emailInvalid) {
-        msg = lang === 'vi' ? 'Định dạng email không hợp lệ.' : lang === 'cn' ? '电子邮件格式无效。' : lang === 'jp' ? '無効なメールアドレス形式です。' : lang === 'kr' ? '이메일 형식이 유효하지 않습니다.' : 'Invalid email format.';
-      }
-
-      setAlertState({
-        isOpen: true,
-        message: msg,
-        type: 'error'
-      });
+    setFieldErrors(errors);
+    const firstError = errors.time || errors.name || errors.phone || errors.email;
+    if (firstError) {
+      setAlertState({ isOpen: true, message: firstError, type: 'error' });
       return false;
     }
-
     return true;
   };
 
@@ -1037,14 +1062,6 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
     setIsConfirmOpen(true);
   };
 
-  const handlePaymentNext = (data: { paymentMethod: string; amountPaid: string; changeDenominations: number[] }) => {
-    setPaymentMethod(data.paymentMethod);
-    setAmountPaid(data.amountPaid);
-    setChangeDenominations(data.changeDenominations);
-    setIsPaymentModalOpen(false);
-    window.setTimeout(() => setIsConfirmOpen(true), 220);
-  };
-
   const handleFinalSubmit = async (data?: {
     paymentMethod?: string;
     customerInfo?: { name: string; email: string; phone: string; gender: string };
@@ -1077,37 +1094,56 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
       options: item.options || {},
     }));
 
-    const response = await fetch('/api/bookings', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Idempotency-Key': idempotencyKey,
-      },
-      body: JSON.stringify({
-        idempotencyKey,
-        name: effectiveName,
-        phone: phoneWithCountry,
-        email: effectiveEmail,
-        customerGender: effectiveGender,
-        note,
-        date: effectiveDate,
-        time: effectiveTime,
-        branchId: 'ngan-ha-spa',
-        branchName: 'ORIA SPA',
-        guests: effectiveGuests,
-        staffGender: 'any',
-        lang,
-        selectedServices,
-        paymentMethod: chosenMethod,
-        amountPaid: parseInt(amountPaid.replace(/\./g, '') || '0', 10),
-        changeDenominations,
-      }),
-    });
+    const controller = new AbortController();
+    const timeoutId = window.setTimeout(() => controller.abort(), 20_000);
+    let response: Response;
+    try {
+      response = await fetch('/api/bookings', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Idempotency-Key': idempotencyKey,
+        },
+        signal: controller.signal,
+        body: JSON.stringify({
+          idempotencyKey,
+          name: effectiveName,
+          phone: phoneWithCountry,
+          email: effectiveEmail,
+          customerGender: effectiveGender,
+          note,
+          date: effectiveDate,
+          time: effectiveTime,
+          branchId: 'ngan-ha-spa',
+          branchName: 'ORIA SPA',
+          guests: effectiveGuests,
+          staffGender: 'any',
+          lang,
+          selectedServices,
+          paymentMethod: chosenMethod,
+          amountPaid: 0,
+          changeDenominations: [],
+        }),
+      });
+    } catch (error) {
+      if (error instanceof DOMException && error.name === 'AbortError') {
+        throw new Error(t('submitTimeout', lang));
+      }
+      throw new Error(t('temporaryUnavailable', lang));
+    } finally {
+      window.clearTimeout(timeoutId);
+    }
 
-    const resData = await response.json();
+    const resData = await response.json().catch(() => ({}));
     if (!response.ok || resData?.success === false) {
       if (resData?.code === 'CART_REQUIRES_REVIEW') {
         await revalidateCart();
+      }
+      if (response.status === 409 || resData?.code === 'PRICE_CHANGED') {
+        throw new Error(t('reviewCart', lang));
+      }
+      if (response.status === 503 || resData?.code === 'BOOKING_TEMPORARILY_UNAVAILABLE') {
+        throw new Error(t('temporaryUnavailable', lang));
       }
       throw new Error(resData?.error || 'Failed to submit booking');
     }
@@ -1192,7 +1228,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                     </div>
                   </div>
                 </div>
-                {hasAttemptedSubmit && !customerInfo.name.trim() && (
+                {fieldErrors.name && (
                   <div style={{ color: '#ef4444', fontSize: '11.5px', marginTop: '5px', paddingLeft: '4px', fontWeight: 500 }}>
                     * {lang === 'vi' ? 'Vui lòng nhập họ và tên của bạn' : lang === 'cn' ? '请输入您的全名' : lang === 'jp' ? 'お名前を入力してください' : lang === 'kr' ? '성함을 입력해 주세요' : 'Please enter your full name'}
                   </div>
@@ -1260,14 +1296,9 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                     />
                   </label>
                 </div>
-                {hasAttemptedSubmit && !customerInfo.phone.trim() && (
+                {fieldErrors.phone && (
                   <div style={{ color: '#ef4444', fontSize: '11.5px', marginTop: '5px', paddingLeft: '4px', fontWeight: 500 }}>
                     * {lang === 'vi' ? 'Vui lòng nhập số điện thoại' : lang === 'cn' ? '请输入电话号码' : lang === 'jp' ? '電話番号を入力してください' : lang === 'kr' ? '전화번호를 입력해 주세요' : 'Please enter phone number'}
-                  </div>
-                )}
-                {hasAttemptedSubmit && customerInfo.phone.trim() && !isValidPhone(customerInfo.phone) && (
-                  <div style={{ color: '#ef4444', fontSize: '11.5px', marginTop: '5px', paddingLeft: '4px', fontWeight: 500 }}>
-                    * {lang === 'vi' ? 'Số điện thoại không hợp lệ (tối thiểu 8 chữ số)' : lang === 'cn' ? '电话号码无效（至少8位数字）' : lang === 'jp' ? '無効な電話番号です（8桁以上）' : lang === 'kr' ? '유효하지 않은 전화번호입니다 (8자리 이상)' : 'Invalid phone number (minimum 8 digits)'}
                   </div>
                 )}
               </div>
@@ -1287,14 +1318,9 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                     placeholder={lang === 'vi' ? 'Địa chỉ Email * (ví dụ: name@gmail.com)' : lang === 'cn' ? '电子邮件 * (例如: name@gmail.com)' : lang === 'jp' ? 'メールアドレス * (例: name@gmail.com)' : lang === 'kr' ? '이메일 주소 * (예: name@gmail.com)' : 'Email Address * (e.g. name@gmail.com)'}
                   />
                 </label>
-                {hasAttemptedSubmit && !customerInfo.email.trim() && (
+                {fieldErrors.email && (
                   <div style={{ color: '#ef4444', fontSize: '11.5px', marginTop: '5px', paddingLeft: '4px', fontWeight: 500 }}>
                     * {lang === 'vi' ? 'Vui lòng nhập địa chỉ email' : lang === 'cn' ? '请输入电子邮件地址' : lang === 'jp' ? 'メールアドレスを入力してください' : lang === 'kr' ? '이메일 주소를 입력해 주세요' : 'Please enter email address'}
-                  </div>
-                )}
-                {hasAttemptedSubmit && customerInfo.email.trim() && !isValidEmail(customerInfo.email) && (
-                  <div style={{ color: '#ef4444', fontSize: '11.5px', marginTop: '5px', paddingLeft: '4px', fontWeight: 500 }}>
-                    * {lang === 'vi' ? 'Định dạng email không hợp lệ' : lang === 'cn' ? '电子邮件格式无效' : lang === 'jp' ? '無効なメールアドレス形式です' : lang === 'kr' ? '이메일 형식이 유효하지 않습니다' : 'Invalid email format'}
                   </div>
                 )}
               </div>
@@ -1375,10 +1401,10 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                     <input
                       ref={calendarInputRef}
                       type="date"
-                      min={localISODate(new Date())}
+                      min={spaToday || undefined}
                       value={bookingDate}
                       onChange={(e) => handleCustomDateSelect(e.target.value)}
-                      style={{ position: 'absolute', opacity: 0, pointerEvents: 'none', width: 0, height: 0 }}
+                      className={styles.hiddenDateInput}
                     />
                   </div>
                 </div>
@@ -1456,7 +1482,6 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
 
                 <div className={styles.dateScroller} aria-label={t('booking', lang)}>
                   {dateOptions.map((iso) => {
-                    const date = new Date(`${iso}T00:00:00`);
                     return (
                       <button
                         key={iso}
@@ -1465,10 +1490,10 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                         onClick={() => setBookingDate(iso)}
                       >
                         <span className={styles.dow}>
-                          {getFormattedDow(date, lang)}
+                          {getFormattedDow(iso, lang)}
                         </span>
-                        <span className={styles.day}>{date.getDate()}</span>
-                        <span className={styles.month}>{getFormattedMonth(date, lang)}</span>
+                        <span className={styles.day}>{Number(iso.slice(-2))}</span>
+                        <span className={styles.month}>{getFormattedMonth(iso, lang)}</span>
                       </button>
                     );
                   })}
@@ -1517,6 +1542,8 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                   })}
                 </div>
 
+                {fieldErrors.time && <p className={styles.fieldError} role="alert">{fieldErrors.time}</p>}
+
                 {hasMoreTimeSlots && (
                   <button
                     type="button"
@@ -1552,7 +1579,10 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                   <div className={styles.invoiceRow1}>
                     <span>{index + 1}. {serviceName(item, lang)}</span>
                     <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-                      <span>{formatCurrency(item.priceVND * item.qty)} VNĐ</span>
+                      <span className={styles.pricePair}>
+                        <span>{formatCurrency(item.priceVND * item.qty)} VND</span>
+                        <small>{formatUSD(item.priceUSD * item.qty)}</small>
+                      </span>
                       <button onClick={() => { setEditingCartId(item.cartId); setEditServiceId(item.id); setEditBaseName(null); setEditNote(item.options?.notes?.content || ''); }} className="text-[#c9a96e] hover:text-white transition-colors" title={t('edit', lang) || 'Edit'}><Edit2 size={16} /></button>
                       <button onClick={() => removeFromCart(item.cartId)} className="text-[#c9a96e] hover:text-red-500 transition-colors" title={t('remove', lang) || 'Remove'}><Trash2 size={16} /></button>
                     </div>
@@ -1606,7 +1636,14 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                       {item.options?.addons?.privateRoom && (
                         <div className={styles.detail}>
                           <span style={{ fontSize: '12px' }}>{lang === 'vi' ? 'Tiện ích' : lang === 'cn' ? '附加项目' : lang === 'jp' ? 'アドオン' : lang === 'kr' ? '추가 항목' : 'Add-on'}</span>
-                          <strong style={{ fontSize: '12px', textAlign: 'right', maxWidth: '60%', color: '#c9a96e' }}>{lang === 'vi' ? 'Phòng riêng (+105K)' : lang === 'cn' ? '包间 (+105K)' : lang === 'kr' ? '프라이빗 룸 (+105K)' : lang === 'jp' ? '個室 (+105K)' : 'Private Room (+105K)'}</strong>
+                          <strong style={{ fontSize: '12px', textAlign: 'right', maxWidth: '60%', color: '#c9a96e' }}>
+                            {lang === 'vi' ? 'Phòng riêng' : lang === 'cn' ? '包间' : lang === 'kr' ? '프라이빗 룸' : lang === 'jp' ? '個室' : 'Private Room'}
+                            {privateRoomAddon && (
+                              <small style={{ display: 'block', fontSize: '10px', color: '#b9a77c' }}>
+                                +{formatCurrency(Number(privateRoomAddon.priceVND) || 0)} VND · {formatUSD(Number(privateRoomAddon.priceUSD) || 0)}
+                              </small>
+                            )}
+                          </strong>
                         </div>
                       )}
                     </div>
@@ -1779,7 +1816,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '14px', paddingTop: '14px', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
                             <span style={{ color: '#858391' }}>{t('updatedPrice', lang)}</span>
                             <strong style={{ color: '#f2d58d', fontSize: '25px' }}>
-                              {formatCurrency(currentEditService.priceVND)} {lang === 'vi' ? 'đ' : 'VND'}
+                              {formatCurrency(currentEditService.priceVND)} VND <small>{formatUSD(currentEditService.priceUSD)}</small>
                             </strong>
                           </div>
                         </div>
@@ -1833,7 +1870,10 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
             <div className={styles.dividerLine} />
             <div className={styles.totalRow}>
               <span className={styles.totalLabel}>{t('total', lang)}</span>
-              <span className={styles.amount}>{formatCurrency(totalVND)} VNĐ</span>
+              <span className={styles.amount}>
+                <span>{formatCurrency(totalVND)} VND</span>
+                <small>{formatUSD(totalUSD)}</small>
+              </span>
             </div>
             <div className={styles.vatNote}>{t('vat', lang)}</div>
 
@@ -1883,18 +1923,10 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
             }}
             lang={lang as any}
             initialData={editingCustomInitialData || undefined}
+            privateRoomPriceVND={privateRoomAddon ? Number(privateRoomAddon.priceVND) || 0 : undefined}
+            privateRoomPriceUSD={privateRoomAddon ? Number(privateRoomAddon.priceUSD) || 0 : undefined}
         />
       )}
-
-      <PaymentModal
-        isOpen={isPaymentModalOpen}
-        onClose={() => setIsPaymentModalOpen(false)}
-        onNext={handlePaymentNext}
-        lang={lang}
-        dict={dict}
-        totalVND={totalVND}
-        totalUSD={totalUSD}
-      />
 
       <OrderConfirmModal
         isOpen={isConfirmOpen}
@@ -1905,7 +1937,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
         cart={cart}
         customerInfo={customerInfo}
         paymentMethod={paymentMethod}
-        amountPaid={parseInt(amountPaid.replace(/\./g, '') || '0', 10)}
+        amountPaid={0}
         guestCount={guestCount}
         bookingDate={bookingDate}
         bookingTime={bookingTime}
@@ -2030,6 +2062,10 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
             <div className={styles.servicePickerList}>
               {servicesLoading ? (
                 <div className={styles.servicePickerState}>{t('loadingServices', lang)}</div>
+              ) : servicesError ? (
+                <div className={styles.servicePickerState} role="alert">
+                  {lang === 'vi' ? 'Không thể tải dịch vụ. Vui lòng thử lại.' : lang === 'cn' ? '无法加载服务，请重试。' : lang === 'jp' ? 'サービスを読み込めません。もう一度お試しください。' : lang === 'kr' ? '서비스를 불러올 수 없습니다. 다시 시도해 주세요.' : 'Services are unavailable. Please try again.'}
+                </div>
               ) : groupedVisibleServices.length ? (
                 groupedVisibleServices.map((group) => (
                   <CheckoutGroupedServiceCard

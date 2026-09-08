@@ -6,6 +6,7 @@ import { X, Check, ChevronDown } from "lucide-react";
 import { ServiceData, CustomPreferences, LanguageCode } from "./types";
 import { getText } from "./utils";
 import { getDictionary } from "@/lib/dictionaries"; // Import getDictionary
+import { formatCurrency } from "@/components/Menu/utils";
 import BodyMap from "./BodyMap";
 import NoteSection from "./NoteSection";
 import Preferences from "./Preferences";
@@ -17,6 +18,8 @@ interface CustomForYouModalProps {
     serviceData: ServiceData;
     lang: LanguageCode;
     initialData?: CustomPreferences;
+    privateRoomPriceVND?: number;
+    privateRoomPriceUSD?: number;
 }
 
 export default function CustomForYouModal({
@@ -25,7 +28,9 @@ export default function CustomForYouModal({
     onSave,
     serviceData,
     lang,
-    initialData
+    initialData,
+    privateRoomPriceVND,
+    privateRoomPriceUSD
 }: CustomForYouModalProps) {
     const dict = getDictionary(lang); // Get dictionary
 
@@ -232,9 +237,12 @@ export default function CustomForYouModal({
                                         }`}>
                                             {getText({ en: 'Private Room', vi: 'Phòng riêng', jp: '個室', kr: '프라이빗 룸', cn: '包间' }, lang)}
                                         </span>
-                                        <span className="text-[13px] text-gray-500 font-medium">
-                                            + 105.000 VNĐ
-                                        </span>
+                                        {(privateRoomPriceVND !== undefined || privateRoomPriceUSD !== undefined) && (
+                                            <span className="text-[13px] text-gray-500 font-medium">
+                                                {privateRoomPriceVND !== undefined && `+ ${formatCurrency(privateRoomPriceVND)} VND`}
+                                                {privateRoomPriceUSD !== undefined && ` · $${privateRoomPriceUSD.toFixed(2)} USD`}
+                                            </span>
+                                        )}
                                     </div>
                                     
                                     <div className={`relative w-[48px] h-[28px] rounded-full transition-colors duration-300 ease-in-out ${
@@ -281,4 +289,3 @@ export default function CustomForYouModal({
         </div>
     );
 }
-

@@ -4,6 +4,13 @@ import React, { useState, useEffect } from 'react';
 import { Save, Plus, Trash2, Settings, Image as ImageIcon } from 'lucide-react';
 import { SUPPORTED_LOCALES, Locale } from '@/lib/constants';
 import { SystemSettings, AboutStoryContent, AboutStoryGalleryItem } from '@/components/SystemSettingsProvider';
+import { CTA_KEYS, DEFAULT_CTA_LINKS, resolveCtaUrl, validateConfigUrl, type CtaKey } from '@/lib/config/urlSettings';
+
+const CTA_LABELS: Record<CtaKey, string> = {
+  spaceExplore: 'Space: Explore',
+  spaceBook: 'Space: Book',
+  tabletContinue: 'Tablet: Continue',
+};
 
 // Helper component for multi-language input
 const MultiLangInput = ({ 
@@ -336,6 +343,54 @@ export default function SystemSettingsPage() {
               onChange={val => setSystemSettings({ ...systemSettings, address: val })}
               multiline
             />
+
+            <section className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+              <h2 className="text-xl font-bold text-gray-800 mb-2">Liên kết CTA</h2>
+              <p className="text-sm text-gray-500 mb-6">
+                Chỉnh đích đến cho các CTA đang dùng trên website. Chỉ hỗ trợ đường dẫn nội bộ hoặc HTTPS.
+              </p>
+              <div className="space-y-4">
+                {CTA_KEYS.map((key) => {
+                  const value = systemSettings.ctaLinks?.[key] || '';
+                  const validation = value ? validateConfigUrl(value) : { isValid: true, value: '' };
+
+                  return (
+                    <div key={key} className="grid grid-cols-1 lg:grid-cols-[180px_minmax(0,1fr)_auto] gap-3 items-start">
+                      <label className="text-sm font-semibold text-gray-700 pt-3" htmlFor={`cta-${key}`}>
+                        {CTA_LABELS[key]}
+                      </label>
+                      <div>
+                        <input
+                          id={`cta-${key}`}
+                          type="text"
+                          className={`w-full px-4 py-2.5 border rounded-xl focus:ring-2 focus:ring-blue-500 ${validation.isValid ? 'border-gray-200' : 'border-red-400'}`}
+                          value={value}
+                          onChange={e => setSystemSettings({
+                            ...systemSettings,
+                            ctaLinks: { ...(systemSettings.ctaLinks || {}), [key]: e.target.value },
+                          })}
+                          placeholder={DEFAULT_CTA_LINKS[key]}
+                        />
+                        <p className="mt-1 text-xs text-gray-500">
+                          Preview VI: <code>{resolveCtaUrl(value, key, 'vi')}</code>
+                        </p>
+                        {!validation.isValid && <p className="mt-1 text-xs text-red-600">{validation.error}</p>}
+                      </div>
+                      <button
+                        type="button"
+                        className="text-sm text-gray-600 hover:text-blue-600 pt-3"
+                        onClick={() => setSystemSettings({
+                          ...systemSettings,
+                          ctaLinks: { ...(systemSettings.ctaLinks || {}), [key]: DEFAULT_CTA_LINKS[key] },
+                        })}
+                      >
+                        Khôi phục mặc định
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            </section>
             </section>
           </div>
         )}

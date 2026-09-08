@@ -1,7 +1,7 @@
 'use client';
 
 import { Z } from '@/lib/zIndex';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { 
     X, 
     Clock, 
@@ -35,13 +35,17 @@ import { QRCodeSVG } from 'qrcode.react';
 import AlertModal from '@/components/Shared/AlertModal';
 import { VND_DENOMINATIONS, USD_INFO, ACCEPTED_CARDS } from '@/lib/paymentConstants';
 import { clearBookingCart } from '@/lib/bookingCartStorage';
+import { resolveCtaUrl } from '@/lib/config/urlSettings';
+import { useSystemSettings } from '@/components/SystemSettingsProvider';
+import { useMenuData } from '@/components/Menu/MenuContext';
 
 const UI_CONFIG = {
     MODAL_MAX_WIDTH: '880px',
     TABLET_RESET_SECONDS: 180,
     QR_SIZE: 180,
-    JOURNEY_BASE_URL: 'https://nganha.vercel.app',
 };
+
+const formatUSD = (amount: number) => `$${(Number(amount) || 0).toFixed(2)} USD`;
 
 type SupportedLang = 'vi' | 'en' | 'cn' | 'jp' | 'kr';
 
@@ -284,13 +288,6 @@ const MODAL_TEXTS: Record<string, Record<SupportedLang, string>> = {
         jp: '両替レートおよびお釣りに関する規定',
         kr: '환율 및 잔돈 반환 규정',
     },
-    exchangeRate: {
-        vi: 'Tỷ giá quy đổi',
-        en: 'Exchange Rate',
-        cn: '兑换汇率',
-        jp: '換算レート',
-        kr: '환율 안내',
-    },
     refundNote: {
         vi: 'Tiền thừa sẽ được thối lại bằng tiền mặt Việt Nam Đồng (VND).',
         en: 'Change will be returned in VND cash.',
@@ -320,11 +317,11 @@ const MODAL_TEXTS: Record<string, Record<SupportedLang, string>> = {
         kr: 'POS 단말기를 통한 카드 결제 시 수수료가 부과되지 않습니다. 모든 주요 국제 카드 및 간편 결제를 지원합니다:',
     },
     transferTitle: {
-        vi: 'VietQR / Chuyển khoản 24/7',
-        en: 'VietQR Transfer',
-        cn: 'VietQR / 24/7 银行转账',
-        jp: 'VietQR / 24時間銀行振込',
-        kr: 'VietQR / 24시간 계좌이체',
+        vi: 'QR TRANSFER / Chuyển khoản 24/7',
+        en: 'QR TRANSFER',
+        cn: 'QR TRANSFER / 24/7 银行转账',
+        jp: 'QR TRANSFER / 24時間銀行振込',
+        kr: 'QR TRANSFER / 24시간 계좌이체',
     },
     transferSub: {
         vi: 'Quét mã QR chuyển khoản nhanh',
@@ -334,11 +331,11 @@ const MODAL_TEXTS: Record<string, Record<SupportedLang, string>> = {
         kr: 'QR 코드 즉시 이체',
     },
     transferDesc: {
-        vi: 'Chúng tôi hỗ trợ chuyển khoản quốc tế và chuyển khoản nội địa nhanh 24/7 qua mã VietQR.',
-        en: 'We support 24/7 international and domestic instant transfers via VietQR.',
-        cn: '我们支持通过 VietQR 进行 24/7 国际及越南本地快速银行转账。',
-        jp: 'VietQRコードによる24時間365日の国内・国際即時銀行振込に対応しています。',
-        kr: 'VietQR 코드를 통해 24시간 국내외 즉시 계좌이체를 지원합니다.',
+        vi: 'Chúng tôi hỗ trợ chuyển khoản quốc tế và chuyển khoản nội địa nhanh 24/7 qua mã QR TRANSFER.',
+        en: 'We support 24/7 international and domestic instant transfers via QR TRANSFER.',
+        cn: '我们支持通过 QR TRANSFER 进行 24/7 国际及越南本地快速银行转账。',
+        jp: 'QR TRANSFERコードによる24時間365日の国内・国際即時銀行振込に対応しています。',
+        kr: 'QR TRANSFER 코드를 통해 24시간 국내외 즉시 계좌이체를 지원합니다.',
     },
 };
 
@@ -396,6 +393,8 @@ export default function OrderConfirmModal({
     const [bookingId, setBookingId] = useState<string | null>(null);
     const [isTabletDevice, setIsTabletDevice] = useState(false);
     const [alertState, setAlertState] = useState<{ isOpen: boolean; message: string; type?: 'error' | 'success' | 'info' }>({ isOpen: false, message: '' });
+    const { systemSettings } = useSystemSettings();
+    const { services } = useMenuData();
 
     // Inline edit state on popover
     const [isEditingSchedule, setIsEditingSchedule] = useState(false);
@@ -412,6 +411,15 @@ export default function OrderConfirmModal({
     // Track expanded state for service customizations
     const [expandedItems, setExpandedItems] = useState<Record<number, boolean>>({});
     const [isTermsAgreed, setIsTermsAgreed] = useState(false);
+    const tabletContinueUrl = useMemo(() => {
+        const resolved = resolveCtaUrl(systemSettings.ctaLinks?.tabletContinue, 'tabletContinue', lang);
+        if (typeof window === 'undefined') return resolved;
+        try {
+            return new URL(resolved, window.location.origin).toString();
+        } catch {
+            return `${window.location.origin}/${lang}`;
+        }
+    }, [lang, systemSettings.ctaLinks?.tabletContinue]);
 
     const toggleExpand = (idx: number) => {
         setExpandedItems(prev => ({ ...prev, [idx]: !prev[idx] }));
@@ -457,6 +465,8 @@ export default function OrderConfirmModal({
     if (!isOpen) return null;
 
     const totalVND = cart.reduce((sum, item) => sum + item.priceVND * item.qty, 0);
+    const totalUSD = cart.reduce((sum, item) => sum + (Number(item.priceUSD) || 0) * item.qty, 0);
+    const privateRoomAddon = services.find((service) => service.id === 'NHS0900' && service.ACTIVE !== false);
 
     const PAYMENT_METHODS_ACCEPTED = [
         {
@@ -480,7 +490,7 @@ export default function OrderConfirmModal({
         {
             id: 'transfer',
             icon: QrCode,
-            label: lang === 'vi' ? 'VietQR / CK' : lang === 'cn' ? '银行转账 / 二维码' : lang === 'jp' ? '銀行振込 / QRコード' : lang === 'kr' ? '계좌이체 / QR결제' : 'VietQR Transfer',
+            label: lang === 'vi' ? 'QR TRANSFER / CK' : lang === 'cn' ? 'QR TRANSFER / 银行转账' : lang === 'jp' ? 'QR TRANSFER / 銀行振込' : lang === 'kr' ? 'QR TRANSFER / 계좌이체' : 'QR TRANSFER',
             desc: lang === 'vi' ? 'Hỗ trợ chuyển khoản nội địa và quốc tế nhanh chóng' : lang === 'cn' ? '支持国内及国际快速转账' : lang === 'jp' ? '国内および国際送金に対応' : lang === 'kr' ? '국내 및 해외 빠른 계좌이체 지원' : 'Instant dynamic QR & bank transfer',
         },
     ];
@@ -804,7 +814,8 @@ export default function OrderConfirmModal({
                                                             </div>
                                                             <div className="flex flex-col items-end gap-1 shrink-0">
                                                                 <span className="font-bold text-[#f2d58d] text-sm">
-                                                                    {formatCurrency(item.priceVND * item.qty)} VND
+                                                                    <span>{formatCurrency(item.priceVND * item.qty)} VND</span>
+                                                                    <small className="block text-[10px] text-[#c9a96e]">{formatUSD(item.priceUSD * item.qty)}</small>
                                                                 </span>
                                                                 <button
                                                                     type="button"
@@ -878,7 +889,12 @@ export default function OrderConfirmModal({
                                                                                     <Sparkles size={13} />
                                                                                     <span>{dict.custom_for_you?.private_room || getModalText('privateRoom', lang)}</span>
                                                                                 </div>
-                                                                                <span className="text-[#f2d58d] font-bold">+105K</span>
+                                                                                {privateRoomAddon && (
+                                                                                    <span className="text-[#f2d58d] font-bold text-right">
+                                                                                        +{formatCurrency(Number(privateRoomAddon.priceVND) || 0)} VND
+                                                                                        <small className="block text-[10px] text-[#c9a96e]">{formatUSD(Number(privateRoomAddon.priceUSD) || 0)}</small>
+                                                                                    </span>
+                                                                                )}
                                                                             </div>
                                                                         )}
                                                                         {isPregnant && (
@@ -973,7 +989,8 @@ export default function OrderConfirmModal({
                                                     {dict.checkout?.total_bill || 'Tổng tiền'}
                                                 </div>
                                                 <div className="text-base sm:text-lg font-bold text-[#f2d58d]">
-                                                    {formatCurrency(totalVND)} VND
+                                                    <span>{formatCurrency(totalVND)} VND</span>
+                                                    <small className="block text-[10px] text-[#c9a96e]">{formatUSD(totalUSD)}</small>
                                                 </div>
                                             </div>
                                         </div>
@@ -1098,7 +1115,7 @@ export default function OrderConfirmModal({
                             {isTabletDevice && bookingId && (
                                 <div className="bg-white p-4 rounded-2xl shadow-xl">
                                     <QRCodeSVG
-                                        value={`${typeof window !== 'undefined' ? window.location.origin : UI_CONFIG.JOURNEY_BASE_URL}/${lang}`}
+                                        value={tabletContinueUrl}
                                         size={UI_CONFIG.QR_SIZE}
                                         level="H"
                                         includeMargin={true}
@@ -1106,7 +1123,17 @@ export default function OrderConfirmModal({
                                 </div>
                             )}
 
-                            {/* Single Action: Return to Home (Dismisses modal, clears cart cache, redirects to / safely) */}
+                            {isTabletDevice && (
+                                <a
+                                    href={tabletContinueUrl}
+                                    className="inline-flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-wider text-[#f2d58d] hover:text-white transition-colors"
+                                >
+                                    {lang === 'vi' ? 'Tiếp tục' : lang === 'cn' ? '继续' : lang === 'jp' ? '続ける' : lang === 'kr' ? '계속' : 'Continue'}
+                                    <ArrowRight size={14} />
+                                </a>
+                            )}
+
+                            {/* Single Action: Return to Home (desktop default remains unchanged) */}
                             <div className="w-full pt-4">
                                 <button
                                     id="modal-step3-return-home-btn"
@@ -1196,19 +1223,9 @@ export default function OrderConfirmModal({
                                 </div>
                             )}
 
-                            {/* CASH USD CONTENT: Exchange Rate + Refund Note + USD Illustration */}
+                            {/* CASH USD CONTENT: Informational cash guidance only */}
                             {activeMethodId === 'cash_usd' && (
                                 <div className="space-y-3">
-                                    {/* Exchange Rate Box */}
-                                    <div className="bg-black/50 border border-[#C9A96E]/40 rounded-2xl p-3.5 text-center">
-                                        <div className="text-[11px] text-[#C9A96E] font-bold uppercase tracking-wider mb-0.5">
-                                            {getModalText('exchangeRate', lang)}
-                                        </div>
-                                        <div className="text-xl font-black text-[#f2d58d]">
-                                            1 USD = {formatCurrency(USD_INFO.exchangeRate)} VND
-                                        </div>
-                                    </div>
-
                                     {/* Refund in VND note */}
                                     <div className="bg-blue-950/40 border border-blue-500/30 rounded-2xl p-3 flex gap-2.5 items-center">
                                         <div className="w-7 h-7 rounded-full bg-blue-500/20 flex items-center justify-center shrink-0">
@@ -1254,7 +1271,7 @@ export default function OrderConfirmModal({
                                         <div className="w-14 h-14 rounded-2xl bg-[#c9a96e]/15 border border-[#c9a96e]/30 flex items-center justify-center text-[#f2d58d]">
                                             <QrCode size={30} />
                                         </div>
-                                        <div className="text-sm font-bold text-[#f2d58d]">VietQR / Transfer</div>
+                                        <div className="text-sm font-bold text-[#f2d58d]">QR TRANSFER</div>
                                         <p className="text-sm text-gray-200 leading-relaxed font-medium">
                                             {getModalText('transferDesc', lang)}
                                         </p>

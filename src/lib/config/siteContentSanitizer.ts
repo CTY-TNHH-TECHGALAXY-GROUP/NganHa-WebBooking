@@ -5,6 +5,7 @@
  */
 
 import { sanitizeHomepageStyling, SanitizedHomepageStyling } from './stylingSanitizer';
+import { isValidConfigUrl, sanitizeCtaLinks } from './urlSettings';
 
 // Safe public fields allowlist for system_settings
 const ALLOWED_SYSTEM_SETTINGS_KEYS = new Set([
@@ -22,6 +23,7 @@ const ALLOWED_SYSTEM_SETTINGS_KEYS = new Set([
   'wechatQr',
   'kakaotalk',
   'mediaWatermarkEnabled',
+  'ctaLinks',
   'lost_and_found',
   'homepage_content',
   'blog_content',
@@ -44,6 +46,22 @@ function isSafeUrl(url: unknown): boolean {
     // Relative URLs or basic paths
     return trimmed.startsWith('/') && !trimmed.startsWith('//');
   }
+}
+
+export function sanitizePublicAboutStoryContent(value: unknown): Record<string, unknown> {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return {};
+  const cleaned = stripInternalMetadata(value) as Record<string, unknown>;
+  const specialtySection = cleaned.specialtySection;
+
+  if (specialtySection && typeof specialtySection === 'object' && !Array.isArray(specialtySection)) {
+    const section = { ...(specialtySection as Record<string, unknown>) };
+    if (section.ctaLink !== undefined && !isValidConfigUrl(section.ctaLink)) {
+      delete section.ctaLink;
+    }
+    cleaned.specialtySection = section;
+  }
+
+  return cleaned;
 }
 
 /**
@@ -98,6 +116,11 @@ export function sanitizePublicSystemSettings(settings: unknown): Record<string, 
 
     if (key === 'mediaWatermarkEnabled') {
       result[key] = Boolean(val);
+      continue;
+    }
+
+    if (key === 'ctaLinks') {
+      result[key] = sanitizeCtaLinks(val);
       continue;
     }
 
@@ -163,7 +186,7 @@ export function sanitizePublicSiteContent(raw: {
 
   return {
     system_settings: sanitizePublicSystemSettings(configs.system_settings),
-    about_story_content: (stripInternalMetadata(configs.about_story_content) || {}) as Record<string, unknown>,
+    about_story_content: sanitizePublicAboutStoryContent(configs.about_story_content),
     brand_history: Array.isArray(configs.brand_history)
       ? stripInternalMetadata(configs.brand_history)
       : [],

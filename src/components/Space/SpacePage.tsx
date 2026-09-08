@@ -3,6 +3,8 @@
 import React, { useEffect, useState, useRef, useMemo } from 'react';
 import Link from 'next/link';
 import { useTranslation } from '@/components/TranslationProvider';
+import { useSystemSettings } from '@/components/SystemSettingsProvider';
+import { resolveCtaUrl } from '@/lib/config/urlSettings';
 import styles from './SpacePage.module.css';
 import { getSpaceContent } from './SpacePage.localization';
 
@@ -34,6 +36,7 @@ const defaultMedia = {
 
 export default function SpacePage({ initialMedia }: { initialMedia?: any } = {}) {
   const { currentLang } = useTranslation();
+  const { systemSettings } = useSystemSettings();
   const space = useMemo(() => getSpaceContent(currentLang), [currentLang]);
   const [contentMedia, setContentMedia] = useState<any>(initialMedia || {});
   
@@ -459,8 +462,8 @@ const MediaRenderer = ({ mediaObj, className, alt, onEnded }: { mediaObj: {src: 
           <div className={styles.ctaSide}>
             <p>{space.cta.desc}</p>
             <div className={styles.buttons}>
-              <Link href="/pure-relaxation" className={styles.btn}>{space.cta.exploreBtn}</Link>
-              <Link href="/booking" className={styles.btn}>{space.cta.bookBtn}</Link>
+              <Link href={resolveCtaUrl(systemSettings.ctaLinks?.spaceExplore, 'spaceExplore', currentLang)} className={styles.btn}>{space.cta.exploreBtn}</Link>
+              <Link href={resolveCtaUrl(systemSettings.ctaLinks?.spaceBook, 'spaceBook', currentLang)} className={styles.btn}>{space.cta.bookBtn}</Link>
             </div>
           </div>
         </div>

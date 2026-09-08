@@ -2,6 +2,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import { withAuth } from '@/lib/api/withAuth';
 import { recordContentRevisions } from '@/lib/api/contentRevision';
 import { validateHomepageStyling, sanitizeHomepageStyling } from '@/lib/config/stylingSanitizer';
+import { CTA_KEYS, normalizeReceptionEmail, sanitizeCtaLinks, validateConfigUrl } from '@/lib/config/urlSettings';
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
+}
 
 export const GET = withAuth(async (_request, { supabase }) => {
   try {
@@ -59,9 +64,46 @@ export const POST = withAuth(async (request: NextRequest, { supabase, user }) =>
         .eq('key', 'system_settings')
         .maybeSingle();
 
+      if (!isRecord(system_settings)) {
+        return NextResponse.json({ error: 'system_settings must be an object' }, { status: 400 });
+      }
+
+      const previousSettings = isRecord(existingSettings?.value) ? existingSettings.value : {};
+      const nextSettings: Record<string, unknown> = { ...previousSettings, ...system_settings };
+
+      if ('ctaLinks' in system_settings) {
+        if (!isRecord(system_settings.ctaLinks)) {
+          return NextResponse.json({ error: 'ctaLinks must be an object' }, { status: 400 });
+        }
+
+        const previousCtaLinks = isRecord(previousSettings.ctaLinks) ? previousSettings.ctaLinks : {};
+        const requestedCtaLinks = system_settings.ctaLinks;
+        for (const key of CTA_KEYS) {
+          if (!(key in requestedCtaLinks)) continue;
+          const validation = validateConfigUrl(requestedCtaLinks[key]);
+          if (!validation.isValid) {
+            return NextResponse.json({ error: `Invalid ${key}: ${validation.error}` }, { status: 400 });
+          }
+        }
+        nextSettings.ctaLinks = sanitizeCtaLinks({ ...previousCtaLinks, ...requestedCtaLinks });
+      }
+
+      if ('receptionEmail' in system_settings) {
+        const receptionEmail = system_settings.receptionEmail;
+        if (receptionEmail !== '') {
+          const normalized = normalizeReceptionEmail(receptionEmail);
+          if (!normalized) {
+            return NextResponse.json({ error: 'Invalid receptionEmail' }, { status: 400 });
+          }
+          nextSettings.receptionEmail = normalized;
+        } else {
+          nextSettings.receptionEmail = '';
+        }
+      }
+
       upsertData.push({
         key: 'system_settings',
-        value: { ...(existingSettings?.value || {}), ...system_settings },
+        value: nextSettings,
         updated_at: new Date().toISOString()
       });
     }

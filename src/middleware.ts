@@ -4,6 +4,22 @@ import { createServerClient } from '@supabase/ssr';
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  // Retired standalone demo: keep the old URL from falling through to the dynamic locale route.
+  if (pathname === '/history-demo.html') {
+    return new NextResponse('Not Found', { status: 404 });
+  }
+
+  if (pathname === '/demo-3d' || pathname.startsWith('/demo-3d/')) {
+    return new NextResponse('Not Found', { status: 404 });
+  }
+
+  const legacySelectMatch = /^\/(vi|en|cn|jp|kr)\/new-user\/select-menu\/?$/.exec(pathname);
+  if (legacySelectMatch) {
+    const redirectUrl = request.nextUrl.clone();
+    redirectUrl.pathname = `/${legacySelectMatch[1]}/pure-relaxation`;
+    return NextResponse.redirect(redirectUrl);
+  }
+
   const isAdminLogin = pathname === '/admin/login' || pathname.startsWith('/admin/login/');
   const isAdminPage = (pathname === '/admin' || pathname.startsWith('/admin/')) && !isAdminLogin;
   const isAdminApi = pathname === '/api/admin' || pathname.startsWith('/api/admin/');

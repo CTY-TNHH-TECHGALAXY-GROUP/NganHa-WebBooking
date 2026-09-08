@@ -395,10 +395,10 @@ const Header = () => {
             </div>
 
             {/* Center Logo */}
-            <div className={`md:absolute md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 transition-opacity duration-300 z-0 ml-4 md:ml-0 flex-1 md:flex-none flex justify-start md:justify-center ${showLogo ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-              <a href="/" className="block mt-2 md:mt-3">
-                <SmartLogo theme="dark" className="h-10 sm:h-14 md:h-[68px] w-auto object-contain cursor-pointer scale-100 md:scale-125" />
-              </a>
+            <div className={`header-logo-slot transition-opacity duration-300 z-0 ${showLogo ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+              <Link href="/" className="header-logo-link" aria-label="Oria Spa home">
+                <SmartLogo theme="dark" className="h-10 sm:h-14 md:h-[68px] w-auto object-contain cursor-pointer" />
+              </Link>
             </div>
 
             {/* Desktop Navigation removed as per request, using Mobile Menu Drawer instead */}
@@ -416,7 +416,8 @@ const Header = () => {
               {/* Cart Button */}
               <button 
                 type="button"
-                className="relative text-[#f7ebc7] hover:text-[#D4AF37] mr-3 sm:mr-4 lg:mr-6 transition-colors duration-300 flex items-center justify-center p-1"
+                className="header-nav-cart relative text-[#f7ebc7] hover:text-[#D4AF37] mr-3 sm:mr-4 lg:mr-6 transition-colors duration-300 flex items-center justify-center p-1"
+                data-nav-cart-button
                 onClick={handleCartClick}
                 aria-label={
                   currentLang.code === 'vi' ? `Giỏ hàng, đã chọn ${cartCount} dịch vụ` :

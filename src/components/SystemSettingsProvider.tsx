@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useEffect } from 'react';
 import { Locale } from '@/lib/constants';
+import type { CtaLinks } from '@/lib/config/urlSettings';
 
 // Interfaces
 export interface SystemSettings {
@@ -19,6 +20,7 @@ export interface SystemSettings {
   wechatQr?: string;
   kakaotalk?: string;
   receptionEmail?: string;
+  ctaLinks?: CtaLinks;
   mediaWatermarkEnabled?: boolean;
   homepage_content?: any;
   blog_content?: any;

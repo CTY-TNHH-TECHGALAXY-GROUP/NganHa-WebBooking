@@ -18,6 +18,21 @@ export interface CartStorageSchemaV2 {
   items: CartItem[];
 }
 
+const PRIVATE_ROOM_ADDON_ID = 'NHS0900';
+
+const getPrivateRoomAddon = (catalog: Service[] = []) =>
+  catalog.find((service) => service.id === PRIVATE_ROOM_ADDON_ID && service.ACTIVE !== false);
+
+export const getCartItemPrices = (service: Service, options?: ServiceOptions, catalog: Service[] = []) => {
+  const addon = options?.addons?.privateRoom ? getPrivateRoomAddon(catalog) : undefined;
+  return {
+    basePriceVND: Number(service.priceVND) || 0,
+    basePriceUSD: Number(service.priceUSD) || 0,
+    priceVND: (Number(service.priceVND) || 0) + (Number(addon?.priceVND) || 0),
+    priceUSD: (Number(service.priceUSD) || 0) + (Number(addon?.priceUSD) || 0),
+  };
+};
+
 const makeCartId = (serviceId: string) =>
   `${serviceId}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 
@@ -145,26 +160,21 @@ export const writeBookingCart = (cart: CartItem[]) => {
 export const serviceToCartItem = (
   service: Service,
   qty = 1,
-  options?: ServiceOptions
+  options?: ServiceOptions,
+  catalog: Service[] = []
 ): CartItem => {
   const mergedOptions = options || {};
-  let newPriceVND = service.priceVND;
-  let newPriceUSD = service.priceUSD;
-
-  if (mergedOptions.addons?.privateRoom) {
-    newPriceVND += 105000;
-    newPriceUSD += 5;
-  }
+  const prices = getCartItemPrices(service, mergedOptions, catalog);
 
   return {
     ...service,
     cartId: makeCartId(service.id),
-    qty,
+    qty: Math.min(20, Math.max(1, Math.trunc(qty))),
     options: mergedOptions,
-    basePriceVND: service.priceVND,
-    basePriceUSD: service.priceUSD,
-    priceVND: newPriceVND,
-    priceUSD: newPriceUSD,
+    basePriceVND: prices.basePriceVND,
+    basePriceUSD: prices.basePriceUSD,
+    priceVND: prices.priceVND,
+    priceUSD: prices.priceUSD,
   };
 };
 
@@ -201,7 +211,7 @@ export const updateBookingCartItemQuantity = (cartId: string, delta: number) => 
   const index = current.findIndex((item) => item.cartId === cartId);
   if (index < 0) return current;
 
-  const nextQty = (current[index].qty || 1) + delta;
+  const nextQty = Math.min(20, (current[index].qty || 1) + delta);
   if (nextQty <= 0) {
     return removeBookingCartItemByCartId(cartId);
   }
@@ -235,7 +245,8 @@ export const updateBookingCartItemNote = (cartId: string, content: string) => {
 
 export const updateBookingCartItemOptions = (
   cartId: string,
-  options: Partial<ServiceOptions>
+  options: Partial<ServiceOptions>,
+  catalog: Service[] = []
 ) => {
   const current = readBookingCart();
   const index = current.findIndex((item) => item.cartId === cartId);
@@ -251,13 +262,9 @@ export const updateBookingCartItemOptions = (
   const basePriceVND = item.basePriceVND ?? item.priceVND;
   const basePriceUSD = item.basePriceUSD ?? item.priceUSD;
 
-  let newPriceVND = basePriceVND;
-  let newPriceUSD = basePriceUSD;
-
-  if (nextOptions.addons?.privateRoom) {
-    newPriceVND += 105000;
-    newPriceUSD += 5;
-  }
+  const addon = nextOptions.addons?.privateRoom ? getPrivateRoomAddon(catalog) : undefined;
+  const newPriceVND = basePriceVND + (Number(addon?.priceVND) || 0);
+  const newPriceUSD = basePriceUSD + (Number(addon?.priceUSD) || 0);
 
   next[index] = {
     ...item,

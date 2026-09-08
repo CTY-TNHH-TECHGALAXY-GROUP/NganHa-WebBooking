@@ -792,6 +792,42 @@
   font-size: 30px;
   font-weight: 700;
   text-align: right;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.amount small,
+.pricePair small,
+.drawerOption strong small {
+  color: rgba(242, 213, 141, 0.72);
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+.pricePair {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.fieldError {
+  margin: 6px 0 0;
+  color: #ff8f8f;
+  font-size: 11.5px;
+  line-height: 1.4;
+}
+
+.hiddenDateInput {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .vatNote {

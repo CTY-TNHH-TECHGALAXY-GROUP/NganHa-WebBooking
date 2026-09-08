@@ -80,7 +80,7 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
 
     // 1. Thêm món (Tạo cartId mới hoặc cộng dồn nếu option giống hệt - tạm thời cứ tạo mới để dễ custom)
     const addToCart = (service: Service, qty: number, options?: ServiceOptions) => {
-        const newItem = serviceToCartItem(service, qty, options);
+        const newItem = serviceToCartItem(service, qty, options, services);
         setCart(prev => {
             return [...prev, newItem];
         });
@@ -93,7 +93,7 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
             if (qty <= 0) {
                 return prev.filter(item => item.cartId !== cartId);
             }
-            return prev.map(item => item.cartId === cartId ? { ...item, qty } : item);
+            return prev.map(item => item.cartId === cartId ? { ...item, qty: Math.min(20, qty) } : item);
         });
     };
 
@@ -106,9 +106,7 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
             if (qty <= 0) return prev.filter(item => getCartSelectionKey(item) !== selectionKey);
 
             const primary = matching[0];
-            return prev
-                .filter(item => item.cartId === primary.cartId || getCartSelectionKey(item) !== selectionKey)
-                .map(item => item.cartId === primary.cartId ? { ...item, qty } : item);
+            return prev.map(item => item.cartId === primary.cartId ? { ...item, qty: Math.min(20, qty) } : item);
         });
     };
 
@@ -117,13 +115,11 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
         setCart(prev => prev.map(item => {
             if (item.cartId === cartId) {
                 const mergedOptions = { ...item.options, ...options };
-                let newPriceVND = item.basePriceVND ?? item.priceVND;
-                let newPriceUSD = item.basePriceUSD ?? item.priceUSD;
-                
-                if (mergedOptions.addons?.privateRoom) {
-                    newPriceVND += 105000;
-                    newPriceUSD += 5;
-                }
+                const addon = mergedOptions.addons?.privateRoom
+                    ? services.find((service) => service.id === 'NHS0900' && service.ACTIVE !== false)
+                    : undefined;
+                const newPriceVND = (item.basePriceVND ?? item.priceVND) + (Number(addon?.priceVND) || 0);
+                const newPriceUSD = (item.basePriceUSD ?? item.priceUSD) + (Number(addon?.priceUSD) || 0);
                 return { ...item, options: mergedOptions, priceVND: newPriceVND, priceUSD: newPriceUSD };
             }
             return item;
@@ -132,7 +128,18 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
 
     // [NEW] Cập nhật options cho TOÀN BỘ giỏ hàng (Bulk Update)
     const updateAllCartItemOptions = (options: ServiceOptions) => {
-        setCart(prev => prev.map(item => ({ ...item, options: { ...item.options, ...options } })));
+        setCart(prev => prev.map(item => {
+            const mergedOptions = { ...item.options, ...options };
+            const addon = mergedOptions.addons?.privateRoom
+                ? services.find((service) => service.id === 'NHS0900' && service.ACTIVE !== false)
+                : undefined;
+            return {
+                ...item,
+                options: mergedOptions,
+                priceVND: (item.basePriceVND ?? item.priceVND) + (Number(addon?.priceVND) || 0),
+                priceUSD: (item.basePriceUSD ?? item.priceUSD) + (Number(addon?.priceUSD) || 0),
+            };
+        }));
     };
 
     // [NEW] Thay thế Service của một item trong giỏ hàng (giữ nguyên cartId và số lượng, update options)
@@ -140,13 +147,11 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
         setCart(prev => prev.map(item => {
             if (item.cartId === cartId) {
                 const mergedOptions = { ...item.options, ...options };
-                let newPriceVND = newService.priceVND;
-                let newPriceUSD = newService.priceUSD;
-                
-                if (mergedOptions.addons?.privateRoom) {
-                    newPriceVND += 105000;
-                    newPriceUSD += 5;
-                }
+                const addon = mergedOptions.addons?.privateRoom
+                    ? services.find((service) => service.id === 'NHS0900' && service.ACTIVE !== false)
+                    : undefined;
+                const newPriceVND = newService.priceVND + (Number(addon?.priceVND) || 0);
+                const newPriceUSD = newService.priceUSD + (Number(addon?.priceUSD) || 0);
 
                 return {
                     ...newService, // Spread the new service first (replaces id, price, names, timeValue, etc.)
