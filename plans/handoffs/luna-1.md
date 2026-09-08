@@ -2,6 +2,7 @@
 
 Date: 2026-09-08
 Baseline: `05fce624831c47efa057c9349a026d05ea0b50ac`
+Luna commit: `6932eb3d2763147bc021e0262a6cbccfbf7e020d`
 Scope: VI/EN/JP/KR/CN content, Pure Relaxation admin/editor/API persistence, and History media.
 
 ## Delivered
