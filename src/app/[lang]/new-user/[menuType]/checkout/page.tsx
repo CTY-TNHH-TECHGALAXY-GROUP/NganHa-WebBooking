@@ -1311,9 +1311,9 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
               </div>
 
               {/* Phone Number (Required) */}
-              <div style={{ marginBottom: '12px' }}>
-                <div className={styles.phoneGroup} style={{ position: isPhoneCountryOpen ? 'relative' : 'static', zIndex: isPhoneCountryOpen ? 9999 : 'auto', marginBottom: 0 }}>
-                  <div className={`${styles.field} ${styles.phoneCountryField}`} style={{ position: 'relative', zIndex: isPhoneCountryOpen ? 50 : 1 }}>
+              <div style={{ marginBottom: '12px', position: 'relative', zIndex: isPhoneCountryOpen ? 100 : 2 }}>
+                <div className={styles.phoneGroup} style={{ position: 'relative', zIndex: isPhoneCountryOpen ? 100 : 2, marginBottom: 0 }}>
+                  <div className={`${styles.field} ${styles.phoneCountryField}`} style={{ position: 'relative', zIndex: isPhoneCountryOpen ? 100 : 2 }}>
                     <div 
                       className={styles.phoneCountrySelect} 
                       onClick={() => setIsPhoneCountryOpen(!isPhoneCountryOpen)}
@@ -1323,7 +1323,20 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                     </div>
                     
                     {isPhoneCountryOpen && (
-                      <div style={{ position: 'absolute', top: 'calc(100% + 4px)', left: 0, width: 'max-content', minWidth: '120px', background: '#17162b', border: '1px solid rgba(226,190,111,0.15)', borderRadius: '12px', zIndex: 100, maxHeight: '250px', overflowY: 'auto', boxShadow: '0 10px 30px rgba(0,0,0,0.5)' }}>
+                      <div style={{ 
+                        position: 'absolute', 
+                        top: 'calc(100% + 6px)', 
+                        left: 0, 
+                        width: 'max-content', 
+                        minWidth: '180px', 
+                        background: '#15131b', 
+                        border: '1px solid rgba(226,190,111,0.3)', 
+                        borderRadius: '14px', 
+                        zIndex: 99999, 
+                        maxHeight: '260px', 
+                        overflowY: 'auto', 
+                        boxShadow: '0 16px 40px rgba(0,0,0,0.95)' 
+                      }}>
                         {PHONE_COUNTRIES.map((country, idx) => {
                            const isSelected = phoneCountry.iso === country.iso;
                            return (
