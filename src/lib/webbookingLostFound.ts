@@ -4,6 +4,7 @@ import type { LostAndFoundItem, LostAndFoundStatus } from '@/lib/lostAndFound';
 export type LostFoundClaimStatus = 'none' | 'new' | 'contacted' | 'resolved' | 'archived';
 
 export type WebbookingLostFoundItem = LostAndFoundItem & {
+  sortOrder?: number;
   claimStatus: LostFoundClaimStatus;
   claimantName?: string;
   claimantPhone?: string;
@@ -17,6 +18,7 @@ const defaultLocaleValue = (): Record<Locale, string> => ({ vi: '', en: '', cn: 
 export const toWebbookingLostFoundItem = (row: any): WebbookingLostFoundItem => ({
   id: row.id,
   type: row.item_type || 'other',
+  sortOrder: row.sort_order ?? 0,
   title: { ...defaultLocaleValue(), ...(row.title || {}) },
   detail: { ...defaultLocaleValue(), ...(row.detail || {}) },
   foundAt: { ...defaultLocaleValue(), ...(row.found_at || {}) },
@@ -31,18 +33,22 @@ export const toWebbookingLostFoundItem = (row: any): WebbookingLostFoundItem => 
   claimLocale: row.claim_locale || undefined,
 });
 
-export const toWebbookingLostFoundPayload = (item: Partial<WebbookingLostFoundItem>) => ({
-  item_type: item.type || 'other',
-  title: item.title || defaultLocaleValue(),
-  detail: item.detail || defaultLocaleValue(),
-  found_at: item.foundAt || defaultLocaleValue(),
-  found_on: item.foundOn || new Date().toISOString().slice(0, 10),
-  image_url: item.image || null,
-  status: item.status || 'available',
-  claim_status: item.claimStatus || 'none',
-  claimant_name: item.claimantName || null,
-  claimant_phone: item.claimantPhone || null,
-  claimant_email: item.claimantEmail || null,
-  claim_note: item.claimNote || null,
-  claim_locale: item.claimLocale || null,
-});
+export const toWebbookingLostFoundPayload = (item: Partial<WebbookingLostFoundItem>) => {
+  const isNone = (item.claimStatus || 'none') === 'none';
+  return {
+    item_type: item.type || 'other',
+    sort_order: item.sortOrder ?? 0,
+    title: item.title || defaultLocaleValue(),
+    detail: item.detail || defaultLocaleValue(),
+    found_at: item.foundAt || defaultLocaleValue(),
+    found_on: item.foundOn || new Date().toISOString().slice(0, 10),
+    image_url: item.image || null,
+    status: item.status || 'available',
+    claim_status: item.claimStatus || 'none',
+    claimant_name: isNone ? null : (item.claimantName?.trim() || null),
+    claimant_phone: isNone ? null : (item.claimantPhone?.trim() || null),
+    claimant_email: isNone ? null : (item.claimantEmail?.trim() || null),
+    claim_note: isNone ? null : (item.claimNote?.trim() || null),
+    claim_locale: isNone ? null : (item.claimLocale || null),
+  };
+};

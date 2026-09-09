@@ -239,6 +239,71 @@ const OurStory = () => {
                 </div>
               </article>
             ))}
+
+            {config.specialtySection.menuNiches && config.specialtySection.menuNiches.map((menu, index) => (
+              <article key={menu.id || 'menu-niche-' + index}>
+                <figure className={styles.pillarMedia}>
+                  <img
+                    src={menu.image || '/images/about-treatment.png'}
+                    alt={getLocalizedText(menu.title, lang)}
+                    loading="lazy"
+                  />
+                  {menu.watermarkEnabled !== false && (
+                    <div className="media-watermark" aria-hidden="true" />
+                  )}
+                </figure>
+                <div className={styles.pillarCopy}>
+                  <span>{menu.order || String(index + 1).padStart(2, '0')}</span>
+                  <h4>{getLocalizedText(menu.title, lang)}</h4>
+                  {menu.tagline && getLocalizedText(menu.tagline, lang) && (
+                    <p className={styles.menuTagline}>{getLocalizedText(menu.tagline, lang)}</p>
+                  )}
+                  <p>{getLocalizedText(menu.summary, lang)}</p>
+                  {(menu.included || menu.bestFor || menu.highlights || menu.note) && (
+                    <div className={styles.menuDetails}>
+                      {menu.included && getLocalizedText(menu.included, lang) && (
+                        <p>
+                          <strong>
+                            {lang === 'vi' ? 'Bao gồm: ' : lang === 'cn' ? '包含服务：' : lang === 'kr' ? '포함 서비스: ' : lang === 'jp' ? '含まれるサービス: ' : 'Included: '}
+                          </strong>
+                          {getLocalizedText(menu.included, lang)}
+                        </p>
+                      )}
+                      {menu.bestFor && getLocalizedText(menu.bestFor, lang) && (
+                        <p>
+                          <strong>
+                            {lang === 'vi' ? 'Phù hợp với: ' : lang === 'cn' ? '适合人群：' : lang === 'kr' ? '추천 대상: ' : lang === 'jp' ? 'おすすめの方: ' : 'Best for: '}
+                          </strong>
+                          {getLocalizedText(menu.bestFor, lang)}
+                        </p>
+                      )}
+                      {menu.highlights && getLocalizedText(menu.highlights, lang) && (
+                        <p>
+                          <strong>
+                            {lang === 'vi' ? 'Điểm khác biệt: ' : lang === 'cn' ? '特色亮点：' : lang === 'kr' ? '차별점: ' : lang === 'jp' ? '特徴: ' : 'Highlights: '}
+                          </strong>
+                          {getLocalizedText(menu.highlights, lang)}
+                        </p>
+                      )}
+                      {menu.note && getLocalizedText(menu.note, lang) && (
+                        <p className={styles.menuNote}>
+                          <em>{getLocalizedText(menu.note, lang)}</em>
+                        </p>
+                      )}
+                    </div>
+                  )}
+                  {menu.ctaText && getLocalizedText(menu.ctaText, lang) && (
+                    <Link
+                      href={resolveConfigUrl(menu.ctaLink, lang, `/${lang}/new-user/standard/checkout`)}
+                      className={styles.textLink}
+                    >
+                      {getLocalizedText(menu.ctaText, lang)}
+                      <ArrowUpRight aria-hidden="true" size={20} />
+                    </Link>
+                  )}
+                </div>
+              </article>
+            ))}
           </div>
 
           <Link

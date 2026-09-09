@@ -23,6 +23,18 @@ export const POST = withAuth(async (request: NextRequest, { supabase }) => {
     .select('*')
     .single();
 
-  if (error) return apiResponse.error(error.message, 'DB_ERROR', 500);
+  if (error) {
+    console.error('[admin/lost-and-found POST] Error:', error);
+    return apiResponse.error(error.message, 'DB_ERROR', 500);
+  }
+
+  try {
+    const { revalidatePath } = require('next/cache');
+    revalidatePath('/lost-and-found');
+    revalidatePath('/api/public/lost-and-found');
+  } catch (e) {
+    console.error('Revalidation error:', e);
+  }
+
   return apiResponse.success(toWebbookingLostFoundItem(data), undefined, 201);
 });

@@ -16,7 +16,7 @@ export async function GET() {
 
     if (error) throw error;
     return NextResponse.json({ items: (data || []).map(toWebbookingLostFoundItem) }, {
-      headers: { 'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300' },
+      headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate' },
     });
   } catch (error) {
     // The public page uses the existing SystemConfigs fallback until the migration is applied.

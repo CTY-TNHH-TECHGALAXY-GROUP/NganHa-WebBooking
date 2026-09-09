@@ -9,7 +9,7 @@
 import { fetchBookingQuote } from '@/lib/bookingQuote';
 
 import { Z } from '@/lib/zIndex';
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef } from 'react';
 import { useMenuData } from '@/components/Menu/MenuContext';
 import { formatCurrency } from '@/components/Menu/utils';
 import {
@@ -91,6 +91,7 @@ interface BookingCheckoutProps {
 }
 
 const BookingCheckout = ({ lang, onBack }: BookingCheckoutProps) => {
+  const idempotencyKeyRef = useRef(globalThis.crypto?.randomUUID?.() || `booking_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 10)}`);
   const t = (key: keyof typeof TEXT) => TEXT[key][lang as 'vi' | 'en'] || TEXT[key]['en'];
   const { cart } = useMenuData();
 
@@ -156,6 +157,7 @@ const BookingCheckout = ({ lang, onBack }: BookingCheckoutProps) => {
 
     try {
       const selectedBranch = BRANCH_LIST.find(b => b.id === form.branchId);
+      const idempotencyKey = idempotencyKeyRef.current;
 
       // Transform cart items to API format
       const selectedServices = cart.map(item => ({
@@ -170,8 +172,9 @@ const BookingCheckout = ({ lang, onBack }: BookingCheckoutProps) => {
 
       const res = await fetch('/api/bookings', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'Idempotency-Key': idempotencyKey },
         body: JSON.stringify({
+          idempotencyKey,
           quote: await fetchBookingQuote(selectedServices, lang),
           name: form.name,
           phone: form.phone,

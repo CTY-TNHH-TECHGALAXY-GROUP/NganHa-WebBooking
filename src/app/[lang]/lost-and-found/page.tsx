@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 import { getSupabaseAdmin } from '@/lib/supabase-server';
 import { toWebbookingLostFoundItem, type WebbookingLostFoundItem } from '@/lib/webbookingLostFound';
 import LostAndFoundPage from '@/components/LostAndFound/LostAndFoundPage';
+import { SUPPORTED_LOCALES, type Locale } from '@/lib/constants';
 
 export const dynamic = 'force-dynamic';
 
@@ -10,7 +12,18 @@ export const metadata: Metadata = {
   description: 'A thoughtful place to reconnect guests with belongings left at Oria Spa.',
 };
 
-export default async function Page() {
+interface PageProps {
+  params: Promise<{ lang: string }>;
+}
+
+export default async function LocalizedLostAndFoundPage({ params }: PageProps) {
+  const resolvedParams = await params;
+  const lang = resolvedParams?.lang;
+
+  if (!lang || !SUPPORTED_LOCALES.includes(lang as Locale)) {
+    notFound();
+  }
+
   let initialItems: WebbookingLostFoundItem[] = [];
   try {
     const supabase = getSupabaseAdmin();
@@ -25,8 +38,8 @@ export default async function Page() {
       initialItems = data.map(toWebbookingLostFoundItem);
     }
   } catch (err) {
-    console.error('[LostAndFound Page] Server fetch error:', err);
+    console.error('[LocalizedLostAndFound Page] Server fetch error:', err);
   }
 
-  return <LostAndFoundPage initialItems={initialItems} />;
+  return <LostAndFoundPage initialItems={initialItems} forcedLang={lang} />;
 }

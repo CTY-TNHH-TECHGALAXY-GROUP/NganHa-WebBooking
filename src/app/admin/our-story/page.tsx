@@ -53,6 +53,7 @@ export default function OurStoryAdminPage() {
   const [saving, setSaving] = useState(false);
   const [activeLang, setActiveLang] = useState<string>('vi');
   const [activeTab, setActiveTab] = useState<'location' | 'architecture' | 'film' | 'atmosphere' | 'specialty'>('location');
+  const [activeMenuNicheIndex, setActiveMenuNicheIndex] = useState<number>(0);
   const [message, setMessage] = useState<{ type: 'success' | 'error' | ''; text: string }>({ type: '', text: '' });
   const [uploadingTarget, setUploadingTarget] = useState<string | null>(null);
 
@@ -1462,6 +1463,255 @@ export default function OurStoryAdminPage() {
                   </div>
                 ))}
               </div>
+            </div>
+
+            {/* 4 Menu Niches */}
+            <div className="pt-6 border-t border-admin-line">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+                <div>
+                  <h3 className="text-sm font-bold text-admin-gold uppercase tracking-wider flex items-center gap-2">
+                    <span>✨</span> 4 Ngách Menu Đặc Trưng ({activeLang.toUpperCase()})
+                  </h3>
+                  <p className="text-xs text-admin-text-faint mt-0.5">
+                    Hiển thị ngay dưới trụ cột 04 (Một Hành Trình) theo đúng layout chuẩn của Our Story
+                  </p>
+                </div>
+              </div>
+
+              {/* Sub-tabs for the 4 menus */}
+              <div className="flex flex-wrap gap-2 mb-4">
+                {(config.specialtySection.menuNiches || []).map((menu, idx) => {
+                  const isActive = activeMenuNicheIndex === idx;
+                  const menuTitle = menu.title?.[activeLang] || menu.title?.vi || `Menu ${menu.order || idx + 1}`;
+                  return (
+                    <button
+                      key={menu.id || `menu-tab-${idx}`}
+                      type="button"
+                      onClick={() => setActiveMenuNicheIndex(idx)}
+                      className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${
+                        isActive
+                          ? 'bg-admin-gold text-stone-900 shadow-md font-semibold'
+                          : 'bg-admin-card text-admin-text hover:bg-admin-line border border-admin-line'
+                      }`}
+                    >
+                      <span className={`px-1.5 py-0.5 rounded text-[10px] font-mono ${isActive ? 'bg-stone-900 text-admin-gold' : 'bg-admin-line text-admin-gold'}`}>
+                        {menu.order || String(idx + 1).padStart(2, '0')}
+                      </span>
+                      <span>{menuTitle}</span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Active Menu Niche Editor Card */}
+              {(() => {
+                const currentNiches = config.specialtySection.menuNiches || [];
+                const menu = currentNiches[activeMenuNicheIndex] || currentNiches[0];
+                const idx = activeMenuNicheIndex;
+                if (!menu) return null;
+
+                const updateMenuField = (fieldKey: keyof typeof menu, value: any) => {
+                  const newNiches = [...currentNiches];
+                  newNiches[idx] = { ...newNiches[idx], [fieldKey]: value };
+                  setConfig({
+                    ...config,
+                    specialtySection: {
+                      ...config.specialtySection,
+                      menuNiches: newNiches,
+                    },
+                  });
+                };
+
+                const updateMenuLocalized = (fieldKey: 'title' | 'tagline' | 'summary' | 'included' | 'bestFor' | 'highlights' | 'note' | 'ctaText', value: string) => {
+                  const newNiches = [...currentNiches];
+                  const currentLoc = (newNiches[idx][fieldKey] as LocalizedString) || {};
+                  newNiches[idx] = {
+                    ...newNiches[idx],
+                    [fieldKey]: { ...currentLoc, [activeLang]: value },
+                  };
+                  setConfig({
+                    ...config,
+                    specialtySection: {
+                      ...config.specialtySection,
+                      menuNiches: newNiches,
+                    },
+                  });
+                };
+
+                return (
+                  <div className="p-5 bg-admin-bg/60 border border-admin-line rounded-xl space-y-4">
+                    {/* Header info */}
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                      <div>
+                        <label className="block text-xs font-semibold text-admin-text-dim mb-1">
+                          Số thứ tự (Order)
+                        </label>
+                        <input
+                          type="text"
+                          className="w-full px-3 py-2 bg-admin-card border border-admin-line rounded-lg text-xs text-admin-text font-mono font-bold focus:outline-none focus:border-admin-gold"
+                          value={menu.order || ''}
+                          onChange={(e) => updateMenuField('order', e.target.value)}
+                          placeholder="01"
+                        />
+                      </div>
+                      <div className="md:col-span-3">
+                        <label className="block text-xs font-semibold text-admin-text-dim mb-1">
+                          Tên Menu ({activeLang.toUpperCase()})
+                        </label>
+                        <input
+                          type="text"
+                          className="w-full px-3 py-2 bg-admin-card border border-admin-line rounded-lg text-sm text-admin-text font-bold focus:outline-none focus:border-admin-gold"
+                          value={menu.title?.[activeLang] || ''}
+                          onChange={(e) => updateMenuLocalized('title', e.target.value)}
+                          placeholder="Tiêu đề menu..."
+                        />
+                      </div>
+                    </div>
+
+                    {/* Tagline */}
+                    <div>
+                      <label className="block text-xs font-semibold text-admin-text-dim mb-1">
+                        Câu định vị ngắn (Tagline) ({activeLang.toUpperCase()})
+                      </label>
+                      <input
+                        type="text"
+                        className="w-full px-3 py-2 bg-admin-card border border-admin-line rounded-lg text-xs text-admin-text focus:outline-none focus:border-admin-gold"
+                        value={menu.tagline?.[activeLang] || ''}
+                        onChange={(e) => updateMenuLocalized('tagline', e.target.value)}
+                        placeholder="Tagline ngắn gọn..."
+                      />
+                    </div>
+
+                    {/* Summary */}
+                    <div>
+                      <label className="block text-xs font-semibold text-admin-text-dim mb-1">
+                        Mô tả tổng quan (Summary) ({activeLang.toUpperCase()})
+                      </label>
+                      <textarea
+                        className="w-full px-3 py-2 bg-admin-card border border-admin-line rounded-lg text-xs text-admin-text focus:outline-none focus:border-admin-gold min-h-[60px]"
+                        value={menu.summary?.[activeLang] || ''}
+                        onChange={(e) => updateMenuLocalized('summary', e.target.value)}
+                        placeholder="Đoạn văn giới thiệu ngắn..."
+                      />
+                    </div>
+
+                    {/* Details: Included, Best For, Highlights */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                      <div>
+                        <label className="block text-xs font-semibold text-admin-gold mb-1">
+                          Bao gồm dịch vụ ({activeLang.toUpperCase()})
+                        </label>
+                        <textarea
+                          className="w-full px-3 py-2 bg-admin-card border border-admin-line rounded-lg text-xs text-admin-text focus:outline-none focus:border-admin-gold min-h-[80px]"
+                          value={menu.included?.[activeLang] || ''}
+                          onChange={(e) => updateMenuLocalized('included', e.target.value)}
+                          placeholder="Dịch vụ bao gồm..."
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-admin-gold mb-1">
+                          Phù hợp với ai ({activeLang.toUpperCase()})
+                        </label>
+                        <textarea
+                          className="w-full px-3 py-2 bg-admin-card border border-admin-line rounded-lg text-xs text-admin-text focus:outline-none focus:border-admin-gold min-h-[80px]"
+                          value={menu.bestFor?.[activeLang] || ''}
+                          onChange={(e) => updateMenuLocalized('bestFor', e.target.value)}
+                          placeholder="Đối tượng phù hợp..."
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-admin-gold mb-1">
+                          Điểm khác biệt ({activeLang.toUpperCase()})
+                        </label>
+                        <textarea
+                          className="w-full px-3 py-2 bg-admin-card border border-admin-line rounded-lg text-xs text-admin-text focus:outline-none focus:border-admin-gold min-h-[80px]"
+                          value={menu.highlights?.[activeLang] || ''}
+                          onChange={(e) => updateMenuLocalized('highlights', e.target.value)}
+                          placeholder="Điểm nhấn khác biệt..."
+                        />
+                      </div>
+                    </div>
+
+                    {/* Image & CTA row */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-3 border-t border-admin-line">
+                      {/* Left: Image & Watermark */}
+                      <div className="space-y-2">
+                        <label className="block text-xs font-semibold text-admin-text-dim">
+                          Hình ảnh ngách menu (Tỉ lệ 4:3)
+                        </label>
+                        <div className="flex flex-col sm:flex-row gap-2">
+                          <input
+                            type="text"
+                            className="flex-1 min-w-0 px-3 py-1.5 bg-admin-card border border-admin-line rounded-lg text-xs text-admin-text focus:outline-none focus:border-admin-gold"
+                            value={menu.image || ''}
+                            onChange={(e) => updateMenuField('image', e.target.value)}
+                            placeholder="/images/... hoặc URL ảnh"
+                          />
+                          <label className="inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 px-3 py-1.5 bg-admin-card border border-admin-line rounded-lg text-xs font-semibold text-admin-text hover:border-admin-gold transition-colors">
+                            <Upload size={14} />
+                            {uploadingTarget === `menu-niche-${idx}` ? 'Đang tải...' : 'Tải ảnh'}
+                            <input
+                              type="file"
+                              accept="image/*"
+                              className="hidden"
+                              disabled={uploadingTarget === `menu-niche-${idx}`}
+                              onChange={(e) =>
+                                handleFileUpload(
+                                  e,
+                                  (url) => updateMenuField('image', url),
+                                  `menu-niche-${idx}`,
+                                )
+                              }
+                            />
+                          </label>
+                        </div>
+                        <WatermarkToggle
+                          checked={menu.watermarkEnabled !== false}
+                          onChange={(checked) => updateMenuField('watermarkEnabled', checked)}
+                        />
+                        {menu.image ? (
+                          <img
+                            src={menu.image}
+                            alt=""
+                            className="w-full h-36 object-cover rounded-lg border border-admin-line"
+                          />
+                        ) : null}
+                      </div>
+
+                      {/* Right: CTA Button Text & Link */}
+                      <div className="space-y-3">
+                        <div>
+                          <label className="block text-xs font-semibold text-admin-text-dim mb-1">
+                            Chữ nút bấm CTA ({activeLang.toUpperCase()})
+                          </label>
+                          <input
+                            type="text"
+                            className="w-full px-3 py-2 bg-admin-card border border-admin-line rounded-lg text-xs text-admin-text focus:outline-none focus:border-admin-gold"
+                            value={menu.ctaText?.[activeLang] || ''}
+                            onChange={(e) => updateMenuLocalized('ctaText', e.target.value)}
+                            placeholder="Đặt lịch trải nghiệm..."
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-semibold text-admin-text-dim mb-1">
+                            Link CTA điều hướng
+                          </label>
+                          <input
+                            type="text"
+                            className="w-full px-3 py-2 bg-admin-card border border-admin-line rounded-lg text-xs text-admin-text focus:outline-none focus:border-admin-gold"
+                            value={menu.ctaLink || ''}
+                            onChange={(e) => updateMenuField('ctaLink', e.target.value)}
+                            placeholder="/{lang}/new-user/standard/checkout hoặc tel:+84..."
+                          />
+                          <p className="text-[10px] text-admin-text-faint mt-1">
+                            Hỗ trợ biến số <code>{'{lang}'}</code> hoặc link hotline <code>tel:+84964090277</code>
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
             </div>
 
             {/* CTA Button */}

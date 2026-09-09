@@ -90,18 +90,20 @@ const tests = [
     const result = parse(validBody({ status: 'PAID', amountPaid: 790000, bookingId: 'client-id', branchName: 'ORIA SPA' }));
     assert.equal(result.ok, true);
     assert.match(routeSource, /status: 'NEW'/);
-    assert.match(routeSource, /customerId: null/);
+    assert.match(routeSource, /customerId,/);
     assert.match(routeSource, /totalAmount: pricing\.totalAmountVND/);
   }],
-  ['API10 RPC/catalog failures map to unavailable and have no direct fallback', () => {
+  ['API10 counter allocator failures map to unavailable without a second writer', () => {
     assert.match(routeSource, /BOOKING_TEMPORARILY_UNAVAILABLE/);
-    assert.doesNotMatch(routeSource, /generateCollisionSafeFallbackId/);
-    assert.match(routeSource, /supabase\.rpc\('create_booking_atomic'/);
+    assert.match(routeSource, /supabase\.rpc\('webbooking_allocate_booking_number'/);
+    assert.doesNotMatch(routeSource, /webbooking_submit_booking|create_booking_atomic/);
   }],
   ['API11 replay uses stored snapshot before current time/catalog checks', () => {
-    assert.match(routeSource, /findReplay\(supabase, finalKey, booking\.intentFingerprint\)/);
+    assert.match(routeSource, /findReplay\(supabase, finalKey, \{ waitForItems: true \}\)/);
+    assert.match(routeSource, /replay\.state === 'complete'/);
     assert.match(routeSource, /responseForSnapshot\(replay\.snapshot, true\)/);
-    assert.doesNotMatch(routeSource.slice(routeSource.indexOf('if (replay?.snapshot)'), routeSource.indexOf('if (isBookingTimeInPast')), /sendBookingConfirmationEmail/);
+    const replayGate = routeSource.slice(routeSource.indexOf("if (replay.state === 'complete')"), routeSource.indexOf("if (!booking.quote"));
+    assert.doesNotMatch(replayGate, /sendBookingConfirmationEmail/);
   }],
   ['API12 signed quote detects intent, expiry and catalog changes', () => {
     process.env.BOOKING_QUOTE_SECRET = 'mock-only-terra-2';
@@ -113,7 +115,7 @@ const tests = [
     assert.equal(verifyQuote(token, cartIntentFingerprint([{ id: 'NHS1002', quantity: 1, options: {} }]), 'changed').ok, false);
   }],
   ['API13 mail failure does not turn committed booking into API failure', () => {
-    assert.match(routeSource, /EMAIL_PENDING/);
+    assert.match(routeSource, /emailStatus/);
     assert.match(routeSource, /return NextResponse\.json\(\{ success: true/);
     assert.match(routeSource, /sendBookingConfirmationEmail/);
   }],

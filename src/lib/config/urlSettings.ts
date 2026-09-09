@@ -6,7 +6,7 @@ export type CtaLinks = Partial<Record<CtaKey, string>>;
 
 export const DEFAULT_CTA_LINKS: Record<CtaKey, string> = {
   spaceExplore: '/pure-relaxation',
-  spaceBook: '/booking',
+  spaceBook: 'https://oria-spa.vercel.app/vi/new-user/standard/checkout',
   tabletContinue: '/{lang}',
 };
 
@@ -57,6 +57,22 @@ export function validateConfigUrl(value: unknown): UrlValidationResult {
     } catch {
       return { isValid: false, value: trimmed, error: 'Malformed relative URL' };
     }
+  }
+
+  if (withoutTemplate.startsWith('tel:')) {
+    const phonePart = withoutTemplate.slice(4).trim();
+    if (/^\+?[0-9\s.-]{4,20}$/.test(phonePart)) {
+      return { isValid: true, value: trimmed };
+    }
+    return { isValid: false, value: trimmed, error: 'Malformed tel: URL' };
+  }
+
+  if (withoutTemplate.startsWith('mailto:')) {
+    const emailPart = withoutTemplate.slice(7).trim();
+    if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailPart)) {
+      return { isValid: true, value: trimmed };
+    }
+    return { isValid: false, value: trimmed, error: 'Malformed mailto: URL' };
   }
 
   try {

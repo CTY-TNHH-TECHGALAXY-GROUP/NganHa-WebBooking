@@ -4,7 +4,8 @@ import { apiResponse } from '@/lib/api/apiResponse';
 import { toWebbookingLostFoundItem, toWebbookingLostFoundPayload } from '@/lib/webbookingLostFound';
 
 export const PUT = withAuth(async (request: NextRequest, { supabase }, params) => {
-  const { id } = await params;
+  const resolvedParams = params instanceof Promise ? await params : params;
+  const id = resolvedParams?.id;
   const body = await request.json();
   const { data, error } = await supabase
     .from('WebbookingLostFound')
@@ -13,13 +14,38 @@ export const PUT = withAuth(async (request: NextRequest, { supabase }, params) =
     .select('*')
     .single();
 
-  if (error) return apiResponse.error(error.message, 'DB_ERROR', 500);
+  if (error) {
+    console.error('[admin/lost-and-found PUT] Error:', error);
+    return apiResponse.error(error.message, 'DB_ERROR', 500);
+  }
+
+  try {
+    const { revalidatePath } = require('next/cache');
+    revalidatePath('/lost-and-found');
+    revalidatePath('/api/public/lost-and-found');
+  } catch (e) {
+    console.error('Revalidation error:', e);
+  }
+
   return apiResponse.success(toWebbookingLostFoundItem(data));
 });
 
 export const DELETE = withAuth(async (_request, { supabase }, params) => {
-  const { id } = await params;
+  const resolvedParams = params instanceof Promise ? await params : params;
+  const id = resolvedParams?.id;
   const { error } = await supabase.from('WebbookingLostFound').delete().eq('id', id);
-  if (error) return apiResponse.error(error.message, 'DB_ERROR', 500);
+  if (error) {
+    console.error('[admin/lost-and-found DELETE] Error:', error);
+    return apiResponse.error(error.message, 'DB_ERROR', 500);
+  }
+
+  try {
+    const { revalidatePath } = require('next/cache');
+    revalidatePath('/lost-and-found');
+    revalidatePath('/api/public/lost-and-found');
+  } catch (e) {
+    console.error('Revalidation error:', e);
+  }
+
   return apiResponse.success({ success: true });
 });

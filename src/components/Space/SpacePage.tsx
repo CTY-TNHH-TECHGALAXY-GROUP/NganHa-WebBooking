@@ -4,7 +4,7 @@ import React, { useEffect, useState, useRef, useMemo } from 'react';
 import Link from 'next/link';
 import { useTranslation } from '@/components/TranslationProvider';
 import { useSystemSettings } from '@/components/SystemSettingsProvider';
-import { resolveCtaUrl } from '@/lib/config/urlSettings';
+import { resolveConfigUrl } from '@/lib/config/urlSettings';
 import styles from './SpacePage.module.css';
 import { getSpaceContent } from './SpacePage.localization';
 
@@ -500,8 +500,26 @@ const MediaRenderer = ({ mediaObj, className, alt, onEnded }: { mediaObj: {src: 
           <div className={styles.ctaSide}>
             <p>{space.cta.desc}</p>
             <div className={styles.buttons}>
-              <Link href={resolveCtaUrl(systemSettings.ctaLinks?.spaceExplore, 'spaceExplore', currentLang)} className={styles.btn}>{space.cta.exploreBtn}</Link>
-              <Link href={resolveCtaUrl(systemSettings.ctaLinks?.spaceBook, 'spaceBook', currentLang)} className={styles.btn}>{space.cta.bookBtn}</Link>
+              <Link
+                href={resolveConfigUrl(
+                  contentMedia?.cta?.exploreLink || systemSettings.ctaLinks?.spaceExplore,
+                  currentLang,
+                  '/pure-relaxation'
+                )}
+                className={styles.btn}
+              >
+                {space.cta.exploreBtn}
+              </Link>
+              <Link
+                href={resolveConfigUrl(
+                  contentMedia?.cta?.bookLink || contentMedia?.cta?.link || systemSettings.ctaLinks?.spaceBook,
+                  currentLang,
+                  'https://oria-spa.vercel.app/vi/new-user/standard/checkout'
+                )}
+                className={styles.btn}
+              >
+                {space.cta.bookBtn}
+              </Link>
             </div>
           </div>
         </div>

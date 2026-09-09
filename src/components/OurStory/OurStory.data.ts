@@ -20,6 +20,22 @@ export interface OurStoryPillar {
   watermarkEnabled?: boolean;
 }
 
+export interface OurStoryMenuNiche {
+  id: string;
+  order: string;
+  title: LocalizedString;
+  tagline: LocalizedString;
+  summary: LocalizedString;
+  included: LocalizedString;
+  bestFor: LocalizedString;
+  highlights: LocalizedString;
+  note?: LocalizedString;
+  image: string;
+  watermarkEnabled?: boolean;
+  ctaText?: LocalizedString;
+  ctaLink?: string | null;
+}
+
 export interface OurStoryActivity {
   frameId: number;
   text: LocalizedString;
@@ -74,6 +90,7 @@ export interface OurStoryConfig {
     headline: LocalizedString;
     lead: LocalizedString;
     pillars: OurStoryPillar[];
+    menuNiches?: OurStoryMenuNiche[];
     ctaText: LocalizedString;
     ctaLink: string | null;
   };
@@ -580,6 +597,232 @@ export const createDefaultOurStoryConfig = (): OurStoryConfig => ({
         },
       },
     ],
+    menuNiches: [
+      {
+        id: 'standard',
+        order: '01',
+        title: {
+          vi: 'Menu Phổ Thông',
+          en: 'Standard Menu',
+          cn: '标准菜单',
+          jp: 'スタンダードメニュー',
+          kr: '스탠다드 메뉴',
+        },
+        tagline: {
+          vi: 'Đầy đủ dịch vụ spa + barbershop',
+          en: 'Full spa + barbershop services',
+          cn: '全套水疗 + 理发服务',
+          jp: 'スパ + 理容サービス完備',
+          kr: '스파 + 이발소 서비스 전체',
+        },
+        summary: {
+          vi: 'Đây là menu nền tảng, tổng hợp toàn bộ dịch vụ chăm sóc cơ thể và diện mạo trong một không gian — dành cho khách hàng muốn giải quyết nhiều nhu cầu trong một lần ghé, không cần di chuyển nhiều nơi.',
+          en: 'This is the foundational menu, bringing together body care and grooming services in one space — for guests who want to take care of multiple needs in a single visit, without moving between different locations.',
+          cn: '这是基础菜单，将身体护理与仪容护理服务整合在同一空间——适合希望在一次到店中解决多种需求、无需奔波多地的客人。',
+          jp: 'ボディケアと身だしなみケアのサービスを一つの空間に集約した基本メニューです——複数の場所を移動することなく、一度の来店で様々なニーズを満たしたいお客様に最適です。',
+          kr: '기본이 되는 메뉴로, 신체 관리와 그루밍 서비스를 한 공간에서 모두 제공합니다 — 여러 곳을 이동할 필요 없이 한 번의 방문으로 다양한 니즈를 해결하고 싶은 고객에게 적합합니다.',
+        },
+        included: {
+          vi: 'Dịch vụ spa cơ bản (massage thư giãn, chăm sóc da mặt...), dịch vụ barbershop (tạo kiểu, cạo mặt...), đặc biệt là dịch vụ đặc trưng ráy tai chuyên nghiệp mang lại cảm giác sạch sẽ, thư giãn tức thì, thường được kết hợp sau cắt tóc hoặc massage.',
+          en: 'Basic spa services (relaxation massage, facial care...), barbershop services (styling, face shaving...), and our signature professional ear-cleaning service that leaves you feeling instantly refreshed and relaxed.',
+          cn: '基础水疗服务（放松按摩、面部护理等）、理发服务（造型、修面等），以及特色专业采耳服务，带来即时的清洁与放松体验，常作为理发或按摩后的附加项目。',
+          jp: '基本スパサービス（リラクゼーションマッサージ、フェイシャルケアなど）、理容サービス（スタイリング、シェービングなど）、そして即座にすっきりと寛げる特色プロフェッショナル耳掃除サービス。',
+          kr: '기본 스파 서비스(릴렉싱 마사지, 페이셜 케어 등), 이발소 서비스(스타일링, 면도 등), 즉각적인 청결과 편안함을 선사하는 시그니처 전문 귀 청소 서비스 포함.',
+        },
+        bestFor: {
+          vi: 'Khách hàng muốn trải nghiệm nhanh gọn, tiện lợi — vừa chăm sóc cơ thể vừa chỉnh chu diện mạo trong một buổi; người mới trải nghiệm lần đầu; khách tìm mức chi phí hợp lý; giải quyết nhiều nhu cầu cùng lúc (tóc, mặt, tai...).',
+          en: 'Guests who want a quick, convenient one-stop experience — caring for both body and appearance in one visit; first-time visitors; guests looking for reasonable pricing; solving multiple needs in one go.',
+          cn: '追求快捷便利、在一次到店中兼顾身体与面貌打理的客人；初次体验者；追求合理价格与高性价比的客人；希望一站式解决多项小需求的客人。',
+          jp: '手早く身だしなみとボディケアを整えたい方、初めてご利用の方、手頃な価格を重視される方、髪・顔・耳のケアを一度に済ませたい方。',
+          kr: '한 번의 방문으로 신체 관리와 외모 관리를 빠르고 편리하게 해결하고 싶은 고객, 첫 방문 고객, 합리적인 가격을 원하는 고객, 여러 니즈를 한 번에 해결하고 싶은 고객.',
+        },
+        highlights: {
+          vi: 'Menu có tính đại chúng nhất — quy trình tiêu chuẩn, thời gian phục vụ tối ưu, không cần đặt lịch phức tạp. Nhân viên điều phối linh hoạt theo dịch vụ, phòng chung rộng rãi thoáng đãng. Dịch vụ ráy tai là điểm nhấn đặc trưng giúp menu này khác biệt hoàn toàn.',
+          en: 'The most accessible menu — standard process, optimized service time, ideal for regular use without complex booking. Random staff assignment, spacious airy shared rooms. Signature ear cleaning is the distinctive highlight.',
+          cn: '最具大众化的菜单——标准化流程、优化服务时间，适合日常使用或初次体验，无需复杂预约。公共房间宽敞通风，特色采耳是区别于一般水疗理发店的标志亮点。',
+          jp: '最も親しみやすいメニュー——標準化されたプロセスと最適化された時間で、日常使いにも最適。広々とした共有ルーム、特色ある耳掃除が他店との明確な違いを生み出します。',
+          kr: '가장 대중적인 메뉴 — 표준화된 프로세스와 최적화된 소요 시간으로 복잡한 예약 불필요. 넓고 쾌적한 공용룸, 시그니처 귀 청소가 일반 스파와 차별화되는 하이라이트.',
+        },
+        image: '/images/barbershop.png',
+        watermarkEnabled: true,
+        ctaText: {
+          vi: 'Khám Phá Menu Phổ Thông',
+          en: 'Explore Standard Menu',
+          cn: '探索标准菜单',
+          jp: 'スタンダードメニューを見る',
+          kr: '스탠다드 메뉴 알아보기',
+        },
+        ctaLink: '/{lang}/new-user/standard/checkout',
+      },
+      {
+        id: 'luxury',
+        order: '02',
+        title: {
+          vi: 'Menu Luxury — Design Your Journey',
+          en: 'Luxury Menu — Design Your Journey',
+          cn: '尊享菜单 — 专属定制旅程',
+          jp: 'ラグジュアリーメニュー — ジャーニーデザイン',
+          kr: '럭셔리 메뉴 — 나만의 여정 설계',
+        },
+        tagline: {
+          vi: 'Phòng riêng · Tự thiết kế dịch vụ · Chọn nhân viên phù hợp',
+          en: 'Private room · Design your own service · Choose preferred therapist',
+          cn: '独立包间 · 自由定制服务 · 自选技师',
+          jp: '完全個室 · 自分だけのサービス設計 · セラピスト指名',
+          kr: '프라이빗 룸 · 나만의 서비스 설계 · 원하는 테라피스트 선택',
+        },
+        summary: {
+          vi: 'Menu cao cấp dành cho khách hàng đề cao sự riêng tư, cá nhân hóa và chất lượng trải nghiệm ở mức tối đa. Khách hàng chủ động tự thiết kế toàn bộ hành trình trải nghiệm của mình thay vì theo quy trình có sẵn.',
+          en: 'This is the premium menu for guests who value privacy, personalization, and the highest level of experience quality. Guests take full control of designing their own bespoke journey rather than following a fixed routine.',
+          cn: '为重视隐私、个性化与极致体验品质的客人打造的高端菜单。不同于固定流程的标准菜单，尊享菜单让客人完全自主设计属于自己的整场体验。',
+          jp: 'プライバシー、パーソナライズ、そして最高レベルの体験品質を重視するお客様のためのプレミアムメニュー。決まったコースではなく、ご自身で旅の全工程をデザインできます。',
+          kr: '프라이버시, 개인화, 최상의 경험 품질을 중시하는 고객을 위한 프리미엄 메뉴입니다. 정해진 프로세스를 따르지 않고, 고객이 직접 자신만의 여정을 설계할 수 있습니다.',
+        },
+        included: {
+          vi: 'Phòng riêng biệt lập yên tĩnh, kín đáo suốt buổi trị liệu; Tự thiết kế dịch vụ kết hợp linh hoạt nhiều dịch vụ theo đúng nhu cầu cá nhân; Xem hồ sơ/chuyên môn và tự chọn kỹ thuật viên có thế mạnh đúng mong muốn (deep tissue, chăm sóc da...).',
+          en: 'Secluded private room throughout the session; Design your own service by combining multiple therapies to your exact needs; View therapist profiles and choose the specialist matching your preferences.',
+          cn: '全程独立私密包间；根据自身需求自由组合多项服务（非固定套餐）；查阅技师专业背景与擅长领域，自主挑选最符合心意的技师（深层理疗、护肤专精等）。',
+          jp: '施術の間ずっと他のお客様と共有しない完全個室；希望に合わせて複数のサービスを組み合わせる自由設計；セラピストのプロフィールを確認して得意分野を持つ担当者を指名可能。',
+          kr: '시술 내내 독립된 조용한 프라이빗 룸; 본인의 니즈에 맞춘 자유로운 다중 서비스 조합 설계; 테라피스트 프로필 확인 후 원하는 전문 분야의 관리사 직접 선택.',
+        },
+        bestFor: {
+          vi: 'Khách hàng đã có kinh nghiệm sử dụng dịch vụ, biết rõ mình cần gì; người coi trọng sự riêng tư tuyệt đối; khách muốn trải nghiệm được "may đo"; các dịp đặc biệt: sinh nhật, kỷ niệm, tiếp đãi đối tác quý.',
+          en: 'Experienced spa-goers who know their body\'s needs; guests valuing absolute privacy; those desiring a tailored luxury experience; special occasions: birthdays, anniversaries, and VIP partner hosting.',
+          cn: '已有丰富体验经验且明确需求的客人；极为重视绝对隐私的客人；追求量身定制体验者；特殊场合：生日、纪念日、商务接待或贵宾款待。',
+          jp: 'すでに利用経験があり自分に必要なものを理解している方、完全なプライバシーを重視する方、オーダーメイド体験を求める方、記念日・誕生日やVIPのおもてなし。',
+          kr: '자신의 니즈를 명확히 아는 경험 많은 고객, 절대적인 프라이버시를 중시하는 분, 맞춤형 경험을 원하는 고객, 특별한 날: 생일, 기념일, 비즈니스 파트너/귀빈 접대.',
+        },
+        highlights: {
+          vi: 'Đây không phải là "mua dịch vụ" mà là "thiết kế trải nghiệm" — khách hàng là người chủ động từ không gian, nội dung đến người thực hiện. Cần đặt lịch trước để Oria Spa chuẩn bị chu đáo, sắp xếp đúng phòng và kỹ thuật viên ưng ý nhất.',
+          en: 'This isn\'t "buying a service" — it is "designing an experience." The guest is in full control. Advance booking is required so Oria Spa can prepare the ideal room, specialist, and tailored amenities for you.',
+          cn: '这并非单纯“购买服务”，而是“打造专属体验”——从空间、服务到技师由您全权主导。需提前预约以便Oria Spa妥善筹备，为您精准安排心仪房间与专职技师。',
+          jp: '単なる「サービスの購入」ではなく「体験のデザイン」——空間から担当セラピストまでお客様が主導。最適な個室とセラピストを手配するため事前予約をお願いしております。',
+          kr: '단순한 "서비스 구매"가 아니라 "경험을 설계"하는 것입니다 — 공간부터 담당 테라피스트까지 고객이 주도합니다. 완벽한 맞춤 준비를 위해 사전 예약이 필수입니다.',
+        },
+        image: '/images/history/2021-ngan-ha-treatment-beds.png',
+        watermarkEnabled: true,
+        ctaText: {
+          vi: 'Thiết Kế Hành Trình Riêng',
+          en: 'Design Your Journey',
+          cn: '定制专属体验',
+          jp: '旅をデザインする',
+          kr: '나만의 여정 설계하기',
+        },
+        ctaLink: '/{lang}/new-user/standard/checkout',
+      },
+      {
+        id: 'deep_body',
+        order: '03',
+        title: {
+          vi: 'Menu Body Chuyên Sâu',
+          en: 'Deep Body Therapy',
+          cn: '深层理疗菜单',
+          jp: 'ディープボディセラピー',
+          kr: '딥 바디 테라피',
+        },
+        tagline: {
+          vi: 'Tập trung massage và trị liệu chuyên sâu',
+          en: 'Focused on massage and deep therapeutic treatment',
+          cn: '专注按摩与深层理疗',
+          jp: 'マッサージとディープセラピーに特化',
+          kr: '마사지와 딥테라피 집중',
+        },
+        summary: {
+          vi: 'Menu chuyên biệt tập trung 100% vào mục tiêu giải quyết các vấn đề cơ thể ở mức độ sâu — căng cơ mãn tính, đau vai gáy, mất ngủ do stress tích tụ và phục hồi năng lượng thể chất toàn diện.',
+          en: 'This specialized menu focuses 100% on one goal: resolving deep-seated body issues — chronic muscle tension, neck and shoulder pain, stress-related insomnia, and total energy recovery.',
+          cn: '本菜单100%专注于一个目标：解决身体深层问题——慢性肌肉劳损、肩颈酸痛、因压力累积的失眠，以及全身能量的深度恢复。',
+          jp: '総合スパのように多様なサービスを広げるのではなく、慢性的な筋肉の張り、首・肩のコリ、ストレスによる不眠、活力回復など身体の深層問題の解決に100%集中する専門メニューです。',
+          kr: '신체의 깊은 문제를 해결하는 데 100% 집중하는 전문 메뉴입니다: 만성 근육 긴장, 목·어깨 통증, 스트레스로 인한 불면증 완화 및 온전한 에너지 회복.',
+        },
+        included: {
+          vi: 'Liệu trình massage trị liệu chuyên sâu (deep tissue, myofascial release, trigger point therapy...); Kỹ thuật viên giàu kinh nghiệm dùng lực mạnh và sâu; Đánh giá thể trạng trước khi thực hiện; Thời lượng từ 70 phút trở lên để chạm đến lớp cơ sâu.',
+          en: 'Deep therapeutic massage modalities (deep tissue, myofascial release, trigger point); Experienced therapists applying strong, deep pressure; Pre-treatment body assessment; Extended duration (70+ mins) to reach deep muscle layers.',
+          cn: '深层理疗按摩疗程（深层肌肉、筋膜放松、激痛点疗法）；经验丰富且熟练运用强劲深层力度的资深技师；护理前进行身体状况细致评估；70分钟以上充裕时长以触达深层肌肉。',
+          jp: 'ディープセラピー施術（ディープティッシュ、筋膜リリース、トリガーポイント）；強く深い圧をコントロールできる熟練セラピスト；施術前の身体状態評価；深層筋に届く70分以上のセッション。',
+          kr: '딥테라피 마사지 시술(딥티슈, 근막 이완, 트리거 포인트 테라피); 강하고 깊은 압을 능숙하게 다루는 숙련된 테라피스트; 시술 전 신체 상태 평가; 심층 근육에 도달하는 70분 이상의 충분한 시간.',
+        },
+        bestFor: {
+          vi: 'Người làm việc văn phòng ngồi lâu đau mỏi vai gáy - lưng dưới; người mất ngủ do căng thẳng cơ bắp tích tụ; người vận động thể thao cần phục hồi cơ; khách quen với lực mạnh mong muốn tác động sâu thực sự.',
+          en: 'Office workers sitting long hours with chronic neck, shoulder, and lower back pain; those suffering insomnia from muscle tension; athletes needing muscle recovery; guests accustomed to strong pressure desiring deep relief.',
+          cn: '久坐办公、经常肩颈腰背酸痛的白领；因肌肉紧绷积累而失眠或浅眠者；运动量大需肌肉恢复者；习惯强力手法、希望明显感受深层渗透力的客人。',
+          jp: '長時間のデスクワークで首・肩・腰のコリに悩むオフィスワーカー、筋肉の緊張による不眠に悩む方、運動後のリカバリーが必要な方、強い圧を好む方。',
+          kr: '장시간 앉아서 근무하며 목·어깨·허리 통증을 겪는 직장인, 근육 긴장으로 불면이나 얕은 수면을 겪는 분, 운동 후 근육 회복이 필요한 스포츠 애호가, 강한 압을 선호하는 고객.',
+        },
+        highlights: {
+          vi: 'Menu duy nhất định vị rõ là "trị liệu" chứ không chỉ "thư giãn" — mục tiêu là thay đổi thực sự tình trạng cơ thể. Vì sử dụng lực mạnh và sâu, menu này không khuyến khích cho khách hàng lần đầu massage, phù hợp nhất với người đã quen và thực sự có nhu cầu.',
+          en: 'The only menu explicitly positioned as "therapy" rather than "relaxation" — designed to create measurable physical improvement. Due to deep, strong pressure, not recommended for first-time massage guests.',
+          cn: '唯一明确定位为“理疗”而非单纯“放松”的菜单——旨在真正改善身体状况。因手法深层有力，本菜单不建议首次体验按摩的客人选择，最适合已有按摩习惯者。',
+          jp: '「リラクゼーション」ではなく明確に「セラピー」として位置づけられた唯一のメニュー。強く深い圧を使用するため、マッサージ未経験の方にはおすすめせず、慣れた方に最適です。',
+          kr: '"릴렉세이션"이 아닌 "테라피"로 명확히 포지셔닝된 유일한 메뉴 — 신체 상태를 근본적으로 개선합니다. 강하고 깊은 압을 사용하므로 첫 마사지 고객에게는 권장하지 않습니다.',
+        },
+        image: '/images/body-treatment-full.png',
+        watermarkEnabled: true,
+        ctaText: {
+          vi: 'Đặt Lịch Trị Liệu Ngay',
+          en: 'Book Deep Therapy',
+          cn: '预约深层理疗',
+          jp: 'ディープセラピーを予約',
+          kr: '딥테라피 예약하기',
+        },
+        ctaLink: '/{lang}/new-user/standard/checkout',
+      },
+      {
+        id: 'homespa',
+        order: '04',
+        title: {
+          vi: 'Menu Homespa',
+          en: 'Home Spa Menu',
+          cn: '到家水疗菜单',
+          jp: 'ホームスパメニュー',
+          kr: '홈스파 메뉴',
+        },
+        tagline: {
+          vi: 'KTV đến tận nhà — trải nghiệm spa không cần ra ngoài',
+          en: 'Therapist comes to you — spa experience without leaving home',
+          cn: '技师上门 —— 无需出门的水疗体验',
+          jp: 'セラピストが訪問 — 外出せずに楽しむスパ体験',
+          kr: '테라피스트가 직접 방문 — 외출 없이 즐기는 스파',
+        },
+        summary: {
+          vi: 'Giải quyết rào cản di chuyển rất thực tế: thời tiết nắng gắt/mưa lớn, kẹt xe giờ cao điểm, hoặc đơn giản là sau một ngày dài chỉ muốn ở nhà thư giãn. Homespa mang dịch vụ xoa bóp đến tận không gian riêng của bạn.',
+          en: 'This menu solves a very real friction: unpredictable weather, rush-hour traffic, or simply wanting to stay comfortably at home after a long day. Homespa brings premier spa therapy directly to your private sanctuary.',
+          cn: '解决出行痛点：烈日暴雨天气、高峰交通拥堵，或是忙碌一天后只想留在家里。到家水疗将高品质按摩护理直接带入您的私密生活空间。',
+          jp: '強い日差しや大雨、渋滞、あるいは長い一日の後に外出せず家にいたいという現実的な障壁を解決。ホームスパは上質なトリートメントをお客様のプライベート空間へお届けします。',
+          kr: '궂은 날씨, 출퇴근길 교통체증, 또는 하루 끝에 편안한 내 집에서 쉬고 싶은 현실적인 장벽을 해결합니다. 홈스파는 전문 스파 서비스를 고객의 프라이빗한 공간으로 직접 전달합니다.',
+        },
+        included: {
+          vi: 'Kỹ thuật viên di chuyển trực tiếp đến địa chỉ yêu cầu (nhà riêng, căn hộ, khách sạn...); Trang bị đầy đủ dụng cụ và tinh dầu chuyên nghiệp; Thực hiện chuẩn chỉnh liệu trình phù hợp thể trạng theo gói dịch vụ đã chọn.',
+          en: 'Therapist travels to your requested address (home, apartment, hotel...); Fully equipped with professional spa tools and organic oils; Delivers the precise treatment matching your body\'s needs according to your chosen package.',
+          cn: '技师前往您指定的地址（住宅、公寓、酒店等）；携带齐全的专业水疗器具与优质精油；根据所选套餐细致执行符合身体需求的专属疗程。',
+          jp: 'セラピストがご指定先（自宅、マンション、ホテル等）へ訪問；プロ仕様の器具とオイルを持参；ご選択のパッケージに沿って身体のニーズに応じた丁寧な施術を行います。',
+          kr: '테라피스트가 고객이 지정한 장소(자택, 아파트, 호텔 등)로 직접 방문; 전문 스파 장비와 천연 오일 완비; 선택하신 패키지에 맞춰 신체 니즈에 맞는 정성스러운 시술을 제공합니다.',
+        },
+        bestFor: {
+          vi: 'Khách hàng bận rộn không có thời gian di chuyển; người ở khu vực xa, giao thông khó khăn; khách muốn trải nghiệm trong không gian quen thuộc riêng tư tuyệt đối; tiệc tại gia, chăm sóc gia đình đông người, người lớn tuổi hoặc phụ nữ sau sinh.',
+          en: 'Busy guests with no time to travel; residents in distant areas; guests who prefer familiar private spaces; occasion-based groups: house parties, family wellness (multiple guests), elderly or postpartum women.',
+          cn: '无暇出行的忙碌人士；居住偏远或交通不便的客人；希望在熟悉且绝对私密的家中享受服务的客人；居家聚会、家庭多人同时护理、行动不便的长辈或产后女性。',
+          jp: '移動時間が取れない多忙な方、遠方や交通が不便な地域にお住まいの方、慣れた完全プライベートな空間を好む方、ホームパーティー、ご家族複数名のケア、外出が難しいご高齢者や産後の女性。',
+          kr: '매장까지 이동할 시간이 없는 바쁜 고객, 외곽 지역 거주자, 익숙하고 완전한 프라이빗 공간을 원하는 분, 홈파티 및 다인 가족 케어, 외출이 불편한 어르신 또는 산후 여성.',
+        },
+        highlights: {
+          vi: 'Homespa không phải bản thu nhỏ của spa tại chỗ, mà là giải pháp loại bỏ hoàn toàn rào cản về di chuyển và thời tiết, để việc chăm sóc cơ thể trở nên dễ tiếp cận bất kể hoàn cảnh.',
+          en: 'Homespa is not a scaled-down version of an in-spa visit, but a dedicated solution removing commute and weather barriers, making wellness effortlessly accessible in every circumstance.',
+          cn: '到家水疗并非门店服务的“缩水版”，而是专注解决出行与天气障碍的完整方案，让高品质身心关怀不受客观环境限制、随时可享。',
+          jp: 'ホームスパは店舗の「簡易版」ではなく、移動や天候という障壁を完全に取り除き、どんな状況でも上質なボディケアを受けられるようにするためのソリューションです。',
+          kr: '홈스파는 매장 서비스의 "축소판"이 아니라, 이동과 날씨라는 장벽을 완전히 없애 어떤 상황에서도 신체 관리를 쉽게 접할 수 있도록 하는 솔루션입니다.',
+        },
+        image: '/images/heel-care.png',
+        watermarkEnabled: true,
+        ctaText: {
+          vi: 'Liên Hệ Đặt Lịch Homespa',
+          en: 'Contact Homespa',
+          cn: '联系到家水疗',
+          jp: 'ホームスパを予約・相談',
+          kr: '홈스파 문의 및 예약',
+        },
+        ctaLink: 'tel:+84964090277',
+      },
+    ],
     ctaText: {
       vi: 'Đặt Lịch Trải Nghiệm Ngay',
       en: 'Reserve Your Experience',
@@ -616,6 +859,28 @@ export const hydrateOurStoryConfig = (saved: any): OurStoryConfig => {
       Object.assign(specialtyPillars[idx].desc, pillar.desc);
     });
   }
+
+  const defaultMenuNiches = defaults.specialtySection.menuNiches || [];
+  const specialtyMenuNiches = Array.isArray(saved.specialtySection?.menuNiches) && saved.specialtySection.menuNiches.length > 0
+    ? saved.specialtySection.menuNiches.map((item: any, idx: number) => {
+        const fallback = defaultMenuNiches[idx] || defaultMenuNiches[0];
+        return {
+          id: item.id || fallback?.id || `menu-niche-${idx + 1}`,
+          order: item.order || fallback?.order || String(idx + 1).padStart(2, '0'),
+          image: item.image || fallback?.image || '/images/about-treatment.png',
+          watermarkEnabled: item.watermarkEnabled !== false,
+          title: { ...(fallback?.title || {}), ...(item.title || {}) },
+          tagline: { ...(fallback?.tagline || {}), ...(item.tagline || {}) },
+          summary: { ...(fallback?.summary || {}), ...(item.summary || {}) },
+          included: { ...(fallback?.included || {}), ...(item.included || {}) },
+          bestFor: { ...(fallback?.bestFor || {}), ...(item.bestFor || {}) },
+          highlights: { ...(fallback?.highlights || {}), ...(item.highlights || {}) },
+          note: { ...(fallback?.note || {}), ...(item.note || {}) },
+          ctaText: { ...(fallback?.ctaText || {}), ...(item.ctaText || {}) },
+          ctaLink: item.ctaLink !== undefined ? item.ctaLink : fallback?.ctaLink,
+        };
+      })
+    : defaultMenuNiches;
 
   return {
     contentVersion: 3,
@@ -689,6 +954,7 @@ export const hydrateOurStoryConfig = (saved: any): OurStoryConfig => {
       headline: { ...defaults.specialtySection.headline, ...(saved.specialtySection?.headline || {}) },
       lead: specialtyLead,
       pillars: specialtyPillars,
+      menuNiches: specialtyMenuNiches,
       ctaText: { ...defaults.specialtySection.ctaText, ...(saved.specialtySection?.ctaText || {}) },
       ctaLink: saved.specialtySection?.ctaLink === '/new-user/standard/checkout' ? null : (saved.specialtySection?.ctaLink || defaults.specialtySection.ctaLink),
     },

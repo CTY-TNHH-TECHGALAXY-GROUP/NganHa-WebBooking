@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Image as ImageIcon, Video, Upload, CheckCircle, ChevronDown, ChevronRight, Crop } from 'lucide-react';
+import { Image as ImageIcon, Video, Upload, CheckCircle, ChevronDown, ChevronRight, Crop, Link as LinkIcon, ExternalLink } from 'lucide-react';
 import { createClient } from '@/lib/supabase';
 import FocalPointEditor from '@/components/Admin/FocalPointEditor';
 
@@ -23,7 +23,7 @@ const spaceStructure = [
       'capacity.facialArea',
     ],
   },
-  { id: 'cta', title: 'Call To Action', keys: ['cta'] },
+  { id: 'cta', title: '05 / Call To Action (Banner Chân Trang & Nút Đặt Lịch)', keys: ['cta'] },
 ];
 
 const KEY_LABELS: Record<string, string> = {
@@ -557,6 +557,164 @@ const SpaceAdminPage = () => {
                         )}
                       </div>
                     ))}
+                    {section.id === 'cta' && (
+                      <div className="bg-admin-panel border border-admin-line-strong rounded-2xl p-5 flex flex-col justify-between shadow-[var(--shadow)] md:col-span-1 xl:col-span-2">
+                        <div>
+                          <div className="flex items-center justify-between mb-2">
+                            <h3 className="text-sm font-bold text-admin-text tracking-wide flex items-center gap-2">
+                              <LinkIcon size={16} className="text-admin-gold" />
+                              Cấu hình Link Nút CTA Banner
+                            </h3>
+                            <span className="text-[11px] text-admin-gold font-mono bg-admin-gold/10 px-2 py-0.5 rounded">
+                              Space Banner
+                            </span>
+                          </div>
+                          <p className="text-xs text-admin-text-dim mb-4">
+                            Gắn đường link điều hướng khi khách hàng bấm vào nút trên banner cuối cùng của trang Không gian (Space).
+                          </p>
+
+                          {/* CTA 1: Đặt lịch trải nghiệm */}
+                          <div className="mb-4 bg-admin-panel-2 p-3.5 rounded-xl border border-admin-line-strong">
+                            <div className="flex items-center justify-between mb-1.5">
+                              <label className="text-xs font-bold text-admin-text flex items-center gap-1.5">
+                                <span className="w-2 h-2 rounded-full bg-admin-gold inline-block" />
+                                Link nút &quot;ĐẶT LỊCH TRẢI NGHIỆM&quot;
+                              </label>
+                              <span className="text-[11px] text-admin-gold font-mono">cta.bookLink</span>
+                            </div>
+                            <div className="flex gap-2">
+                              <input
+                                type="text"
+                                placeholder="https://oria-spa.vercel.app/vi/new-user/standard/checkout"
+                                defaultValue={contentData?.cta?.bookLink || 'https://oria-spa.vercel.app/vi/new-user/standard/checkout'}
+                                key={contentData?.cta?.bookLink || 'empty-book-link'}
+                                onBlur={async (e) => {
+                                  const newUrl = e.target.value.trim();
+                                  if (newUrl === (contentData?.cta?.bookLink || '')) return;
+                                  setUploadingId('cta.bookLink');
+                                  try {
+                                    const newMediaData = setNestedValue(contentData, 'cta.bookLink', newUrl);
+                                    setContentData(newMediaData);
+                                    await saveContent(newMediaData);
+                                    setSuccessId('cta.bookLink');
+                                    setTimeout(() => setSuccessId(null), 3000);
+                                  } catch (err) {
+                                    console.error(err);
+                                  } finally {
+                                    setUploadingId(null);
+                                  }
+                                }}
+                                className="flex-1 bg-admin-panel border border-admin-line-strong text-admin-text text-xs font-mono rounded-lg px-3 py-2.5 outline-none focus:border-admin-gold transition-colors"
+                              />
+                              <button
+                                type="button"
+                                onClick={async () => {
+                                  const defaultUrl = 'https://oria-spa.vercel.app/vi/new-user/standard/checkout';
+                                  setUploadingId('cta.bookLink');
+                                  try {
+                                    const newMediaData = setNestedValue(contentData, 'cta.bookLink', defaultUrl);
+                                    setContentData(newMediaData);
+                                    await saveContent(newMediaData);
+                                    setSuccessId('cta.bookLink');
+                                    setTimeout(() => setSuccessId(null), 3000);
+                                  } catch (err) {
+                                    console.error(err);
+                                  } finally {
+                                    setUploadingId(null);
+                                  }
+                                }}
+                                className="px-3 py-2 text-xs bg-admin-panel border border-admin-line-strong hover:border-admin-gold hover:text-admin-gold rounded-lg text-admin-text-dim transition-colors whitespace-nowrap font-medium"
+                                title="Đặt lại link mặc định"
+                              >
+                                Mặc định
+                              </button>
+                            </div>
+                            <div className="flex items-center justify-between mt-2">
+                              <p className="text-[11px] text-admin-text-faint">
+                                Mặc định: <code className="text-admin-gold font-mono">https://oria-spa.vercel.app/vi/new-user/standard/checkout</code>
+                              </p>
+                              {(contentData?.cta?.bookLink || 'https://oria-spa.vercel.app/vi/new-user/standard/checkout') && (
+                                <a
+                                  href={contentData?.cta?.bookLink || 'https://oria-spa.vercel.app/vi/new-user/standard/checkout'}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-[11px] text-admin-gold hover:underline flex items-center gap-1"
+                                >
+                                  Mở thử link <ExternalLink size={11} />
+                                </a>
+                              )}
+                            </div>
+                          </div>
+
+                          {/* CTA 2: Khám phá thêm */}
+                          <div className="bg-admin-panel-2 p-3.5 rounded-xl border border-admin-line-strong">
+                            <div className="flex items-center justify-between mb-1.5">
+                              <label className="text-xs font-bold text-admin-text flex items-center gap-1.5">
+                                <span className="w-2 h-2 rounded-full bg-admin-text-dim inline-block" />
+                                Link nút &quot;KHÁM PHÁ THÊM&quot; (Explore)
+                              </label>
+                              <span className="text-[11px] text-admin-gold font-mono">cta.exploreLink</span>
+                            </div>
+                            <div className="flex gap-2">
+                              <input
+                                type="text"
+                                placeholder="/pure-relaxation"
+                                defaultValue={contentData?.cta?.exploreLink || '/pure-relaxation'}
+                                key={contentData?.cta?.exploreLink || 'empty-explore-link'}
+                                onBlur={async (e) => {
+                                  const newUrl = e.target.value.trim();
+                                  if (newUrl === (contentData?.cta?.exploreLink || '')) return;
+                                  setUploadingId('cta.exploreLink');
+                                  try {
+                                    const newMediaData = setNestedValue(contentData, 'cta.exploreLink', newUrl);
+                                    setContentData(newMediaData);
+                                    await saveContent(newMediaData);
+                                    setSuccessId('cta.exploreLink');
+                                    setTimeout(() => setSuccessId(null), 3000);
+                                  } catch (err) {
+                                    console.error(err);
+                                  } finally {
+                                    setUploadingId(null);
+                                  }
+                                }}
+                                className="flex-1 bg-admin-panel border border-admin-line-strong text-admin-text text-xs font-mono rounded-lg px-3 py-2.5 outline-none focus:border-admin-gold transition-colors"
+                              />
+                              <button
+                                type="button"
+                                onClick={async () => {
+                                  const defaultUrl = '/pure-relaxation';
+                                  setUploadingId('cta.exploreLink');
+                                  try {
+                                    const newMediaData = setNestedValue(contentData, 'cta.exploreLink', defaultUrl);
+                                    setContentData(newMediaData);
+                                    await saveContent(newMediaData);
+                                    setSuccessId('cta.exploreLink');
+                                    setTimeout(() => setSuccessId(null), 3000);
+                                  } catch (err) {
+                                    console.error(err);
+                                  } finally {
+                                    setUploadingId(null);
+                                  }
+                                }}
+                                className="px-3 py-2 text-xs bg-admin-panel border border-admin-line-strong hover:border-admin-gold hover:text-admin-gold rounded-lg text-admin-text-dim transition-colors whitespace-nowrap font-medium"
+                                title="Đặt lại link mặc định"
+                              >
+                                Mặc định
+                              </button>
+                            </div>
+                            <p className="mt-2 text-[11px] text-admin-text-faint">
+                              Mặc định: <code className="text-admin-gold font-mono">/pure-relaxation</code>
+                            </p>
+                          </div>
+                        </div>
+
+                        {successId?.startsWith('cta.') && (
+                          <div className="mt-3 bg-admin-green/10 border border-admin-green text-admin-green text-xs font-bold px-3 py-2 rounded-lg flex items-center gap-1.5 animate-fadeIn">
+                            <CheckCircle size={14} /> Đã lưu cấu hình liên kết CTA thành công!
+                          </div>
+                        )}
+                      </div>
+                    )}
                     {currentKeys.length === 0 && (
                       <p className="text-admin-text-dim text-sm italic col-span-full">Chưa có dữ liệu nào. Hãy bấm "Thêm Video / Ảnh" để tạo mới.</p>
                     )}

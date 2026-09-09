@@ -11,6 +11,7 @@ import {
   isBookingTimeInPast,
   parseBookingRequest,
   serviceName,
+  stableStringify,
   validateCatalogOptions,
   verifyQuote,
   type CatalogService,
@@ -45,18 +46,14 @@ const jsonError = (code: string, message: string, status: number, fieldErrors?: 
 function schemaUnavailable(error: any): boolean {
   const message = String(error?.message || '');
   return ['42P01', '42703', '42501', '42883', 'PGRST202', 'PGRST204'].includes(error?.code) ||
-    /schema cache|could not find the function|function create_booking_atomic/i.test(message);
+    /schema cache|could not find the function|function webbooking_(allocate_booking_number|commit_booking)/i.test(message);
 }
 
-function mapRpcError(error: any): NextResponse {
+function mapAllocatorError(error: any): NextResponse {
   const message = String(error?.message || '');
-  if (/IDEMPOTENCY_CONFLICT/i.test(message)) return jsonError('IDEMPOTENCY_CONFLICT', 'This idempotency key was already used for a different booking intent.', 409);
-  if (/IDEMPOTENCY_LEGACY_REVIEW/i.test(message)) return jsonError('IDEMPOTENCY_REVIEW_REQUIRED', 'This older booking needs review before it can be replayed.', 409);
-  if (/PRICE_CHANGED|QUOTE/i.test(message)) return jsonError('PRICE_CHANGED', 'The service catalog changed. Please review your booking again.', 409);
-  if (/CUSTOMER_IDENTITY_CONFLICT/i.test(message)) return jsonError('CONTACT_REQUIRES_REVIEW', 'Please review your contact details or contact the spa.', 409);
+  if (/BOOKING_DATE_REQUIRED/i.test(message)) return jsonError('VALIDATION_ERROR', 'Please choose a booking date and time.', 400);
   if (schemaUnavailable(error) || /timeout|temporarily|connection/i.test(message)) return jsonError('BOOKING_TEMPORARILY_UNAVAILABLE', 'Booking is temporarily unavailable. Please try again later.', 503);
-  if (/inactive|does not exist|service/i.test(message)) return jsonError('CART_REQUIRES_REVIEW', 'A selected service is no longer available.', 409);
-  return jsonError('BOOKING_FAILED', 'The booking could not be created.', 500);
+  return jsonError('BOOKING_NUMBER_UNAVAILABLE', 'A booking number could not be reserved. Please try again.', 503);
 }
 
 function responseForSnapshot(snapshot: BookingSnapshot, idempotent: boolean): NextResponse {
@@ -80,6 +77,18 @@ function responseForSnapshot(snapshot: BookingSnapshot, idempotent: boolean): Ne
       status: snapshot.status || 'NEW',
     },
   });
+}
+
+function responseForIncompleteBooking(bookingId: string): NextResponse {
+  return NextResponse.json(
+    {
+      success: false,
+      code: 'BOOKING_IN_PROGRESS',
+      error: 'Your booking is still being completed. Please retry shortly.',
+      bookingId,
+    },
+    { status: 409, headers: { 'Retry-After': '1' } },
+  );
 }
 
 function dateOnly(value: unknown): string {
@@ -116,7 +125,9 @@ function snapshotFromRow(row: any, items: unknown[] = [], services: unknown[] = 
     lang: String(row?.customerLang || row?.lang || 'vi'),
     status: row?.status || 'NEW',
     items,
-    services: items.length ? servicesFromItems(items) : services,
+    // Prefer the canonical catalog snapshot assembled before insert. Existing
+    // BookingItems do not carry localized name/duration fields in this schema.
+    services: services.length ? services : items.length ? servicesFromItems(items) : [],
     notes: row?.notes ?? null,
     focusAreaNote: row?.focusAreaNote ?? null,
   };
@@ -135,25 +146,163 @@ async function loadCommittedSnapshot(supabase: any, bookingId: string, fallback:
   return fallback;
 }
 
-async function findReplay(supabase: any, key: string, intentFingerprint: string): Promise<{ snapshot?: BookingSnapshot; conflict?: string } | null> {
+type ReplayLookup =
+  | { state: 'missing' }
+  | { state: 'complete'; snapshot: BookingSnapshot }
+  | { state: 'incomplete'; bookingId: string; itemCount: number }
+  | { state: 'unavailable' };
+
+const wait = (milliseconds: number) => new Promise((resolve) => setTimeout(resolve, milliseconds));
+
+async function findReplay(supabase: any, key: string, options: { waitForItems?: boolean } = {}): Promise<ReplayLookup> {
+  const attempts = options.waitForItems ? 4 : 1;
   try {
-    let row: any = null;
-    for (const lookup of [
-      (query: any) => query.eq('idempotency_key', key),
-      (query: any) => query.eq('idLegacy', `idemp:${key}`),
-    ]) {
-      const result = await lookup(supabase.from('Bookings').select('id, billCode, customerName, customerPhone, customerEmail, bookingDate, timeBooking, branchName, guestCount, totalAmount, customerLang, status, notes, focusAreaNote, idempotency_fingerprint').limit(1));
-      if (result.data?.[0]) { row = result.data[0]; break; }
-      if (result.data && !Array.isArray(result.data) && result.data.id) { row = result.data; break; }
+    const columns = 'id, billCode, customerName, customerPhone, customerEmail, bookingDate, timeBooking, branchName, guestCount, totalAmount, customerLang, status, notes, focusAreaNote';
+    for (let attempt = 0; attempt < attempts; attempt += 1) {
+      // Keep the established operations-admin marker. No new idempotency column
+      // or namespace is introduced by the counter-only release.
+      const { data: exact, error: bookingError } = await supabase.from('Bookings').select(columns).eq('idLegacy', `idemp:${key}`).maybeSingle();
+      if (bookingError) return { state: 'unavailable' };
+      if (!exact?.id) return { state: 'missing' };
+      const { data: items, error: itemsError } = await supabase.from('BookingItems').select('id, bookingId, serviceId, quantity, price, status, options, tip').eq('bookingId', exact.id);
+      if (itemsError) return { state: 'unavailable' };
+      if ((items || []).length > 0) return { state: 'complete', snapshot: snapshotFromRow(exact, items || []) };
+      if (attempt < attempts - 1) await wait(40 * (attempt + 1));
+      else return { state: 'incomplete', bookingId: String(exact.id), itemCount: 0 };
     }
-    if (!row) return null;
-    if (row.idempotency_fingerprint && row.idempotency_fingerprint !== intentFingerprint) return { conflict: 'IDEMPOTENCY_CONFLICT' };
-    if (!row.idempotency_fingerprint) return { conflict: 'IDEMPOTENCY_REVIEW_REQUIRED' };
-    const { data: items } = await supabase.from('BookingItems').select('id, bookingId, serviceId, quantity, price, status, options, tip').eq('bookingId', row.id);
-    return { snapshot: snapshotFromRow(row, items || []) };
   } catch {
-    return null;
+    // An unavailable replay lookup must not change the existing insert path.
+    return { state: 'unavailable' };
   }
+  return { state: 'unavailable' };
+}
+
+function uniqueErrorText(error: any): string {
+  return [error?.constraint, error?.details, error?.message].filter(Boolean).join(' ').toLowerCase();
+}
+
+function isBookingIdentifierConflict(error: any): boolean {
+  if (error?.code !== '23505') return false;
+  const text = uniqueErrorText(error);
+  return /bookings_pkey|bookings_billcode_key|billcode|duplicate key value violates unique constraint "bookings_pkey"/.test(text);
+}
+
+function isRetryableWriterError(error: any): boolean {
+  const text = uniqueErrorText(error);
+  return schemaUnavailable(error) || /timeout|temporarily|connection|deadlock|serialization/i.test(text);
+}
+
+function isWriterIdempotencyConflict(error: any): boolean {
+  const text = uniqueErrorText(error);
+  return error?.code === '23505' && /idlegacy|idempotency/.test(text);
+}
+
+function mapWriterError(error: any): NextResponse | null {
+  const text = uniqueErrorText(error);
+  if (/IDEMPOTENCY_KEY_REUSED/i.test(text)) return null;
+  if (/SERVICE_NOT_BOOKABLE|ITEM_INVALID|BOOKING_PAYLOAD_INVALID|BOOKING_FIELD_NOT_ALLOWED|BOOKING_SERVER_FIELDS_INVALID|BOOKING_ITEMS_INVALID/i.test(text)) {
+    return jsonError('CART_REQUIRES_REVIEW', 'Please review the selected services and options.', 409);
+  }
+  if (/SERVICE_PRICE_CONFLICT|BOOKING_TOTAL_CONFLICT/i.test(text)) {
+    return jsonError('PRICE_CHANGED', 'The service catalog changed. Please review your booking again.', 409);
+  }
+  return null;
+}
+
+type BookingWriterResult = { bookingId: string; billCode?: string; replay?: boolean };
+
+// Adapter boundary for the website-only atomic writer. The SQL contract is
+// intentionally kept outside this route: public.webbooking_commit_booking(
+// jsonb, jsonb) owns the parent plus all child inserts in one transaction.
+async function commitBookingAtomically(supabase: any, bookingPayload: Record<string, unknown>, items: Record<string, unknown>[]): Promise<BookingWriterResult> {
+  const { data, error } = await supabase.rpc('webbooking_commit_booking', {
+    p_booking: bookingPayload,
+    p_items: items,
+  });
+  if (error) throw error;
+  const result = Array.isArray(data) ? data[0] : data;
+  const bookingId = String(result?.bookingId || result?.booking_id || bookingPayload.id || '');
+  if (!bookingId) throw new Error('BOOKING_WRITER_EMPTY_RESULT');
+  return { bookingId, billCode: result?.billCode || result?.bill_code, replay: result?.replay === true || result?.idempotent === true };
+}
+
+function replayIdentityMatches(snapshot: BookingSnapshot, booking: NormalizedBooking): boolean {
+  const knownValues = [
+    [snapshot.customerName, booking.name],
+    [snapshot.customerPhone, booking.phone],
+    [snapshot.customerEmail, booking.email],
+    [snapshot.date, booking.date],
+    [snapshot.time, booking.time],
+    [snapshot.branchName, booking.branchName],
+    [snapshot.guests, booking.guests],
+    [snapshot.lang, booking.lang],
+  ] as const;
+  return knownValues.every(([saved, current]) => saved === null || saved === undefined || saved === '' || String(saved).toLowerCase() === String(current).toLowerCase());
+}
+
+function replayLineKeysFromRequest(booking: NormalizedBooking): string[] {
+  return booking.selectedServices.flatMap((item) => {
+    const options = item.options;
+    const strength = options.strength === 'light' ? 'LIGHT' : options.strength === 'strong' ? 'HARD' : options.strength ? 'NORMAL' : undefined;
+    const noteParts = [
+      options.notes?.tag0 ? 'Phụ nữ có thai' : '',
+      options.notes?.tag1 ? 'Có dị ứng' : '',
+      options.notes?.content || '',
+    ].filter(Boolean);
+    const base = { serviceId: item.id, quantity: item.quantity, options: {
+      ...(strength ? { strength } : {}),
+      focus: options.bodyParts?.focus || [],
+      avoid: options.bodyParts?.avoid || [],
+      therapist: options.therapist === 'male' ? 'Nam' : options.therapist === 'female' ? 'Nữ' : 'Ngẫu nhiên',
+      note: noteParts.join(' - '),
+    } };
+    return [
+      stableStringify(base),
+      ...(options.addons?.privateRoom ? [stableStringify({ serviceId: PRIVATE_ROOM_SERVICE_ID, quantity: item.quantity, options: { parentServiceId: item.id, isAddon: true } })] : []),
+    ];
+  }).sort();
+}
+
+function replayLineKeysFromSnapshot(snapshot: BookingSnapshot): string[] {
+  return (snapshot.items || []).map((item: any) => {
+    const options = item?.options && typeof item.options === 'object' ? item.options : {};
+    if (options.isAddon === true) {
+      return stableStringify({ serviceId: String(item?.serviceId || ''), quantity: Number(item?.quantity || 0), options: {
+        parentServiceId: options.parentServiceId || null,
+        isAddon: true,
+      } });
+    }
+    const hasCanonicalOptions = ['strength', 'focus', 'avoid', 'therapist', 'note'].some((key) => Object.prototype.hasOwnProperty.call(options, key));
+    return stableStringify({
+      serviceId: String(item?.serviceId || ''),
+      quantity: Number(item?.quantity || 0),
+      options: hasCanonicalOptions ? {
+        ...(options.strength ? { strength: options.strength } : {}),
+        focus: Array.isArray(options.focus) ? options.focus : [],
+        avoid: Array.isArray(options.avoid) ? options.avoid : [],
+        therapist: options.therapist || 'Ngẫu nhiên',
+        note: options.note || '',
+      } : null,
+    });
+  }).sort();
+}
+
+function replayLinesMatch(snapshot: BookingSnapshot, booking: NormalizedBooking): boolean {
+  const saved = replayLineKeysFromSnapshot(snapshot);
+  const current = replayLineKeysFromRequest(booking);
+  return saved.length > 0 && stableStringify(saved) === stableStringify(current);
+}
+
+async function resolveReplayConflict(supabase: any, key: string, booking: NormalizedBooking): Promise<NextResponse> {
+  const replay = await findReplay(supabase, key, { waitForItems: true });
+  if (replay.state === 'complete') {
+    if (!replayIdentityMatches(replay.snapshot, booking) || !replayLinesMatch(replay.snapshot, booking)) {
+      return jsonError('IDEMPOTENCY_KEY_REUSED', 'This booking request key is already linked to a different booking.', 409);
+    }
+    return responseForSnapshot(replay.snapshot, true);
+  }
+  if (replay.state === 'incomplete') return responseForIncompleteBooking(replay.bookingId);
+  return jsonError('BOOKING_REPLAY_UNAVAILABLE', 'The existing booking could not be verified. Please retry shortly.', 503);
 }
 
 function localizedServices(pricing: CanonicalPricing, booking: NormalizedBooking): unknown[] {
@@ -191,36 +340,99 @@ function buildNotes(booking: NormalizedBooking, pricing: CanonicalPricing): { no
   return { notes: notes.length ? notes.join(' | ') : null, focusAreaNote: preferences.length ? preferences.join('\n') : null };
 }
 
-function buildRpcPayload(booking: NormalizedBooking, pricing: CanonicalPricing): { booking: Record<string, unknown>; items: Record<string, unknown>[] } {
+function buildBookingPayload(booking: NormalizedBooking, pricing: CanonicalPricing, bookingId: string, customerId: string | null, idempotencyKey: string): Record<string, unknown> {
   const preferenceNotes = buildNotes(booking, pricing);
-  const bookingPayload: Record<string, unknown> = {
-    source: 'WEB_BOOKING', guestCount: booking.guests, branchName: booking.branchName,
-    bookingDate: new Date(`${booking.date}T${booking.time}:00+07:00`).toISOString(), timeBooking: booking.time,
+  return {
+    id: bookingId, billCode: bookingId, source: 'WEB_BOOKING', guestCount: booking.guests, branchName: booking.branchName,
+    // The writer maps bookingDate to a timestamp without time zone. Send the
+    // appointment wall time, not a UTC ISO value that would shift the slot.
+    bookingDate: `${booking.date}T${booking.time}:00`, timeBooking: booking.time,
     customerName: booking.name, customerPhone: booking.phone, customerEmail: booking.email,
-    customerGender: booking.customerGender, customerLang: booking.lang, customerId: null,
+    customerGender: booking.customerGender, customerLang: booking.lang, customerId,
     roomName: pricing.items.some((item) => item.hasPrivateRoom) ? 'Private Room' : null,
     notes: preferenceNotes.notes, focusAreaNote: preferenceNotes.focusAreaNote,
-    totalAmount: pricing.totalAmountVND, status: 'NEW', tip: 0, requestFingerprint: booking.intentFingerprint,
+    totalAmount: pricing.totalAmountVND, status: 'NEW', tip: 0,
+    idLegacy: `idemp:${idempotencyKey}`,
+    createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(),
   };
-  const items = pricing.items.flatMap((item, line) => {
-    const options = { strength: item.options.strength, focus: item.options.bodyParts?.focus || [], avoid: item.options.bodyParts?.avoid || [], therapist: item.options.therapist || 'random', note: item.options.notes?.content || '',
-      _booking: { line, name: serviceName(item.catalog, booking.lang), duration: item.duration, priceUSD: item.basePriceUSD, options: item.options } };
-    const rows: Record<string, unknown>[] = [{ serviceId: item.id, quantity: item.quantity, price: item.basePriceVND, status: 'WAITING', options, tip: 0 }];
-    if (item.hasPrivateRoom) rows.push({ serviceId: PRIVATE_ROOM_SERVICE_ID, quantity: item.quantity, price: item.addonPriceVND, status: 'WAITING', options: { displayName: 'Private Room', parentServiceId: item.id, parentLine: line, isAddon: true, _booking: { priceUSD: item.addonPriceUSD } }, tip: 0 });
-    return rows;
-  });
-  return { booking: bookingPayload, items };
 }
 
-function snapshotFromRpc(result: any, booking: NormalizedBooking, pricing: CanonicalPricing): BookingSnapshot {
-  const data = result?.data && typeof result.data === 'object' ? result.data : result;
-  return {
-    bookingId: String(result?.booking_id || data?.bookingId || ''), billCode: String(result?.bill_code || data?.billCode || result?.booking_id || data?.bookingId || ''),
-    customerName: String(data?.customerName || booking.name), customerPhone: data?.customerPhone ?? booking.phone, customerEmail: data?.customerEmail ?? booking.email,
-    date: String(data?.date || booking.date), time: data?.time ?? booking.time, branchName: String(data?.branchName || booking.branchName),
-    guests: Number(data?.guests || booking.guests), totalAmount: Number(data?.totalAmount ?? pricing.totalAmountVND), lang: String(data?.lang || booking.lang),
-    status: String(data?.status || 'NEW'), items: data?.items || [], services: localizedServices(pricing, booking), notes: data?.notes || null, focusAreaNote: data?.focusAreaNote || null,
+function buildBookingItems(booking: NormalizedBooking, pricing: CanonicalPricing, bookingId: string): Record<string, unknown>[] {
+  return pricing.items.flatMap((item, index) => {
+    const options = item.options;
+    const strength = options.strength === 'light' ? 'LIGHT' : options.strength === 'strong' ? 'HARD' : options.strength ? 'NORMAL' : undefined;
+    const noteParts = [
+      options.notes?.tag0 ? 'Phụ nữ có thai' : '',
+      options.notes?.tag1 ? 'Có dị ứng' : '',
+      options.notes?.content || '',
+    ].filter(Boolean);
+    const rows: Record<string, unknown>[] = [{
+      id: `${bookingId}-${item.id}-${index}`,
+      bookingId, serviceId: item.id, quantity: item.quantity, price: item.basePriceVND,
+      status: 'WAITING',
+      options: {
+        strength,
+        focus: options.bodyParts?.focus || [],
+        avoid: options.bodyParts?.avoid || [],
+        therapist: options.therapist === 'male' ? 'Nam' : options.therapist === 'female' ? 'Nữ' : 'Ngẫu nhiên',
+        note: noteParts.join(' - '),
+      },
+      tip: 0,
+    }];
+    if (item.hasPrivateRoom) rows.push({
+      id: `${bookingId}-${PRIVATE_ROOM_SERVICE_ID}-${index}`,
+      bookingId, serviceId: PRIVATE_ROOM_SERVICE_ID, quantity: item.quantity, price: item.addonPriceVND,
+      status: 'WAITING',
+      options: { displayName: 'Phòng riêng', parentServiceId: item.id, isAddon: true },
+      tip: 0,
+    });
+    return rows;
+  });
+}
+
+async function resolveCustomerId(supabase: any, booking: NormalizedBooking): Promise<string | null> {
+  const phone = booking.phone.trim();
+  const email = booking.email.trim().toLowerCase();
+  const query = phone
+    ? supabase.from('Customers').select('id, fullName, phone, email, gender').eq('phone', phone).maybeSingle()
+    : supabase.from('Customers').select('id, fullName, phone, email, gender').eq('email', email).maybeSingle();
+  const { data: existingCustomer } = await query;
+  if (existingCustomer?.id) {
+    const updatePayload: Record<string, unknown> = { fullName: booking.name, updatedAt: new Date().toISOString() };
+    if (email && !existingCustomer.email) updatePayload.email = email;
+    if (phone && !existingCustomer.phone) updatePayload.phone = phone;
+    if (booking.customerGender && !existingCustomer.gender) updatePayload.gender = booking.customerGender;
+    await supabase.from('Customers').update(updatePayload).eq('id', existingCustomer.id);
+    return String(existingCustomer.id);
+  }
+  const customerId = `CUS-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+  const { data: created, error } = await supabase.from('Customers').insert({
+    id: customerId, fullName: booking.name, phone, email, gender: booking.customerGender,
+    createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(),
+  }).select('id').single();
+  if (error) {
+    console.warn('[API Bookings] Customer persistence failed; preserving booking flow:', error.message);
+    return null;
+  }
+  return created?.id || customerId;
+}
+
+async function allocateBookingId(supabase: any, bookingDate: string): Promise<string> {
+  const { data, error } = await supabase.rpc('webbooking_allocate_booking_number', { p_booking_at: bookingDate });
+  if (error) throw error;
+  const value = typeof data === 'string' ? data : data?.bookingId || data?.booking_id || data?.billCode;
+  if (!value || typeof value !== 'string') throw new Error('BOOKING_NUMBER_EMPTY');
+  return value;
+}
+
+function snapshotFromDirectInsert(booking: NormalizedBooking, pricing: CanonicalPricing, bookingId: string, items: Record<string, unknown>[], customerId: string | null): BookingSnapshot {
+  const payload = {
+    id: bookingId, billCode: bookingId, customerName: booking.name, customerPhone: booking.phone,
+    customerEmail: booking.email, bookingDate: `${booking.date}T${booking.time}:00+07:00`, timeBooking: booking.time,
+    branchName: booking.branchName, guestCount: booking.guests, totalAmount: pricing.totalAmountVND,
+    customerLang: booking.lang, status: 'NEW', notes: buildNotes(booking, pricing).notes, focusAreaNote: buildNotes(booking, pricing).focusAreaNote,
   };
+  return { ...snapshotFromRow(payload, items), services: localizedServices(pricing, booking) };
 }
 
 async function resolveReceptionEmail(supabase: any): Promise<string> {
@@ -251,14 +463,21 @@ export async function POST(request: Request) {
   const parsed = parseBookingRequest(body, request, { allowPastForReplay: true });
   if (!parsed.ok) return jsonError('VALIDATION_ERROR', 'Please correct the highlighted fields.', 400, parsed.errors);
   const booking = parsed.value;
+  // Preserve compatibility with older clients while keeping retries stable for
+  // the current checkout, which supplies an explicit request key.
   const finalKey = booking.idempotencyKey || `hash_${booking.intentFingerprint.slice(0, 48)}`;
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) return jsonError('BOOKING_TEMPORARILY_UNAVAILABLE', 'Booking is temporarily unavailable. Please try again later.', 503);
   const supabase = getSupabaseAdmin();
 
-  const replay = await findReplay(supabase, finalKey, booking.intentFingerprint);
-  if (replay?.conflict === 'IDEMPOTENCY_CONFLICT') return jsonError('IDEMPOTENCY_CONFLICT', 'This idempotency key was already used for a different booking intent.', 409);
-  if (replay?.conflict === 'IDEMPOTENCY_REVIEW_REQUIRED') return jsonError('IDEMPOTENCY_REVIEW_REQUIRED', 'This older booking needs review before it can be replayed.', 409);
-  if (replay?.snapshot) return responseForSnapshot(replay.snapshot, true);
+  const replay = await findReplay(supabase, finalKey, { waitForItems: true });
+  if (replay.state === 'complete') {
+    if (!replayIdentityMatches(replay.snapshot, booking) || !replayLinesMatch(replay.snapshot, booking)) {
+      return jsonError('IDEMPOTENCY_KEY_REUSED', 'This booking request key is already linked to a different booking.', 409);
+    }
+    return responseForSnapshot(replay.snapshot, true);
+  }
+  if (replay.state === 'incomplete') return responseForIncompleteBooking(replay.bookingId);
+
   if (!booking.quote) return jsonError('PRICE_CHANGED', 'Please review current pricing before confirming.', 409, [{ field: 'quote', code: 'QUOTE_REQUIRED', message: 'A current quote is required.' }]);
   if (isBookingTimeInPast(booking.date, booking.time)) return jsonError('VALIDATION_ERROR', 'Please choose a future booking time.', 400, [{ field: 'time', code: 'BOOKING_TIME_IN_PAST', message: 'Booking time must be in the future.' }]);
 
@@ -290,52 +509,96 @@ export async function POST(request: Request) {
   const quoteCheck = verifyQuote(booking.quote, [booking.intentFingerprint, cartIntentFingerprint(booking.selectedServices)], catalogDigest(catalog));
   if (!quoteCheck.ok) return jsonError('PRICE_CHANGED', 'The service catalog changed. Please review your booking again.', 409, [{ field: 'quote', code: quoteCheck.reason, message: 'The quote is no longer current.' }]);
 
-  // Detect changes early; the RPC also locks and checks this snapshot at commit.
+  // Close the catalog read window before the atomic writer call.
   const { data: latestCatalogRows, error: latestCatalogError } = await supabase.from('Services').select('id, nameVN, nameEN, nameCN, nameJP, nameKR, priceVND, priceUSD, duration, isActive, showPreferences, showNotes, showGender, showStrength, showFocus, focusConfig').in('id', ids);
   if (latestCatalogError) return jsonError('BOOKING_TEMPORARILY_UNAVAILABLE', 'Booking is temporarily unavailable. Please try again later.', 503);
   if (catalogDigest((latestCatalogRows || []) as CatalogService[]) !== catalogDigest(catalog)) return jsonError('PRICE_CHANGED', 'The service catalog changed. Please review your booking again.', 409, [{ field: 'quote', code: 'PRICE_CHANGED', message: 'The catalog changed before commit.' }]);
 
-  const { booking: bookingPayload, items } = buildRpcPayload(booking, pricing);
-  const expectedCatalog = catalog.filter((service) => items.some((item) => item.serviceId === service.id)).map((service) => ({
-    id: service.id, priceVND: Number(service.priceVND), priceUSD: Number(service.priceUSD), duration: Number(service.duration), isActive: service.isActive,
-  }));
-  const { data: rpcResult, error: rpcError } = await supabase.rpc('create_booking_atomic', { p_booking_data: { ...bookingPayload, expectedCatalog }, p_booking_items: items, p_idempotency_key: finalKey });
-  if (rpcError) return mapRpcError(rpcError);
-  const committedId = String(rpcResult?.booking_id || rpcResult?.data?.bookingId || '');
-  if (!committedId) return jsonError('BOOKING_TEMPORARILY_UNAVAILABLE', 'Booking was not acknowledged by the booking service.', 503);
-  const committedSnapshot = await loadCommittedSnapshot(supabase, committedId, snapshotFromRpc(rpcResult, booking, pricing));
-  if (rpcResult?.idempotent) return responseForSnapshot(committedSnapshot, true);
+  // The allocator supplies only the identifier. The website writer owns the
+  // atomic parent/items commit; there is deliberately no insert fallback.
+  // Allocate first so a missing counter cannot leave a customer-only side effect.
+  let customerId: string | null = null;
+  let customerResolved = false;
+  const bookingDate = new Date(`${booking.date}T${booking.time}:00+07:00`).toISOString();
+  let committedId = '';
+  let bookingPayload: Record<string, unknown> | null = null;
+  let items: Record<string, unknown>[] = [];
+  let writerReplay = false;
+  for (let attempt = 0; attempt < 5 && !committedId; attempt += 1) {
+    try {
+      committedId = await allocateBookingId(supabase, bookingDate);
+    } catch (error: any) {
+      return mapAllocatorError(error);
+    }
+    if (!customerResolved) {
+      try {
+        customerId = await resolveCustomerId(supabase, booking);
+      } catch (error: any) {
+        // Preserve the established booking flow if customer master lookup is
+        // temporarily unavailable. The operations system can reconcile the row.
+        console.warn('[API Bookings] Customer lookup unavailable:', error?.message || 'unknown error');
+      }
+      customerResolved = true;
+    }
+    bookingPayload = buildBookingPayload(booking, pricing, committedId, customerId, finalKey);
+    items = buildBookingItems(booking, pricing, committedId);
+    try {
+      const result = await commitBookingAtomically(supabase, bookingPayload, items);
+      committedId = result.bookingId;
+      writerReplay = result.replay === true;
+    } catch (writerError: any) {
+      if (isWriterIdempotencyConflict(writerError)) return resolveReplayConflict(supabase, finalKey, booking);
+      if (isBookingIdentifierConflict(writerError)) {
+        committedId = '';
+        continue;
+      }
+      if (isRetryableWriterError(writerError)) {
+        const reconciled = await findReplay(supabase, finalKey, { waitForItems: true });
+        if (reconciled.state === 'complete') {
+          if (!replayIdentityMatches(reconciled.snapshot, booking) || !replayLinesMatch(reconciled.snapshot, booking)) return jsonError('IDEMPOTENCY_KEY_REUSED', 'This booking request key is already linked to a different booking.', 409);
+          return responseForSnapshot(reconciled.snapshot, true);
+        }
+        if (reconciled.state === 'incomplete') return responseForIncompleteBooking(reconciled.bookingId);
+        return jsonError('BOOKING_TEMPORARILY_UNAVAILABLE', 'Booking is temporarily unavailable. Please try again later.', 503);
+      }
+      const mapped = mapWriterError(writerError);
+      if (mapped) return mapped;
+      console.error('[API Bookings] Atomic booking writer failed:', writerError?.code || writerError?.message);
+      return jsonError('BOOKING_FAILED', 'The booking could not be completed. Please try again.', 500);
+    }
+  }
+  if (!committedId || !bookingPayload) return jsonError('BOOKING_NUMBER_UNAVAILABLE', 'A booking number could not be reserved. Please try again.', 503);
 
-  // Customer master data is intentionally untouched here. Terra-1 owns any
-  // atomic resolve/link behavior; this route keeps the booking snapshot only.
+  const fallbackSnapshot = snapshotFromDirectInsert(booking, pricing, committedId, items, customerId);
+  if (writerReplay) {
+    const replaySnapshot = await loadCommittedSnapshot(supabase, committedId, fallbackSnapshot);
+    if (!replayIdentityMatches(replaySnapshot, booking) || !replayLinesMatch(replaySnapshot, booking) || replaySnapshot.totalAmount !== pricing.totalAmountVND) {
+      return jsonError('IDEMPOTENCY_KEY_REUSED', 'This booking request key is already linked to a different booking.', 409);
+    }
+    return responseForSnapshot(replaySnapshot, true);
+  }
+  const committedSnapshot = await loadCommittedSnapshot(supabase, committedId, fallbackSnapshot);
+  // Never acknowledge or email from a read that proves only a partial item
+  // set. The writer should make this impossible, but this guard protects the
+  // response boundary if a stale/legacy read observes incomplete state.
+  if (!replayIdentityMatches(committedSnapshot, booking) || !replayLinesMatch(committedSnapshot, booking) || committedSnapshot.totalAmount !== pricing.totalAmountVND) {
+    return responseForIncompleteBooking(committedId);
+  }
   const receptionEmail = await resolveReceptionEmail(supabase);
   let emailStatus: { sent: boolean; messageId?: string; pending?: boolean } = { sent: false, pending: true };
-  const markEmail = async (status: string) => {
-    try {
-      const { error } = await supabase.from('Bookings').update({ reception_feedback: status }).eq('id', committedSnapshot.bookingId);
-      if (error) console.error('[API Bookings] Email status update failed:', error.code || 'unknown');
-    } catch {
-      console.error('[API Bookings] Email status update unavailable');
-    }
-  };
   try {
     const mail = await sendBookingConfirmationEmail({
       bookingId: committedSnapshot.bookingId, customerName: committedSnapshot.customerName, customerEmail: committedSnapshot.customerEmail,
       customerPhone: committedSnapshot.customerPhone || '', date: committedSnapshot.date, time: committedSnapshot.time || '', guests: committedSnapshot.guests,
       branchName: committedSnapshot.branchName,
-      services: (committedSnapshot.services || pricing.items.map((item) => ({ name: serviceName(item.catalog, booking.lang), duration: item.duration * item.quantity, priceVND: item.priceVND, quantity: item.quantity, options: item.options }))) as any,
+      services: pricing.items.map((item) => ({ name: serviceName(item.catalog, booking.lang), duration: item.duration * item.quantity, priceVND: item.priceVND * item.quantity, quantity: item.quantity, options: item.options })) as any,
       totalAmount: committedSnapshot.totalAmount, therapist: pricing.items.find((item) => item.options.therapist)?.options.therapist || 'any',
       lang: committedSnapshot.lang, notes: committedSnapshot.notes || undefined, focusAreaNote: committedSnapshot.focusAreaNote || undefined, receptionEmail,
     });
     if (mail.success) {
       emailStatus = { sent: true, messageId: mail.messageId };
-      await markEmail('EMAIL_SENT');
-    } else {
-      await markEmail('EMAIL_PENDING');
     }
-  } catch {
-    await markEmail('EMAIL_PENDING');
-  }
+  } catch {}
 
   return NextResponse.json({ success: true, idempotent: false, data: { ...committedSnapshot, emailStatus } });
 }

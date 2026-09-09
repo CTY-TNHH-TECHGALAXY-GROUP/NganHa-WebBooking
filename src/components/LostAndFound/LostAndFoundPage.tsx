@@ -22,24 +22,43 @@ type LostAndFoundLocale = keyof typeof COPY;
 const iconFor = (type: LostAndFoundItem['type']) => ({ glasses: Glasses, accessory: Sparkles, tech: Watch, other: Ear }[type]);
 const toLocaleDate = (date: string, locale: string) => new Intl.DateTimeFormat(locale === 'vi' ? 'vi-VN' : 'en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).format(new Date(`${date}T12:00:00`));
 
-export default function LostAndFoundPage() {
-  const { currentLang } = useTranslation();
+export default function LostAndFoundPage({ 
+  initialItems, 
+  forcedLang 
+}: { 
+  initialItems?: WebbookingLostFoundItem[];
+  forcedLang?: string;
+}) {
+  const { currentLang, setCurrentLang } = useTranslation();
   const { systemSettings } = useSystemSettings();
-  const locale: LostAndFoundLocale = currentLang === 'en' || currentLang === 'jp' || currentLang === 'kr' || currentLang === 'cn' ? currentLang : 'vi';
+
+  useEffect(() => {
+    if (forcedLang && forcedLang !== currentLang) {
+      setCurrentLang(forcedLang);
+    }
+  }, [forcedLang, currentLang, setCurrentLang]);
+
+  const activeLang = forcedLang || currentLang;
+  const locale: LostAndFoundLocale = activeLang === 'en' || activeLang === 'jp' || activeLang === 'kr' || activeLang === 'cn' ? activeLang : 'vi';
   const copy = COPY[locale];
   const config = useMemo(() => normalizeLostAndFound(systemSettings?.lost_and_found), [systemSettings?.lost_and_found]);
-  const [items, setItems] = useState<WebbookingLostFoundItem[]>(config.items.map(item => ({ ...item, claimStatus: 'none' })));
+  const [items, setItems] = useState<WebbookingLostFoundItem[]>(() => {
+    if (initialItems && initialItems.length > 0) return initialItems;
+    return config.items.map(item => ({ ...item, claimStatus: 'none' }));
+  });
   const [selected, setSelected] = useState<LostAndFoundItem | null>(null);
   const [sent, setSent] = useState(false);
   const [sending, setSending] = useState(false);
   const [contactError, setContactError] = useState('');
 
   useEffect(() => {
-    setItems(config.items.map(item => ({ ...item, claimStatus: 'none' })));
-  }, [config]);
+    if (initialItems && initialItems.length > 0) {
+      setItems(initialItems);
+    }
+  }, [initialItems]);
 
   useEffect(() => {
-    fetch('/api/public/lost-and-found')
+    fetch('/api/public/lost-and-found', { cache: 'no-store' })
       .then(response => response.ok ? response.json() : { items: [] })
       .then(data => {
         if (Array.isArray(data.items) && data.items.length > 0) {
@@ -114,13 +133,13 @@ export default function LostAndFoundPage() {
               </div>
               <div className={styles.itemCopy}>
                 <span className={styles.status}>{state}</span>
-                <h2>{getLostAndFoundText(item.title, currentLang)}</h2>
-                <p>{getLostAndFoundText(item.detail, currentLang)}</p>
+                <h2>{getLostAndFoundText(item.title, activeLang)}</h2>
+                <p>{getLostAndFoundText(item.detail, activeLang)}</p>
               </div>
               <div className={styles.itemMeta}>
                 <span><MapPin size={14} /> {copy.found}</span>
-                <strong>{getLostAndFoundText(item.foundAt, currentLang)}</strong>
-                <small>{toLocaleDate(item.foundOn, currentLang)}</small>
+                <strong>{getLostAndFoundText(item.foundAt, activeLang)}</strong>
+                <small>{toLocaleDate(item.foundOn, activeLang)}</small>
               </div>
               <button className={styles.contactTrigger} disabled={item.status !== 'available'} onClick={() => { setSelected(item); setSent(false); setContactError(''); }}>
                 <span>{item.status === 'available' ? copy.contact : copy.contacting}</span><ArrowUpRight size={17} />

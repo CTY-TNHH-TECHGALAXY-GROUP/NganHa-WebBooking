@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import vm from 'node:vm';
 import ts from 'typescript';
+import { createHash } from 'node:crypto';
 import * as contract from '../src/lib/booking/contract.ts';
 
 const compile = file => ts.transpileModule(readFileSync(new URL(file, import.meta.url), 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText;
@@ -17,42 +18,59 @@ body.quote = contract.createQuote(contract.cartIntentFingerprint(body.selectedSe
 const parsed = contract.parseBookingRequest(body, new Request('http://test.invalid'));
 assert.equal(parsed.ok, true);
 const row = { id: 'WB-QA-001', billCode: 'WB-QA-001', customerName: body.name, customerEmail: body.email, customerPhone: body.phone,
-  bookingDate: '2099-09-08', timeBooking: '14:00', totalAmount: 1580000, status: 'NEW', idempotency_fingerprint: parsed.value.intentFingerprint };
+  bookingDate: '2099-09-08', timeBooking: '14:00', branchName: body.branchName, guestCount: body.guests, customerLang: body.lang,
+  totalAmount: 1580000, status: 'NEW', idempotency_fingerprint: parsed.value.intentFingerprint };
 function harness(scenario = {}) {
-  const calls = { rpc: 0, mail: 0, tables: [] };
+  const calls = { rpc: 0, allocator: 0, writer: 0, mail: 0, tables: [], inserts: [], deletes: 0, writerPayloads: [], replayLookups: 0 };
   const supabase = {
     from(table) {
-      const query = { table, filters: [], action: 'select' };
+      const query = { table, filters: [], action: 'select', payload: null };
       calls.tables.push(query);
       const result = () => {
-        if (query.action === 'update') { if (scenario.markerThrows) throw new Error('offline'); return { error: null }; }
-        if (table === 'Services') return scenario.catalogError ? { error: scenario.catalogError } : { data: catalog };
-        if (table === 'Bookings') {
-          if (query.filters.some(([key]) => key === 'id')) return { data: row };
-          return { data: scenario.replay ? { ...row, ...scenario.replay } : null };
+        if (query.action === 'insert') {
+          calls.inserts.push(query);
+          if (table === 'Customers') return scenario.customerError ? { error: scenario.customerError } : { data: { id: 'CUS-QA-001' } };
+          if (table === 'Bookings' || table === 'BookingItems') throw new Error(`DIRECT_${table}_INSERT_FORBIDDEN`);
         }
-        if (table === 'BookingItems') return { data: [{ serviceId: 'QA', quantity: 2, price: 790000, options: {} }] };
+        if (query.action === 'delete') { calls.deletes++; throw new Error('DIRECT_DELETE_FORBIDDEN'); }
+        if (table === 'Services') return scenario.catalogError ? { error: scenario.catalogError } : { data: catalog };
+        if (table === 'Customers') return { data: scenario.customer ? { id: 'CUS-QA-001', ...scenario.customer } : null };
+        if (table === 'Bookings') {
+          const isReplayLookup = query.filters.some(([key]) => key === 'idLegacy');
+          if (isReplayLookup) calls.replayLookups++;
+          const replayVisible = scenario.replay && (scenario.replayVisibleInitially !== false || calls.writer > 0);
+          if (isReplayLookup) return { data: replayVisible ? { ...row, ...scenario.replay } : null };
+          if (query.filters.some(([key]) => key === 'id')) return { data: calls.writer > 0 ? row : null };
+          return { data: null };
+        }
+        if (table === 'BookingItems') return { data: scenario.replayItems || [{ serviceId: 'QA', quantity: 2, price: 790000, options: { focus: [], avoid: [], therapist: 'Ngẫu nhiên', note: '' } }] };
         return { data: null };
       };
       const builder = {
-        select() { return this; }, update() { query.action = 'update'; return this; },
+        select() { return this; }, insert(payload) { query.action = 'insert'; query.payload = payload; return this; }, delete() { query.action = 'delete'; return this; },
         eq(key, value) { query.filters.push([key, value]); return this; },
+        like(key, value) { query.filters.push([key, value]); return this; },
         in() { return this; }, order() { return this; }, limit() { return this; },
         maybeSingle() { return Promise.resolve().then(result); },
+        single() { return Promise.resolve().then(result); },
         then(resolve, reject) { return Promise.resolve().then(result).then(resolve, reject); },
       };
       return builder;
     },
     async rpc(name, payload) {
       calls.rpc++; calls.payload = payload;
-      if (scenario.rpcError) return { error: scenario.rpcError };
-      return { data: { booking_id: row.id, data: { bookingId: row.id, totalAmount: row.totalAmount } } };
+      if (name === 'webbooking_allocate_booking_number') { calls.allocator++; if (scenario.rpcError) return { error: scenario.rpcError }; return { data: row.id }; }
+      assert.equal(name, 'webbooking_commit_booking'); calls.writer++; calls.writerPayloads.push(payload);
+      const error = scenario.writerErrors?.[calls.writer - 1] || scenario.writerError;
+      if (error) return { error };
+      return { data: scenario.writerResult || { bookingId: row.id, billCode: row.billCode } };
     },
   };
   const exports = {};
-  const sandbox = { exports, Buffer, Request, Response, console: { error() {}, warn() {} },
+  const sandbox = { exports, Buffer, Request, Response, setTimeout, console: { error() {}, warn() {} },
     process: { env: { NEXT_PUBLIC_SUPABASE_URL: 'https://test.invalid', SUPABASE_SERVICE_ROLE_KEY: 'mock' } },
     require(name) {
+      if (name === 'node:crypto') return { createHash };
       if (name === 'next/server') return { NextResponse: { json: (value, options) => Response.json(value, options) } };
       if (name === '@/lib/supabase-server') return { getSupabaseAdmin: () => supabase };
       if (name === '@/lib/booking/contract') return contract;
@@ -72,43 +90,74 @@ await test('actual route rejects malformed/null/array/oversize before DB', async
     const h = harness(); assert.equal((await h.post(value, raw)).status, status); assert.equal(h.calls.rpc, 0);
   }
 });
-await test('schema/ACL/RPC failures are 503, no mail or direct insert', async () => {
+await test('schema/ACL/counter failures are 503, no mail or direct insert/delete fallback', async () => {
   for (const code of ['42P01', '42703', '42501', '42883', 'PGRST202', 'PGRST204']) {
     const h = harness({ rpcError: { code, message: 'service database object does not exist' } });
     const response = await h.post(); assert.equal(response.status, 503);
-    assert.equal((await response.json()).code, 'BOOKING_TEMPORARILY_UNAVAILABLE'); assert.equal(h.calls.mail, 0);
+    assert.equal((await response.json()).code, 'BOOKING_TEMPORARILY_UNAVAILABLE'); assert.equal(h.calls.mail, 0); assert.equal(h.calls.inserts.length, 0); assert.equal(h.calls.deletes, 0);
   }
 });
-await test('atomic quote mismatch returns 409 with no email', async () => {
-  const h = harness({ rpcError: { code: 'P0001', message: 'PRICE_CHANGED' } });
-  assert.equal((await h.post()).status, 409); assert.equal(h.calls.mail, 0);
-  assert.equal(h.calls.payload.p_booking_data.expectedCatalog[0].priceUSD, 32);
+await test('quote mismatch returns 409 before allocator and insert', async () => {
+  const h = harness();
+  assert.equal((await h.post({ ...body, quote: 'invalid-quote' })).status, 409); assert.equal(h.calls.mail, 0); assert.equal(h.calls.rpc, 0); assert.equal(h.calls.inserts.length, 0);
 });
-await test('contact identity conflict is a review response, no DB details', async () => {
-  const h = harness({ rpcError: { code: 'P0001', message: 'CUSTOMER_IDENTITY_CONFLICT' } });
-  const r = await h.post(); assert.equal(r.status, 409); assert.equal((await r.json()).code, 'CONTACT_REQUIRES_REVIEW');
+await test('atomic writer boundary is exercised without direct insert/delete fallback', async () => {
+  const h = harness(); const r = await h.post({ ...body, quote: 'invalid-quote' }); assert.equal(r.status, 409);
+  assert.equal(h.calls.writer, 0); assert.equal(h.calls.deletes, 0); assert.match(readFileSync(new URL('../src/app/api/bookings/route.ts', import.meta.url), 'utf8'), /webbooking_commit_booking/);
 });
-await test('commit remains successful when SMTP and marker both throw', async () => {
-  const h = harness({ mailThrows: true, markerThrows: true }); const response = await h.post();
+await test('commit remains successful when SMTP throws', async () => {
+  const h = harness({ mailThrows: true }); const response = await h.post();
   assert.equal(response.status, 200); const result = await response.json();
-  assert.equal(result.data.totalAmount, 1580000); assert.equal(result.data.emailStatus.pending, true); assert.equal(h.calls.rpc, 1);
+  assert.equal(result.data.totalAmount, 1580000); assert.equal(result.data.emailStatus.pending, true); assert.equal(h.calls.writer, 1); assert.equal(h.calls.deletes, 0);
 });
-await test('successful email with unavailable marker keeps success', async () => {
-  const h = harness({ markerThrows: true }); const r = await h.post();
+await test('successful email keeps the direct booking commit', async () => {
+  const h = harness(); const r = await h.post();
   assert.equal(r.status, 200); assert.equal((await r.json()).data.emailStatus.sent, true);
 });
 await test('replay bypasses catalog outage and never sends mail', async () => {
   const h = harness({ replay: {}, catalogError: { code: 'offline' } }); const r = await h.post();
   assert.equal(r.status, 200); const result = await r.json(); assert.equal(result.idempotent, true);
   assert.equal(result.data.services.length, 1); assert.equal(result.data.services[0].quantity, 2);
-  assert.equal(h.calls.rpc, 0); assert.equal(h.calls.mail, 0);
+  assert.equal(h.calls.allocator, 0); assert.equal(h.calls.writer, 0); assert.equal(h.calls.mail, 0);
 });
-await test('changed intent cannot fetch someone else booking by key', async () => {
-  const h = harness({ replay: {} }); const r = await h.post({ ...body, name: 'Different Guest' });
-  assert.equal(r.status, 409); assert.equal((await r.json()).data, undefined);
+await test('established idLegacy key replays the existing booking', async () => {
+  const h = harness({ replay: {} }); const r = await h.post({ ...body });
+  assert.equal(r.status, 200); assert.equal((await r.json()).idempotent, true); assert.equal(h.calls.allocator, 0); assert.equal(h.calls.writer, 0); assert.equal(h.calls.inserts.length, 0);
 });
 await test('missing quote cannot create a new booking', async () => {
   const h = harness(); const r = await h.post({ ...body, quote: undefined });
-  assert.equal(r.status, 409); assert.equal(h.calls.rpc, 0); assert.equal(h.calls.mail, 0);
+  assert.equal(r.status, 409); assert.equal(h.calls.rpc, 0); assert.equal(h.calls.mail, 0); assert.equal(h.calls.inserts.length, 0);
 });
-console.log(`Actual-route mocked integration: ${passed}/9 passed; no network/SMTP/production data.`);
+await test('idLegacy conflict replays the existing booking without allocating a replacement', async () => {
+  const h = harness({
+    writerErrors: [{ code: '23505', constraint: 'Bookings_idLegacy_key', message: 'duplicate key value violates unique constraint "Bookings_idLegacy_key"' }],
+    replay: {}, replayVisibleInitially: false,
+  });
+  const r = await h.post(); const result = await r.json();
+  assert.equal(r.status, 200); assert.equal(result.idempotent, true); assert.equal(result.data.bookingId, row.id);
+  assert.equal(h.calls.writer, 1); assert.equal(h.calls.deletes, 0); assert.equal(h.calls.mail, 0);
+});
+await test('idLegacy conflict with an incomplete parent is retryable and never reports success', async () => {
+  const h = harness({
+    writerErrors: [{ code: '23505', constraint: 'Bookings_idLegacy_key', message: 'duplicate key value violates unique constraint "Bookings_idLegacy_key"' }],
+    replay: {}, replayVisibleInitially: false, replayItems: [],
+  });
+  const r = await h.post(); const result = await r.json();
+  assert.equal(r.status, 409); assert.equal(result.code, 'BOOKING_IN_PROGRESS'); assert.equal(h.calls.mail, 0);
+  assert.equal(h.calls.writer, 1); assert.equal(h.calls.deletes, 0);
+});
+await test('booking id/billCode conflict retries the allocator, while other unique errors fail closed', async () => {
+  const retryable = harness({ writerErrors: [{ code: '23505', constraint: 'Bookings_billCode_key', message: 'duplicate key value violates unique constraint "Bookings_billCode_key"' }, null] });
+  const retryResponse = await retryable.post();
+  assert.equal(retryResponse.status, 200); assert.equal(retryable.calls.allocator, 2); assert.equal(retryable.calls.writer, 2); assert.equal(retryable.calls.deletes, 0);
+
+  const unknown = harness({ writerErrors: [{ code: '23505', constraint: 'Bookings_accessToken_key', message: 'duplicate key value violates unique constraint "Bookings_accessToken_key"' }] });
+  const unknownResponse = await unknown.post();
+  assert.equal(unknownResponse.status, 500); assert.equal(unknown.calls.writer, 1); assert.equal(unknown.calls.deletes, 0);
+});
+await test('same idLegacy with different request identity returns 409', async () => {
+  const h = harness({ replay: {} });
+  const r = await h.post({ ...body, name: 'Different Guest' }); const result = await r.json();
+  assert.equal(r.status, 409); assert.equal(result.code, 'IDEMPOTENCY_KEY_REUSED'); assert.equal(h.calls.rpc, 0); assert.equal(h.calls.mail, 0);
+});
+console.log(`Actual-route mocked integration: ${passed}/13 passed; no network/SMTP/production data.`);

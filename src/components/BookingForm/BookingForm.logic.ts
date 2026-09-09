@@ -3,7 +3,7 @@
 // Intent filter + Accordion + Multi-service selection
 // ═══════════════════════════════════════
 
-import { useState, useCallback, useMemo, useEffect } from 'react';
+import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import { Service } from '@/types';
 import { fetchServices } from '@/data/services';
 import { fetchBookingQuote } from '@/lib/bookingQuote';
@@ -85,6 +85,7 @@ export type BookingResult = {
 };
 
 export const useBookingForm = () => {
+  const idempotencyKeyRef = useRef(globalThis.crypto?.randomUUID?.() || `booking_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 10)}`);
   // ─── Raw Services ───
   const [rawServices, setRawServices] = useState<Service[]>([]);
   const [isLoadingServices, setIsLoadingServices] = useState(true);
@@ -422,8 +423,9 @@ export const useBookingForm = () => {
       setSubmitError(null);
 
       try {
-        const selectedBranch = BRANCH_LIST.find(b => b.id === formData.branchId);
-        const payload = {
+      const selectedBranch = BRANCH_LIST.find(b => b.id === formData.branchId);
+      const payload = {
+          idempotencyKey: idempotencyKeyRef.current,
           quote: await fetchBookingQuote(formData.selectedServices, formData.lang),
           name: formData.name,
           phone: formData.phone || null,
@@ -441,7 +443,7 @@ export const useBookingForm = () => {
 
         const res = await fetch('/api/bookings', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json', 'Idempotency-Key': payload.idempotencyKey },
           body: JSON.stringify(payload),
         });
 
