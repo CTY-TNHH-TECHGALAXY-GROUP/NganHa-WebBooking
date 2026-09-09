@@ -203,12 +203,12 @@ const PaymentMethods = ({ lang, dict, selected, onChange }: PaymentMethodsProps)
                                     <QrCode size={64} className="mx-auto mb-4 opacity-50" />
                                     <p className="font-medium">
                                         {{
-                                            vi: 'Quét mã QR TRANSFER để chuyển khoản nhanh 24/7',
-                                            en: 'Scan QR TRANSFER code for 24/7 instant bank transfer',
-                                            cn: '扫描 QR TRANSFER 码进行 24/7 快速银行转账',
-                                            jp: 'QR TRANSFERコードをスキャンして24時間即時銀行振込',
-                                            kr: 'QR TRANSFER 코드를 스캔하여 24시간 즉시 계좌이체',
-                                        }[lang] || 'Scan QR TRANSFER code for 24/7 instant bank transfer'}
+                                            vi: 'Quét mã QR để chuyển khoản nhanh 24/7',
+                                            en: 'Scan QR code for 24/7 instant bank transfer',
+                                            cn: '扫描二维码进行 24/7 快速银行转账',
+                                            jp: 'QRコードをスキャンして24時間即時銀行振込',
+                                            kr: 'QR 코드를 스캔하여 24시간 즉시 계좌이체',
+                                        }[lang] || 'Scan QR code for 24/7 instant bank transfer'}
                                     </p>
                                 </div>
                             )}

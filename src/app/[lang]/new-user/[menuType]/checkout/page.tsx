@@ -516,6 +516,7 @@ const CheckoutGroupedServiceCard = ({
   openVideoPreview,
   cart,
   onUpdateCartItem,
+  onEditCustomItem,
 }: {
   group: Service[];
   lang: SupportedLanguage;
@@ -525,92 +526,128 @@ const CheckoutGroupedServiceCard = ({
   openVideoPreview: (media: any) => void;
   cart: CartItem[];
   onUpdateCartItem: (cartId: string, quantity: number) => void;
+  onEditCustomItem?: (item: CartItem) => void;
 }) => {
   const selectedVariant = group[0];
   const groupSelections = cart.filter((item) => group.some((service) => service.id === item.id));
   const singleSelection = groupSelections.length === 1 ? groupSelections[0] : null;
   const totalSelectedQuantity = groupSelections.reduce((total, item) => total + item.qty, 0);
 
-  const handleCardClick = () => {
-    openDurationDrawer(group);
+  const handleAddClick = (e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    if (group.length > 1) {
+      openDurationDrawer(group);
+    } else {
+      addService(group[0], 1);
+    }
   };
 
   return (
     <article 
-      className={styles.pickerServiceCard}
-      onClick={handleCardClick}
+      className={`${styles.pickerServiceCard} ${totalSelectedQuantity > 0 ? styles.pickerServiceCardSelected : ''}`}
+      onClick={totalSelectedQuantity === 0 ? handleAddClick : undefined}
     >
-      {renderCheckoutServiceMedia(selectedVariant, openVideoPreview)}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', minWidth: 0 }}>
-        <h3>{serviceName(selectedVariant, lang)}</h3>
-        <p>{serviceDescription(selectedVariant, lang)}</p>
-        <div className={styles.serviceMeta} style={{ marginTop: '0.4rem', flexWrap: 'wrap', display: 'flex', alignItems: 'center', gap: '8px' }}>
-          {group.length > 1 ? (
-            <>
-              <span style={{ fontSize: '11px', textTransform: 'uppercase', color: '#9b978e' }}>{t('fromPrice', lang)}</span>
-              <strong>{formatCurrency(group[0].priceVND)} VND <small>{formatUSD(group[0].priceUSD)}</small></strong>
-              <span style={{ fontSize: '11px', color: '#b29e5d', marginLeft: 'auto' }}>{group.length} {t('optionsCount', lang)}</span>
-            </>
-          ) : (
-            <>
-              <span>{selectedVariant.timeValue} {dict.checkout?.mins || 'mins'}</span>
-              <strong>{formatCurrency(selectedVariant.priceVND)} VND <small>{formatUSD(selectedVariant.priceUSD)}</small></strong>
-            </>
-          )}
+      <div className={styles.pickerCardMain}>
+        <div className={styles.pickerCardMedia}>
+          {renderCheckoutServiceMedia(selectedVariant, openVideoPreview)}
         </div>
-        {totalSelectedQuantity > 0 && (
-          <div className={styles.pickerSelectionSummary} onClick={(event) => event.stopPropagation()}>
-            <div className={styles.pickerSelectionSummaryHead}>
-              <span>{totalSelectedQuantity} {t('selectedServices', lang)}</span>
-              <button type="button" onClick={handleCardClick}>
-                {t('addAnotherOption', lang)} <Plus size={13} />
-              </button>
-            </div>
-            <div className={styles.pickerSelectedOptions} aria-label={t('selectedOptions', lang)}>
-              {groupSelections.map((item) => (
-                <span key={item.cartId}>
-                  {item.timeValue} {dict.checkout?.mins || 'mins'}
-                  {item.options?.therapist ? ` · ${item.options.therapist}` : ''}
-                  {item.options?.strength ? ` · ${item.options.strength}` : ''}
-                  <strong>×{item.qty}</strong>
-                </span>
-              ))}
-            </div>
+        <div className={styles.pickerCardInfo}>
+          <h3 className={styles.pickerServiceTitle}>{serviceName(selectedVariant, lang)}</h3>
+          <p className={styles.pickerServiceDesc}>{serviceDescription(selectedVariant, lang)}</p>
+          <div className={styles.pickerPriceRow}>
+            {group.length > 1 ? (
+              <>
+                <span className={styles.pickerFromLabel}>{t('fromPrice', lang)}</span>
+                <span className={styles.pickerPriceVND}>{formatCurrency(group[0].priceVND)} VND</span>
+                <span className={styles.pickerPriceUSD}>{formatUSD(group[0].priceUSD)}</span>
+              </>
+            ) : (
+              <>
+                <span className={styles.pickerPriceVND}>{formatCurrency(selectedVariant.priceVND)} VND</span>
+                <span className={styles.pickerPriceUSD}>{formatUSD(selectedVariant.priceUSD)}</span>
+                <span className={styles.pickerPriceDuration}>{selectedVariant.timeValue} {dict.checkout?.mins || 'mins'}</span>
+              </>
+            )}
           </div>
-        )}
-      </div>
-      {totalSelectedQuantity > 0 ? (
-        <div className={styles.pickerCardActions} onClick={(event) => event.stopPropagation()}>
-          {singleSelection ? (
-            <div className={styles.pickerQuantityControl}>
-              <button type="button" onClick={() => onUpdateCartItem(singleSelection.cartId, singleSelection.qty - 1)} aria-label="Decrease quantity"><Minus size={14} /></button>
-              <span>{singleSelection.qty}</span>
-              <button type="button" onClick={() => onUpdateCartItem(singleSelection.cartId, singleSelection.qty + 1)} aria-label="Increase quantity"><Plus size={14} /></button>
-            </div>
-          ) : (
-            <span className={styles.pickerSelectedBadge}>{totalSelectedQuantity}</span>
-          )}
-          <button
-            type="button"
-            className={styles.pickerAddButton}
-            onClick={handleCardClick}
-            aria-label={`${t('addAnotherOption', lang)} ${serviceName(selectedVariant, lang)}`}
-          >
-            <Plus size={16} />
-          </button>
         </div>
-      ) : (
-        <button
-          type="button"
-          className={styles.pickerAddButton}
-          onClick={(e) => {
-            e.stopPropagation();
-            handleCardClick();
-          }}
-          aria-label={`${t('add', lang)} ${serviceName(selectedVariant, lang)}`}
-        >
-          <Plus size={16} />
-        </button>
+
+        <div className={styles.pickerCardAction} onClick={(event) => event.stopPropagation()}>
+          {totalSelectedQuantity > 0 ? (
+            singleSelection ? (
+              <div className={styles.pickerQuantityControl}>
+                <button
+                  type="button"
+                  onClick={() => onUpdateCartItem(singleSelection.cartId, singleSelection.qty - 1)}
+                  aria-label="Decrease quantity"
+                >
+                  <Minus size={14} />
+                </button>
+                <span>{singleSelection.qty}</span>
+                <button
+                  type="button"
+                  onClick={() => onUpdateCartItem(singleSelection.cartId, singleSelection.qty + 1)}
+                  aria-label="Increase quantity"
+                >
+                  <Plus size={14} />
+                </button>
+              </div>
+            ) : (
+              <div className={styles.pickerSelectedBadge}>
+                <span>{totalSelectedQuantity}</span>
+              </div>
+            )
+          ) : (
+            <div className={styles.pickerUnselectedAction}>
+              <button
+                type="button"
+                className={styles.pickerAddButton}
+                onClick={handleAddClick}
+                aria-label={`${t('add', lang)} ${serviceName(selectedVariant, lang)}`}
+              >
+                <Plus size={16} />
+              </button>
+              {group.length > 1 && (
+                <span className={styles.pickerOptionsCount}>
+                  {group.length} {t('optionsCount', lang)}
+                </span>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {totalSelectedQuantity > 0 && (
+        <div className={styles.pickerCardBottom} onClick={(event) => event.stopPropagation()}>
+          <div className={styles.pickerBottomHeader}>
+            <span className={styles.pickerSelectedServicesLabel}>
+              {totalSelectedQuantity} {t('selectedServices', lang)}
+            </span>
+            <button
+              type="button"
+              className={styles.pickerAddAnotherOptionBtn}
+              onClick={handleAddClick}
+              aria-label={`${t('addAnotherOption', lang)} ${serviceName(selectedVariant, lang)}`}
+            >
+              {t('addAnotherOption', lang)} +
+            </button>
+          </div>
+          <div className={styles.pickerSelectedPills} aria-label={t('selectedOptions', lang)}>
+            {groupSelections.map((item) => (
+              <button
+                key={item.cartId}
+                type="button"
+                className={styles.pickerPill}
+                onClick={() => onEditCustomItem?.(item)}
+                title="Click to customize"
+              >
+                <span>{item.timeValue} {dict.checkout?.mins || 'mins'}</span>
+                {item.options?.therapist ? <span> · {item.options.therapist}</span> : ''}
+                {item.options?.strength ? <span> · {item.options.strength}</span> : ''}
+                <strong>×{item.qty}</strong>
+              </button>
+            ))}
+          </div>
+        </div>
       )}
     </article>
   );
@@ -956,6 +993,9 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
   };
 
   const handleSaveCustom = (prefs: CustomPreferences) => {
+    const shouldReturnToPicker = returnToServicePickerOnCancel;
+    setReturnToServicePickerOnCancel(false);
+
     if (editingCustomCartId && customizingService) {
       replaceCartItemService(editingCustomCartId, customizingService, {
         strength: prefs.strength,
@@ -966,18 +1006,18 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
       });
       setEditingCustomCartId(null);
       setEditingCustomInitialData(null);
-      setReturnToServicePickerOnCancel(false);
       setPendingServiceQuantity(1);
       setCustomizingService(null);
       if (returnToConfirmAfterEdit) {
         setReturnToConfirmAfterEdit(false);
         window.setTimeout(() => setIsConfirmOpen(true), 100);
+      } else if (shouldReturnToPicker) {
+        setIsServicePickerOpen(true);
       }
       return;
     }
 
     if (!customizingService) return;
-    setReturnToServicePickerOnCancel(false);
     addToCart(customizingService, pendingServiceQuantity, {
       strength: prefs.strength,
       therapist: prefs.therapist,
@@ -990,6 +1030,8 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
     if (returnToConfirmAfterEdit) {
       setReturnToConfirmAfterEdit(false);
       window.setTimeout(() => setIsConfirmOpen(true), 100);
+    } else if (shouldReturnToPicker) {
+      setIsServicePickerOpen(true);
     } else {
       window.requestAnimationFrame(() => document.getElementById('cart')?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
     }
@@ -1047,6 +1089,10 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
       SHOW_GENDER: true,
       SHOW_FOCUS: true,
     } as any;
+    if (isServicePickerOpen) {
+      setIsServicePickerOpen(false);
+      setReturnToServicePickerOnCancel(true);
+    }
     setCustomizingService(s);
     setEditingCustomCartId(item.cartId);
     setEditingCustomInitialData({
@@ -2105,6 +2151,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                     openVideoPreview={openVideoPreview}
                     cart={cart}
                     onUpdateCartItem={updateCartItem}
+                    onEditCustomItem={handleEditCartItemCustomization}
                   />
                 ))
               ) : (

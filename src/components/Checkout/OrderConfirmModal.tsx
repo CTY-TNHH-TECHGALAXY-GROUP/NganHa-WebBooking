@@ -296,11 +296,11 @@ const MODAL_TEXTS: Record<string, Record<SupportedLang, string>> = {
         kr: '잔돈은 베트남 동(VND) 현금으로 거슬러 드립니다.',
     },
     cardTitle: {
-        vi: 'Thẻ POS & Không tiếp xúc',
-        en: 'Credit / POS Card',
-        cn: 'POS刷卡与非接触支付',
-        jp: 'カード決済・タッチ決済',
-        kr: '신용/체크카드 및 컨택리스 결제',
+        vi: 'Card',
+        en: 'Card',
+        cn: 'Card',
+        jp: 'Card',
+        kr: 'Card',
     },
     cardSub: {
         vi: 'Các loại thẻ và ví điện tử hỗ trợ',
@@ -317,11 +317,11 @@ const MODAL_TEXTS: Record<string, Record<SupportedLang, string>> = {
         kr: 'POS 단말기를 통한 카드 결제 시 수수료가 부과되지 않습니다. 모든 주요 국제 카드 및 간편 결제를 지원합니다:',
     },
     transferTitle: {
-        vi: 'QR TRANSFER / Chuyển khoản 24/7',
-        en: 'QR TRANSFER',
-        cn: 'QR TRANSFER / 24/7 银行转账',
-        jp: 'QR TRANSFER / 24時間銀行振込',
-        kr: 'QR TRANSFER / 24시간 계좌이체',
+        vi: 'Transfer',
+        en: 'Transfer',
+        cn: 'Transfer',
+        jp: 'Transfer',
+        kr: 'Transfer',
     },
     transferSub: {
         vi: 'Quét mã QR chuyển khoản nhanh',
@@ -331,11 +331,11 @@ const MODAL_TEXTS: Record<string, Record<SupportedLang, string>> = {
         kr: 'QR 코드 즉시 이체',
     },
     transferDesc: {
-        vi: 'Chúng tôi hỗ trợ chuyển khoản quốc tế và chuyển khoản nội địa nhanh 24/7 qua mã QR TRANSFER.',
-        en: 'We support 24/7 international and domestic instant transfers via QR TRANSFER.',
-        cn: '我们支持通过 QR TRANSFER 进行 24/7 国际及越南本地快速银行转账。',
-        jp: 'QR TRANSFERコードによる24時間365日の国内・国際即時銀行振込に対応しています。',
-        kr: 'QR TRANSFER 코드를 통해 24시간 국내외 즉시 계좌이체를 지원합니다.',
+        vi: 'Chúng tôi hỗ trợ chuyển khoản quốc tế và chuyển khoản nội địa nhanh 24/7 qua mã QR.',
+        en: 'We support 24/7 international and domestic instant transfers via QR code.',
+        cn: '我们支持通过 QR 码进行 24/7 国际及越南本地快速银行转账。',
+        jp: 'QRコードによる24時間365日の国内・国際即時銀行振込に対応しています。',
+        kr: 'QR 코드를 통해 24시간 국내외 즉시 계좌이체를 지원합니다.',
     },
 };
 
@@ -484,13 +484,13 @@ export default function OrderConfirmModal({
         {
             id: 'card',
             icon: CreditCard,
-            label: lang === 'vi' ? 'Thẻ POS / Visa' : lang === 'cn' ? '信用卡 / 借记卡' : lang === 'jp' ? 'クレジットカード' : lang === 'kr' ? '신용 / 체크카드' : 'Credit / POS Card',
+            label: 'Card',
             desc: lang === 'vi' ? 'Hỗ trợ thẻ Visa, MasterCard, JCB, Napas qua máy POS' : lang === 'cn' ? '支持Visa、万事达卡、JCB及Napas刷卡机' : lang === 'jp' ? 'POS端末経由でVisa、MasterCard、JCB、Napasに対応' : lang === 'kr' ? 'POS기를 통해 Visa, MasterCard, JCB, Napas 카드 지원' : 'Visa, MasterCard, JCB, Napas supported via POS',
         },
         {
             id: 'transfer',
             icon: QrCode,
-            label: lang === 'vi' ? 'QR TRANSFER / CK' : lang === 'cn' ? 'QR TRANSFER / 银行转账' : lang === 'jp' ? 'QR TRANSFER / 銀行振込' : lang === 'kr' ? 'QR TRANSFER / 계좌이체' : 'QR TRANSFER',
+            label: 'Transfer',
             desc: lang === 'vi' ? 'Hỗ trợ chuyển khoản nội địa và quốc tế nhanh chóng' : lang === 'cn' ? '支持国内及国际快速转账' : lang === 'jp' ? '国内および国際送金に対応' : lang === 'kr' ? '국내 및 해외 빠른 계좌이체 지원' : 'Instant dynamic QR & bank transfer',
         },
     ];
@@ -1272,7 +1272,7 @@ export default function OrderConfirmModal({
                                         <div className="w-14 h-14 rounded-2xl bg-[#c9a96e]/15 border border-[#c9a96e]/30 flex items-center justify-center text-[#f2d58d]">
                                             <QrCode size={30} />
                                         </div>
-                                        <div className="text-sm font-bold text-[#f2d58d]">QR TRANSFER</div>
+                                        <div className="text-sm font-bold text-[#f2d58d]">Transfer</div>
                                         <p className="text-sm text-gray-200 leading-relaxed font-medium">
                                             {getModalText('transferDesc', lang)}
                                         </p>

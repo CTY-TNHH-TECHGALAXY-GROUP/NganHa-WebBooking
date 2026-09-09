@@ -1084,57 +1084,80 @@
 }
 
 .pickerServiceCard {
-  display: grid;
-  grid-template-columns: 118px minmax(0, 1fr) auto;
-  gap: 15px;
-  align-items: center;
-  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  padding: 14px 16px;
   width: 100%;
   min-width: 0;
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.04);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.035);
   cursor: pointer;
   transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+  box-sizing: border-box;
 }
 
 .pickerServiceCard:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.06);
   border-color: rgba(201, 169, 110, 0.35);
-  transform: translateY(-1px);
 }
 
-.pickerServiceCard img,
-.pickerServiceCard video,
-.pickerServiceCard .serviceMedia {
-  width: 118px;
+.pickerServiceCardSelected {
+  border-color: rgba(212, 175, 55, 0.3);
+  background: rgba(212, 175, 55, 0.03);
+}
+
+.pickerCardMain {
+  display: grid;
+  grid-template-columns: 110px minmax(0, 1fr) auto;
+  gap: 16px;
+  align-items: center;
+  width: 100%;
+}
+
+.pickerCardMedia {
+  flex-shrink: 0;
+}
+
+.pickerCardMedia img,
+.pickerCardMedia video,
+.pickerCardMedia .serviceMedia {
+  width: 110px;
   height: 78px;
   object-fit: cover;
-  border-radius: 13px;
+  border-radius: 14px;
   display: block;
   background: rgba(255, 255, 255, 0.04);
 }
 
-.pickerServiceCard video,
-.serviceMedia:is(video) {
+.pickerCardMedia video,
+.pickerCardMedia .serviceMedia:is(video) {
   cursor: zoom-in;
 }
 
-.pickerServiceCard h3 {
+.pickerCardInfo {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+}
+
+.pickerServiceTitle {
   margin: 0;
-  color: var(--ink);
-  font-family: var(--serif);
-  font-size: 23px;
-  line-height: 1.1;
+  color: #f7ebc7;
+  font-family: var(--sans, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif);
+  font-size: 19px;
+  font-weight: 600;
+  line-height: 1.22;
   min-width: 0;
   overflow-wrap: anywhere;
 }
 
-.pickerServiceCard p {
-  margin: 6px 0 0;
-  color: var(--ink-dim);
-  font-size: 14.5px;
-  line-height: 1.38;
+.pickerServiceDesc {
+  margin: 4px 0 0;
+  color: #9b978e;
+  font-size: 13.5px;
+  line-height: 1.35;
   min-width: 0;
   overflow: hidden;
   display: -webkit-box;
@@ -1142,13 +1165,76 @@
   -webkit-box-orient: vertical;
 }
 
-.pickerAddButton { min-width: 36px; width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; gap: 0; border: none; border-radius: 999px; background: var(--gold); color: #111; cursor: pointer; transition: transform 0.2s, filter 0.2s; padding: 0; flex-shrink: 0; align-self: center; }
+.pickerPriceRow {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-top: 6px;
+  flex-wrap: wrap;
+}
+
+.pickerFromLabel {
+  font-size: 11px;
+  text-transform: uppercase;
+  color: #9b978e;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.pickerPriceVND {
+  font-size: 15px;
+  font-weight: 700;
+  color: #f7ebc7;
+}
+
+.pickerPriceUSD {
+  font-size: 12px;
+  color: #9b978e;
+}
+
+.pickerCardAction {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-shrink: 0;
+}
+
+.pickerUnselectedAction {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.pickerAddButton {
+  min-width: 36px;
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 999px;
+  background: var(--gold, #D4AF37);
+  color: #111;
+  cursor: pointer;
+  transition: transform 0.2s, filter 0.2s;
+  padding: 0;
+}
 
 .pickerAddButton:hover,
 .pickerAddButton:focus-visible {
-  transform: translateY(-1px);
-  filter: brightness(1.05);
+  transform: scale(1.06);
+  filter: brightness(1.1);
   outline: none;
+}
+
+.pickerOptionsCount {
+  font-size: 11.5px;
+  color: #c5a86a;
+  text-align: center;
+  white-space: nowrap;
 }
 
 .pickerQuantityControl,
@@ -1162,87 +1248,102 @@
 }
 
 .pickerQuantityControl {
-  min-width: 94px;
-}
-
-.pickerCardActions {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  flex-shrink: 0;
+  min-width: 90px;
 }
 
 .pickerSelectedBadge {
-  display: inline-grid;
-  width: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
   height: 32px;
-  place-items: center;
-  border: 1px solid rgba(217, 184, 94, 0.34);
-  border-radius: 50%;
-  color: #f3e2b1;
-  font-size: 14px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: rgba(212, 175, 55, 0.15);
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  color: #f7ebc7;
+  font-size: 13px;
   font-weight: 700;
 }
 
-.pickerSelectionSummary {
-  display: grid;
-  gap: 6px;
-  margin-top: 9px;
-  color: #cdb16c;
+.pickerPriceDuration {
   font-size: 12px;
-  line-height: 1.3;
+  color: #c5a86a;
+  margin-left: 2px;
 }
 
-.pickerSelectionSummaryHead {
+.pickerCardBottom {
+  width: 100%;
+  margin-top: 13px;
+  padding-top: 11px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.pickerBottomHeader {
   display: flex;
   align-items: center;
-  gap: 10px;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
 }
 
-.pickerSelectionSummaryHead > span {
+.pickerSelectedServicesLabel {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: #c5a86a;
   white-space: nowrap;
 }
 
-.pickerSelectionSummaryHead button {
+.pickerAddAnotherOptionBtn {
   display: inline-flex;
   align-items: center;
   gap: 5px;
   padding: 0;
-  border: 0;
+  border: none;
   background: transparent;
-  color: #f1dd9e;
-  font: inherit;
-  font-weight: 700;
+  color: #d8be7b;
+  font-size: 12.5px;
+  font-weight: 600;
   cursor: pointer;
+  white-space: nowrap;
+  transition: color 0.2s;
 }
 
-.pickerSelectionSummaryHead button:hover,
-.pickerSelectionSummaryHead button:focus-visible {
-  color: #fff4c9;
+.pickerAddAnotherOptionBtn:hover,
+.pickerAddAnotherOptionBtn:focus-visible {
+  color: #fff2cb;
   outline: none;
 }
 
-.pickerSelectedOptions {
+.pickerSelectedPills {
   display: flex;
   flex-wrap: wrap;
-  gap: 5px 7px;
+  gap: 6px;
+  margin-top: 8px;
+  width: 100%;
 }
 
-.pickerSelectedOptions span {
+.pickerPill {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  max-width: 100%;
-  padding: 3px 7px;
-  border: 1px solid rgba(217, 184, 94, 0.17);
+  gap: 5px;
+  padding: 4px 10px;
+  border: 1px solid rgba(212, 175, 55, 0.22);
   border-radius: 999px;
-  color: #bdb6a7;
-  font-size: 11px;
-  line-height: 1.25;
-  white-space: nowrap;
+  background: rgba(0, 0, 0, 0.28);
+  color: #cfc8be;
+  font-size: 11.5px;
+  line-height: 1.3;
+  cursor: pointer;
+  transition: border-color 0.2s, background-color 0.2s;
 }
 
-.pickerSelectedOptions strong {
+.pickerPill:hover {
+  border-color: rgba(212, 175, 55, 0.55);
+  background: rgba(212, 175, 55, 0.08);
+}
+
+.pickerPill strong {
   color: #f0d98c;
   font-weight: 700;
 }
@@ -1523,37 +1624,54 @@
 
 .drawerOptions {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(115px, 1fr));
+  gap: 10px;
 }
 
 .drawerOption {
   border: 1px solid rgba(217, 184, 94, 0.2);
   background: rgba(255, 255, 255, 0.03);
-  border-radius: 12px;
-  padding: 12px 14px;
+  border-radius: 14px;
+  padding: 10px 12px;
   cursor: pointer;
   text-align: left;
   color: #d8d2c5;
   transition: 0.2s ease;
   min-width: 0;
+  overflow: hidden;
 }
 
 .drawerOption span {
   display: block;
-  font-size: 13px;
+  font-size: 12px;
+  font-weight: 600;
   margin-bottom: 5px;
-  color: #a7a196;
+  color: #c5a86a;
   white-space: nowrap;
+  letter-spacing: 0.03em;
 }
 
 .drawerOption strong {
-  font-family: var(--serif);
-  font-size: 16px;
-  color: #f0e3bb;
-  display: block;
-  white-space: nowrap;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  font-family: var(--sans, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif);
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #f7ebc7;
+  line-height: 1.25;
   letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.drawerOption strong small {
+  display: block;
+  font-size: 11px;
+  font-weight: 400;
+  color: #9b978e;
+  margin-top: 2px;
+  font-family: var(--sans, sans-serif);
+  line-height: 1.2;
 }
 
 .drawerOption:hover {
@@ -1648,27 +1766,25 @@
     padding: 20px;
   }
 
-  .pickerServiceCard {
+  .pickerCardMain {
     grid-template-columns: 88px minmax(0, 1fr) auto;
-    gap: 12px;
+    gap: 14px;
   }
 
-  .pickerServiceCard img,
-  .pickerServiceCard video,
-  .pickerServiceCard .serviceMedia {
+  .pickerCardMedia img,
+  .pickerCardMedia video,
+  .pickerCardMedia .serviceMedia {
     width: 88px;
     height: 68px;
   }
 
-  .pickerServiceCard h3 {
-    font-size: 20px;
+  .pickerServiceTitle {
+    font-size: 18px;
   }
 
-  .pickerServiceCard p {
-    font-size: 13.5px;
+  .pickerServiceDesc {
+    font-size: 13px;
   }
-
-  .pickerAddButton { min-width: 36px; width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; gap: 0; border: none; border-radius: 999px; background: var(--gold); color: #111; cursor: pointer; transition: transform 0.2s, filter 0.2s; padding: 0; flex-shrink: 0; align-self: center; }
 
   .videoPreviewStage {
     width: 94vw;
@@ -1775,41 +1891,85 @@
   }
 
   .pickerServiceCard {
-    grid-template-columns: 66px minmax(0, 1fr) auto;
-    grid-template-rows: auto;
-    gap: 10px 12px;
-    padding: 11px;
-    border-radius: 16px;
+    padding: 12px 14px;
+    border-radius: 18px;
+  }
+
+  .pickerCardMain {
+    grid-template-columns: 74px minmax(0, 1fr) auto;
+    gap: 12px;
     align-items: center;
   }
 
-  .pickerServiceCard img,
-  .pickerServiceCard video,
-  .pickerServiceCard .serviceMedia {
-    width: 66px;
-    height: 66px;
+  .pickerCardMedia img,
+  .pickerCardMedia video,
+  .pickerCardMedia .serviceMedia {
+    width: 74px;
+    height: 70px;
     border-radius: 12px;
   }
 
-  .pickerServiceCard h3 {
-    font-size: 19px;
-    line-height: 1.08;
+  .pickerServiceTitle {
+    font-size: 16.5px;
+    line-height: 1.2;
   }
 
-  .pickerServiceCard p {
-    margin-top: 5px;
-    font-size: 12.5px;
-    line-height: 1.35;
+  .pickerServiceDesc {
+    margin-top: 3px;
+    font-size: 12px;
+    line-height: 1.3;
     -webkit-line-clamp: 2;
   }
 
+  .pickerPriceRow {
+    margin-top: 5px;
+    gap: 5px;
+  }
+
+  .pickerPriceVND {
+    font-size: 14px;
+  }
+
+  .pickerPriceUSD {
+    font-size: 11.5px;
+  }
+
   .pickerAddButton {
-    grid-column: auto;
-    grid-row: auto;
-    min-width: 32px !important;
-    width: 32px !important;
-    height: 32px !important;
-    align-self: center !important;
+    min-width: 34px !important;
+    width: 34px !important;
+    height: 34px !important;
+  }
+
+  .pickerQuantityControl {
+    min-width: 84px;
+    gap: 6px;
+  }
+
+  .pickerQuantityControl button {
+    width: 28px;
+    height: 28px;
+  }
+
+  .pickerQuantityControl span {
+    font-size: 13px;
+    min-width: 14px;
+  }
+
+  .pickerBottomHeader {
+    gap: 8px;
+  }
+
+  .pickerSelectedServicesLabel {
+    font-size: 11.5px;
+  }
+
+  .pickerAddAnotherOptionBtn {
+    font-size: 11.5px;
+  }
+
+  .pickerPill {
+    font-size: 11px;
+    padding: 3px 8px;
   }
 }
 
@@ -1830,21 +1990,44 @@
   }
 
   .pickerServiceCard {
-    grid-template-columns: 56px minmax(0, 1fr) auto;
-    padding: 9px;
+    padding: 10px 12px;
+    border-radius: 16px;
+  }
+
+  .pickerCardMain {
+    grid-template-columns: 62px minmax(0, 1fr) auto;
+    gap: 10px;
+  }
+
+  .pickerCardMedia img,
+  .pickerCardMedia video,
+  .pickerCardMedia .serviceMedia {
+    width: 62px;
+    height: 62px;
+  }
+
+  .pickerServiceTitle {
+    font-size: 15px;
+  }
+
+  .pickerPriceVND {
+    font-size: 13px;
   }
 
   .pickerAddButton {
-    min-width: 28px !important;
-    width: 28px !important;
-    height: 28px !important;
+    min-width: 30px !important;
+    width: 30px !important;
+    height: 30px !important;
   }
 
-  .pickerServiceCard img,
-  .pickerServiceCard video,
-  .pickerServiceCard .serviceMedia {
-    width: 58px;
-    height: 58px;
+  .pickerQuantityControl {
+    min-width: 76px;
+    gap: 4px;
+  }
+
+  .pickerQuantityControl button {
+    width: 26px;
+    height: 26px;
   }
 }
 
