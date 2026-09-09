@@ -21,7 +21,7 @@ const row = { id: 'WB-QA-001', billCode: 'WB-QA-001', customerName: body.name, c
   bookingDate: '2099-09-08', timeBooking: '14:00', branchName: body.branchName, guestCount: body.guests, customerLang: body.lang,
   totalAmount: 1580000, status: 'NEW', idempotency_fingerprint: parsed.value.intentFingerprint };
 function harness(scenario = {}) {
-  const calls = { rpc: 0, allocator: 0, writer: 0, mail: 0, tables: [], inserts: [], deletes: 0, writerPayloads: [], replayLookups: 0 };
+  const calls = { rpc: 0, allocator: 0, writer: 0, mail: 0, tables: [], inserts: [], deletes: 0, directBookingWrites: 0, writerPayloads: [], replayLookups: 0, verificationReads: 0 };
   const supabase = {
     from(table) {
       const query = { table, filters: [], action: 'select', payload: null };
@@ -30,7 +30,10 @@ function harness(scenario = {}) {
         if (query.action === 'insert') {
           calls.inserts.push(query);
           if (table === 'Customers') return scenario.customerError ? { error: scenario.customerError } : { data: { id: 'CUS-QA-001' } };
-          if (table === 'Bookings' || table === 'BookingItems') throw new Error(`DIRECT_${table}_INSERT_FORBIDDEN`);
+          if (table === 'Bookings' || table === 'BookingItems') {
+            calls.directBookingWrites++;
+            throw new Error(`DIRECT_${table}_INSERT_FORBIDDEN`);
+          }
         }
         if (query.action === 'delete') { calls.deletes++; throw new Error('DIRECT_DELETE_FORBIDDEN'); }
         if (table === 'Services') return scenario.catalogError ? { error: scenario.catalogError } : { data: catalog };
@@ -38,12 +41,23 @@ function harness(scenario = {}) {
         if (table === 'Bookings') {
           const isReplayLookup = query.filters.some(([key]) => key === 'idLegacy');
           if (isReplayLookup) calls.replayLookups++;
+          if (query.filters.some(([key]) => key === 'id')) {
+            calls.verificationReads++;
+            if (scenario.verificationError) return { data: null, error: scenario.verificationError };
+            return { data: scenario.verificationMissing ? null : calls.writer > 0 ? row : null };
+          }
           const replayVisible = scenario.replay && (scenario.replayVisibleInitially !== false || calls.writer > 0);
           if (isReplayLookup) return { data: replayVisible ? { ...row, ...scenario.replay } : null };
-          if (query.filters.some(([key]) => key === 'id')) return { data: calls.writer > 0 ? row : null };
           return { data: null };
         }
-        if (table === 'BookingItems') return { data: scenario.replayItems || [{ serviceId: 'QA', quantity: 2, price: 790000, options: { focus: [], avoid: [], therapist: 'Ngẫu nhiên', note: '' } }] };
+        if (table === 'BookingItems') {
+          if (query.filters.some(([key]) => key === 'bookingId')) {
+            calls.verificationReads++;
+            if (scenario.verificationItemsError) return { data: null, error: scenario.verificationItemsError };
+            if (scenario.verificationItemsMissing) return { data: null };
+          }
+          return { data: scenario.replayItems || [{ bookingId: row.id, serviceId: 'QA', quantity: 2, price: 790000, options: { focus: [], avoid: [], therapist: 'Ngẫu nhiên', note: '' } }] };
+        }
         return { data: null };
       };
       const builder = {
@@ -59,11 +73,16 @@ function harness(scenario = {}) {
     },
     async rpc(name, payload) {
       calls.rpc++; calls.payload = payload;
-      if (name === 'webbooking_allocate_booking_number') { calls.allocator++; if (scenario.rpcError) return { error: scenario.rpcError }; return { data: row.id }; }
+      if (name === 'webbooking_allocate_booking_number') {
+        calls.allocator++;
+        if (scenario.rpcError) return { error: scenario.rpcError };
+        if (Object.prototype.hasOwnProperty.call(scenario, 'allocatorData')) return { data: scenario.allocatorData };
+        return { data: row.id };
+      }
       assert.equal(name, 'webbooking_commit_booking'); calls.writer++; calls.writerPayloads.push(payload);
       const error = scenario.writerErrors?.[calls.writer - 1] || scenario.writerError;
       if (error) return { error };
-      return { data: scenario.writerResult || { bookingId: row.id, billCode: row.billCode } };
+      return { data: Object.prototype.hasOwnProperty.call(scenario, 'writerResult') ? scenario.writerResult : { success: true, idempotent: false, bookingId: row.id, billCode: row.billCode } };
     },
   };
   const exports = {};
@@ -79,12 +98,16 @@ function harness(scenario = {}) {
     },
   };
   vm.runInNewContext(compile('../src/app/api/bookings/route.ts'), sandbox);
-  return { calls, post: (input = body, raw) => exports.POST(new Request('http://test.invalid/api/bookings', {
+  return { calls, scenario, post: (input = body, raw) => exports.POST(new Request('http://test.invalid/api/bookings', {
     method: 'POST', headers: { 'Content-Type': 'application/json', 'Idempotency-Key': 'integration-qa-key' }, body: raw ?? JSON.stringify(input),
   })) };
 }
 let passed = 0;
-const test = async (name, fn) => { await fn(); passed++; console.log(`PASS ${name}`); };
+let failed = 0;
+const test = async (name, fn) => {
+  try { await fn(); passed++; console.log(`PASS ${name}`); }
+  catch (error) { failed++; console.error(`FAIL ${name}`); console.error(error); }
+};
 await test('actual route rejects malformed/null/array/oversize before DB', async () => {
   for (const [value, raw, status] of [[null, undefined, 400], [[], undefined, 400], [body, '{', 400], [body, ' '.repeat(contract.MAX_BODY_BYTES + 1), 413]]) {
     const h = harness(); assert.equal((await h.post(value, raw)).status, status); assert.equal(h.calls.rpc, 0);
@@ -95,6 +118,24 @@ await test('schema/ACL/counter failures are 503, no mail or direct insert/delete
     const h = harness({ rpcError: { code, message: 'service database object does not exist' } });
     const response = await h.post(); assert.equal(response.status, 503);
     assert.equal((await response.json()).code, 'BOOKING_TEMPORARILY_UNAVAILABLE'); assert.equal(h.calls.mail, 0); assert.equal(h.calls.inserts.length, 0); assert.equal(h.calls.deletes, 0);
+  }
+});
+await test('malformed and false RPC results fail closed without mail or direct booking writes', async () => {
+  for (const allocatorData of [null, false, {}, { success: false }]) {
+    const h = harness({ allocatorData });
+    const response = await h.post();
+    assert.equal(response.status, 503);
+    assert.equal(h.calls.writer, 0);
+    assert.equal(h.calls.mail, 0);
+    assert.equal(h.calls.directBookingWrites, 0);
+  }
+  for (const writerResult of [null, false, {}, [], { success: false, bookingId: row.id }, { success: true, bookingId: 123 }]) {
+    const h = harness({ writerResult });
+    const response = await h.post();
+    assert.notEqual(response.status, 200);
+    assert.equal(h.calls.writer, 1);
+    assert.equal(h.calls.mail, 0);
+    assert.equal(h.calls.directBookingWrites, 0);
   }
 });
 await test('quote mismatch returns 409 before allocator and insert', async () => {
@@ -109,6 +150,24 @@ await test('commit remains successful when SMTP throws', async () => {
   const h = harness({ mailThrows: true }); const response = await h.post();
   assert.equal(response.status, 200); const result = await response.json();
   assert.equal(result.data.totalAmount, 1580000); assert.equal(result.data.emailStatus.pending, true); assert.equal(h.calls.writer, 1); assert.equal(h.calls.deletes, 0);
+});
+await test('SMTP failure after commit is replay-safe and retry sends no duplicate email', async () => {
+  const h = harness({ mailThrows: true });
+  const first = await h.post();
+  const firstResult = await first.json();
+  assert.equal(first.status, 200);
+  assert.equal(firstResult.idempotent, false);
+  assert.equal(firstResult.data.emailStatus.pending, true);
+  h.scenario.replay = {};
+  const retry = await h.post();
+  const retryResult = await retry.json();
+  assert.equal(retry.status, 200);
+  assert.equal(retryResult.idempotent, true);
+  assert.equal(retryResult.data.bookingId, firstResult.data.bookingId);
+  assert.equal(h.calls.allocator, 1);
+  assert.equal(h.calls.writer, 1);
+  assert.equal(h.calls.mail, 1);
+  assert.equal(h.calls.deletes, 0);
 });
 await test('successful email keeps the direct booking commit', async () => {
   const h = harness(); const r = await h.post();
@@ -146,6 +205,24 @@ await test('idLegacy conflict with an incomplete parent is retryable and never r
   assert.equal(r.status, 409); assert.equal(result.code, 'BOOKING_IN_PROGRESS'); assert.equal(h.calls.mail, 0);
   assert.equal(h.calls.writer, 1); assert.equal(h.calls.deletes, 0);
 });
+await test('DB verification missing or failing after writer commit returns retryable result and no mail', async () => {
+  for (const scenario of [
+    { verificationMissing: true },
+    { verificationError: { code: 'PGRST000', message: 'verification unavailable' } },
+    { verificationItemsMissing: true },
+    { verificationItemsError: { code: 'PGRST000', message: 'item verification unavailable' } },
+  ]) {
+    const h = harness(scenario);
+    const response = await h.post();
+    assert.equal(response.status, 503);
+    const result = await response.json();
+    assert.equal(result.code, 'BOOKING_TEMPORARILY_UNAVAILABLE');
+    assert.match(result.error, /same idempotency key/i);
+    assert.equal(h.calls.writer, 1);
+    assert.equal(h.calls.mail, 0);
+    assert.equal(h.calls.deletes, 0);
+  }
+});
 await test('booking id/billCode conflict retries the allocator, while other unique errors fail closed', async () => {
   const retryable = harness({ writerErrors: [{ code: '23505', constraint: 'Bookings_billCode_key', message: 'duplicate key value violates unique constraint "Bookings_billCode_key"' }, null] });
   const retryResponse = await retryable.post();
@@ -160,4 +237,5 @@ await test('same idLegacy with different request identity returns 409', async ()
   const r = await h.post({ ...body, name: 'Different Guest' }); const result = await r.json();
   assert.equal(r.status, 409); assert.equal(result.code, 'IDEMPOTENCY_KEY_REUSED'); assert.equal(h.calls.rpc, 0); assert.equal(h.calls.mail, 0);
 });
-console.log(`Actual-route mocked integration: ${passed}/13 passed; no network/SMTP/production data.`);
+console.log(`Actual-route mocked integration: ${passed}/${passed + failed} passed; ${failed} failed; no network/SMTP/production data.`);
+if (failed) process.exitCode = 1;
