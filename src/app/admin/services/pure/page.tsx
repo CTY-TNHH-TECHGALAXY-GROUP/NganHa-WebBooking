@@ -370,8 +370,34 @@ const NarrativeEditCard = ({
   saveNarrativeChanges
 }: any) => {
   const [activeLang, setActiveLang] = useState('vi');
+  const [uploadingImage, setUploadingImage] = useState<string | null>(null);
   const sectionId = section.id;
   const isSuccessText = successId === `narrative-${sectionId}`;
+
+  const handleNarrativeUpload = async (field: 'image1' | 'image2', file: File) => {
+    setUploadingImage(field);
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `narrative-${sectionId}-${field}-${Date.now()}.${fileExt}`;
+      const filePath = `pure/narratives/${fileName}`;
+      const supabase = createClient();
+      const { error } = await supabase.storage
+        .from('media-uploads')
+        .upload(filePath, file, { cacheControl: '3600', upsert: true });
+      if (error) {
+        alert('Lỗi tải ảnh (Supabase): ' + error.message);
+        return;
+      }
+      const { data: { publicUrl } } = supabase.storage
+        .from('media-uploads')
+        .getPublicUrl(filePath);
+      handleNarrativeChange?.(sectionId, activeLang, field, publicUrl);
+    } catch (err) {
+      alert('Lỗi khi tải ảnh lên');
+    } finally {
+      setUploadingImage(null);
+    }
+  };
 
   const existingNarratives = contentData.narratives || {};
   const nData = localNarrativeOverrides?.[sectionId] !== undefined 
@@ -453,12 +479,27 @@ const NarrativeEditCard = ({
           {!isVip && (
             <>
               <div className="border border-admin-gold/30 rounded-lg p-3 bg-admin-gold/5 space-y-2">
-                <label className="text-[10px] uppercase font-bold text-admin-gold mb-1 block">
-                  Khung ảnh 1 (Tick 1 - Sau đoạn mở đầu Lead)
-                </label>
+                <div className="flex items-center justify-between">
+                  <label className="text-[10px] uppercase font-bold text-admin-gold block">
+                    Khung ảnh 1 (Tick 1 - Sau đoạn mở đầu Lead)
+                  </label>
+                  <label className="cursor-pointer text-[10px] font-bold text-admin-gold hover:text-white transition-colors bg-admin-gold/20 hover:bg-admin-gold px-2 py-1 rounded flex items-center gap-1">
+                    {uploadingImage === 'image1' ? 'Đang tải lên...' : '📁 Tải ảnh từ máy'}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      disabled={uploadingImage === 'image1'}
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) handleNarrativeUpload('image1', file);
+                      }}
+                    />
+                  </label>
+                </div>
                 <input 
                   className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none"
-                  placeholder="Đường dẫn ảnh 1 (ví dụ: /images/services/foot-massage.png hoặc link CDN)"
+                  placeholder="Dán link ảnh hoặc link Google Drive..."
                   value={getValue('image1')}
                   onChange={(e) => handleNarrativeChange?.(sectionId, activeLang, 'image1', e.target.value)}
                 />
@@ -495,12 +536,27 @@ const NarrativeEditCard = ({
               </div>
 
               <div className="border border-admin-gold/30 rounded-lg p-3 bg-admin-gold/5 space-y-2">
-                <label className="text-[10px] uppercase font-bold text-admin-gold mb-1 block">
-                  Khung ảnh 2 (Tick 2 - Trước đoạn kết Closing)
-                </label>
+                <div className="flex items-center justify-between">
+                  <label className="text-[10px] uppercase font-bold text-admin-gold block">
+                    Khung ảnh 2 (Tick 2 - Trước đoạn kết Closing)
+                  </label>
+                  <label className="cursor-pointer text-[10px] font-bold text-admin-gold hover:text-white transition-colors bg-admin-gold/20 hover:bg-admin-gold px-2 py-1 rounded flex items-center gap-1">
+                    {uploadingImage === 'image2' ? 'Đang tải lên...' : '📁 Tải ảnh từ máy'}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      disabled={uploadingImage === 'image2'}
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) handleNarrativeUpload('image2', file);
+                      }}
+                    />
+                  </label>
+                </div>
                 <input 
                   className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none"
-                  placeholder="Đường dẫn ảnh 2 (ví dụ: /images/about-treatment.png hoặc link CDN)"
+                  placeholder="Dán link ảnh hoặc link Google Drive..."
                   value={getValue('image2')}
                   onChange={(e) => handleNarrativeChange?.(sectionId, activeLang, 'image2', e.target.value)}
                 />
@@ -887,7 +943,10 @@ const PureAdminPage = () => {
       const s = prev[sectionId] || existingNarratives[sectionId] || {};
       const newS = { ...s };
       newS[lang] = newS[lang] || {};
-      newS[lang][field] = value;
+      const processedVal = (field === 'image1' || field === 'image2') && typeof value === 'string'
+        ? processGoogleDriveLink(value.trim())
+        : value;
+      newS[lang][field] = processedVal;
       return { ...prev, [sectionId]: newS };
     });
   };
