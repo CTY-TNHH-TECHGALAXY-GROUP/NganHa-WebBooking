@@ -88,7 +88,6 @@ export const POST = withAuth(async (request: NextRequest, { supabase, user }) =>
           .from('WebBookingContent')
           .update({ value: update.value })
           .eq('key', update.key)
-          .eq('value', (currentByKey.get(update.key) as { value: unknown }).value)
           .select('key, value')
           .maybeSingle();
       } else if (expected !== undefined && !currentByKey.has(update.key)) {

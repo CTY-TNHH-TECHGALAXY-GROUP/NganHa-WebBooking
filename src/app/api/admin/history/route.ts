@@ -50,7 +50,6 @@ export const POST = withAuth(async (request: NextRequest, { supabase, user }) =>
       .from('SystemConfigs')
       .update({ value: body.brand_history })
       .eq('key', 'brand_history')
-      .eq('value', current.value)
       .select('value')
       .maybeSingle()
     : await supabase

@@ -689,7 +689,7 @@ const PureAdminPage = () => {
     }
   };
 
-  const saveContent = async (newMediaData: any) => {
+  const saveContent = async (newMediaData: any): Promise<boolean> => {
     try {
       const res = await fetch('/api/admin/content', {
         method: 'POST',
@@ -702,13 +702,16 @@ const PureAdminPage = () => {
       const json = await res.json();
       if (!json.success) {
         if (res.status === 409) alert('Nội dung đã thay đổi ở cửa sổ khác. Bản nháp hiện tại vẫn được giữ lại; hãy tải lại để so sánh.');
-        else alert('Lỗi khi lưu dữ liệu!');
+        else alert('Lỗi khi lưu dữ liệu: ' + (json.error?.message || json.message || 'Không xác định'));
+        return false;
       } else {
         setContentRevision(json.data?.revisions?.pure_relaxation_media || contentRevision);
+        return true;
       }
     } catch (err) {
       console.error(err);
       alert('Lỗi hệ thống khi lưu');
+      return false;
     }
   };
 
@@ -825,9 +828,16 @@ const PureAdminPage = () => {
       },
     };
     setContentData(newMediaData);
-    setSuccessId(`category-${sectionId}`);
-    await saveContent(newMediaData);
-    setTimeout(() => setSuccessId(null), 3000);
+    const ok = await saveContent(newMediaData);
+    if (ok) {
+      setLocalCategoryOverrides((prev: any) => {
+        const next = { ...prev };
+        delete next[sectionId];
+        return next;
+      });
+      setSuccessId(`category-${sectionId}`);
+      setTimeout(() => setSuccessId(null), 3000);
+    }
   };
 
   const saveTextChanges = async (serviceName: string) => {
@@ -840,9 +850,16 @@ const PureAdminPage = () => {
       }
     };
     setContentData(newMediaData);
-    setSuccessId(`${serviceName}-text`);
-    await saveContent(newMediaData);
-    setTimeout(() => setSuccessId(null), 3000);
+    const ok = await saveContent(newMediaData);
+    if (ok) {
+      setLocalTextOverrides((prev: any) => {
+        const next = { ...prev };
+        delete next[serviceName];
+        return next;
+      });
+      setSuccessId(`${serviceName}-text`);
+      setTimeout(() => setSuccessId(null), 3000);
+    }
   };
 
   // --- NARRATIVE EDITING ---
@@ -871,9 +888,16 @@ const PureAdminPage = () => {
       }
     };
     setContentData(newMediaData);
-    setSuccessId(`narrative-${sectionId}`);
-    await saveContent(newMediaData);
-    setTimeout(() => setSuccessId(null), 3000);
+    const ok = await saveContent(newMediaData);
+    if (ok) {
+      setLocalNarrativeOverrides((prev: any) => {
+        const next = { ...prev };
+        delete next[sectionId];
+        return next;
+      });
+      setSuccessId(`narrative-${sectionId}`);
+      setTimeout(() => setSuccessId(null), 3000);
+    }
   };
 
   if (loading) return <div className="p-8 text-center text-admin-text-dim">Đang tải cấu hình...</div>;
