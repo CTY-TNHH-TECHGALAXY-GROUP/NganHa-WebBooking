@@ -5,7 +5,23 @@ import { apiResponse } from '@/lib/api/apiResponse';
 import { recordContentRevisions } from '@/lib/api/contentRevision';
 import { createHash } from 'node:crypto';
 
-const revisionToken = (value: unknown) => createHash('sha256').update(JSON.stringify(value ?? null)).digest('hex');
+function canonicalize(obj: unknown): unknown {
+  if (obj === null || typeof obj !== 'object') {
+    return obj;
+  }
+  if (Array.isArray(obj)) {
+    return obj.map(canonicalize);
+  }
+  const keys = Object.keys(obj as Record<string, unknown>).sort();
+  const sorted: Record<string, unknown> = {};
+  for (const key of keys) {
+    sorted[key] = canonicalize((obj as Record<string, unknown>)[key]);
+  }
+  return sorted;
+}
+
+const revisionToken = (value: unknown) =>
+  createHash('sha256').update(JSON.stringify(canonicalize(value ?? null))).digest('hex');
 
 export const GET = withAuth(async (_request, { supabase }) => {
   const { data, error } = await supabase

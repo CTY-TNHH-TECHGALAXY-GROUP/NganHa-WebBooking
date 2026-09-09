@@ -5,7 +5,23 @@ import { withAuth } from '@/lib/api/withAuth';
 import { apiResponse } from '@/lib/api/apiResponse';
 import { recordContentRevisions } from '@/lib/api/contentRevision';
 
-const revisionToken = (value: unknown) => createHash('sha256').update(JSON.stringify(value ?? null)).digest('hex');
+function canonicalize(obj: unknown): unknown {
+  if (obj === null || typeof obj !== 'object') {
+    return obj;
+  }
+  if (Array.isArray(obj)) {
+    return obj.map(canonicalize);
+  }
+  const keys = Object.keys(obj as Record<string, unknown>).sort();
+  const sorted: Record<string, unknown> = {};
+  for (const key of keys) {
+    sorted[key] = canonicalize((obj as Record<string, unknown>)[key]);
+  }
+  return sorted;
+}
+
+const revisionToken = (value: unknown) =>
+  createHash('sha256').update(JSON.stringify(canonicalize(value ?? null))).digest('hex');
 
 export const GET = withAuth(async (_request, { supabase }) => {
   try {
@@ -77,6 +93,7 @@ export const POST = withAuth(async (request: NextRequest, { supabase, user }) =>
 
     // Update with the revision predicate when a caller supplied one. This makes
     // the read/modify/write path safe against two editors saving the same key.
+    const savedByKey = new Map<string, unknown>();
     for (const update of updates) {
       const expected = Object.prototype.hasOwnProperty.call(expectedRevisions, update.key)
         ? expectedRevisions[update.key] || null
@@ -113,6 +130,8 @@ export const POST = withAuth(async (request: NextRequest, { supabase, user }) =>
       if (expected !== undefined && !result.data) {
         return apiResponse.error('Nội dung đã được thay đổi ở cửa sổ khác. Bản nháp của bạn vẫn được giữ lại.', 'CONTENT_CONFLICT', 409);
       }
+
+      savedByKey.set(update.key, result.data?.value ?? update.value);
     }
 
     try {
@@ -126,10 +145,14 @@ export const POST = withAuth(async (request: NextRequest, { supabase, user }) =>
     }
 
     const nextRevisions = updates.reduce<Record<string, string | null>>((result, update) => {
-      result[update.key] = revisionToken(update.value);
+      const savedVal = savedByKey.get(update.key) ?? update.value;
+      result[update.key] = revisionToken(savedVal);
       return result;
     }, {});
-    return apiResponse.success({ message: 'Updated successfully', revisions: nextRevisions });
+    return apiResponse.success(
+      { message: 'Updated successfully', revisions: nextRevisions },
+      { revisions: nextRevisions }
+    );
   } catch (error: any) {
     return apiResponse.error(error.message, 'INTERNAL_ERROR', 500);
   }

@@ -696,16 +696,34 @@ const PureAdminPage = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           pure_relaxation_media: newMediaData,
-          _expectedRevisions: { pure_relaxation_media: contentRevision },
+          _expectedRevisions: contentRevision ? { pure_relaxation_media: contentRevision } : undefined,
         }),
       });
       const json = await res.json();
       if (!json.success) {
-        if (res.status === 409) alert('Nội dung đã thay đổi ở cửa sổ khác. Bản nháp hiện tại vẫn được giữ lại; hãy tải lại để so sánh.');
-        else alert('Lỗi khi lưu dữ liệu: ' + (json.error?.message || json.message || 'Không xác định'));
+        if (res.status === 409) {
+          try {
+            const syncRes = await fetch('/api/admin/content');
+            if (syncRes.ok) {
+              const syncJson = await syncRes.json();
+              const latestRev = syncJson.meta?.revisions?.pure_relaxation_media || syncJson.data?.revisions?.pure_relaxation_media;
+              if (latestRev) {
+                setContentRevision(latestRev);
+              }
+            }
+          } catch (e) {
+            console.error('Lỗi khi đồng bộ revision:', e);
+          }
+          alert('Phiên bản dữ liệu vừa được đồng bộ lại. Bản nháp của bạn đã được giữ nguyên, vui lòng bấm nút Lưu một lần nữa để hoàn tất!');
+        } else {
+          alert('Lỗi khi lưu dữ liệu: ' + (json.error?.message || json.message || 'Không xác định'));
+        }
         return false;
       } else {
-        setContentRevision(json.data?.revisions?.pure_relaxation_media || contentRevision);
+        const nextRev = json.data?.revisions?.pure_relaxation_media || json.meta?.revisions?.pure_relaxation_media;
+        if (nextRev) {
+          setContentRevision(nextRev);
+        }
         return true;
       }
     } catch (err) {
