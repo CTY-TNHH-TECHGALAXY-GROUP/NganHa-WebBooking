@@ -120,6 +120,17 @@ When user's prompt is NOT in English:
 2. Identify dependent files
 3. Update ALL affected files together
 
+### 🛡️ Strict Isolation & Zero Collateral Damage (CỰC KỲ QUAN TRỌNG - BẮT BUỘC)
+
+> **NGUYÊN TẮC CÁCH LY PHẠM VI: SỬA ĐÚNG 1 VỊ TRÍ / TÍNH NĂNG - TUYỆT ĐỐI KHÔNG GÂY ẢNH HƯỞNG ĐẾN CÁC LAYOUT, VỊ TRÍ, TÍNH NĂNG KHÁC.**
+
+Mọi thay đổi code PHẢI tuân thủ nghiêm ngặt 4 điều kiện cốt lõi:
+1. **Phạm vi tối thiểu (Single Target Precision):** Khi sửa hoặc thêm 1 vị trí/tính năng, chỉ được phép sửa đúng phần tử đó. Tuyệt đối KHÔNG sửa đổi, xóa, hoặc refactor các thuộc tính, badge, text, hoặc component lân cận nếu không được yêu cầu rõ ràng.
+2. **Bảo toàn nguyên trạng (Zero Silent Cleanup):** Mọi badge (như `%` giảm giá), nút bấm, icon, ngôn ngữ i18n, modal hay tính năng hiện hữu đều là chủ đích thiết kế. Nghiêm cấm việc tự ý "dọn dẹp" hay lược bỏ bất kỳ code nào.
+3. **Không vỡ Layout chéo (Zero Cross-Layout Breakage):** Khi chỉnh sửa file/component dùng chung (`Header`, `Footer`, `LayoutWrapper`, `globals.css`), phải đảm bảo 100% không làm vỡ hoặc xô lệch layout của các trang khác. Tránh các CSS global override (`!important`, thẻ cha) làm ảnh hưởng layout ngoài ý muốn.
+4. **Hậu kiểm Diff bắt buộc (Pre-Commit Diff Verification):** Trước khi commit/hoàn thành, AI BẮT BUỘC phải đọc lại `git diff` từng dòng để đảm bảo không có dòng code nào ngoài phạm vi bị thay đổi hoặc vô tình bị xóa mất.
+
+
 ### 🔎 Pre-Flight Code Check (MANDATORY BEFORE CODING)
 
 **Before creating new features, writing code, or modifying files:**
