@@ -409,9 +409,9 @@
 }
 
 .pillActive {
-  color: #f7ebc7;
-  background-color: #281b15;
-  border-color: #281b15;
+  color: #fffaf0;
+  background-color: var(--pure-accent);
+  border-color: var(--pure-accent);
 }
 
 .variantStack {
@@ -445,13 +445,13 @@
 }
 
 .variantActive {
-  background-color: #281b15;
-  color: #f7ebc7;
-  border-color: #281b15;
+  background-color: var(--pure-accent);
+  color: #fffaf0;
+  border-color: var(--pure-accent);
 }
 
 .variantActive small {
-  color: rgba(247, 235, 199, 0.72);
+  color: rgba(255, 250, 240, 0.85);
 }
 
 .selectedPanel {
