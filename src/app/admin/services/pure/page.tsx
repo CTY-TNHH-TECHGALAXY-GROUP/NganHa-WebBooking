@@ -452,6 +452,23 @@ const NarrativeEditCard = ({
 
           {!isVip && (
             <>
+              <div className="border border-admin-gold/30 rounded-lg p-3 bg-admin-gold/5 space-y-2">
+                <label className="text-[10px] uppercase font-bold text-admin-gold mb-1 block">
+                  Khung ảnh 1 (Tick 1 - Sau đoạn mở đầu Lead)
+                </label>
+                <input 
+                  className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none"
+                  placeholder="Đường dẫn ảnh 1 (ví dụ: /images/services/foot-massage.png hoặc link CDN)"
+                  value={getValue('image1')}
+                  onChange={(e) => handleNarrativeChange?.(sectionId, activeLang, 'image1', e.target.value)}
+                />
+                {getValue('image1') && (
+                  <div className="mt-1 relative w-32 h-20 rounded-lg overflow-hidden border border-admin-line">
+                    <img src={getValue('image1')} alt="Preview 1" className="w-full h-full object-cover" />
+                  </div>
+                )}
+              </div>
+
               <div>
                 <label className="text-[10px] uppercase font-bold text-admin-text-dim mb-1 block">Body 1</label>
                 <textarea 
@@ -475,6 +492,23 @@ const NarrativeEditCard = ({
                   value={getValue('body3')}
                   onChange={(e) => handleNarrativeChange?.(sectionId, activeLang, 'body3', e.target.value)}
                 />
+              </div>
+
+              <div className="border border-admin-gold/30 rounded-lg p-3 bg-admin-gold/5 space-y-2">
+                <label className="text-[10px] uppercase font-bold text-admin-gold mb-1 block">
+                  Khung ảnh 2 (Tick 2 - Trước đoạn kết Closing)
+                </label>
+                <input 
+                  className="w-full bg-admin-panel border border-admin-line rounded-lg p-2 text-sm text-admin-text focus:border-admin-gold focus:outline-none"
+                  placeholder="Đường dẫn ảnh 2 (ví dụ: /images/about-treatment.png hoặc link CDN)"
+                  value={getValue('image2')}
+                  onChange={(e) => handleNarrativeChange?.(sectionId, activeLang, 'image2', e.target.value)}
+                />
+                {getValue('image2') && (
+                  <div className="mt-1 relative w-32 h-20 rounded-lg overflow-hidden border border-admin-line">
+                    <img src={getValue('image2')} alt="Preview 2" className="w-full h-full object-cover" />
+                  </div>
+                )}
               </div>
             </>
           )}
@@ -574,9 +608,12 @@ const NarrativeEditCard = ({
                   <div className="text-xl font-serif border border-dashed border-gray-400 p-1 bg-white">[Headline]</div>
                   <div className="font-medium text-[10px] leading-relaxed border border-dashed border-gray-400 p-1 bg-white">[Lead]</div>
                   <div className="italic border-l-2 border-[#a67433] pl-2 text-left text-[10px] bg-white p-1 border-dashed border border-gray-400">[Quote]</div>
+                  <div className="text-[#a67433] tracking-widest uppercase font-bold text-[8px] border border-dashed border-[#a67433] p-1 bg-[#a67433]/15">[Khung ảnh 1 (Tick 1)]</div>
                   <div className="text-left text-gray-500 border border-dashed border-gray-400 p-1 bg-white">[Body 1]</div>
                   <div className="text-left text-gray-500 border border-dashed border-gray-400 p-1 bg-white">[Body 2]</div>
                   <div className="text-left text-gray-500 border border-dashed border-gray-400 p-1 bg-white">[Body 3]</div>
+                  <div className="text-[#a67433] tracking-widest uppercase font-bold text-[8px] border border-dashed border-[#a67433] p-1 bg-[#a67433]/15">[Khung ảnh 2 (Tick 2)]</div>
+                  <div className="text-left font-bold text-gray-700 border border-dashed border-gray-400 p-1 bg-white">[Closing]</div>
                 </div>
               ) : (
                 <div className="space-y-3 text-center">

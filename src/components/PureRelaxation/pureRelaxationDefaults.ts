@@ -22,21 +22,27 @@ export const PURE_RELAXATION_DEFAULTS: Record<string, Record<string, any>> = {
   'foot-care': {
     vi: {
       eyebrow: 'Foot Massage Perspective',
-      headline: 'Foot Massage – Thư giãn bắt đầu từ đôi chân',
-      lead: 'Trải nghiệm Foot Massage tại OriaSpa được mở đầu bằng làn nước ấm hòa cùng hơn 12 loại thảo dược do chính OriaSpa trồng, chăm sóc và thu hoạch. Khi được hòa vào nước nóng, hơi ấm và hương thảo mộc nhẹ nhàng bao lấy đôi chân, giúp cơ thể dần thả lỏng ngay từ những phút đầu tiên.',
+      headline: 'Đi bộ cả ngày, đôi chân xứng đáng được nghỉ ngơi',
+      lead: 'Có những ngày cứ đi mãi không dừng. Từ con phố này sang con phố khác, hết quán cà phê lại đến khu chợ, hết điểm check-in lại tới cửa hàng bên đường - chân cứ bước, đầu óc thì mải mê khám phá, đến khi nhận ra thì đôi chân đã mỏi nhừ từ lúc nào.',
+      image1: '/images/services/foot-massage.png',
       quote: '',
-      body1: 'Sau khi đôi chân được làm ấm, thảo dược tiếp tục được kết hợp trong bước làm sạch và tẩy tế bào chết bàn chân. Sự hòa quyện giữa nguyên liệu thảo mộc và thao tác chăm sóc bằng tay giúp bề mặt da trở nên mềm mại, sạch thoáng và dễ chịu hơn, đồng thời giữ lại cảm giác tự nhiên đặc trưng của liệu trình OriaSpa.',
-      body2: 'Trong lúc đôi chân được massage, một túi chườm thảo dược ấm được đặt nhẹ tại vùng cổ – vai. Hơi ấm từ túi chườm lan dần quanh vùng cổ, tạo cảm giác được bao bọc và thư giãn đồng thời ở cả hai đầu cơ thể: đôi chân phía dưới được chăm sóc bằng thảo dược và đôi tay người thợ, trong khi vùng cổ – vai phía trên được giữ ấm nhẹ nhàng.',
-      body3: 'Từ ngâm chân thảo mộc, tẩy tế bào chết bằng nguyên liệu kết hợp thảo dược, túi chườm cổ ấm đến từng thao tác massage thủ công, mỗi bước đều được kết nối để tạo nên một trải nghiệm chăm sóc trọn vẹn hơn cho đôi chân và toàn bộ cơ thể.'
+      body1: 'Rồi tình cờ đi ngang qua Oria Spa. Nhìn vào mới biết ở đây có dịch vụ massage chân - đúng thứ đang cần nhất lúc này.',
+      body2: 'Không cần đặt lịch trước, không cần chuẩn bị gì cả. Chỉ cần bước vào, ngồi xuống, để đôi chân được thả lỏng sau bao nhiêu cây số đã đi qua. Vài mươi phút sau, đôi chân nhẹ nhõm hẳn, đủ sức để tiếp tục hành trình phía trước.',
+      body3: 'Đôi khi điều tốt nhất giữa một ngày dài rong ruổi không phải là điểm đến tiếp theo, mà là một khoảng dừng đúng lúc. Oria Spa ở đó, ngay trên đường đi của bạn.',
+      image2: '/images/about-treatment.png',
+      closing: 'Bắt đầu từ làn nước thảo mộc ấm, tiếp nối bằng sự chăm sóc trên từng vùng da, lan lên hơi ấm nơi cổ – vai và hoàn thiện bằng đôi tay người thợ.'
     },
     en: {
       eyebrow: 'Foot Massage Perspective',
-      headline: 'Foot Massage – Relaxation begins at the feet',
-      lead: 'The Foot Massage experience at OriaSpa begins with warm water blended with over 12 types of herbs grown, cared for, and harvested by OriaSpa. When mixed with hot water, the warmth and gentle herbal aroma wrap around your feet, helping the body gradually relax from the very first moments.',
+      headline: 'A day of walking deserves a break for your feet',
+      lead: "Some days you just keep going. From one street to the next, from a coffee shop to a market, from one photo spot to a shop down the road - your feet keep moving while your mind is busy taking it all in, until you suddenly realize just how tired they've become.",
+      image1: '/images/services/foot-massage.png',
       quote: '',
-      body1: 'After warming the feet, herbs continue to be used in the cleansing and exfoliating step. The combination of herbal ingredients and manual care helps the skin surface become soft, clean, and comfortable, while maintaining the natural feel characteristic of OriaSpa treatments.',
-      body2: 'While the feet are being massaged, a warm herbal pack is gently placed on the neck and shoulders. The warmth spreads around the neck, creating a sense of being enveloped and relaxed at both ends of the body: the feet below are cared for with herbs and therapist’s hands, while the neck and shoulders above are gently kept warm.',
-      body3: 'From the herbal foot soak, exfoliation with herbal ingredients, and warm neck pack to each manual massage technique, every step is connected to create a more complete care experience for the feet and the whole body.'
+      body1: 'Then you happen to walk past Oria Spa. A quick look inside and you find out they offer foot massage - exactly what you need right now.',
+      body2: 'No booking required, no preparation needed. Just walk in, sit down, and let your feet finally rest after all those kilometers. A few dozen minutes later, they feel light again, ready to carry you through the rest of the day.',
+      body3: "Sometimes the best part of a long day of wandering isn't the next destination - it's a well-timed pause. Oria Spa is right there, along the way.",
+      image2: '/images/about-treatment.png',
+      closing: 'Starting with warm herbal water, followed by care for each skin area, spreading warmth to the neck and shoulders, and completed by the therapist’s hands.'
     }
   },
   'ear-clean': {
