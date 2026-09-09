@@ -43,6 +43,145 @@ type BookingSnapshot = {
 const jsonError = (code: string, message: string, status: number, fieldErrors?: unknown[]) =>
   NextResponse.json({ success: false, code, error: message, ...(fieldErrors?.length ? { fieldErrors } : {}) }, { status });
 
+const EMAIL_OUTCOMES = ['accepted', 'failed', 'unknown', 'skipped'] as const;
+type EmailOutcome = typeof EMAIL_OUTCOMES[number];
+const EMAIL_STAGES = ['preparation', 'configuration', 'smtp', 'unknown'] as const;
+type EmailStage = typeof EMAIL_STAGES[number];
+const EMAIL_CODES = [
+  'SMTP_ACCEPTED',
+  'EMAIL_PREPARATION_FAILED',
+  'EMAIL_CONFIGURATION_UNAVAILABLE',
+  'EMAIL_RECIPIENT_INVALID',
+  'EMAIL_TEST_SKIPPED',
+  'SMTP_AUTH_FAILED',
+  'SMTP_CONNECTION_FAILED',
+  'SMTP_TLS_FAILED',
+  'SMTP_TIMEOUT',
+  'SMTP_RECIPIENT_REJECTED',
+  'SMTP_DELIVERY_UNKNOWN',
+  'EMAIL_SEND_FAILED',
+  'EMAIL_RESULT_UNKNOWN',
+  'EMAIL_REPLAY_NOT_ATTEMPTED',
+] as const;
+type EmailCode = typeof EMAIL_CODES[number];
+
+type EmailAttempt = { attempt: number; stage: EmailStage; code: EmailCode };
+type EmailDiagnostics = {
+  diagnosticsVersion: 1;
+  outcome: EmailOutcome;
+  stage: EmailStage;
+  code: EmailCode;
+  attempts: EmailAttempt[];
+};
+type EmailStatus = EmailDiagnostics & {
+  sent: boolean;
+  messageId?: string;
+  pending?: boolean;
+};
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
+}
+
+function emailOutcome(value: unknown): EmailOutcome | undefined {
+  return typeof value === 'string' && (EMAIL_OUTCOMES as readonly string[]).includes(value)
+    ? value as EmailOutcome
+    : undefined;
+}
+
+function emailStage(value: unknown): EmailStage | undefined {
+  return typeof value === 'string' && (EMAIL_STAGES as readonly string[]).includes(value)
+    ? value as EmailStage
+    : undefined;
+}
+
+function emailCode(value: unknown): EmailCode | undefined {
+  if (typeof value !== 'string' || value.length > 128) return undefined;
+  if ((EMAIL_CODES as readonly string[]).includes(value)) return value as EmailCode;
+  const legacyReasons: Record<string, EmailCode> = {
+    'no recipient email': 'EMAIL_RECIPIENT_INVALID',
+    'transporter not configured': 'EMAIL_CONFIGURATION_UNAVAILABLE',
+    'notification delivery failed.': 'EMAIL_SEND_FAILED',
+  };
+  return legacyReasons[value.trim().toLowerCase()];
+}
+
+function stageForEmailCode(code: EmailCode): EmailStage {
+  if (code === 'EMAIL_PREPARATION_FAILED' || code === 'EMAIL_RECIPIENT_INVALID' || code === 'EMAIL_TEST_SKIPPED') return 'preparation';
+  if (code === 'EMAIL_CONFIGURATION_UNAVAILABLE') return 'configuration';
+  if (code === 'SMTP_ACCEPTED' || code.startsWith('SMTP_')) return 'smtp';
+  return 'unknown';
+}
+
+function outcomeForEmailCode(code: EmailCode): EmailOutcome {
+  if (code === 'SMTP_ACCEPTED') return 'accepted';
+  if (code === 'EMAIL_TEST_SKIPPED') return 'skipped';
+  if (code === 'SMTP_DELIVERY_UNKNOWN' || code === 'EMAIL_SEND_FAILED' || code === 'EMAIL_RESULT_UNKNOWN' || code === 'EMAIL_REPLAY_NOT_ATTEMPTED') return 'unknown';
+  return 'failed';
+}
+
+function safeMessageId(value: unknown): string | undefined {
+  if (typeof value !== 'string') return undefined;
+  const trimmed = value.trim();
+  return trimmed && trimmed.length <= 512 && !/[\r\n]/.test(trimmed) ? trimmed : undefined;
+}
+
+function emailAttempts(result: Record<string, unknown>): EmailAttempt[] {
+  const smtp = isRecord(result.smtp) ? result.smtp : undefined;
+  const candidate = Array.isArray(result.attempts)
+    ? result.attempts
+    : Array.isArray(smtp?.attempts)
+      ? smtp.attempts
+      : smtp && Object.prototype.hasOwnProperty.call(smtp, 'attempt')
+        ? [smtp]
+        : [];
+  return candidate.slice(0, 2).flatMap((value): EmailAttempt[] => {
+    if (!isRecord(value) || typeof value.attempt !== 'number' || !Number.isInteger(value.attempt) || value.attempt < 1 || value.attempt > 2) return [];
+    const stage = emailStage(value.stage);
+    const code = emailCode(value.code ?? value.reasonCode);
+    return stage && code ? [{ attempt: value.attempt, stage, code }] : [];
+  });
+}
+
+function emailStatusFromMailerResult(result: unknown): EmailStatus {
+  if (!isRecord(result)) {
+    return { sent: false, pending: true, diagnosticsVersion: 1, outcome: 'unknown', stage: 'unknown', code: 'EMAIL_RESULT_UNKNOWN', attempts: [] };
+  }
+
+  const success = result.success === true;
+  const customer = isRecord(result.customer) ? result.customer : undefined;
+  const smtp = isRecord(result.smtp) ? result.smtp : undefined;
+  const reportedOutcome = emailOutcome(result.outcome) || emailOutcome(customer?.outcome);
+  let code = emailCode(result.reasonCode ?? result.code ?? result.reason) || emailCode(smtp?.code);
+  if (!code) code = reportedOutcome === 'skipped' ? 'EMAIL_TEST_SKIPPED' : success && reportedOutcome !== 'unknown' ? 'SMTP_ACCEPTED' : 'EMAIL_RESULT_UNKNOWN';
+  if (success && reportedOutcome === 'skipped' && code === 'SMTP_ACCEPTED') code = 'EMAIL_TEST_SKIPPED';
+  if (!success && code === 'SMTP_ACCEPTED') code = 'EMAIL_RESULT_UNKNOWN';
+
+  let outcome = reportedOutcome || outcomeForEmailCode(code);
+  if (!success && outcome === 'accepted') outcome = 'unknown';
+  const sent = success && outcome === 'accepted';
+  const status: EmailStatus = {
+    sent,
+    ...(sent ? { messageId: safeMessageId(result.messageId) } : {}),
+    ...(sent ? {} : { pending: true }),
+    diagnosticsVersion: 1,
+    outcome,
+    stage: emailStage(result.stage) || emailStage(smtp?.stage) || stageForEmailCode(code),
+    code,
+    attempts: emailAttempts(result),
+  };
+  if (!status.messageId) delete status.messageId;
+  return status;
+}
+
+function emailStatusForMailerThrow(): EmailStatus {
+  return { sent: false, pending: true, diagnosticsVersion: 1, outcome: 'unknown', stage: 'unknown', code: 'EMAIL_SEND_FAILED', attempts: [] };
+}
+
+function emailDiagnosticsForReplay(): EmailDiagnostics {
+  return { diagnosticsVersion: 1, outcome: 'unknown', stage: 'unknown', code: 'EMAIL_REPLAY_NOT_ATTEMPTED', attempts: [] };
+}
+
 function schemaUnavailable(error: any): boolean {
   const message = String(error?.message || '');
   return ['42P01', '42703', '42501', '42883', 'PGRST202', 'PGRST204'].includes(error?.code) ||
@@ -79,6 +218,9 @@ function responseForSnapshot(snapshot: BookingSnapshot, idempotent: boolean): Ne
       totalAmount: snapshot.totalAmount,
       lang: snapshot.lang,
       status: snapshot.status || 'NEW',
+      // This request deliberately does not resend. The stored snapshot has no
+      // historical delivery receipt, so the diagnostics remain unknown.
+      ...(idempotent ? { emailStatus: emailDiagnosticsForReplay() } : {}),
     },
   });
 }
@@ -625,7 +767,7 @@ export async function POST(request: Request) {
     return responseForIncompleteBooking(committedId);
   }
   const receptionEmail = await resolveReceptionEmail(supabase);
-  let emailStatus: { sent: boolean; messageId?: string; pending?: boolean } = { sent: false, pending: true };
+  let emailStatus: EmailStatus = emailStatusForMailerThrow();
   console.info('[API Bookings] Email dispatch started', {
     bookingId: committedSnapshot.bookingId,
     customerEmailPresent: Boolean(committedSnapshot.customerEmail),
@@ -640,18 +782,23 @@ export async function POST(request: Request) {
       totalAmount: committedSnapshot.totalAmount, therapist: pricing.items.find((item) => item.options.therapist)?.options.therapist || 'any',
       lang: committedSnapshot.lang, notes: committedSnapshot.notes || undefined, focusAreaNote: committedSnapshot.focusAreaNote || undefined, receptionEmail,
     });
-    if (mail.success) {
-      emailStatus = { sent: true, messageId: mail.messageId };
-    }
+    emailStatus = emailStatusFromMailerResult(mail);
     console.info('[API Bookings] Email dispatch result', {
       bookingId: committedSnapshot.bookingId,
-      success: mail.success === true,
-      messageIdPresent: Boolean(mail.messageId),
-      reason: typeof mail.reason === 'string' ? mail.reason : undefined,
+      sent: emailStatus.sent,
+      outcome: emailStatus.outcome,
+      stage: emailStatus.stage,
+      code: emailStatus.code,
+      attempts: emailStatus.attempts.length,
+      messageIdPresent: Boolean(emailStatus.messageId),
     });
   } catch {
+    emailStatus = emailStatusForMailerThrow();
     console.error('[API Bookings] Email dispatch threw', {
       bookingId: committedSnapshot.bookingId,
+      outcome: emailStatus.outcome,
+      stage: emailStatus.stage,
+      code: emailStatus.code,
     });
   }
 

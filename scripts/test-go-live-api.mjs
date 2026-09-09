@@ -98,7 +98,27 @@ function harness(scenario = {}) {
       if (name === 'next/server') return { NextResponse: { json: (value, options) => Response.json(value, options) } };
       if (name === '@/lib/supabase-server') return { getSupabaseAdmin: () => supabase };
       if (name === '@/lib/booking/contract') return contract;
-      if (name === '@/lib/mailer') return { sendBookingConfirmationEmail: async () => { calls.mail++; calls.trace.push({ stage: 'mailer' }); if (scenario.mailThrows) throw Error('mail offline'); return { success: !scenario.mailFails }; } };
+      if (name === '@/lib/mailer') return { sendBookingConfirmationEmail: async () => {
+        calls.mail++;
+        calls.trace.push({ stage: 'mailer' });
+        if (scenario.mailThrows) throw Error('mail offline password=MAIL_SECRET recipient=guest@example.invalid');
+        if (Object.prototype.hasOwnProperty.call(scenario, 'mailResult')) return scenario.mailResult;
+        if (scenario.mailFails) return {
+          success: false,
+          outcome: 'failed',
+          stage: 'smtp',
+          reasonCode: 'SMTP_AUTH_FAILED',
+          attempts: [{ attempt: 1, stage: 'smtp', code: 'SMTP_AUTH_FAILED' }],
+        };
+        return {
+          success: true,
+          messageId: '<qa-message-id@mock.invalid>',
+          outcome: 'accepted',
+          stage: 'smtp',
+          reasonCode: 'SMTP_ACCEPTED',
+          attempts: [{ attempt: 1, stage: 'smtp', code: 'SMTP_ACCEPTED' }],
+        };
+      } };
       throw Error(`Unexpected dependency: ${name}`);
     },
   };
@@ -154,7 +174,11 @@ await test('atomic writer boundary is exercised without direct insert/delete fal
 await test('commit remains successful when SMTP throws', async () => {
   const h = harness({ mailThrows: true }); const response = await h.post();
   assert.equal(response.status, 200); const result = await response.json();
-  assert.equal(result.data.totalAmount, 1580000); assert.equal(result.data.emailStatus.pending, true); assert.equal(h.calls.writer, 1); assert.equal(h.calls.deletes, 0);
+  assert.equal(result.data.totalAmount, 1580000);
+  assert.deepEqual(result.data.emailStatus, {
+    sent: false, pending: true, diagnosticsVersion: 1, outcome: 'unknown', stage: 'unknown', code: 'EMAIL_SEND_FAILED', attempts: [],
+  });
+  assert.equal(h.calls.writer, 1); assert.equal(h.calls.deletes, 0);
 });
 await test('SMTP failure after commit is replay-safe and retry sends no duplicate email', async () => {
   const h = harness({ mailThrows: true });
@@ -163,12 +187,17 @@ await test('SMTP failure after commit is replay-safe and retry sends no duplicat
   assert.equal(first.status, 200);
   assert.equal(firstResult.idempotent, false);
   assert.equal(firstResult.data.emailStatus.pending, true);
+  assert.equal(firstResult.data.emailStatus.code, 'EMAIL_SEND_FAILED');
   h.scenario.replay = {};
   const retry = await h.post();
   const retryResult = await retry.json();
   assert.equal(retry.status, 200);
   assert.equal(retryResult.idempotent, true);
   assert.equal(retryResult.data.bookingId, firstResult.data.bookingId);
+  assert.deepEqual(retryResult.data.emailStatus, {
+    diagnosticsVersion: 1, outcome: 'unknown', stage: 'unknown', code: 'EMAIL_REPLAY_NOT_ATTEMPTED', attempts: [],
+  });
+  assert.equal(Object.prototype.hasOwnProperty.call(retryResult.data.emailStatus, 'sent'), false);
   assert.equal(h.calls.allocator, 1);
   assert.equal(h.calls.writer, 1);
   assert.equal(h.calls.mail, 1);
@@ -176,7 +205,12 @@ await test('SMTP failure after commit is replay-safe and retry sends no duplicat
 });
 await test('successful email keeps the direct booking commit', async () => {
   const h = harness(); const r = await h.post();
-  assert.equal(r.status, 200); assert.equal((await r.json()).data.emailStatus.sent, true);
+  const result = await r.json();
+  assert.equal(r.status, 200);
+  assert.deepEqual(result.data.emailStatus, {
+    sent: true, messageId: '<qa-message-id@mock.invalid>', diagnosticsVersion: 1, outcome: 'accepted', stage: 'smtp', code: 'SMTP_ACCEPTED',
+    attempts: [{ attempt: 1, stage: 'smtp', code: 'SMTP_ACCEPTED' }],
+  });
   assert.deepEqual(h.calls.trace, [
     { stage: 'rpc', name: 'webbooking_allocate_booking_number' },
     { stage: 'rpc', name: 'webbooking_commit_booking' },
@@ -192,6 +226,9 @@ await test('writerReplay returns the verified snapshot and never dispatches mail
   assert.equal(response.status, 200);
   assert.equal(result.idempotent, true);
   assert.equal(result.data.bookingId, row.id);
+  assert.deepEqual(result.data.emailStatus, {
+    diagnosticsVersion: 1, outcome: 'unknown', stage: 'unknown', code: 'EMAIL_REPLAY_NOT_ATTEMPTED', attempts: [],
+  });
   assert.equal(h.calls.allocator, 1);
   assert.equal(h.calls.writer, 1);
   assert.equal(h.calls.verificationReads, 2);
@@ -296,8 +333,68 @@ await test('SMTP false result keeps the committed booking successful and marks e
   assert.equal(response.status, 200);
   assert.equal(result.data.emailStatus.sent, false);
   assert.equal(result.data.emailStatus.pending, true);
+  assert.equal(result.data.emailStatus.outcome, 'failed');
+  assert.equal(result.data.emailStatus.stage, 'smtp');
+  assert.equal(result.data.emailStatus.code, 'SMTP_AUTH_FAILED');
+  assert.deepEqual(result.data.emailStatus.attempts, [{ attempt: 1, stage: 'smtp', code: 'SMTP_AUTH_FAILED' }]);
   assert.equal(h.calls.writer, 1);
   assert.equal(h.calls.mail, 1);
+});
+await test('mailer result allowlist preserves accepted fields and excludes raw extras', async () => {
+  const secret = 'password=MAIL_SECRET recipient=secret@example.com';
+  const h = harness({ mailResult: {
+    success: true,
+    messageId: '<safe-message-id@mock.invalid>',
+    outcome: 'accepted',
+    stage: 'smtp',
+    reasonCode: 'SMTP_ACCEPTED',
+    attempts: [{ attempt: 1, stage: 'smtp', code: 'SMTP_ACCEPTED' }],
+    error: secret,
+    response: secret,
+    accepted: [secret],
+  } });
+  const response = await h.post();
+  const result = await response.json();
+  assert.equal(response.status, 200);
+  assert.equal(result.data.emailStatus.sent, true);
+  assert.equal(result.data.emailStatus.messageId, '<safe-message-id@mock.invalid>');
+  assert.doesNotMatch(JSON.stringify(result), /MAIL_SECRET|secret@example\.com/);
+  assert.doesNotMatch(JSON.stringify(result.data.emailStatus), /"(?:error|response|accepted)"\s*:/);
+});
+await test('mailer failure/unknown/malformed results stay safe after commit', async () => {
+  const cases = [
+    {
+      mailResult: {
+        success: false,
+        outcome: 'failed',
+        stage: 'smtp',
+        reasonCode: 'SMTP_AUTH_FAILED',
+        attempts: [{ attempt: 1, stage: 'smtp', code: 'SMTP_AUTH_FAILED' }],
+        error: 'password=MAIL_SECRET',
+      },
+      expected: { outcome: 'failed', stage: 'smtp', code: 'SMTP_AUTH_FAILED', attempts: [{ attempt: 1, stage: 'smtp', code: 'SMTP_AUTH_FAILED' }] },
+    },
+    {
+      mailResult: { success: false, stage: 'smtp', reasonCode: 'SMTP_DELIVERY_UNKNOWN', attempts: [{ attempt: 1, stage: 'smtp', code: 'SMTP_DELIVERY_UNKNOWN' }], stack: 'token=MAIL_SECRET' },
+      expected: { outcome: 'unknown', stage: 'smtp', code: 'SMTP_DELIVERY_UNKNOWN', attempts: [{ attempt: 1, stage: 'smtp', code: 'SMTP_DELIVERY_UNKNOWN' }] },
+    },
+    { mailResult: null, expected: { outcome: 'unknown', stage: 'unknown', code: 'EMAIL_RESULT_UNKNOWN', attempts: [] } },
+    { mailResult: {}, expected: { outcome: 'unknown', stage: 'unknown', code: 'EMAIL_RESULT_UNKNOWN', attempts: [] } },
+    { mailResult: [], expected: { outcome: 'unknown', stage: 'unknown', code: 'EMAIL_RESULT_UNKNOWN', attempts: [] } },
+  ];
+  for (const testCase of cases) {
+    const h = harness(testCase);
+    const response = await h.post();
+    const result = await response.json();
+    assert.equal(response.status, 200);
+    assert.equal(result.data.emailStatus.sent, false);
+    assert.equal(result.data.emailStatus.pending, true);
+    assert.equal(result.data.emailStatus.diagnosticsVersion, 1);
+    assert.deepEqual({ outcome: result.data.emailStatus.outcome, stage: result.data.emailStatus.stage, code: result.data.emailStatus.code, attempts: result.data.emailStatus.attempts }, testCase.expected);
+    assert.doesNotMatch(JSON.stringify(result), /MAIL_SECRET/);
+    assert.equal(h.calls.writer, 1);
+    assert.equal(h.calls.mail, 1);
+  }
 });
 await test('booking id/billCode conflict retries the allocator, while other unique errors fail closed', async () => {
   const retryable = harness({ writerErrors: [{ code: '23505', constraint: 'Bookings_billCode_key', message: 'duplicate key value violates unique constraint "Bookings_billCode_key"' }, null] });

@@ -34,6 +34,46 @@ export interface BookingEmailSendOptions {
   createTransporter?: typeof getTransporter;
 }
 
+export type BookingEmailOutcome = 'accepted' | 'failed' | 'unknown' | 'skipped';
+export type BookingEmailStage = 'preparation' | 'configuration' | 'smtp' | 'unknown';
+export type BookingEmailDiagnosticCode =
+  | 'SMTP_ACCEPTED'
+  | 'EMAIL_PREPARATION_FAILED'
+  | 'EMAIL_CONFIGURATION_UNAVAILABLE'
+  | 'EMAIL_RECIPIENT_INVALID'
+  | 'EMAIL_TEST_SKIPPED'
+  | 'SMTP_AUTH_FAILED'
+  | 'SMTP_CONNECTION_FAILED'
+  | 'SMTP_TLS_FAILED'
+  | 'SMTP_TIMEOUT'
+  | 'SMTP_RECIPIENT_REJECTED'
+  | 'SMTP_DELIVERY_UNKNOWN'
+  | 'EMAIL_SEND_FAILED'
+  | 'EMAIL_RESULT_UNKNOWN'
+  | 'EMAIL_REPLAY_NOT_ATTEMPTED';
+
+export interface BookingEmailAttempt {
+  attempt: number;
+  stage: 'smtp';
+  code: BookingEmailDiagnosticCode;
+}
+
+export interface BookingEmailResult {
+  /** Legacy caller field. True only when the intended recipient has accepted evidence. */
+  success: boolean;
+  /** Legacy caller field. A message id is not delivery or inbox evidence. */
+  messageId?: string;
+  diagnosticsVersion: 1;
+  outcome: BookingEmailOutcome;
+  stage: BookingEmailStage;
+  code: BookingEmailDiagnosticCode;
+  attempts: BookingEmailAttempt[];
+  /** Preserved fixed strings used by older callers for local preparation/configuration failures. */
+  reason?: 'No recipient email' | 'Transporter not configured';
+  /** Preserved fixed string used by older callers for an unclassified send failure. */
+  error?: 'Notification delivery failed.';
+}
+
 const I18N_TEMPLATE_1: Record<string, {
   subject: string;
   greeting: (name: string) => string;
@@ -223,6 +263,97 @@ function safeSmtpErrorDetails(error: unknown): Record<string, string | number> {
   if (typeof value.command === 'string' && /^(CONN|AUTH|MAIL|RCPT|DATA|STARTTLS)$/i.test(value.command)) details.command = value.command.toUpperCase();
   if (typeof value.responseCode === 'number' && Number.isInteger(value.responseCode) && value.responseCode >= 100 && value.responseCode <= 599) details.responseCode = value.responseCode;
   return details;
+}
+
+type SmtpFailureClassification = Pick<BookingEmailResult, 'code' | 'outcome'>;
+type SendInfoClassification = Pick<BookingEmailResult, 'code' | 'outcome'> & { success: boolean };
+
+function classifySmtpError(error: unknown): SmtpFailureClassification {
+  if (!error || typeof error !== 'object') {
+    return { outcome: 'unknown', code: 'SMTP_DELIVERY_UNKNOWN' };
+  }
+
+  const value = error as Record<string, unknown>;
+  const errorCode = typeof value.code === 'string' ? value.code.toUpperCase() : '';
+  const command = typeof value.command === 'string' ? value.command.toUpperCase() : '';
+  const responseCode = typeof value.responseCode === 'number' ? value.responseCode : undefined;
+
+  if (command === 'AUTH' || errorCode === 'EAUTH' || responseCode === 534 || responseCode === 535) {
+    return { outcome: 'failed', code: 'SMTP_AUTH_FAILED' };
+  }
+
+  if (
+    command === 'STARTTLS' ||
+    errorCode === 'ETLS' ||
+    errorCode === 'TLS' ||
+    errorCode.startsWith('ERR_TLS')
+  ) {
+    return { outcome: 'failed', code: 'SMTP_TLS_FAILED' };
+  }
+
+  if (errorCode === 'ETIMEDOUT' || errorCode === 'ETIME' || errorCode === 'ESOCKETTIMEDOUT') {
+    return { outcome: 'unknown', code: 'SMTP_TIMEOUT' };
+  }
+
+  if (command === 'RCPT' || errorCode === 'EENVELOPE') {
+    return { outcome: 'failed', code: 'SMTP_RECIPIENT_REJECTED' };
+  }
+
+  if (
+    command === 'CONN' ||
+    errorCode === 'ENOTFOUND' ||
+    errorCode === 'EAI_AGAIN' ||
+    errorCode === 'ECONNECTION' ||
+    errorCode === 'ECONNREFUSED' ||
+    errorCode === 'ECONNRESET' ||
+    errorCode === 'ESOCKET' ||
+    errorCode === 'EHOSTUNREACH' ||
+    errorCode === 'ENETUNREACH'
+  ) {
+    return { outcome: 'failed', code: 'SMTP_CONNECTION_FAILED' };
+  }
+
+  return { outcome: 'unknown', code: 'SMTP_DELIVERY_UNKNOWN' };
+}
+
+function getMessageId(info: unknown): string | undefined {
+  if (!info || typeof info !== 'object') return undefined;
+  const messageId = (info as Record<string, unknown>).messageId;
+  return typeof messageId === 'string' && messageId ? messageId : undefined;
+}
+
+function getRecipientAddress(value: unknown): string | null {
+  if (typeof value === 'string') return normalizeEmailRecipient(value);
+  if (!value || typeof value !== 'object') return null;
+  return normalizeEmailRecipient((value as Record<string, unknown>).address);
+}
+
+function recipientWasListed(info: unknown, field: 'accepted' | 'rejected', recipient: string): boolean {
+  if (!info || typeof info !== 'object') return false;
+  const values = (info as Record<string, unknown>)[field];
+  if (!Array.isArray(values)) return false;
+
+  const normalizedRecipient = recipient.toLowerCase();
+  return values.some((value) => getRecipientAddress(value)?.toLowerCase() === normalizedRecipient);
+}
+
+function classifySendInfo(info: unknown, expectedRecipient: string): SendInfoClassification {
+  if (recipientWasListed(info, 'accepted', expectedRecipient)) {
+    return { success: true, outcome: 'accepted', code: 'SMTP_ACCEPTED' };
+  }
+
+  if (recipientWasListed(info, 'rejected', expectedRecipient)) {
+    return { success: false, outcome: 'failed', code: 'SMTP_RECIPIENT_REJECTED' };
+  }
+
+  // A message id or acceptance of only BCC/reception recipients is not customer delivery evidence.
+  return { success: false, outcome: 'unknown', code: 'EMAIL_RESULT_UNKNOWN' };
+}
+
+function makeBookingEmailResult(
+  result: Omit<BookingEmailResult, 'diagnosticsVersion'>
+): BookingEmailResult {
+  return { diagnosticsVersion: 1, ...result };
 }
 
 const DEFAULT_RECEPTION_EMAIL = 'info@techgalaxygroup.com';
@@ -635,7 +766,10 @@ ${safeNotes}
 export async function sendBookingConfirmationEmail(
   payload: BookingEmailPayload,
   options: BookingEmailSendOptions = {}
-) {
+) : Promise<BookingEmailResult> {
+  let stage: BookingEmailStage = 'preparation';
+  const attempts: BookingEmailAttempt[] = [];
+
   try {
     const {
       bookingId,
@@ -660,7 +794,14 @@ export async function sendBookingConfirmationEmail(
 
     if (!hasCustomerEmail && !rawReception) {
       console.log('[Mailer] Skipped email: neither customer email nor reception email available');
-      return { success: false, reason: 'No recipient email' };
+      return makeBookingEmailResult({
+        success: false,
+        outcome: 'failed',
+        stage: 'preparation',
+        code: 'EMAIL_RECIPIENT_INVALID',
+        attempts,
+        reason: 'No recipient email',
+      });
     }
 
     // Prevent delivering real SMTP emails to dummy/test domains (RFC 2606 reserved domains)
@@ -679,15 +820,30 @@ export async function sendBookingConfirmationEmail(
 
     if (isTestEmail) {
       console.log('[Mailer] Synthetic/test recipient detected; SMTP delivery skipped.');
-      return { success: true, messageId: `<mock-test-${Date.now()}@local.mock>` };
+      return makeBookingEmailResult({
+        success: false,
+        outcome: 'skipped',
+        stage: 'preparation',
+        code: 'EMAIL_TEST_SKIPPED',
+        attempts,
+      });
     }
 
     const createTransporter = options.createTransporter || getTransporter;
+    stage = 'configuration';
     const transporter = createTransporter();
-    if (!transporter) {
+    if (!transporter || typeof transporter.sendMail !== 'function') {
       console.warn('[Mailer] Cannot send email: transporter not configured (check SMTP_USER and SMTP_PASS)');
-      return { success: false, reason: 'Transporter not configured' };
+      return makeBookingEmailResult({
+        success: false,
+        outcome: 'failed',
+        stage: 'configuration',
+        code: 'EMAIL_CONFIGURATION_UNAVAILABLE',
+        attempts,
+        reason: 'Transporter not configured',
+      });
     }
+    stage = 'preparation';
 
     const t = I18N_TEMPLATE_1[lang] || I18N_TEMPLATE_1.vi;
     const fromName = process.env.SMTP_FROM_NAME || 'Oria Spa';
@@ -798,9 +954,33 @@ ${t.signoffTeam}
       mailOptions.bcc = bccRecipient;
     }
 
-    let info;
+    const expectedRecipient = customerRecipient || toRecipient;
+    stage = 'smtp';
+
+    const sendAttempt = async (candidate: { sendMail: (mailOptions: any) => Promise<unknown> }) => {
+      const attempt = attempts.length + 1;
+      try {
+        const info = await candidate.sendMail(mailOptions);
+        const classification = classifySendInfo(info, expectedRecipient);
+        attempts.push({ attempt, stage: 'smtp', code: classification.code });
+        return { info, classification };
+      } catch (error) {
+        const classification = classifySmtpError(error);
+        attempts.push({ attempt, stage: 'smtp', code: classification.code });
+        throw error;
+      }
+    };
+
     try {
-      info = await transporter.sendMail(mailOptions);
+      const { info, classification } = await sendAttempt(transporter);
+      return makeBookingEmailResult({
+        success: classification.success,
+        messageId: getMessageId(info),
+        outcome: classification.outcome,
+        stage: 'smtp',
+        code: classification.code,
+        attempts,
+      });
     } catch (primaryErr: any) {
       console.warn('[Mailer] Primary SMTP attempt failed; trying port 587', {
         bookingId,
@@ -808,9 +988,17 @@ ${t.signoffTeam}
         ...safeSmtpErrorDetails(primaryErr),
       });
       const fallbackTransporter = createTransporter(587);
-      if (!fallbackTransporter) throw primaryErr;
+      if (!fallbackTransporter || typeof fallbackTransporter.sendMail !== 'function') throw primaryErr;
       try {
-        info = await fallbackTransporter.sendMail(mailOptions);
+        const { info, classification } = await sendAttempt(fallbackTransporter);
+        return makeBookingEmailResult({
+          success: classification.success,
+          messageId: getMessageId(info),
+          outcome: classification.outcome,
+          stage: 'smtp',
+          code: classification.code,
+          attempts,
+        });
       } catch (fallbackErr: any) {
         console.error('[Mailer] Fallback SMTP attempt failed', {
           bookingId,
@@ -820,14 +1008,26 @@ ${t.signoffTeam}
         throw fallbackErr;
       }
     }
-
-    console.log(`[Mailer] Booking notification sent (MessageId: ${info.messageId || 'unknown'}).`);
-    return { success: true, messageId: info.messageId };
   } catch (err: any) {
+    const classification = stage === 'preparation'
+      ? { outcome: 'failed' as const, code: 'EMAIL_PREPARATION_FAILED' as const }
+      : stage === 'configuration'
+        ? { outcome: 'failed' as const, code: 'EMAIL_CONFIGURATION_UNAVAILABLE' as const }
+        : stage === 'smtp'
+          ? classifySmtpError(err)
+          : { outcome: 'unknown' as const, code: 'EMAIL_SEND_FAILED' as const };
+
     console.error('[Mailer] Booking notification failed.', {
       bookingId: payload.bookingId,
       ...safeSmtpErrorDetails(err),
     });
-    return { success: false, error: 'Notification delivery failed.' };
+    return makeBookingEmailResult({
+      success: false,
+      outcome: classification.outcome,
+      stage,
+      code: classification.code,
+      attempts,
+      error: 'Notification delivery failed.',
+    });
   }
 }
