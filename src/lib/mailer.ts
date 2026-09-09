@@ -215,6 +215,16 @@ function getTransporter(portOverride?: number) {
   });
 }
 
+function safeSmtpErrorDetails(error: unknown): Record<string, string | number> {
+  if (!error || typeof error !== 'object') return {};
+  const value = error as Record<string, unknown>;
+  const details: Record<string, string | number> = {};
+  if (typeof value.code === 'string' && /^[A-Z][A-Z0-9_:-]{1,31}$/.test(value.code)) details.code = value.code;
+  if (typeof value.command === 'string' && /^(CONN|AUTH|MAIL|RCPT|DATA|STARTTLS)$/i.test(value.command)) details.command = value.command.toUpperCase();
+  if (typeof value.responseCode === 'number' && Number.isInteger(value.responseCode) && value.responseCode >= 100 && value.responseCode <= 599) details.responseCode = value.responseCode;
+  return details;
+}
+
 const DEFAULT_RECEPTION_EMAIL = 'info@techgalaxygroup.com';
 
 function escapeHtml(value: unknown): string {
@@ -792,16 +802,32 @@ ${t.signoffTeam}
     try {
       info = await transporter.sendMail(mailOptions);
     } catch (primaryErr: any) {
-      console.warn(`⚠️ [Mailer] Lỗi gửi qua cổng 465 (${primaryErr.message}), thử lại tự động qua cổng 587 STARTTLS...`);
+      console.warn('[Mailer] Primary SMTP attempt failed; trying port 587', {
+        bookingId,
+        port: Number(process.env.SMTP_PORT || 465),
+        ...safeSmtpErrorDetails(primaryErr),
+      });
       const fallbackTransporter = createTransporter(587);
       if (!fallbackTransporter) throw primaryErr;
-      info = await fallbackTransporter.sendMail(mailOptions);
+      try {
+        info = await fallbackTransporter.sendMail(mailOptions);
+      } catch (fallbackErr: any) {
+        console.error('[Mailer] Fallback SMTP attempt failed', {
+          bookingId,
+          port: 587,
+          ...safeSmtpErrorDetails(fallbackErr),
+        });
+        throw fallbackErr;
+      }
     }
 
     console.log(`[Mailer] Booking notification sent (MessageId: ${info.messageId || 'unknown'}).`);
     return { success: true, messageId: info.messageId };
   } catch (err: any) {
-    console.error('[Mailer] Booking notification failed.');
+    console.error('[Mailer] Booking notification failed.', {
+      bookingId: payload.bookingId,
+      ...safeSmtpErrorDetails(err),
+    });
     return { success: false, error: 'Notification delivery failed.' };
   }
 }

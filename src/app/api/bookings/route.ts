@@ -57,6 +57,10 @@ function mapAllocatorError(error: any): NextResponse {
 }
 
 function responseForSnapshot(snapshot: BookingSnapshot, idempotent: boolean): NextResponse {
+  console.info('[API Bookings] Stored booking returned without email dispatch', {
+    bookingId: snapshot.bookingId,
+    idempotent,
+  });
   return NextResponse.json({
     success: true,
     idempotent,
@@ -622,6 +626,11 @@ export async function POST(request: Request) {
   }
   const receptionEmail = await resolveReceptionEmail(supabase);
   let emailStatus: { sent: boolean; messageId?: string; pending?: boolean } = { sent: false, pending: true };
+  console.info('[API Bookings] Email dispatch started', {
+    bookingId: committedSnapshot.bookingId,
+    customerEmailPresent: Boolean(committedSnapshot.customerEmail),
+    receptionEmailPresent: Boolean(receptionEmail),
+  });
   try {
     const mail = await sendBookingConfirmationEmail({
       bookingId: committedSnapshot.bookingId, customerName: committedSnapshot.customerName, customerEmail: committedSnapshot.customerEmail,
@@ -634,7 +643,17 @@ export async function POST(request: Request) {
     if (mail.success) {
       emailStatus = { sent: true, messageId: mail.messageId };
     }
-  } catch {}
+    console.info('[API Bookings] Email dispatch result', {
+      bookingId: committedSnapshot.bookingId,
+      success: mail.success === true,
+      messageIdPresent: Boolean(mail.messageId),
+      reason: typeof mail.reason === 'string' ? mail.reason : undefined,
+    });
+  } catch {
+    console.error('[API Bookings] Email dispatch threw', {
+      bookingId: committedSnapshot.bookingId,
+    });
+  }
 
   return NextResponse.json({ success: true, idempotent: false, data: { ...committedSnapshot, emailStatus } });
 }

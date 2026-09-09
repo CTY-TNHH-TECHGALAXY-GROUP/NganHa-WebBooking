@@ -18,6 +18,9 @@ for (const id of ['body-null', 'body-array', 'unicode-name-valid', 'idempotency-
 
 const replayStart = routeSource.indexOf("if (replay.state === 'complete')");
 const mailDispatchStart = routeSource.indexOf('const mail = await sendBookingConfirmationEmail');
+const writerReplayStart = routeSource.indexOf('if (writerReplay)');
+const reconcileStart = routeSource.indexOf('async function reconcileAfterUncertainCommit');
+const localizedServicesStart = routeSource.indexOf('function localizedServices');
 
 assert.ok(replayStart >= 0, 'booking route must retain an idempotent replay branch');
 assert.ok(mailDispatchStart > replayStart, 'mail dispatch must remain after replay handling');
@@ -29,6 +32,10 @@ assert.match(routeSource, /findReplay\(supabase, finalKey, \{ waitForItems: true
 assert.match(routeSource, /responseForIncompleteBooking\(replay\.bookingId\)/);
 assert.match(routeSource, /responseForUnverifiedBooking/);
 assert.match(routeSource, /reconcileAfterUncertainCommit/);
+assert.ok(writerReplayStart > replayStart && writerReplayStart < mailDispatchStart, 'writer replay must be handled before mail dispatch');
+assert.doesNotMatch(routeSource.slice(writerReplayStart, mailDispatchStart), /sendBookingConfirmationEmail\s*\(/);
+assert.ok(reconcileStart >= 0 && localizedServicesStart > reconcileStart, 'uncertain commit reconciliation branch must remain explicit');
+assert.doesNotMatch(routeSource.slice(reconcileStart, localizedServicesStart), /sendBookingConfirmationEmail\s*\(/);
 assert.match(routeSource, /BOOKING_TIME_IN_PAST/);
 assert.match(contractSource, /INVALID_PHONE/);
 assert.match(routeSource, /BOOKING_TEMPORARILY_UNAVAILABLE/);

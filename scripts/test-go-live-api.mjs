@@ -21,7 +21,7 @@ const row = { id: 'WB-QA-001', billCode: 'WB-QA-001', customerName: body.name, c
   bookingDate: '2099-09-08', timeBooking: '14:00', branchName: body.branchName, guestCount: body.guests, customerLang: body.lang,
   totalAmount: 1580000, status: 'NEW', idempotency_fingerprint: parsed.value.intentFingerprint };
 function harness(scenario = {}) {
-  const calls = { rpc: 0, allocator: 0, writer: 0, mail: 0, tables: [], inserts: [], deletes: 0, directBookingWrites: 0, writerPayloads: [], replayLookups: 0, verificationReads: 0 };
+  const calls = { rpc: 0, allocator: 0, writer: 0, mail: 0, tables: [], inserts: [], deletes: 0, directBookingWrites: 0, writerPayloads: [], replayLookups: 0, verificationReads: 0, trace: [] };
   const supabase = {
     from(table) {
       const query = { table, filters: [], action: 'select', payload: null };
@@ -43,6 +43,7 @@ function harness(scenario = {}) {
           if (isReplayLookup) calls.replayLookups++;
           if (query.filters.some(([key]) => key === 'id')) {
             calls.verificationReads++;
+            calls.trace.push({ stage: 'verification', table: 'Bookings' });
             if (scenario.verificationError) return { data: null, error: scenario.verificationError };
             return { data: scenario.verificationMissing ? null : calls.writer > 0 ? row : null };
           }
@@ -53,6 +54,7 @@ function harness(scenario = {}) {
         if (table === 'BookingItems') {
           if (query.filters.some(([key]) => key === 'bookingId')) {
             calls.verificationReads++;
+            calls.trace.push({ stage: 'verification', table: 'BookingItems' });
             if (scenario.verificationItemsError) return { data: null, error: scenario.verificationItemsError };
             if (scenario.verificationItemsMissing) return { data: null };
           }
@@ -72,7 +74,7 @@ function harness(scenario = {}) {
       return builder;
     },
     async rpc(name, payload) {
-      calls.rpc++; calls.payload = payload;
+      calls.rpc++; calls.payload = payload; calls.trace.push({ stage: 'rpc', name });
       if (name === 'webbooking_allocate_booking_number') {
         calls.allocator++;
         if (scenario.rpcError) return { error: scenario.rpcError };
@@ -82,18 +84,21 @@ function harness(scenario = {}) {
       assert.equal(name, 'webbooking_commit_booking'); calls.writer++; calls.writerPayloads.push(payload);
       const error = scenario.writerErrors?.[calls.writer - 1] || scenario.writerError;
       if (error) return { error };
-      return { data: Object.prototype.hasOwnProperty.call(scenario, 'writerResult') ? scenario.writerResult : { success: true, idempotent: false, bookingId: row.id, billCode: row.billCode } };
+      const hasWriterResult = Object.prototype.hasOwnProperty.call(scenario, 'writerResult');
+      const hasWriterResultAtIndex = Array.isArray(scenario.writerResults) && Object.prototype.hasOwnProperty.call(scenario.writerResults, calls.writer - 1);
+      const writerResult = hasWriterResultAtIndex ? scenario.writerResults[calls.writer - 1] : hasWriterResult ? scenario.writerResult : { success: true, idempotent: false, bookingId: row.id, billCode: row.billCode };
+      return { data: writerResult };
     },
   };
   const exports = {};
-  const sandbox = { exports, Buffer, Request, Response, setTimeout, console: { error() {}, warn() {} },
+  const sandbox = { exports, Buffer, Request, Response, setTimeout, console: { error() {}, warn() {}, info() {} },
     process: { env: { NEXT_PUBLIC_SUPABASE_URL: 'https://test.invalid', SUPABASE_SERVICE_ROLE_KEY: 'mock' } },
     require(name) {
       if (name === 'node:crypto') return { createHash };
       if (name === 'next/server') return { NextResponse: { json: (value, options) => Response.json(value, options) } };
       if (name === '@/lib/supabase-server') return { getSupabaseAdmin: () => supabase };
       if (name === '@/lib/booking/contract') return contract;
-      if (name === '@/lib/mailer') return { sendBookingConfirmationEmail: async () => { calls.mail++; if (scenario.mailThrows) throw Error('mail offline'); return { success: !scenario.mailFails }; } };
+      if (name === '@/lib/mailer') return { sendBookingConfirmationEmail: async () => { calls.mail++; calls.trace.push({ stage: 'mailer' }); if (scenario.mailThrows) throw Error('mail offline'); return { success: !scenario.mailFails }; } };
       throw Error(`Unexpected dependency: ${name}`);
     },
   };
@@ -172,6 +177,49 @@ await test('SMTP failure after commit is replay-safe and retry sends no duplicat
 await test('successful email keeps the direct booking commit', async () => {
   const h = harness(); const r = await h.post();
   assert.equal(r.status, 200); assert.equal((await r.json()).data.emailStatus.sent, true);
+  assert.deepEqual(h.calls.trace, [
+    { stage: 'rpc', name: 'webbooking_allocate_booking_number' },
+    { stage: 'rpc', name: 'webbooking_commit_booking' },
+    { stage: 'verification', table: 'Bookings' },
+    { stage: 'verification', table: 'BookingItems' },
+    { stage: 'mailer' },
+  ]);
+});
+await test('writerReplay returns the verified snapshot and never dispatches mail', async () => {
+  const h = harness({ writerResult: { success: true, idempotent: true, bookingId: row.id, billCode: row.billCode } });
+  const response = await h.post();
+  const result = await response.json();
+  assert.equal(response.status, 200);
+  assert.equal(result.idempotent, true);
+  assert.equal(result.data.bookingId, row.id);
+  assert.equal(h.calls.allocator, 1);
+  assert.equal(h.calls.writer, 1);
+  assert.equal(h.calls.verificationReads, 2);
+  assert.equal(h.calls.mail, 0);
+  assert.doesNotMatch(JSON.stringify(h.calls.trace), /mailer/);
+});
+await test('writer timeout after commit reconciles to success without dispatching mail', async () => {
+  const h = harness({ writerError: { code: '57014', message: 'statement timeout after commit' }, replay: {}, replayVisibleInitially: false });
+  const response = await h.post();
+  const result = await response.json();
+  assert.equal(response.status, 200);
+  assert.equal(result.idempotent, true);
+  assert.equal(result.data.bookingId, row.id);
+  assert.equal(h.calls.allocator, 1);
+  assert.equal(h.calls.writer, 1);
+  assert.equal(h.calls.replayLookups, 2);
+  assert.equal(h.calls.mail, 0);
+  assert.doesNotMatch(JSON.stringify(h.calls.trace), /mailer/);
+});
+await test('missing writer response after commit reconciles to success without dispatching mail', async () => {
+  const h = harness({ writerResult: null, replay: {}, replayVisibleInitially: false });
+  const response = await h.post();
+  const result = await response.json();
+  assert.equal(response.status, 200);
+  assert.equal(result.idempotent, true);
+  assert.equal(result.data.bookingId, row.id);
+  assert.equal(h.calls.writer, 1);
+  assert.equal(h.calls.mail, 0);
 });
 await test('replay bypasses catalog outage and never sends mail', async () => {
   const h = harness({ replay: {}, catalogError: { code: 'offline' } }); const r = await h.post();
@@ -223,6 +271,34 @@ await test('DB verification missing or failing after writer commit returns retry
     assert.equal(h.calls.deletes, 0);
   }
 });
+await test('verification failure followed by same-key retry replays success without dispatching mail', async () => {
+  const h = harness({ verificationMissing: true });
+  const first = await h.post();
+  const firstResult = await first.json();
+  assert.equal(first.status, 503);
+  assert.equal(firstResult.code, 'BOOKING_TEMPORARILY_UNAVAILABLE');
+  assert.equal(h.calls.mail, 0);
+
+  h.scenario.verificationMissing = false;
+  h.scenario.replay = {};
+  const retry = await h.post();
+  const retryResult = await retry.json();
+  assert.equal(retry.status, 200);
+  assert.equal(retryResult.idempotent, true);
+  assert.equal(retryResult.data.bookingId, firstResult.bookingId || row.id);
+  assert.equal(h.calls.writer, 1);
+  assert.equal(h.calls.mail, 0);
+});
+await test('SMTP false result keeps the committed booking successful and marks email pending', async () => {
+  const h = harness({ mailFails: true });
+  const response = await h.post();
+  const result = await response.json();
+  assert.equal(response.status, 200);
+  assert.equal(result.data.emailStatus.sent, false);
+  assert.equal(result.data.emailStatus.pending, true);
+  assert.equal(h.calls.writer, 1);
+  assert.equal(h.calls.mail, 1);
+});
 await test('booking id/billCode conflict retries the allocator, while other unique errors fail closed', async () => {
   const retryable = harness({ writerErrors: [{ code: '23505', constraint: 'Bookings_billCode_key', message: 'duplicate key value violates unique constraint "Bookings_billCode_key"' }, null] });
   const retryResponse = await retryable.post();
@@ -236,6 +312,21 @@ await test('same idLegacy with different request identity returns 409', async ()
   const h = harness({ replay: {} });
   const r = await h.post({ ...body, name: 'Different Guest' }); const result = await r.json();
   assert.equal(r.status, 409); assert.equal(result.code, 'IDEMPOTENCY_KEY_REUSED'); assert.equal(h.calls.rpc, 0); assert.equal(h.calls.mail, 0);
+});
+await test('same key concurrent new and writerReplay requests converge to one mail dispatch', async () => {
+  const h = harness({ writerResults: [
+    { success: true, idempotent: false, bookingId: row.id, billCode: row.billCode },
+    { success: true, idempotent: true, bookingId: row.id, billCode: row.billCode },
+  ] });
+  const [first, second] = await Promise.all([h.post(), h.post()]);
+  const firstResult = await first.json();
+  const secondResult = await second.json();
+  assert.equal(first.status, 200);
+  assert.equal(second.status, 200);
+  assert.equal(firstResult.data.bookingId, row.id);
+  assert.equal(secondResult.data.bookingId, row.id);
+  assert.equal(h.calls.writer, 2);
+  assert.equal(h.calls.mail, 1);
 });
 console.log(`Actual-route mocked integration: ${passed}/${passed + failed} passed; ${failed} failed; no network/SMTP/production data.`);
 if (failed) process.exitCode = 1;
