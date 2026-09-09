@@ -246,6 +246,20 @@ const MODAL_TEXTS: Record<string, Record<SupportedLang, string>> = {
         jp: '注文番号：',
         kr: '예약 번호:',
     },
+    bookingRequestReceived: {
+        vi: 'Oria Spa đã tiếp nhận yêu cầu. Chúng tôi sẽ sớm xác nhận lịch hẹn.',
+        en: 'Oria Spa has received your request. We will confirm your appointment soon.',
+        cn: 'Oria Spa 已收到您的预约请求。我们将尽快确认您的预约。',
+        jp: 'Oria Spaがご予約リクエストを受け付けました。まもなく予約を確認します。',
+        kr: 'Oria Spa가 예약 요청을 접수했습니다. 곧 예약을 확인해 드리겠습니다.',
+    },
+    confirmationEmailNotice: {
+        vi: 'Không nhận được phản hồi sau 15 phút? Vui lòng liên hệ hotline {hotline}.',
+        en: 'No response after 15 minutes? Please contact our hotline at {hotline}.',
+        cn: '15分钟后仍未收到回复？请联系热线 {hotline}。',
+        jp: '15分経っても返信がない場合は、ホットライン {hotline} までご連絡ください。',
+        kr: '15분 후에도 답변을 받지 못하셨다면 핫라인 {hotline}로 문의해 주세요.',
+    },
     understood: {
         vi: 'Đã hiểu',
         en: 'Understood',
@@ -420,6 +434,7 @@ export default function OrderConfirmModal({
             return `${window.location.origin}/${lang}`;
         }
     }, [lang, systemSettings.ctaLinks?.tabletContinue]);
+    const hotline = systemSettings.phone?.trim() || '+84 964 090 277';
 
     const toggleExpand = (idx: number) => {
         setExpandedItems(prev => ({ ...prev, [idx]: !prev[idx] }));
@@ -1088,8 +1103,8 @@ export default function OrderConfirmModal({
                             </div>
 
                             <div className="space-y-2">
-                                <h3 className="text-xl md:text-2xl font-bold text-white tracking-wide">
-                                    {lang === 'vi' ? 'Đặt lịch thành công!' : lang === 'cn' ? '预约成功！' : lang === 'jp' ? 'ご予約が完了しました！' : lang === 'kr' ? '예약이 완료되었습니다!' : 'Booking Successful!'}
+                                <h3 className="text-xl md:text-2xl font-bold text-[#e2be6f] tracking-wide">
+                                    {getModalText('bookingRequestReceived', lang)}
                                 </h3>
 
                                 {bookingId && (
@@ -1099,16 +1114,8 @@ export default function OrderConfirmModal({
                                     </div>
                                 )}
 
-                                <p className="text-xs md:text-sm text-[#e2be6f] font-medium pt-1 max-w-sm mx-auto leading-relaxed">
-                                    {lang === 'vi' 
-                                        ? 'Chúng tôi đang trong quá trình xử lý đơn của bạn, vui lòng đợi 1 tí nhé ✨' 
-                                        : lang === 'cn' 
-                                        ? '我们正在处理您的订单，请稍候片刻 ✨' 
-                                        : lang === 'jp' 
-                                        ? '現在リクエストを処理中です。少々お待ちください ✨' 
-                                        : lang === 'kr' 
-                                        ? '고객님의 예약을 처리 중입니다. 잠시만 기다려 주세요 ✨' 
-                                        : 'We are processing your booking, please wait a moment ✨'}
+                                <p className="text-[11px] md:text-xs text-white/55 pt-1 max-w-sm mx-auto leading-relaxed" aria-live="polite">
+                                    {getModalText('confirmationEmailNotice', lang).replace('{hotline}', hotline)}
                                 </p>
                             </div>
 

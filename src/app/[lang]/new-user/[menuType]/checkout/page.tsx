@@ -622,14 +622,16 @@ const CheckoutGroupedServiceCard = ({
             <span className={styles.pickerSelectedServicesLabel}>
               {totalSelectedQuantity} {t('selectedServices', lang)}
             </span>
-            <button
-              type="button"
-              className={styles.pickerAddAnotherOptionBtn}
-              onClick={handleAddClick}
-              aria-label={`${t('addAnotherOption', lang)} ${serviceName(selectedVariant, lang)}`}
-            >
-              {t('addAnotherOption', lang)} +
-            </button>
+            {group.length > 1 && (
+              <button
+                type="button"
+                className={styles.pickerAddAnotherOptionBtn}
+                onClick={handleAddClick}
+                aria-label={`${t('addAnotherOption', lang)} ${serviceName(selectedVariant, lang)}`}
+              >
+                {t('addAnotherOption', lang)} +
+              </button>
+            )}
           </div>
           <div className={styles.pickerSelectedPills} aria-label={t('selectedOptions', lang)}>
             {groupSelections.map((item) => (
