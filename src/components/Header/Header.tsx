@@ -91,9 +91,9 @@ const DEFAULT_NAV_ITEMS: NavItem[] = [
     label: 'Services',
     isUnclickable: true,
     children: [
-      { id: 'design_journey', label: 'Design Your Journey', href: '/design-your-journey' },
-      { id: 'pure_relaxation', label: 'Pure relaxation', href: '/pure-relaxation' },
-      { id: 'therapy', label: 'Therapy', href: '/therapy' },
+      { id: 'design_journey', label: 'Design Your Journey', href: '/design-your-journey', badge: '50%' },
+      { id: 'pure_relaxation', label: 'Pure relaxation', href: '/pure-relaxation', badge: '30%' },
+      { id: 'therapy', label: 'Therapy', href: '/therapy', badge: '20%' },
     ],
   },
   {
@@ -234,9 +234,9 @@ const Header = () => {
         label: getLocalizedText(hpNav?.services, lang, getNavFallback('services', lang)),
         isUnclickable: true,
         children: [
-          { id: 'design_journey', label: getLocalizedText(hpNav?.designJourney, lang, getNavFallback('design_journey', lang)), href: '/design-your-journey' },
-          { id: 'pure_relaxation', label: getLocalizedText(hpNav?.pureRelaxation, lang, getNavFallback('pure_relaxation', lang)), href: '/pure-relaxation' },
-          { id: 'therapy', label: getLocalizedText(hpNav?.therapy, lang, getNavFallback('therapy', lang)), href: '/therapy' },
+          { id: 'design_journey', label: getLocalizedText(hpNav?.designJourney, lang, getNavFallback('design_journey', lang)), href: '/design-your-journey', badge: hpNav?.designJourneyBadge || '50%' },
+          { id: 'pure_relaxation', label: getLocalizedText(hpNav?.pureRelaxation, lang, getNavFallback('pure_relaxation', lang)), href: '/pure-relaxation', badge: hpNav?.pureRelaxationBadge || '30%' },
+          { id: 'therapy', label: getLocalizedText(hpNav?.therapy, lang, getNavFallback('therapy', lang)), href: '/therapy', badge: hpNav?.therapyBadge || '20%' },
         ],
       },
       {
