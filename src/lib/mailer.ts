@@ -295,6 +295,12 @@ function classifySmtpError(error: unknown): SmtpFailureClassification {
     return { outcome: 'unknown', code: 'SMTP_TIMEOUT' };
   }
 
+  // Once DATA has started, a transport error cannot prove whether the server
+  // accepted the message. Keep it unknown and never retry it blindly.
+  if (command === 'DATA') {
+    return { outcome: 'unknown', code: 'SMTP_DELIVERY_UNKNOWN' };
+  }
+
   if (command === 'RCPT' || errorCode === 'EENVELOPE') {
     return { outcome: 'failed', code: 'SMTP_RECIPIENT_REJECTED' };
   }
@@ -314,6 +320,19 @@ function classifySmtpError(error: unknown): SmtpFailureClassification {
   }
 
   return { outcome: 'unknown', code: 'SMTP_DELIVERY_UNKNOWN' };
+}
+
+function canRetryWithFallback(error: unknown): boolean {
+  const classification = classifySmtpError(error);
+  if (classification.code === 'SMTP_TLS_FAILED') {
+    return Boolean(error && typeof error === 'object' && (error as Record<string, unknown>).command === 'STARTTLS');
+  }
+  if (classification.code !== 'SMTP_CONNECTION_FAILED' || !error || typeof error !== 'object') return false;
+
+  const value = error as Record<string, unknown>;
+  const errorCode = typeof value.code === 'string' ? value.code.toUpperCase() : '';
+  const command = typeof value.command === 'string' ? value.command.toUpperCase() : '';
+  return command === 'CONN' || errorCode === 'ENOTFOUND' || errorCode === 'EAI_AGAIN' || errorCode === 'ECONNREFUSED';
 }
 
 function getMessageId(info: unknown): string | undefined {
@@ -982,6 +1001,7 @@ ${t.signoffTeam}
         attempts,
       });
     } catch (primaryErr: any) {
+      if (!canRetryWithFallback(primaryErr)) throw primaryErr;
       console.warn('[Mailer] Primary SMTP attempt failed; trying port 587', {
         bookingId,
         port: Number(process.env.SMTP_PORT || 465),

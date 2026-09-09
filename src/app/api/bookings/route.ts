@@ -126,7 +126,7 @@ function safeMessageId(value: unknown): string | undefined {
   return trimmed && trimmed.length <= 512 && !/[\r\n]/.test(trimmed) ? trimmed : undefined;
 }
 
-function emailAttempts(result: Record<string, unknown>): EmailAttempt[] {
+function emailAttempts(result: Record<string, unknown>): EmailAttempt[] | undefined {
   const smtp = isRecord(result.smtp) ? result.smtp : undefined;
   const candidate = Array.isArray(result.attempts)
     ? result.attempts
@@ -135,12 +135,16 @@ function emailAttempts(result: Record<string, unknown>): EmailAttempt[] {
       : smtp && Object.prototype.hasOwnProperty.call(smtp, 'attempt')
         ? [smtp]
         : [];
-  return candidate.slice(0, 2).flatMap((value): EmailAttempt[] => {
+  if (candidate.length > 2) return undefined;
+
+  const parsed = candidate.flatMap((value): EmailAttempt[] => {
     if (!isRecord(value) || typeof value.attempt !== 'number' || !Number.isInteger(value.attempt) || value.attempt < 1 || value.attempt > 2) return [];
     const stage = emailStage(value.stage);
     const code = emailCode(value.code ?? value.reasonCode);
     return stage && code ? [{ attempt: value.attempt, stage, code }] : [];
   });
+  if (parsed.length !== candidate.length || new Set(parsed.map((attempt) => attempt.attempt)).size !== parsed.length) return undefined;
+  return parsed;
 }
 
 function emailStatusFromMailerResult(result: unknown): EmailStatus {
@@ -152,10 +156,24 @@ function emailStatusFromMailerResult(result: unknown): EmailStatus {
   const customer = isRecord(result.customer) ? result.customer : undefined;
   const smtp = isRecord(result.smtp) ? result.smtp : undefined;
   const reportedOutcome = emailOutcome(result.outcome) || emailOutcome(customer?.outcome);
-  let code = emailCode(result.reasonCode ?? result.code ?? result.reason) || emailCode(smtp?.code);
-  if (!code) code = reportedOutcome === 'skipped' ? 'EMAIL_TEST_SKIPPED' : success && reportedOutcome !== 'unknown' ? 'SMTP_ACCEPTED' : 'EMAIL_RESULT_UNKNOWN';
-  if (success && reportedOutcome === 'skipped' && code === 'SMTP_ACCEPTED') code = 'EMAIL_TEST_SKIPPED';
-  if (!success && code === 'SMTP_ACCEPTED') code = 'EMAIL_RESULT_UNKNOWN';
+  const reportedCode = emailCode(result.reasonCode ?? result.code ?? result.reason) || emailCode(smtp?.code);
+
+  // The mailer is trusted only through a consistent, allowlisted result. A
+  // contradictory success/code pair must never become a public sent=true.
+  const contradictory =
+    (reportedOutcome === 'accepted' && reportedCode !== 'SMTP_ACCEPTED') ||
+    (reportedCode === 'SMTP_ACCEPTED' && reportedOutcome !== undefined && reportedOutcome !== 'accepted') ||
+    (!success && (reportedOutcome === 'accepted' || reportedCode === 'SMTP_ACCEPTED'));
+  if (contradictory) {
+    return { sent: false, pending: true, diagnosticsVersion: 1, outcome: 'unknown', stage: 'unknown', code: 'EMAIL_RESULT_UNKNOWN', attempts: [] };
+  }
+
+  let code = reportedCode;
+  if (!code) code = reportedOutcome === 'skipped' ? 'EMAIL_TEST_SKIPPED' : 'EMAIL_RESULT_UNKNOWN';
+  const attempts = emailAttempts(result);
+  if (!attempts) {
+    return { sent: false, pending: true, diagnosticsVersion: 1, outcome: 'unknown', stage: 'unknown', code: 'EMAIL_RESULT_UNKNOWN', attempts: [] };
+  }
 
   let outcome = reportedOutcome || outcomeForEmailCode(code);
   if (!success && outcome === 'accepted') outcome = 'unknown';
@@ -168,7 +186,7 @@ function emailStatusFromMailerResult(result: unknown): EmailStatus {
     outcome,
     stage: emailStage(result.stage) || emailStage(smtp?.stage) || stageForEmailCode(code),
     code,
-    attempts: emailAttempts(result),
+    attempts,
   };
   if (!status.messageId) delete status.messageId;
   return status;

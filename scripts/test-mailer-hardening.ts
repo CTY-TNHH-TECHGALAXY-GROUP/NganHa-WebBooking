@@ -216,10 +216,7 @@ async function run() {
       outcome: 'failed',
       stage: 'smtp',
       code: 'SMTP_AUTH_FAILED',
-      attempts: [
-        { attempt: 1, stage: 'smtp', code: 'SMTP_AUTH_FAILED' },
-        { attempt: 2, stage: 'smtp', code: 'SMTP_AUTH_FAILED' },
-      ],
+      attempts: [{ attempt: 1, stage: 'smtp', code: 'SMTP_AUTH_FAILED' }],
     });
 
     const dnsFailure = await runSmtpFailure({ code: 'ENOTFOUND', command: 'CONN' });
@@ -252,10 +249,7 @@ async function run() {
       outcome: 'unknown',
       stage: 'smtp',
       code: 'SMTP_TIMEOUT',
-      attempts: [
-        { attempt: 1, stage: 'smtp', code: 'SMTP_TIMEOUT' },
-        { attempt: 2, stage: 'smtp', code: 'SMTP_TIMEOUT' },
-      ],
+      attempts: [{ attempt: 1, stage: 'smtp', code: 'SMTP_TIMEOUT' }],
     });
 
     const preparationResult = await sendBookingConfirmationEmail(
