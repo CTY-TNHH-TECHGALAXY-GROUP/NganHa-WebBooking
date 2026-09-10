@@ -15,6 +15,7 @@ const SYSTEM_CONFIG_KEYS = [
   'local_tour_content',
   'home_spa_content',
   'farm_retreat_content',
+  'farm_store_content',
 ] as const;
 
 export async function GET() {
