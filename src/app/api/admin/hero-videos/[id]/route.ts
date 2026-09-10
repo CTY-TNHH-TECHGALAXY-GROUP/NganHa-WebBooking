@@ -1,7 +1,7 @@
-import { NextResponse } from 'next/server';
 import { withAuth } from '@/lib/api/withAuth';
 import { apiResponse } from '@/lib/api/apiResponse';
 import { getSupabaseAdmin } from '@/lib/supabase-server';
+import { revalidateHeroVideoConfig } from '@/lib/config/heroVideos';
 
 async function getHeroVideos() {
   try {
@@ -17,10 +17,11 @@ async function getHeroVideos() {
 async function saveHeroVideos(data: any) {
   try {
     const supabase = getSupabaseAdmin();
-    await supabase.from('SystemConfigs').upsert({ 
+    const { error } = await supabase.from('SystemConfigs').upsert({
       key: 'hero_videos', 
       value: data 
     }, { onConflict: 'key' });
+    if (error) throw error;
     return true;
   } catch (e) {
     console.error(e);
@@ -37,6 +38,8 @@ export const DELETE = withAuth(async (req, ctx, params) => {
     return apiResponse.error('Video không tồn tại', 'NOT_FOUND', 404);
   }
   
-  await saveHeroVideos(updated);
+  if (await saveHeroVideos(updated)) {
+    revalidateHeroVideoConfig();
+  }
   return apiResponse.success(updated);
 });

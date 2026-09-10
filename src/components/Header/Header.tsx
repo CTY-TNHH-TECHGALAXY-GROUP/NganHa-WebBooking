@@ -62,7 +62,10 @@ const NAV_FALLBACKS: Record<string, Record<Locale, string>> = {
   academy_training: { vi: 'Đào tạo / Trực tuyến', en: 'Training / Online', cn: '培训/在线', jp: 'トレーニング・オンライン', kr: '교육 / 온라인' },
   academy_certification: { vi: 'Chứng nhận', en: 'Certification', cn: '认证', jp: '認定', kr: '인증' },
   academy_understand: { vi: 'Thấu hiểu bản thân', en: 'Understand Yourself', cn: '了解自我', jp: '自分を知る', kr: '자신을 이해하기' },
-  local_tour: { vi: 'Tour địa phương', en: 'Local tour', cn: '当地旅游', jp: 'ローカルツアー', kr: '로컬 투어' },
+  local_tour: { vi: 'Sai Gon Tour', en: 'Sai Gon Tour', cn: '西贡深度游 (Sai Gon Tour)', jp: 'サイゴンツアー (Sai Gon Tour)', kr: '사이공 투어 (Sai Gon Tour)' },
+  local_tour_pkg1: { vi: 'Gói 1: Sài Gòn Xưa', en: 'Package 1: Old Saigon', cn: '套餐一: 老西贡', jp: 'パッケージ1: 古きサイゴン', kr: '패키지 1: 옛 사이공' },
+  local_tour_pkg2: { vi: 'Gói 2: Sài Gòn Trọn Vẹn', en: 'Package 2: Complete Saigon', cn: '套餐二: 完整西贡', jp: 'パッケージ2: まるごとサイゴン', kr: '패키지 2: 온전한 사이공' },
+  local_tour_pkg3: { vi: 'Gói 3: Sài Gòn Về Đêm', en: 'Package 3: Saigon by Night', cn: '套餐三: 西贡之夜', jp: 'パッケージ3: サイゴンの夜', kr: '패키지 3: 사이공의 밤' },
   lost_and_found: { vi: 'Thất lạc & Tìm kiếm', en: 'Lost & Found', cn: '失物招领', jp: '遺失物', kr: '분실물' },
   blogs: { vi: 'Bài viết', en: 'Blogs', cn: '博客', jp: '블로그', kr: '블로그' },
   privileges: { vi: 'Đặc quyền của bạn', en: 'Your privileges', cn: '专属特权', jp: '会員特典', kr: '회원 혜택' },
@@ -97,6 +100,16 @@ const DEFAULT_NAV_ITEMS: NavItem[] = [
     ],
   },
   {
+    id: 'local_tour',
+    label: 'Sai Gon Tour',
+    isUnclickable: true,
+    children: [
+      { id: 'local_tour_pkg1', label: 'Gói 1: Sài Gòn Xưa', href: '/local-tour/saigon-xua' },
+      { id: 'local_tour_pkg2', label: 'Gói 2: Sài Gòn Trọn Vẹn', href: '/local-tour/saigon-tron-ven' },
+      { id: 'local_tour_pkg3', label: 'Gói 3: Sài Gòn Về Đêm', href: '/local-tour/saigon-ve-dem' },
+    ],
+  },
+  {
     id: 'academy',
     label: 'Academy',
     isUnclickable: true,
@@ -107,7 +120,6 @@ const DEFAULT_NAV_ITEMS: NavItem[] = [
       { id: 'academy_understand', label: 'Understand Yourself', href: '/academy/understand-yourself' },
     ],
   },
-  { id: 'local_tour', label: 'Local tour', href: '/local-tour' },
   { id: 'lost_and_found', label: 'Lost & Found', href: '/lost-and-found' },
   { id: 'blogs', label: 'Blogs', href: '/blogs' },
   { id: 'privileges', label: 'Your privileges', href: '/privileges' },
@@ -172,6 +184,7 @@ const Header = () => {
   const [cartSnapshot, setCartSnapshot] = useState<CartItem[]>([]);
   const [cartCount, setCartCount] = useState(0);
   const [activeBrandIndex, setActiveBrandIndex] = useState(0);
+  const [isAcademyOpen, setIsAcademyOpen] = useState(false);
 
   const { 
     isMobileMenuOpen, 
@@ -240,6 +253,28 @@ const Header = () => {
         ],
       },
       {
+        id: 'local_tour',
+        label: getLocalizedText(hpNav?.localTour, lang, getNavFallback('local_tour', lang)),
+        isUnclickable: true,
+        children: [
+          {
+            id: 'local_tour_pkg1',
+            label: getNavFallback('local_tour_pkg1', lang),
+            href: lang && lang !== 'vi' ? `/${lang}/local-tour/saigon-xua` : '/local-tour/saigon-xua',
+          },
+          {
+            id: 'local_tour_pkg2',
+            label: getNavFallback('local_tour_pkg2', lang),
+            href: lang && lang !== 'vi' ? `/${lang}/local-tour/saigon-tron-ven` : '/local-tour/saigon-tron-ven',
+          },
+          {
+            id: 'local_tour_pkg3',
+            label: getNavFallback('local_tour_pkg3', lang),
+            href: lang && lang !== 'vi' ? `/${lang}/local-tour/saigon-ve-dem` : '/local-tour/saigon-ve-dem',
+          },
+        ],
+      },
+      {
         id: 'academy',
         label: getLocalizedText(hpNav?.academy, lang, getNavFallback('academy', lang)),
         isUnclickable: true,
@@ -250,7 +285,6 @@ const Header = () => {
           { id: 'academy_understand', label: getLocalizedText(hpNav?.understandYourself, lang, getNavFallback('academy_understand', lang)), href: '/academy/understand-yourself' },
         ],
       },
-      { id: 'local_tour', label: getLocalizedText(hpNav?.localTour, lang, getNavFallback('local_tour', lang)), href: '/local-tour' },
       { id: 'lost_and_found', label: getLocalizedText(hpNav?.lostAndFound, lang, getNavFallback('lost_and_found', lang)), href: '/lost-and-found' },
       { id: 'blogs', label: getLocalizedText(hpNav?.blogs, lang, getNavFallback('blogs', lang)), href: '/blogs' },
       { id: 'privileges', label: getLocalizedText(hpNav?.privileges, lang, getNavFallback('privileges', lang)), href: '/privileges' },
@@ -316,23 +350,32 @@ const Header = () => {
   // Lock body scroll and hide floating widgets when fullscreen menu is open
   useEffect(() => {
     if (isMobileMenuOpen) {
-      document.body.classList.add('modal-open');
+      document.body.classList.add('modal-open', 'menu-open');
       document.body.style.overflow = 'hidden';
     } else {
-      document.body.classList.remove('modal-open');
+      document.body.classList.remove('modal-open', 'menu-open');
       document.body.style.overflow = '';
     }
     return () => {
-      document.body.classList.remove('modal-open');
+      document.body.classList.remove('modal-open', 'menu-open');
       document.body.style.overflow = '';
     };
   }, [isMobileMenuOpen]);
 
   const renderCategory = (item: NavItem) => {
+    const isAcademy = item.id === 'academy';
     const label = item.id ? t('header_menu', item.id) || item.label : item.label;
+
     return (
       <div key={item.id || item.href} className="nav-category-group">
-        <h3 className="nav-category-title">
+        <h3
+          className={`nav-category-title ${
+            isAcademy
+              ? 'cursor-pointer select-none inline-flex items-center gap-2 group hover:opacity-95 transition-opacity'
+              : ''
+          }`}
+          onClick={isAcademy ? () => setIsAcademyOpen((prev) => !prev) : undefined}
+        >
           {item.href ? (
             <Link
               href={item.href}
@@ -343,24 +386,72 @@ const Header = () => {
               {label}
             </Link>
           ) : (
-            label
+            <span>{label}</span>
+          )}
+
+          {isAcademy && (
+            <button
+              type="button"
+              className="p-1 -my-1 text-[#D4AF37] group-hover:text-[#f7ebc7] transition-colors focus:outline-none inline-flex items-center justify-center rounded"
+              aria-label={isAcademyOpen ? 'Thu gọn Học viện' : 'Mở rộng Học viện'}
+              aria-expanded={isAcademyOpen}
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsAcademyOpen((prev) => !prev);
+              }}
+            >
+              <ChevronDown
+                size={16}
+                className={`transition-transform duration-300 transform ${
+                  isAcademyOpen ? 'rotate-0' : '-rotate-90'
+                }`}
+              />
+            </button>
           )}
         </h3>
+
         {item.children && (
-          <div className="nav-category-children">
-            {item.children.map((child) => (
-              <Link
-                key={child.href}
-                href={child.href}
-                target={child.target || undefined}
-                className="nav-child-link"
-                onClick={toggleMobileMenu}
-              >
-                <span>{child.id ? t('header_menu', child.id) || child.label : child.label}</span>
-                {child.badge && <span className="text-[#41b8a6] ml-2 font-light">{child.badge}</span>}
-              </Link>
-            ))}
-          </div>
+          isAcademy ? (
+            <AnimatePresence initial={false}>
+              {isAcademyOpen && (
+                <motion.div
+                  className="nav-category-children overflow-hidden"
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.25, ease: 'easeInOut' }}
+                >
+                  {item.children.map((child) => (
+                    <Link
+                      key={child.href}
+                      href={child.href}
+                      target={child.target || undefined}
+                      className="nav-child-link"
+                      onClick={toggleMobileMenu}
+                    >
+                      <span>{child.id ? t('header_menu', child.id) || child.label : child.label}</span>
+                      {child.badge && <span className="text-[#41b8a6] ml-2 font-light">{child.badge}</span>}
+                    </Link>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          ) : (
+            <div className="nav-category-children">
+              {item.children.map((child) => (
+                <Link
+                  key={child.href}
+                  href={child.href}
+                  target={child.target || undefined}
+                  className="nav-child-link"
+                  onClick={toggleMobileMenu}
+                >
+                  <span>{child.id ? t('header_menu', child.id) || child.label : child.label}</span>
+                  {child.badge && <span className="text-[#41b8a6] ml-2 font-light">{child.badge}</span>}
+                </Link>
+              ))}
+            </div>
+          )
         )}
       </div>
     );
@@ -375,7 +466,7 @@ const Header = () => {
   return (
     <>
       <motion.header
-        className={`site-header ${isScrolled ? 'header-scrolled' : 'header-transparent'}`}
+        className={`site-header ${isScrolled ? 'header-scrolled' : 'header-transparent'} ${isMobileMenuOpen ? 'menu-open !z-[9999]' : ''}`}
         initial={{ y: -80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: HEADER_TRANSITION_DURATION, ease: 'easeOut' }}
@@ -520,18 +611,18 @@ const Header = () => {
               <div className="nav-fullscreen-inner">
                 {/* Left Panel: Navigation Links */}
                 <div className="nav-panel-left">
-                  {/* Mobile Flow (<768px): 1 unified sequential list in exact order: 1. Space -> 2. Services -> 3. Academy -> 4. Local tour -> 5. Blogs -> 6. Privileges -> 7. History */}
+                  {/* Mobile Flow (<768px): 1 unified sequential list in exact order: 1. Space -> 2. Services -> 3. Local tour -> 4. Academy -> 5. Blogs -> 6. Privileges -> 7. History */}
                   <div className="nav-links-mobile md:hidden flex flex-col gap-7 w-full">
                     {NAV_ITEMS.map((item) => renderCategory(item))}
                   </div>
 
-                  {/* Tablet Flow (768px - 1023px): 2 balanced columns: Col 1 (Space, Services), Col 2 (Academy, Local tour, Blogs, Privileges, History) */}
+                  {/* Tablet Flow (768px - 1023px): 2 balanced columns: Col 1 (Space, Services), Col 2 (Local tour, Academy, Blogs, Privileges, History) */}
                   <div className="nav-links-tablet hidden md:flex lg:hidden gap-10 w-full">
                     <div className="nav-links-col flex-1 flex flex-col gap-8">
                       {NAV_ITEMS.filter(item => !!item.id && ['spaces', 'services'].includes(item.id)).map(item => renderCategory(item))}
                     </div>
                     <div className="nav-links-col flex-1 flex flex-col gap-8">
-                      {NAV_ITEMS.filter(item => !!item.id && ['academy', 'local_tour', 'lost_and_found', 'blogs', 'privileges', 'history'].includes(item.id)).map(item => renderCategory(item))}
+                      {NAV_ITEMS.filter(item => !!item.id && ['local_tour', 'academy', 'lost_and_found', 'blogs', 'privileges', 'history'].includes(item.id)).map(item => renderCategory(item))}
                     </div>
                   </div>
 
@@ -541,7 +632,7 @@ const Header = () => {
                       {NAV_ITEMS.filter(item => !!item.id && ['spaces', 'services'].includes(item.id)).map(item => renderCategory(item))}
                     </div>
                     <div className="nav-links-col flex-1 flex flex-col gap-10">
-                      {NAV_ITEMS.filter(item => !!item.id && ['academy', 'local_tour', 'lost_and_found', 'blogs', 'privileges', 'history'].includes(item.id)).map(item => renderCategory(item))}
+                      {NAV_ITEMS.filter(item => !!item.id && ['local_tour', 'academy', 'lost_and_found', 'blogs', 'privileges', 'history'].includes(item.id)).map(item => renderCategory(item))}
                     </div>
                   </div>
                 </div>

@@ -1,7 +1,7 @@
-import { NextResponse } from 'next/server';
 import { withAuth } from '@/lib/api/withAuth';
 import { apiResponse } from '@/lib/api/apiResponse';
 import { getSupabaseAdmin } from '@/lib/supabase-server';
+import { revalidateHeroVideoConfig } from '@/lib/config/heroVideos';
 
 const DEFAULT_VIDEOS = [
   { id: '1', url: '/videos/video1.mp4', poster: 'https://i.ibb.co/fs2MBD4/hero-spa-bg.jpg', sort_order: 1 },
@@ -11,7 +11,7 @@ const DEFAULT_VIDEOS = [
 async function getHeroVideos() {
   try {
     const supabase = getSupabaseAdmin();
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from('SystemConfigs')
       .select('value')
       .eq('key', 'hero_videos')
@@ -22,7 +22,9 @@ async function getHeroVideos() {
     }
     
     // Nếu chưa có trong DB, tạo mặc định
-    await saveHeroVideos(DEFAULT_VIDEOS);
+    if (await saveHeroVideos(DEFAULT_VIDEOS)) {
+      revalidateHeroVideoConfig();
+    }
     return DEFAULT_VIDEOS;
   } catch (e) {
     console.error('Error reading hero_videos from DB', e);
@@ -67,7 +69,9 @@ export const POST = withAuth(async (req) => {
   };
   
   current.push(newItem);
-  await saveHeroVideos(current);
+  if (await saveHeroVideos(current)) {
+    revalidateHeroVideoConfig();
+  }
 
   return apiResponse.success(newItem);
 });

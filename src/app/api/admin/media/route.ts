@@ -31,7 +31,7 @@ export const POST = withAuth(async (req, { supabase }) => {
     console.error('[API /admin/media POST] Upload error:', err);
     return apiResponse.error(err.message || 'Lỗi tải tệp lên', 'UPLOAD_ERROR', 500);
   }
-}, ['owner', 'editor']);
+}, ['owner', 'admin', 'editor']);
 
 export const DELETE = withAuth(async (req, { supabase }) => {
   try {
@@ -55,4 +55,4 @@ export const DELETE = withAuth(async (req, { supabase }) => {
     console.error('[API /admin/media DELETE] Delete error:', err);
     return apiResponse.error(err.message || 'Lỗi xóa tệp', 'DELETE_ERROR', 500);
   }
-}, ['owner', 'editor']);
+}, ['owner', 'admin', 'editor']);

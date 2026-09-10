@@ -3,7 +3,7 @@
 
 import React, { useMemo, useState, useEffect, useCallback, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { MapPin, Clock, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
+import { MapPin, Clock, ChevronDown, ChevronLeft, ChevronRight, Play, RotateCcw } from 'lucide-react';
 import { useTranslation } from '@/components/TranslationProvider';
 import { useSystemSettings } from '@/components/SystemSettingsProvider';
 import { BRANCH_LIST } from '@/data/branches';
@@ -15,36 +15,216 @@ import {
 
 // 🔧 UI CONFIGURATION
 const HERO_PARTICLE_COUNT = 30;
+const VIDEO_FIRST_FRAME_TIMEOUT_MS = 15000;
+
+/**
+ * Server-to-client contract for the homepage hero configuration.
+ *
+ * The server passes `initialHeroConfig` to avoid a second client config request.
+ * An empty array is a resolved empty configuration, not a default-video signal.
+ */
+export interface HeroVideoConfig {
+  id?: string | number | null;
+  url?: string | null;
+  media_url?: string | null;
+  poster?: string | null;
+  poster_url?: string | null;
+  sort_order?: number | null;
+}
+
+export interface HeroProps {
+  initialHeroConfig?: {
+    status: ConfigState;
+    videos: HeroVideoConfig[];
+  };
+  initialVideos?: HeroVideoConfig[];
+}
+
+interface ResolvedHeroVideo {
+  id: string;
+  url: string;
+  poster?: string;
+  sortOrder: number;
+}
+
+type ConfigState = 'loading' | 'ready' | 'error' | 'empty';
+type PlaybackState = 'idle' | 'loading' | 'ready' | 'error';
+type MediaFailureKind = 'source' | 'timeout';
+
+interface MediaFailure {
+  attemptKey: string;
+  kind: MediaFailureKind;
+}
+
+type FrameAwareVideo = HTMLVideoElement & {
+  requestVideoFrameCallback?: (callback: () => void) => number;
+};
+
+interface PendingFrameRequest {
+  attemptKey: string;
+  video: HTMLVideoElement;
+  handle: number;
+}
+
+interface HeroStatusCopy {
+  configLoading: string;
+  videoLoading: string;
+  configError: string;
+  configEmpty: string;
+  videoError: string;
+  videoTimeout: string;
+  autoplayBlocked: string;
+  retry: string;
+  nextVideo: string;
+  playVideo: string;
+}
+
+const HERO_STATUS_COPY: Record<string, HeroStatusCopy> = {
+  vi: {
+    configLoading: 'Dang chuan bi khong gian thu gian...',
+    videoLoading: 'Dang chuan bi video...',
+    configError: 'Khong the tai cau hinh video trang chu.',
+    configEmpty: 'Hien chua co video duoc cau hinh cho trang chu.',
+    videoError: 'Video trang chu nay khong the tai.',
+    videoTimeout: 'Video mat qua nhieu thoi gian de chuan bi.',
+    autoplayBlocked: 'Tu dong phat bi chan. Hay dung nut phat video.',
+    retry: 'Thu lai',
+    nextVideo: 'Video tiep theo',
+    playVideo: 'Phat video',
+  },
+  en: {
+    configLoading: 'Preparing your experience...',
+    videoLoading: 'Preparing the selected video...',
+    configError: 'Homepage video settings could not be loaded.',
+    configEmpty: 'No homepage video is currently configured.',
+    videoError: 'This homepage video could not be loaded.',
+    videoTimeout: 'The homepage video took too long to prepare.',
+    autoplayBlocked: 'Autoplay was blocked. Use the play button to start the video.',
+    retry: 'Try again',
+    nextVideo: 'Next video',
+    playVideo: 'Play video',
+  },
+  cn: {
+    configLoading: '正在准备用于放松的空间...',
+    videoLoading: '正在准备选中的视频...',
+    configError: '无法加载主页视频设置。',
+    configEmpty: '目前尚未配置主页视频。',
+    videoError: '此主页视频无法加载。',
+    videoTimeout: '主页视频准备时间过长。',
+    autoplayBlocked: '自动播放被阻止。请使用播放按钮开始视频。',
+    retry: '重试',
+    nextVideo: '下一个视频',
+    playVideo: '播放视频',
+  },
+  jp: {
+    configLoading: 'リラックスできる空間を準備しています...',
+    videoLoading: '選択した動画を準備しています...',
+    configError: 'ホームページの動画設定を読み込めませんでした。',
+    configEmpty: 'ホームページ動画が設定されていません。',
+    videoError: 'このホームページ動画を読み込めませんでした。',
+    videoTimeout: 'ホームページ動画の準備に時間がかかっています。',
+    autoplayBlocked: '自動再生がブロックされました。再生ボタンを使用してください。',
+    retry: '再試行',
+    nextVideo: '次の動画',
+    playVideo: '動画を再生',
+  },
+  kr: {
+    configLoading: '편안한 공간을 준비하고 있습니다...',
+    videoLoading: '선택한 영상을 준비하고 있습니다...',
+    configError: '홈페이지 영상 설정을 불러오지 못했습니다.',
+    configEmpty: '현재 홈페이지 영상이 설정되지 않았습니다.',
+    videoError: '이 홈페이지 영상을 불러오지 못했습니다.',
+    videoTimeout: '홈페이지 영상 준비에 너무 오래 걸리고 있습니다.',
+    autoplayBlocked: '자동 재생이 차단되었습니다. 재생 버튼을 사용해 영상을 시작하세요.',
+    retry: '다시 시도',
+    nextVideo: '다음 영상',
+    playVideo: '영상 재생',
+  },
+};
+
+const getRequestedVideoIndex = (count: number) => {
+  if (count <= 0 || typeof window === 'undefined') return 0;
+
+  const requestedVideo = Number(new URLSearchParams(window.location.search).get('heroVideo'));
+  return Number.isInteger(requestedVideo) && requestedVideo >= 0 && requestedVideo < count
+    ? requestedVideo
+    : 0;
+};
+
+const normalizeHeroVideos = (value: unknown): ResolvedHeroVideo[] => {
+  if (!Array.isArray(value)) return [];
+
+  return value
+    .flatMap((candidate, index) => {
+      if (!candidate || typeof candidate !== 'object') return [];
+
+      const video = candidate as HeroVideoConfig;
+      const source = [video.url, video.media_url]
+        .find((item): item is string => typeof item === 'string' && item.trim().length > 0)
+        ?.trim();
+
+      if (!source) return [];
+
+      const poster = [video.poster, video.poster_url]
+        .find((item): item is string => typeof item === 'string' && item.trim().length > 0)
+        ?.trim();
+
+      return [{
+        id: video.id === null || video.id === undefined ? `hero-video-${index}` : String(video.id),
+        url: source,
+        poster,
+        sortOrder: typeof video.sort_order === 'number' ? video.sort_order : index,
+      }];
+    })
+    .sort((a, b) => a.sortOrder - b.sortOrder);
+};
 
 // ═══════════════════════════════════════════
 // HERO COMPONENT
 // ═══════════════════════════════════════════
 
-const DEFAULT_HOMEPAGE_VIDEOS = [
-  { id: 'foot-massage', url: '/videos/0807(1).mp4', poster: 'https://i.ibb.co/fs2MBD4/hero-spa-bg.jpg' }
-];
-
-const Hero = () => {
-  const { t, currentLang } = useTranslation();
+const Hero = ({ initialHeroConfig, initialVideos }: HeroProps) => {
+  const { currentLang } = useTranslation();
   const { systemSettings, getLocalizedText } = useSystemSettings();
+  const hasInitialVideoConfig = initialHeroConfig !== undefined || Array.isArray(initialVideos);
+  const initialVideoValues = initialHeroConfig?.videos ?? initialVideos;
+  const initialResolvedVideos = useMemo(
+    () => initialVideoValues === undefined ? null : normalizeHeroVideos(initialVideoValues),
+    [initialVideoValues],
+  );
+  const initialConfigState: ConfigState | null = initialHeroConfig
+    ? initialHeroConfig.status === 'ready' && initialResolvedVideos?.length === 0
+      ? 'empty'
+      : initialHeroConfig.status
+    : initialResolvedVideos === null
+      ? null
+      : initialResolvedVideos.length > 0 ? 'ready' : 'empty';
   const [activeVideoIndex, setActiveVideoIndex] = useState(0);
-  const [loadedIndices, setLoadedIndices] = useState<number[]>([0]);
-  const [homepageVideos, setHomepageVideos] = useState<any[]>(DEFAULT_HOMEPAGE_VIDEOS);
-  const videoCount = homepageVideos.length;
+  const [selectionReady, setSelectionReady] = useState(false);
+  const [homepageVideos, setHomepageVideos] = useState<ResolvedHeroVideo[] | null>(initialResolvedVideos);
+  const [configState, setConfigState] = useState<ConfigState>(() => {
+    return initialConfigState || 'loading';
+  });
+  const [playbackState, setPlaybackState] = useState<PlaybackState>('idle');
+  const [videoRetryCount, setVideoRetryCount] = useState(0);
+  const [readyAttemptKey, setReadyAttemptKey] = useState<string | null>(null);
+  const [autoplayBlocked, setAutoplayBlocked] = useState(false);
+  const [mediaFailure, setMediaFailure] = useState<MediaFailure | null>(null);
 
-  const applyRequestedHeroVideo = useCallback((count: number) => {
-    if (typeof window === 'undefined' || count <= 0) return;
+  const videoCount = homepageVideos?.length ?? 0;
 
-    const params = new URLSearchParams(window.location.search);
-    const requestedVideo = Number(params.get('heroVideo'));
+  useEffect(() => {
+    if (!hasInitialVideoConfig) return;
 
-    if (Number.isInteger(requestedVideo) && requestedVideo >= 0 && requestedVideo < count) {
-      setActiveVideoIndex(requestedVideo);
-      setLoadedIndices((prev) => (
-        prev.includes(requestedVideo) ? prev : [...prev, requestedVideo]
-      ));
-    }
-  }, []);
+    const nextVideos = initialResolvedVideos || [];
+    setHomepageVideos(nextVideos);
+    setConfigState(initialConfigState || (nextVideos.length > 0 ? 'ready' : 'empty'));
+    setSelectionReady(false);
+    setPlaybackState('idle');
+    setReadyAttemptKey(null);
+    setMediaFailure(null);
+    setAutoplayBlocked(false);
+  }, [hasInitialVideoConfig, initialConfigState, initialResolvedVideos]);
 
   // Mảng hiển thị branch
   const displayBranches = BRANCH_LIST.map((branch, index) => {
@@ -60,65 +240,210 @@ const Hero = () => {
   });
   
   useEffect(() => {
-    fetch('/api/hero-videos')
-      .then(res => res.json())
-      .then(json => {
-        const remoteVideos = Array.isArray(json.data)
-          ? json.data
-              .filter((video: any) => video?.url || video?.media_url)
-              .sort((a: any, b: any) => (a.sort_order || 0) - (b.sort_order || 0))
-          : [];
+    if (hasInitialVideoConfig) return;
 
-        if (json.success && remoteVideos.length > 0) {
-          setHomepageVideos(remoteVideos);
-          const params = new URLSearchParams(window.location.search);
-          const requestedVideo = Number(params.get('heroVideo'));
-          const nextIndex = Number.isInteger(requestedVideo) && requestedVideo >= 0 && requestedVideo < remoteVideos.length
-            ? requestedVideo
-            : 0;
-          setActiveVideoIndex(nextIndex);
-          setLoadedIndices([nextIndex]);
-        }
-      })
-      .catch(err => console.error('Error fetching hero videos:', err));
+    // The homepage must never invent a video source when the server contract
+    // was not provided. This also prevents an accidental default download.
+    setConfigState('error');
+    setHomepageVideos(null);
+    setSelectionReady(false);
+    setPlaybackState('idle');
+  }, [hasInitialVideoConfig]);
+
+  useEffect(() => {
+    if (!homepageVideos || homepageVideos.length === 0) {
+      setSelectionReady(false);
+      return;
+    }
+
+    const requestedIndex = getRequestedVideoIndex(homepageVideos.length);
+    setActiveVideoIndex(requestedIndex);
+    setSelectionReady(true);
+    setPlaybackState('idle');
+    setReadyAttemptKey(null);
+    readyAttemptKeyRef.current = null;
+    setMediaFailure(null);
+    setAutoplayBlocked(false);
+  }, [homepageVideos]);
+
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const activeAttemptKeyRef = useRef<string | null>(null);
+  const readyAttemptKeyRef = useRef<string | null>(null);
+  const pendingFrameRequestRef = useRef<PendingFrameRequest | null>(null);
+
+  const activeVideo = selectionReady && homepageVideos
+    ? homepageVideos[activeVideoIndex] || homepageVideos[0]
+    : null;
+  const activeVideoKey = activeVideo ? `${activeVideo.id}|${activeVideo.url}` : null;
+  const activeAttemptKey = activeVideoKey ? `${activeVideoKey}|${videoRetryCount}` : null;
+  activeAttemptKeyRef.current = activeAttemptKey;
+
+  useEffect(() => {
+    if (!activeAttemptKey) return;
+
+    setPlaybackState('loading');
+    setReadyAttemptKey(null);
+    readyAttemptKeyRef.current = null;
+    setMediaFailure(null);
+    setAutoplayBlocked(false);
+  }, [activeAttemptKey]);
+
+  const cancelPendingFrame = useCallback(() => {
+    const pendingRequest = pendingFrameRequestRef.current;
+    if (!pendingRequest) return;
+
+    const frameVideo = pendingRequest.video as FrameAwareVideo;
+    frameVideo.cancelVideoFrameCallback?.(pendingRequest.handle);
+    pendingFrameRequestRef.current = null;
   }, []);
 
   useEffect(() => {
-    applyRequestedHeroVideo(videoCount);
-  }, [applyRequestedHeroVideo, videoCount]);
+    if (playbackState !== 'loading') {
+      cancelPendingFrame();
+      return;
+    }
 
-  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
+    return cancelPendingFrame;
+  }, [activeAttemptKey, cancelPendingFrame, playbackState]);
+
+  useEffect(() => {
+    if (!activeAttemptKey || playbackState !== 'loading') return;
+
+    const timeoutId = window.setTimeout(() => {
+      if (activeAttemptKeyRef.current !== activeAttemptKey) return;
+
+      setMediaFailure({ attemptKey: activeAttemptKey, kind: 'timeout' });
+      setPlaybackState('error');
+    }, VIDEO_FIRST_FRAME_TIMEOUT_MS);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [activeAttemptKey, playbackState]);
+
+  const markFirstFrameReady = useCallback((video: HTMLVideoElement, attemptKey: string) => {
+    if (activeAttemptKeyRef.current !== attemptKey || videoRef.current !== video) return;
+    if (readyAttemptKeyRef.current === attemptKey) return;
+
+    readyAttemptKeyRef.current = attemptKey;
+    cancelPendingFrame();
+    setReadyAttemptKey(attemptKey);
+    setPlaybackState('ready');
+  }, [cancelPendingFrame]);
+
+  const attemptVideoPlayback = useCallback((video: HTMLVideoElement, attemptKey: string) => {
+    if (activeAttemptKeyRef.current !== attemptKey || videoRef.current !== video) return;
+
+    if (video.ended || (video.duration && video.currentTime >= video.duration - 0.2)) {
+      video.currentTime = 0;
+    }
+
+    try {
+      const playPromise = video.play();
+      playPromise?.catch(() => {
+        if (activeAttemptKeyRef.current !== attemptKey || videoRef.current !== video) return;
+
+        setAutoplayBlocked(true);
+        if (video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
+          markFirstFrameReady(video, attemptKey);
+        }
+      });
+    } catch {
+      setAutoplayBlocked(true);
+      if (video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
+        markFirstFrameReady(video, attemptKey);
+      }
+    }
+  }, [markFirstFrameReady]);
+
+  const handleVideoLoadedData = useCallback((video: HTMLVideoElement, attemptKey: string) => {
+    if (activeAttemptKeyRef.current !== attemptKey || videoRef.current !== video) return;
+    if (video.readyState < HTMLMediaElement.HAVE_CURRENT_DATA) return;
+
+    const frameVideo = video as FrameAwareVideo;
+    if (typeof frameVideo.requestVideoFrameCallback === 'function') {
+      const pendingRequest = pendingFrameRequestRef.current;
+      if (!pendingRequest || pendingRequest.attemptKey !== attemptKey) {
+        const handle = frameVideo.requestVideoFrameCallback(() => {
+          markFirstFrameReady(video, attemptKey);
+        });
+        pendingFrameRequestRef.current = { attemptKey, video, handle };
+      }
+      attemptVideoPlayback(video, attemptKey);
+      return;
+    }
+
+    // Older browsers do not expose requestVideoFrameCallback. loadeddata is the
+    // first decodable-frame event, and readyState guards against metadata-only readiness.
+    markFirstFrameReady(video, attemptKey);
+    attemptVideoPlayback(video, attemptKey);
+  }, [attemptVideoPlayback, markFirstFrameReady]);
+
+  const handleVideoPlaying = useCallback((video: HTMLVideoElement, attemptKey: string) => {
+    if (video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
+      markFirstFrameReady(video, attemptKey);
+    }
+  }, [markFirstFrameReady]);
+
+  const handleVideoError = useCallback((video: HTMLVideoElement, attemptKey: string) => {
+    if (activeAttemptKeyRef.current !== attemptKey || videoRef.current !== video) return;
+
+    cancelPendingFrame();
+    setMediaFailure({ attemptKey, kind: 'source' });
+    setPlaybackState('error');
+  }, [cancelPendingFrame]);
+
+  useEffect(() => {
+    if (!activeAttemptKey || playbackState !== 'loading' || !videoRef.current) return;
+
+    const video = videoRef.current;
+    if (video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
+      handleVideoLoadedData(video, activeAttemptKey);
+    }
+  }, [activeAttemptKey, handleVideoLoadedData, playbackState]);
+
+  const goToVideo = useCallback((nextIndex: number) => {
+    if (videoCount <= 0 || nextIndex === activeVideoIndex) return;
+
+    setActiveVideoIndex(nextIndex);
+    setVideoRetryCount(0);
+    setReadyAttemptKey(null);
+    readyAttemptKeyRef.current = null;
+    setMediaFailure(null);
+    setAutoplayBlocked(false);
+    setPlaybackState('loading');
+  }, [activeVideoIndex, videoCount]);
 
   const handleNextVideo = useCallback(() => {
-    setActiveVideoIndex((prev) => (prev + 1) % Math.max(videoCount, 1));
-  }, [videoCount]);
+    if (videoCount <= 0) return;
+    goToVideo((activeVideoIndex + 1) % videoCount);
+  }, [activeVideoIndex, goToVideo, videoCount]);
 
   const handlePrevVideo = useCallback(() => {
-    setActiveVideoIndex((prev) => (prev - 1 + Math.max(videoCount, 1)) % Math.max(videoCount, 1));
-  }, [videoCount]);
+    if (videoCount <= 0) return;
+    goToVideo((activeVideoIndex - 1 + videoCount) % videoCount);
+  }, [activeVideoIndex, goToVideo, videoCount]);
 
-  // Lazy load video index
-  useEffect(() => {
-    if (!loadedIndices.includes(activeVideoIndex)) {
-      setLoadedIndices((prev) => [...prev, activeVideoIndex]);
+  const handleRetry = useCallback(() => {
+    if (configState === 'error' || configState === 'empty') {
+      window.location.reload();
+      return;
     }
-  }, [activeVideoIndex, loadedIndices]);
 
-  // Handle Play/Pause
-  useEffect(() => {
-    videoRefs.current.forEach((video, idx) => {
-      if (video) {
-        if (idx === activeVideoIndex) {
-          if (video.ended || (video.duration && video.currentTime >= video.duration - 0.2)) {
-            video.currentTime = 0;
-          }
-          video.play().catch(() => {});
-        } else {
-          video.pause();
-        }
-      }
-    });
-  }, [activeVideoIndex, loadedIndices]);
+    if (!activeAttemptKey) return;
+
+    setVideoRetryCount((count) => count + 1);
+    readyAttemptKeyRef.current = null;
+    setReadyAttemptKey(null);
+    setMediaFailure(null);
+    setAutoplayBlocked(false);
+    setPlaybackState('loading');
+  }, [activeAttemptKey, configState]);
+
+  const handleManualPlay = useCallback(() => {
+    const video = videoRef.current;
+    if (!video || !activeAttemptKey) return;
+
+    attemptVideoPlayback(video, activeAttemptKey);
+  }, [activeAttemptKey, attemptVideoPlayback]);
 
   // Memoize particles to avoid hydration mismatch
   const particles = useMemo(() =>
@@ -144,8 +469,25 @@ const Hero = () => {
     setTouchStart(0);
   };
 
+  const statusCopy = HERO_STATUS_COPY[currentLang] || HERO_STATUS_COPY.en;
+  const heroReady = Boolean(
+    activeAttemptKey &&
+    playbackState === 'ready' &&
+    readyAttemptKey === activeAttemptKey,
+  );
+  const configFailure = configState === 'error' || configState === 'empty';
+  const mediaFailureMessage = mediaFailure?.kind === 'timeout'
+    ? statusCopy.videoTimeout
+    : statusCopy.videoError;
+  const statusMessage = configState === 'loading'
+    ? statusCopy.configLoading
+    : configFailure
+      ? configState === 'empty' ? statusCopy.configEmpty : statusCopy.configError
+      : playbackState === 'error' ? mediaFailureMessage : statusCopy.videoLoading;
+
   return (
     <section id="hero" className="hero-section hero-section--cinematic" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
+      <style>{'@keyframes hero-video-loading-spin { to { transform: rotate(360deg); } }'}</style>
       {/* Particles */}
       <div className="hero-particles">
         {particles.map((p) => (
@@ -161,65 +503,120 @@ const Hero = () => {
       {/* Animated Gradient BG */}
       <div className="hero-gradient-bg" />
 
-      {/* Background Videos with Lazy-load & Cross-fade */}
-      <div className="hero-bg">
-        {homepageVideos.map((video, idx) => {
-          const isActive = idx === activeVideoIndex;
-          const isLoaded = loadedIndices.includes(idx);
-          const videoUrl = video.url || video.media_url;
-          const posterUrl = video.poster || video.poster_url || 'https://i.ibb.co/fs2MBD4/hero-spa-bg.jpg';
-
-          return (
-            <div
-              key={video.id}
-              className={`hero-video-wrapper ${isActive ? 'active' : ''}`}
-              style={{
-                position: 'absolute',
-                inset: 0,
-                opacity: isActive ? 1 : 0,
-                transition: 'opacity 800ms ease-in-out',
-                zIndex: isActive ? 1 : 0,
+      {/* The configured source is the only video mounted on the homepage. */}
+      <div className="hero-bg" aria-hidden={!heroReady}>
+        {activeVideo && selectionReady ? (
+          <div
+            key={activeAttemptKey || activeVideoKey || activeVideo.id}
+            className="hero-video-wrapper active"
+            style={{
+              position: 'absolute',
+              inset: 0,
+              opacity: heroReady ? 1 : 0,
+              transition: 'opacity 800ms ease-in-out',
+              zIndex: 1,
+            }}
+          >
+            <video
+              ref={(element) => {
+                videoRef.current = element;
               }}
-            >
-              {isLoaded ? (
-                <video
-                  ref={(el) => {
-                    videoRefs.current[idx] = el;
-                  }}
-                  className="hero-video"
-                  src={videoUrl}
-                  poster={posterUrl}
-                  autoPlay={isActive}
-                  muted
-                  playsInline
-                  loop={videoCount === 1}
-                  preload="auto"
-                  onEnded={videoCount > 1 ? handleNextVideo : undefined}
-                  onError={() => {
-                    if (videoCount > 1) {
-                      setTimeout(handleNextVideo, 3000); // Wait 3s before skipping so it's not instant loop if all are broken
-                    }
-                  }}
+              className="hero-video"
+              src={activeVideo.url}
+              {...(activeVideo.poster ? { poster: activeVideo.poster } : {})}
+              autoPlay
+              muted
+              playsInline
+              loop={videoCount === 1}
+              preload="auto"
+              onLoadedData={(event) => {
+                const attemptKey = activeAttemptKeyRef.current;
+                if (attemptKey) handleVideoLoadedData(event.currentTarget, attemptKey);
+              }}
+              onPlaying={(event) => {
+                const attemptKey = activeAttemptKeyRef.current;
+                if (attemptKey) handleVideoPlaying(event.currentTarget, attemptKey);
+              }}
+              onEnded={videoCount > 1 ? handleNextVideo : undefined}
+              onError={(event) => {
+                const attemptKey = activeAttemptKeyRef.current;
+                if (attemptKey) handleVideoError(event.currentTarget, attemptKey);
+              }}
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+              }}
+            />
+          </div>
+        ) : null}
+        {heroReady ? <div className="hero-overlay" style={{ zIndex: 2 }} /> : null}
+      </div>
+
+      {!heroReady ? (
+        <div
+          className="hero-video-loading-screen"
+          role={configFailure || playbackState === 'error' ? 'alert' : 'status'}
+          aria-live="polite"
+          style={{
+            position: 'absolute',
+            inset: 0,
+            zIndex: 20,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '24px',
+            background: '#070605',
+            color: '#f1d487',
+            textAlign: 'center',
+          }}
+        >
+          <div style={{ display: 'grid', justifyItems: 'center', gap: '20px', maxWidth: '460px' }}>
+            <div style={{ display: 'grid', gap: '10px' }}>
+              <p style={{ margin: 0, fontSize: '18px', fontWeight: 600 }}>
+                {playbackState === 'error' || configFailure ? statusMessage : 'Loading'}
+              </p>
+              {playbackState === 'error' || configFailure ? (
+                <button
+                  type="button"
+                  onClick={handleRetry}
                   style={{
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'cover',
+                    justifySelf: 'center',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    border: '1px solid rgba(241, 212, 135, 0.7)',
+                    borderRadius: '6px',
+                    padding: '10px 16px',
+                    background: 'transparent',
+                    color: '#f1d487',
+                    cursor: 'pointer',
+                    fontWeight: 600,
                   }}
-                />
+                >
+                  <RotateCcw size={16} aria-hidden="true" />
+                  {statusCopy.retry}
+                </button>
               ) : (
-                <div
-                  className="hero-image"
-                  style={{ backgroundImage: `url(${posterUrl})` }}
+                <span
+                  aria-hidden="true"
+                  style={{
+                    justifySelf: 'center',
+                    width: '28px',
+                    height: '28px',
+                    border: '2px solid rgba(241, 212, 135, 0.25)',
+                    borderTopColor: '#f1d487',
+                    borderRadius: '50%',
+                    animation: 'hero-video-loading-spin 900ms linear infinite',
+                  }}
                 />
               )}
             </div>
-          );
-        })}
-        <div className="hero-overlay" style={{ zIndex: 2 }} />
-      </div>
+          </div>
+        </div>
+      ) : null}
 
-      {/* Content */}
-      <motion.div
+      {heroReady ? <motion.div
         className="hero-content"
         initial="hidden"
         animate="visible"
@@ -250,10 +647,34 @@ const Hero = () => {
           </motion.p>
         ) : null}
 
+        {autoplayBlocked ? (
+          <button
+            type="button"
+            onClick={handleManualPlay}
+            aria-label={statusCopy.playVideo}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              alignSelf: 'center',
+              border: '1px solid rgba(241, 212, 135, 0.7)',
+              borderRadius: '6px',
+              padding: '10px 16px',
+              background: 'rgba(7, 6, 5, 0.55)',
+              color: '#f1d487',
+              cursor: 'pointer',
+              fontWeight: 600,
+            }}
+          >
+            <Play size={16} aria-hidden="true" />
+            {statusCopy.playVideo}
+          </button>
+        ) : null}
+
 
 
         {/* Chevrons Navigation for Desktop */}
-        {homepageVideos.length > 1 && (
+        {videoCount > 1 && (
           <div className="hero-nav-controls" style={{ zIndex: 10 }}>
             <button
               onClick={handlePrevVideo}
@@ -273,17 +694,17 @@ const Hero = () => {
         )}
 
         {/* Pagination Dots & Text */}
-        {homepageVideos.length > 1 && (
+        {videoCount > 1 && (
           <div className="hero-pagination" style={{ zIndex: 10 }}>
             <span className="hero-pagination-number">
-              {String(activeVideoIndex + 1).padStart(2, '0')} / {String(homepageVideos.length).padStart(2, '0')}
+              {String(activeVideoIndex + 1).padStart(2, '0')} / {String(videoCount).padStart(2, '0')}
             </span>
             <div className="hero-pagination-dots">
-              {homepageVideos.map((_, idx) => (
+              {homepageVideos?.map((_, idx) => (
                 <button
                   key={idx}
                   className={`hero-pagination-dot ${idx === activeVideoIndex ? 'active' : ''}`}
-                  onClick={() => setActiveVideoIndex(idx)}
+                  onClick={() => goToVideo(idx)}
                   aria-label={`Go to video ${idx + 1}`}
                 />
               ))}
@@ -292,7 +713,7 @@ const Hero = () => {
         )}
 
 
-      </motion.div>
+      </motion.div> : null}
 
     </section>
   );

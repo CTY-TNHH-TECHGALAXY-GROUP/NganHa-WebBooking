@@ -6,7 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { createBrowserClient } from '@supabase/ssr';
 import {
   LayoutDashboard, BookOpen, FileText, Wrench, Film, Search, Globe, Settings, ArchiveRestore,
-  Menu, X, ChevronRight, LogOut, ImagePlus
+  Menu, X, ChevronRight, LogOut, ImagePlus, Compass
 } from 'lucide-react';
 import { verifyAdminSessionAction } from '@/lib/auth/adminAction';
 
@@ -16,6 +16,7 @@ const SIDEBAR_WIDTH = '260px';
 const NAV_ITEMS = [
   { label: 'Tổng quan', href: '/admin', icon: LayoutDashboard },
   { label: 'Câu chuyện (Our Story)', href: '/admin/our-story', icon: BookOpen },
+  { label: 'Local Tour Sài Gòn', href: '/admin/local-tour', icon: Compass },
   { label: 'Lịch sử Thương hiệu', href: '/admin/history', icon: BookOpen },
   { label: 'Lost & Found', href: '/admin/lost-and-found', icon: ArchiveRestore },
   { label: 'Video Trang chủ', href: '/admin/hero-videos', icon: Film },
@@ -191,7 +192,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
           <div className="flex items-center gap-2">
             <span className="text-admin-gold text-xl">✦</span>
             <div>
-              <h1 className="text-base font-bold text-admin-text tracking-wide">NganHa Admin</h1>
+              <h1 className="text-base font-bold text-admin-text tracking-wide">Oria Spa</h1>
               <p className="text-[11px] text-admin-text-faint mt-0.5">Hệ thống quản trị nội dung</p>
             </div>
           </div>

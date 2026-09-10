@@ -20,6 +20,21 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(redirectUrl);
   }
 
+  // Redirect /local-tour overview directly to the first tour package (no hub page)
+  if (pathname === '/local-tour' || pathname === '/local-tour/') {
+    const redirectUrl = request.nextUrl.clone();
+    redirectUrl.pathname = '/local-tour/saigon-xua';
+    return NextResponse.redirect(redirectUrl);
+  }
+
+  const localeTourMatch = /^\/(vi|en|cn|jp|kr)\/local-tour\/?$/.exec(pathname);
+  if (localeTourMatch) {
+    const redirectUrl = request.nextUrl.clone();
+    const l = localeTourMatch[1];
+    redirectUrl.pathname = l === 'vi' ? '/local-tour/saigon-xua' : `/${l}/local-tour/saigon-xua`;
+    return NextResponse.redirect(redirectUrl);
+  }
+
   const isAdminLogin = pathname === '/admin/login' || pathname.startsWith('/admin/login/');
   const isAdminPage = (pathname === '/admin' || pathname.startsWith('/admin/')) && !isAdminLogin;
   const isAdminApi = pathname === '/api/admin' || pathname.startsWith('/api/admin/');

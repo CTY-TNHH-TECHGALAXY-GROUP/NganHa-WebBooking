@@ -59,6 +59,21 @@ const OurStory = () => {
               ))}
             </ul>
 
+            <div className="mt-8 pt-6 border-t border-[rgba(216,182,106,0.2)]">
+              <Link
+                href={lang && lang !== 'vi' ? `/${lang}/local-tour` : '/local-tour'}
+                className={styles.textLink}
+              >
+                <span>
+                  {lang === 'vi' ? 'Khám phá Local Tour Sài Gòn theo cách của Oria Spa' :
+                   lang === 'cn' ? '探索 Oria Spa 西贡深度漫步体验' :
+                   lang === 'jp' ? 'Oria Spa流のサイゴンローカルツアーを見る' :
+                   lang === 'kr' ? 'Oria Spa와 함께하는 사이공 로컬 투어 살펴보기' :
+                   'Explore Saigon Local Tour the Oria Spa Way'}
+                </span>
+                <ArrowUpRight aria-hidden="true" size={20} />
+              </Link>
+            </div>
           </article>
 
           <div className={styles.visualStory}>
@@ -124,7 +139,6 @@ const OurStory = () => {
               <span>03</span>
               <h3>{getLocalizedText(config.filmReel.title, lang)}</h3>
             </div>
-            <p>{getLocalizedText(config.architectureSection.activityHint, lang)}</p>
           </div>
 
           <div

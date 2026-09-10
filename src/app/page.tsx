@@ -1,14 +1,17 @@
-'use client';
-
 import Hero from '@/components/Hero/Hero';
 import OurStory from '@/components/OurStory/OurStory';
 import History from '@/components/History/History';
+import { getHeroVideoConfig } from '@/lib/config/heroVideos';
 
-const HomePage = () => {
+export const dynamic = 'force-dynamic';
+
+const HomePage = async () => {
+  const initialHeroConfig = await getHeroVideoConfig();
+
   return (
     <main>
       {/* Hero Section - Fullscreen with video/image background */}
-      <Hero />
+      <Hero initialHeroConfig={initialHeroConfig} />
 
       {/* Our Story Section - Saigon & Oria Location, Architecture & Film Strip */}
       <OurStory />

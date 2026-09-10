@@ -12,6 +12,7 @@ const SYSTEM_CONFIG_KEYS = [
   'footer_content',
   'blog_content',
   'homepage_styling',
+  'local_tour_content',
 ] as const;
 
 export async function GET() {

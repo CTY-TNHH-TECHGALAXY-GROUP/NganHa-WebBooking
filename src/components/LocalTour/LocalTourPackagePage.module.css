@@ -1,0 +1,662 @@
+/* LocalTourPackagePage.module.css - Oria Spa Luxury Editorial Aesthetic */
+/* Soft, borderless, smooth floating cards - Zero rigid frames */
+
+.packagePage {
+  --font-heading: var(--font-heading, 'Playfair Display', Georgia, serif);
+  --font-body: var(--font-body, 'Inter', -apple-system, BlinkMacSystemFont, sans-serif);
+  --story-gold: #d8b66a;
+  --story-ink: #f4eddf;
+  --story-muted: #bcb09f;
+  --story-line: rgba(216, 182, 106, 0.12);
+  min-height: 100vh;
+  background-color: #0c0806;
+  color: #ded5c7;
+  font-family: var(--font-body);
+  font-weight: 300;
+  line-height: 1.8;
+  padding-bottom: 90px;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* 1. CINEMATIC HERO */
+.hero {
+  position: relative;
+  min-height: 70vh;
+  display: flex;
+  align-items: flex-end;
+  padding: 130px 24px 50px;
+  background-color: #0c0806;
+  overflow: hidden;
+}
+
+@media (min-width: 768px) {
+  .hero {
+    min-height: 80vh;
+    padding: 150px 48px 70px;
+  }
+}
+
+.heroBackdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.heroBackdrop img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+  filter: brightness(0.65) saturate(1.1);
+  transform: scale(1.02);
+  transition: transform 8s ease;
+}
+
+.heroGradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(12, 8, 6, 0.4) 0%,
+    rgba(12, 8, 6, 0.25) 40%,
+    rgba(12, 8, 6, 0.85) 75%,
+    #0c0806 100%
+  );
+}
+
+.heroVignette {
+  position: absolute;
+  inset: 0;
+  box-shadow: inset 0 0 120px rgba(0, 0, 0, 0.75);
+  pointer-events: none;
+}
+
+.heroContent {
+  position: relative;
+  z-index: 2;
+  max-width: 1080px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.heroTitle {
+  font-family: var(--font-heading);
+  color: #fff6e8;
+  font-size: clamp(2.4rem, 5.5vw, 4.4rem);
+  font-weight: 600;
+  line-height: 1.15;
+  margin-bottom: 16px;
+  letter-spacing: -0.01em;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+}
+
+.heroTagline {
+  font-family: var(--font-heading);
+  font-style: italic;
+  font-size: clamp(1.15rem, 2.2vw, 1.45rem);
+  color: #f0e6d6;
+  line-height: 1.6;
+  max-width: 780px;
+  margin-bottom: 26px;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
+}
+
+/* Quick Specs Row - Soft Pill Floating Badges (Zero Rigid Borders) */
+.specPillsRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.specPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  border: none;
+  color: #e5dac9;
+  font-family: var(--font-body);
+  font-size: 13px;
+  letter-spacing: 0.01em;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  transition: background 0.3s ease;
+}
+
+.specPillIcon {
+  color: var(--story-gold);
+  font-size: 13px;
+}
+
+/* 2. PACKAGE SWITCHER BAR (EDITORIAL TABS - ZERO BUTTON FEELING) */
+.packageSwitcherBar {
+  position: sticky;
+  top: 72px;
+  z-index: 20;
+  background: rgba(14, 9, 7, 0.88);
+  backdrop-filter: blur(18px);
+  padding: 12px 24px;
+  border: none;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+:global(body.menu-open) .packageSwitcherBar,
+:global(body.modal-open) .packageSwitcherBar {
+  display: none !important;
+}
+
+.switcherInner {
+  max-width: 1080px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.switcherInner::-webkit-scrollbar {
+  display: none;
+}
+
+.switcherLabel {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--story-gold);
+  flex-shrink: 0;
+}
+
+.switcherTabs {
+  display: flex;
+  gap: 20px;
+  flex-shrink: 0;
+}
+
+.switcherTab {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 4px 10px;
+  font-size: 14.5px;
+  font-family: var(--font-heading);
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  color: #a89f91;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  transition: color 0.25s ease, border-bottom-color 0.25s ease;
+  white-space: nowrap;
+}
+
+.switcherTab:hover {
+  color: #f7ebc7;
+  border-bottom-color: rgba(216, 182, 106, 0.35);
+}
+
+.switcherTabActive {
+  color: #fff6e8 !important;
+  font-weight: 600;
+  border-bottom-color: var(--story-gold) !important;
+}
+
+.switcherNumber {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--story-gold);
+}
+
+/* 3. MAIN CONTENT CONTAINER */
+.container {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 60px 24px;
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding: 80px 32px;
+  }
+}
+
+/* Section Header */
+.sectionHeader {
+  margin-bottom: 44px;
+  text-align: center;
+}
+
+.sectionPre {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--story-gold);
+  margin-bottom: 8px;
+}
+
+.sectionTitle {
+  font-family: var(--font-heading);
+  font-size: clamp(1.9rem, 3.2vw, 2.6rem);
+  color: #fff6e8;
+  font-weight: 600;
+  line-height: 1.25;
+  margin-bottom: 12px;
+}
+
+.sectionDesc {
+  font-family: var(--font-body);
+  color: #a89f91;
+  font-size: 15px;
+  max-width: 620px;
+  margin: 0 auto;
+  line-height: 1.65;
+}
+
+/* 4. VISUAL HIGHLIGHTS GRID - SOFT, SMOOTH CARDS (ZERO RIGID BORDERS) */
+.highlightsGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+  margin-bottom: 84px;
+}
+
+@media (min-width: 768px) {
+  .highlightsGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.highlightCard {
+  position: relative;
+  background: linear-gradient(180deg, rgba(28, 20, 16, 0.5) 0%, rgba(16, 11, 8, 0.75) 100%);
+  border: none;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(10px);
+  transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.5s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.highlightCard:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 32px 64px -12px rgba(0, 0, 0, 0.75);
+}
+
+.highlightImgWrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 11;
+  overflow: hidden;
+  background: #090605;
+}
+
+.highlightImgWrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.highlightCard:hover .highlightImgWrap img {
+  transform: scale(1.06);
+}
+
+/* Horizontal Photo Scroller for Highlight Card */
+.highlightScroller {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  width: 100%;
+  height: 100%;
+}
+
+.highlightScroller::-webkit-scrollbar {
+  display: none;
+}
+
+.highlightSlide {
+  flex: 0 0 100%;
+  width: 100%;
+  height: 100%;
+  scroll-snap-align: start;
+  position: relative;
+}
+
+.highlightSlide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.highlightPhotoCount {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(10, 6, 4, 0.65);
+  backdrop-filter: blur(10px);
+  color: #f7ebc7;
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.highlightNavBtn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(10, 6, 4, 0.7);
+  backdrop-filter: blur(8px);
+  color: #fff6e8;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  cursor: pointer;
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  line-height: 1;
+  padding: 0;
+  transition: all 0.2s ease;
+}
+
+.highlightNavBtn:hover {
+  background: rgba(212, 175, 55, 0.9);
+  color: #1a1208;
+  transform: translateY(-50%) scale(1.08);
+}
+
+.highlightNavPrev {
+  left: 10px;
+}
+
+.highlightNavNext {
+  right: 10px;
+}
+
+.highlightDots {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+  z-index: 5;
+}
+
+.highlightDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.highlightDotActive {
+  background: var(--story-gold);
+  width: 18px;
+  border-radius: 999px;
+}
+
+.highlightNumber {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(10, 6, 4, 0.55);
+  border: none;
+  color: var(--story-gold);
+  font-family: var(--font-body);
+  font-size: 11.5px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(10px);
+}
+
+.highlightBody {
+  padding: 24px 22px 26px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.highlightTitle {
+  font-family: var(--font-heading);
+  color: #fff6e8;
+  font-size: 19px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  line-height: 1.35;
+}
+
+.highlightSubtitle {
+  font-family: var(--font-body);
+  color: #a89f91;
+  font-size: 14px;
+  line-height: 1.65;
+  margin: 0;
+}
+
+/* 5. VISUAL ITINERARY TIMELINE - SEAMLESS EDITORIAL FLOW (ZERO BOX / ZERO BORDER) */
+.itinerarySection {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+  margin-bottom: 84px;
+}
+
+.timelineList {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  position: relative;
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.timelineItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.timelineItem:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.timelineTime {
+  color: var(--story-gold);
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 16px;
+  letter-spacing: 0.02em;
+  flex-shrink: 0;
+  min-width: 120px;
+  padding-top: 2px;
+}
+
+.timelineDesc {
+  font-family: var(--font-body);
+  color: #ded5c7;
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+/* 6. BEST FOR QUOTE - PURE EDITORIAL STATEMENT (ZERO BOX / ZERO BORDER) */
+.bestForBox {
+  max-width: 760px;
+  margin: 0 auto 84px;
+  text-align: center;
+  padding: 20px 0 30px;
+  background: transparent;
+  border: none;
+}
+
+.bestForTag {
+  color: var(--story-gold);
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.bestForQuote {
+  font-family: var(--font-heading);
+  font-style: italic;
+  font-size: clamp(18px, 2.2vw, 22px);
+  color: #f7ebc7;
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* 7. BOTTOM CONCIERGE & BOOKING - SOFT ORGANIC GLOW (ZERO RIGID BORDERS) */
+.conciergeCard {
+  background: radial-gradient(ellipse at 50% 50%, rgba(38, 26, 20, 0.65) 0%, rgba(14, 9, 7, 0.3) 100%);
+  border: none;
+  border-radius: 28px;
+  padding: 56px 32px;
+  text-align: center;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(14px);
+}
+
+.conciergeHeading {
+  font-family: var(--font-heading);
+  color: #fff6e8;
+  font-size: clamp(1.6rem, 2.8vw, 2.2rem);
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.conciergeText {
+  font-family: var(--font-body);
+  color: #a89f91;
+  font-size: 15px;
+  max-width: 600px;
+  margin: 0 auto 28px;
+  line-height: 1.65;
+}
+
+.conciergeActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 36px;
+  margin-bottom: 28px;
+}
+
+.conciergeLink {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--story-gold);
+  color: #fff6e8;
+  font-family: var(--font-heading);
+  font-size: 17px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.25s ease, border-color 0.25s ease;
+}
+
+.conciergeLink:hover {
+  color: var(--story-gold);
+  border-bottom-color: #fff6e8;
+}
+
+.conciergeAddress {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #ded5c7;
+  font-family: var(--font-body);
+  font-size: 14px;
+}
+
+/* 8. EDITORIAL STORY SECTION (PHOTO FRAMES AFTER PARAGRAPH 1 & 3) */
+.storySection {
+  margin-bottom: 70px;
+}
+
+.storyContent {
+  max-width: 860px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.storyParagraph {
+  font-family: var(--font-body);
+  font-size: clamp(1.02rem, 1.8vw, 1.15rem);
+  line-height: 1.85;
+  color: #ded5c7;
+  font-weight: 300;
+  text-align: justify;
+}
+
+.storyPhotoFrame {
+  margin: 16px 0 28px;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+}
+
+.storyPhotoFrame img {
+  width: 100%;
+  height: clamp(260px, 45vw, 460px);
+  object-fit: cover;
+  display: block;
+  filter: brightness(0.88);
+  transition: transform 0.6s ease, filter 0.6s ease;
+}
+
+.storyPhotoFrame:hover img {
+  transform: scale(1.02);
+  filter: brightness(0.96);
+}

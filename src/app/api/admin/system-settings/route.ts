@@ -15,7 +15,7 @@ export const GET = withAuth(async (_request, { supabase }) => {
     const { data, error } = await supabase
       .from('SystemConfigs')
       .select('key, value')
-      .in('key', ['system_settings', 'about_story_content', 'brand_history', 'homepage_content', 'footer_content', 'blog_content', 'homepage_styling']);
+      .in('key', ['system_settings', 'about_story_content', 'brand_history', 'homepage_content', 'footer_content', 'blog_content', 'homepage_styling', 'local_tour_content']);
 
     if (error) {
       console.error('Error fetching system settings:', error);
@@ -30,6 +30,7 @@ export const GET = withAuth(async (_request, { supabase }) => {
       footer_content: {},
       blog_content: {},
       homepage_styling: null as unknown,
+      local_tour_content: null as unknown,
     };
 
     if (data) {
@@ -41,6 +42,7 @@ export const GET = withAuth(async (_request, { supabase }) => {
         if (item.key === 'footer_content') result.footer_content = item.value;
         if (item.key === 'blog_content') result.blog_content = item.value;
         if (item.key === 'homepage_styling') result.homepage_styling = sanitizeHomepageStyling(item.value) ?? item.value;
+        if (item.key === 'local_tour_content') result.local_tour_content = item.value;
       });
     }
 
@@ -53,7 +55,7 @@ export const GET = withAuth(async (_request, { supabase }) => {
 
 export const POST = withAuth(async (request: NextRequest, { supabase, user }) => {
   try {
-    const { system_settings, about_story_content, brand_history, homepage_content, footer_content, blog_content, homepage_styling } = await request.json();
+    const { system_settings, about_story_content, brand_history, homepage_content, footer_content, blog_content, homepage_styling, local_tour_content } = await request.json();
 
     const upsertData = [];
 
@@ -178,6 +180,14 @@ export const POST = withAuth(async (request: NextRequest, { supabase, user }) =>
       }
     }
 
+    if (local_tour_content !== undefined) {
+      upsertData.push({
+        key: 'local_tour_content',
+        value: local_tour_content,
+        updated_at: new Date().toISOString()
+      });
+    }
+
     if (upsertData.length > 0) {
       const { data: previous } = await supabase
         .from('SystemConfigs')
@@ -205,6 +215,8 @@ export const POST = withAuth(async (request: NextRequest, { supabase, user }) =>
       revalidatePath('/', 'layout');
       revalidatePath('/');
       revalidatePath('/[lang]', 'layout');
+      revalidatePath('/local-tour', 'layout');
+      revalidatePath('/[lang]/local-tour', 'layout');
     } catch (e) {
       console.error('Revalidation error:', e);
     }

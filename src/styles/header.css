@@ -18,6 +18,11 @@
   box-sizing: border-box;
 }
 
+.site-header.menu-open,
+body.menu-open .site-header {
+  z-index: 9999 !important;
+}
+
 .site-header::before {
   content: '';
   position: absolute;
