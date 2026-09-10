@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { withCapability } from '@/lib/api/withAuth';
-import { authorizeCapability } from '@/lib/auth/adminCapabilities';
+import { withAuth } from '@/lib/api/withAuth';
 import { recordContentRevisions } from '@/lib/api/contentRevision';
 import { validateHomepageStyling, sanitizeHomepageStyling } from '@/lib/config/stylingSanitizer';
 import { CTA_KEYS, normalizeReceptionEmail, sanitizeCtaLinks, validateConfigUrl } from '@/lib/config/urlSettings';
@@ -9,15 +8,25 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
 }
 
-export const GET = withCapability(async (_request, access) => {
-  const { supabase } = access;
+export const GET = withAuth(async (_request, { supabase }) => {
   try {
-    
     // Fetch editable site-content collections.
     const { data, error } = await supabase
       .from('SystemConfigs')
       .select('key, value')
-      .in('key', ['system_settings', 'about_story_content', 'brand_history', 'homepage_content', 'footer_content', 'blog_content', 'homepage_styling', 'local_tour_content', 'home_spa_content', 'farm_retreat_content', 'farm_store_content']);
+      .in('key', [
+        'system_settings',
+        'about_story_content',
+        'brand_history',
+        'homepage_content',
+        'footer_content',
+        'blog_content',
+        'homepage_styling',
+        'local_tour_content',
+        'home_spa_content',
+        'farm_retreat_content',
+        'farm_store_content',
+      ]);
 
     if (error) {
       console.error('Error fetching system settings:', error);
@@ -54,25 +63,15 @@ export const GET = withCapability(async (_request, access) => {
       });
     }
 
-    // receptionEmail is a private notification setting. A content reader may
-    // read the public settings payload, but must never receive this address.
-    const notificationAccess = await authorizeCapability(access, 'notification_settings.manage');
-    if (!notificationAccess.allowed && isRecord(result.system_settings)) {
-      const { receptionEmail: _receptionEmail, ...publicSettings } = result.system_settings;
-      return NextResponse.json({ ...result, system_settings: publicSettings });
-    }
-
     return NextResponse.json(result);
   } catch (error) {
     console.error('API Error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
-}, 'content.read');
+});
 
-export const POST = withCapability(async (request: NextRequest, access) => {
-  const { supabase, user } = access;
+export const POST = withAuth(async (request: NextRequest, { supabase, user }) => {
   try {
-    const body = await request.json();
     const {
       system_settings,
       about_story_content,
@@ -85,41 +84,7 @@ export const POST = withCapability(async (request: NextRequest, access) => {
       home_spa_content,
       farm_retreat_content,
       farm_store_content,
-    } = body || {};
-
-    const hasNotificationChange = isRecord(system_settings)
-      && Object.prototype.hasOwnProperty.call(system_settings, 'receptionEmail');
-    if (hasNotificationChange) {
-      const notificationAccess = await authorizeCapability(
-        access,
-        'notification_settings.manage',
-        { mutation: true },
-      );
-      if (!notificationAccess.allowed) {
-        return NextResponse.json({ error: 'Không có quyền quản lý cấu hình notification' }, { status: notificationAccess.status });
-      }
-    }
-
-    const hasContentMutation = [
-      about_story_content,
-      brand_history,
-      homepage_content,
-      footer_content,
-      blog_content,
-      homepage_styling,
-      local_tour_content,
-      home_spa_content,
-      farm_retreat_content,
-      farm_store_content,
-    ].some((value) => value !== undefined)
-      || (isRecord(system_settings)
-        && Object.keys(system_settings).some((key) => key !== 'receptionEmail'));
-    if (hasContentMutation) {
-      const publishAccess = await authorizeCapability(access, 'content.publish', { mutation: true });
-      if (!publishAccess.allowed) {
-        return NextResponse.json({ error: 'Không có quyền xuất bản nội dung' }, { status: publishAccess.status });
-      }
-    }
+    } = await request.json();
 
     const upsertData = [];
 
@@ -170,7 +135,7 @@ export const POST = withCapability(async (request: NextRequest, access) => {
       upsertData.push({
         key: 'system_settings',
         value: nextSettings,
-        updated_at: new Date().toISOString()
+        updated_at: new Date().toISOString(),
       });
     }
 
@@ -178,7 +143,7 @@ export const POST = withCapability(async (request: NextRequest, access) => {
       upsertData.push({
         key: 'about_story_content',
         value: about_story_content,
-        updated_at: new Date().toISOString()
+        updated_at: new Date().toISOString(),
       });
     }
 
@@ -186,15 +151,15 @@ export const POST = withCapability(async (request: NextRequest, access) => {
       upsertData.push({
         key: 'brand_history',
         value: brand_history,
-        updated_at: new Date().toISOString()
+        updated_at: new Date().toISOString(),
       });
     }
-    
+
     if (homepage_content !== undefined) {
       upsertData.push({
         key: 'homepage_content',
         value: homepage_content,
-        updated_at: new Date().toISOString()
+        updated_at: new Date().toISOString(),
       });
     }
 
@@ -208,7 +173,7 @@ export const POST = withCapability(async (request: NextRequest, access) => {
       upsertData.push({
         key: 'footer_content',
         value: { ...(existingFooter?.value || {}), ...footer_content },
-        updated_at: new Date().toISOString()
+        updated_at: new Date().toISOString(),
       });
     }
 
@@ -216,7 +181,7 @@ export const POST = withCapability(async (request: NextRequest, access) => {
       upsertData.push({
         key: 'blog_content',
         value: blog_content,
-        updated_at: new Date().toISOString()
+        updated_at: new Date().toISOString(),
       });
     }
 
@@ -225,21 +190,21 @@ export const POST = withCapability(async (request: NextRequest, access) => {
         upsertData.push({
           key: 'homepage_styling',
           value: null,
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         });
       } else {
         const validation = validateHomepageStyling(homepage_styling);
         if (!validation.isValid || !validation.sanitized) {
           return NextResponse.json(
             { error: `Invalid homepage_styling: ${validation.errors.join(', ')}` },
-            { status: 400 }
+            { status: 400 },
           );
         }
 
         upsertData.push({
           key: 'homepage_styling',
           value: validation.sanitized,
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         });
       }
     }
@@ -248,7 +213,7 @@ export const POST = withCapability(async (request: NextRequest, access) => {
       upsertData.push({
         key: 'local_tour_content',
         value: local_tour_content,
-        updated_at: new Date().toISOString()
+        updated_at: new Date().toISOString(),
       });
     }
 
@@ -256,7 +221,7 @@ export const POST = withCapability(async (request: NextRequest, access) => {
       upsertData.push({
         key: 'home_spa_content',
         value: home_spa_content,
-        updated_at: new Date().toISOString()
+        updated_at: new Date().toISOString(),
       });
     }
 
@@ -264,7 +229,7 @@ export const POST = withCapability(async (request: NextRequest, access) => {
       upsertData.push({
         key: 'farm_retreat_content',
         value: farm_retreat_content,
-        updated_at: new Date().toISOString()
+        updated_at: new Date().toISOString(),
       });
     }
 
@@ -272,7 +237,7 @@ export const POST = withCapability(async (request: NextRequest, access) => {
       upsertData.push({
         key: 'farm_store_content',
         value: farm_store_content,
-        updated_at: new Date().toISOString()
+        updated_at: new Date().toISOString(),
       });
     }
 
@@ -280,13 +245,16 @@ export const POST = withCapability(async (request: NextRequest, access) => {
       const { data: previous } = await supabase
         .from('SystemConfigs')
         .select('key, value')
-        .in('key', upsertData.map(item => item.key));
+        .in('key', upsertData.map((item) => item.key));
 
-      await recordContentRevisions(supabase, (previous || []).map((item: { key: string; value: Record<string, unknown> | unknown[] }) => ({
-        content_key: `SystemConfigs:${item.key}`,
-        payload: item.value,
-        changed_by: user.id,
-      })));
+      await recordContentRevisions(
+        supabase,
+        (previous || []).map((item: { key: string; value: Record<string, unknown> | unknown[] }) => ({
+          content_key: `SystemConfigs:${item.key}`,
+          payload: item.value,
+          changed_by: user.id,
+        })),
+      );
 
       const { error } = await supabase
         .from('SystemConfigs')
@@ -309,6 +277,10 @@ export const POST = withCapability(async (request: NextRequest, access) => {
       revalidatePath('/local-tour/[packageSlug]', 'page');
       revalidatePath('/oriahome', 'layout');
       revalidatePath('/[lang]/oriahome', 'layout');
+      revalidatePath('/oriafarm-retreat', 'layout');
+      revalidatePath('/[lang]/oriafarm-retreat', 'layout');
+      revalidatePath('/oriafarm-store', 'layout');
+      revalidatePath('/[lang]/oriafarm-store', 'layout');
       revalidatePath('/api/public/site-content');
     } catch (e) {
       console.error('Revalidation error:', e);
@@ -319,4 +291,4 @@ export const POST = withCapability(async (request: NextRequest, access) => {
     console.error('API Error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
-}, 'content.write', { mutation: true });
+});
