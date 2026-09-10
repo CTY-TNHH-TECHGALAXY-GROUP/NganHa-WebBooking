@@ -162,6 +162,26 @@ export default function HomeSpaPage({
                 )}
               </motion.div>
             )}
+
+            {/* Story Photo 3 after Section 3 */}
+            {sIdx === 2 && config.storyPhotos?.[2] && (
+              <motion.div
+                className={styles.storyPhotoFrame}
+                initial={reduceMotion ? false : { opacity: 0, scale: 0.98 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ duration: 0.7 }}
+              >
+                <img
+                  src={config.storyPhotos[2]}
+                  alt="Oria Home Spa ambiance 3"
+                  loading="lazy"
+                />
+                {config.storyPhotosWatermark?.[2] !== false && (
+                  <div className="media-watermark" aria-hidden="true" />
+                )}
+              </motion.div>
+            )}
           </React.Fragment>
         ))}
 

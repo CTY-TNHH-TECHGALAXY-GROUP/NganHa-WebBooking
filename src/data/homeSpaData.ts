@@ -39,8 +39,9 @@ export const DEFAULT_HOME_SPA_CONFIG: HomeSpaConfig = {
   storyPhotos: [
     'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=1200&q=80',
     'https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&w=1200&q=80',
+    'https://images.unsplash.com/photo-1519823551278-64ac92734fb1?auto=format&fit=crop&w=1200&q=80',
   ],
-  storyPhotosWatermark: [true, true],
+  storyPhotosWatermark: [true, true, true],
   sections: [
     {
       id: 'sec-1',
@@ -191,7 +192,7 @@ export function hydrateHomeSpaConfig(raw: any): HomeSpaConfig {
     storyPhotos,
     storyPhotosWatermark: Array.isArray(raw.storyPhotosWatermark)
       ? raw.storyPhotosWatermark
-      : [true, true],
+      : [true, true, true],
     sections: hydratedSections,
     closingText: raw.closingText || DEFAULT_HOME_SPA_CONFIG.closingText,
     ctaText: raw.ctaText || DEFAULT_HOME_SPA_CONFIG.ctaText,

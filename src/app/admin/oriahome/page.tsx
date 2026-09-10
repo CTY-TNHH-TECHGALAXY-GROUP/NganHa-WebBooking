@@ -132,7 +132,7 @@ export default function HomeSpaAdminPage() {
   };
 
   // Image Upload handler for Supabase
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, target: 'hero' | 'story-0' | 'story-1') => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, target: 'hero' | 'story-0' | 'story-1' | 'story-2') => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -158,14 +158,20 @@ export default function HomeSpaAdminPage() {
         updateConfig((prev) => ({ ...prev, heroImage: url }));
       } else if (target === 'story-0') {
         updateConfig((prev) => {
-          const nextPhotos = [...(prev.storyPhotos || ['', ''])];
+          const nextPhotos = [...(prev.storyPhotos || ['', '', ''])];
           nextPhotos[0] = url;
           return { ...prev, storyPhotos: nextPhotos };
         });
       } else if (target === 'story-1') {
         updateConfig((prev) => {
-          const nextPhotos = [...(prev.storyPhotos || ['', ''])];
+          const nextPhotos = [...(prev.storyPhotos || ['', '', ''])];
           nextPhotos[1] = url;
+          return { ...prev, storyPhotos: nextPhotos };
+        });
+      } else if (target === 'story-2') {
+        updateConfig((prev) => {
+          const nextPhotos = [...(prev.storyPhotos || ['', '', ''])];
+          nextPhotos[2] = url;
           return { ...prev, storyPhotos: nextPhotos };
         });
       }
@@ -500,24 +506,24 @@ export default function HomeSpaAdminPage() {
           ))}
         </section>
 
-        {/* 2 KHUNG ẢNH MINH HỌA (STORY PHOTOS) */}
+        {/* 3 KHUNG ẢNH MINH HỌA (STORY PHOTOS) */}
         <section className="p-6 rounded-2xl bg-admin-card border border-admin-line space-y-5">
           <div className="flex items-center justify-between border-b border-admin-line pb-3">
             <div>
               <h2 className="text-base font-bold text-admin-gold flex items-center gap-2">
                 <ImageIcon size={18} />
-                2 Khung Ảnh Minh Họa Bài Viết (Xen Kẽ Giữa Các Phần)
+                3 Khung Ảnh Minh Họa Bài Viết (Xen Kẽ Giữa Các Phần)
               </h2>
               <p className="text-xs text-admin-text-dim mt-0.5">
-                Khung 01 hiển thị sau Phần 1, Khung 02 hiển thị sau Phần 2.
+                Khung 01 sau Phần 1, Khung 02 sau Phần 2, Khung 03 sau Phần 3 (Khi nào nên book Oria Home Spa).
               </p>
             </div>
             <span className="text-[11px] px-2.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 font-semibold">
-              ⚡ 2 Khung ảnh
+              ⚡ 3 Khung ảnh
             </span>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-2">
             {/* Story Photo 1 */}
             <div className="p-5 rounded-2xl bg-admin-bg/60 border border-admin-line space-y-3">
               <div className="flex items-center justify-between">
@@ -790,8 +796,149 @@ export default function HomeSpaAdminPage() {
                     checked={config.storyPhotosWatermark?.[1] !== false}
                     onChange={(checked) => {
                       updateConfig((prev) => {
-                        const nextWm = [...(prev.storyPhotosWatermark || [true, true])];
+                        const nextWm = [...(prev.storyPhotosWatermark || [true, true, true])];
                         nextWm[1] = checked;
+                        return { ...prev, storyPhotosWatermark: nextWm };
+                      });
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Story Photo 3 */}
+            <div className="p-5 rounded-2xl bg-admin-bg/60 border border-admin-line space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs uppercase tracking-wider text-admin-gold font-bold">
+                  Khung Ảnh 03 (Nằm ở Phần 3)
+                </span>
+                <span className="text-[10px] text-admin-text-faint bg-black/40 px-2 py-0.5 rounded">
+                  Chung 5 ngôn ngữ
+                </span>
+              </div>
+
+              <div className="relative rounded-xl overflow-hidden border border-admin-line w-full aspect-[16/9] bg-black/50">
+                <img
+                  src={
+                    config.storyPhotos?.[2] ||
+                    'https://images.unsplash.com/photo-1519823551278-64ac92734fb1?auto=format&fit=crop&w=1200&q=80'
+                  }
+                  alt="Story photo 3"
+                  className="w-full h-full object-cover"
+                />
+                {uploadingKey === 'story-2' && (
+                  <div className="absolute inset-0 bg-black/75 flex items-center justify-center text-xs text-admin-gold font-semibold">
+                    Đang tải ảnh lên...
+                  </div>
+                )}
+              </div>
+
+              <div className="space-y-2 pt-1">
+                <label className="flex items-center justify-center gap-2 w-full py-2 bg-admin-line hover:bg-admin-line-strong text-admin-text text-xs font-semibold rounded-xl cursor-pointer transition-colors">
+                  <Upload size={14} />
+                  <span>Tải ảnh mới từ máy tính</span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    disabled={uploadingKey === 'story-2'}
+                    className="hidden"
+                    onChange={(e) => handleImageUpload(e, 'story-2')}
+                  />
+                </label>
+
+                <div className="flex gap-2">
+                  <div className="relative flex-1">
+                    <input
+                      type="text"
+                      value={config.storyPhotos?.[2] ?? ''}
+                      onFocus={(e) => e.target.select()}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        updateConfig((prev) => {
+                          const nextP = [...(prev.storyPhotos || ['', '', ''])];
+                          nextP[2] = val;
+                          return { ...prev, storyPhotos: nextP };
+                        });
+                      }}
+                      onPaste={(e) => {
+                        const pasted = e.clipboardData.getData('text');
+                        if (pasted) {
+                          e.preventDefault();
+                          updateConfig((prev) => {
+                            const nextP = [...(prev.storyPhotos || ['', '', ''])];
+                            nextP[2] = pasted.trim();
+                            return { ...prev, storyPhotos: nextP };
+                          });
+                        }
+                      }}
+                      placeholder="Dán link URL ảnh mới vào đây..."
+                      className="w-full bg-admin-bg text-xs text-admin-text p-2.5 pr-8 rounded-xl border border-admin-line focus:border-admin-gold outline-none font-mono"
+                    />
+                    {config.storyPhotos?.[2] ? (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          updateConfig((prev) => {
+                            const nextP = [...(prev.storyPhotos || ['', '', ''])];
+                            nextP[2] = '';
+                            return { ...prev, storyPhotos: nextP };
+                          });
+                        }}
+                        className="absolute right-2 top-1/2 -translate-y-1/2 text-admin-text-faint hover:text-red-400 text-xs p-1"
+                        title="Xóa link ảnh để dán link mới"
+                      >
+                        <X size={14} />
+                      </button>
+                    ) : null}
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      try {
+                        const text = await navigator.clipboard.readText();
+                        if (text && text.trim()) {
+                          updateConfig((prev) => {
+                            const nextP = [...(prev.storyPhotos || ['', '', ''])];
+                            nextP[2] = text.trim();
+                            return { ...prev, storyPhotos: nextP };
+                          });
+                        } else {
+                          const url = prompt('Dán link URL ảnh vào đây:');
+                          if (url) {
+                            updateConfig((prev) => {
+                              const nextP = [...(prev.storyPhotos || ['', '', ''])];
+                              nextP[2] = url.trim();
+                              return { ...prev, storyPhotos: nextP };
+                            });
+                          }
+                        }
+                      } catch {
+                        const url = prompt('Dán link URL ảnh vào đây:');
+                        if (url) {
+                          updateConfig((prev) => {
+                            const nextP = [...(prev.storyPhotos || ['', '', ''])];
+                            nextP[2] = url.trim();
+                            return { ...prev, storyPhotos: nextP };
+                          });
+                        }
+                      }
+                    }}
+                    className="px-3.5 py-2 bg-admin-line hover:bg-admin-line-strong text-admin-text text-xs font-semibold rounded-xl transition-all shrink-0 flex items-center gap-1.5"
+                    title="Dán nhanh link từ bộ nhớ tạm"
+                  >
+                    <ClipboardPaste size={14} className="text-admin-gold" />
+                    <span>Dán link</span>
+                  </button>
+                </div>
+
+                <div className="pt-2">
+                  <WatermarkToggle
+                    checked={config.storyPhotosWatermark?.[2] !== false}
+                    onChange={(checked) => {
+                      updateConfig((prev) => {
+                        const nextWm = [...(prev.storyPhotosWatermark || [true, true, true])];
+                        nextWm[2] = checked;
                         return { ...prev, storyPhotosWatermark: nextWm };
                       });
                     }}
