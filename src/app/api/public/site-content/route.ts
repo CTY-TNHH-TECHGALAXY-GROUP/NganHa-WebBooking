@@ -14,6 +14,7 @@ const SYSTEM_CONFIG_KEYS = [
   'homepage_styling',
   'local_tour_content',
   'home_spa_content',
+  'farm_retreat_content',
 ] as const;
 
 export async function GET() {

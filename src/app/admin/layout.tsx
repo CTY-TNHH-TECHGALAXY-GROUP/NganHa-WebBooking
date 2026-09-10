@@ -6,7 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { createBrowserClient } from '@supabase/ssr';
 import {
   LayoutDashboard, BookOpen, FileText, Wrench, Film, Search, Globe, Settings, ArchiveRestore,
-  Menu, X, ChevronRight, LogOut, ImagePlus, Compass, Home
+  Menu, X, ChevronRight, LogOut, ImagePlus, Compass, Home, Trees
 } from 'lucide-react';
 import { verifyAdminSessionAction } from '@/lib/auth/adminAction';
 
@@ -17,6 +17,7 @@ const NAV_ITEMS = [
   { label: 'Tổng quan', href: '/admin', icon: LayoutDashboard },
   { label: 'Câu chuyện (Our Story)', href: '/admin/our-story', icon: BookOpen },
   { label: 'Oria Home Spa', href: '/admin/oriahome', icon: Home },
+  { label: 'Oria Farm Retreat', href: '/admin/oriafarm-retreat', icon: Trees },
   { label: 'Local Tour Sài Gòn', href: '/admin/local-tour', icon: Compass },
   { label: 'Lịch sử Thương hiệu', href: '/admin/history', icon: BookOpen },
   { label: 'Lost & Found', href: '/admin/lost-and-found', icon: ArchiveRestore },

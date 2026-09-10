@@ -15,7 +15,7 @@ export const GET = withAuth(async (_request, { supabase }) => {
     const { data, error } = await supabase
       .from('SystemConfigs')
       .select('key, value')
-      .in('key', ['system_settings', 'about_story_content', 'brand_history', 'homepage_content', 'footer_content', 'blog_content', 'homepage_styling', 'local_tour_content', 'home_spa_content']);
+      .in('key', ['system_settings', 'about_story_content', 'brand_history', 'homepage_content', 'footer_content', 'blog_content', 'homepage_styling', 'local_tour_content', 'home_spa_content', 'farm_retreat_content']);
 
     if (error) {
       console.error('Error fetching system settings:', error);
@@ -32,6 +32,7 @@ export const GET = withAuth(async (_request, { supabase }) => {
       homepage_styling: null as unknown,
       local_tour_content: null as unknown,
       home_spa_content: null as unknown,
+      farm_retreat_content: null as unknown,
     };
 
     if (data) {
@@ -45,6 +46,7 @@ export const GET = withAuth(async (_request, { supabase }) => {
         if (item.key === 'homepage_styling') result.homepage_styling = sanitizeHomepageStyling(item.value) ?? item.value;
         if (item.key === 'local_tour_content') result.local_tour_content = item.value;
         if (item.key === 'home_spa_content') result.home_spa_content = item.value;
+        if (item.key === 'farm_retreat_content') result.farm_retreat_content = item.value;
       });
     }
 
@@ -57,7 +59,7 @@ export const GET = withAuth(async (_request, { supabase }) => {
 
 export const POST = withAuth(async (request: NextRequest, { supabase, user }) => {
   try {
-    const { system_settings, about_story_content, brand_history, homepage_content, footer_content, blog_content, homepage_styling, local_tour_content, home_spa_content } = await request.json();
+    const { system_settings, about_story_content, brand_history, homepage_content, footer_content, blog_content, homepage_styling, local_tour_content, home_spa_content, farm_retreat_content } = await request.json();
 
     const upsertData = [];
 
@@ -194,6 +196,14 @@ export const POST = withAuth(async (request: NextRequest, { supabase, user }) =>
       upsertData.push({
         key: 'home_spa_content',
         value: home_spa_content,
+        updated_at: new Date().toISOString()
+      });
+    }
+
+    if (farm_retreat_content !== undefined) {
+      upsertData.push({
+        key: 'farm_retreat_content',
+        value: farm_retreat_content,
         updated_at: new Date().toISOString()
       });
     }
