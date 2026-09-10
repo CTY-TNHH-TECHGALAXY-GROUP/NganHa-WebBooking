@@ -125,9 +125,9 @@ export default function LocalTourAdminPage() {
     updateConfig((prev) => {
       const nextPackages = [...prev.packages];
       const pkg = { ...nextPackages[pkgIndex] };
-      if (field === 'title' || field === 'time' || field === 'bestFor') {
+      if (field === 'title' || field === 'time' || field === 'bestFor' || field === 'tagline') {
         pkg[field] = {
-          ...(pkg[field] as Record<string, string>),
+          ...((pkg[field] as Record<string, string>) || {}),
           [activeLang]: value,
         };
       }
@@ -221,6 +221,57 @@ export default function LocalTourAdminPage() {
       setMessage({
         type: 'success',
         text: '✅ Đã tải ảnh bài viết lên thành công! Vui lòng nhấn "Lưu Thay Đổi" để cập nhật lên Weblive.',
+      });
+    } catch (err: any) {
+      alert('Lỗi: ' + (err?.message || 'Không thể tải ảnh lên'));
+    } finally {
+      setUploadingHlKey(null);
+    }
+  };
+
+  // Update Hero Image for Package
+  const updatePackageHeroImage = (pkgIndex: number, url: string) => {
+    updateConfig((prev) => {
+      const nextPackages = [...prev.packages];
+      const pkg = { ...nextPackages[pkgIndex] };
+      pkg.heroImage = url;
+      nextPackages[pkgIndex] = pkg;
+      return { ...prev, packages: nextPackages };
+    });
+  };
+
+  // Upload Hero Image to Supabase Storage
+  const handleHeroImageUpload = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    pkgIndex: number
+  ) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const uploadKey = `pkg-${pkgIndex}-hero`;
+    setUploadingHlKey(uploadKey);
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `local-tour/hero/${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+      const supabase = createClient();
+
+      const { data, error } = await supabase.storage
+        .from('media-uploads')
+        .upload(fileName, file, { cacheControl: '3600', upsert: true });
+
+      if (error) {
+        alert('Lỗi tải ảnh lên: ' + error.message);
+        return;
+      }
+
+      const {
+        data: { publicUrl },
+      } = supabase.storage.from('media-uploads').getPublicUrl(data.path);
+
+      updatePackageHeroImage(pkgIndex, publicUrl);
+      setMessage({
+        type: 'success',
+        text: '✅ Đã tải ảnh bìa Hero thành công! Vui lòng nhấn "Lưu Thay Đổi" để cập nhật lên Weblive.',
       });
     } catch (err: any) {
       alert('Lỗi: ' + (err?.message || 'Không thể tải ảnh lên'));
@@ -614,16 +665,147 @@ export default function LocalTourAdminPage() {
               </div>
             </div>
 
-            <div>
-              <label className="text-xs uppercase tracking-wider text-admin-text-dim block mb-2 font-semibold">
-                Phù Hợp Cho ({activeLang.toUpperCase()})
-              </label>
-              <input
-                type="text"
-                value={activePackage.bestFor[activeLang] || ''}
-                onChange={(e) => updatePackageField(activePackageTab, 'bestFor', e.target.value)}
-                className="w-full bg-admin-bg text-sm text-admin-text p-3 rounded-xl border border-admin-line focus:border-admin-gold outline-none"
-              />
+            {/* HERO BANNER IMAGE */}
+            <div className="bg-admin-bg p-4 rounded-xl border border-admin-line space-y-3">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                <div>
+                  <label className="text-xs uppercase tracking-wider text-admin-gold font-bold flex items-center gap-1.5">
+                    <ImageIcon size={14} />
+                    ẢNH BÌA HERO (BANNER ĐẦU TRANG &amp; COVER CARD)
+                  </label>
+                  <p className="text-[11px] text-admin-text-faint mt-0.5">
+                    Hiển thị làm ảnh nền toàn cảnh đầu trang chi tiết ({activePackage.title[activeLang] || activePackage.title['vi']}) và ảnh cover card ngoài trang danh sách.
+                  </p>
+                </div>
+                <span className="text-[10px] font-mono text-admin-text-faint bg-admin-card px-2.5 py-1 rounded border border-admin-line self-start sm:self-auto">
+                  Khuyến nghị: 1800×1000px
+                </span>
+              </div>
+
+              <div className="flex flex-col md:flex-row gap-4 items-start">
+                <div className="relative w-full md:w-80 aspect-video rounded-xl overflow-hidden border border-admin-line shrink-0 bg-black/40 group shadow-md">
+                  <img
+                    src={
+                      activePackage.heroImage ||
+                      DEFAULT_LOCAL_TOUR_CONFIG.packages[activePackageTab]?.heroImage ||
+                      'https://images.unsplash.com/photo-1563492065599-3520f775eeed?auto=format&fit=crop&w=1800&q=85'
+                    }
+                    alt="Package Hero"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-all duration-300"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20 pointer-events-none" />
+                  <span className="absolute bottom-2 left-2 text-[10px] font-bold uppercase tracking-wider bg-admin-gold text-[#241804] px-2 py-0.5 rounded shadow">
+                    Hero Preview
+                  </span>
+                  {uploadingHlKey === `pkg-${activePackageTab}-hero` && (
+                    <div className="absolute inset-0 bg-black/70 flex items-center justify-center text-admin-gold text-xs font-semibold">
+                      Đang tải ảnh lên...
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex-1 w-full space-y-3">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <label className="cursor-pointer px-3.5 py-2 bg-admin-gold hover:bg-admin-gold-hover text-[#241804] text-xs font-bold rounded-xl transition-all shadow flex items-center gap-1.5">
+                      <Upload size={14} />
+                      <span>{uploadingHlKey === `pkg-${activePackageTab}-hero` ? 'Đang tải...' : 'Tải ảnh mới từ máy'}</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        disabled={uploadingHlKey === `pkg-${activePackageTab}-hero`}
+                        onChange={(e) => handleHeroImageUpload(e, activePackageTab)}
+                      />
+                    </label>
+
+                    <span className="text-xs text-admin-text-faint">hoặc dán đường link URL ảnh trực tiếp bên dưới</span>
+                  </div>
+
+                  <div className="flex gap-2">
+                    <div className="relative flex-1">
+                      <input
+                        type="text"
+                        value={activePackage.heroImage ?? ''}
+                        onFocus={(e) => e.target.select()}
+                        onChange={(e) => updatePackageHeroImage(activePackageTab, e.target.value)}
+                        onPaste={(e) => {
+                          const pasted = e.clipboardData.getData('text');
+                          if (pasted) {
+                            e.preventDefault();
+                            updatePackageHeroImage(activePackageTab, pasted.trim());
+                          }
+                        }}
+                        placeholder="Dán link URL ảnh Hero mới vào đây..."
+                        className="w-full bg-admin-card text-xs text-admin-text p-2.5 pr-8 rounded-xl border border-admin-line focus:border-admin-gold outline-none font-mono"
+                      />
+                      {activePackage.heroImage ? (
+                        <button
+                          type="button"
+                          onClick={() => updatePackageHeroImage(activePackageTab, '')}
+                          className="absolute right-2 top-1/2 -translate-y-1/2 text-admin-text-faint hover:text-red-400 p-1"
+                          title="Xóa link ảnh để dùng ảnh mặc định"
+                        >
+                          <X size={14} />
+                        </button>
+                      ) : null}
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        try {
+                          const text = await navigator.clipboard.readText();
+                          if (text && text.trim()) {
+                            updatePackageHeroImage(activePackageTab, text.trim());
+                          } else {
+                            const url = prompt('Dán link URL ảnh Hero vào đây:');
+                            if (url) updatePackageHeroImage(activePackageTab, url.trim());
+                          }
+                        } catch {
+                          const url = prompt('Dán link URL ảnh Hero vào đây:');
+                          if (url) updatePackageHeroImage(activePackageTab, url.trim());
+                        }
+                      }}
+                      className="px-3.5 py-2 bg-admin-line hover:bg-admin-line-strong text-admin-text text-xs font-semibold rounded-xl transition-all shrink-0 flex items-center gap-1.5"
+                      title="Dán nhanh link từ bộ nhớ tạm"
+                    >
+                      <ClipboardPaste size={14} className="text-admin-gold" />
+                      <span>Dán link</span>
+                    </button>
+                  </div>
+
+                  <p className="text-[11px] text-admin-text-faint">
+                    Hỗ trợ định dạng JPG, PNG, WEBP. Hệ thống sẽ tự động áp dụng hiệu ứng phủ đen mờ và vignette sang trọng của Oria Spa.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="text-xs uppercase tracking-wider text-admin-text-dim block mb-2 font-semibold">
+                  Tagline / Khẩu Hiệu Ngắn ({activeLang.toUpperCase()})
+                </label>
+                <input
+                  type="text"
+                  value={activePackage.tagline?.[activeLang] || ''}
+                  onChange={(e) => updatePackageField(activePackageTab, 'tagline', e.target.value)}
+                  placeholder="Khẩu hiệu ngắn xuất hiện ngay dưới tên gói..."
+                  className="w-full bg-admin-bg text-sm text-admin-text p-3 rounded-xl border border-admin-line focus:border-admin-gold outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="text-xs uppercase tracking-wider text-admin-text-dim block mb-2 font-semibold">
+                  Phù Hợp Cho ({activeLang.toUpperCase()})
+                </label>
+                <input
+                  type="text"
+                  value={activePackage.bestFor[activeLang] || ''}
+                  onChange={(e) => updatePackageField(activePackageTab, 'bestFor', e.target.value)}
+                  className="w-full bg-admin-bg text-sm text-admin-text p-3 rounded-xl border border-admin-line focus:border-admin-gold outline-none"
+                />
+              </div>
             </div>
 
             {/* Schedule Items if applicable */}
