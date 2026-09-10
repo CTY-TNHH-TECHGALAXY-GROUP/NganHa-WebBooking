@@ -329,21 +329,21 @@ export default function LocalTourPackagePage({
                   <p className={styles.storyParagraph}>
                     {getText(para)}
                   </p>
-                  {/* Photo frame after paragraph 1 (index 0) and paragraph 3 (index 2) for Package 1 */}
-                  {pkg.id === 'pkg-1' && pIdx === 0 && (
+                  {/* 2 Khung ảnh minh họa câu chuyện hành trình (như hình 2) */}
+                  {pIdx === 0 && (pkg.storyPhotos?.[0] || pkg.id === 'pkg-1') && (
                     <div className={styles.storyPhotoFrame}>
                       <img
-                        src="https://images.unsplash.com/photo-1563492065599-3520f775eeed?auto=format&fit=crop&w=1200&q=80"
-                        alt={lang === 'vi' ? 'Nhà Thờ Đức Bà & Bưu Điện' : 'Notre Dame & Central Post Office'}
+                        src={pkg.storyPhotos?.[0] || "https://images.unsplash.com/photo-1563492065599-3520f775eeed?auto=format&fit=crop&w=1200&q=80"}
+                        alt={lang === 'vi' ? 'Ảnh minh họa hành trình 1' : 'Tour story photo 1'}
                         loading="lazy"
                       />
                     </div>
                   )}
-                  {pkg.id === 'pkg-1' && pIdx === 2 && (
+                  {((pkg.paragraphs.length > 2 && pIdx === 2) || (pkg.paragraphs.length <= 2 && pIdx === pkg.paragraphs.length - 1)) && (pkg.storyPhotos?.[1] || (pkg.id === 'pkg-1' && pIdx === 2)) && (
                     <div className={styles.storyPhotoFrame}>
                       <img
-                        src="https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=1200&q=80"
-                        alt={lang === 'vi' ? 'Dinh Độc Lập & Bảo Tàng' : 'Independence Palace & War Museum'}
+                        src={pkg.storyPhotos?.[1] || "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=1200&q=80"}
+                        alt={lang === 'vi' ? 'Ảnh minh họa hành trình 2' : 'Tour story photo 2'}
                         loading="lazy"
                       />
                     </div>

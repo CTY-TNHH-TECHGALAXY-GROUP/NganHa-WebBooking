@@ -24,7 +24,6 @@ import {
   DEFAULT_LOCAL_TOUR_CONFIG,
   hydrateLocalTourConfig,
   type LocalTourConfig,
-  type LocalTourDestination,
   type LocalTourPackage,
 } from '@/data/localTourData';
 
@@ -41,9 +40,8 @@ export default function LocalTourAdminPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [activeLang, setActiveLang] = useState<string>('vi');
-  const [mainTab, setMainTab] = useState<'packages' | 'destinations' | 'intro'>('packages');
+  const [mainTab, setMainTab] = useState<'packages' | 'intro'>('packages');
   const [activePackageTab, setActivePackageTab] = useState<number>(0);
-  const [uploadingId, setUploadingId] = useState<number | null>(null);
   const [uploadingHlKey, setUploadingHlKey] = useState<string | null>(null);
   const [newImageUrlInputs, setNewImageUrlInputs] = useState<Record<string, string>>({});
   const [message, setMessage] = useState<{ type: 'success' | 'error' | ''; text: string }>({
@@ -105,62 +103,7 @@ export default function LocalTourAdminPage() {
     }
   };
 
-  // Upload image to Supabase Storage - applies to dest.image for ALL 5 languages
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, destId: number) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
 
-    setUploadingId(destId);
-    try {
-      const fileExt = file.name.split('.').pop();
-      const fileName = `local-tour/${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
-      const supabase = createClient();
-
-      const { data, error } = await supabase.storage
-        .from('media-uploads')
-        .upload(fileName, file, { cacheControl: '3600', upsert: true });
-
-      if (error) {
-        alert('Lỗi tải ảnh lên: ' + error.message);
-        return;
-      }
-
-      const {
-        data: { publicUrl },
-      } = supabase.storage.from('media-uploads').getPublicUrl(data.path);
-
-      updateDestinationImage(destId, publicUrl);
-    } catch (err: any) {
-      alert('Lỗi: ' + (err.message || 'Không thể tải ảnh lên'));
-    } finally {
-      setUploadingId(null);
-    }
-  };
-
-  // 1 Image URL applies to all 5 languages
-  const updateDestinationImage = (destId: number, url: string) => {
-    setConfig((prev) => ({
-      ...prev,
-      destinations: prev.destinations.map((d) => (d.id === destId ? { ...d, image: url } : d)),
-    }));
-  };
-
-  // Update Destination Name for activeLang
-  const updateDestinationName = (destId: number, text: string) => {
-    setConfig((prev) => ({
-      ...prev,
-      destinations: prev.destinations.map((d) => {
-        if (d.id !== destId) return d;
-        return {
-          ...d,
-          name: {
-            ...d.name,
-            [activeLang]: text,
-          },
-        };
-      }),
-    }));
-  };
 
   // Package field updates for activeLang
   const updatePackageField = (pkgIndex: number, field: keyof LocalTourPackage, value: any) => {
@@ -208,6 +151,63 @@ export default function LocalTourAdminPage() {
       nextPackages[pkgIndex] = pkg;
       return { ...prev, packages: nextPackages };
     });
+  };
+
+  // Update Story Photo (Index 0: after para 1, Index 1: after para 3)
+  const updateStoryPhoto = (pkgIndex: number, photoIndex: number, url: string) => {
+    setConfig((prev) => {
+      const nextPackages = [...prev.packages];
+      const pkg = { ...nextPackages[pkgIndex] };
+      const nextStoryPhotos = [
+        ...(pkg.storyPhotos && pkg.storyPhotos.length > 0
+          ? pkg.storyPhotos
+          : [
+              'https://images.unsplash.com/photo-1563492065599-3520f775eeed?auto=format&fit=crop&w=1200&q=80',
+              'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=1200&q=80',
+            ]),
+      ];
+      nextStoryPhotos[photoIndex] = url;
+      pkg.storyPhotos = nextStoryPhotos;
+      nextPackages[pkgIndex] = pkg;
+      return { ...prev, packages: nextPackages };
+    });
+  };
+
+  // Upload Story Photo to Supabase Storage
+  const handleStoryPhotoUpload = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    pkgIndex: number,
+    photoIndex: number
+  ) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const uploadKey = `pkg-${pkgIndex}-story-${photoIndex}`;
+    setUploadingHlKey(uploadKey);
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `local-tour/story/${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+      const supabase = createClient();
+
+      const { data, error } = await supabase.storage
+        .from('media-uploads')
+        .upload(fileName, file, { cacheControl: '3600', upsert: true });
+
+      if (error) {
+        alert('Lỗi tải ảnh lên: ' + error.message);
+        return;
+      }
+
+      const {
+        data: { publicUrl },
+      } = supabase.storage.from('media-uploads').getPublicUrl(data.path);
+
+      updateStoryPhoto(pkgIndex, photoIndex, publicUrl);
+    } catch (err: any) {
+      alert('Lỗi: ' + (err?.message || 'Không thể tải ảnh lên'));
+    } finally {
+      setUploadingHlKey(null);
+    }
   };
 
   // Update Highlight Title for activeLang
@@ -404,9 +404,6 @@ export default function LocalTourAdminPage() {
   }
 
   const activePackage = config.packages[activePackageTab] || config.packages[0];
-  const activeDestinations = activePackage.destinationIds
-    .map((id) => config.destinations.find((d) => d.id === id))
-    .filter((d): d is LocalTourDestination => Boolean(d));
 
   return (
     <div className="p-6 lg:p-10 max-w-6xl mx-auto pb-28">
@@ -501,17 +498,6 @@ export default function LocalTourAdminPage() {
           }`}
         >
           <Layers size={16} className={mainTab === 'packages' ? 'text-admin-gold' : 'text-admin-text-dim'} /> 3 Gói Trải Nghiệm &amp; Lịch Trình
-        </button>
-        <button
-          type="button"
-          onClick={() => setMainTab('destinations')}
-          className={`px-5 py-3 rounded-t-xl text-sm transition-all flex items-center gap-2 ${
-            mainTab === 'destinations'
-              ? 'bg-admin-card border-t-2 border-t-admin-gold border-x border-admin-line text-admin-text font-bold -mb-[5px] border-b-2 border-b-admin-card shadow-sm'
-              : 'text-admin-text-dim hover:text-admin-text font-medium'
-          }`}
-        >
-          <ImageIcon size={16} className={mainTab === 'destinations' ? 'text-admin-gold' : 'text-admin-text-dim'} /> Thư Viện 10 Điểm Dừng &amp; Ảnh Phim
         </button>
         <button
           type="button"
@@ -666,6 +652,138 @@ export default function LocalTourAdminPage() {
                     />
                   </div>
                 ))}
+              </div>
+            </div>
+
+            {/* 2 KHUNG ẢNH MINH HỌA CÂU CHUYỆN (NHƯ HÌNH 2) */}
+            <div className="pt-6 border-t border-admin-line space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div>
+                  <h3 className="text-base font-bold text-admin-gold flex items-center gap-2">
+                    <ImageIcon size={20} className="text-admin-gold" />
+                    2 Khung Ảnh Minh Họa Câu Chuyện (Hiển thị xen kẽ trong bài viết như Hình 2)
+                  </h3>
+                  <p className="text-xs text-admin-text-dim mt-0.5">
+                    1 Link ảnh dùng chung cho cả 5 ngôn ngữ — Tự động căn chỉnh tỉ lệ khung tranh sang trọng.
+                  </p>
+                </div>
+                <span className="text-[11px] px-2.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 font-semibold self-start sm:self-auto">
+                  ⚡ 2 Khung ảnh bài viết
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+                {/* Story Photo 1 */}
+                <div className="p-5 rounded-2xl bg-admin-bg/60 border border-admin-line space-y-3 hover:border-admin-line-strong transition-all">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs uppercase tracking-wider text-admin-gold font-bold">
+                      Khung Ảnh 01 (Nằm sau Đoạn 1)
+                    </span>
+                    <span className="text-[10px] text-admin-text-faint bg-black/40 px-2 py-0.5 rounded">
+                      Chung 5 ngôn ngữ
+                    </span>
+                  </div>
+
+                  <div className="relative rounded-xl overflow-hidden border border-admin-line w-full aspect-[16/9] bg-black/50">
+                    <img
+                      src={
+                        activePackage.storyPhotos?.[0] ||
+                        'https://images.unsplash.com/photo-1563492065599-3520f775eeed?auto=format&fit=crop&w=1200&q=80'
+                      }
+                      alt="Story photo 1"
+                      className="w-full h-full object-cover"
+                    />
+                    {uploadingHlKey === `pkg-${activePackageTab}-story-0` && (
+                      <div className="absolute inset-0 bg-black/75 flex items-center justify-center text-xs text-admin-gold font-semibold">
+                        Đang tải ảnh lên...
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="space-y-2 pt-1">
+                    <label className="flex items-center justify-center gap-2 w-full py-2 bg-admin-line hover:bg-admin-line-strong text-admin-text text-xs font-semibold rounded-xl cursor-pointer transition-colors">
+                      <Upload size={14} />
+                      <span>Tải ảnh mới từ máy tính</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        disabled={uploadingHlKey === `pkg-${activePackageTab}-story-0`}
+                        className="hidden"
+                        onChange={(e) => handleStoryPhotoUpload(e, activePackageTab, 0)}
+                      />
+                    </label>
+
+                    <input
+                      type="text"
+                      value={
+                        activePackage.storyPhotos?.[0] ||
+                        'https://images.unsplash.com/photo-1563492065599-3520f775eeed?auto=format&fit=crop&w=1200&q=80'
+                      }
+                      onChange={(e) => updateStoryPhoto(activePackageTab, 0, e.target.value)}
+                      placeholder="URL ảnh khung 1..."
+                      className="w-full bg-admin-card text-xs text-admin-text p-2.5 rounded-xl border border-admin-line focus:border-admin-gold outline-none"
+                    />
+                  </div>
+                  <p className="text-[11px] text-admin-text-faint">
+                    Ví dụ: Ảnh Nhà Thờ Đức Bà &amp; Bưu Điện Thành Phố
+                  </p>
+                </div>
+
+                {/* Story Photo 2 */}
+                <div className="p-5 rounded-2xl bg-admin-bg/60 border border-admin-line space-y-3 hover:border-admin-line-strong transition-all">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs uppercase tracking-wider text-admin-gold font-bold">
+                      Khung Ảnh 02 (Nằm sau Đoạn 3)
+                    </span>
+                    <span className="text-[10px] text-admin-text-faint bg-black/40 px-2 py-0.5 rounded">
+                      Chung 5 ngôn ngữ
+                    </span>
+                  </div>
+
+                  <div className="relative rounded-xl overflow-hidden border border-admin-line w-full aspect-[16/9] bg-black/50">
+                    <img
+                      src={
+                        activePackage.storyPhotos?.[1] ||
+                        'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=1200&q=80'
+                      }
+                      alt="Story photo 2"
+                      className="w-full h-full object-cover"
+                    />
+                    {uploadingHlKey === `pkg-${activePackageTab}-story-1` && (
+                      <div className="absolute inset-0 bg-black/75 flex items-center justify-center text-xs text-admin-gold font-semibold">
+                        Đang tải ảnh lên...
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="space-y-2 pt-1">
+                    <label className="flex items-center justify-center gap-2 w-full py-2 bg-admin-line hover:bg-admin-line-strong text-admin-text text-xs font-semibold rounded-xl cursor-pointer transition-colors">
+                      <Upload size={14} />
+                      <span>Tải ảnh mới từ máy tính</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        disabled={uploadingHlKey === `pkg-${activePackageTab}-story-1`}
+                        className="hidden"
+                        onChange={(e) => handleStoryPhotoUpload(e, activePackageTab, 1)}
+                      />
+                    </label>
+
+                    <input
+                      type="text"
+                      value={
+                        activePackage.storyPhotos?.[1] ||
+                        'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=1200&q=80'
+                      }
+                      onChange={(e) => updateStoryPhoto(activePackageTab, 1, e.target.value)}
+                      placeholder="URL ảnh khung 2..."
+                      className="w-full bg-admin-card text-xs text-admin-text p-2.5 rounded-xl border border-admin-line focus:border-admin-gold outline-none"
+                    />
+                  </div>
+                  <p className="text-[11px] text-admin-text-faint">
+                    Ví dụ: Ảnh Dinh Độc Lập &amp; Bảo Tàng Chứng Tích
+                  </p>
+                </div>
               </div>
             </div>
           </div>
@@ -856,170 +974,10 @@ export default function LocalTourAdminPage() {
             </div>
           </div>
 
-          {/* Destinations & Shared Photos inside this package */}
-          <div className="space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-              <h3 className="text-lg font-bold text-admin-text flex items-center gap-2">
-                <ImageIcon size={20} className="text-admin-gold" />
-                {activeDestinations.length} Điểm Dừng &amp; Ảnh Cuộn Phim Cho Gói Này
-              </h3>
-              <div className="inline-flex items-center gap-2 px-3 py-1 bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs rounded-full font-medium">
-                <span>⚡ 1 Link ảnh dùng chung cho cả 5 ngôn ngữ</span>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {activeDestinations.map((dest, index) => (
-                <div
-                  key={'pkg-dest-' + dest.id}
-                  className="p-5 rounded-2xl bg-admin-card border border-admin-line space-y-4 hover:border-admin-line-strong transition-all"
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs uppercase tracking-wider text-admin-gold font-bold">
-                      ĐIỂM {String(index + 1).padStart(2, '0')} (ID: {dest.id})
-                    </span>
-                    <span className="text-[10px] text-admin-text-faint bg-black/40 px-2 py-0.5 rounded">
-                      Ảnh dùng chung 5 ngôn ngữ
-                    </span>
-                  </div>
-
-                  {/* Photo Preview & Quick Upload */}
-                  <div className="flex gap-4 items-start">
-                    <div className="relative rounded-xl overflow-hidden border border-admin-line w-32 aspect-[4/3] bg-black/40 shrink-0">
-                      <img
-                        src={dest.image}
-                        alt={dest.name[activeLang] || dest.name['vi']}
-                        className="w-full h-full object-cover"
-                      />
-                      {uploadingId === dest.id && (
-                        <div className="absolute inset-0 bg-black/70 flex items-center justify-center text-[10px] text-admin-gold">
-                          Đang tải...
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="flex-1 space-y-2">
-                      <label className="flex items-center justify-center gap-2 w-full py-2 bg-admin-line hover:bg-admin-line-strong text-admin-text text-xs font-semibold rounded-lg cursor-pointer transition-colors">
-                        <Upload size={14} />
-                        <span>Tải ảnh mới</span>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          className="hidden"
-                          onChange={(e) => handleImageUpload(e, dest.id)}
-                        />
-                      </label>
-
-                      <input
-                        type="text"
-                        value={dest.image}
-                        onChange={(e) => updateDestinationImage(dest.id, e.target.value)}
-                        placeholder="URL ảnh dùng chung..."
-                        className="w-full bg-admin-bg text-[11px] text-admin-text-dim p-2 rounded-lg border border-admin-line focus:border-admin-gold outline-none"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Destination Name for current language */}
-                  <div>
-                    <label className="text-xs uppercase tracking-wider text-admin-text-dim block mb-1.5 font-semibold">
-                      Tên Điểm Dừng ({activeLang.toUpperCase()})
-                    </label>
-                    <input
-                      type="text"
-                      value={dest.name[activeLang] || ''}
-                      onChange={(e) => updateDestinationName(dest.id, e.target.value)}
-                      className="w-full bg-admin-bg text-sm text-admin-text p-2.5 rounded-xl border border-admin-line focus:border-admin-gold outline-none font-medium"
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
         </div>
       )}
 
-      {/* TAB 2: MASTER DESTINATIONS GALLERY (ALL 10 DESTINATIONS) */}
-      {mainTab === 'destinations' && (
-        <div className="space-y-6">
-          <div className="p-4 bg-admin-card rounded-xl border border-admin-line flex items-center justify-between">
-            <p className="text-sm text-admin-text-dim">
-              Đây là toàn bộ <strong>{config.destinations.length} điểm đến</strong> của Local Tour Sài Gòn. Bạn có thể thay đổi link ảnh một lần duy nhất để áp dụng tự động cho cả 5 ngôn ngữ.
-            </p>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-green-500/10 border border-green-500/30 text-green-400 text-xs rounded-full font-semibold">
-              <CheckCircle2 size={14} /> 1 Link ảnh dùng chung
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {config.destinations.map((dest) => (
-              <div
-                key={'master-dest-' + dest.id}
-                className="p-6 rounded-2xl bg-admin-card border border-admin-line space-y-4 hover:border-admin-line-strong transition-all"
-              >
-                <div className="flex items-center justify-between">
-                  <span className="text-xs uppercase tracking-wider text-admin-gold font-bold">
-                    ĐIỂM DỪNG #{dest.id}
-                  </span>
-                  <span className="text-xs text-admin-text-faint">
-                    {activeLang.toUpperCase()}
-                  </span>
-                </div>
-
-                <div className="flex gap-4 items-start">
-                  <div className="relative rounded-xl overflow-hidden border border-admin-line w-36 aspect-[4/3] bg-black/40 shrink-0">
-                    <img
-                      src={dest.image}
-                      alt={dest.name[activeLang] || dest.name['vi']}
-                      className="w-full h-full object-cover"
-                    />
-                    {uploadingId === dest.id && (
-                      <div className="absolute inset-0 bg-black/70 flex items-center justify-center text-xs text-admin-gold">
-                        Đang tải ảnh...
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="flex-1 space-y-2">
-                    <label className="flex items-center justify-center gap-2 w-full py-2 bg-admin-line hover:bg-admin-line-strong text-admin-text text-xs font-semibold rounded-lg cursor-pointer transition-colors">
-                      <Upload size={14} />
-                      <span>Tải ảnh lên</span>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        className="hidden"
-                        onChange={(e) => handleImageUpload(e, dest.id)}
-                      />
-                    </label>
-
-                    <input
-                      type="text"
-                      value={dest.image}
-                      onChange={(e) => updateDestinationImage(dest.id, e.target.value)}
-                      placeholder="URL ảnh dùng chung cho 5 ngôn ngữ..."
-                      className="w-full bg-admin-bg text-[11px] text-admin-text-dim p-2 rounded-lg border border-admin-line focus:border-admin-gold outline-none"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="text-xs uppercase tracking-wider text-admin-text-dim block mb-1.5 font-semibold">
-                    Tên Điểm Dừng ({activeLang.toUpperCase()})
-                  </label>
-                  <input
-                    type="text"
-                    value={dest.name[activeLang] || ''}
-                    onChange={(e) => updateDestinationName(dest.id, e.target.value)}
-                    className="w-full bg-admin-bg text-sm text-admin-text p-2.5 rounded-xl border border-admin-line focus:border-admin-gold outline-none font-medium"
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* TAB 3: INTRO, HEADER & CLOSING */}
+      {/* TAB 2: INTRO, HEADER & CLOSING */}
       {mainTab === 'intro' && (
         <div className="bg-admin-card rounded-2xl border border-admin-line p-6 space-y-6">
           <div className="border-b border-admin-line pb-4 flex items-center justify-between">

@@ -20,6 +20,7 @@ export interface LocalTourPackage {
   title: LocalizedString;
   tagline?: LocalizedString;
   heroImage?: string;
+  storyPhotos?: string[];
   time: LocalizedString;
   durationLabel?: LocalizedString;
   schedule?: LocalizedString[];
@@ -213,6 +214,10 @@ export const DEFAULT_LOCAL_TOUR_CONFIG: LocalTourConfig = {
         jp: 'サイゴン川沿いのフランス建築から、深みある歴史の記憶へと紡ぐ物語。',
       },
       heroImage: 'https://images.unsplash.com/photo-1563492065599-3520f775eeed?auto=format&fit=crop&w=1800&q=85',
+      storyPhotos: [
+        'https://images.unsplash.com/photo-1563492065599-3520f775eeed?auto=format&fit=crop&w=1200&q=80',
+        'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=1200&q=80',
+      ],
       time: {
         vi: '8:00 sáng - 11:30 sáng (khoảng 3,5 tiếng)',
         en: '8:00 AM - 11:30 AM (about 3.5 hours)',
@@ -387,6 +392,10 @@ export const DEFAULT_LOCAL_TOUR_CONFIG: LocalTourConfig = {
         jp: '観光もセルフケアも諦めない：午前の名所巡り、本場ランチ、Oria Spaでの70分マッサージ。',
       },
       heroImage: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=1800&q=85',
+      storyPhotos: [
+        'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1200&q=80',
+        'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=1200&q=80',
+      ],
       time: {
         vi: '8:00 sáng - 2:30 chiều (khoảng 6,5 tiếng)',
         en: '8:00 AM - 2:30 PM (about 6.5 hours)',
@@ -534,6 +543,10 @@ export const DEFAULT_LOCAL_TOUR_CONFIG: LocalTourConfig = {
         jp: '何一つ心残りのない充実の一日：歴史探訪、絶品料理、マッサージ、そしてÀ Ố Show鑑賞。',
       },
       heroImage: 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&w=1800&q=85',
+      storyPhotos: [
+        'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=1200&q=80',
+        'https://images.unsplash.com/photo-1507676184212-d03ab07a01bf?auto=format&fit=crop&w=1200&q=80',
+      ],
       time: {
         vi: '9:00 sáng - 7:00 tối (trọn ngày)',
         en: '9:00 AM - 7:00 PM (full day)',
@@ -726,11 +739,16 @@ export function hydrateLocalTourConfig(raw: any): LocalTourConfig {
         })
       : defaultPkg?.highlights;
 
+    const storyPhotos = Array.isArray(pkg.storyPhotos) && pkg.storyPhotos.length > 0
+      ? pkg.storyPhotos
+      : (defaultPkg?.storyPhotos || []);
+
     return {
       ...defaultPkg,
       ...pkg,
       slug: pkg.slug || defaultPkg?.slug || pkg.id,
       heroImage: pkg.heroImage || defaultPkg?.heroImage,
+      storyPhotos,
       tagline: pkg.tagline || defaultPkg?.tagline,
       durationLabel: pkg.durationLabel || defaultPkg?.durationLabel,
       highlights: hydratedHighlights,
