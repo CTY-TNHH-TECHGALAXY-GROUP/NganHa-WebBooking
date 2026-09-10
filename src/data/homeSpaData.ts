@@ -34,13 +34,9 @@ export const DEFAULT_HOME_SPA_CONFIG: HomeSpaConfig = {
     kr: '스파가 당신에게 찾아갑니다',
     jp: 'スパがあなたのもとへ',
   },
-  heroImage: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1800&q=85',
+  heroImage: '',
   heroWatermarkEnabled: true,
-  storyPhotos: [
-    'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=1200&q=80',
-    'https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&w=1200&q=80',
-    'https://images.unsplash.com/photo-1519823551278-64ac92734fb1?auto=format&fit=crop&w=1200&q=80',
-  ],
+  storyPhotos: ['', '', ''],
   storyPhotosWatermark: [true, true, true],
   sections: [
     {
@@ -180,14 +176,20 @@ export function hydrateHomeSpaConfig(raw: any): HomeSpaConfig {
     };
   });
 
-  const storyPhotos = Array.isArray(raw.storyPhotos) && raw.storyPhotos.length > 0
+  const rawHero = typeof raw.heroImage === 'string' ? raw.heroImage.trim() : '';
+  const heroImage = rawHero.includes('unsplash.com') ? '' : (rawHero || DEFAULT_HOME_SPA_CONFIG.heroImage || '');
+
+  const rawPhotos: string[] = Array.isArray(raw.storyPhotos)
     ? raw.storyPhotos
-    : DEFAULT_HOME_SPA_CONFIG.storyPhotos;
+    : (DEFAULT_HOME_SPA_CONFIG.storyPhotos || ['', '', '']);
+  const storyPhotos = rawPhotos.map((url) =>
+    typeof url === 'string' && !url.includes('unsplash.com') ? url.trim() : ''
+  );
 
   return {
     pageTitle: raw.pageTitle || DEFAULT_HOME_SPA_CONFIG.pageTitle,
     pageSubtitle: raw.pageSubtitle || DEFAULT_HOME_SPA_CONFIG.pageSubtitle,
-    heroImage: raw.heroImage || DEFAULT_HOME_SPA_CONFIG.heroImage,
+    heroImage,
     heroWatermarkEnabled: raw.heroWatermarkEnabled !== false,
     storyPhotos,
     storyPhotosWatermark: Array.isArray(raw.storyPhotosWatermark)

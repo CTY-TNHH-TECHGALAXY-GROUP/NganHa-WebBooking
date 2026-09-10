@@ -299,14 +299,19 @@ export default function HomeSpaAdminPage() {
               </label>
 
               <div className="relative rounded-2xl overflow-hidden border border-admin-line w-full aspect-[16/9] bg-black/50">
-                <img
-                  src={
-                    config.heroImage ||
-                    'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1800&q=85'
-                  }
-                  alt="Hero banner"
-                  className="w-full h-full object-cover"
-                />
+                {config.heroImage ? (
+                  <img
+                    src={config.heroImage}
+                    alt="Hero banner"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full flex flex-col items-center justify-center text-admin-text-dim text-xs gap-2 p-4 text-center">
+                    <ImageIcon size={28} className="opacity-40 text-admin-gold" />
+                    <span>Chưa có ảnh Hero Banner</span>
+                    <span className="text-[10px] text-admin-text-faint">Dán link URL hoặc tải ảnh từ máy tính</span>
+                  </div>
+                )}
                 {uploadingKey === 'hero' && (
                   <div className="absolute inset-0 bg-black/75 flex items-center justify-center text-xs text-admin-gold font-semibold">
                     Đang tải ảnh lên...
@@ -536,14 +541,19 @@ export default function HomeSpaAdminPage() {
               </div>
 
               <div className="relative rounded-xl overflow-hidden border border-admin-line w-full aspect-[16/9] bg-black/50">
-                <img
-                  src={
-                    config.storyPhotos?.[0] ||
-                    'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=1200&q=80'
-                  }
-                  alt="Story photo 1"
-                  className="w-full h-full object-cover"
-                />
+                {config.storyPhotos?.[0] ? (
+                  <img
+                    src={config.storyPhotos[0]}
+                    alt="Story photo 1"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full flex flex-col items-center justify-center text-admin-text-dim text-xs gap-2 p-4 text-center">
+                    <ImageIcon size={24} className="opacity-40 text-admin-gold" />
+                    <span>Chưa có Khung Ảnh 01</span>
+                    <span className="text-[10px] text-admin-text-faint">Dán link URL hoặc tải ảnh từ máy tính</span>
+                  </div>
+                )}
                 {uploadingKey === 'story-0' && (
                   <div className="absolute inset-0 bg-black/75 flex items-center justify-center text-xs text-admin-gold font-semibold">
                     Đang tải ảnh lên...
@@ -677,14 +687,19 @@ export default function HomeSpaAdminPage() {
               </div>
 
               <div className="relative rounded-xl overflow-hidden border border-admin-line w-full aspect-[16/9] bg-black/50">
-                <img
-                  src={
-                    config.storyPhotos?.[1] ||
-                    'https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&w=1200&q=80'
-                  }
-                  alt="Story photo 2"
-                  className="w-full h-full object-cover"
-                />
+                {config.storyPhotos?.[1] ? (
+                  <img
+                    src={config.storyPhotos[1]}
+                    alt="Story photo 2"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full flex flex-col items-center justify-center text-admin-text-dim text-xs gap-2 p-4 text-center">
+                    <ImageIcon size={24} className="opacity-40 text-admin-gold" />
+                    <span>Chưa có Khung Ảnh 02</span>
+                    <span className="text-[10px] text-admin-text-faint">Dán link URL hoặc tải ảnh từ máy tính</span>
+                  </div>
+                )}
                 {uploadingKey === 'story-1' && (
                   <div className="absolute inset-0 bg-black/75 flex items-center justify-center text-xs text-admin-gold font-semibold">
                     Đang tải ảnh lên...
@@ -818,14 +833,19 @@ export default function HomeSpaAdminPage() {
               </div>
 
               <div className="relative rounded-xl overflow-hidden border border-admin-line w-full aspect-[16/9] bg-black/50">
-                <img
-                  src={
-                    config.storyPhotos?.[2] ||
-                    'https://images.unsplash.com/photo-1519823551278-64ac92734fb1?auto=format&fit=crop&w=1200&q=80'
-                  }
-                  alt="Story photo 3"
-                  className="w-full h-full object-cover"
-                />
+                {config.storyPhotos?.[2] ? (
+                  <img
+                    src={config.storyPhotos[2]}
+                    alt="Story photo 3"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full flex flex-col items-center justify-center text-admin-text-dim text-xs gap-2 p-4 text-center">
+                    <ImageIcon size={24} className="opacity-40 text-admin-gold" />
+                    <span>Chưa có Khung Ảnh 03</span>
+                    <span className="text-[10px] text-admin-text-faint">Dán link URL hoặc tải ảnh từ máy tính</span>
+                  </div>
+                )}
                 {uploadingKey === 'story-2' && (
                   <div className="absolute inset-0 bg-black/75 flex items-center justify-center text-xs text-admin-gold font-semibold">
                     Đang tải ảnh lên...

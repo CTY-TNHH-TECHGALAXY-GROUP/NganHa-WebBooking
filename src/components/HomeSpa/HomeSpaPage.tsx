@@ -75,13 +75,12 @@ export default function HomeSpaPage({
       {/* 1. CINEMATIC HERO BANNER */}
       <section className={styles.hero}>
         <div className={styles.heroBackdrop}>
-          <img
-            src={
-              config.heroImage ||
-              'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1800&q=85'
-            }
-            alt={getText(config.pageTitle)}
-          />
+          {Boolean(config.heroImage) && (
+            <img
+              src={config.heroImage}
+              alt={getText(config.pageTitle)}
+            />
+          )}
           {config.heroWatermarkEnabled !== false && (
             <div className="media-watermark" aria-hidden="true" />
           )}
@@ -95,7 +94,6 @@ export default function HomeSpaPage({
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <span className={styles.heroPre}>ORIA HOME · PRIVATE SANCTUARY</span>
             <h1 className={styles.heroTitle}>{getText(config.pageTitle)}</h1>
             <p className={styles.heroSubtitle}>{getText(config.pageSubtitle)}</p>
             <div className={styles.heroDivider} />
