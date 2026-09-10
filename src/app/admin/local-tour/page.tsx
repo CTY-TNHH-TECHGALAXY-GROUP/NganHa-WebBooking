@@ -39,6 +39,7 @@ export default function LocalTourAdminPage() {
   const [config, setConfig] = useState<LocalTourConfig>(DEFAULT_LOCAL_TOUR_CONFIG);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [isDirty, setIsDirty] = useState(false);
   const [activeLang, setActiveLang] = useState<string>('vi');
   const [mainTab, setMainTab] = useState<'packages' | 'intro'>('packages');
   const [activePackageTab, setActivePackageTab] = useState<number>(0);
@@ -48,6 +49,11 @@ export default function LocalTourAdminPage() {
     type: '',
     text: '',
   });
+
+  const updateConfig = (fn: (prev: LocalTourConfig) => LocalTourConfig) => {
+    setConfig((prev) => fn(prev));
+    setIsDirty(true);
+  };
 
   // Load existing configuration from API (system-settings & content fallback)
   useEffect(() => {
@@ -92,9 +98,16 @@ export default function LocalTourAdminPage() {
       ]);
 
       if (resSettings.ok || resContent.ok) {
-        setMessage({ type: 'success', text: '✅ Đã lưu cấu hình Local Tour và đồng bộ trực tiếp lên Weblive thành công!' });
+        setIsDirty(false);
+        setMessage({
+          type: 'success',
+          text: '✅ Đã lưu cấu hình Local Tour và đồng bộ trực tiếp lên Weblive thành công! Hãy tải lại trang Weblive để kiểm tra.',
+        });
       } else {
-        setMessage({ type: 'error', text: 'Có lỗi xảy ra khi lưu cấu hình. Vui lòng thử lại.' });
+        const errJson1 = await resSettings.json().catch(() => null);
+        const errJson2 = await resContent.json().catch(() => null);
+        const errMsg = errJson1?.error || errJson2?.message || 'Có lỗi xảy ra khi lưu cấu hình. Vui lòng thử lại.';
+        setMessage({ type: 'error', text: errMsg });
       }
     } catch (err: any) {
       setMessage({ type: 'error', text: `Lỗi kết nối máy chủ: ${err?.message || ''}` });
@@ -107,7 +120,7 @@ export default function LocalTourAdminPage() {
 
   // Package field updates for activeLang
   const updatePackageField = (pkgIndex: number, field: keyof LocalTourPackage, value: any) => {
-    setConfig((prev) => {
+    updateConfig((prev) => {
       const nextPackages = [...prev.packages];
       const pkg = { ...nextPackages[pkgIndex] };
       if (field === 'title' || field === 'time' || field === 'bestFor') {
@@ -123,7 +136,7 @@ export default function LocalTourAdminPage() {
 
   // Update schedule line for activeLang
   const updateScheduleItem = (pkgIndex: number, schedIndex: number, value: string) => {
-    setConfig((prev) => {
+    updateConfig((prev) => {
       const nextPackages = [...prev.packages];
       const pkg = { ...nextPackages[pkgIndex] };
       const nextSchedule = [...(pkg.schedule || [])];
@@ -139,7 +152,7 @@ export default function LocalTourAdminPage() {
 
   // Update paragraph for activeLang
   const updateParagraph = (pkgIndex: number, pIndex: number, value: string) => {
-    setConfig((prev) => {
+    updateConfig((prev) => {
       const nextPackages = [...prev.packages];
       const pkg = { ...nextPackages[pkgIndex] };
       const nextParagraphs = [...(pkg.paragraphs || [])];
@@ -155,7 +168,7 @@ export default function LocalTourAdminPage() {
 
   // Update Story Photo (Index 0: after para 1, Index 1: after para 3)
   const updateStoryPhoto = (pkgIndex: number, photoIndex: number, url: string) => {
-    setConfig((prev) => {
+    updateConfig((prev) => {
       const nextPackages = [...prev.packages];
       const pkg = { ...nextPackages[pkgIndex] };
       const nextStoryPhotos = [
@@ -203,6 +216,10 @@ export default function LocalTourAdminPage() {
       } = supabase.storage.from('media-uploads').getPublicUrl(data.path);
 
       updateStoryPhoto(pkgIndex, photoIndex, publicUrl);
+      setMessage({
+        type: 'success',
+        text: '✅ Đã tải ảnh bài viết lên thành công! Vui lòng nhấn "Lưu Thay Đổi" để cập nhật lên Weblive.',
+      });
     } catch (err: any) {
       alert('Lỗi: ' + (err?.message || 'Không thể tải ảnh lên'));
     } finally {
@@ -212,7 +229,7 @@ export default function LocalTourAdminPage() {
 
   // Update Highlight Title for activeLang
   const updateHighlightTitle = (pkgIndex: number, hlIndex: number, text: string) => {
-    setConfig((prev) => {
+    updateConfig((prev) => {
       const nextPackages = [...prev.packages];
       const pkg = { ...nextPackages[pkgIndex] };
       const nextHighlights = [...(pkg.highlights || [])];
@@ -230,7 +247,7 @@ export default function LocalTourAdminPage() {
 
   // Update Highlight Subtitle for activeLang
   const updateHighlightSubtitle = (pkgIndex: number, hlIndex: number, text: string) => {
-    setConfig((prev) => {
+    updateConfig((prev) => {
       const nextPackages = [...prev.packages];
       const pkg = { ...nextPackages[pkgIndex] };
       const nextHighlights = [...(pkg.highlights || [])];
@@ -249,7 +266,7 @@ export default function LocalTourAdminPage() {
   // Add Image to Highlight card
   const addImageToHighlight = (pkgIndex: number, hlIndex: number, imageUrl: string) => {
     if (!imageUrl.trim()) return;
-    setConfig((prev) => {
+    updateConfig((prev) => {
       const nextPackages = [...prev.packages];
       const pkg = { ...nextPackages[pkgIndex] };
       const nextHighlights = [...(pkg.highlights || [])];
@@ -269,7 +286,7 @@ export default function LocalTourAdminPage() {
 
   // Remove Image from Highlight card
   const removeImageFromHighlight = (pkgIndex: number, hlIndex: number, imgIndex: number) => {
-    setConfig((prev) => {
+    updateConfig((prev) => {
       const nextPackages = [...prev.packages];
       const pkg = { ...nextPackages[pkgIndex] };
       const nextHighlights = [...(pkg.highlights || [])];
@@ -321,6 +338,10 @@ export default function LocalTourAdminPage() {
       } = supabase.storage.from('media-uploads').getPublicUrl(data.path);
 
       addImageToHighlight(pkgIndex, hlIndex, publicUrl);
+      setMessage({
+        type: 'success',
+        text: '✅ Đã tải ảnh lên! Hãy nhấn "Lưu Thay Đổi" để cập nhật ngay lên Weblive.',
+      });
     } catch (err: any) {
       alert('Lỗi: ' + (err?.message || 'Không thể tải ảnh lên'));
     } finally {
@@ -330,7 +351,7 @@ export default function LocalTourAdminPage() {
 
   // Add new Highlight Card
   const handleAddHighlightCard = (pkgIndex: number) => {
-    setConfig((prev) => {
+    updateConfig((prev) => {
       const nextPackages = [...prev.packages];
       const pkg = { ...nextPackages[pkgIndex] };
       const nextHighlights = [...(pkg.highlights || [])];
@@ -363,7 +384,7 @@ export default function LocalTourAdminPage() {
   // Delete Highlight Card
   const handleDeleteHighlightCard = (pkgIndex: number, hlIndex: number) => {
     if (!confirm('Bạn có chắc chắn muốn xóa thẻ điểm nhấn này?')) return;
-    setConfig((prev) => {
+    updateConfig((prev) => {
       const nextPackages = [...prev.packages];
       const pkg = { ...nextPackages[pkgIndex] };
       const nextHighlights = [...(pkg.highlights || [])];
@@ -376,7 +397,7 @@ export default function LocalTourAdminPage() {
 
   // Global intro/closing field updates for activeLang
   const updateGlobalField = (field: 'docTitle' | 'docScript' | 'docIntro' | 'docIntroSub' | 'docClosing' | 'address', value: string) => {
-    setConfig((prev) => ({
+    updateConfig((prev) => ({
       ...prev,
       [field]: {
         ...(prev[field] as Record<string, string> || {}),
@@ -388,6 +409,7 @@ export default function LocalTourAdminPage() {
   const handleResetDefaults = () => {
     if (confirm('Khôi phục lại toàn bộ nội dung và ảnh gốc theo tài liệu chuẩn?')) {
       setConfig(DEFAULT_LOCAL_TOUR_CONFIG);
+      setIsDirty(true);
       setMessage({
         type: 'success',
         text: 'Đã khôi phục dữ liệu mặc định ban đầu. Nhấn "Lưu Thay Đổi" để cập nhật lên website.',
@@ -1091,6 +1113,32 @@ export default function LocalTourAdminPage() {
           <Save size={18} />
           {saving ? 'Đang lưu...' : 'Lưu Thay Đổi'}
         </button>
+      </div>
+
+      {/* STICKY FLOATING SAVE BAR - CỐ ĐỊNH Ở GÓC DƯỚI MÀN HÌNH */}
+      <div className={`fixed bottom-6 right-6 z-50 transition-all duration-300 ${isDirty ? 'scale-100 opacity-100' : 'opacity-90 hover:opacity-100'}`}>
+        <div className="flex items-center gap-3 p-3 px-5 rounded-2xl bg-[#1e1511]/95 border border-admin-gold/50 shadow-[0_10px_30px_rgba(0,0,0,0.85)] backdrop-blur-md">
+          {isDirty ? (
+            <div className="flex items-center gap-2 text-xs text-amber-300 font-semibold animate-pulse">
+              <span className="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+              <span>Có thay đổi chưa lưu!</span>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2 text-xs text-admin-text-dim">
+              <CheckCircle2 size={15} className="text-green-400" />
+              <span>Đã đồng bộ Weblive</span>
+            </div>
+          )}
+          <button
+            type="button"
+            onClick={handleSave}
+            disabled={saving}
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-admin-gold hover:bg-[#a67433] text-[#241804] rounded-xl font-bold text-xs transition-all shadow-md disabled:opacity-50"
+          >
+            <Save size={16} />
+            {saving ? 'Đang lưu...' : 'Lưu Thay Đổi Ngay'}
+          </button>
+        </div>
       </div>
     </div>
   );

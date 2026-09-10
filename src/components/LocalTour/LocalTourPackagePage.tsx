@@ -182,7 +182,7 @@ export default function LocalTourPackagePage({
   }, [currentLang]);
 
   useEffect(() => {
-    fetch('/api/public/site-content')
+    fetch(`/api/public/site-content?t=${Date.now()}`, { cache: 'no-store' })
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
         const remoteTour = data?.local_tour_content || data?.content?.local_tour_content;

@@ -139,6 +139,10 @@ export const POST = withAuth(async (request: NextRequest, { supabase, user }) =>
       revalidatePath('/pure-relaxation');
       revalidatePath('/[lang]/pure-relaxation');
       revalidatePath('/design-your-journey');
+      revalidatePath('/local-tour', 'layout');
+      revalidatePath('/[lang]/local-tour', 'layout');
+      revalidatePath('/[lang]/local-tour/[packageSlug]', 'page');
+      revalidatePath('/local-tour/[packageSlug]', 'page');
       revalidatePath('/api/public/site-content');
     } catch (e) {
       console.warn('Revalidate error:', e);
