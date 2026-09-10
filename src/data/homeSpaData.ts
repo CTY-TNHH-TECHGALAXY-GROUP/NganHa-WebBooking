@@ -10,6 +10,7 @@ export interface HomeSpaConfig {
   pageTitle: LocalizedString;
   pageSubtitle: LocalizedString;
   heroImage?: string;
+  heroMediaType?: 'image' | 'video';
   heroWatermarkEnabled?: boolean;
   storyPhotos?: string[];
   storyPhotosWatermark?: boolean[];
@@ -35,6 +36,7 @@ export const DEFAULT_HOME_SPA_CONFIG: HomeSpaConfig = {
     jp: 'スパがあなたのもとへ',
   },
   heroImage: '',
+  heroMediaType: 'image',
   heroWatermarkEnabled: true,
   storyPhotos: ['', '', ''],
   storyPhotosWatermark: [true, true, true],
@@ -178,6 +180,10 @@ export function hydrateHomeSpaConfig(raw: any): HomeSpaConfig {
 
   const rawHero = typeof raw.heroImage === 'string' ? raw.heroImage.trim() : '';
   const heroImage = rawHero.includes('unsplash.com') ? '' : (rawHero || DEFAULT_HOME_SPA_CONFIG.heroImage || '');
+  const isVideoDetect = /\.(mp4|mov|webm)(\?.*)?$/i.test(heroImage);
+  const heroMediaType: 'image' | 'video' = raw.heroMediaType === 'video' || (raw.heroMediaType !== 'image' && isVideoDetect)
+    ? 'video'
+    : 'image';
 
   const rawPhotos: string[] = Array.isArray(raw.storyPhotos)
     ? raw.storyPhotos
@@ -190,6 +196,7 @@ export function hydrateHomeSpaConfig(raw: any): HomeSpaConfig {
     pageTitle: raw.pageTitle || DEFAULT_HOME_SPA_CONFIG.pageTitle,
     pageSubtitle: raw.pageSubtitle || DEFAULT_HOME_SPA_CONFIG.pageSubtitle,
     heroImage,
+    heroMediaType,
     heroWatermarkEnabled: raw.heroWatermarkEnabled !== false,
     storyPhotos,
     storyPhotosWatermark: Array.isArray(raw.storyPhotosWatermark)

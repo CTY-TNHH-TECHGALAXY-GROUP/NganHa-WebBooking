@@ -12,6 +12,7 @@ import {
   ClipboardPaste,
   X,
   ImageIcon,
+  Video,
   FileText,
   HelpCircle,
   ExternalLink,
@@ -131,15 +132,17 @@ export default function HomeSpaAdminPage() {
     }
   };
 
-  // Image Upload handler for Supabase
+  // Media Upload handler for Supabase (Image & Video)
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, target: 'hero' | 'story-0' | 'story-1' | 'story-2') => {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    const isVideo = file.type.startsWith('video/') || /\.(mp4|mov|webm)$/i.test(file.name);
+
     setUploadingKey(target);
     try {
       const supabase = createClient();
-      const ext = file.name.split('.').pop();
+      const ext = file.name.split('.').pop() || (isVideo ? 'mp4' : 'jpg');
       const fileName = `oriahome/${target}-${Date.now()}.${ext}`;
 
       const { data, error } = await supabase.storage
@@ -155,7 +158,11 @@ export default function HomeSpaAdminPage() {
       const url = publicUrlData.publicUrl;
 
       if (target === 'hero') {
-        updateConfig((prev) => ({ ...prev, heroImage: url }));
+        updateConfig((prev) => ({
+          ...prev,
+          heroImage: url,
+          heroMediaType: isVideo ? 'video' : 'image',
+        }));
       } else if (target === 'story-0') {
         updateConfig((prev) => {
           const nextPhotos = [...(prev.storyPhotos || ['', '', ''])];
@@ -176,11 +183,17 @@ export default function HomeSpaAdminPage() {
         });
       }
 
-      setMessage({ type: 'success', text: 'Tải ảnh lên thành công!' });
+      setMessage({
+        type: 'success',
+        text: isVideo ? 'Tải video lên thành công!' : 'Tải ảnh lên thành công!',
+      });
       setTimeout(() => setMessage({ type: '', text: '' }), 3000);
     } catch (err: any) {
       console.error('Upload failed:', err);
-      setMessage({ type: 'error', text: 'Tải ảnh thất bại: ' + err.message });
+      setMessage({
+        type: 'error',
+        text: (isVideo ? 'Tải video thất bại: ' : 'Tải ảnh thất bại: ') + err.message,
+      });
     } finally {
       setUploadingKey(null);
     }
@@ -286,35 +299,88 @@ export default function HomeSpaAdminPage() {
         <section className="p-6 rounded-2xl bg-admin-card border border-admin-line space-y-5">
           <div className="flex items-center justify-between border-b border-admin-line pb-3">
             <h2 className="text-base font-bold text-admin-gold flex items-center gap-2">
-              <ImageIcon size={18} /> Ảnh Hero Banner Toàn Cảnh &amp; Tiêu Đề
+              <Video size={18} /> Media Hero Banner Toàn Cảnh &amp; Tiêu Đề
             </h2>
             <span className="text-xs text-admin-text-faint">Phần đầu trang khách</span>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
-            {/* Image Preview & Upload */}
+            {/* Media Preview & Upload */}
             <div className="md:col-span-6 space-y-3">
-              <label className="text-xs uppercase tracking-wider text-admin-text-dim block font-semibold">
-                Ảnh Nền Hero Banner (16:9)
-              </label>
+              <div className="flex items-center justify-between">
+                <label className="text-xs uppercase tracking-wider text-admin-text-dim block font-semibold">
+                  Media Nền Hero Banner (16:9)
+                </label>
+                {/* Media type switcher */}
+                <div className="flex items-center gap-1 bg-black/40 p-1 rounded-lg border border-admin-line text-[11px]">
+                  <button
+                    type="button"
+                    onClick={() => updateConfig((prev) => ({ ...prev, heroMediaType: 'image' }))}
+                    className={`px-2 py-0.5 rounded flex items-center gap-1 transition-all ${
+                      config.heroMediaType !== 'video'
+                        ? 'bg-admin-gold/20 text-admin-gold font-bold'
+                        : 'text-admin-text-faint hover:text-admin-text'
+                    }`}
+                  >
+                    <ImageIcon size={12} />
+                    <span>Ảnh</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => updateConfig((prev) => ({ ...prev, heroMediaType: 'video' }))}
+                    className={`px-2 py-0.5 rounded flex items-center gap-1 transition-all ${
+                      config.heroMediaType === 'video'
+                        ? 'bg-admin-gold/20 text-admin-gold font-bold'
+                        : 'text-admin-text-faint hover:text-admin-text'
+                    }`}
+                  >
+                    <Video size={12} />
+                    <span>Video</span>
+                  </button>
+                </div>
+              </div>
 
               <div className="relative rounded-2xl overflow-hidden border border-admin-line w-full aspect-[16/9] bg-black/50">
                 {config.heroImage ? (
-                  <img
-                    src={config.heroImage}
-                    alt="Hero banner"
-                    className="w-full h-full object-cover"
-                  />
+                  (config.heroMediaType === 'video' || /\.(mp4|mov|webm)(\?.*)?$/i.test(config.heroImage)) ? (
+                    <>
+                      <video
+                        src={config.heroImage}
+                        autoPlay
+                        muted
+                        loop
+                        playsInline
+                        className="w-full h-full object-cover"
+                      />
+                      <span className="absolute top-2.5 left-2.5 bg-black/75 text-admin-gold border border-admin-gold/30 text-[10px] font-bold px-2 py-0.5 rounded-md flex items-center gap-1 backdrop-blur-sm">
+                        <Video size={11} /> VIDEO HERO
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      <img
+                        src={config.heroImage}
+                        alt="Hero banner"
+                        className="w-full h-full object-cover"
+                      />
+                      <span className="absolute top-2.5 left-2.5 bg-black/75 text-admin-text border border-admin-line text-[10px] font-bold px-2 py-0.5 rounded-md flex items-center gap-1 backdrop-blur-sm">
+                        <ImageIcon size={11} /> ẢNH HERO
+                      </span>
+                    </>
+                  )
                 ) : (
                   <div className="w-full h-full flex flex-col items-center justify-center text-admin-text-dim text-xs gap-2 p-4 text-center">
-                    <ImageIcon size={28} className="opacity-40 text-admin-gold" />
-                    <span>Chưa có ảnh Hero Banner</span>
-                    <span className="text-[10px] text-admin-text-faint">Dán link URL hoặc tải ảnh từ máy tính</span>
+                    <div className="flex items-center gap-2 text-admin-gold opacity-50">
+                      <ImageIcon size={24} />
+                      <Video size={24} />
+                    </div>
+                    <span>Chưa có ảnh hoặc video Hero Banner</span>
+                    <span className="text-[10px] text-admin-text-faint">Dán link URL hoặc tải ảnh / video từ máy tính (MP4, MOV, WebM, JPG, PNG)</span>
                   </div>
                 )}
                 {uploadingKey === 'hero' && (
                   <div className="absolute inset-0 bg-black/75 flex items-center justify-center text-xs text-admin-gold font-semibold">
-                    Đang tải ảnh lên...
+                    Đang tải lên...
                   </div>
                 )}
               </div>
@@ -322,10 +388,10 @@ export default function HomeSpaAdminPage() {
               <div className="space-y-2 pt-1">
                 <label className="flex items-center justify-center gap-2 w-full py-2 bg-admin-line hover:bg-admin-line-strong text-admin-text text-xs font-semibold rounded-xl cursor-pointer transition-colors">
                   <Upload size={14} />
-                  <span>Tải ảnh mới từ máy tính</span>
+                  <span>Tải ảnh hoặc video mới từ máy tính</span>
                   <input
                     type="file"
-                    accept="image/*"
+                    accept="image/*, video/*, .mp4, .mov, .webm"
                     disabled={uploadingKey === 'hero'}
                     className="hidden"
                     onChange={(e) => handleImageUpload(e, 'hero')}
@@ -338,15 +404,29 @@ export default function HomeSpaAdminPage() {
                       type="text"
                       value={config.heroImage ?? ''}
                       onFocus={(e) => e.target.select()}
-                      onChange={(e) => updateConfig((prev) => ({ ...prev, heroImage: e.target.value }))}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        const isVid = /\.(mp4|mov|webm)(\?.*)?$/i.test(val);
+                        updateConfig((prev) => ({
+                          ...prev,
+                          heroImage: val,
+                          heroMediaType: isVid ? 'video' : prev.heroMediaType,
+                        }));
+                      }}
                       onPaste={(e) => {
                         const pasted = e.clipboardData.getData('text');
                         if (pasted) {
                           e.preventDefault();
-                          updateConfig((prev) => ({ ...prev, heroImage: pasted.trim() }));
+                          const trimmed = pasted.trim();
+                          const isVid = /\.(mp4|mov|webm)(\?.*)?$/i.test(trimmed);
+                          updateConfig((prev) => ({
+                            ...prev,
+                            heroImage: trimmed,
+                            heroMediaType: isVid ? 'video' : prev.heroMediaType,
+                          }));
                         }
                       }}
-                      placeholder="Dán link URL ảnh mới vào đây..."
+                      placeholder="Dán link URL ảnh hoặc video (.mp4, .mov...) vào đây..."
                       className="w-full bg-admin-bg text-xs text-admin-text p-2.5 pr-8 rounded-xl border border-admin-line focus:border-admin-gold outline-none font-mono"
                     />
                     {config.heroImage ? (
@@ -354,7 +434,7 @@ export default function HomeSpaAdminPage() {
                         type="button"
                         onClick={() => updateConfig((prev) => ({ ...prev, heroImage: '' }))}
                         className="absolute right-2 top-1/2 -translate-y-1/2 text-admin-text-faint hover:text-red-400 p-1"
-                        title="Xóa link ảnh để dùng ảnh mặc định"
+                        title="Xóa link"
                       >
                         <X size={14} />
                       </button>
@@ -367,14 +447,36 @@ export default function HomeSpaAdminPage() {
                       try {
                         const text = await navigator.clipboard.readText();
                         if (text && text.trim()) {
-                          updateConfig((prev) => ({ ...prev, heroImage: text.trim() }));
+                          const trimmed = text.trim();
+                          const isVid = /\.(mp4|mov|webm)(\?.*)?$/i.test(trimmed);
+                          updateConfig((prev) => ({
+                            ...prev,
+                            heroImage: trimmed,
+                            heroMediaType: isVid ? 'video' : prev.heroMediaType,
+                          }));
                         } else {
-                          const url = prompt('Dán link URL ảnh Hero vào đây:');
-                          if (url) updateConfig((prev) => ({ ...prev, heroImage: url.trim() }));
+                          const url = prompt('Dán link URL ảnh hoặc video Hero vào đây:');
+                          if (url) {
+                            const trimmed = url.trim();
+                            const isVid = /\.(mp4|mov|webm)(\?.*)?$/i.test(trimmed);
+                            updateConfig((prev) => ({
+                              ...prev,
+                              heroImage: trimmed,
+                              heroMediaType: isVid ? 'video' : prev.heroMediaType,
+                            }));
+                          }
                         }
                       } catch {
-                        const url = prompt('Dán link URL ảnh Hero vào đây:');
-                        if (url) updateConfig((prev) => ({ ...prev, heroImage: url.trim() }));
+                        const url = prompt('Dán link URL ảnh hoặc video Hero vào đây:');
+                        if (url) {
+                          const trimmed = url.trim();
+                          const isVid = /\.(mp4|mov|webm)(\?.*)?$/i.test(trimmed);
+                          updateConfig((prev) => ({
+                            ...prev,
+                            heroImage: trimmed,
+                            heroMediaType: isVid ? 'video' : prev.heroMediaType,
+                          }));
+                        }
                       }
                     }}
                     className="px-3.5 py-2 bg-admin-line hover:bg-admin-line-strong text-admin-text text-xs font-semibold rounded-xl transition-all shrink-0 flex items-center gap-1.5"

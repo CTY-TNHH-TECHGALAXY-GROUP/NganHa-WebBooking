@@ -76,10 +76,22 @@ export default function HomeSpaPage({
       <section className={styles.hero}>
         <div className={styles.heroBackdrop}>
           {Boolean(config.heroImage) && (
-            <img
-              src={config.heroImage}
-              alt={getText(config.pageTitle)}
-            />
+            (config.heroMediaType === 'video' || /\.(mp4|mov|webm)(\?.*)?$/i.test(config.heroImage || '')) ? (
+              <video
+                src={config.heroImage}
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="auto"
+                aria-label={getText(config.pageTitle)}
+              />
+            ) : (
+              <img
+                src={config.heroImage}
+                alt={getText(config.pageTitle)}
+              />
+            )
           )}
           {config.heroWatermarkEnabled !== false && (
             <div className="media-watermark" aria-hidden="true" />

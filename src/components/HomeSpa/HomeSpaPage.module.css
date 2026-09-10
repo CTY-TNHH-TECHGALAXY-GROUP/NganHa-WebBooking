@@ -31,7 +31,8 @@
   z-index: 1;
 }
 
-.heroBackdrop img {
+.heroBackdrop img,
+.heroBackdrop video {
   width: 100%;
   height: 100%;
   object-fit: cover;
