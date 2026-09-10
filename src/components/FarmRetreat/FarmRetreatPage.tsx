@@ -265,12 +265,12 @@ export default function FarmRetreatPage({
               </p>
             ))}
 
-            {/* Rhythm 4-step Cards to break reading text fatigue */}
-            <div className={styles.rhythmCardsGrid}>
+            {/* Rhythm 4-step sequence to break reading text fatigue */}
+            <div className={styles.rhythmFlow}>
               {rhythmStepTitles.map((item, idx) => (
-                <div key={'rhythm-' + idx} className={styles.rhythmCard}>
-                  <span className={styles.rhythmCardStep}>{item.step}</span>
-                  <span className={styles.rhythmCardTitle}>{item.title}</span>
+                <div key={'rhythm-' + idx} className={styles.rhythmItem}>
+                  <span className={styles.rhythmStep}>{item.step}</span>
+                  <span className={styles.rhythmTitle}>{item.title}</span>
                 </div>
               ))}
             </div>
@@ -358,12 +358,12 @@ export default function FarmRetreatPage({
               <p className={styles.paragraph}>{getText(config.sections[3].paragraphs[0])}</p>
             )}
 
-            {/* Audience categories grid (paragraphs 1 to 4) */}
+            {/* Audience categories list (paragraphs 1 to 4) */}
             {config.sections[3].paragraphs.length >= 5 && (
-              <div className={styles.audienceGrid}>
+              <div className={styles.audienceList}>
                 {config.sections[3].paragraphs.slice(1, 5).map((p, idx) => (
-                  <div key={'aud-' + idx} className={styles.audienceCard}>
-                    <span className={styles.audienceDot} />
+                  <div key={'aud-' + idx} className={styles.audienceItem}>
+                    <span className={styles.audienceMarker}>—</span>
                     <span className={styles.audienceText}>{getText(p)}</span>
                   </div>
                 ))}
@@ -397,10 +397,10 @@ export default function FarmRetreatPage({
           </motion.div>
         )}
 
-        {/* 3. SANCTUARY CLOSING & CTA */}
+        {/* 3. SANCTUARY CLOSING */}
         <motion.section
           className={styles.closingSection}
-          initial={reduceMotion ? false : { opacity: 0, y: 20 }}
+          initial={reduceMotion ? false : { opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7 }}
@@ -408,29 +408,41 @@ export default function FarmRetreatPage({
           <h2 className={styles.closingTitle}>Oria Farm Retreat</h2>
           <p className={styles.closingTagline}>A day away from the city.</p>
 
-          {/* Highlights Pills */}
-          <div className={styles.pillsList}>
-            {getHighlights().map((hl, idx) => (
-              <span key={'hl-' + idx} className={styles.pillItem}>
-                {hl}
-              </span>
+          {/* Highlights Line (Soft Editorial Separators) */}
+          <div className={styles.highlightsLine}>
+            {getHighlights().map((hl, idx, arr) => (
+              <React.Fragment key={'hl-' + idx}>
+                <span className={styles.highlightWord}>{hl}</span>
+                {idx < arr.length - 1 && (
+                  <span className={styles.highlightSep} aria-hidden="true">·</span>
+                )}
+              </React.Fragment>
             ))}
           </div>
 
           <p className={styles.closingText}>{getText(config.closingText)}</p>
+        </motion.section>
 
-          <div>
+        {/* 4. SOFT EDITORIAL CTA (LINK ONLY, NO BUTTON FEELING) */}
+        {config.ctaText && (
+          <motion.div
+            className={styles.ctaWrap}
+            initial={reduceMotion ? false : { opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+          >
             <a
               href={ctaHref}
-              className={styles.ctaButton}
+              className={styles.editorialCtaLink}
               target={ctaHref.startsWith('http') ? '_blank' : undefined}
               rel={ctaHref.startsWith('http') ? 'noopener noreferrer' : undefined}
             >
-              <span>{getText(config.ctaText) || 'Liên Hệ Đặt Chỗ Farm Retreat'}</span>
-              <ArrowUpRight size={18} />
+              <span>{getText(config.ctaText) || (lang === 'vi' ? 'Liên hệ Oria Farm Retreat' : 'Discover Oria Farm Retreat')}</span>
+              <ArrowUpRight size={19} className={styles.editorialCtaIcon} />
             </a>
-          </div>
-        </motion.section>
+          </motion.div>
+        )}
       </main>
     </div>
   );
