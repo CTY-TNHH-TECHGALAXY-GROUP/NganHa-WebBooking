@@ -421,28 +421,28 @@ export default function FarmRetreatPage({
           </div>
 
           <p className={styles.closingText}>{getText(config.closingText)}</p>
-        </motion.section>
 
-        {/* 4. SOFT EDITORIAL CTA (LINK ONLY, NO BUTTON FEELING) */}
-        {config.ctaText && (
-          <motion.div
-            className={styles.ctaWrap}
-            initial={reduceMotion ? false : { opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-          >
-            <a
-              href={ctaHref}
-              className={styles.editorialCtaLink}
-              target={ctaHref.startsWith('http') ? '_blank' : undefined}
-              rel={ctaHref.startsWith('http') ? 'noopener noreferrer' : undefined}
+          {/* 4. SOFT EDITORIAL CTA (LINK ONLY, NO BUTTON FEELING) */}
+          {config.ctaText && (
+            <motion.div
+              className={styles.ctaWrap}
+              initial={reduceMotion ? false : { opacity: 0, y: 12 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.1 }}
             >
-              <span>{getText(config.ctaText) || (lang === 'vi' ? 'Liên hệ Oria Farm Retreat' : 'Discover Oria Farm Retreat')}</span>
-              <ArrowUpRight size={19} className={styles.editorialCtaIcon} />
-            </a>
-          </motion.div>
-        )}
+              <a
+                href={ctaHref}
+                className={styles.editorialCtaLink}
+                target={ctaHref.startsWith('http') ? '_blank' : undefined}
+                rel={ctaHref.startsWith('http') ? 'noopener noreferrer' : undefined}
+              >
+                <span>{getText(config.ctaText) || (lang === 'vi' ? 'Liên hệ Oria Farm Retreat' : 'Discover Oria Farm Retreat')}</span>
+                <ArrowUpRight size={19} className={styles.editorialCtaIcon} />
+              </a>
+            </motion.div>
+          )}
+        </motion.section>
       </main>
     </div>
   );
