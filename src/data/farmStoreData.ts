@@ -28,6 +28,7 @@ export interface FarmStoreConfig {
   tagline: Record<Locale, string>;
   hashtags: string;
   closingText: Record<Locale, string>;
+  address: Record<Locale, string>;
   ctaText: Record<Locale, string>;
   ctaLink: string;
 }
@@ -37,11 +38,11 @@ export const DEFAULT_FARM_STORE_CONFIG: FarmStoreConfig = {
   heroMediaType: 'image',
   heroWatermarkEnabled: true,
   preTitle: {
-    vi: 'TỰ TRỒNG · TỰ NHIÊN · DINH DƯỠNG THẬT',
-    en: 'GROWN BY US · NATURALLY MADE · REAL NUTRITION',
-    cn: '亲自种植 · 天然制作 · 真实营养',
-    jp: '自社農園 · 自然派製法 · 本物の栄養',
-    kr: '직접 재배 · 자연 그대로 · 진정한 영양',
+    vi: '',
+    en: '',
+    cn: '',
+    jp: '',
+    kr: '',
   },
   pageTitle: {
     vi: 'ORIAFARM STORE',
@@ -274,6 +275,13 @@ export const DEFAULT_FARM_STORE_CONFIG: FarmStoreConfig = {
     jp: 'ORIAFARMが自ら育てた自然の恵みから、クリーンな栄養をお届けします。大自然の純粋な力で身体をいたわりましょう。',
     kr: 'ORIAFARM이 직접 기른 자연의 원료로 깨끗한 영양을 전합니다. 자연이 주는 가장 순수한 선물로 내 몸을 채워보세요.',
   },
+  address: {
+    vi: 'Toạ lạc tại SH04, khu đô thị Thủ Thiêm, 19 Tố Hữu, phường An Khánh, Thành Phố Hồ Chí Minh.',
+    en: 'Located at SH04, Thu Thiem Urban Area, 19 To Huu, An Khanh Ward, Ho Chi Minh City.',
+    cn: '坐落于胡志明市安庆坊素有街19号，首添新城区 SH04。',
+    jp: 'ホーチミン市アンカイン街区、トーフー通り19番地、トゥーティエム都市区 SH04に位置。',
+    kr: '호치민시 안카인동 또흐우 거리 19번지, 투티엠 신도시 SH04에 위치.',
+  },
   ctaText: {
     vi: 'Khám phá Menu Oria Farm Store',
     en: 'Discover Oria Farm Store Menu',
@@ -350,6 +358,7 @@ export function hydrateFarmStoreConfig(raw: any): FarmStoreConfig {
     tagline: { ...DEFAULT_FARM_STORE_CONFIG.tagline, ...(raw.tagline || {}) },
     hashtags: typeof raw.hashtags === 'string' ? raw.hashtags : DEFAULT_FARM_STORE_CONFIG.hashtags,
     closingText: { ...DEFAULT_FARM_STORE_CONFIG.closingText, ...(raw.closingText || {}) },
+    address: { ...DEFAULT_FARM_STORE_CONFIG.address, ...(raw.address || {}) },
     ctaText: { ...DEFAULT_FARM_STORE_CONFIG.ctaText, ...(raw.ctaText || {}) },
     ctaLink: typeof raw.ctaLink === 'string' && raw.ctaLink ? raw.ctaLink : DEFAULT_FARM_STORE_CONFIG.ctaLink,
   };

@@ -350,6 +350,33 @@
   margin: 0 auto;
 }
 
+.addressBlock {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 22px auto 0;
+  padding: 8px 18px;
+  background: rgba(196, 151, 70, 0.08);
+  border: 1px solid rgba(196, 151, 70, 0.22);
+  border-radius: 999px;
+  color: #5C4616;
+  font-size: clamp(0.85rem, 1.4vw, 0.95rem);
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+  max-width: 100%;
+}
+
+.addressIcon {
+  color: #8C6A24;
+  flex-shrink: 0;
+}
+
+.addressText {
+  margin: 0;
+}
+
 /* 6. MINIMAL EDITORIAL CTA (NO BUTTON FEELING) */
 .ctaWrap {
   margin-top: 28px;

@@ -768,6 +768,27 @@ export default function FarmStoreAdminPage() {
             />
           </div>
 
+          <div>
+            <label className="block text-xs font-bold text-admin-text mb-1">
+              Địa chỉ cửa hàng (Store Address - {activeLang.toUpperCase()})
+            </label>
+            <input
+              type="text"
+              value={(config.address as any)?.[activeLang] || ''}
+              onChange={(e) =>
+                updateConfig((prev) => ({
+                  ...prev,
+                  address: {
+                    ...prev.address,
+                    [activeLang]: e.target.value,
+                  },
+                }))
+              }
+              placeholder="Toạ lạc tại SH04, khu đô thị Thủ Thiêm, 19 Tố Hữu, phường An Khánh, Thành Phố Hồ Chí Minh."
+              className="w-full rounded-lg border border-admin-line bg-admin-bg px-3.5 py-2 text-xs text-admin-text focus:border-admin-gold focus:outline-none"
+            />
+          </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-admin-line">
             <div>
               <label className="block text-xs font-bold text-admin-text mb-1">

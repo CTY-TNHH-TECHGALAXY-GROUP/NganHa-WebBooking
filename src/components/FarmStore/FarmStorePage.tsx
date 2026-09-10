@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
-import { ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight, MapPin } from 'lucide-react';
 import { useTranslation } from '@/components/TranslationProvider';
 import { useSystemSettings } from '@/components/SystemSettingsProvider';
 import type { Locale } from '@/lib/constants';
@@ -106,9 +106,6 @@ export default function FarmStorePage({
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            {config.preTitle && (
-              <span className={styles.heroPre}>{getText(config.preTitle)}</span>
-            )}
             <h1 className={styles.heroTitle}>{getText(config.pageTitle)}</h1>
             <p className={styles.heroSubtitle}>{getText(config.pageSubtitle)}</p>
             <div className={styles.heroDivider} />
@@ -375,6 +372,13 @@ export default function FarmStorePage({
           )}
 
           <p className={styles.closingText}>{getText(config.closingText)}</p>
+
+          {config.address && getText(config.address) && (
+            <div className={styles.addressBlock}>
+              <MapPin size={15} className={styles.addressIcon} aria-hidden="true" />
+              <span className={styles.addressText}>{getText(config.address)}</span>
+            </div>
+          )}
 
           {/* 4. SOFT EDITORIAL CTA (LINK ONLY, NO BUTTON FEELING) */}
           {config.ctaText && (
