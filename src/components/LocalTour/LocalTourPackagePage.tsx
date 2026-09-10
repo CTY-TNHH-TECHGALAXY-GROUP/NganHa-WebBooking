@@ -34,6 +34,7 @@ function HighlightCardItem({
     images?: string[];
     title: Record<string, string>;
     subtitle: Record<string, string>;
+    watermarkEnabled?: boolean;
   };
   idx: number;
   getText: (s?: Record<string, string>) => string;
@@ -143,6 +144,8 @@ function HighlightCardItem({
           <img src={images[0] || hl.image} alt={getText(hl.title)} loading="lazy" />
         )}
 
+        {hl.watermarkEnabled !== false && <div className="media-watermark" aria-hidden="true" />}
+
         <span className={styles.highlightNumber}>{String(idx + 1).padStart(2, '0')}</span>
       </div>
 
@@ -251,6 +254,7 @@ export default function LocalTourPackagePage({
             src={pkg.heroImage || pkgDestinations[0]?.image || 'https://images.unsplash.com/photo-1563492065599-3520f775eeed?auto=format&fit=crop&w=1800&q=85'}
             alt={getText(pkg.title)}
           />
+          {pkg.heroWatermarkEnabled !== false && <div className="media-watermark" aria-hidden="true" />}
           <div className={styles.heroGradient} />
           <div className={styles.heroVignette} />
         </div>
@@ -337,6 +341,7 @@ export default function LocalTourPackagePage({
                         alt={lang === 'vi' ? 'Ảnh minh họa hành trình 1' : 'Tour story photo 1'}
                         loading="lazy"
                       />
+                      {pkg.storyPhotosWatermark?.[0] !== false && <div className="media-watermark" aria-hidden="true" />}
                     </div>
                   )}
                   {((pkg.paragraphs.length > 2 && pIdx === 2) || (pkg.paragraphs.length <= 2 && pIdx === pkg.paragraphs.length - 1)) && (pkg.storyPhotos?.[1] || (pkg.id === 'pkg-1' && pIdx === 2)) && (
@@ -346,6 +351,7 @@ export default function LocalTourPackagePage({
                         alt={lang === 'vi' ? 'Ảnh minh họa hành trình 2' : 'Tour story photo 2'}
                         loading="lazy"
                       />
+                      {pkg.storyPhotosWatermark?.[1] !== false && <div className="media-watermark" aria-hidden="true" />}
                     </div>
                   )}
                 </React.Fragment>

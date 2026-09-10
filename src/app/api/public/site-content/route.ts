@@ -13,6 +13,7 @@ const SYSTEM_CONFIG_KEYS = [
   'blog_content',
   'homepage_styling',
   'local_tour_content',
+  'home_spa_content',
 ] as const;
 
 export async function GET() {

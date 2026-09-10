@@ -820,7 +820,7 @@ export const createDefaultOurStoryConfig = (): OurStoryConfig => ({
           jp: 'ホームスパを予約・相談',
           kr: '홈스파 문의 및 예약',
         },
-        ctaLink: 'tel:+84964090277',
+        ctaLink: '/{lang}/oriahome',
       },
     ],
     ctaText: {

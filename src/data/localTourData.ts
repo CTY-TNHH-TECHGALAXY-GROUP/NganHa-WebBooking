@@ -11,6 +11,7 @@ export interface LocalTourHighlight {
   images?: string[];
   title: LocalizedString;
   subtitle: LocalizedString;
+  watermarkEnabled?: boolean;
 }
 
 export interface LocalTourPackage {
@@ -20,7 +21,9 @@ export interface LocalTourPackage {
   title: LocalizedString;
   tagline?: LocalizedString;
   heroImage?: string;
+  heroWatermarkEnabled?: boolean;
   storyPhotos?: string[];
+  storyPhotosWatermark?: boolean[];
   time: LocalizedString;
   durationLabel?: LocalizedString;
   schedule?: LocalizedString[];
@@ -735,6 +738,7 @@ export function hydrateLocalTourConfig(raw: any): LocalTourConfig {
             ...hl,
             images: imagesList.length > 0 ? imagesList : (hl.image ? [hl.image] : []),
             image: hl.image || imagesList[0] || '',
+            watermarkEnabled: hl.watermarkEnabled !== false,
           };
         })
       : defaultPkg?.highlights;
@@ -748,7 +752,11 @@ export function hydrateLocalTourConfig(raw: any): LocalTourConfig {
       ...pkg,
       slug: pkg.slug || defaultPkg?.slug || pkg.id,
       heroImage: pkg.heroImage || defaultPkg?.heroImage,
+      heroWatermarkEnabled: pkg.heroWatermarkEnabled !== false,
       storyPhotos,
+      storyPhotosWatermark: Array.isArray(pkg.storyPhotosWatermark)
+        ? pkg.storyPhotosWatermark
+        : [true, true],
       tagline: pkg.tagline || defaultPkg?.tagline,
       durationLabel: pkg.durationLabel || defaultPkg?.durationLabel,
       highlights: hydratedHighlights,

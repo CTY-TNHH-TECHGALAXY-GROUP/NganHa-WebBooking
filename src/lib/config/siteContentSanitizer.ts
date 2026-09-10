@@ -172,6 +172,7 @@ export interface PublicSiteContentPayload {
   blog_content: Record<string, unknown>;
   homepage_styling: SanitizedHomepageStyling | null;
   local_tour_content?: Record<string, unknown> | null;
+  home_spa_content?: Record<string, unknown> | null;
   content: Record<string, unknown>;
 }
 
@@ -196,6 +197,7 @@ export function sanitizePublicSiteContent(raw: {
     blog_content: (stripInternalMetadata(configs.blog_content) || {}) as Record<string, unknown>,
     homepage_styling: sanitizeHomepageStyling(configs.homepage_styling),
     local_tour_content: (stripInternalMetadata(configs.local_tour_content || content.local_tour_content) || null) as Record<string, unknown> | null,
+    home_spa_content: (stripInternalMetadata(configs.home_spa_content || content.home_spa_content) || null) as Record<string, unknown> | null,
     content: stripInternalMetadata(content) as Record<string, unknown>,
   };
 }

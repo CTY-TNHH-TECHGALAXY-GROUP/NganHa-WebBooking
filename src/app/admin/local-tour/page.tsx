@@ -37,6 +37,28 @@ const LANGUAGES = [
   { code: 'kr', label: '한국어', flag: '🇰🇷' },
 ];
 
+const WatermarkToggle = ({ checked, onChange }: { checked: boolean; onChange: (checked: boolean) => void }) => (
+  <div className="flex items-center justify-between gap-3 rounded-lg border border-admin-line bg-admin-card/70 px-3 py-2.5">
+    <div>
+      <p className="text-xs font-bold text-admin-text">Logo mờ trên khung này</p>
+      <p className="mt-0.5 text-[10px] text-admin-text-faint">{checked ? 'Đang hiển thị' : 'Đang ẩn'}</p>
+    </div>
+    <button
+      type="button"
+      role="switch"
+      aria-checked={checked}
+      onClick={() => onChange(!checked)}
+      className={`relative inline-flex h-7 w-12 shrink-0 items-center rounded-full border transition-colors focus:outline-none focus:ring-2 focus:ring-admin-gold/50 ${
+        checked ? 'border-green-500 bg-green-500' : 'border-admin-line-strong bg-admin-line'
+      }`}
+      title={checked ? 'Tắt logo mờ cho khung này' : 'Bật logo mờ cho khung này'}
+    >
+      <span className={`block h-5 w-5 rounded-full bg-white shadow transition-transform ${checked ? 'translate-x-[22px]' : 'translate-x-1'}`} />
+      <span className="sr-only">Bật hoặc tắt logo mờ cho khung media này</span>
+    </button>
+  </div>
+);
+
 export default function LocalTourAdminPage() {
   const [config, setConfig] = useState<LocalTourConfig>(DEFAULT_LOCAL_TOUR_CONFIG);
   const [loading, setLoading] = useState(true);
@@ -777,6 +799,21 @@ export default function LocalTourAdminPage() {
                   <p className="text-[11px] text-admin-text-faint">
                     Hỗ trợ định dạng JPG, PNG, WEBP. Hệ thống sẽ tự động áp dụng hiệu ứng phủ đen mờ và vignette sang trọng của Oria Spa.
                   </p>
+
+                  <div className="pt-2">
+                    <WatermarkToggle
+                      checked={activePackage.heroWatermarkEnabled !== false}
+                      onChange={(checked) => {
+                        updateConfig((prev) => {
+                          const nextPackages = [...prev.packages];
+                          const pkg = { ...nextPackages[activePackageTab] };
+                          pkg.heroWatermarkEnabled = checked;
+                          nextPackages[activePackageTab] = pkg;
+                          return { ...prev, packages: nextPackages };
+                        });
+                      }}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -976,6 +1013,23 @@ export default function LocalTourAdminPage() {
                   <p className="text-[11px] text-admin-text-faint">
                     Ví dụ: Ảnh Nhà Thờ Đức Bà &amp; Bưu Điện Thành Phố
                   </p>
+
+                  <div className="pt-2">
+                    <WatermarkToggle
+                      checked={activePackage.storyPhotosWatermark?.[0] !== false}
+                      onChange={(checked) => {
+                        updateConfig((prev) => {
+                          const nextPackages = [...prev.packages];
+                          const pkg = { ...nextPackages[activePackageTab] };
+                          const nextWm = [...(pkg.storyPhotosWatermark || [true, true])];
+                          nextWm[0] = checked;
+                          pkg.storyPhotosWatermark = nextWm;
+                          nextPackages[activePackageTab] = pkg;
+                          return { ...prev, packages: nextPackages };
+                        });
+                      }}
+                    />
+                  </div>
                 </div>
 
                 {/* Story Photo 2 */}
@@ -1075,6 +1129,23 @@ export default function LocalTourAdminPage() {
                   <p className="text-[11px] text-admin-text-faint">
                     Ví dụ: Ảnh Dinh Độc Lập &amp; Bảo Tàng Chứng Tích
                   </p>
+
+                  <div className="pt-2">
+                    <WatermarkToggle
+                      checked={activePackage.storyPhotosWatermark?.[1] !== false}
+                      onChange={(checked) => {
+                        updateConfig((prev) => {
+                          const nextPackages = [...prev.packages];
+                          const pkg = { ...nextPackages[activePackageTab] };
+                          const nextWm = [...(pkg.storyPhotosWatermark || [true, true])];
+                          nextWm[1] = checked;
+                          pkg.storyPhotosWatermark = nextWm;
+                          nextPackages[activePackageTab] = pkg;
+                          return { ...prev, packages: nextPackages };
+                        });
+                      }}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -1167,6 +1238,24 @@ export default function LocalTourAdminPage() {
                           className="w-full bg-admin-bg text-sm text-admin-text p-2.5 rounded-xl border border-admin-line focus:border-admin-gold outline-none"
                         />
                       </div>
+                    </div>
+
+                    {/* Watermark toggle for highlight card */}
+                    <div className="pt-1">
+                      <WatermarkToggle
+                        checked={hl.watermarkEnabled !== false}
+                        onChange={(checked) => {
+                          updateConfig((prev) => {
+                            const nextPackages = [...prev.packages];
+                            const pkg = { ...nextPackages[activePackageTab] };
+                            const nextHls = [...(pkg.highlights || [])];
+                            nextHls[hlIdx] = { ...nextHls[hlIdx], watermarkEnabled: checked };
+                            pkg.highlights = nextHls;
+                            nextPackages[activePackageTab] = pkg;
+                            return { ...prev, packages: nextPackages };
+                          });
+                        }}
+                      />
                     </div>
 
                     {/* Image Gallery & Actions */}
