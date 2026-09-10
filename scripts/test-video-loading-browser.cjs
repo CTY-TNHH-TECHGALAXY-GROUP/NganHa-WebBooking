@@ -11,6 +11,14 @@ const out = 'plans/video-loading-20260910';
       { name: 'video-error', path: '/', width: 1440, height: 900, fail: true },
     ]) {
       const page = await browser.newPage({ viewport: scenario });
+      await page.addInitScript(() => {
+        window.__heroFirstFrameMs = null;
+        document.addEventListener('playing', event => {
+          if (event.target.matches?.('#hero video') && window.__heroFirstFrameMs === null) {
+            window.__heroFirstFrameMs = performance.now();
+          }
+        }, true);
+      });
       const errors = [], media = [], config = [];
       page.on('pageerror', e => errors.push(e.message));
       page.on('request', r => {
@@ -22,6 +30,7 @@ const out = 'plans/video-loading-20260910';
       await page.waitForTimeout(18000);
       const state = await page.evaluate(() => ({
         title: document.title,
+        firstPlayingMs: window.__heroFirstFrameMs,
         loader: document.querySelector('.hero-video-loading-screen')?.textContent,
         videos: [...document.querySelectorAll('#hero video')].map(v => ({ src: v.currentSrc, readyState: v.readyState, time: v.currentTime, paused: v.paused })),
         overflow: document.documentElement.scrollWidth > innerWidth,

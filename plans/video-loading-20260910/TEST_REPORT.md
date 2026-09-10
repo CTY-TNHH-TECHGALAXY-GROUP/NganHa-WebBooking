@@ -27,3 +27,12 @@ Repeated requests to the configured URL were observed; request counts alone do n
 - Earlier TypeScript/build passes belong to the preceding implementation checkpoint, not a frozen snapshot of this concurrently edited workspace.
 
 No booking submission, production config change, commit, or push was performed during this test.
+
+## Final verification after Loading-only change
+
+- TypeScript noEmit passed.
+- Desktop and mobile playback, source isolation, absence of duplicate client config fetch, and recovery after blocked video all passed again.
+- Navigation-to-first-playing event: desktop 7687 ms; mobile viewport 3025 ms. These single-run dev-server measurements include server work and are not production benchmarks or decoded-frame measurements.
+- The normal loading UI now contains only Loading and the spinner. Error handling remains separate.
+- Compression/fast-start remains outstanding. No claim of fully optimized production speed is supported by these tests.
+- Concurrent commit ac48b92 already included the video implementation on master and vercel. This follow-up records the final browser verification.

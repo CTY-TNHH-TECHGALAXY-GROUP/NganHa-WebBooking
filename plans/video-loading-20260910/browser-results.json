@@ -11,11 +11,12 @@
     "config": [],
     "state": {
       "title": "Oria Spa in District 1, HCMC",
+      "firstPlayingMs": 7687,
       "videos": [
         {
           "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/homepage/0807(1).mp4",
           "readyState": 4,
-          "time": 16.736515,
+          "time": 15.733735,
           "paused": false
         }
       ],
@@ -35,11 +36,12 @@
     "config": [],
     "state": {
       "title": "Oria Spa in District 1, HCMC",
+      "firstPlayingMs": 3025.300000011921,
       "videos": [
         {
           "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/homepage/0807(1).mp4",
           "readyState": 4,
-          "time": 17.049747,
+          "time": 17.20828,
           "paused": false
         }
       ],
@@ -60,6 +62,7 @@
     "config": [],
     "state": {
       "title": "Oria Spa in District 1, HCMC",
+      "firstPlayingMs": null,
       "loader": "Video trang chu nay khong the tai.Thu lai",
       "videos": [
         {
