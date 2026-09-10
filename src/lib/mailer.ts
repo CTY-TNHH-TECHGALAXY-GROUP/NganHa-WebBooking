@@ -453,10 +453,37 @@ function renderPreferenceItemHtml(item: string): string {
   return `<div style="margin: 3px 0; font-size: 13px; line-height: 1.5; color: #f7ebc7;">• ${escapeHtml(text)}</div>`;
 }
 
-function renderPreferencesHtml(rawFocusNote?: string): string {
+const PREFERENCE_COPY: Record<string, string[]> = {
+  vi: ['Lực massage', 'Tập trung', 'Tránh', 'Nhẹ', 'Vừa', 'Mạnh', 'Đầu', 'Cổ', 'Vai', 'Lưng', 'Cánh tay', 'Đùi', 'Đầu gối', 'Bắp chân', 'Bàn chân', 'Toàn thân', 'Phòng riêng', 'Lưu ý mang thai', 'Lưu ý dị ứng hoặc da nhạy cảm'],
+  en: ['Pressure', 'Focus', 'Avoid', 'Light', 'Medium', 'Strong', 'Head', 'Neck', 'Shoulders', 'Back', 'Arms', 'Thighs', 'Knees', 'Calves', 'Feet', 'Full body', 'Private Room', 'Pregnancy note', 'Allergy or sensitive skin note'],
+  cn: ['按摩力度', '重点部位', '避开部位', '轻柔', '适中', '较强', '头部', '颈部', '肩部', '背部', '手臂', '大腿', '膝盖', '小腿', '足部', '全身', '包间', '孕期注意事项', '过敏或敏感肌肤注意事项'],
+  jp: ['マッサージの強さ', '重点部位', '避ける部位', '弱め', '普通', '強め', '頭', '首', '肩', '背中', '腕', '太もも', '膝', 'ふくらはぎ', '足', '全身', '個室', '妊娠に関する注意事項', 'アレルギー・敏感肌に関する注意事項'],
+  kr: ['마사지 강도', '집중 부위', '피할 부위', '약하게', '보통', '강하게', '머리', '목', '어깨', '등', '팔', '허벅지', '무릎', '종아리', '발', '전신', '프라이빗 룸', '임신 관련 주의사항', '알레르기 또는 민감성 피부 주의사항'],
+};
+
+function localizePreferences(raw: string, lang: string): string {
+  const copy = PREFERENCE_COPY[lang] || PREFERENCE_COPY.vi;
+  const bodyCodes = ['HEAD', 'NECK', 'SHOULDER', 'BACK', 'ARM', 'THIGH', 'KNEE', 'CALF', 'FOOT', 'WHOLE_BODY', 'FULL_BODY'];
+  return raw.split(/\r?\n/).map(line => {
+    const value = line.trim();
+    const tag = ['Private Room', 'Pregnancy note', 'Allergy or sensitive skin note'].indexOf(value);
+    if (tag >= 0) return copy[16 + tag];
+    const match = /^(Pressure|Focus|Avoid):\s*(.*)$/.exec(value);
+    if (!match) return line;
+    if (match[1] === 'Pressure') {
+      const index = ['light', 'medium', 'strong'].indexOf(match[2].toLowerCase());
+      return index < 0 ? line : `${copy[0]}: ${copy[3 + index]}`;
+    }
+    const parts = match[2].split(',').map(part => part.trim());
+    if (!parts.every(part => bodyCodes.includes(part))) return line;
+    return `${copy[match[1] === 'Focus' ? 1 : 2]}: ${parts.map(part => copy[6 + Math.min(bodyCodes.indexOf(part), 9)]).join(', ')}`;
+  }).join('\n');
+}
+
+function renderPreferencesHtml(rawFocusNote?: string, lang = 'vi'): string {
   if (!rawFocusNote) return '';
 
-  const lines = rawFocusNote
+  const lines = localizePreferences(rawFocusNote, lang)
     .split(/\r?\n/)
     .map(l => l.trim())
     .filter(Boolean);
@@ -488,9 +515,9 @@ function renderPreferencesHtml(rawFocusNote?: string): string {
   `.trim();
 }
 
-function formatPreferencesText(rawNote: string): string {
+function formatPreferencesText(rawNote: string, lang = 'vi'): string {
   if (!rawNote) return '';
-  const cleanedNote = rawNote.replace(/WHOLE_BODY|FULL_BODY/gi, 'Toàn thân');
+  const cleanedNote = localizePreferences(rawNote, lang);
   return cleanedNote
     .split(/\r?\n/)
     .map(line => {
@@ -723,7 +750,7 @@ export function generateBookingConfirmationHtml(
                   <div style="color: #D4AF37; font-size: 13px; font-weight: 600; margin-bottom: 8px;">
                     • ${t.preferencesLabel}:
                   </div>
-                  ${renderPreferencesHtml(focusAreaNote)}
+                  ${renderPreferencesHtml(focusAreaNote, lang)}
                 </td>
               </tr>
               ` : ''}
@@ -915,7 +942,7 @@ ${customerPhone ? `• ${t.phoneLabel}: ${customerPhone}` : ''}
 • ${t.therapistLabel}: ${therapistDisplay}
 • ${t.locationLabel}: ${branchName}
 ${totalAmount > 0 ? `• ${t.totalLabel}: ${formatVND(totalAmount)}` : ''}
-${focusAreaNote ? `\n• ${t.preferencesLabel}:\n${formatPreferencesText(focusAreaNote)}` : ''}
+${focusAreaNote ? `\n• ${t.preferencesLabel}:\n${formatPreferencesText(focusAreaNote, lang)}` : ''}
 ${notes ? `\n• ${t.notesLabel}: ${notes}` : ''}
 
 ${t.followUp}

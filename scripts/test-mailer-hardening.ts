@@ -79,6 +79,27 @@ async function run() {
   };
 
   try {
+    for (const [lang, pressure, medium, foot] of [
+      ['vi', 'Lực massage', 'Vừa', 'Bàn chân'],
+      ['en', 'Pressure', 'Medium', 'Feet'],
+      ['cn', '按摩力度', '适中', '足部'],
+      ['jp', 'マッサージの強さ', '普通', '足'],
+      ['kr', '마사지 강도', '보통', '발'],
+    ]) {
+      const sent: MailOptions[] = [];
+      await sendBookingConfirmationEmail({
+        ...payload, lang,
+        focusAreaNote: '[Massage]\nPressure: medium\nFocus: FOOT\nAvoid: THIGH\nPrivate Room\nPregnancy note\nAllergy or sensitive skin note\nMy own note <keep>',
+      }, { createTransporter: () => fakeTransporter(sent, 'localized') as any });
+      assert.equal(sent.length, 1);
+      assert.ok(String(sent[0].text).includes(`${pressure}: ${medium}`));
+      assert.ok(String(sent[0].html).includes(pressure));
+      assert.ok(String(sent[0].html).includes(medium));
+      assert.ok(String(sent[0].text).includes(foot));
+      assert.ok(String(sent[0].html).includes('My own note &lt;keep&gt;'));
+      assert.ok(String(sent[0].text).includes('My own note <keep>'));
+      assert.ok(!String(sent[0].text).includes('Pressure: medium'));
+    }
     const escapedHtml = generateBookingConfirmationHtml({
       ...payload,
       bookingId: 'WB-<script>alert(1)</script>',
