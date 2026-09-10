@@ -18,6 +18,8 @@ import {
   FileText,
   Plus,
   Trash2,
+  ClipboardPaste,
+  X,
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase';
 import {
@@ -710,6 +712,7 @@ export default function LocalTourAdminPage() {
                     <img
                       src={
                         activePackage.storyPhotos?.[0] ||
+                        DEFAULT_LOCAL_TOUR_CONFIG.packages[activePackageTab]?.storyPhotos?.[0] ||
                         'https://images.unsplash.com/photo-1563492065599-3520f775eeed?auto=format&fit=crop&w=1200&q=80'
                       }
                       alt="Story photo 1"
@@ -735,16 +738,58 @@ export default function LocalTourAdminPage() {
                       />
                     </label>
 
-                    <input
-                      type="text"
-                      value={
-                        activePackage.storyPhotos?.[0] ||
-                        'https://images.unsplash.com/photo-1563492065599-3520f775eeed?auto=format&fit=crop&w=1200&q=80'
-                      }
-                      onChange={(e) => updateStoryPhoto(activePackageTab, 0, e.target.value)}
-                      placeholder="URL ảnh khung 1..."
-                      className="w-full bg-admin-card text-xs text-admin-text p-2.5 rounded-xl border border-admin-line focus:border-admin-gold outline-none"
-                    />
+                    <div className="flex gap-2">
+                      <div className="relative flex-1">
+                        <input
+                          type="text"
+                          value={activePackage.storyPhotos?.[0] ?? ''}
+                          onFocus={(e) => e.target.select()}
+                          onChange={(e) => updateStoryPhoto(activePackageTab, 0, e.target.value)}
+                          onPaste={(e) => {
+                            const pasted = e.clipboardData.getData('text');
+                            if (pasted) {
+                              e.preventDefault();
+                              updateStoryPhoto(activePackageTab, 0, pasted.trim());
+                            }
+                          }}
+                          placeholder="Dán link URL ảnh mới vào đây..."
+                          className="w-full bg-admin-bg text-xs text-admin-text p-2.5 pr-8 rounded-xl border border-admin-line focus:border-admin-gold outline-none font-mono"
+                        />
+                        {activePackage.storyPhotos?.[0] ? (
+                          <button
+                            type="button"
+                            onClick={() => updateStoryPhoto(activePackageTab, 0, '')}
+                            className="absolute right-2 top-1/2 -translate-y-1/2 text-admin-text-faint hover:text-red-400 p-1"
+                            title="Xóa link ảnh để dán link mới"
+                          >
+                            <X size={14} />
+                          </button>
+                        ) : null}
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          try {
+                            const text = await navigator.clipboard.readText();
+                            if (text && text.trim()) {
+                              updateStoryPhoto(activePackageTab, 0, text.trim());
+                            } else {
+                              const url = prompt('Dán link URL ảnh vào đây:');
+                              if (url) updateStoryPhoto(activePackageTab, 0, url.trim());
+                            }
+                          } catch {
+                            const url = prompt('Dán link URL ảnh vào đây:');
+                            if (url) updateStoryPhoto(activePackageTab, 0, url.trim());
+                          }
+                        }}
+                        className="px-3.5 py-2 bg-admin-line hover:bg-admin-line-strong text-admin-text text-xs font-semibold rounded-xl transition-all shrink-0 flex items-center gap-1.5"
+                        title="Dán nhanh link từ bộ nhớ tạm"
+                      >
+                        <ClipboardPaste size={14} className="text-admin-gold" />
+                        <span>Dán link</span>
+                      </button>
+                    </div>
                   </div>
                   <p className="text-[11px] text-admin-text-faint">
                     Ví dụ: Ảnh Nhà Thờ Đức Bà &amp; Bưu Điện Thành Phố
@@ -766,6 +811,7 @@ export default function LocalTourAdminPage() {
                     <img
                       src={
                         activePackage.storyPhotos?.[1] ||
+                        DEFAULT_LOCAL_TOUR_CONFIG.packages[activePackageTab]?.storyPhotos?.[1] ||
                         'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=1200&q=80'
                       }
                       alt="Story photo 2"
@@ -791,16 +837,58 @@ export default function LocalTourAdminPage() {
                       />
                     </label>
 
-                    <input
-                      type="text"
-                      value={
-                        activePackage.storyPhotos?.[1] ||
-                        'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=1200&q=80'
-                      }
-                      onChange={(e) => updateStoryPhoto(activePackageTab, 1, e.target.value)}
-                      placeholder="URL ảnh khung 2..."
-                      className="w-full bg-admin-card text-xs text-admin-text p-2.5 rounded-xl border border-admin-line focus:border-admin-gold outline-none"
-                    />
+                    <div className="flex gap-2">
+                      <div className="relative flex-1">
+                        <input
+                          type="text"
+                          value={activePackage.storyPhotos?.[1] ?? ''}
+                          onFocus={(e) => e.target.select()}
+                          onChange={(e) => updateStoryPhoto(activePackageTab, 1, e.target.value)}
+                          onPaste={(e) => {
+                            const pasted = e.clipboardData.getData('text');
+                            if (pasted) {
+                              e.preventDefault();
+                              updateStoryPhoto(activePackageTab, 1, pasted.trim());
+                            }
+                          }}
+                          placeholder="Dán link URL ảnh mới vào đây..."
+                          className="w-full bg-admin-bg text-xs text-admin-text p-2.5 pr-8 rounded-xl border border-admin-line focus:border-admin-gold outline-none font-mono"
+                        />
+                        {activePackage.storyPhotos?.[1] ? (
+                          <button
+                            type="button"
+                            onClick={() => updateStoryPhoto(activePackageTab, 1, '')}
+                            className="absolute right-2 top-1/2 -translate-y-1/2 text-admin-text-faint hover:text-red-400 text-xs p-1"
+                            title="Xóa link ảnh để dán link mới"
+                          >
+                            <X size={14} />
+                          </button>
+                        ) : null}
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          try {
+                            const text = await navigator.clipboard.readText();
+                            if (text && text.trim()) {
+                              updateStoryPhoto(activePackageTab, 1, text.trim());
+                            } else {
+                              const url = prompt('Dán link URL ảnh vào đây:');
+                              if (url) updateStoryPhoto(activePackageTab, 1, url.trim());
+                            }
+                          } catch {
+                            const url = prompt('Dán link URL ảnh vào đây:');
+                            if (url) updateStoryPhoto(activePackageTab, 1, url.trim());
+                          }
+                        }}
+                        className="px-3.5 py-2 bg-admin-line hover:bg-admin-line-strong text-admin-text text-xs font-semibold rounded-xl transition-all shrink-0 flex items-center gap-1.5"
+                        title="Dán nhanh link từ bộ nhớ tạm"
+                      >
+                        <ClipboardPaste size={14} className="text-admin-gold" />
+                        <span>Dán link</span>
+                      </button>
+                    </div>
                   </div>
                   <p className="text-[11px] text-admin-text-faint">
                     Ví dụ: Ảnh Dinh Độc Lập &amp; Bảo Tàng Chứng Tích
