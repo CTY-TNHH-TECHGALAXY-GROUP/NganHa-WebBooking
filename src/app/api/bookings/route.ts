@@ -591,13 +591,23 @@ function localizedServices(pricing: CanonicalPricing, booking: NormalizedBooking
 function buildNotes(booking: NormalizedBooking, pricing: CanonicalPricing): { notes: string | null; focusAreaNote: string | null } {
   const notes: string[] = [];
   if (booking.guests > 1) notes.push(`Guests: ${booking.guests}`);
-  if (booking.staffGender !== 'any') notes.push(`Therapist: ${booking.staffGender}`);
   if (booking.note) notes.push(booking.note);
   const preferences = pricing.items.flatMap((item) => {
+    if (item.id === PRIVATE_ROOM_SERVICE_ID) return [];
     const output: string[] = [];
     if (item.options.addons?.privateRoom) output.push('Private Room');
-    if (item.options.bodyParts?.focus.length) output.push(`Focus: ${item.options.bodyParts.focus.join(', ')}`);
-    if (item.options.bodyParts?.avoid.length) output.push(`Avoid: ${item.options.bodyParts.avoid.join(', ')}`);
+    if (item.options.therapist) {
+      const rawTherapist = String(item.options.therapist).toLowerCase().trim();
+      if (rawTherapist === 'female' || rawTherapist === 'nữ') {
+        output.push('Therapist: female');
+      } else if (rawTherapist === 'male' || rawTherapist === 'nam') {
+        output.push('Therapist: male');
+      } else if (rawTherapist === 'random' || rawTherapist === 'any' || rawTherapist === 'ngẫu nhiên') {
+        output.push('Therapist: any');
+      }
+    }
+    if (item.options.bodyParts?.focus?.length) output.push(`Focus: ${item.options.bodyParts.focus.join(', ')}`);
+    if (item.options.bodyParts?.avoid?.length) output.push(`Avoid: ${item.options.bodyParts.avoid.join(', ')}`);
     if (item.options.strength) output.push(`Pressure: ${item.options.strength}`);
     if (item.options.notes?.tag0) output.push('Pregnancy note');
     if (item.options.notes?.tag1) output.push('Allergy or sensitive skin note');

@@ -515,7 +515,7 @@ function formatVND(amount: number) {
   return new Intl.NumberFormat('vi-VN').format(amount) + ' VND';
 }
 
-function renderPreferenceItemHtml(item: string): string {
+function renderPreferenceItemHtml(item: string, isFirst = false): string {
   let text = item.trim();
   if (!text) return '';
 
@@ -523,7 +523,9 @@ function renderPreferenceItemHtml(item: string): string {
 
   // Header like [Service Name]
   if (/^\[.*\]$/.test(text)) {
-    return `<div style="font-weight: 600; color: #D4AF37; margin-top: 8px; margin-bottom: 4px; font-size: 13px; letter-spacing: 0.3px;">${escapeHtml(text)}</div>`;
+    const cleanHeader = text.replace(/^\[\s*|\s*\]$/g, '').trim();
+    const topMargin = isFirst ? '2px' : '12px';
+    return `<div style="font-weight: 600; color: #D4AF37; margin-top: ${topMargin}; margin-bottom: 4px; font-size: 13.5px; letter-spacing: 0.3px;">${escapeHtml(cleanHeader)}</div>`;
   }
 
   // Tag badge
@@ -563,21 +565,34 @@ const PREFERENCE_COPY: Record<string, string[]> = {
 };
 
 function localizePreferences(raw: string, lang: string): string {
-  const copy = PREFERENCE_COPY[lang] || PREFERENCE_COPY.vi;
+  const resolvedLang = I18N_TEMPLATE_1[lang] ? lang : 'vi';
+  const t = I18N_TEMPLATE_1[resolvedLang];
+  const copy = PREFERENCE_COPY[resolvedLang] || PREFERENCE_COPY.vi;
   const bodyCodes = ['HEAD', 'NECK', 'SHOULDER', 'BACK', 'ARM', 'THIGH', 'KNEE', 'CALF', 'FOOT', 'WHOLE_BODY', 'FULL_BODY'];
   return raw.split(/\r?\n/).map(line => {
     const value = line.trim();
     const tag = ['Private Room', 'Pregnancy note', 'Allergy or sensitive skin note'].indexOf(value);
     if (tag >= 0) return copy[16 + tag];
-    const match = /^(Pressure|Focus|Avoid):\s*(.*)$/.exec(value);
+    const match = /^(Pressure|Focus|Avoid|Therapist):\s*(.*)$/i.exec(value);
     if (!match) return line;
-    if (match[1] === 'Pressure') {
+    const key = match[1].toLowerCase();
+    if (key === 'pressure') {
       const index = ['light', 'medium', 'strong'].indexOf(match[2].toLowerCase());
       return index < 0 ? line : `${copy[0]}: ${copy[3 + index]}`;
     }
+    if (key === 'therapist') {
+      const rawVal = match[2].toLowerCase().trim();
+      let label = t.therapistMap.any;
+      if (rawVal.includes('female') || rawVal.includes('nữ') || rawVal === 'female') {
+        label = t.therapistMap.female;
+      } else if (rawVal.includes('male') || rawVal.includes('nam') || rawVal === 'male') {
+        label = t.therapistMap.male;
+      }
+      return `${t.therapistLabel}: ${label}`;
+    }
     const parts = match[2].split(',').map(part => part.trim());
     if (!parts.every(part => bodyCodes.includes(part))) return line;
-    return `${copy[match[1] === 'Focus' ? 1 : 2]}: ${parts.map(part => copy[6 + Math.min(bodyCodes.indexOf(part), 9)]).join(', ')}`;
+    return `${copy[key === 'focus' ? 1 : 2]}: ${parts.map(part => copy[6 + Math.min(bodyCodes.indexOf(part), 9)]).join(', ')}`;
   }).join('\n');
 }
 
@@ -590,6 +605,7 @@ function renderPreferencesHtml(rawFocusNote?: string, lang = 'vi'): string {
     .filter(Boolean);
 
   let itemsHtml = '';
+  let isFirstHeader = true;
   lines.forEach(line => {
     if (line.includes(' | ')) {
       let prefix = '';
@@ -598,14 +614,24 @@ function renderPreferencesHtml(rawFocusNote?: string, lang = 'vi'): string {
       if (firstColon > 0 && firstColon < 40 && !line.slice(0, firstColon).toLowerCase().includes('tập trung') && !line.slice(0, firstColon).toLowerCase().includes('focus')) {
         prefix = line.slice(0, firstColon).trim();
         remaining = line.slice(firstColon + 1).trim();
-        itemsHtml += `<div style="font-weight: 600; color: #D4AF37; margin-top: 6px; margin-bottom: 4px; font-size: 13px;">${escapeHtml(prefix)}</div>`;
+        const cleanPrefix = prefix.replace(/^\[\s*|\s*\]$/g, '').trim();
+        const topMargin = isFirstHeader ? '2px' : '12px';
+        isFirstHeader = false;
+        itemsHtml += `<div style="font-weight: 600; color: #D4AF37; margin-top: ${topMargin}; margin-bottom: 4px; font-size: 13.5px; letter-spacing: 0.3px;">${escapeHtml(cleanPrefix)}</div>`;
       }
       const parts = remaining.split(' | ').map(p => p.trim()).filter(Boolean);
       parts.forEach(part => {
-        itemsHtml += renderPreferenceItemHtml(part);
+        itemsHtml += renderPreferenceItemHtml(part, isFirstHeader);
       });
     } else {
-      itemsHtml += renderPreferenceItemHtml(line);
+      if (/^\[.*\]$/.test(line)) {
+        const topMargin = isFirstHeader ? '2px' : '12px';
+        isFirstHeader = false;
+        const cleanHeader = line.replace(/^\[\s*|\s*\]$/g, '').trim();
+        itemsHtml += `<div style="font-weight: 600; color: #D4AF37; margin-top: ${topMargin}; margin-bottom: 4px; font-size: 13.5px; letter-spacing: 0.3px;">${escapeHtml(cleanHeader)}</div>`;
+      } else {
+        itemsHtml += renderPreferenceItemHtml(line, isFirstHeader);
+      }
     }
   });
 
@@ -622,11 +648,17 @@ function formatPreferencesText(rawNote: string, lang = 'vi'): string {
   return cleanedNote
     .split(/\r?\n/)
     .map(line => {
-      if (line.includes(' | ')) {
-        return line.split(' | ').map(p => `  - ${p.replace(/^[•\-\*]\s*/, '').trim()}`).join('\n');
+      const trimmed = line.trim();
+      if (!trimmed) return '';
+      if (/^\[.*\]$/.test(trimmed)) {
+        return `\n  ${trimmed.replace(/^\[\s*|\s*\]$/g, '').trim()}:`;
       }
-      return line.startsWith('•') || line.startsWith('-') ? `  ${line}` : `  - ${line}`;
+      if (trimmed.includes(' | ')) {
+        return trimmed.split(' | ').map(p => `  - ${p.replace(/^[•\-\*]\s*/, '').trim()}`).join('\n');
+      }
+      return trimmed.startsWith('•') || trimmed.startsWith('-') ? `  ${trimmed}` : `  - ${trimmed}`;
     })
+    .filter(Boolean)
     .join('\n');
 }
 
@@ -669,8 +701,15 @@ export function generateBookingConfirmationHtml(
   const t = I18N_TEMPLATE_1[resolvedLang];
   const phoneDisplay = '+84 964 090 277';
 
-  // Calculate total duration & construct service string
-  const serviceNames = services.map(s => escapeHtml(s.name || 'Oria Spa Treatment')).join(', ');
+  // Calculate total duration & construct service items with quantity
+  const serviceItemsHtml = services.length > 0
+    ? services.map(s => {
+        const name = escapeHtml(s.name || 'Oria Spa Treatment');
+        const qty = s.quantity && Number(s.quantity) > 0 ? Number(s.quantity) : 1;
+        return `<div style="margin: 2px 0;">${name} <span style="color: #D4AF37; font-weight: 600;">x ${qty}</span></div>`;
+      }).join('')
+    : escapeHtml(services[0]?.name || 'Oria Spa Treatment');
+
   const totalDuration = services.reduce((acc, s) => acc + (Number(s.duration) || 0), 0);
   const durationDisplay = totalDuration > 0
     ? t.durationFormat(totalDuration)
@@ -682,26 +721,12 @@ export function generateBookingConfirmationHtml(
   const guestCount = guests && Number(guests) > 0 ? Number(guests) : 1;
   const guestsDisplay = t.guestsSuffix(guestCount);
 
-  // Resolve therapist strictly in single language (no bilingual tags)
-  const rawTherapist = (therapist || '').toLowerCase().trim();
-  let therapistDisplay = '';
-  if (rawTherapist.includes('female') || rawTherapist.includes('nữ') || rawTherapist === 'female') {
-    therapistDisplay = t.therapistMap.female;
-  } else if (rawTherapist.includes('male') || rawTherapist.includes('nam') || rawTherapist === 'male') {
-    therapistDisplay = t.therapistMap.male;
-  } else if (rawTherapist && rawTherapist !== 'any' && rawTherapist !== 'ngẫu nhiên' && rawTherapist !== 'random') {
-    therapistDisplay = therapist!;
-  } else {
-    therapistDisplay = t.therapistMap.any;
-  }
-
   const safeCustomerName = escapeHtml(customerName);
   const safeCustomerPhone = escapeHtml(customerPhone);
   const safePhoneHref = escapeHtml(String(customerPhone ?? '').replace(/[^+\d]/g, ''));
   const safeTime = escapeHtml(time);
   const safeBranchName = escapeHtml(branchName);
   const safeBookingId = escapeHtml(bookingId);
-  const safeTherapistDisplay = escapeHtml(therapistDisplay);
   const safeNotes = escapeHtml(notes);
 
   const logoUrl = 'https://oria-spa.vercel.app/images/oria-logo-email.png';
@@ -753,11 +778,11 @@ export function generateBookingConfirmationHtml(
             
             <table width="100%" cellpadding="0" cellspacing="0" style="font-size: 14px; line-height: 1.7;">
               <tr>
-                <td style="padding: 5px 0; color: rgba(247, 235, 199, 0.6); width: 38%; min-width: 110px; vertical-align: top;">
+                <td style="padding: 6px 0; color: rgba(247, 235, 199, 0.6); width: 38%; min-width: 110px; vertical-align: top;">
                   • <strong>${t.serviceLabel}:</strong>
                 </td>
-                <td style="padding: 5px 0; color: #ffffff; font-weight: 500; vertical-align: top;">
-                  ${serviceNames}
+                <td style="padding: 6px 0; color: #ffffff; font-weight: 500; vertical-align: top;">
+                  ${serviceItemsHtml}
                 </td>
               </tr>
               <tr>
@@ -790,14 +815,6 @@ export function generateBookingConfirmationHtml(
                 </td>
                 <td style="padding: 5px 0; color: #ffffff; font-weight: 500; vertical-align: top;">
                   ${guestsDisplay}
-                </td>
-              </tr>
-              <tr>
-                <td style="padding: 5px 0; color: rgba(247, 235, 199, 0.6); vertical-align: top;">
-                  • <strong>${t.therapistLabel}:</strong>
-                </td>
-                <td style="padding: 5px 0; color: #ffffff; font-weight: 500; vertical-align: top;">
-                  ${safeTherapistDisplay}
                 </td>
               </tr>
               <tr>
@@ -1005,8 +1022,14 @@ export async function sendBookingConfirmationEmail(
     const replyTo = process.env.SMTP_REPLY_TO || fromEmail;
     const phoneDisplay = '+84 964 090 277';
 
-    // Calculate total duration & construct service string
-    const serviceNames = services.map(s => s.name || 'Oria Spa Treatment').join(', ');
+    // Construct service items with quantity
+    const serviceItemsText = services.length > 0
+      ? services.map(s => {
+          const name = s.name || 'Oria Spa Treatment';
+          const qty = s.quantity && Number(s.quantity) > 0 ? Number(s.quantity) : 1;
+          return `  • ${name} x ${qty}`;
+        }).join('\n')
+      : `  • ${services[0]?.name || 'Oria Spa Treatment'}`;
     const totalDuration = services.reduce((acc, s) => acc + (Number(s.duration) || 0), 0);
     const durationDisplay = totalDuration > 0
       ? t.durationFormat(totalDuration)
@@ -1018,19 +1041,6 @@ export async function sendBookingConfirmationEmail(
     const guestCount = guests && Number(guests) > 0 ? Number(guests) : 1;
     const guestsDisplay = t.guestsSuffix(guestCount);
 
-    // Resolve therapist strictly in single language (no bilingual tags)
-    const rawTherapist = (therapist || '').toLowerCase().trim();
-    let therapistDisplay = '';
-    if (rawTherapist.includes('female') || rawTherapist.includes('nữ') || rawTherapist === 'female') {
-      therapistDisplay = t.therapistMap.female;
-    } else if (rawTherapist.includes('male') || rawTherapist.includes('nam') || rawTherapist === 'male') {
-      therapistDisplay = t.therapistMap.male;
-    } else if (rawTherapist && rawTherapist !== 'any' && rawTherapist !== 'ngẫu nhiên' && rawTherapist !== 'random') {
-      therapistDisplay = therapist!;
-    } else {
-      therapistDisplay = t.therapistMap.any;
-    }
-
     // Plain Text Version (Exact structure matching Template 1 in PDF with guests & notes)
     const plainText = `
 ${t.greeting(customerName)}
@@ -1041,13 +1051,12 @@ ${t.heading}
 
 • ${t.bookingCodeLabel}: ${bookingId}
 • ${t.customerLabel}: ${customerName}
-${customerPhone ? `• ${t.phoneLabel}: ${customerPhone}` : ''}
-• ${t.serviceLabel}: ${serviceNames}
+${customerPhone ? `• ${t.phoneLabel}: ${customerPhone}\n` : ''}• ${t.serviceLabel}:
+${serviceItemsText}
 • ${t.dateLabel}: ${formattedDate}
 • ${t.timeLabel}: ${time}
 • ${t.durationLabel}: ${durationDisplay}
 • ${t.guestsLabel}: ${guestsDisplay}
-• ${t.therapistLabel}: ${therapistDisplay}
 • ${t.locationLabel}: ${branchName}
 ${totalAmount > 0 ? `• ${t.totalLabel}: ${formatVND(totalAmount)}` : ''}
 ${focusAreaNote ? `\n• ${t.preferencesLabel}:\n${formatPreferencesText(focusAreaNote, lang)}` : ''}
