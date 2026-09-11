@@ -9,7 +9,7 @@ interface PreferencesProps {
     showGender: boolean;
     values: {
         strength?: 'light' | 'medium' | 'strong';
-        therapist: 'male' | 'female' | 'random';
+        therapist?: 'male' | 'female' | 'random';
     };
     onChange: (key: string, value: any) => void;
 }
@@ -91,4 +91,3 @@ const Preferences: React.FC<PreferencesProps> = ({ lang, showStrength, showGende
 };
 
 export default Preferences;
-

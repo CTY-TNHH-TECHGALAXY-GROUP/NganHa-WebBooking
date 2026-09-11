@@ -6,12 +6,13 @@ export type BodyPartKey = 'HEAD' | 'NECK' | 'SHOULDER' | 'ARM' | 'BACK' | 'THIGH
 export interface ServiceData {
     ID: string;
     NAMES: Record<string, string>; // { EN: "...", VN: "..." }
-    FOCUS_POSITION?: Record<BodyPartKey, boolean>; // Map<Part, boolean>
+    FOCUS_POSITION?: Record<BodyPartKey, boolean> | string; // Map<Part, boolean>; legacy JSON strings accepted
     TAGS?: Array<Record<string, string>>; // List các tag [0: Pregnant, 1: Allergy]
     HINT?: Record<string, string>; // Placeholder cho Other Notes
     PRICE_VN?: number;
     PRICE_USD?: number;
     // UI Configuration Flags (Task E2+E3)
+    SHOW_CUSTOM_FOR_YOU?: boolean;
     SHOW_NOTES?: boolean;           // Show/hide Notes section
     SHOW_PREFERENCES?: boolean;     // Legacy
     SHOW_GENDER?: boolean;
@@ -31,7 +32,7 @@ export interface CustomPreferences {
         content: string; // Nội dung user gõ
     };
     strength?: 'light' | 'medium' | 'strong';
-    therapist: 'male' | 'female' | 'random';
+    therapist?: 'male' | 'female' | 'random';
     addons?: {
         privateRoom?: boolean;
     };

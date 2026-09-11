@@ -26,13 +26,12 @@ export default function Invoice({ cart, lang, dict, currency = 'VND', onCustomRe
                 {/* List Items */}
                 <div className="space-y-8 mb-8">
                     {cart.map((item, idx) => {
-                        // 1. Determine effective values (Defaults if missing)
-                        const strength = item.options?.strength || 'medium';
-                        const therapist = item.options?.therapist || 'random';
+                        const strength = item.options?.strength;
+                        const therapist = item.options?.therapist;
 
-                        // 2. Strict Check for "Customized" status
-                        const isStrengthCustom = strength !== 'medium';
-                        const isTherapistCustom = therapist !== 'random';
+                        // Never display a preference that is absent from the canonical cart.
+                        const isStrengthCustom = Boolean(strength);
+                        const isTherapistCustom = Boolean(therapist);
                         const isBodyCustom = item.options?.bodyParts && (item.options.bodyParts.focus.length > 0 || item.options.bodyParts.avoid.length > 0);
                         const isNotesCustom = item.options?.notes && (item.options.notes.tag0 || item.options.notes.tag1 || item.options.notes.content);
 
@@ -97,7 +96,7 @@ export default function Invoice({ cart, lang, dict, currency = 'VND', onCustomRe
                                     )}
 
                                     {/* Strength */}
-                                    <div className="flex justify-between items-center">
+                                    {strength && <div className="flex justify-between items-center">
                                         <div className="flex gap-2 items-center">
                                             <div className="w-5 flex justify-center"><Hand size={16} className="text-gray-400" /></div>
                                             <span className="font-medium text-gray-400">{dict.checkout.strength_label}</span>
@@ -105,10 +104,10 @@ export default function Invoice({ cart, lang, dict, currency = 'VND', onCustomRe
                                         <span className={`font-bold capitalize ${getStrengthColor(strength)}`}>
                                             {dict.options?.strength_levels?.[strength?.toLowerCase()] || strength}
                                         </span>
-                                    </div>
+                                    </div>}
 
                                     {/* Therapist */}
-                                    <div className="flex justify-between items-center">
+                                    {therapist && <div className="flex justify-between items-center">
                                         <div className="flex gap-2 items-center">
                                             <div className="w-5 flex justify-center"><User size={16} className="text-gray-400" /></div>
                                             <span className="font-medium text-gray-400">{dict.checkout.therapist_label}</span>
@@ -116,7 +115,7 @@ export default function Invoice({ cart, lang, dict, currency = 'VND', onCustomRe
                                         <span className={`font-bold capitalize ${getTherapistColor(therapist)}`}>
                                             {dict.options?.therapist_options?.[therapist?.toLowerCase()] || therapist}
                                         </span>
-                                    </div>
+                                    </div>}
 
                                     {/* Avoid */}
                                     {item.options?.bodyParts?.avoid && item.options.bodyParts.avoid.length > 0 && (

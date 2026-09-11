@@ -5,6 +5,7 @@ import {
   MAX_ITEMS,
   PRIVATE_ROOM_SERVICE_ID,
   buildCanonicalPricing,
+  canonicalizeOptionsForService,
   cartIntentFingerprint,
   catalogDigest,
   createQuote,
@@ -41,7 +42,7 @@ export async function POST(request: Request) {
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) return errorResponse('BOOKING_TEMPORARILY_UNAVAILABLE', 'Pricing is temporarily unavailable. Please try again later.', 503);
 
   const fieldErrors: { field: string; code: string; message: string }[] = [];
-  const normalized: NormalizedService[] = [];
+  const normalized: { item: NormalizedService; raw: any; index: number }[] = [];
   for (let index = 0; index < body.items.length; index += 1) {
     const item = body.items[index];
     const field = `items[${index}]`;
@@ -54,44 +55,62 @@ export async function POST(request: Request) {
     const optionResult = normalizeOptions(item.options, `${field}.options`);
     fieldErrors.push(...optionResult.errors);
     if (optionResult.errors.length || !optionResult.value) continue;
-    normalized.push({ id: item.id.trim(), quantity, options: optionResult.value });
+    normalized.push({ item: { id: item.id.trim(), quantity, options: optionResult.value }, raw: item, index });
   }
   if (fieldErrors.length) return errorResponse('VALIDATION_ERROR', 'Please correct the cart fields.', 400, fieldErrors);
 
-  const ids = Array.from(new Set([...normalized.map((item) => item.id), PRIVATE_ROOM_SERVICE_ID]));
+  const ids = Array.from(new Set([...normalized.map(({ item }) => item.id), PRIVATE_ROOM_SERVICE_ID]));
   const supabase = getSupabaseAdmin();
-  const { data: rows, error: catalogError } = await supabase.from('Services').select('id, nameVN, nameEN, nameCN, nameJP, nameKR, priceVND, priceUSD, duration, isActive, showPreferences, showNotes, showGender, showStrength, showFocus, focusConfig').in('id', ids);
+  const { data: rows, error: catalogError } = await supabase.from('Services').select('id, nameVN, nameEN, nameCN, nameJP, nameKR, priceVND, priceUSD, duration, isActive, showCustomForYou, showPreferences, showNotes, showGender, showStrength, showFocus, focusConfig').in('id', ids);
   if (catalogError) {
     console.error('[API Reprice] Catalog read failed:', catalogError.code || 'unknown');
     return errorResponse('BOOKING_TEMPORARILY_UNAVAILABLE', 'Pricing is temporarily unavailable. Please try again later.', schemaUnavailable(catalogError) ? 503 : 503);
   }
   const catalog = (rows || []) as CatalogService[];
   const map = new Map(catalog.map((service) => [service.id, service]));
-  const unavailableItems: { id: string; cartId?: string; reason: string }[] = [];
-  const validItems = normalized.filter((item, index) => {
+  const unavailableItems: { id: string; cartId?: string; reason: string; fieldErrors?: ReturnType<typeof validateCatalogOptionsForReprice> }[] = [];
+  const validEntries: { item: NormalizedService; raw: any; index: number }[] = [];
+  let optionsChanged = false;
+  normalized.forEach((entry) => {
+    const { item, raw, index } = entry;
     const service = map.get(item.id);
-    if (!service) { unavailableItems.push({ id: item.id, cartId: body.items[index]?.cartId, reason: 'SERVICE_NOT_FOUND' }); return false; }
-    if (service.isActive !== true) { unavailableItems.push({ id: item.id, cartId: body.items[index]?.cartId, reason: 'SERVICE_INACTIVE' }); return false; }
-    const errors = validateCatalogOptionsForReprice(item, service, index);
-    if (errors.length) { unavailableItems.push({ id: item.id, cartId: body.items[index]?.cartId, reason: errors[0].code }); return false; }
-    if (item.options.addons?.privateRoom === true && (!map.get(PRIVATE_ROOM_SERVICE_ID) || map.get(PRIVATE_ROOM_SERVICE_ID)?.isActive !== true)) { unavailableItems.push({ id: item.id, cartId: body.items[index]?.cartId, reason: 'ADDON_UNAVAILABLE' }); return false; }
-    return true;
+    if (!service) {
+      unavailableItems.push({ id: item.id, cartId: raw.cartId, reason: 'SERVICE_NOT_FOUND', fieldErrors: [{ field: `items[${index}].id`, code: 'SERVICE_NOT_FOUND', message: 'Selected service was not found.' }] });
+      return;
+    }
+    if (service.isActive !== true) {
+      unavailableItems.push({ id: item.id, cartId: raw.cartId, reason: 'SERVICE_INACTIVE', fieldErrors: [{ field: `items[${index}].id`, code: 'SERVICE_INACTIVE', message: 'Selected service is inactive.' }] });
+      return;
+    }
+
+    const canonical = canonicalizeOptionsForService(item.options, service);
+    const errors = validateCatalogOptionsForReprice({ ...item, options: canonical.options }, service, index);
+    if (errors.length) {
+      unavailableItems.push({ id: item.id, cartId: raw.cartId, reason: errors[0].code, fieldErrors: errors });
+      return;
+    }
+    if (canonical.changed) optionsChanged = true;
+    if (canonical.options.addons?.privateRoom === true && (!map.get(PRIVATE_ROOM_SERVICE_ID) || map.get(PRIVATE_ROOM_SERVICE_ID)?.isActive !== true)) {
+      unavailableItems.push({ id: item.id, cartId: raw.cartId, reason: 'ADDON_UNAVAILABLE', fieldErrors: [{ field: `items[${index}].options.addons.privateRoom`, code: 'ADDON_UNAVAILABLE', message: 'The private-room add-on is unavailable.' }] });
+      return;
+    }
+    validEntries.push({ ...entry, item: { ...item, options: canonical.options } });
   });
-  if (unavailableItems.length) return NextResponse.json({ valid: false, success: false, code: 'CART_REQUIRES_REVIEW', error: 'Please review the selected services and options.', hasPriceChanged: true, unavailableItems, items: [], totalAmountVND: 0, totalAmountUSD: 0 }, { status: 409 });
+  if (unavailableItems.length) return NextResponse.json({ valid: false, success: false, code: 'CART_REQUIRES_REVIEW', error: 'Please review the selected services and options.', hasPriceChanged: false, optionsChanged: false, unavailableItems, items: [], totalAmountVND: 0, totalAmountUSD: 0 }, { status: 409 });
 
   let pricing;
-  try { pricing = buildCanonicalPricing(validItems, catalog, map.get(PRIVATE_ROOM_SERVICE_ID) || { id: PRIVATE_ROOM_SERVICE_ID, priceVND: null, priceUSD: null, duration: 0, isActive: false }); }
+  try { pricing = buildCanonicalPricing(validEntries.map(({ item }) => item), catalog, map.get(PRIVATE_ROOM_SERVICE_ID) || { id: PRIVATE_ROOM_SERVICE_ID, priceVND: null, priceUSD: null, duration: 0, isActive: false }); }
   catch { return errorResponse('BOOKING_TEMPORARILY_UNAVAILABLE', 'Pricing is temporarily unavailable. Please try again later.', 503); }
   let hasPriceChanged = false;
   const repricedItems = pricing.items.map((item, index) => {
-    const original = body.items[index];
+    const original = validEntries[index].raw;
     if (original.priceVND !== undefined && (typeof original.priceVND !== 'number' || original.priceVND !== item.priceVND)) hasPriceChanged = true;
     if (original.priceUSD !== undefined && (typeof original.priceUSD !== 'number' || original.priceUSD !== item.priceUSD)) hasPriceChanged = true;
     if (original.duration !== undefined && (typeof original.duration !== 'number' || original.duration !== item.duration)) hasPriceChanged = true;
     return { id: item.id, cartId: original.cartId, quantity: item.quantity, basePriceVND: item.basePriceVND, basePriceUSD: item.basePriceUSD, priceVND: item.priceVND, priceUSD: item.priceUSD, duration: item.duration, names: { vi: item.catalog.nameVN || '', en: item.catalog.nameEN || '', cn: item.catalog.nameCN || '', jp: item.catalog.nameJP || '', kr: item.catalog.nameKR || '' }, hasPrivateRoom: item.hasPrivateRoom, options: item.options };
   });
-  const cartFingerprint = cartIntentFingerprint(normalized);
-  return NextResponse.json({ valid: true, success: true, hasPriceChanged, unavailableItems: [], totalAmountVND: pricing.totalAmountVND, totalAmountUSD: pricing.totalAmountUSD, items: repricedItems, quote: createQuote(cartFingerprint, pricing) });
+  const cartFingerprint = cartIntentFingerprint(validEntries.map(({ item }) => item));
+  return NextResponse.json({ valid: true, success: true, hasPriceChanged, optionsChanged, unavailableItems: [], totalAmountVND: pricing.totalAmountVND, totalAmountUSD: pricing.totalAmountUSD, items: repricedItems, quote: createQuote(cartFingerprint, pricing) });
 }
 
 function validateCatalogOptionsForReprice(item: NormalizedService, service: CatalogService, index: number) {

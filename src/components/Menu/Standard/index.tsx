@@ -332,6 +332,7 @@ export default function StandardMenu({ lang, onBack, onCheckout }: StandardMenuP
                                 PRICE_VN: sheet.data.priceVND,
                                 PRICE_USD: sheet.data.priceUSD,
                                 // Task E3: Pass visibility flags
+                                SHOW_CUSTOM_FOR_YOU: sheet.data.SHOW_CUSTOM_FOR_YOU,
                                 SHOW_NOTES: sheet.data.SHOW_NOTES,
                                 SHOW_PREFERENCES: sheet.data.SHOW_PREFERENCES,
                                 SHOW_GENDER: sheet.data.SHOW_GENDER,

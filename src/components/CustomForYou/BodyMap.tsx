@@ -3,6 +3,7 @@ import { Check, X } from 'lucide-react';
 import { BodyPartKey, LanguageCode, MultiLangText, ServiceData } from './types';
 import { getText } from './utils';
 import { getDictionary } from '@/lib/dictionaries';
+import { parseAllowedBodyAreas } from '@/lib/booking/capabilities';
 
 // ============================================================================
 // 🔧 UI CONFIGURATION — Chỉnh màu sắc tại đây
@@ -115,11 +116,9 @@ const renderShape = (
 
 const BodyMap: React.FC<BodyMapProps> = ({ focus, avoid, lang, serviceData, onToggle }) => {
     const dict = getDictionary(lang);
+    const allowedBodyAreas = new Set(parseAllowedBodyAreas(serviceData.FOCUS_POSITION));
 
-    const availableParts = ALL_BODY_PARTS.filter(part => {
-        if (!serviceData.FOCUS_POSITION) return true;
-        return serviceData.FOCUS_POSITION[part.key] === true;
-    });
+    const availableParts = ALL_BODY_PARTS.filter(part => allowedBodyAreas.has(part.key));
 
     const isFullBody = availableParts.length > 0 && (
         focus.length >= availableParts.length ||

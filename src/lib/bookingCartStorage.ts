@@ -294,17 +294,18 @@ export const clearBookingCart = () => {
 /**
  * Đồng bộ & kiểm định lại giỏ hàng với Server Canonical Pricing (/api/bookings/reprice)
  */
-export const revalidateCartWithServer = async (): Promise<{
+export const revalidateCartWithServer = async (sourceCart?: CartItem[]): Promise<{
   valid: boolean;
   hasPriceChanged: boolean;
+  optionsChanged: boolean;
   unavailableItems: { id: string; cartId?: string; reason: string }[];
   updatedCart: CartItem[];
   quote?: string;
   error?: string;
 }> => {
-  const currentCart = readBookingCart();
+  const currentCart = sourceCart || readBookingCart();
   if (currentCart.length === 0) {
-    return { valid: true, hasPriceChanged: false, unavailableItems: [], updatedCart: [] };
+    return { valid: true, hasPriceChanged: false, optionsChanged: false, unavailableItems: [], updatedCart: [] };
   }
 
   try {
@@ -325,12 +326,12 @@ export const revalidateCartWithServer = async (): Promise<{
 
     if (!res.ok) {
       const failure = await res.json().catch(() => ({}));
-      return { valid: false, hasPriceChanged: false, unavailableItems: failure.unavailableItems || [], updatedCart: currentCart, error: failure.code || 'BOOKING_TEMPORARILY_UNAVAILABLE' };
+      return { valid: false, hasPriceChanged: false, optionsChanged: false, unavailableItems: failure.unavailableItems || [], updatedCart: currentCart, error: failure.code || 'BOOKING_TEMPORARILY_UNAVAILABLE' };
     }
 
     const data = await res.json();
     if (data.valid !== true || !Array.isArray(data.items)) {
-      return { valid: false, hasPriceChanged: false, unavailableItems: data.unavailableItems || [], updatedCart: currentCart, error: data.code || 'CART_REQUIRES_REVIEW' };
+      return { valid: false, hasPriceChanged: false, optionsChanged: false, unavailableItems: data.unavailableItems || [], updatedCart: currentCart, error: data.code || 'CART_REQUIRES_REVIEW' };
     }
     const unavailableSet = new Set(
       (data.unavailableItems || []).map((u: any) => u.cartId || u.id)
@@ -344,6 +345,8 @@ export const revalidateCartWithServer = async (): Promise<{
     });
 
     let modified = false;
+    let priceModified = false;
+    let optionsChanged = data.optionsChanged === true;
     const nextCart: CartItem[] = [];
 
     for (const item of currentCart) {
@@ -362,6 +365,11 @@ export const revalidateCartWithServer = async (): Promise<{
           item.timeValue !== fresh.duration
         ) {
           modified = true;
+          priceModified = true;
+        }
+        if (JSON.stringify(item.options || {}) !== JSON.stringify(fresh.options || {})) {
+          modified = true;
+          optionsChanged = true;
         }
         nextCart.push({
           ...item,
@@ -370,6 +378,7 @@ export const revalidateCartWithServer = async (): Promise<{
           priceVND: fresh.priceVND,
           priceUSD: fresh.priceUSD,
           timeValue: fresh.duration ?? item.timeValue,
+          options: fresh.options ?? item.options,
         });
       } else {
         nextCart.push(item);
@@ -383,13 +392,14 @@ export const revalidateCartWithServer = async (): Promise<{
 
     return {
       valid: data.valid,
-      hasPriceChanged: data.hasPriceChanged || modified,
+      hasPriceChanged: data.hasPriceChanged === true || priceModified,
+      optionsChanged,
       unavailableItems: data.unavailableItems || [],
       updatedCart: nextCart,
       quote: data.quote,
     };
   } catch (err) {
     console.warn('[bookingCartStorage] Server reprice request failed:', err);
-    return { valid: false, hasPriceChanged: false, unavailableItems: [], updatedCart: currentCart, error: 'BOOKING_TEMPORARILY_UNAVAILABLE' };
+    return { valid: false, hasPriceChanged: false, optionsChanged: false, unavailableItems: [], updatedCart: currentCart, error: 'BOOKING_TEMPORARILY_UNAVAILABLE' };
   }
 };

@@ -213,6 +213,7 @@ export default function CartDrawer({ cart, services, lang, isOpen, onClose, onUp
     }, [cart]);
 
     const handleOpenCustomModal = (item: CartItem) => {
+        if (item.SHOW_CUSTOM_FOR_YOU === false) return;
         setEditingItem(item);
         setIsCustomModalOpen(true);
     };
@@ -240,6 +241,11 @@ export default function CartDrawer({ cart, services, lang, isOpen, onClose, onUp
             FOCUS_POSITION: item.FOCUS_POSITION as any,
             TAGS: item.TAGS as any,
             SHOW_STRENGTH: item.SHOW_STRENGTH,
+            SHOW_CUSTOM_FOR_YOU: item.SHOW_CUSTOM_FOR_YOU,
+            SHOW_NOTES: item.SHOW_NOTES,
+            SHOW_PREFERENCES: item.SHOW_PREFERENCES,
+            SHOW_GENDER: item.SHOW_GENDER,
+            SHOW_FOCUS: item.SHOW_FOCUS,
             HINT: item.HINT as any,
             PRICE_VN: item.priceVND,
             PRICE_USD: item.priceUSD

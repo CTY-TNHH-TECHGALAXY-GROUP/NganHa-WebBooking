@@ -9,7 +9,7 @@
 
 'use client';
 
-import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useEffect, useRef, useState, ReactNode } from 'react';
 import { Service, ServiceOptions, CartItem, Category } from '@/components/Menu/types';
 import { getServices } from '@/components/Menu/getServices';
 import { readBookingCart, serviceToCartItem, writeBookingCart, revalidateCartWithServer } from '@/lib/bookingCartStorage';
@@ -47,6 +47,7 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
     // Cart State
     const [cart, setCart] = useState<CartItem[]>([]);
     const [cartHydrated, setCartHydrated] = useState(false);
+    const revalidationVersion = useRef(0);
 
     const fetchData = async () => {
         try {
@@ -181,8 +182,10 @@ export const MenuProvider = ({ children }: { children: ReactNode }) => {
 
     // 6. Đồng bộ & kiểm định lại giỏ hàng với Server Canonical Pricing
     const revalidateCart = async () => {
-        const res = await revalidateCartWithServer();
-        if (res.hasPriceChanged || res.unavailableItems.length > 0) {
+        const version = ++revalidationVersion.current;
+        const snapshot = cart;
+        const res = await revalidateCartWithServer(snapshot);
+        if (version === revalidationVersion.current && (res.hasPriceChanged || res.optionsChanged || res.unavailableItems.length > 0)) {
             setCart(res.updatedCart);
         }
         return res;

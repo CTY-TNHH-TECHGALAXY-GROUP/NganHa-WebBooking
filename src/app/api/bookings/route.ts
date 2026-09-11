@@ -7,6 +7,7 @@ import {
   MAX_BODY_BYTES,
   PRIVATE_ROOM_SERVICE_ID,
   buildCanonicalPricing,
+  canonicalizeOptionsForService,
   cartIntentFingerprint,
   catalogDigest,
   isBookingTimeInPast,
@@ -484,13 +485,14 @@ function replayLineKeysFromRequest(booking: NormalizedBooking): string[] {
       options.notes?.tag1 ? 'Có dị ứng' : '',
       options.notes?.content || '',
     ].filter(Boolean);
-    const base = { serviceId: item.id, quantity: item.quantity, options: {
+    const baseOptions = {
       ...(strength ? { strength } : {}),
-      focus: options.bodyParts?.focus || [],
-      avoid: options.bodyParts?.avoid || [],
-      therapist: options.therapist === 'male' ? 'Nam' : options.therapist === 'female' ? 'Nữ' : 'Ngẫu nhiên',
-      note: noteParts.join(' - '),
-    } };
+      ...(options.bodyParts?.focus.length ? { focus: options.bodyParts.focus } : {}),
+      ...(options.bodyParts?.avoid.length ? { avoid: options.bodyParts.avoid } : {}),
+      ...(options.therapist ? { therapist: options.therapist === 'male' ? 'Nam' : options.therapist === 'female' ? 'Nữ' : 'Ngẫu nhiên' } : {}),
+      ...(noteParts.length ? { note: noteParts.join(' - ') } : {}),
+    };
+    const base = { serviceId: item.id, quantity: item.quantity, options: Object.keys(baseOptions).length ? baseOptions : null };
     return [
       stableStringify(base),
       ...(options.addons?.privateRoom ? [stableStringify({ serviceId: PRIVATE_ROOM_SERVICE_ID, quantity: item.quantity, options: { parentServiceId: item.id, isAddon: true } })] : []),
@@ -507,16 +509,22 @@ function replayLineKeysFromSnapshot(snapshot: BookingSnapshot): string[] {
         isAddon: true,
       } });
     }
-    const hasCanonicalOptions = ['strength', 'focus', 'avoid', 'therapist', 'note'].some((key) => Object.prototype.hasOwnProperty.call(options, key));
+    const hasCanonicalOptions = Boolean(
+      options.strength ||
+      (Array.isArray(options.focus) && options.focus.length) ||
+      (Array.isArray(options.avoid) && options.avoid.length) ||
+      (options.therapist && String(options.therapist).toLowerCase() !== 'ngẫu nhiên') ||
+      options.note,
+    );
     return stableStringify({
       serviceId: String(item?.serviceId || ''),
       quantity: Number(item?.quantity || 0),
       options: hasCanonicalOptions ? {
         ...(options.strength ? { strength: options.strength } : {}),
-        focus: Array.isArray(options.focus) ? options.focus : [],
-        avoid: Array.isArray(options.avoid) ? options.avoid : [],
-        therapist: options.therapist || 'Ngẫu nhiên',
-        note: options.note || '',
+        ...(Array.isArray(options.focus) && options.focus.length ? { focus: options.focus } : {}),
+        ...(Array.isArray(options.avoid) && options.avoid.length ? { avoid: options.avoid } : {}),
+        ...(options.therapist && String(options.therapist).toLowerCase() !== 'ngẫu nhiên' ? { therapist: options.therapist } : {}),
+        ...(options.note ? { note: options.note } : {}),
       } : null,
     });
   }).sort();
@@ -613,17 +621,20 @@ function buildBookingItems(booking: NormalizedBooking, pricing: CanonicalPricing
       options.notes?.tag1 ? 'Có dị ứng' : '',
       options.notes?.content || '',
     ].filter(Boolean);
+    const bookingItemOptions: Record<string, unknown> = {
+      ...(strength ? { strength } : {}),
+      ...(options.bodyParts?.focus.length ? { focus: options.bodyParts.focus } : {}),
+      ...(options.bodyParts?.avoid.length ? { avoid: options.bodyParts.avoid } : {}),
+      ...(options.therapist ? {
+        therapist: options.therapist === 'male' ? 'Nam' : options.therapist === 'female' ? 'Nữ' : 'Ngẫu nhiên',
+      } : {}),
+      ...(noteParts.length ? { note: noteParts.join(' - ') } : {}),
+    };
     const rows: Record<string, unknown>[] = [{
       id: `${bookingId}-${item.id}-${index}`,
       bookingId, serviceId: item.id, quantity: item.quantity, price: item.basePriceVND,
       status: 'WAITING',
-      options: {
-        strength,
-        focus: options.bodyParts?.focus || [],
-        avoid: options.bodyParts?.avoid || [],
-        therapist: options.therapist === 'male' ? 'Nam' : options.therapist === 'female' ? 'Nữ' : 'Ngẫu nhiên',
-        note: noteParts.join(' - '),
-      },
+      options: bookingItemOptions,
       tip: 0,
     }];
     if (item.hasPrivateRoom) rows.push({
@@ -720,7 +731,7 @@ export async function POST(request: Request) {
   if (isBookingTimeInPast(booking.date, booking.time)) return jsonError('VALIDATION_ERROR', 'Please choose a future booking time.', 400, [{ field: 'time', code: 'BOOKING_TIME_IN_PAST', message: 'Booking time must be in the future.' }]);
 
   const ids = Array.from(new Set([...booking.selectedServices.map((item) => item.id), PRIVATE_ROOM_SERVICE_ID]));
-  const { data: catalogRows, error: catalogError } = await supabase.from('Services').select('id, nameVN, nameEN, nameCN, nameJP, nameKR, priceVND, priceUSD, duration, isActive, showPreferences, showNotes, showGender, showStrength, showFocus, focusConfig').in('id', ids);
+  const { data: catalogRows, error: catalogError } = await supabase.from('Services').select('id, nameVN, nameEN, nameCN, nameJP, nameKR, priceVND, priceUSD, duration, isActive, showCustomForYou, showPreferences, showNotes, showGender, showStrength, showFocus, focusConfig').in('id', ids);
   if (catalogError) {
     console.error('[API Bookings] Catalog read failed:', catalogError.code || 'unknown');
     return jsonError('BOOKING_TEMPORARILY_UNAVAILABLE', 'Booking is temporarily unavailable. Please try again later.', 503);
@@ -728,29 +739,34 @@ export async function POST(request: Request) {
   const catalog = (catalogRows || []) as CatalogService[];
   const addon = catalog.find((service) => service.id === PRIVATE_ROOM_SERVICE_ID);
   const serviceMap = new Map(catalog.map((service) => [service.id, service]));
-  const catalogFieldErrors = booking.selectedServices.flatMap((item, index) => {
+  const canonicalSelectedServices = booking.selectedServices.map((item) => {
+    const service = serviceMap.get(item.id);
+    return service ? { ...item, options: canonicalizeOptionsForService(item.options, service).options } : item;
+  });
+  const canonicalBooking: NormalizedBooking = { ...booking, selectedServices: canonicalSelectedServices };
+  const catalogFieldErrors = canonicalBooking.selectedServices.flatMap((item, index) => {
     const service = serviceMap.get(item.id);
     if (!service) return [{ field: `selectedServices[${index}].id`, code: 'SERVICE_NOT_FOUND', message: 'Selected service was not found.' }];
     if (service.isActive === false) return [{ field: `selectedServices[${index}].id`, code: 'SERVICE_INACTIVE', message: 'Selected service is inactive.' }];
     return validateCatalogOptions(item.options, service, `selectedServices[${index}].options`);
   });
   if (catalogFieldErrors.length) return jsonError('CART_REQUIRES_REVIEW', 'Please review the selected services and options.', 409, catalogFieldErrors);
-  if (booking.selectedServices.some((item) => item.options.addons?.privateRoom === true) && (!addon || addon.isActive !== true)) return jsonError('CART_REQUIRES_REVIEW', 'The selected private-room add-on is unavailable.', 409);
+  if (canonicalBooking.selectedServices.some((item) => item.options.addons?.privateRoom === true) && (!addon || addon.isActive !== true)) return jsonError('CART_REQUIRES_REVIEW', 'The selected private-room add-on is unavailable.', 409);
 
   let pricing: CanonicalPricing;
   try {
-    pricing = buildCanonicalPricing(booking.selectedServices, catalog, addon || { id: PRIVATE_ROOM_SERVICE_ID, priceVND: null, priceUSD: null, duration: 0, isActive: false });
+    pricing = buildCanonicalPricing(canonicalBooking.selectedServices, catalog, addon || { id: PRIVATE_ROOM_SERVICE_ID, priceVND: null, priceUSD: null, duration: 0, isActive: false });
   } catch (error: any) {
     const review = String(error?.message || '').startsWith('SERVICE_');
     return jsonError(review ? 'CART_REQUIRES_REVIEW' : 'BOOKING_TEMPORARILY_UNAVAILABLE', review ? 'Please review the selected services and options.' : 'Booking is temporarily unavailable. Please try again later.', review ? 409 : 503);
   }
-  const quoteCheck = verifyQuote(booking.quote, [booking.intentFingerprint, cartIntentFingerprint(booking.selectedServices)], catalogDigest(catalog));
+  const quoteCheck = verifyQuote(booking.quote, [booking.intentFingerprint, cartIntentFingerprint(canonicalBooking.selectedServices)], catalogDigest(catalog));
   if (!quoteCheck.ok) return jsonError('PRICE_CHANGED', 'The service catalog changed. Please review your booking again.', 409, [{ field: 'quote', code: quoteCheck.reason, message: 'The quote is no longer current.' }]);
 
   // The allocator supplies only the identifier. The website writer owns the
   // atomic parent/items commit; there is deliberately no insert fallback.
   // Allocate first so a missing counter cannot leave a customer-only side effect.
-  const bookingDate = new Date(`${booking.date}T${booking.time}:00+07:00`).toISOString();
+  const bookingDate = new Date(`${canonicalBooking.date}T${canonicalBooking.time}:00+07:00`).toISOString();
   let committedId = '';
   let customerId: string | null = null;
   let customerResolved = false;
@@ -766,28 +782,28 @@ export async function POST(request: Request) {
     }
     if (!customerResolved) {
       try {
-        customerId = await resolveCustomerId(supabase, booking);
+        customerId = await resolveCustomerId(supabase, canonicalBooking);
       } catch (error: any) {
         console.warn('[API Bookings] Customer lookup unavailable:', error?.message || 'unknown error');
       }
       customerResolved = true;
     }
-    bookingPayload = buildBookingPayload(booking, pricing, committedId, customerId, finalKey);
-    items = buildBookingItems(booking, pricing, committedId);
+    bookingPayload = buildBookingPayload(canonicalBooking, pricing, committedId, customerId, finalKey);
+    items = buildBookingItems(canonicalBooking, pricing, committedId);
     try {
       const result = await commitBookingAtomically(supabase, bookingPayload, items);
       if (result.state === 'incomplete') return responseForIncompleteBooking(result.bookingId);
-      if (result.state === 'unavailable') return reconcileAfterUncertainCommit(supabase, finalKey, booking);
+      if (result.state === 'unavailable') return reconcileAfterUncertainCommit(supabase, finalKey, canonicalBooking);
       committedId = result.bookingId;
       writerReplay = result.replay;
     } catch (writerError: any) {
-      if (isWriterIdempotencyConflict(writerError)) return resolveReplayConflict(supabase, finalKey, booking);
+      if (isWriterIdempotencyConflict(writerError)) return resolveReplayConflict(supabase, finalKey, canonicalBooking);
       if (isBookingIdentifierConflict(writerError)) {
         committedId = '';
         continue;
       }
       if (isRetryableWriterError(writerError)) {
-        return reconcileAfterUncertainCommit(supabase, finalKey, booking);
+        return reconcileAfterUncertainCommit(supabase, finalKey, canonicalBooking);
       }
       const mapped = mapWriterError(writerError);
       if (mapped) return mapped;
@@ -797,13 +813,13 @@ export async function POST(request: Request) {
   }
   if (!committedId || !bookingPayload) return jsonError('BOOKING_NUMBER_UNAVAILABLE', 'A booking number could not be reserved. Please try again.', 503);
 
-  const committedLookup = await loadCommittedSnapshot(supabase, committedId, localizedServices(pricing, booking));
+  const committedLookup = await loadCommittedSnapshot(supabase, committedId, localizedServices(pricing, canonicalBooking));
   if (committedLookup.state === 'unavailable') return responseForUnverifiedBooking();
   if (committedLookup.state === 'incomplete') return responseForIncompleteBooking(committedLookup.bookingId);
   const committedSnapshot = committedLookup.snapshot;
 
   if (writerReplay) {
-    if (!replayIdentityMatches(committedSnapshot, booking) || !replayLinesMatch(committedSnapshot, booking) || committedSnapshot.totalAmount !== pricing.totalAmountVND) {
+    if (!replayIdentityMatches(committedSnapshot, canonicalBooking) || !replayLinesMatch(committedSnapshot, canonicalBooking) || committedSnapshot.totalAmount !== pricing.totalAmountVND) {
       return jsonError('IDEMPOTENCY_KEY_REUSED', 'This booking request key is already linked to a different booking.', 409);
     }
     return responseForSnapshot(committedSnapshot, true);
@@ -811,7 +827,7 @@ export async function POST(request: Request) {
   // Never acknowledge or email from a read that proves only a partial item
   // set. The writer should make this impossible, but this guard protects the
   // response boundary if a stale/legacy read observes incomplete state.
-  if (!replayIdentityMatches(committedSnapshot, booking) || !replayLinesMatch(committedSnapshot, booking) || committedSnapshot.totalAmount !== pricing.totalAmountVND) {
+  if (!replayIdentityMatches(committedSnapshot, canonicalBooking) || !replayLinesMatch(committedSnapshot, canonicalBooking) || committedSnapshot.totalAmount !== pricing.totalAmountVND) {
     return responseForIncompleteBooking(committedId);
   }
 
@@ -837,7 +853,7 @@ export async function POST(request: Request) {
       guests: committedSnapshot.guests,
       branchName: committedSnapshot.branchName,
       services: pricing.items.map((item) => ({
-        name: serviceName(item.catalog, booking.lang),
+        name: serviceName(item.catalog, canonicalBooking.lang),
         duration: item.duration * item.quantity,
         priceVND: item.priceVND * item.quantity,
         quantity: item.quantity,

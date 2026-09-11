@@ -993,6 +993,7 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
             FOCUS_POSITION: modalServiceData.FOCUS_POSITION,
             TAGS: modalServiceData.TAGS,
             SHOW_STRENGTH: modalServiceData.SHOW_STRENGTH,
+            SHOW_CUSTOM_FOR_YOU: modalServiceData.SHOW_CUSTOM_FOR_YOU,
             HINT: modalServiceData.HINT,
             PRICE_VN: modalServiceData.priceVND,
             PRICE_USD: modalServiceData.priceUSD,

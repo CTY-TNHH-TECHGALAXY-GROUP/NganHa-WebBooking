@@ -99,7 +99,8 @@ export const GET = async () => {
       SHOW_NOTES: item.showNotes !== false,
       SHOW_PREFERENCES: item.showPreferences !== false,
       SHOW_GENDER: item.showGender !== false,
-      SHOW_STRENGTH: item.showStrength !== false,
+      // Strength is opt-in: null/missing must not create a hidden medium default.
+      SHOW_STRENGTH: item.showStrength === true,
       SHOW_FOCUS: item.showFocus !== false,
       ACTIVE: item.isActive,
       BEST_SELLER: item.isBestSeller,

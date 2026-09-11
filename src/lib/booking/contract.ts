@@ -1,4 +1,5 @@
 import { createHash, createHmac, timingSafeEqual } from 'node:crypto';
+import { resolveServiceCapabilities, type ServiceCapabilities } from './capabilities.ts';
 
 export const BOOKING_TIMEZONE = 'Asia/Ho_Chi_Minh';
 export const BRANCH_DEFAULT = 'ORIA SPA';
@@ -69,7 +70,8 @@ export type CatalogService = {
   showGender?: boolean | null;
   showStrength?: boolean | null;
   showFocus?: boolean | null;
-  focusConfig?: Record<string, boolean> | null;
+  showCustomForYou?: boolean | null;
+  focusConfig?: unknown;
 };
 
 export type CanonicalService = NormalizedService & {
@@ -353,17 +355,35 @@ export function cartIntentFingerprint(selectedServices: NormalizedService[]): st
   return fingerprint({ selectedServices });
 }
 
+export function capabilitiesForService(service: CatalogService): ServiceCapabilities {
+  return resolveServiceCapabilities(service);
+}
+
+export function canonicalizeOptionsForService(options: NormalizedOption, service: CatalogService): { options: NormalizedOption; changed: boolean } {
+  const capabilities = capabilitiesForService(service);
+  const next: NormalizedOption = { ...options };
+
+  // Remove only neutral values that the UI could have generated without a
+  // visible choice. Meaningful legacy selections remain for review.
+  if (!capabilities.gender && options.therapist === 'random') delete next.therapist;
+  if (next.bodyParts && next.bodyParts.focus.length === 0 && next.bodyParts.avoid.length === 0) delete next.bodyParts;
+  if (next.notes && !next.notes.content && !next.notes.tag0 && !next.notes.tag1) delete next.notes;
+
+  return { options: next, changed: stableStringify(next) !== stableStringify(options) };
+}
+
 export function validateCatalogOptions(options: NormalizedOption, service: CatalogService, field: string): FieldError[] {
   const errors: FieldError[] = [];
+  const capabilities = capabilitiesForService(service);
   const hasNotes = Boolean(options.notes && (options.notes.content || options.notes.tag0 || options.notes.tag1));
   const hasFocus = Boolean(options.bodyParts && (options.bodyParts.focus.length || options.bodyParts.avoid.length));
-  if (options.strength && service.showStrength === false) errors.push(error(`${field}.strength`, 'UNSUPPORTED_OPTION', 'This service does not support strength selection.'));
-  if (options.therapist && service.showGender === false) errors.push(error(`${field}.therapist`, 'UNSUPPORTED_OPTION', 'This service does not support therapist selection.'));
-  if (hasNotes && service.showNotes === false) errors.push(error(`${field}.notes`, 'UNSUPPORTED_OPTION', 'This service does not support notes.'));
-  if (hasFocus && service.showFocus === false) errors.push(error(`${field}.bodyParts`, 'UNSUPPORTED_OPTION', 'This service does not support body preferences.'));
-  if (hasFocus && service.focusConfig && options.bodyParts) {
-    const supported = Object.entries(service.focusConfig).filter(([, enabled]) => enabled).map(([key]) => key.toUpperCase());
-    const unsupported = [...options.bodyParts.focus, ...options.bodyParts.avoid].find((part) => supported.length > 0 && !supported.includes(part));
+  if (options.strength && !capabilities.strength) errors.push(error(`${field}.strength`, 'UNSUPPORTED_OPTION', 'This service does not support strength selection.'));
+  if (options.therapist && !capabilities.gender) errors.push(error(`${field}.therapist`, 'UNSUPPORTED_OPTION', 'This service does not support therapist selection.'));
+  if (hasNotes && !capabilities.notes) errors.push(error(`${field}.notes`, 'UNSUPPORTED_OPTION', 'This service does not support notes.'));
+  if (hasFocus && !capabilities.focus) errors.push(error(`${field}.bodyParts`, 'UNSUPPORTED_OPTION', 'This service does not support body preferences.'));
+  if (hasFocus && capabilities.focus && options.bodyParts) {
+    const unsupported = [...options.bodyParts.focus, ...options.bodyParts.avoid]
+      .find((part) => !capabilities.allowedBodyAreas.includes(part));
     if (unsupported) errors.push(error(`${field}.bodyParts`, 'UNSUPPORTED_OPTION', `Body area ${unsupported} is not supported for this service.`));
   }
   return errors;

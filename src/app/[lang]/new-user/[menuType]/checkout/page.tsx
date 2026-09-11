@@ -13,6 +13,7 @@ import { useMenuData } from '@/components/Menu/MenuContext';
 import type { CartItem, Service, SupportedLanguage } from '@/components/Menu/types';
 import { formatCurrency } from '@/components/Menu/utils';
 import { getDictionary } from '@/lib/dictionaries';
+import { resolveServiceCapabilities } from '@/lib/booking/capabilities';
 import { useTranslation } from '@/components/TranslationProvider';
 import { trackAnalytics } from '@/lib/analytics/client';
 import styles from './checkout-demo.module.css';
@@ -751,7 +752,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
       }
     })();
     return () => { isMounted = false; };
-  }, [lang]);
+  }, [lang, cart.length]);
 
   const [editingCartId, setEditingCartId] = useState<string | null>(null);
   const [editServiceId, setEditServiceId] = useState<string | null>(null);
@@ -1012,6 +1013,13 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
     setIsServicePickerOpen(false);
     setReturnToServicePickerOnCancel(true);
     setPendingServiceQuantity(Math.max(1, quantity));
+    if (service.SHOW_CUSTOM_FOR_YOU === false) {
+      addToCart(service, Math.max(1, quantity), {});
+      setReturnToServicePickerOnCancel(false);
+      setPendingServiceQuantity(1);
+      setIsServicePickerOpen(true);
+      return;
+    }
     setCustomizingService(service);
   };
 
@@ -1101,28 +1109,20 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
   };
 
   const handleEditCartItemCustomization = (item: CartItem) => {
-    const s = services.find((srv) => srv.id === item.id) || {
-      id: item.id,
-      names: item.names,
-      priceVND: item.priceVND,
-      priceUSD: item.priceUSD || 0,
-      timeValue: item.timeValue,
-      timeDisplay: item.timeDisplay,
-      SHOW_STRENGTH: true,
-      SHOW_NOTES: true,
-      SHOW_PREFERENCES: true,
-      SHOW_GENDER: true,
-      SHOW_FOCUS: true,
-    } as any;
+    const s = services.find((srv) => srv.id === item.id) || item;
+    if (s.SHOW_CUSTOM_FOR_YOU === false) {
+      setAlertState({ isOpen: true, type: 'info', message: t('reviewCart', lang) });
+      return;
+    }
     if (isServicePickerOpen) {
       setIsServicePickerOpen(false);
       setReturnToServicePickerOnCancel(true);
     }
-    setCustomizingService(s);
+            setCustomizingService(s);
     setEditingCustomCartId(item.cartId);
     setEditingCustomInitialData({
-      strength: (item.options?.strength as any) || 'medium',
-      therapist: (item.options?.therapist as any) || 'random',
+      strength: item.options?.strength,
+      therapist: item.options?.therapist,
       notes: {
         tag0: item.options?.notes?.tag0 ?? false,
         tag1: item.options?.notes?.tag1 ?? false,
@@ -1781,6 +1781,15 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                     
                     const sortedGroup = [...group].sort((a, b) => a.timeValue - b.timeValue);
                     const currentEditService = sortedGroup.find(s => s.id === editServiceId) || sortedGroup[0] || item;
+                    const editCapabilities = resolveServiceCapabilities({
+                      showCustomForYou: currentEditService.SHOW_CUSTOM_FOR_YOU,
+                      showPreferences: currentEditService.SHOW_PREFERENCES,
+                      showStrength: currentEditService.SHOW_STRENGTH,
+                      showGender: currentEditService.SHOW_GENDER,
+                      showFocus: currentEditService.SHOW_FOCUS,
+                      showNotes: currentEditService.SHOW_NOTES,
+                      focusConfig: currentEditService.FOCUS_POSITION,
+                    });
 
                     return (
                       <div style={{ marginTop: '14px', borderRadius: '18px', background: 'linear-gradient(180deg, rgba(20,19,38,0.98), rgba(14,14,29,0.98))', border: '1px solid rgba(226,190,111,0.28)', overflow: 'hidden', boxShadow: '0 24px 60px rgba(0,0,0,0.35)' }}>
@@ -1895,8 +1904,8 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                               setCustomizingService(currentEditService);
                               setEditingCustomCartId(item.cartId);
                               setEditingCustomInitialData({
-                                strength: (item.options?.strength as any) || 'medium',
-                                therapist: (item.options?.therapist as any) || 'random',
+                                strength: item.options?.strength,
+                                therapist: item.options?.therapist,
                                 notes: {
                                   tag0: item.options?.notes?.tag0 ?? false,
                                   tag1: item.options?.notes?.tag1 ?? false,
@@ -1920,8 +1929,8 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                               </div>
                             </div>
                             <div className="text-xs text-[#d1cbbd] flex flex-wrap items-center gap-x-3 gap-y-1">
-                              <span>{lang === 'vi' ? 'Lực:' : lang === 'cn' ? '力度:' : lang === 'jp' ? '強さ:' : lang === 'kr' ? '강도:' : 'Strength:'} <strong className="text-[#f2d58d] capitalize">{(item.options?.strength && (dict.options?.strength_levels as any)?.[item.options.strength.toLowerCase()]) || item.options?.strength || 'Medium'}</strong></span>
-                              <span>{lang === 'vi' ? 'KTV:' : lang === 'cn' ? '技师:' : lang === 'jp' ? 'セラピスト:' : lang === 'kr' ? '관리사:' : 'Therapist:'} <strong className="text-[#f2d58d] capitalize">{(item.options?.therapist && (dict.options?.therapist_options as any)?.[item.options.therapist.toLowerCase()]) || item.options?.therapist || 'Random'}</strong></span>
+                              {editCapabilities.strength && item.options?.strength && <span>{lang === 'vi' ? 'Lực:' : lang === 'cn' ? '力度:' : lang === 'jp' ? '強さ:' : lang === 'kr' ? '강도:' : 'Strength:'} <strong className="text-[#f2d58d] capitalize">{(dict.options?.strength_levels as any)?.[item.options.strength.toLowerCase()] || item.options.strength}</strong></span>}
+                              {editCapabilities.gender && item.options?.therapist && <span>{lang === 'vi' ? 'KTV:' : lang === 'cn' ? '技师:' : lang === 'jp' ? 'セラピスト:' : lang === 'kr' ? '관리사:' : 'Therapist:'} <strong className="text-[#f2d58d] capitalize">{(dict.options?.therapist_options as any)?.[item.options.therapist.toLowerCase()] || item.options.therapist}</strong></span>}
                               {item.options?.bodyParts?.focus?.length ? (
                                 <span>{lang === 'vi' ? 'Tập trung:' : lang === 'cn' ? '重点:' : lang === 'jp' ? '重点:' : lang === 'kr' ? '집중:' : 'Focus:'} <strong className="text-[#f2d58d]">{isWholeBodyParts(item.options.bodyParts.focus) ? (dict.custom_for_you?.full_body || (lang === 'vi' ? 'Toàn thân' : lang === 'cn' ? '全身' : lang === 'jp' ? '全身' : lang === 'kr' ? '전신' : 'Full Body')) : item.options.bodyParts.focus.map(p => translatePart(p, lang)).join(', ')}</strong></span>
                               ) : null}
@@ -2034,6 +2043,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                 HINT: customizingService.HINT as Record<string, string>,
                 PRICE_VN: customizingService.priceVND,
                 PRICE_USD: customizingService.priceUSD,
+                SHOW_CUSTOM_FOR_YOU: customizingService.SHOW_CUSTOM_FOR_YOU,
                 SHOW_NOTES: customizingService.SHOW_NOTES,
                 SHOW_PREFERENCES: customizingService.SHOW_PREFERENCES,
                 SHOW_GENDER: customizingService.SHOW_GENDER,
