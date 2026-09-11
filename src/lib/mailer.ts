@@ -131,7 +131,7 @@ const I18N_TEMPLATE_1: Record<string, {
     guestsLabel: "Number of Guests",
     guestsSuffix: (n) => `${n} guest${n > 1 ? 's' : ''}`,
     therapistLabel: "Therapist",
-    therapistMap: { female: 'Female', male: 'Male', any: 'Any Therapist' },
+    therapistMap: { female: 'Female', male: 'Male', random: 'Random', any: 'Random' },
     locationLabel: "Location",
     bookingCodeLabel: "Booking Code",
     totalLabel: "Estimated Total",
@@ -157,7 +157,7 @@ const I18N_TEMPLATE_1: Record<string, {
     guestsLabel: "Số lượng khách",
     guestsSuffix: (n) => `${n} khách`,
     therapistLabel: "Kỹ thuật viên",
-    therapistMap: { female: 'Nữ', male: 'Nam', any: 'Ngẫu nhiên' },
+    therapistMap: { female: 'Nữ', male: 'Nam', random: 'Ngẫu nhiên', any: 'Ngẫu nhiên' },
     locationLabel: "Chi nhánh",
     bookingCodeLabel: "Mã đặt lịch",
     totalLabel: "Tổng thanh toán dự kiến",
@@ -183,7 +183,7 @@ const I18N_TEMPLATE_1: Record<string, {
     guestsLabel: "预约人数",
     guestsSuffix: (n) => `${n} 位`,
     therapistLabel: "理疗师",
-    therapistMap: { female: '女理疗师', male: '男理疗师', any: '随机安排' },
+    therapistMap: { female: '女', male: '男', random: '随机', any: '随机' },
     locationLabel: "水疗中心地址",
     bookingCodeLabel: "预约编号",
     totalLabel: "预计总额",
@@ -209,7 +209,7 @@ const I18N_TEMPLATE_1: Record<string, {
     guestsLabel: "ご利用人数",
     guestsSuffix: (n) => `${n} 名様`,
     therapistLabel: "担当セラピスト",
-    therapistMap: { female: '女性セラピスト', male: '男性セラピスト', any: 'おまかせ（指定なし）' },
+    therapistMap: { female: '女性', male: '男性', random: 'お任せ', any: 'お任せ' },
     locationLabel: "店舗所在地",
     bookingCodeLabel: "ご予約番号",
     totalLabel: "お支払い概算",
@@ -235,7 +235,7 @@ const I18N_TEMPLATE_1: Record<string, {
     guestsLabel: "방문 인원",
     guestsSuffix: (n) => `${n} 인`,
     therapistLabel: "테라피스트",
-    therapistMap: { female: '여성 테라피스트', male: '남성 테라피스트', any: '임의 배정 (지정 없음)' },
+    therapistMap: { female: '여성', male: '남성', random: '랜덤', any: '랜덤' },
     locationLabel: "지점 위치",
     bookingCodeLabel: "예약 번호",
     totalLabel: "예상 결제 금액",
@@ -582,11 +582,13 @@ function localizePreferences(raw: string, lang: string): string {
     }
     if (key === 'therapist') {
       const rawVal = match[2].toLowerCase().trim();
-      let label = t.therapistMap.any;
+      let label = t.therapistMap.random || t.therapistMap.any;
       if (rawVal.includes('female') || rawVal.includes('nữ') || rawVal === 'female') {
         label = t.therapistMap.female;
       } else if (rawVal.includes('male') || rawVal.includes('nam') || rawVal === 'male') {
         label = t.therapistMap.male;
+      } else if (rawVal.includes('random') || rawVal.includes('ngẫu nhiên') || rawVal === 'random' || rawVal === 'any') {
+        label = t.therapistMap.random || t.therapistMap.any;
       }
       return `${t.therapistLabel}: ${label}`;
     }

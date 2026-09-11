@@ -603,7 +603,7 @@ function buildNotes(booking: NormalizedBooking, pricing: CanonicalPricing): { no
       } else if (rawTherapist === 'male' || rawTherapist === 'nam') {
         output.push('Therapist: male');
       } else if (rawTherapist === 'random' || rawTherapist === 'any' || rawTherapist === 'ngẫu nhiên') {
-        output.push('Therapist: any');
+        output.push('Therapist: random');
       }
     }
     if (item.options.bodyParts?.focus?.length) output.push(`Focus: ${item.options.bodyParts.focus.join(', ')}`);
