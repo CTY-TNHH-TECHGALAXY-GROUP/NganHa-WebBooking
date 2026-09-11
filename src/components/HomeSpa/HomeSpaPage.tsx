@@ -144,7 +144,7 @@ export default function HomeSpaPage({
               >
                 <img
                   src={config.storyPhotos[0]}
-                  alt="Oria Home Spa ambiance 1"
+                  alt="Oria Home Spa"
                   loading="lazy"
                 />
                 {config.storyPhotosWatermark?.[0] !== false && (
@@ -164,7 +164,7 @@ export default function HomeSpaPage({
               >
                 <img
                   src={config.storyPhotos[1]}
-                  alt="Oria Home Spa ambiance 2"
+                  alt="Oria Home Spa"
                   loading="lazy"
                 />
                 {config.storyPhotosWatermark?.[1] !== false && (
@@ -184,7 +184,7 @@ export default function HomeSpaPage({
               >
                 <img
                   src={config.storyPhotos[2]}
-                  alt="Oria Home Spa ambiance 3"
+                  alt="Oria Home Spa"
                   loading="lazy"
                 />
                 {config.storyPhotosWatermark?.[2] !== false && (

@@ -40,8 +40,6 @@ export default function GlobalImagePreview() {
           isOpen: true,
           mediaUrl: customEvent.detail.mediaUrl,
           mediaType: customEvent.detail.mediaType || 'image',
-          title: customEvent.detail.title || '',
-          description: customEvent.detail.description || '',
         });
       }
     };
@@ -124,16 +122,10 @@ export default function GlobalImagePreview() {
       e.preventDefault();
       e.stopPropagation();
 
-      const title = img.getAttribute('data-title') || img.title || img.alt || '';
-      const figcaption = img.closest('figure')?.querySelector('figcaption')?.textContent?.trim();
-      const desc = img.getAttribute('data-description') || figcaption || '';
-
       setPreview({
         isOpen: true,
         mediaUrl: src,
         mediaType: 'image',
-        title: title || undefined,
-        description: desc || undefined,
       });
     };
 
@@ -154,8 +146,6 @@ export default function GlobalImagePreview() {
       onClose={handleClose}
       mediaUrl={preview.mediaUrl}
       mediaType={preview.mediaType}
-      title={preview.title}
-      description={preview.description}
       lang={currentLang}
     />
   );

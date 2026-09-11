@@ -67,7 +67,7 @@ export default function MediaPreviewModal({
     <div
       role="dialog"
       aria-modal="true"
-      aria-label={title || 'Media preview'}
+      aria-label="Media preview"
       className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/92 backdrop-blur-md p-3 sm:p-6 transition-opacity duration-300"
       onClick={onClose}
     >
@@ -116,7 +116,7 @@ export default function MediaPreviewModal({
           ) : (
             <img
               src={mediaUrl}
-              alt={title || 'Full screen preview'}
+              alt=""
               onLoad={() => setIsLoading(false)}
               ref={(node) => {
                 if (node && node.complete && isLoading) {
