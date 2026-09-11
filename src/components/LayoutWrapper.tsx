@@ -9,6 +9,7 @@ import Header from '@/components/Header/Header';
 import FloatingWidgets from '@/components/FloatingWidgets/FloatingWidgets';
 import Footer from '@/components/Footer/Footer';
 import SplashScreen from '@/components/SplashScreen/SplashScreen';
+import GlobalImagePreview from '@/components/Shared/GlobalImagePreview';
 
 const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
@@ -22,6 +23,7 @@ const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
       {children}
       {!isBookingPage && <Footer />}
       {!hideFloatingWidgets && <FloatingWidgets />}
+      <GlobalImagePreview />
     </>
   );
 };

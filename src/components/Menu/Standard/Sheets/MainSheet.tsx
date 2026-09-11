@@ -14,7 +14,7 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Minus, Plus, ChevronDown, List, Pencil, PlusCircle } from 'lucide-react';
+import { X, Minus, Plus, ChevronDown, List, Pencil, PlusCircle, ZoomIn } from 'lucide-react';
 import { CartItem, Service } from '../../types';
 import { formatCurrency } from '../../utils';
 import { getCartSelectionKey } from '../../cartSelection';
@@ -187,11 +187,46 @@ export default function MainSheet({ group, cart, isOpen, lang, onClose, onAddToC
 
                 {/* --- HEADER CHUNG --- */}
                 {viewMode === 'ADD' && selectedService && (
-                    <div className="w-full px-5 pt-6 pb-2 shrink-0">
-                        <h2 className="text-2xl font-bold text-[#C9A96E] font-luxury leading-tight">{groupName}</h2>
-                        <p className="text-sm text-gray-400 mt-1 opacity-80 leading-snug">
-                            {selectedService.descriptions[lang as keyof typeof selectedService.descriptions] || selectedService.descriptions['en']}
-                        </p>
+                    <div className="w-full px-5 pt-6 pb-2 shrink-0 flex items-start gap-3.5">
+                        {(selectedService.img || selectedService.media_url) && (
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    const mediaUrl = selectedService.media_url || selectedService.img;
+                                    if (mediaUrl) {
+                                        window.dispatchEvent(new CustomEvent('open-media-preview', {
+                                            detail: {
+                                                mediaUrl,
+                                                mediaType: selectedService.media_type === 'video' ? 'video' : 'image',
+                                                title: groupName,
+                                                description: selectedService.descriptions[lang as keyof typeof selectedService.descriptions] || selectedService.descriptions['en']
+                                            }
+                                        }));
+                                    }
+                                }}
+                                className="relative w-14 h-14 shrink-0 rounded-xl overflow-hidden bg-[#1c1c1e] border border-[#C9A96E]/40 group cursor-zoom-in shadow-md mt-0.5"
+                                title={lang === 'vi' ? 'Xem ảnh đầy đủ' : 'Click to view full image'}
+                                aria-label={lang === 'vi' ? `Xem ảnh ${groupName}` : `View full image for ${groupName}`}
+                            >
+                                <img
+                                    src={selectedService.img}
+                                    alt={groupName}
+                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                    onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                                />
+                                <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
+                                    <div className="w-5 h-5 rounded-full bg-black/70 text-[#C9A96E] flex items-center justify-center">
+                                        <ZoomIn size={11} strokeWidth={2.5} />
+                                    </div>
+                                </div>
+                            </button>
+                        )}
+                        <div className="flex-1 min-w-0 pr-8">
+                            <h2 className="text-2xl font-bold text-[#C9A96E] font-luxury leading-tight">{groupName}</h2>
+                            <p className="text-sm text-gray-400 mt-1 opacity-80 leading-snug">
+                                {selectedService.descriptions[lang as keyof typeof selectedService.descriptions] || selectedService.descriptions['en']}
+                            </p>
+                        </div>
                     </div>
                 )}
 

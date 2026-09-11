@@ -66,8 +66,22 @@ export default function ServiceItem({ service, quantity, lang, isBestSeller, onC
                     e.stopPropagation();
                     setIsPreviewOpen(true);
                 }}
-                className="w-20 h-20 shrink-0 rounded-xl overflow-hidden bg-[#1c1c1e] relative shadow-sm cursor-zoom-in group/thumb"
+                onTouchEnd={(e) => {
+                    e.stopPropagation();
+                    setIsPreviewOpen(true);
+                }}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setIsPreviewOpen(true);
+                    }
+                }}
+                className="w-20 h-20 shrink-0 rounded-xl overflow-hidden bg-[#1c1c1e] relative shadow-sm cursor-zoom-in group/thumb z-10"
                 title={lang === 'vi' ? 'Xem ảnh đầy đủ' : 'Click to view full screen'}
+                aria-label={lang === 'vi' ? `Xem ảnh chi tiết ${name}` : `View full image for ${name}`}
             >
                 {service.media_type === 'video' && service.media_url ? (
                     <>

@@ -269,3 +269,15 @@ body.modal-open .floating-widgets,
 body.modal-open .google-review-widget {
   display: none !important;
 }
+
+/* Media preview affordance */
+main figure img:not([data-no-preview]),
+main article img:not([data-no-preview]),
+main [class*="filmFrame"] img,
+main [class*="facilityImageFrame"] img,
+main [class*="pillarMedia"] img,
+main .cursor-zoom-in img,
+footer [role="button"] img {
+  cursor: zoom-in;
+}
+

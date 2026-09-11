@@ -68,13 +68,17 @@ export default function MediaPreviewModal({
       role="dialog"
       aria-modal="true"
       aria-label={title || 'Media preview'}
-      className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/92 backdrop-blur-md p-3 sm:p-6 transition-all duration-300 animate-in fade-in"
+      className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/92 backdrop-blur-md p-3 sm:p-6 transition-opacity duration-300"
       onClick={onClose}
     >
       {/* Top right "X" close button */}
       <button
         type="button"
         onClick={(e) => {
+          e.stopPropagation();
+          onClose();
+        }}
+        onTouchEnd={(e) => {
           e.stopPropagation();
           onClose();
         }}
@@ -92,7 +96,7 @@ export default function MediaPreviewModal({
         {/* Media box */}
         <div className="relative overflow-hidden rounded-2xl border border-[#C9A96E]/30 bg-neutral-950 shadow-2xl flex items-center justify-center max-h-[78vh] w-auto max-w-full">
           {isLoading && (
-            <div className="absolute inset-0 flex items-center justify-center bg-black/50 backdrop-blur-xs z-10">
+            <div className="absolute inset-0 flex items-center justify-center bg-black/50 backdrop-blur-xs z-10 pointer-events-none">
               <Loader2 className="w-8 h-8 text-[#C9A96E] animate-spin" />
             </div>
           )}
@@ -114,6 +118,11 @@ export default function MediaPreviewModal({
               src={mediaUrl}
               alt={title || 'Full screen preview'}
               onLoad={() => setIsLoading(false)}
+              ref={(node) => {
+                if (node && node.complete && isLoading) {
+                  setIsLoading(false);
+                }
+              }}
               onError={(e) => {
                 setIsLoading(false);
                 if (poster && e.currentTarget.src !== poster) {
