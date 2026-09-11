@@ -1700,6 +1700,21 @@
   color: #9c988f;
 }
 
+.drawerSelectionLabel {
+  display: block;
+  font-size: 13px;
+  color: #9c988f;
+}
+
+.drawerSelectionAddAnother {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: #dec27b;
+}
+
 .drawerSelection strong {
   display: block;
   margin-top: 4px;

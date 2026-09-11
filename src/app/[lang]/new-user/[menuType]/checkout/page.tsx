@@ -462,37 +462,46 @@ const DurationDrawer = ({
           {selectedOptions.length > 0 && (
             <div className={styles.drawerSavedOptions}>
               <div className={styles.drawerLabel}>{t('selectedOptions', lang)}</div>
-              {selectedOptions.map((item) => (
-                <div className={styles.drawerSavedOption} key={item.cartId}>
-                  <div>
-                    <strong>{item.timeValue} {dict.checkout?.mins || 'mins'}</strong>
-                    <span>
-                      {item.options?.therapist ? ((dict.options?.therapist_options as any)?.[item.options.therapist.toLowerCase()] || item.options.therapist).toLowerCase() : ''}
-                      {item.options?.strength ? ` · ${((dict.options?.strength_levels as any)?.[item.options.strength.toLowerCase()] || item.options.strength).toLowerCase()}` : ''}
-                    </span>
+              {selectedOptions.map((item) => {
+                const therapistName = item.options?.therapist
+                  ? ((dict.options?.therapist_options as any)?.[item.options.therapist.toLowerCase()] || item.options.therapist).toLowerCase()
+                  : '';
+                const strengthName = item.options?.strength
+                  ? ((dict.options?.strength_levels as any)?.[item.options.strength.toLowerCase()] || item.options.strength).toLowerCase()
+                  : '';
+
+                const parts: string[] = [];
+                if (therapistName) {
+                  parts.push(lang === 'vi' ? `KTV ${therapistName}` : therapistName);
+                }
+                if (strengthName) {
+                  parts.push(lang === 'vi' ? `lực ${strengthName}` : strengthName);
+                }
+                const subtitle = parts.join(' · ');
+
+                return (
+                  <div className={styles.drawerSavedOption} key={item.cartId}>
+                    <div>
+                      <strong>{item.timeValue} {dict.checkout?.mins || 'mins'}</strong>
+                      {subtitle ? <span>{subtitle}</span> : null}
+                    </div>
+                    <div className={styles.drawerQuantityControl}>
+                      <button type="button" onClick={() => onUpdateCartItem(item.cartId, item.qty - 1)} aria-label="Decrease quantity"><Minus size={14} /></button>
+                      <span>{item.qty}</span>
+                      <button type="button" onClick={() => onUpdateCartItem(item.cartId, item.qty + 1)} aria-label="Increase quantity"><Plus size={14} /></button>
+                    </div>
                   </div>
-                  <div className={styles.drawerQuantityControl}>
-                    <button type="button" onClick={() => onUpdateCartItem(item.cartId, item.qty - 1)} aria-label="Decrease quantity"><Minus size={14} /></button>
-                    <span>{item.qty}</span>
-                    <button type="button" onClick={() => onUpdateCartItem(item.cartId, item.qty + 1)} aria-label="Increase quantity"><Plus size={14} /></button>
-                  </div>
-                </div>
-              ))}
-              <button
-                type="button"
-                className={styles.drawerAddAnother}
-                onClick={() => {
-                  setSelectedVariantId(group[0].id);
-                  setQuantity(1);
-                }}
-              >
-                {t('addAnotherOption', lang)} <Plus size={14} />
-              </button>
+                );
+              })}
             </div>
           )}
           <div className={styles.drawerFooter}>
             <div className={styles.drawerSelection}>
-              {dict.checkout?.yourSelection || t('yourSelection', lang)}
+              <span className={selectedOptions.length > 0 ? styles.drawerSelectionAddAnother : styles.drawerSelectionLabel}>
+                {selectedOptions.length > 0 
+                  ? t('addAnotherOption', lang)
+                  : (dict.checkout?.yourSelection || t('yourSelection', lang))}
+              </span>
               <strong>
                 {selectedVariant.timeValue} {dict.checkout?.mins || 'mins'} · {formatCurrency(selectedVariant.priceVND * quantity)} VND · {formatUSD(selectedVariant.priceUSD * quantity)}
               </strong>
