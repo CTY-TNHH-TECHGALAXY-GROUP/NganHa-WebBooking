@@ -6,6 +6,7 @@ const recipient = process.env.TEST_CUSTOMER_EMAIL || 'nghik22@gmail.com';
 const testPrefix = 'TEST';
 const date = process.env.TEST_BOOKING_DATE || '2026-09-30';
 const startIndex = Number(process.env.TEST_START_INDEX || 0);
+const testCount = Number(process.env.TEST_COUNT || 999);
 
 const scenarios = [
   {
@@ -64,8 +65,9 @@ async function jsonRequest(path, init) {
 
 const sleep = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds));
 
+const selectedScenarios = scenarios.slice(startIndex, startIndex + testCount);
 let passed = 0;
-for (const [offset, scenario] of scenarios.slice(startIndex).entries()) {
+for (const [offset, scenario] of selectedScenarios.entries()) {
   const index = startIndex + offset;
   const items = scenario.selectedServices.map((item, itemIndex) => ({ ...item, cartId: `TEST-${index + 1}-${itemIndex + 1}` }));
   const repriced = await jsonRequest('/api/bookings/reprice', {
@@ -98,4 +100,4 @@ for (const [offset, scenario] of scenarios.slice(startIndex).entries()) {
   }));
   passed += 1;
 }
-console.log(`Production booking scenarios: ${passed}/${scenarios.slice(startIndex).length} passed; TEST prefix; customer mailbox ${recipient}; real booking commits performed.`);
+console.log(`Production booking scenarios: ${passed}/${selectedScenarios.length} passed; TEST prefix; customer mailbox ${recipient}; real booking commits performed.`);

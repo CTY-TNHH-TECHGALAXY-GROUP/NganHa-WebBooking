@@ -60,7 +60,7 @@ export default function LocalTourPage({ initialConfig, initialLang }: LocalTourP
     return map;
   }, [config.destinations]);
 
-  const hotline = systemSettings?.phone || '+84 964 090 277';
+  const hotline = config.ctaHotline?.trim() || systemSettings?.phone || '+84 964 090 277';
 
   return (
     <div className={styles.sectionRoot}>
@@ -226,6 +226,11 @@ export default function LocalTourPage({ initialConfig, initialLang }: LocalTourP
 
         {/* CLOSING SUMMARY VERBATIM FROM DOCX */}
         <section className="pt-20 pb-16 text-center max-w-2xl mx-auto">
+          {config.ctaTitle && (
+            <h2 className="text-2xl md:text-3xl font-serif text-[#f2e6d0] mb-4">
+              {getText(config.ctaTitle)}
+            </h2>
+          )}
           <p className={styles.closingText}>
             {getText(config.docClosing)}
           </p>

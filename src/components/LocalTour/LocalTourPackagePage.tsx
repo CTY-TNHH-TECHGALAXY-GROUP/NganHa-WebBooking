@@ -225,7 +225,7 @@ export default function LocalTourPackagePage({
       .filter((d): d is LocalTourDestination => Boolean(d));
   }, [pkg.destinationIds, destinationMap]);
 
-  const hotline = systemSettings?.phone || '+84 964 090 277';
+  const hotline = config.ctaHotline?.trim() || systemSettings?.phone || '+84 964 090 277';
 
   // Helper for localized package link
   const getPackageUrl = (targetPkg: LocalTourPackage) => {
@@ -446,7 +446,16 @@ export default function LocalTourPackagePage({
         {/* BOTTOM CONCIERGE & BOOKING CARD */}
         <section className={styles.conciergeCard}>
           <h2 className={styles.conciergeHeading}>
-            {lang === 'vi' ? 'Sẵn Sàng Cho Trải Nghiệm Sài Gòn?' : lang === 'cn' ? '开启您的西贡专属之旅' : lang === 'jp' ? 'サイゴンの旅へ出かけませんか？' : lang === 'kr' ? '사이공 여행을 시작해 볼까요?' : 'Ready to Experience Saigon?'}
+            {getText(config.ctaTitle) ||
+              (lang === 'vi'
+                ? 'Sẵn Sàng Cho Trải Nghiệm Sài Gòn?'
+                : lang === 'cn'
+                ? '开启您的西贡专属之旅'
+                : lang === 'jp'
+                ? 'サイゴンの旅へ出かけませんか？'
+                : lang === 'kr'
+                ? '사이공 여행을 시작해 볼까요?'
+                : 'Ready to Experience Saigon?')}
           </h2>
           <p className={styles.conciergeText}>
             {getText(config.docClosing)}
@@ -456,22 +465,49 @@ export default function LocalTourPackagePage({
               <Phone size={15} />
               <span>Hotline: {hotline}</span>
             </a>
-            {nextPkg && (
-              <Link href={getPackageUrl(nextPkg)} className={styles.conciergeLink}>
-                <span>
-                  {lang === 'vi'
-                    ? `Khám Phá ${getText(nextPkg.title)}`
-                    : lang === 'cn'
-                    ? `探索 ${getText(nextPkg.title)}`
-                    : lang === 'jp'
-                    ? `${getText(nextPkg.title)} を見る`
-                    : lang === 'kr'
-                    ? `${getText(nextPkg.title)} 보기`
-                    : `Explore ${getText(nextPkg.title)}`}
-                </span>
-                <ArrowRight size={14} />
-              </Link>
-            )}
+            {(() => {
+              const customBtnText = getText(config.ctaButtonText);
+              const customBtnLink = config.ctaButtonLink?.trim();
+              if (customBtnLink) {
+                return (
+                  <Link href={customBtnLink} className={styles.conciergeLink}>
+                    <span>
+                      {customBtnText ||
+                        (lang === 'vi'
+                          ? 'Khám Phá Tiếp Theo'
+                          : lang === 'cn'
+                          ? '探索更多'
+                          : lang === 'jp'
+                          ? '次を見る'
+                          : lang === 'kr'
+                          ? '더 알아보기'
+                          : 'Explore Next')}
+                    </span>
+                    <ArrowRight size={14} />
+                  </Link>
+                );
+              }
+              if (nextPkg) {
+                return (
+                  <Link href={getPackageUrl(nextPkg)} className={styles.conciergeLink}>
+                    <span>
+                      {customBtnText ||
+                        (lang === 'vi'
+                          ? `Khám Phá ${getText(nextPkg.title)}`
+                          : lang === 'cn'
+                          ? `探索 ${getText(nextPkg.title)}`
+                          : lang === 'jp'
+                          ? `${getText(nextPkg.title)} を見る`
+                          : lang === 'kr'
+                          ? `${getText(nextPkg.title)} 보기`
+                          : `Explore ${getText(nextPkg.title)}`)}
+                    </span>
+                    <ArrowRight size={14} />
+                  </Link>
+                );
+              }
+              return null;
+            })()}
           </div>
           <div className={styles.conciergeAddress}>
             <MapPin size={16} className="text-[#d8b66a]" />

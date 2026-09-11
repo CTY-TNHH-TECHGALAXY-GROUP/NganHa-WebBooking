@@ -20,6 +20,9 @@ import {
   Trash2,
   ClipboardPaste,
   X,
+  PhoneCall,
+  MapPin,
+  ArrowRight,
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase';
 import {
@@ -65,7 +68,7 @@ export default function LocalTourAdminPage() {
   const [saving, setSaving] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
   const [activeLang, setActiveLang] = useState<string>('vi');
-  const [mainTab, setMainTab] = useState<'packages' | 'intro'>('packages');
+  const [mainTab, setMainTab] = useState<'packages' | 'intro' | 'cta'>('packages');
   const [activePackageTab, setActivePackageTab] = useState<number>(0);
   const [uploadingHlKey, setUploadingHlKey] = useState<string | null>(null);
   const [newImageUrlInputs, setNewImageUrlInputs] = useState<Record<string, string>>({});
@@ -470,14 +473,33 @@ export default function LocalTourAdminPage() {
     });
   };
 
-  // Global intro/closing field updates for activeLang
-  const updateGlobalField = (field: 'docTitle' | 'docScript' | 'docIntro' | 'docIntroSub' | 'docClosing' | 'address', value: string) => {
+  // Global intro/closing/cta field updates for activeLang
+  const updateGlobalField = (
+    field:
+      | 'docTitle'
+      | 'docScript'
+      | 'docIntro'
+      | 'docIntroSub'
+      | 'docClosing'
+      | 'address'
+      | 'ctaTitle'
+      | 'ctaButtonText',
+    value: string
+  ) => {
     updateConfig((prev) => ({
       ...prev,
       [field]: {
-        ...(prev[field] as Record<string, string> || {}),
+        ...((prev[field] as Record<string, string>) || {}),
         [activeLang]: value,
       },
+    }));
+  };
+
+  // Direct scalar fields for CTA
+  const updateScalarField = (field: 'ctaHotline' | 'ctaButtonLink', value: string) => {
+    updateConfig((prev) => ({
+      ...prev,
+      [field]: value,
     }));
   };
 
@@ -584,11 +606,11 @@ export default function LocalTourAdminPage() {
       </div>
 
       {/* Main Navigation Sections */}
-      <div className="flex gap-2 border-b border-admin-line mb-8 pb-1">
+      <div className="flex gap-2 border-b border-admin-line mb-8 pb-1 overflow-x-auto">
         <button
           type="button"
           onClick={() => setMainTab('packages')}
-          className={`px-5 py-3 rounded-t-xl text-sm transition-all flex items-center gap-2 ${
+          className={`px-5 py-3 rounded-t-xl text-sm transition-all flex items-center gap-2 whitespace-nowrap ${
             mainTab === 'packages'
               ? 'bg-admin-card border-t-2 border-t-admin-gold border-x border-admin-line text-admin-text font-bold -mb-[5px] border-b-2 border-b-admin-card shadow-sm'
               : 'text-admin-text-dim hover:text-admin-text font-medium'
@@ -599,13 +621,24 @@ export default function LocalTourAdminPage() {
         <button
           type="button"
           onClick={() => setMainTab('intro')}
-          className={`px-5 py-3 rounded-t-xl text-sm transition-all flex items-center gap-2 ${
+          className={`px-5 py-3 rounded-t-xl text-sm transition-all flex items-center gap-2 whitespace-nowrap ${
             mainTab === 'intro'
               ? 'bg-admin-card border-t-2 border-t-admin-gold border-x border-admin-line text-admin-text font-bold -mb-[5px] border-b-2 border-b-admin-card shadow-sm'
               : 'text-admin-text-dim hover:text-admin-text font-medium'
           }`}
         >
-          <FileText size={16} className={mainTab === 'intro' ? 'text-admin-gold' : 'text-admin-text-dim'} /> Tiêu Đề, Mở Đầu &amp; Địa Chỉ Chân Trang
+          <FileText size={16} className={mainTab === 'intro' ? 'text-admin-gold' : 'text-admin-text-dim'} /> Tiêu Đề &amp; Mở Đầu Trang
+        </button>
+        <button
+          type="button"
+          onClick={() => setMainTab('cta')}
+          className={`px-5 py-3 rounded-t-xl text-sm transition-all flex items-center gap-2 whitespace-nowrap ${
+            mainTab === 'cta'
+              ? 'bg-admin-card border-t-2 border-t-admin-gold border-x border-admin-line text-admin-text font-bold -mb-[5px] border-b-2 border-b-admin-card shadow-sm'
+              : 'text-admin-text-dim hover:text-admin-text font-medium'
+          }`}
+        >
+          <PhoneCall size={16} className={mainTab === 'cta' ? 'text-admin-gold' : 'text-admin-text-dim'} /> Khối Kêu Gọi (CTA) Chân Trang
         </button>
       </div>
 
@@ -1420,35 +1453,191 @@ export default function LocalTourAdminPage() {
             />
           </div>
 
-          <div className="pt-4 border-t border-admin-line space-y-4">
-            <h3 className="text-sm font-bold text-admin-gold">Thông Tin Kết Thúc &amp; Địa Chỉ</h3>
+          <div className="pt-4 border-t border-admin-line">
+            <div className="p-4 bg-admin-bg/60 rounded-xl border border-admin-line flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <p className="text-sm font-semibold text-admin-text flex items-center gap-2">
+                  <PhoneCall size={16} className="text-admin-gold" /> Khối Kêu Gọi Hành Động (CTA) &amp; Chân Trang
+                </p>
+                <p className="text-xs text-admin-text-dim mt-0.5">
+                  Tùy chỉnh tiêu đề &quot;Sẵn Sàng Cho Trải Nghiệm Sài Gòn?&quot;, lời kết, hotline, nút bấm và địa chỉ chân trang.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setMainTab('cta')}
+                className="px-4 py-2 bg-admin-gold text-[#241804] rounded-xl text-xs font-bold hover:bg-[#a67433] transition-all flex items-center justify-center gap-1.5 whitespace-nowrap self-start sm:self-auto"
+              >
+                <PhoneCall size={14} /> Đi Đến Tab CTA
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
-            <div>
-              <label className="text-xs uppercase tracking-wider text-admin-text-dim block mb-2 font-semibold">
-                Lời Kết Tour ({activeLang.toUpperCase()})
-              </label>
-              <textarea
-                rows={3}
-                value={config.docClosing[activeLang] || ''}
-                onChange={(e) => updateGlobalField('docClosing', e.target.value)}
-                className="w-full bg-admin-bg text-sm text-admin-text p-3 rounded-xl border border-admin-line focus:border-admin-gold outline-none resize-y"
-              />
+      {/* TAB 3: CALL TO ACTION (CTA) & CONCIERGE FOOTER */}
+      {mainTab === 'cta' && (
+        <div className="space-y-8">
+          <div className="bg-admin-card rounded-2xl border border-admin-line p-6 space-y-6">
+            <div className="border-b border-admin-line pb-4 flex items-center justify-between">
+              <div>
+                <h2 className="text-xl font-bold text-admin-text flex items-center gap-2">
+                  <PhoneCall size={20} className="text-admin-gold" /> Chỉnh Sửa Khối Kêu Gọi Hành Động (CTA) Chân Trang
+                </h2>
+                <p className="text-xs text-admin-text-dim mt-1">
+                  Khối liên hệ &amp; đặt tour xuất hiện ở cuối các trang tour chi tiết.
+                </p>
+              </div>
+              <span className="text-xs text-admin-gold font-semibold bg-admin-gold/10 px-3 py-1 rounded-lg border border-admin-gold/20">
+                Ngôn ngữ: {activeLang.toUpperCase()}
+              </span>
             </div>
 
+            {/* 1. CTA Heading */}
             <div>
-              <label className="text-xs uppercase tracking-wider text-admin-text-dim block mb-2 font-semibold">
-                Địa Chỉ Chân Trang ({activeLang.toUpperCase()})
+              <label className="text-xs uppercase tracking-wider text-admin-text-dim block mb-2 font-semibold flex items-center justify-between">
+                <span>Tiêu Đề Lớn CTA ({activeLang.toUpperCase()})</span>
+                <span className="text-admin-gold font-normal lowercase text-[11px]">Hiển thị tiêu đề chính nổi bật</span>
               </label>
               <input
                 type="text"
-                value={config.address?.[activeLang] || DEFAULT_LOCAL_TOUR_CONFIG.address?.[activeLang] || ''}
-                onChange={(e) => updateGlobalField('address', e.target.value)}
-                placeholder="Ngô Đức Kế, Sài Gòn, Thành phố Hồ Chí Minh"
-                className="w-full bg-admin-bg text-sm text-admin-text p-3 rounded-xl border border-admin-line focus:border-admin-gold outline-none"
+                value={config.ctaTitle?.[activeLang] ?? (DEFAULT_LOCAL_TOUR_CONFIG.ctaTitle?.[activeLang] || '')}
+                onChange={(e) => updateGlobalField('ctaTitle', e.target.value)}
+                placeholder="Ví dụ: Sẵn Sàng Cho Trải Nghiệm Sài Gòn?"
+                className="w-full bg-admin-bg text-sm text-admin-text p-3 rounded-xl border border-admin-line focus:border-admin-gold outline-none font-medium"
               />
               <p className="text-xs text-admin-text-faint mt-1.5">
-                Mặc định: Ngô Đức Kế, Sài Gòn, Thành phố Hồ Chí Minh
+                Mặc định: {DEFAULT_LOCAL_TOUR_CONFIG.ctaTitle?.[activeLang] || 'Sẵn Sàng Cho Trải Nghiệm Sài Gòn?'}
               </p>
+            </div>
+
+            {/* 2. CTA Closing Description */}
+            <div>
+              <label className="text-xs uppercase tracking-wider text-admin-text-dim block mb-2 font-semibold flex items-center justify-between">
+                <span>Đoạn Văn Lời Dẫn / Mô Tả ({activeLang.toUpperCase()})</span>
+                <span className="text-admin-gold font-normal lowercase text-[11px]">Đoạn văn thuyết phục đặt tour bên dưới tiêu đề</span>
+              </label>
+              <textarea
+                rows={4}
+                value={config.docClosing?.[activeLang] || ''}
+                onChange={(e) => updateGlobalField('docClosing', e.target.value)}
+                placeholder="Ba gói, ba mức trải nghiệm khác nhau, nhưng đều được Oria Spa sắp xếp sẵn để bạn không phải lo tính toán lịch trình..."
+                className="w-full bg-admin-bg text-sm text-admin-text p-3 rounded-xl border border-admin-line focus:border-admin-gold outline-none resize-y leading-relaxed"
+              />
+            </div>
+
+            {/* 3. Hotline & Address Row */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+              <div>
+                <label className="text-xs uppercase tracking-wider text-admin-text-dim block mb-2 font-semibold">
+                  Hotline Liên Hệ (Áp dụng chung)
+                </label>
+                <input
+                  type="text"
+                  value={config.ctaHotline ?? DEFAULT_LOCAL_TOUR_CONFIG.ctaHotline ?? ''}
+                  onChange={(e) => updateScalarField('ctaHotline', e.target.value)}
+                  placeholder="+84964090277 hoặc +84 964 090 277"
+                  className="w-full bg-admin-bg text-sm text-admin-text p-3 rounded-xl border border-admin-line focus:border-admin-gold outline-none"
+                />
+                <p className="text-[11px] text-admin-text-faint mt-1.5">
+                  Để trống sẽ tự động lấy hotline từ Cài Đặt Hệ Thống.
+                </p>
+              </div>
+
+              <div>
+                <label className="text-xs uppercase tracking-wider text-admin-text-dim block mb-2 font-semibold">
+                  Địa Chỉ Chân Trang ({activeLang.toUpperCase()})
+                </label>
+                <input
+                  type="text"
+                  value={config.address?.[activeLang] ?? (DEFAULT_LOCAL_TOUR_CONFIG.address?.[activeLang] || '')}
+                  onChange={(e) => updateGlobalField('address', e.target.value)}
+                  placeholder="Oria Spa 11 Ngô Đức Kế, Sài Gòn, Quận 1, TP. Hồ Chí Minh"
+                  className="w-full bg-admin-bg text-sm text-admin-text p-3 rounded-xl border border-admin-line focus:border-admin-gold outline-none"
+                />
+                <p className="text-[11px] text-admin-text-faint mt-1.5">
+                  Mặc định: {DEFAULT_LOCAL_TOUR_CONFIG.address?.[activeLang] || 'Oria Spa 11 Ngô Đức Kế, Sài Gòn, Quận 1, TP. Hồ Chí Minh'}
+                </p>
+              </div>
+            </div>
+
+            {/* 4. Action Button Customization */}
+            <div className="pt-4 border-t border-admin-line space-y-4">
+              <h3 className="text-sm font-bold text-admin-gold flex items-center gap-2">
+                <ArrowRight size={16} /> Tùy Chỉnh Nút Hành Động Bên Cạnh Hotline
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="text-xs uppercase tracking-wider text-admin-text-dim block mb-2 font-semibold">
+                    Chữ Trên Nút ({activeLang.toUpperCase()})
+                  </label>
+                  <input
+                    type="text"
+                    value={config.ctaButtonText?.[activeLang] || ''}
+                    onChange={(e) => updateGlobalField('ctaButtonText', e.target.value)}
+                    placeholder="Mặc định: Khám Phá [Tên Gói Tiếp Theo]"
+                    className="w-full bg-admin-bg text-sm text-admin-text p-3 rounded-xl border border-admin-line focus:border-admin-gold outline-none"
+                  />
+                  <p className="text-[11px] text-admin-text-faint mt-1.5">
+                    Để trống sẽ tự động hiển thị &quot;Khám Phá Gói...&quot; của gói tiếp theo.
+                  </p>
+                </div>
+
+                <div>
+                  <label className="text-xs uppercase tracking-wider text-admin-text-dim block mb-2 font-semibold">
+                    Đường Dẫn Nút (Link URL)
+                  </label>
+                  <input
+                    type="text"
+                    value={config.ctaButtonLink || ''}
+                    onChange={(e) => updateScalarField('ctaButtonLink', e.target.value)}
+                    placeholder="Mặc định: Tự động chuyển tiếp đến gói tiếp theo"
+                    className="w-full bg-admin-bg text-sm text-admin-text p-3 rounded-xl border border-admin-line focus:border-admin-gold outline-none"
+                  />
+                  <p className="text-[11px] text-admin-text-faint mt-1.5">
+                    Nhập URL tùy chọn (ví dụ: /vi/new-user/standard/checkout) hoặc để trống.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* 5. Live Visual Preview Matching Exact Screenshot */}
+          <div className="bg-[#100b08] rounded-2xl border border-admin-line p-8 md:p-14 text-center relative overflow-hidden shadow-2xl">
+            <div className="absolute top-3 left-4 text-[10px] uppercase tracking-widest text-admin-gold font-mono flex items-center gap-1.5">
+              <Sparkles size={12} /> Xem Trước Thực Tế ({activeLang.toUpperCase()})
+            </div>
+
+            <div className="max-w-2xl mx-auto space-y-5 pt-3">
+              <h2 className="text-2xl md:text-3xl font-serif text-white font-normal tracking-wide">
+                {config.ctaTitle?.[activeLang] || DEFAULT_LOCAL_TOUR_CONFIG.ctaTitle?.[activeLang] || 'Sẵn Sàng Cho Trải Nghiệm Sài Gòn?'}
+              </h2>
+
+              <p className="text-[#a89c91] text-xs md:text-sm leading-relaxed max-w-xl mx-auto font-light">
+                {config.docClosing?.[activeLang] || DEFAULT_LOCAL_TOUR_CONFIG.docClosing?.[activeLang] || 'Ba gói, ba mức trải nghiệm khác nhau, nhưng đều được Oria Spa sắp xếp sẵn để bạn không phải lo tính toán lịch trình. Chỉ cần chọn gói phù hợp với thời gian mình có, còn lại để Oria Spa lo.'}
+              </p>
+
+              <div className="flex flex-wrap items-center justify-center gap-6 pt-4">
+                <div className="inline-flex items-center gap-2 text-xs md:text-sm text-white border-b border-[#a67433] pb-1">
+                  <PhoneCall size={14} className="text-white" />
+                  <span>Hotline: {config.ctaHotline || DEFAULT_LOCAL_TOUR_CONFIG.ctaHotline || '+84964090277'}</span>
+                </div>
+
+                <div className="inline-flex items-center gap-2 text-xs md:text-sm text-white border-b border-[#a67433] pb-1">
+                  <span>
+                    {config.ctaButtonText?.[activeLang] ||
+                      (activeLang === 'vi' ? 'Khám Phá Gói 1: Sài Gòn Xưa' : activeLang === 'cn' ? '探索套餐一:老西贡' : activeLang === 'jp' ? 'パッケージ1:古きサイゴン を見る' : activeLang === 'kr' ? '패키지 1: 옛 사이공 보기' : 'Explore Package 1: Old Saigon')}
+                  </span>
+                  <ArrowRight size={14} />
+                </div>
+              </div>
+
+              <div className="flex items-center justify-center gap-2 text-[11px] md:text-xs text-[#a89c91] pt-3">
+                <MapPin size={14} className="text-[#d8b66a]" />
+                <span>
+                  {config.address?.[activeLang] || DEFAULT_LOCAL_TOUR_CONFIG.address?.[activeLang] || 'Oria Spa 11 Ngô Đức Kế, Sài Gòn, Quận 1, TP. Hồ Chí Minh (Bên bờ sông Sài Gòn)'}
+                </span>
+              </div>
             </div>
           </div>
         </div>

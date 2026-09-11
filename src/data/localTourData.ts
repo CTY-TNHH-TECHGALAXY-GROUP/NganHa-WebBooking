@@ -40,6 +40,10 @@ export interface LocalTourConfig {
   docIntroSub: LocalizedString;
   forLabel: LocalizedString;
   docClosing: LocalizedString;
+  ctaTitle?: LocalizedString;
+  ctaHotline?: string;
+  ctaButtonText?: LocalizedString;
+  ctaButtonLink?: string;
   address?: LocalizedString;
   packages: LocalTourPackage[];
   destinations: LocalTourDestination[];
@@ -190,12 +194,28 @@ export const DEFAULT_LOCAL_TOUR_CONFIG: LocalTourConfig = {
     kr: '세 가지 패키지, 세 가지 경험의 깊이. 모두 Oria Spa가 미리 준비해 두었기에 일정을 직접 짤 필요가 없습니다. 자신의 시간에 맞는 패키지 하나만 고르세요 - 나머지는 Oria Spa가 알아서 해드립니다.',
     jp: '3つのパッケージ、3つの体験の深さ。すべてOria Spaが事前に手配しているので、スケジュールを組む手間は一切ありません。ご自分の時間に合うものを一つ選ぶだけ - あとはOria Spaにお任せください。',
   },
+  ctaTitle: {
+    vi: 'Sẵn Sàng Cho Trải Nghiệm Sài Gòn?',
+    en: 'Ready to Experience Saigon?',
+    cn: '开启您的西贡专属之旅',
+    kr: '사이공 여행을 시작해 볼까요?',
+    jp: 'サイゴンの旅へ出かけませんか？',
+  },
+  ctaHotline: '+84964090277',
+  ctaButtonText: {
+    vi: '',
+    en: '',
+    cn: '',
+    kr: '',
+    jp: '',
+  },
+  ctaButtonLink: '',
   address: {
-    vi: 'Oria Spa — 01 Ngô Đức Kế, Bến Nghé, Quận 1, TP. Hồ Chí Minh (Bên bờ sông Sài Gòn)',
-    en: 'Oria Spa — 01 Ngo Duc Ke, Ben Nghe, District 1, Ho Chi Minh City (By Saigon River)',
-    cn: 'Oria Spa — 胡志明市第一郡吴德计街01号（西贡河畔）',
-    kr: 'Oria Spa — 01 Ngo Duc Ke, Ben Nghe, District 1, Ho Chi Minh City (사이공 강변)',
-    jp: 'Oria Spa — 01 Ngo Duc Ke, Ben Nghe, District 1, Ho Chi Minh City（サイゴン川沿い）',
+    vi: 'Oria Spa 11 Ngô Đức Kế, Sài Gòn, Quận 1, TP. Hồ Chí Minh (Bên bờ sông Sài Gòn)',
+    en: 'Oria Spa 11 Ngo Duc Ke, Saigon, District 1, Ho Chi Minh City (By Saigon River)',
+    cn: 'Oria Spa 胡志明市第一郡西贡吴德计街11号（西贡河畔）',
+    kr: 'Oria Spa 11 Ngo Duc Ke, Saigon, District 1, Ho Chi Minh City (사이공 강변)',
+    jp: 'Oria Spa 11 Ngo Duc Ke, Saigon, District 1, Ho Chi Minh City（サイゴン川沿い）',
   },
   packages: [
     {
@@ -770,6 +790,10 @@ export function hydrateLocalTourConfig(raw: any): LocalTourConfig {
     docIntroSub: raw.docIntroSub || DEFAULT_LOCAL_TOUR_CONFIG.docIntroSub,
     forLabel: raw.forLabel || DEFAULT_LOCAL_TOUR_CONFIG.forLabel,
     docClosing: raw.docClosing || DEFAULT_LOCAL_TOUR_CONFIG.docClosing,
+    ctaTitle: raw.ctaTitle || DEFAULT_LOCAL_TOUR_CONFIG.ctaTitle,
+    ctaHotline: typeof raw.ctaHotline === 'string' ? raw.ctaHotline : (DEFAULT_LOCAL_TOUR_CONFIG.ctaHotline || ''),
+    ctaButtonText: raw.ctaButtonText || DEFAULT_LOCAL_TOUR_CONFIG.ctaButtonText,
+    ctaButtonLink: typeof raw.ctaButtonLink === 'string' ? raw.ctaButtonLink : (DEFAULT_LOCAL_TOUR_CONFIG.ctaButtonLink || ''),
     address: raw.address || DEFAULT_LOCAL_TOUR_CONFIG.address,
     packages: hydratedPackages,
     destinations: Array.isArray(raw.destinations) && raw.destinations.length > 0
