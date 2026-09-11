@@ -94,7 +94,7 @@ export default function MediaPreviewModal({
         className="relative max-w-5xl max-h-[92vh] w-full flex flex-col items-center justify-center"
       >
         {/* Media box */}
-        <div className="relative overflow-hidden rounded-2xl border border-[#C9A96E]/30 bg-neutral-950 shadow-2xl flex items-center justify-center max-h-[78vh] w-auto max-w-full">
+        <div className="relative overflow-hidden rounded-2xl border border-[#C9A96E]/30 bg-neutral-950 shadow-2xl flex items-center justify-center max-h-[88vh] w-auto max-w-full">
           {isLoading && (
             <div className="absolute inset-0 flex items-center justify-center bg-black/50 backdrop-blur-xs z-10 pointer-events-none">
               <Loader2 className="w-8 h-8 text-[#C9A96E] animate-spin" />
@@ -111,7 +111,7 @@ export default function MediaPreviewModal({
               loop
               onCanPlay={() => setIsLoading(false)}
               onLoadedData={() => setIsLoading(false)}
-              className="max-h-[78vh] max-w-full w-auto h-auto object-contain rounded-2xl"
+              className="max-h-[88vh] max-w-full w-auto h-auto object-contain rounded-2xl"
             />
           ) : (
             <img
@@ -129,26 +129,10 @@ export default function MediaPreviewModal({
                   e.currentTarget.src = poster;
                 }
               }}
-              className="max-h-[78vh] max-w-full w-auto h-auto object-contain rounded-2xl transition-opacity duration-300"
+              className="max-h-[88vh] max-w-full w-auto h-auto object-contain rounded-2xl transition-opacity duration-300"
             />
           )}
         </div>
-
-        {/* Title & Description caption */}
-        {(title || description) && (
-          <div className="mt-3 sm:mt-4 text-center px-4 max-w-2xl">
-            {title && (
-              <h3 className="text-[#D4AF37] font-bold text-base sm:text-lg tracking-wide font-luxury drop-shadow-md">
-                {title}
-              </h3>
-            )}
-            {description && (
-              <p className="text-gray-300 text-xs sm:text-sm mt-1 leading-relaxed opacity-90 line-clamp-3">
-                {description}
-              </p>
-            )}
-          </div>
-        )}
       </div>
     </div>
   );
