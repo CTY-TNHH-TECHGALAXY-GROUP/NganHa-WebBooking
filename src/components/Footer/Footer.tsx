@@ -5,6 +5,7 @@ import { useSystemSettings } from '@/components/SystemSettingsProvider';
 import { useTranslation } from '@/components/TranslationProvider';
 import SmartLogo from '@/components/SmartLogo';
 import { HeartPulse, ShieldCheck, X, Check, Copy } from 'lucide-react';
+import MediaPreviewModal from '@/components/Shared/MediaPreviewModal';
 
 const WeChatIcon = ({ size = 18, className = "" }: { size?: number; className?: string }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" className={className}>
@@ -22,8 +23,10 @@ const CORE_VALUES_SECTION_TITLE: Record<string, string> = {
 
 const CORE_VALUES = [
   {
+    id: 'guest-centric',
     icon: null,
     imgSrc: '/images/core-values/guest-centric.png',
+    applyGoldFilter: true,
     title: {
       vi: 'TẬN TÂM PHỤNG SỰ',
       en: 'GUEST-CENTRIC EXCELLENCE',
@@ -33,8 +36,10 @@ const CORE_VALUES = [
     }
   },
   {
+    id: 'natural-authenticity',
     icon: null,
     imgSrc: '/images/core-values/natural-authenticity.png',
+    applyGoldFilter: true,
     title: {
       vi: 'THUẦN THIÊN NHIÊN',
       en: 'NATURAL AUTHENTICITY',
@@ -44,8 +49,10 @@ const CORE_VALUES = [
     }
   },
   {
+    id: 'empathetic-understanding',
     icon: HeartPulse,
     imgSrc: null,
+    applyGoldFilter: false,
     title: {
       vi: 'LẮNG NGHE & THẤU HIỂU',
       en: 'EMPATHETIC UNDERSTANDING',
@@ -55,8 +62,10 @@ const CORE_VALUES = [
     }
   },
   {
+    id: 'artisans-touch',
     icon: null,
     imgSrc: '/images/core-values/artisans-touch.png',
+    applyGoldFilter: true,
     title: {
       vi: 'BÀN TAY NGHỆ NHÂN',
       en: "ARTISAN'S TOUCH",
@@ -66,8 +75,10 @@ const CORE_VALUES = [
     }
   },
   {
+    id: 'global-essence',
     icon: null,
     imgSrc: '/images/core-values/global-essence.png',
+    applyGoldFilter: true,
     title: {
       vi: 'HỘI NHẬP & SÁNG TẠO',
       en: 'GLOBAL ESSENCE & CREATIVE FUSION',
@@ -77,8 +88,10 @@ const CORE_VALUES = [
     }
   },
   {
+    id: 'hygiene-health',
     icon: ShieldCheck,
     imgSrc: null,
+    applyGoldFilter: false,
     title: {
       vi: 'SẠCH KHỎE ĐỒNG HÀNH',
       en: 'HYGIENE & HEALTH PRIORITY',
@@ -95,6 +108,7 @@ const Footer = () => {
 
   const [footerData, setFooterData] = useState<any>(initialFooter || {});
   const [settingsData, setSettingsData] = useState<any>(initialSettings || {});
+  const [previewMedia, setPreviewMedia] = useState<{ url: string; title?: string } | null>(null);
 
   useEffect(() => {
     if (initialFooter && Object.keys(initialFooter).length > 0) {
@@ -283,30 +297,74 @@ const Footer = () => {
 
   const copyrightText = footerData?.copyright || `© ${new Date().getFullYear()} TECHGALAXY GROUP. All rights reserved.`;
 
+  const customSectionTitle = footerData?.coreValuesSectionTitle;
+  const sectionTitle = (customSectionTitle && customSectionTitle[currentLang])
+    ? customSectionTitle[currentLang]
+    : (CORE_VALUES_SECTION_TITLE[currentLang] || CORE_VALUES_SECTION_TITLE.en);
+
+  const savedCoreValues: any[] = Array.isArray(footerData?.coreValues) ? footerData.coreValues : [];
+
+  const coreValuesList = CORE_VALUES.map((defaultItem, index) => {
+    const customItem = savedCoreValues.find((c: any) => c && c.id === defaultItem.id) || savedCoreValues[index];
+    if (!customItem) return defaultItem;
+
+    const imgSrc = customItem.imgSrc !== undefined && customItem.imgSrc !== '' ? customItem.imgSrc : defaultItem.imgSrc;
+    const applyGoldFilter = customItem.applyGoldFilter !== undefined
+      ? Boolean(customItem.applyGoldFilter)
+      : defaultItem.applyGoldFilter;
+
+    return {
+      ...defaultItem,
+      imgSrc,
+      applyGoldFilter,
+      title: {
+        ...defaultItem.title,
+        ...(customItem.title || {})
+      }
+    };
+  });
+
   return (
     <footer id="footer" className="bg-[rgba(40,27,21,1)] text-[#f7ebc7] relative z-10 overflow-x-hidden">
       {/* Core Values Section */}
       <div className="py-12 md:py-24 px-6 border-b border-[rgba(247,235,199,0.15)] bg-transparent">
         <div className="max-w-6xl mx-auto flex flex-col items-center">
           <h2 className="font-serif text-3xl md:text-4xl text-center text-[#f7ebc7] mb-16 tracking-wide uppercase">
-            {CORE_VALUES_SECTION_TITLE[currentLang] || CORE_VALUES_SECTION_TITLE.en}
+            {sectionTitle}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-8 md:gap-y-16 gap-x-8 text-center w-full">
-            {CORE_VALUES.map((value, index) => {
+            {coreValuesList.map((value, index) => {
               const Icon = value.icon;
-              const itemTitle = (value.title as any)[currentLang] || (value.title as any)['en'] || (value.title as any)['vi'];
+              const itemTitle = (value.title as any)?.[currentLang] || (value.title as any)?.['en'] || (value.title as any)?.['vi'] || '';
+              const hasImage = Boolean(value.imgSrc);
               return (
-                <div key={index} className="flex flex-col items-center gap-5">
-                  <div className="w-24 h-24 rounded-full flex items-center justify-center transition-transform hover:scale-105 duration-300">
-                    {value.imgSrc ? (
+                <div key={value.id || index} className="flex flex-col items-center gap-5">
+                  <div 
+                    className={`w-24 h-24 rounded-full flex items-center justify-center transition-transform hover:scale-105 duration-300 ${hasImage ? 'cursor-pointer' : ''}`}
+                    onClick={() => {
+                      if (hasImage && value.imgSrc) {
+                        setPreviewMedia({ url: value.imgSrc, title: itemTitle });
+                      }
+                    }}
+                    role={hasImage ? "button" : undefined}
+                    tabIndex={hasImage ? 0 : undefined}
+                    onKeyDown={hasImage ? (e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        if (value.imgSrc) setPreviewMedia({ url: value.imgSrc, title: itemTitle });
+                      }
+                    } : undefined}
+                    aria-label={hasImage ? `Xem ảnh ${itemTitle}` : undefined}
+                  >
+                    {hasImage ? (
                       <img 
-                        src={value.imgSrc} 
+                        src={value.imgSrc!} 
                         alt={itemTitle} 
                         className="w-16 h-16 md:w-20 md:h-20 object-contain"
-                        style={{
+                        style={value.applyGoldFilter ? {
                           filter: 'brightness(0) saturate(100%) invert(92%) sepia(16%) saturate(444%) hue-rotate(350deg) brightness(101%) contrast(94%)',
                           WebkitFilter: 'brightness(0) saturate(100%) invert(92%) sepia(16%) saturate(444%) hue-rotate(350deg) brightness(101%) contrast(94%)',
-                        }}
+                        } : undefined}
                       />
                     ) : (
                       Icon && <Icon size={56} className="text-[#f7ebc7]" strokeWidth={1.2} />
@@ -488,6 +546,16 @@ const Footer = () => {
           </div>
         </div>
       )}
+
+      {/* Media Preview Modal for Core Values */}
+      <MediaPreviewModal
+        isOpen={Boolean(previewMedia?.url)}
+        onClose={() => setPreviewMedia(null)}
+        mediaUrl={previewMedia?.url || ''}
+        mediaType="image"
+        title={previewMedia?.title}
+        lang={currentLang}
+      />
     </footer>
   );
 };
