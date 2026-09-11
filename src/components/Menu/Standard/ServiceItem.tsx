@@ -9,10 +9,11 @@
  * Ngày cập nhật: 2026-01-31
  */
 'use client';
-import React from 'react';
-import { Minus, Plus } from 'lucide-react';
+import React, { useState } from 'react';
+import { Minus, Plus, ZoomIn } from 'lucide-react';
 import { Service } from '@/components/Menu/types';
 import { formatCurrency } from '@/components/Menu/utils';
+import MediaPreviewModal from '@/components/Shared/MediaPreviewModal';
 
 interface ServiceItemProps {
     service: Service;
@@ -29,6 +30,10 @@ export default function ServiceItem({ service, quantity, lang, isBestSeller, onC
     const desc = service.descriptions[lang as keyof typeof service.descriptions] || service.descriptions['en'];
     const isSelected = quantity > 0;
     const [isVideoLoading, setIsVideoLoading] = React.useState(true);
+    const [isPreviewOpen, setIsPreviewOpen] = React.useState(false);
+
+    const mediaUrl = (service.media_type === 'image' && service.media_url) ? service.media_url : (service.media_url || service.img);
+    const isVideo = service.media_type === 'video' && Boolean(service.media_url);
 
     const BEST_SELLER_LABEL = {
         en: 'BEST SELLER',
@@ -55,14 +60,21 @@ export default function ServiceItem({ service, quantity, lang, isBestSeller, onC
                 </div>
             )}
 
-            {/* 1. Ảnh vuông bo tròn / Video */}
-            <div className="w-20 h-20 shrink-0 rounded-xl overflow-hidden bg-[#1c1c1e] relative shadow-sm">
+            {/* 1. Ảnh vuông bo tròn / Video - Click để phóng to toàn màn hình */}
+            <div
+                onClick={(e) => {
+                    e.stopPropagation();
+                    setIsPreviewOpen(true);
+                }}
+                className="w-20 h-20 shrink-0 rounded-xl overflow-hidden bg-[#1c1c1e] relative shadow-sm cursor-zoom-in group/thumb"
+                title={lang === 'vi' ? 'Xem ảnh đầy đủ' : 'Click to view full screen'}
+            >
                 {service.media_type === 'video' && service.media_url ? (
                     <>
                         <video
                             src={service.media_url}
                             poster={service.img}
-                            className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover/thumb:scale-110"
                             muted
                             autoPlay
                             playsInline
@@ -80,11 +92,18 @@ export default function ServiceItem({ service, quantity, lang, isBestSeller, onC
                 ) : (
                     <img
                         src={service.media_type === 'image' && service.media_url ? service.media_url : service.img}
-                        className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover/thumb:scale-110"
                         alt={name}
                         onError={(e) => (e.currentTarget.src = 'https://placehold.co/100x100?text=SPA')}
                     />
                 )}
+
+                {/* Biểu tượng zoom khi hover */}
+                <div className="absolute inset-0 bg-black/35 opacity-0 group-hover/thumb:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
+                    <div className="w-6 h-6 rounded-full bg-black/60 text-[#D4AF37] flex items-center justify-center shadow-md">
+                        <ZoomIn size={13} strokeWidth={2.5} />
+                    </div>
+                </div>
             </div>
 
             {/* 2. Nội dung text (Không hiện giá) */}
@@ -96,8 +115,6 @@ export default function ServiceItem({ service, quantity, lang, isBestSeller, onC
                     {desc}
                 </p>
             </div>
-
-
 
             {/* 3. Quick quantity controls. Events stay inside the control, not the card. */}
             <div className="absolute bottom-3 right-3 z-10">
@@ -113,6 +130,18 @@ export default function ServiceItem({ service, quantity, lang, isBestSeller, onC
                     </button>
                 )}
             </div>
+
+            {/* Popover xem ảnh/video toàn màn hình với nút X đóng */}
+            <MediaPreviewModal
+                isOpen={isPreviewOpen}
+                onClose={() => setIsPreviewOpen(false)}
+                mediaUrl={mediaUrl}
+                mediaType={isVideo ? 'video' : 'image'}
+                poster={service.img}
+                title={name}
+                description={desc}
+                lang={lang}
+            />
         </div>
     );
 }

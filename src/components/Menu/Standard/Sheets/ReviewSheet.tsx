@@ -11,9 +11,10 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { X, Trash2, Minus, Plus } from 'lucide-react';
+import { X, Trash2, Minus, Plus, ZoomIn } from 'lucide-react';
 import { Service, CartState } from '../../types'; // Dùng đường dẫn tương đối
 import { formatCurrency } from '../../utils';
+import MediaPreviewModal from '@/components/Shared/MediaPreviewModal';
 
 const REVIEW_COPY: Record<string, Record<'vi' | 'en' | 'cn' | 'jp' | 'kr', string>> = {
     remove: {
@@ -70,6 +71,7 @@ interface ReviewSheetProps {
 export default function ReviewSheet({ service, cart, isOpen, lang, onClose, onUpdateCart }: ReviewSheetProps) {
     const [qty, setQty] = useState(0);
     const [isClosing, setIsClosing] = useState(false);
+    const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
     // Khi mở lên, lấy số lượng hiện tại trong giỏ đổ vào state
     useEffect(() => {
@@ -137,14 +139,26 @@ export default function ReviewSheet({ service, cart, isOpen, lang, onClose, onUp
                 {/* Body: Thông tin món */}
                 <div className="p-5">
                     <div className="flex gap-4 mb-6">
-                        {/* Ảnh nhỏ */}
-                        <div className="w-20 h-20 rounded-xl overflow-hidden bg-[#1c1c1e] shrink-0 border border-gray-600 shadow-sm">
+                        {/* Ảnh nhỏ - Click để phóng to toàn màn hình */}
+                        <div
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setIsPreviewOpen(true);
+                            }}
+                            className="w-20 h-20 rounded-xl overflow-hidden bg-[#1c1c1e] shrink-0 border border-gray-600 shadow-sm cursor-zoom-in relative group/thumb"
+                            title={lang === 'vi' ? 'Xem ảnh đầy đủ' : 'Click to view full screen'}
+                        >
                             <img
                                 src={service.img}
-                                className="w-full h-full object-cover"
+                                className="w-full h-full object-cover transition-transform duration-300 group-hover/thumb:scale-110"
                                 alt={name}
                                 onError={(e) => (e.currentTarget.src = 'https://placehold.co/100x100?text=SPA')}
                             />
+                            <div className="absolute inset-0 bg-black/35 opacity-0 group-hover/thumb:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
+                                <div className="w-6 h-6 rounded-full bg-black/60 text-[#D4AF37] flex items-center justify-center shadow-md">
+                                    <ZoomIn size={13} strokeWidth={2.5} />
+                                </div>
+                            </div>
                         </div>
                         {/* Tên & Giá */}
                         <div className="flex-1 flex flex-col justify-center">
@@ -205,6 +219,16 @@ export default function ReviewSheet({ service, cart, isOpen, lang, onClose, onUp
                     </button>
                 </div>
             </div>
+
+            {/* Popover xem ảnh toàn màn hình */}
+            <MediaPreviewModal
+                isOpen={isPreviewOpen}
+                onClose={() => setIsPreviewOpen(false)}
+                mediaUrl={service.img}
+                mediaType="image"
+                title={name}
+                lang={lang}
+            />
         </>
     );
 }

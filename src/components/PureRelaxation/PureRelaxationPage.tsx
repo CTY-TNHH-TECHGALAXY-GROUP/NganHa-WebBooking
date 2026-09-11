@@ -11,6 +11,7 @@ import {
   removeOneBookingCartItem,
   updateBookingCartItemOptions,
 } from '@/lib/bookingCartStorage';
+import MediaPreviewModal from '@/components/Shared/MediaPreviewModal';
 import CustomForYouModal from '@/components/CustomForYou';
 import { CustomPreferences } from '@/components/CustomForYou/types';
 import { getPureRelaxationSections } from './pureRelaxationData';
@@ -210,6 +211,7 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
   const [lastAddedCartIds, setLastAddedCartIds] = useState<string[]>([]);
   const [modalServiceData, setModalServiceData] = useState<any>(null);
   const [pendingCheckout, setPendingCheckout] = useState(false);
+  const [previewMedia, setPreviewMedia] = useState<{ url: string; title?: string; desc?: string } | null>(null);
   const router = useRouter();
   const { currentLang } = useTranslation();
   const noticeCopy = {
@@ -829,7 +831,15 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
           {notice && <p className={styles.notice}>{notice}</p>}
 
           {active.privilege?.image && (
-            <div className={styles.privilegeCard}>
+            <div
+              className={`${styles.privilegeCard} cursor-zoom-in`}
+              onClick={() => setPreviewMedia({
+                url: active.privilege!.image,
+                title: active.privilege!.title,
+                desc: active.privilege!.copy,
+              })}
+              title={currentLang === 'vi' ? 'Xem ảnh đầy đủ' : 'Click to view full screen'}
+            >
               <img src={active.privilege.image} alt={active.privilege.title} loading="lazy" />
               <div>
                 <span className={styles.choiceLabel}>
@@ -924,7 +934,15 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
 
               {/* Khung ảnh 1 (Tick 1 - Sau đoạn mở đầu) */}
               {Boolean((finalSectionContent as any).image1 || section.id === 'foot-care') && (
-                <div className={styles.perspectivePhotoFrame}>
+                <div
+                  className={`${styles.perspectivePhotoFrame} cursor-zoom-in`}
+                  onClick={() => setPreviewMedia({
+                    url: (finalSectionContent as any).image1 || '/images/services/foot-massage.png',
+                    title: (finalSectionContent as any).headline || 'Oria Spa Foot Massage',
+                    desc: (finalSectionContent as any).image1Caption,
+                  })}
+                  title={currentLang === 'vi' ? 'Xem ảnh đầy đủ' : 'Click to view full screen'}
+                >
                   <img 
                     src={(finalSectionContent as any).image1 || '/images/services/foot-massage.png'} 
                     alt={(finalSectionContent as any).headline || 'Oria Spa Foot Massage'} 
@@ -942,7 +960,15 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
 
               {/* Khung ảnh 2 (Tick 2 - Trước đoạn kết) */}
               {Boolean((finalSectionContent as any).image2 || section.id === 'foot-care') && (
-                <div className={styles.perspectivePhotoFrame}>
+                <div
+                  className={`${styles.perspectivePhotoFrame} cursor-zoom-in`}
+                  onClick={() => setPreviewMedia({
+                    url: (finalSectionContent as any).image2 || '/images/about-treatment.png',
+                    title: (finalSectionContent as any).closing || 'Oria Spa Relaxation',
+                    desc: (finalSectionContent as any).image2Caption,
+                  })}
+                  title={currentLang === 'vi' ? 'Xem ảnh đầy đủ' : 'Click to view full screen'}
+                >
                   <img 
                     src={(finalSectionContent as any).image2 || '/images/about-treatment.png'} 
                     alt={(finalSectionContent as any).closing || 'Oria Spa Relaxation'} 
@@ -1005,6 +1031,17 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
           lang={currentLang as any}
         />
       )}
+
+      {/* Popover xem ảnh toàn màn hình với nút X đóng */}
+      <MediaPreviewModal
+        isOpen={Boolean(previewMedia)}
+        onClose={() => setPreviewMedia(null)}
+        mediaUrl={previewMedia?.url || ''}
+        mediaType="image"
+        title={previewMedia?.title}
+        description={previewMedia?.desc}
+        lang={currentLang}
+      />
     </section>
   );
 };
