@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, MapPin, ChevronUp, ChevronDown, ShoppingCart } from 'lucide-react';
+import { Menu, X, ChevronUp, ChevronDown, ShoppingCart } from 'lucide-react';
 import SmartLogo from '@/components/SmartLogo';
 import type { CartItem } from '@/components/Menu/types';
 import { formatCurrency } from '@/components/Menu/utils';
@@ -16,6 +16,29 @@ import { trackAnalytics } from '@/lib/analytics/client';
 import { useSystemSettings } from '@/components/SystemSettingsProvider';
 import { Locale } from '@/lib/constants';
 import { getDictionary } from '@/lib/dictionaries';
+
+// Google Maps Pin Icon with authentic Google brand colors (#EA4335, #4285F4, #FBBC04, #34A853)
+function GoogleMapsPinIcon({ className = "w-5 h-5" }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 135.5 194.2"
+      width="20"
+      height="20"
+      className={className}
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      <g transform="translate(-583.2646, 52.894413)">
+        <path fill="#34A853" d="M620.6,91 c6,7.5,12.1,16.9,15.3,22.6c3.9,7.4,5.5,12.4,8.4,21.3c1.7,4.9,3.3,6.4,6.7,6.4c3.7,0,5.4-2.5,6.7-6.4c2.7-8.4,4.8-14.8,8.1-20.9 c6.5-11.7,14.7-22.1,22.7-32.1c2.2-2.8,16.2-19.3,22.5-32.4c0,0,7.7-14.3,7.7-34.3c0-18.7-7.6-31.7-7.6-31.7l-22,5.9l-13.4,35.2 l-3.3,4.8l-0.7,0.9l-0.9,1.1l-1.5,1.8l-2.2,2.2l-11.9,9.7l-29.7,17.2L620.6,91z" />
+        <path fill="#FBBC04" d="M589.9,47.1 c7.3,16.6,21.2,31.1,30.7,43.9l50.3-59.6c0,0-7.1,9.3-19.9,9.3c-14.3,0-25.9-11.4-25.9-25.8c0-9.9,5.9-16.7,5.9-16.7l-34.1,9.1 L589.9,47.1z" />
+        <path fill="#4285F4" d="M671.5-49.8 c16.7,5.4,31,16.7,39.6,33.4l-40.2,47.9c0,0,5.9-6.9,5.9-16.7c0-14.7-12.4-25.8-25.8-25.8c-12.7,0-20,9.2-20,9.2V-32L671.5-49.8z" />
+        <path fill="#1A73E8" d="M599.1-28.7 c10-11.9,27.5-24.2,51.7-24.2c11.7,0,20.6,3.1,20.6,3.1l-40.4,48h-28.6L599.1-28.7z" />
+        <path fill="#EA4335" d="M589.9,47.1c0,0-6.6-13.1-6.6-32 c0-17.9,7-33.5,15.9-43.7l31.9,26.9L589.9,47.1z" />
+      </g>
+    </svg>
+  );
+}
 
 // 🔧 UI CONFIGURATION
 const HEADER_TRANSITION_DURATION = 0.3;
@@ -585,7 +608,7 @@ const Header = () => {
               </div>
 
               <a href="https://www.google.com/maps/search/?api=1&query=Oria+Spa&query_place_id=ChIJ2ULTMCAvdTERA4I7Sei7vyY" target="_blank" rel="noopener noreferrer" className="header-icon-btn text-[#f7ebc7]" aria-label="Location">
-                <MapPin size={20} className="text-[#f7ebc7]" />
+                <GoogleMapsPinIcon className="w-5 h-5 transition-transform duration-200 hover:scale-110 drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)]" />
               </a>
             </div>
           </div>
