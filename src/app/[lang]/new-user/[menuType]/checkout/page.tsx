@@ -400,12 +400,22 @@ const DurationDrawer = ({
   const [selectedVariantId, setSelectedVariantId] = useState<string>('');
   const [quantity, setQuantity] = useState(1);
 
+  const uniqueGroup = useMemo(() => {
+    if (!group) return [];
+    const seen = new Set<number>();
+    return group.filter((s) => {
+      if (seen.has(s.timeValue)) return false;
+      seen.add(s.timeValue);
+      return true;
+    });
+  }, [group]);
+
   useEffect(() => {
-    if (group && group.length > 0) {
-      setSelectedVariantId(group[0].id);
+    if (uniqueGroup && uniqueGroup.length > 0) {
+      setSelectedVariantId(uniqueGroup[0].id);
       setQuantity(1);
     }
-  }, [group]);
+  }, [uniqueGroup]);
 
   const selectedOptions = useMemo(() => {
     if (!group) return [];
@@ -415,7 +425,7 @@ const DurationDrawer = ({
 
   if (!group || group.length === 0) return null;
 
-  const selectedVariant = group.find((v) => v.id === selectedVariantId) || group[0];
+  const selectedVariant = uniqueGroup.find((v) => v.id === selectedVariantId) || uniqueGroup[0] || group[0];
 
   return (
     <>
@@ -446,7 +456,7 @@ const DurationDrawer = ({
         <div className={styles.drawerBody}>
           <div className={styles.drawerLabel}>{dict.checkout?.chooseDuration || t('chooseDuration', lang)}</div>
           <div className={styles.drawerOptions}>
-            {group.map((v) => (
+            {uniqueGroup.map((v) => (
               <button
                 key={v.id}
                 className={`${styles.drawerOption} ${v.id === selectedVariantId ? styles.drawerOptionActive : ''}`}
@@ -546,6 +556,16 @@ const CheckoutGroupedServiceCard = ({
   onUpdateCartItem: (cartId: string, quantity: number) => void;
   onEditCustomItem?: (item: CartItem) => void;
 }) => {
+  const uniqueDurations = useMemo(() => {
+    const seen = new Set<number>();
+    return group.filter((s) => {
+      if (seen.has(s.timeValue)) return false;
+      seen.add(s.timeValue);
+      return true;
+    });
+  }, [group]);
+  const hasMultipleDurations = uniqueDurations.length > 1;
+
   const selectedVariant = group[0];
   const groupSelections = cart.filter((item) => group.some((service) => service.id === item.id));
   const singleSelection = groupSelections.length === 1 ? groupSelections[0] : null;
@@ -553,8 +573,8 @@ const CheckoutGroupedServiceCard = ({
 
   const handleAddClick = (e?: React.MouseEvent) => {
     e?.stopPropagation();
-    if (group.length > 1) {
-      openDurationDrawer(group);
+    if (hasMultipleDurations) {
+      openDurationDrawer(uniqueDurations);
     } else {
       addService(group[0], 1);
     }
@@ -573,17 +593,19 @@ const CheckoutGroupedServiceCard = ({
           <h3 className={styles.pickerServiceTitle}>{serviceName(selectedVariant, lang)}</h3>
           <p className={styles.pickerServiceDesc}>{serviceDescription(selectedVariant, lang)}</p>
           <div className={styles.pickerPriceRow}>
-            {group.length > 1 ? (
+            {hasMultipleDurations ? (
               <>
                 <span className={styles.pickerFromLabel}>{t('fromPrice', lang)}</span>
-                <span className={styles.pickerPriceVND}>{formatCurrency(group[0].priceVND)} VND</span>
-                <span className={styles.pickerPriceUSD}>{formatUSD(group[0].priceUSD)}</span>
+                <span className={styles.pickerPriceVND}>{formatCurrency(uniqueDurations[0].priceVND)} VND</span>
+                <span className={styles.pickerPriceUSD}>{formatUSD(uniqueDurations[0].priceUSD)}</span>
               </>
             ) : (
               <>
                 <span className={styles.pickerPriceVND}>{formatCurrency(selectedVariant.priceVND)} VND</span>
                 <span className={styles.pickerPriceUSD}>{formatUSD(selectedVariant.priceUSD)}</span>
-                <span className={styles.pickerPriceDuration}>{selectedVariant.timeValue} {dict.checkout?.mins || 'mins'}</span>
+                {selectedVariant.timeValue > 0 && (
+                  <span className={styles.pickerPriceDuration}>{selectedVariant.timeValue} {dict.checkout?.mins || 'mins'}</span>
+                )}
               </>
             )}
           </div>
@@ -624,9 +646,9 @@ const CheckoutGroupedServiceCard = ({
               >
                 <Plus size={16} />
               </button>
-              {group.length > 1 && (
+              {hasMultipleDurations && (
                 <span className={styles.pickerOptionsCount}>
-                  {group.length} {t('optionsCount', lang)}
+                  {uniqueDurations.length} {t('optionsCount', lang)}
                 </span>
               )}
             </div>
@@ -640,7 +662,7 @@ const CheckoutGroupedServiceCard = ({
             <span className={styles.pickerSelectedServicesLabel}>
               {totalSelectedQuantity} {t('selectedServices', lang)}
             </span>
-            {group.length > 1 && (
+            {hasMultipleDurations && (
               <button
                 type="button"
                 className={styles.pickerAddAnotherOptionBtn}
@@ -970,7 +992,10 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
         // Strip duration identifiers like 60', 90 mins, etc. to group base services together
         const baseNameEn = rawNameEn.replace(/\s*\d+\s*(mins?|'|phút).*$/i, '').trim();
         if (!acc[baseNameEn]) acc[baseNameEn] = [];
-        acc[baseNameEn].push(service);
+        const alreadyExists = acc[baseNameEn].some(
+          (s) => s.id === service.id || (s.timeValue === service.timeValue && s.priceVND === service.priceVND)
+        );
+        if (!alreadyExists) acc[baseNameEn].push(service);
         return acc;
       }, {} as Record<string, Service[]>)
     );
@@ -2063,7 +2088,15 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
         lang={lang}
         dict={dict}
         cart={cart}
-        customerInfo={customerInfo}
+        customerInfo={{
+          ...customerInfo,
+          phone: customerInfo.phone.trim()
+            ? customerInfo.phone.trim().startsWith('+')
+              ? customerInfo.phone.trim()
+              : `${phoneCountry.code}${customerInfo.phone.trim().replace(/^0+/, '')}`
+            : '',
+        }}
+        phoneCountryCode={phoneCountry.code}
         paymentMethod={paymentMethod}
         amountPaid={0}
         guestCount={guestCount}

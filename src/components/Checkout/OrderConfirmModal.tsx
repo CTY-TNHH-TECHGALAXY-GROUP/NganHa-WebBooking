@@ -379,6 +379,7 @@ interface OrderConfirmModalProps {
         phone: string;
         gender: string;
     };
+    phoneCountryCode?: string;
     paymentMethod?: string;
     amountPaid?: number;
     guestCount?: number;
@@ -388,6 +389,14 @@ interface OrderConfirmModalProps {
     onEditCustomerInfo?: () => void;
 }
 
+const formatFullPhone = (phone?: string, countryCode?: string) => {
+    const trimmed = (phone || '').trim();
+    if (!trimmed) return '';
+    if (trimmed.startsWith('+')) return trimmed;
+    if (countryCode) return `${countryCode}${trimmed.replace(/^0+/, '')}`;
+    return trimmed;
+};
+
 export default function OrderConfirmModal({
     isOpen,
     onClose,
@@ -396,6 +405,7 @@ export default function OrderConfirmModal({
     dict,
     cart,
     customerInfo: initialCustomerInfo,
+    phoneCountryCode,
     paymentMethod = 'cash_vnd',
     guestCount: initialGuestCount = 1,
     bookingDate: initialBookingDate,
@@ -414,7 +424,7 @@ export default function OrderConfirmModal({
     const [isEditingSchedule, setIsEditingSchedule] = useState(false);
     const [localName, setLocalName] = useState(initialCustomerInfo?.name || '');
     const [localEmail, setLocalEmail] = useState(initialCustomerInfo?.email || '');
-    const [localPhone, setLocalPhone] = useState(initialCustomerInfo?.phone || '');
+    const [localPhone, setLocalPhone] = useState(() => formatFullPhone(initialCustomerInfo?.phone, phoneCountryCode));
     const [localGuests, setLocalGuests] = useState(initialGuestCount);
     const [localDate, setLocalDate] = useState(initialBookingDate || '');
     const [localTime, setLocalTime] = useState(initialBookingTime || '');
@@ -451,13 +461,13 @@ export default function OrderConfirmModal({
             setIsEditingSchedule(false);
             setLocalName(initialCustomerInfo?.name || '');
             setLocalEmail(initialCustomerInfo?.email || '');
-            setLocalPhone(initialCustomerInfo?.phone || '');
+            setLocalPhone(formatFullPhone(initialCustomerInfo?.phone, phoneCountryCode));
             setLocalGuests(initialGuestCount);
             setLocalDate(initialBookingDate || '');
             setLocalTime(initialBookingTime || '');
         }
         return () => { document.body.classList.remove('has-booking-modal'); };
-    }, [isOpen, initialCustomerInfo, initialGuestCount, initialBookingDate, initialBookingTime]);
+    }, [isOpen, initialCustomerInfo, phoneCountryCode, initialGuestCount, initialBookingDate, initialBookingTime]);
 
     useEffect(() => {
         const checkDevice = async () => {
@@ -546,7 +556,7 @@ export default function OrderConfirmModal({
                     ...initialCustomerInfo,
                     name: localName.trim(),
                     email: localEmail.trim(),
-                    phone: localPhone.trim(),
+                    phone: formatFullPhone(localPhone, phoneCountryCode),
                 },
                 guestCount: localGuests,
                 bookingDate: localDate,
@@ -765,7 +775,7 @@ export default function OrderConfirmModal({
                                                 {localPhone && (
                                                     <div className="flex justify-between items-center py-1 border-b border-white/[0.04]">
                                                         <span className="text-gray-400">{dict.checkout?.phone_label || getModalText('phone', lang)}</span>
-                                                        <span className="font-bold text-white">{localPhone}</span>
+                                                        <span className="font-bold text-white">{formatFullPhone(localPhone, phoneCountryCode)}</span>
                                                     </div>
                                                 )}
                                             </div>

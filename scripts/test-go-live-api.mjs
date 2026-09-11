@@ -21,6 +21,7 @@ const row = { id: 'WB-QA-001', billCode: 'WB-QA-001', customerName: body.name, c
   bookingDate: '2099-09-08', timeBooking: '14:00', branchName: body.branchName, guestCount: body.guests, customerLang: body.lang,
   totalAmount: 1580000, status: 'NEW', idempotency_fingerprint: parsed.value.intentFingerprint };
 function harness(scenario = {}) {
+  const savedRow = { ...row, ...(scenario.savedRow || {}) };
   const calls = { rpc: 0, allocator: 0, writer: 0, mail: 0, tables: [], inserts: [], deletes: 0, directBookingWrites: 0, writerPayloads: [], replayLookups: 0, verificationReads: 0, trace: [] };
   const supabase = {
     from(table) {
@@ -45,10 +46,10 @@ function harness(scenario = {}) {
             calls.verificationReads++;
             calls.trace.push({ stage: 'verification', table: 'Bookings' });
             if (scenario.verificationError) return { data: null, error: scenario.verificationError };
-            return { data: scenario.verificationMissing ? null : calls.writer > 0 ? row : null };
+            return { data: scenario.verificationMissing ? null : calls.writer > 0 ? savedRow : null };
           }
           const replayVisible = scenario.replay && (scenario.replayVisibleInitially !== false || calls.writer > 0);
-          if (isReplayLookup) return { data: replayVisible ? { ...row, ...scenario.replay } : null };
+          if (isReplayLookup) return { data: replayVisible ? { ...savedRow, ...scenario.replay } : null };
           return { data: null };
         }
         if (table === 'BookingItems') {
@@ -58,7 +59,7 @@ function harness(scenario = {}) {
             if (scenario.verificationItemsError) return { data: null, error: scenario.verificationItemsError };
             if (scenario.verificationItemsMissing) return { data: null };
           }
-          return { data: scenario.replayItems || [{ bookingId: row.id, serviceId: 'QA', quantity: 2, price: 790000, options: { focus: [], avoid: [], therapist: 'Ngẫu nhiên', note: '' } }] };
+          return { data: scenario.replayItems || [{ bookingId: savedRow.id, serviceId: 'QA', quantity: 2, price: 790000, options: { focus: [], avoid: [], therapist: 'Ngẫu nhiên', note: '' } }] };
         }
         return { data: null };
       };
@@ -79,14 +80,14 @@ function harness(scenario = {}) {
         calls.allocator++;
         if (scenario.rpcError) return { error: scenario.rpcError };
         if (Object.prototype.hasOwnProperty.call(scenario, 'allocatorData')) return { data: scenario.allocatorData };
-        return { data: row.id };
+        return { data: savedRow.id };
       }
       assert.equal(name, 'webbooking_commit_booking'); calls.writer++; calls.writerPayloads.push(payload);
       const error = scenario.writerErrors?.[calls.writer - 1] || scenario.writerError;
       if (error) return { error };
       const hasWriterResult = Object.prototype.hasOwnProperty.call(scenario, 'writerResult');
       const hasWriterResultAtIndex = Array.isArray(scenario.writerResults) && Object.prototype.hasOwnProperty.call(scenario.writerResults, calls.writer - 1);
-      const writerResult = hasWriterResultAtIndex ? scenario.writerResults[calls.writer - 1] : hasWriterResult ? scenario.writerResult : { success: true, idempotent: false, bookingId: row.id, billCode: row.billCode };
+      const writerResult = hasWriterResultAtIndex ? scenario.writerResults[calls.writer - 1] : hasWriterResult ? scenario.writerResult : { success: true, idempotent: false, bookingId: savedRow.id, billCode: savedRow.billCode };
       return { data: writerResult };
     },
   };
@@ -427,6 +428,17 @@ await test('same key concurrent new and writerReplay requests converge to one ma
   assert.equal(secondResult.data.bookingId, row.id);
   assert.equal(h.calls.writer, 2);
   assert.equal(h.calls.mail, 1);
+});
+await test('checkout guest count is stored in notes, while the DB guestCount stays at its default', async () => {
+  const h = harness({ savedRow: { guestCount: 1, notes: 'Guests: 3 | Window seat' } });
+  const response = await h.post({ ...body, guests: 3, note: 'Window seat' });
+  const result = await response.json();
+  const bookingPayload = h.calls.writerPayloads[0].p_booking;
+
+  assert.equal(response.status, 200);
+  assert.equal(result.data.guests, 3);
+  assert.equal(Object.prototype.hasOwnProperty.call(bookingPayload, 'guestCount'), false);
+  assert.equal(bookingPayload.notes, 'Guests: 3 | Window seat');
 });
 console.log(`Actual-route mocked integration: ${passed}/${passed + failed} passed; ${failed} failed; no network/SMTP/production data.`);
 if (failed) process.exitCode = 1;

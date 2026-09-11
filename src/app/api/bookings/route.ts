@@ -319,6 +319,16 @@ function servicesFromItems(items: any[]): unknown[] {
   });
 }
 
+function guestCountFromStoredBooking(row: any): number {
+  const notes = typeof row?.notes === 'string' ? row.notes : '';
+  const noteMatch = notes.match(/^Guests:\s*(\d{1,2})(?:\s*\||$)/);
+  const noteCount = noteMatch ? Number(noteMatch[1]) : NaN;
+  if (Number.isInteger(noteCount) && noteCount >= 1 && noteCount <= 20) return noteCount;
+
+  const fallback = Number(row?.guestCount ?? row?.guests ?? 1);
+  return Number.isInteger(fallback) && fallback >= 1 ? fallback : 1;
+}
+
 function snapshotFromRow(row: any, items: unknown[] = [], services: unknown[] = []): BookingSnapshot {
   return {
     bookingId: String(row?.id || row?.bookingId || ''),
@@ -329,7 +339,9 @@ function snapshotFromRow(row: any, items: unknown[] = [], services: unknown[] = 
     date: dateOnly(row?.bookingDate || row?.date),
     time: row?.timeBooking ?? row?.time ?? null,
     branchName: String(row?.branchName || BRANCH_DEFAULT),
-    guests: Number(row?.guestCount || row?.guests || 1),
+    // Checkout guest count is persisted in the human-readable notes marker;
+    // guestCount remains the DB writer default for operations compatibility.
+    guests: guestCountFromStoredBooking(row),
     totalAmount: Number(row?.totalAmount || 0),
     lang: String(row?.customerLang || row?.lang || 'vi'),
     status: row?.status || 'NEW',
@@ -598,7 +610,9 @@ function buildNotes(booking: NormalizedBooking, pricing: CanonicalPricing): { no
 function buildBookingPayload(booking: NormalizedBooking, pricing: CanonicalPricing, bookingId: string, customerId: string | null, idempotencyKey: string): Record<string, unknown> {
   const preferenceNotes = buildNotes(booking, pricing);
   return {
-    id: bookingId, billCode: bookingId, source: 'WEB_BOOKING', guestCount: booking.guests, branchName: booking.branchName,
+    id: bookingId, billCode: bookingId, source: 'WEB_BOOKING', branchName: booking.branchName,
+    // The checkout guest selector is note-only. The atomic writer defaults the
+    // legacy Bookings.guestCount column to 1 when this field is omitted.
     // The writer maps bookingDate to a timestamp without time zone. Send the
     // appointment wall time, not a UTC ISO value that would shift the slot.
     bookingDate: `${booking.date}T${booking.time}:00`, timeBooking: booking.time,
