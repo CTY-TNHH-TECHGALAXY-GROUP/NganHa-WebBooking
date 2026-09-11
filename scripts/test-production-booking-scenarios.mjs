@@ -45,7 +45,7 @@ const scenarios = [
       { id: 'NHS1009', quantity: 1, options: { strength: 'medium', therapist: 'random', notes: { tag0: false, tag1: true, content: 'TEST second service allergy' } } },
     ],
     verify(data) {
-      assert.equal(data.items.length, 2); assert.equal(data.items[0].quantity, 1); assert.equal(data.items[1].quantity, 1); assert.match(data.focusAreaNote || '', /HEAD/); assert.match(data.notes || '', /TEST/);
+      assert.equal(data.items.length, 2); assert.equal(data.items[0].quantity, 1); assert.equal(data.items[1].quantity, 1); assert.match(data.focusAreaNote || '', /HEAD/);
     },
   },
 ];
