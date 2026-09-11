@@ -13,6 +13,7 @@ import {
   type FlipbookSourceRect,
 } from '@/lib/flipbook';
 import { useTranslation } from '@/components/TranslationProvider';
+import { trackAnalytics } from '@/lib/analytics/client';
 
 // 🔧 UI CONFIGURATION
 const HEADER_HEIGHT_PX = 80;
@@ -70,15 +71,20 @@ const ServiceBook = () => {
     onMenuBack: () => router.push(PURE_RELAXATION_URL),
     onAddService: ({ service, sourceRect }) => {
       const nextCart = addServiceToCart(service);
+      trackAnalytics('cart_add', { identifier: service.id });
       animateFlowerToCart(sourceRect);
       showCartToast(service, nextCart.reduce((sum, item) => sum + item.qty, 0));
     },
     onRemoveService: ({ serviceId }) => {
       const nextCart = removeOneBookingCartItem(serviceId);
+      trackAnalytics('cart_remove', { identifier: serviceId });
       dispatchCartUpdate(nextCart);
     },
     onBookNow: ({ service }) => {
-      if (service) addServiceToCart(service);
+      if (service) {
+        trackAnalytics('service_option_select', { identifier: service.id });
+        addServiceToCart(service);
+      }
       router.push(CHECKOUT_URL);
     },
     onPlaceOrder: () => router.push(CHECKOUT_URL),

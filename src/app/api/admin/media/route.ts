@@ -1,10 +1,10 @@
 import { NextRequest } from 'next/server';
-import { withAuth } from '@/lib/api/withAuth';
+import { withCapability } from '@/lib/api/withAuth';
 import { apiResponse } from '@/lib/api/apiResponse';
 import { MediaService } from '@/lib/services/media.service';
 import { validateUpload, UploadValidationError } from '@/lib/uploads/validateUpload';
 
-export const POST = withAuth(async (req, { supabase }) => {
+export const POST = withCapability(async (req, { supabase }) => {
   try {
     const formData = await req.formData();
     const file = formData.get('file') as File | null;
@@ -31,9 +31,9 @@ export const POST = withAuth(async (req, { supabase }) => {
     console.error('[API /admin/media POST] Upload error:', err);
     return apiResponse.error(err.message || 'Lỗi tải tệp lên', 'UPLOAD_ERROR', 500);
   }
-}, ['owner', 'admin', 'editor']);
+}, 'media.upload', { mutation: true });
 
-export const DELETE = withAuth(async (req, { supabase }) => {
+export const DELETE = withCapability(async (req, { supabase }) => {
   try {
     const { searchParams } = new URL(req.url);
     const path = searchParams.get('path');
@@ -55,4 +55,4 @@ export const DELETE = withAuth(async (req, { supabase }) => {
     console.error('[API /admin/media DELETE] Delete error:', err);
     return apiResponse.error(err.message || 'Lỗi xóa tệp', 'DELETE_ERROR', 500);
   }
-}, ['owner', 'admin', 'editor']);
+}, 'media.delete', { mutation: true });

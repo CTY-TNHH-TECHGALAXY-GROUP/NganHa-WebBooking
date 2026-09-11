@@ -9,13 +9,14 @@
 import { fetchBookingQuote } from '@/lib/bookingQuote';
 
 import { Z } from '@/lib/zIndex';
-import React, { useState, useMemo, useRef } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { useMenuData } from '@/components/Menu/MenuContext';
 import { formatCurrency } from '@/components/Menu/utils';
 import {
   ArrowLeft, ArrowRight, User, Phone, Mail, Calendar,
   Clock, MapPin, Check, Users, Sparkles, MessageSquare
 } from 'lucide-react';
+import { trackAnalytics } from '@/lib/analytics/client';
 
 // 🔧 UI CONFIGURATION
 const ANIMATION_DURATION = 300;
@@ -101,6 +102,10 @@ const BookingCheckout = ({ lang, onBack }: BookingCheckoutProps) => {
   const [isSuccess, setIsSuccess] = useState(false);
   const [bookingResult, setBookingResult] = useState<BookingResult | null>(null);
 
+  useEffect(() => {
+    trackAnalytics('checkout_view', { language: lang });
+  }, [lang]);
+
   const [form, setForm] = useState<CheckoutFormData>({
     name: '',
     phone: '',
@@ -154,6 +159,8 @@ const BookingCheckout = ({ lang, onBack }: BookingCheckoutProps) => {
   const handleSubmit = async () => {
     if (isSubmitting) return;
     setIsSubmitting(true);
+    trackAnalytics('booking_submit', { language: lang });
+    let failureReason: 'network' | 'server' = 'network';
 
     try {
       const selectedBranch = BRANCH_LIST.find(b => b.id === form.branchId);
@@ -199,6 +206,7 @@ const BookingCheckout = ({ lang, onBack }: BookingCheckoutProps) => {
       }
 
       if (!res.ok) {
+        failureReason = 'server';
         throw new Error(json.error || `Lỗi HTTP ${res.status}`);
       }
 
@@ -212,6 +220,7 @@ const BookingCheckout = ({ lang, onBack }: BookingCheckoutProps) => {
         alert(json.error || 'Có lỗi xảy ra');
       }
     } catch (err) {
+      trackAnalytics('booking_failed', { identifier: failureReason, language: lang });
       console.error('Submit error:', err);
       alert('Lỗi kết nối');
     } finally {

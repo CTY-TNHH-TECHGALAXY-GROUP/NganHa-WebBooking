@@ -1,9 +1,9 @@
-import { withAuth } from '@/lib/api/withAuth';
+import { withCapability } from '@/lib/api/withAuth';
 import { apiResponse } from '@/lib/api/apiResponse';
 import { getSupabaseAdmin } from '@/lib/supabaseAdmin';
 import { parseMediaPatch } from '@/lib/admin/mediaPatch';
 
-const updateMedia = withAuth(async (req, _ctx, params) => {
+const updateMedia = withCapability(async (req, _ctx, params) => {
   const body = await req.json().catch(() => null);
   const { id } = await params;
 
@@ -52,7 +52,7 @@ const updateMedia = withAuth(async (req, _ctx, params) => {
   }
 
   return apiResponse.success(data[0]);
-});
+}, 'services.write', { scope: 'services', mutation: true });
 
 export const PUT = updateMedia;
 export const PATCH = updateMedia;

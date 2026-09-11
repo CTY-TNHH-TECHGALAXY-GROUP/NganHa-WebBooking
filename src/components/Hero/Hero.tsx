@@ -3,12 +3,13 @@
 
 import React, { useMemo, useState, useEffect, useCallback, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { MapPin, Clock, ChevronDown, ChevronLeft, ChevronRight, Play, RotateCcw } from 'lucide-react';
+import { MapPin, Clock, ChevronDown, ChevronLeft, ChevronRight, Play } from 'lucide-react';
 import { useTranslation } from '@/components/TranslationProvider';
 import { useSystemSettings } from '@/components/SystemSettingsProvider';
 import { BRANCH_LIST } from '@/data/branches';
 import SmartLogo from '@/components/SmartLogo';
 import { Locale } from '@/lib/constants';
+import { trackAnalytics } from '@/lib/analytics/client';
 import {
   heroStagger, fadeInUp, heroTitle, scaleIn, branchEntrance,
 } from './Hero.animation';
@@ -269,6 +270,8 @@ const Hero = ({ initialHeroConfig, initialVideos }: HeroProps) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const activeAttemptKeyRef = useRef<string | null>(null);
   const readyAttemptKeyRef = useRef<string | null>(null);
+  const startedAttemptKeyRef = useRef<string | null>(null);
+  const failedAttemptKeyRef = useRef<string | null>(null);
   const pendingFrameRequestRef = useRef<PendingFrameRequest | null>(null);
 
   const activeVideo = selectionReady && homepageVideos
@@ -438,6 +441,21 @@ const Hero = ({ initialHeroConfig, initialVideos }: HeroProps) => {
     setPlaybackState('loading');
   }, [activeAttemptKey, configState]);
 
+  // Auto-retry silently in background when video fails or times out without disturbing the spinner
+  useEffect(() => {
+    if (playbackState !== 'error') return;
+
+    const timer = setTimeout(() => {
+      if (videoCount > 1) {
+        handleNextVideo();
+      } else {
+        handleRetry();
+      }
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [playbackState, videoCount, handleNextVideo, handleRetry]);
+
   const handleManualPlay = useCallback(() => {
     const video = videoRef.current;
     if (!video || !activeAttemptKey) return;
@@ -475,16 +493,6 @@ const Hero = ({ initialHeroConfig, initialVideos }: HeroProps) => {
     playbackState === 'ready' &&
     readyAttemptKey === activeAttemptKey,
   );
-  const configFailure = configState === 'error' || configState === 'empty';
-  const mediaFailureMessage = mediaFailure?.kind === 'timeout'
-    ? statusCopy.videoTimeout
-    : statusCopy.videoError;
-  const statusMessage = configState === 'loading'
-    ? statusCopy.configLoading
-    : configFailure
-      ? configState === 'empty' ? statusCopy.configEmpty : statusCopy.configError
-      : playbackState === 'error' ? mediaFailureMessage : statusCopy.videoLoading;
-
   return (
     <section id="hero" className="hero-section hero-section--cinematic" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
       <style>{'@keyframes hero-video-loading-spin { to { transform: rotate(360deg); } }'}</style>
@@ -535,11 +543,19 @@ const Hero = ({ initialHeroConfig, initialVideos }: HeroProps) => {
               }}
               onPlaying={(event) => {
                 const attemptKey = activeAttemptKeyRef.current;
+                if (attemptKey && startedAttemptKeyRef.current !== attemptKey) {
+                  startedAttemptKeyRef.current = attemptKey;
+                  trackAnalytics('hero_video_started', { identifier: activeVideo.id });
+                }
                 if (attemptKey) handleVideoPlaying(event.currentTarget, attemptKey);
               }}
               onEnded={videoCount > 1 ? handleNextVideo : undefined}
               onError={(event) => {
                 const attemptKey = activeAttemptKeyRef.current;
+                if (attemptKey && failedAttemptKeyRef.current !== attemptKey) {
+                  failedAttemptKeyRef.current = attemptKey;
+                  trackAnalytics('hero_video_failed', { identifier: activeVideo.id });
+                }
                 if (attemptKey) handleVideoError(event.currentTarget, attemptKey);
               }}
               style={{
@@ -556,7 +572,7 @@ const Hero = ({ initialHeroConfig, initialVideos }: HeroProps) => {
       {!heroReady ? (
         <div
           className="hero-video-loading-screen"
-          role={configFailure || playbackState === 'error' ? 'alert' : 'status'}
+          role="status"
           aria-live="polite"
           style={{
             position: 'absolute',
@@ -571,48 +587,18 @@ const Hero = ({ initialHeroConfig, initialVideos }: HeroProps) => {
             textAlign: 'center',
           }}
         >
-          <div style={{ display: 'grid', justifyItems: 'center', gap: '20px', maxWidth: '460px' }}>
-            <div style={{ display: 'grid', gap: '10px' }}>
-              <p style={{ margin: 0, fontSize: '18px', fontWeight: 600 }}>
-                {playbackState === 'error' || configFailure ? statusMessage : 'Loading'}
-              </p>
-              {playbackState === 'error' || configFailure ? (
-                <button
-                  type="button"
-                  onClick={handleRetry}
-                  style={{
-                    justifySelf: 'center',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    border: '1px solid rgba(241, 212, 135, 0.7)',
-                    borderRadius: '6px',
-                    padding: '10px 16px',
-                    background: 'transparent',
-                    color: '#f1d487',
-                    cursor: 'pointer',
-                    fontWeight: 600,
-                  }}
-                >
-                  <RotateCcw size={16} aria-hidden="true" />
-                  {statusCopy.retry}
-                </button>
-              ) : (
-                <span
-                  aria-hidden="true"
-                  style={{
-                    justifySelf: 'center',
-                    width: '28px',
-                    height: '28px',
-                    border: '2px solid rgba(241, 212, 135, 0.25)',
-                    borderTopColor: '#f1d487',
-                    borderRadius: '50%',
-                    animation: 'hero-video-loading-spin 900ms linear infinite',
-                  }}
-                />
-              )}
-            </div>
-          </div>
+          <span
+            aria-hidden="true"
+            style={{
+              justifySelf: 'center',
+              width: '32px',
+              height: '32px',
+              border: '2.5px solid rgba(241, 212, 135, 0.25)',
+              borderTopColor: '#f1d487',
+              borderRadius: '50%',
+              animation: 'hero-video-loading-spin 900ms linear infinite',
+            }}
+          />
         </div>
       ) : null}
 

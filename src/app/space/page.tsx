@@ -1,14 +1,17 @@
 import React from 'react';
 import SpacePage from '@/components/Space/SpacePage';
 import { getSupabaseAdmin } from '@/lib/supabase-server';
+import { getPageMetadata } from '@/lib/seo/metadata';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-export const metadata = {
-  title: 'Oria Spa — Minimal Space Experience',
-  description: 'Three spaces. One continuous journey through light, touch and quiet.',
-};
+export async function generateMetadata() {
+  return getPageMetadata({ routeKey: 'space', pathname: '/space', localized: false }, {
+    title: 'Oria Spa — Minimal Space Experience',
+    description: 'Three spaces. One continuous journey through light, touch and quiet.',
+  });
+}
 
 export default async function Page() {
   let initialMedia: any = null;

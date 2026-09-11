@@ -5,6 +5,7 @@ import { Save, Plus, Trash2, Settings, Image as ImageIcon } from 'lucide-react';
 import { SUPPORTED_LOCALES, Locale } from '@/lib/constants';
 import { SystemSettings, AboutStoryContent, AboutStoryGalleryItem } from '@/components/SystemSettingsProvider';
 import { CTA_KEYS, DEFAULT_CTA_LINKS, resolveCtaUrl, validateConfigUrl, type CtaKey } from '@/lib/config/urlSettings';
+import { MAX_BCC_RECIPIENTS } from '@/lib/notificationSettings';
 
 const CTA_LABELS: Record<CtaKey, string> = {
   spaceExplore: 'Space: Explore',
@@ -63,6 +64,15 @@ export default function SystemSettingsPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
+  const [notificationSettings, setNotificationSettings] = useState({
+    bccEnabled: false,
+    bccRecipients: [] as string[],
+    revision: 0,
+  });
+  const [notificationSettingsLoading, setNotificationSettingsLoading] = useState(true);
+  const [notificationSettingsVisible, setNotificationSettingsVisible] = useState(false);
+  const [notificationMessage, setNotificationMessage] = useState('');
+  const [notificationSaving, setNotificationSaving] = useState(false);
 
   const [systemSettings, setSystemSettings] = useState<SystemSettings>({});
   const [footerContent, setFooterContent] = useState<any>({
@@ -86,6 +96,40 @@ export default function SystemSettingsPage() {
       });
   }, []);
 
+  useEffect(() => {
+    let active = true;
+    fetch('/api/admin/notification-settings', { cache: 'no-store' })
+      .then(async res => ({ ok: res.ok, status: res.status, body: await res.json() }))
+      .then(({ ok, status, body }) => {
+        if (!active) return;
+        if (status === 401 || status === 403) {
+          setNotificationSettingsVisible(false);
+          setNotificationSettingsLoading(false);
+          return;
+        }
+        setNotificationSettingsVisible(true);
+        if (ok && body?.data) {
+          setNotificationSettings({
+            bccEnabled: body.data.bccEnabled === true,
+            bccRecipients: Array.isArray(body.data.bccRecipients) ? body.data.bccRecipients : [],
+            revision: Number.isSafeInteger(body.data.revision) ? body.data.revision : 0,
+          });
+        } else {
+          setNotificationMessage(body?.error?.message || 'Không thể tải cấu hình BCC.');
+        }
+        setNotificationSettingsLoading(false);
+      })
+      .catch(() => {
+        if (!active) return;
+        setNotificationSettingsVisible(true);
+        setNotificationMessage('Không thể tải cấu hình BCC.');
+        setNotificationSettingsLoading(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
+
   const handleSave = async () => {
     setSaving(true);
     setMessage('');
@@ -105,6 +149,33 @@ export default function SystemSettingsPage() {
       setMessage('Có lỗi xảy ra khi lưu.');
     }
     setSaving(false);
+  };
+
+  const handleSaveNotificationSettings = async () => {
+    setNotificationSaving(true);
+    setNotificationMessage('');
+    try {
+      const res = await fetch('/api/admin/notification-settings', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(notificationSettings),
+      });
+      const body = await res.json();
+      if (!res.ok) {
+        setNotificationMessage(body?.error?.message || 'Không thể lưu cấu hình BCC.');
+      } else if (body?.data) {
+        setNotificationSettings({
+          bccEnabled: body.data.bccEnabled === true,
+          bccRecipients: Array.isArray(body.data.bccRecipients) ? body.data.bccRecipients : [],
+          revision: Number.isSafeInteger(body.data.revision) ? body.data.revision : notificationSettings.revision,
+        });
+        setNotificationMessage('Đã lưu cấu hình BCC.');
+        setTimeout(() => setNotificationMessage(''), 3000);
+      }
+    } catch {
+      setNotificationMessage('Không thể lưu cấu hình BCC.');
+    }
+    setNotificationSaving(false);
   };
 
   if (loading) return <div className="p-8 text-center text-gray-500">Đang tải cấu hình...</div>;
@@ -392,6 +463,99 @@ export default function SystemSettingsPage() {
               </div>
             </section>
             </section>
+
+            {notificationSettingsVisible && (
+              <section className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                  <div>
+                    <h2 className="text-xl font-bold text-gray-800">Email Notifications</h2>
+                    <p className="mt-1 text-sm text-gray-500">
+                      Gửi bản sao riêng cho tối đa {MAX_BCC_RECIPIENTS} địa chỉ khi có đơn mới. Email lễ tân hiện tại vẫn được giữ nguyên.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-checked={notificationSettings.bccEnabled}
+                    disabled={notificationSettingsLoading || notificationSaving}
+                    onClick={() => setNotificationSettings(current => ({ ...current, bccEnabled: !current.bccEnabled }))}
+                    className={`relative inline-flex h-10 w-[76px] shrink-0 items-center rounded-full border transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 ${
+                      notificationSettings.bccEnabled ? 'border-green-500 bg-green-500' : 'border-gray-300 bg-gray-200'
+                    }`}
+                    title={notificationSettings.bccEnabled ? 'Tắt BCC' : 'Bật BCC'}
+                  >
+                    <span className={`block h-8 w-8 rounded-full bg-white shadow-md transition-transform ${notificationSettings.bccEnabled ? 'translate-x-[38px]' : 'translate-x-1'}`} />
+                    <span className="sr-only">Bật hoặc tắt email BCC</span>
+                  </button>
+                </div>
+
+                {notificationSettingsLoading ? (
+                  <p className="mt-6 text-sm text-gray-500">Đang tải cấu hình BCC...</p>
+                ) : (
+                  <>
+                    <div className="mt-6 space-y-3">
+                      {notificationSettings.bccRecipients.map((recipient, index) => (
+                        <div key={`${index}-${recipient}`} className="flex items-center gap-2">
+                          <label htmlFor={`bcc-recipient-${index}`} className="sr-only">Địa chỉ BCC {index + 1}</label>
+                          <input
+                            id={`bcc-recipient-${index}`}
+                            type="email"
+                            value={recipient}
+                            onChange={event => setNotificationSettings(current => ({
+                              ...current,
+                              bccRecipients: current.bccRecipients.map((item, itemIndex) => itemIndex === index ? event.target.value : item),
+                            }))}
+                            placeholder="recipient@example.com"
+                            className="min-w-0 flex-1 rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:ring-2 focus:ring-blue-500"
+                          />
+                          <button
+                            type="button"
+                            aria-label={`Xóa địa chỉ BCC ${index + 1}`}
+                            title="Xóa địa chỉ BCC"
+                            onClick={() => setNotificationSettings(current => ({
+                              ...current,
+                              bccRecipients: current.bccRecipients.filter((_, itemIndex) => itemIndex !== index),
+                            }))}
+                            className="rounded-lg p-2 text-gray-500 transition-colors hover:bg-red-50 hover:text-red-600"
+                          >
+                            <Trash2 size={18} />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="mt-4 flex flex-wrap items-center gap-3">
+                      <button
+                        type="button"
+                        disabled={notificationSettings.bccRecipients.length >= MAX_BCC_RECIPIENTS || notificationSaving}
+                        onClick={() => setNotificationSettings(current => ({
+                          ...current,
+                          bccRecipients: [...current.bccRecipients, ''],
+                        }))}
+                        className="inline-flex items-center gap-2 rounded-lg border border-gray-200 px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:border-blue-300 hover:text-blue-600 disabled:cursor-not-allowed disabled:opacity-50"
+                      >
+                        <Plus size={16} />
+                        Thêm địa chỉ
+                      </button>
+                      <button
+                        type="button"
+                        disabled={notificationSaving}
+                        onClick={handleSaveNotificationSettings}
+                        className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+                      >
+                        <Save size={16} />
+                        {notificationSaving ? 'Đang lưu...' : 'Lưu Email Notifications'}
+                      </button>
+                      {notificationMessage && (
+                        <span className={`text-sm ${notificationMessage.includes('Đã lưu') ? 'text-green-600' : 'text-red-600'}`}>
+                          {notificationMessage}
+                        </span>
+                      )}
+                    </div>
+                  </>
+                )}
+              </section>
+            )}
           </div>
         )}
 

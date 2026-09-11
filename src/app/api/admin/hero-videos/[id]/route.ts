@@ -1,7 +1,8 @@
-import { withAuth } from '@/lib/api/withAuth';
+import { withCapability } from '@/lib/api/withAuth';
 import { apiResponse } from '@/lib/api/apiResponse';
 import { getSupabaseAdmin } from '@/lib/supabase-server';
 import { revalidateHeroVideoConfig } from '@/lib/config/heroVideos';
+import { authorizeCapability } from '@/lib/auth/adminCapabilities';
 
 async function getHeroVideos() {
   try {
@@ -29,7 +30,11 @@ async function saveHeroVideos(data: any) {
   }
 }
 
-export const DELETE = withAuth(async (req, ctx, params) => {
+export const DELETE = withCapability(async (req, access, params) => {
+  const publishAuthorization = await authorizeCapability(access, 'content.publish', { scope: 'hero_videos', mutation: true });
+  if (!publishAuthorization.allowed) {
+    return apiResponse.error(publishAuthorization.error, publishAuthorization.code, publishAuthorization.status);
+  }
   const { id } = await params;
   const current = await getHeroVideos();
   
@@ -42,4 +47,4 @@ export const DELETE = withAuth(async (req, ctx, params) => {
     revalidateHeroVideoConfig();
   }
   return apiResponse.success(updated);
-});
+}, 'content.write', { scope: 'hero_videos', mutation: true });

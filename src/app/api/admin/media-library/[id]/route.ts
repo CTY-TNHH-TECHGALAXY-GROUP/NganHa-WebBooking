@@ -1,9 +1,9 @@
 import { NextRequest } from 'next/server';
-import { withAuth } from '@/lib/api/withAuth';
+import { withCapability } from '@/lib/api/withAuth';
 import { apiResponse } from '@/lib/api/apiResponse';
 import { MediaService } from '@/lib/services/media.service';
 
-export const DELETE = withAuth(async (req, { supabase }, params) => {
+export const DELETE = withCapability(async (req, { supabase }, params) => {
   const { id } = await params;
 
   if (!id) {
@@ -50,4 +50,4 @@ export const DELETE = withAuth(async (req, { supabase }, params) => {
   }
 
   return apiResponse.success({ success: true });
-}, ['owner', 'editor']);
+}, 'media.delete', { mutation: true });

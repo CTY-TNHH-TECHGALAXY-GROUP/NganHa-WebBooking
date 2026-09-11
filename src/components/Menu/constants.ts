@@ -14,7 +14,7 @@ export const CATEGORIES: Category[] = [
         id: 'Body',
         names: {
             en: 'Body Care',
-            vi: 'Body Care',
+            vi: 'Chăm Sóc Cơ Thể',
             jp: 'ボディケア',
             kr: '바디 케어',
             cn: '身体护理'
@@ -25,7 +25,7 @@ export const CATEGORIES: Category[] = [
         id: 'Foot',
         names: {
             en: 'Foot Care',
-            vi: 'Foot Care',
+            vi: 'Chăm Sóc Chân',
             jp: 'フットケア',
             kr: '발 케어',
             cn: '足部护理'
@@ -69,7 +69,7 @@ export const CATEGORIES: Category[] = [
         id: 'Additional',
         names: {
             en: 'Add On',
-            vi: 'Add On',
+            vi: 'Dịch Vụ Thêm',
             jp: 'アドオン',
             kr: '추가',
             cn: '附加'
@@ -87,7 +87,6 @@ export const CATEGORIES: Category[] = [
         },
         image: '/category-icons-svg/haircut.svg'
     },
-
     {
         id: 'Manicure & Pedicure',
         names: {
@@ -98,5 +97,16 @@ export const CATEGORIES: Category[] = [
             cn: '美甲'
         },
         image: '/category-icons-svg/nail-care.svg'
+    },
+    {
+        id: 'Facial',
+        names: {
+            en: 'Facial Care',
+            vi: 'Chăm Sóc Da Mặt',
+            jp: 'フェイシャルケア',
+            kr: '페이셜 케어',
+            cn: '面部护理'
+        },
+        image: '/category-icons-svg/facial-care.svg'
     },
 ];

@@ -4,16 +4,20 @@ import { getSupabaseAdmin } from '@/lib/supabase-server';
 import { toWebbookingLostFoundItem, type WebbookingLostFoundItem } from '@/lib/webbookingLostFound';
 import LostAndFoundPage from '@/components/LostAndFound/LostAndFoundPage';
 import { SUPPORTED_LOCALES, type Locale } from '@/lib/constants';
+import { getPageMetadata } from '@/lib/seo/metadata';
 
 export const dynamic = 'force-dynamic';
 
-export const metadata: Metadata = {
-  title: 'Lost & Found | Oria Spa',
-  description: 'A thoughtful place to reconnect guests with belongings left at Oria Spa.',
-};
-
 interface PageProps {
   params: Promise<{ lang: string }>;
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { lang } = await params;
+  return getPageMetadata({ routeKey: 'lost-and-found', pathname: `/${lang}/lost-and-found`, locale: lang as Locale, localized: true, defaultPathname: '/lost-and-found' }, {
+    title: 'Lost & Found | Oria Spa',
+    description: 'A thoughtful place to reconnect guests with belongings left at Oria Spa.',
+  });
 }
 
 export default async function LocalizedLostAndFoundPage({ params }: PageProps) {

@@ -1,54 +1,132 @@
-import { NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
+import { createHash } from 'node:crypto';
+import { revalidatePath } from 'next/cache';
 import { withAuth } from '@/lib/api/withAuth';
 import { apiResponse } from '@/lib/api/apiResponse';
-import { getSupabaseAdmin } from '@/lib/supabase-server';
+import { recordContentRevisions } from '@/lib/api/contentRevision';
+import { hasSeoAeoCapability } from '@/lib/seo/capabilities';
+import { getSeoConfig, saveSeoConfig } from '@/lib/seo/config';
+import { isSupportedSeoLocale, isValidSeoRouteKey, validateAeoFields, validateSeoFields } from '@/lib/seo/validation';
+import { AEO_CAPABILITIES, SEO_CAPABILITIES, type ContentStatus, type SeoConfig } from '@/lib/seo/types';
 
-const DEFAULT_SEO = {
-  title: "Ngân Hà Barbershop & Spa | Premium Spa in District 1, HCMC",
-  description: "Experience premium spa, barbershop, and wellness services at Ngan Ha. Located at 11 Ngo Duc Ke & 6B Thi Sach, District 1, Ho Chi Minh City. Book online now!",
-  keywords: "spa district 1, barbershop HCMC, Ngan Ha Spa, massage Saigon, ear cleaning spa, đặt lịch spa, spa Quận 1",
-  ogImage: "https://i.ibb.co/fs2MBD4/hero-spa-bg.jpg"
-};
+type Section = 'seo' | 'aeo';
 
-async function getSeo() {
-  try {
-    const supabase = getSupabaseAdmin();
-    const { data } = await supabase.from('SystemConfigs').select('value').eq('key', 'seo_config').single();
-    if (data && data.value) return data.value;
-  } catch (e) {
-    console.error('Error reading seo_config from DB', e);
-  }
-  return DEFAULT_SEO;
+function revisionToken(value: unknown) {
+  return createHash('sha256').update(JSON.stringify(value ?? null)).digest('hex');
 }
 
-async function saveSeo(data: any) {
-  try {
-    const supabase = getSupabaseAdmin();
-    await supabase.from('SystemConfigs').upsert({ 
-      key: 'seo_config', 
-      value: data,
-      description: 'Cấu hình SEO toàn hệ thống'
-    }, { onConflict: 'key' });
-    return true;
-  } catch (e) {
-    console.error('Error writing seo_config to DB', e);
-    return false;
-  }
+function sectionFrom(value: unknown): Section | null {
+  return value === 'seo' || value === 'aeo' ? value : null;
 }
 
-export const GET = withAuth(async () => {
-  return apiResponse.success(await getSeo());
+function getSectionDocument(config: SeoConfig, section: Section) {
+  return section === 'seo'
+    ? { version: config.version, global: config.global, pages: config.pages }
+    : { version: config.version, pages: config.aeo };
+}
+
+function revalidateSeoRoute(routeKey: string, locale: string) {
+  const paths = routeKey === 'home' || routeKey === 'global'
+    ? ['/', `/${locale}`]
+    : routeKey === 'local-tour-detail'
+      ? [`/${locale}/local-tour`, '/local-tour']
+      : [`/${locale}/${routeKey}`, `/${routeKey}`];
+  for (const path of paths) {
+    try { revalidatePath(path); } catch (error) { console.warn('[seo] Unable to revalidate path:', path, error); }
+  }
+  try { revalidatePath('/sitemap.xml'); } catch (error) { console.warn('[seo] Unable to revalidate sitemap:', error); }
+}
+
+export const GET = withAuth(async (request, access) => {
+  const requested = new URL(request.url).searchParams.get('section');
+  const section: Section = requested === 'aeo' ? 'aeo' : 'seo';
+  const capability = section === 'seo' ? SEO_CAPABILITIES.read : AEO_CAPABILITIES.read;
+  if (!(await hasSeoAeoCapability(access, capability))) {
+    return apiResponse.error('Tài khoản chưa được cấp quyền đọc nội dung SEO/AEO', 'CAPABILITY_REQUIRED', 403);
+  }
+
+  const config = await getSeoConfig(access.supabase);
+  return apiResponse.success(getSectionDocument(config, section));
 });
 
-export const POST = withAuth(async (req) => {
-  const body = await req.json();
-  const current = await getSeo();
-  
-  const updated = {
-    ...current,
-    ...body
-  };
-  
-  await saveSeo(updated);
-  return apiResponse.success(updated);
+export const POST = withAuth(async (request: NextRequest, access) => {
+  let body: Record<string, unknown>;
+  try {
+    body = await request.json();
+  } catch {
+    return apiResponse.error('Payload JSON không hợp lệ', 'INVALID_JSON', 400);
+  }
+
+  const legacyPayload = body.section === undefined && body.routeKey === undefined;
+  const section = body.section === undefined ? 'seo' : sectionFrom(body.section);
+  const routeKey = body.routeKey === undefined && legacyPayload ? 'global' : body.routeKey;
+  const locale = body.locale === undefined && legacyPayload ? 'vi' : body.locale;
+  const status = body.status === undefined && legacyPayload
+    ? 'published'
+    : body.status === 'published'
+      ? 'published'
+      : body.status === 'draft'
+        ? 'draft'
+        : null;
+  if (!section || !isValidSeoRouteKey(routeKey) || !isSupportedSeoLocale(locale) || !status) {
+    return apiResponse.error('section, routeKey, locale và status không hợp lệ', 'INVALID_PAYLOAD', 400);
+  }
+
+  const writeCapability = section === 'seo' ? SEO_CAPABILITIES.write : AEO_CAPABILITIES.write;
+  const publishCapability = section === 'seo' ? SEO_CAPABILITIES.publish : AEO_CAPABILITIES.publish;
+  if (!(await hasSeoAeoCapability(access, writeCapability))) {
+    return apiResponse.error('Tài khoản chưa được cấp quyền chỉnh sửa SEO/AEO', 'CAPABILITY_REQUIRED', 403);
+  }
+  if (status === 'published' && !(await hasSeoAeoCapability(access, publishCapability))) {
+    return apiResponse.error('Tài khoản chưa được cấp quyền xuất bản SEO/AEO', 'CAPABILITY_REQUIRED', 403);
+  }
+
+  const rawData = body.data !== undefined
+    ? body.data
+    : legacyPayload
+      ? { title: body.title, description: body.description, keywords: body.keywords, ogImage: body.ogImage, ogImageAlt: '', twitterCard: 'summary_large_image', canonicalPath: '', indexable: true }
+      : body;
+  const validated = section === 'seo' ? validateSeoFields(rawData) : validateAeoFields(rawData);
+  if (!validated.ok) return apiResponse.error(validated.errors.join('; '), 'INVALID_CONTENT', 422);
+
+  const config = await getSeoConfig(access.supabase);
+  const currentPage = section === 'seo' ? config.pages[routeKey] : config.aeo[routeKey];
+  const currentLocale = section === 'seo' && routeKey === 'global' ? config.global[locale] : currentPage?.locales[locale];
+  const currentValue = currentLocale?.[status];
+  if (body.expectedRevision !== undefined && body.expectedRevision !== revisionToken(currentValue || null)) {
+    return apiResponse.error('Nội dung đã được thay đổi ở cửa sổ khác. Hãy tải lại trước khi lưu.', 'SEO_CONTENT_CONFLICT', 409);
+  }
+
+  const nextConfig = JSON.parse(JSON.stringify(config)) as SeoConfig;
+  if (section === 'seo' && routeKey === 'global') {
+    const entry = nextConfig.global[locale] || {};
+    nextConfig.global[locale] = { ...entry, [status]: validated.value, updatedAt: new Date().toISOString() };
+  } else if (section === 'seo') {
+    const page = nextConfig.pages[routeKey] || { locales: {} };
+    const entry = page.locales[locale] || {};
+    page.locales[locale] = { ...entry, [status]: validated.value, updatedAt: new Date().toISOString() };
+    nextConfig.pages[routeKey] = page;
+  } else {
+    const page = nextConfig.aeo[routeKey] || { locales: {} };
+    const entry = page.locales[locale] || {};
+    page.locales[locale] = { ...entry, [status]: validated.value, updatedAt: new Date().toISOString() };
+    nextConfig.aeo[routeKey] = page;
+  }
+
+  const saved = await saveSeoConfig(access.supabase, nextConfig);
+  if (!saved.ok) return apiResponse.error('Không thể lưu cấu hình SEO/AEO', 'DB_ERROR', 500);
+
+  await recordContentRevisions(access.supabase, [{
+    content_key: `SystemConfigs:${section}:${routeKey}:${locale}:${status}`,
+    payload: nextConfig as unknown as Record<string, unknown>,
+    changed_by: access.user.id,
+  }]);
+
+  revalidateSeoRoute(routeKey, locale);
+  return apiResponse.success({
+    section,
+    document: getSectionDocument(nextConfig, section),
+    status: status as ContentStatus,
+    revision: revisionToken(validated.value),
+  });
 });

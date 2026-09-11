@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { SOCIAL_LINKS } from '@/lib/constants';
 import AIChatBot from '@/components/AIChatBot/AIChatBot';
 import { useSystemSettings } from '@/components/SystemSettingsProvider';
+import { trackAnalytics } from '@/lib/analytics/client';
 import GoogleReviewWidget from '@/components/GoogleReviewWidget/GoogleReviewWidget';
 import { useTranslation } from '@/components/TranslationProvider';
 
@@ -309,6 +310,7 @@ const FloatingWidgets = () => {
                 {/* 1. Gọi Hotline */}
                 <a
                   href={hotlineUrl}
+                  onClick={() => trackAnalytics('contact_click', { identifier: 'hotline' })}
                   className="bg-gradient-to-r from-[#D4AF37] to-[#B89628] text-[#1a1510] font-bold px-4 py-2.5 rounded-2xl rounded-br-sm flex items-center justify-between gap-3 shadow-lg hover:brightness-110 hover:-translate-y-0.5 transition-all w-full min-w-[200px] max-w-[225px]"
                   aria-label="Call hotline"
                 >
@@ -319,6 +321,7 @@ const FloatingWidgets = () => {
                 {/* 2. WhatsApp */}
                 <a
                   href={whatsappUrl}
+                  onClick={() => trackAnalytics('contact_click', { identifier: 'whatsapp' })}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="bg-[#1c1815] text-white border border-[#25D366]/40 hover:border-[#25D366] hover:bg-[#25D366]/10 px-4 py-2.5 rounded-2xl rounded-br-sm flex items-center justify-between gap-3 shadow-lg hover:-translate-y-0.5 transition-all w-full min-w-[200px] max-w-[225px]"
@@ -331,6 +334,7 @@ const FloatingWidgets = () => {
                 {/* 3. Zalo */}
                 <a
                   href={zaloUrl}
+                  onClick={() => trackAnalytics('contact_click', { identifier: 'zalo' })}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="bg-[#1c1815] text-white border border-[#0068FF]/40 hover:border-[#0068FF] hover:bg-[#0068FF]/10 px-4 py-2.5 rounded-2xl rounded-br-sm flex items-center justify-between gap-3 shadow-lg hover:-translate-y-0.5 transition-all w-full min-w-[200px] max-w-[225px]"
@@ -343,6 +347,7 @@ const FloatingWidgets = () => {
                 {lineUrl && (
                   <a
                     href={lineUrl}
+                    onClick={() => trackAnalytics('contact_click', { identifier: 'line' })}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="bg-[#1c1815] text-white border border-[#06C755]/40 hover:border-[#06C755] hover:bg-[#06C755]/10 px-4 py-2.5 rounded-2xl rounded-br-sm flex items-center justify-between gap-3 shadow-lg hover:-translate-y-0.5 transition-all w-full min-w-[200px] max-w-[225px]"
@@ -355,7 +360,10 @@ const FloatingWidgets = () => {
 
                 {/* 4. WeChat */}
                 <button
-                  onClick={handleWechatClick}
+                  onClick={() => {
+                    handleWechatClick();
+                    trackAnalytics('contact_click', { identifier: 'wechat' });
+                  }}
                   className="bg-[#1c1815] text-white border border-[#07C160]/40 hover:border-[#07C160] hover:bg-[#07C160]/10 px-4 py-2.5 rounded-2xl rounded-br-sm flex items-center justify-between gap-3 shadow-lg hover:-translate-y-0.5 transition-all w-full min-w-[200px] max-w-[225px]"
                   aria-label="WeChat"
                 >
@@ -365,7 +373,10 @@ const FloatingWidgets = () => {
 
                 {/* 5. KakaoTalk */}
                 <button
-                  onClick={handleKakaoClick}
+                  onClick={() => {
+                    handleKakaoClick();
+                    trackAnalytics('contact_click', { identifier: 'kakaotalk' });
+                  }}
                   className="bg-[#1c1815] text-white border border-[#FEE500]/40 hover:border-[#FEE500] hover:bg-[#FEE500]/10 px-4 py-2.5 rounded-2xl rounded-br-sm flex items-center justify-between gap-3 shadow-lg hover:-translate-y-0.5 transition-all w-full min-w-[200px] max-w-[225px]"
                   aria-label="KakaoTalk"
                 >
@@ -375,7 +386,10 @@ const FloatingWidgets = () => {
                 
                 {/* 6. Chat với AI - COMING SOON */}
                 <button
-                  onClick={handleAiChatClick}
+                  onClick={() => {
+                    handleAiChatClick();
+                    trackAnalytics('contact_click', { identifier: 'ai_chat' });
+                  }}
                   className="bg-[#14100e] text-[#f7ebc7]/80 px-4 py-2.5 rounded-2xl rounded-br-sm flex items-center justify-between gap-2 shadow-lg border border-[#D4AF37]/30 hover:border-[#D4AF37] hover:bg-[#D4AF37]/10 hover:-translate-y-0.5 transition-all w-full min-w-[200px] max-w-[225px]"
                   aria-label="Open chat"
                 >

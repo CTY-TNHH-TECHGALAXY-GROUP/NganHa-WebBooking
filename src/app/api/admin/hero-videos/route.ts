@@ -1,7 +1,8 @@
-import { withAuth } from '@/lib/api/withAuth';
+import { withCapability } from '@/lib/api/withAuth';
 import { apiResponse } from '@/lib/api/apiResponse';
 import { getSupabaseAdmin } from '@/lib/supabase-server';
 import { revalidateHeroVideoConfig } from '@/lib/config/heroVideos';
+import { authorizeCapability } from '@/lib/auth/adminCapabilities';
 
 const DEFAULT_VIDEOS = [
   { id: '1', url: '/videos/video1.mp4', poster: 'https://i.ibb.co/fs2MBD4/hero-spa-bg.jpg', sort_order: 1 },
@@ -51,11 +52,15 @@ async function saveHeroVideos(data: any) {
   }
 }
 
-export const GET = withAuth(async () => {
+export const GET = withCapability(async () => {
   return apiResponse.success(await getHeroVideos());
-});
+}, 'content.read', { scope: 'hero_videos' });
 
-export const POST = withAuth(async (req) => {
+export const POST = withCapability(async (req, access) => {
+  const publishAuthorization = await authorizeCapability(access, 'content.publish', { scope: 'hero_videos', mutation: true });
+  if (!publishAuthorization.allowed) {
+    return apiResponse.error(publishAuthorization.error, publishAuthorization.code, publishAuthorization.status);
+  }
   const body = await req.json();
   const { url, poster } = body;
 
@@ -74,4 +79,4 @@ export const POST = withAuth(async (req) => {
   }
 
   return apiResponse.success(newItem);
-});
+}, 'content.write', { scope: 'hero_videos', mutation: true });

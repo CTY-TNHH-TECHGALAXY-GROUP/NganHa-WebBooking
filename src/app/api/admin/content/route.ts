@@ -1,9 +1,10 @@
 import { NextRequest } from 'next/server';
 import { revalidatePath } from 'next/cache';
 import { createHash } from 'node:crypto';
-import { withAuth } from '@/lib/api/withAuth';
+import { withCapability } from '@/lib/api/withAuth';
 import { apiResponse } from '@/lib/api/apiResponse';
 import { recordContentRevisions } from '@/lib/api/contentRevision';
+import { authorizeCapability } from '@/lib/auth/adminCapabilities';
 
 function canonicalize(obj: unknown): unknown {
   if (obj === null || typeof obj !== 'object') {
@@ -23,7 +24,7 @@ function canonicalize(obj: unknown): unknown {
 const revisionToken = (value: unknown) =>
   createHash('sha256').update(JSON.stringify(canonicalize(value ?? null))).digest('hex');
 
-export const GET = withAuth(async (_request, { supabase }) => {
+export const GET = withCapability(async (_request, { supabase }) => {
   try {
     const { data, error } = await supabase
       .from('WebBookingContent')
@@ -48,10 +49,15 @@ export const GET = withAuth(async (_request, { supabase }) => {
   } catch (error: any) {
     return apiResponse.error(error.message, 'INTERNAL_ERROR', 500);
   }
-});
+}, 'content.read');
 
-export const POST = withAuth(async (request: NextRequest, { supabase, user }) => {
+export const POST = withCapability(async (request: NextRequest, access) => {
+  const { supabase, user } = access;
   try {
+    const publishAuthorization = await authorizeCapability(access, 'content.publish', { mutation: true });
+    if (!publishAuthorization.allowed) {
+      return apiResponse.error(publishAuthorization.error, publishAuthorization.code, publishAuthorization.status);
+    }
     const payload = await request.json(); // Record<string, any> plus optional _expectedRevisions metadata.
     const expectedRevisions = payload?._expectedRevisions && typeof payload._expectedRevisions === 'object'
       ? payload._expectedRevisions as Record<string, string | null>
@@ -160,4 +166,4 @@ export const POST = withAuth(async (request: NextRequest, { supabase, user }) =>
   } catch (error: any) {
     return apiResponse.error(error.message, 'INTERNAL_ERROR', 500);
   }
-});
+}, 'content.write', { mutation: true });

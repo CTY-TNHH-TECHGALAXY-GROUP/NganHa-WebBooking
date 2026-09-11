@@ -3,6 +3,7 @@ import { Playfair_Display, Inter } from "next/font/google";
 import LayoutWrapper from "@/components/LayoutWrapper";
 import { TranslationProvider } from "@/components/TranslationProvider";
 import { SystemSettingsProvider } from "@/components/SystemSettingsProvider";
+import AnalyticsRuntime from "@/lib/analytics/AnalyticsRuntime";
 import { getSupabaseAdmin } from "@/lib/supabase-server";
 import {
   sanitizeHomepageStyling,
@@ -10,6 +11,7 @@ import {
   getSafeGoogleFontUrl,
 } from "@/lib/config/stylingSanitizer";
 import { sanitizePublicAboutStoryContent, sanitizePublicSystemSettings } from "@/lib/config/siteContentSanitizer";
+import { getPageMetadata } from '@/lib/seo/metadata';
 import "./globals.css";
 
 // 🔧 FONT CONFIGURATION
@@ -29,31 +31,19 @@ const inter = Inter({
 });
 
 export async function generateMetadata(): Promise<Metadata> {
-  let seo = {
-    title: "ORIA SPA | Premium Spa in District 1, HCMC",
-    description:
-      "Experience premium spa, barbershop, and wellness services at ORIA SPA. Located at 11 Ngo Duc Ke & 6B Thi Sach, District 1, Ho Chi Minh City. Book online now!",
-    keywords:
-      "spa district 1, barbershop HCMC, ORIA SPA, massage Saigon, ear cleaning spa, đặt lịch spa, spa Quận 1",
-    ogImage: "https://i.ibb.co/fs2MBD4/hero-spa-bg.jpg"
-  };
-
-  try {
-    const supabase = getSupabaseAdmin();
-    const { data } = await supabase.from('SystemConfigs').select('value').eq('key', 'seo_config').single();
-    if (data && data.value) {
-      seo = { ...seo, ...data.value };
-    }
-  } catch (e) {
-    if (e instanceof Error && !e.message.includes('Missing Supabase env vars')) console.error('Error reading seo.json for metadata', e);
-  }
+  const seo = await getPageMetadata({
+    routeKey: 'home',
+    pathname: '/',
+    locale: 'vi',
+    localized: true,
+    defaultPathname: '/',
+  }, {
+    title: 'Oria Spa | Premium Spa in District 1, HCMC',
+    description: 'Experience premium spa, barbershop, and wellness services at Oria Spa. Located at 11 Ngo Duc Ke, District 1, Ho Chi Minh City. Book online now!',
+  });
 
   return {
-    title: seo.title,
-    description: seo.description,
-    keywords: Array.isArray(seo.keywords)
-      ? seo.keywords
-      : seo.keywords.split(',').map((k: string) => k.trim()),
+    ...seo,
     icons: {
       icon: [
         { url: '/favicon.ico?v=3', sizes: 'any' },
@@ -69,19 +59,6 @@ export async function generateMetadata(): Promise<Metadata> {
       title: "Oria Spa",
       statusBarStyle: "default",
       capable: true,
-    },
-    openGraph: {
-      title: seo.title,
-      description: seo.description,
-      type: "website",
-      images: [
-        {
-          url: seo.ogImage,
-          width: 1200,
-          height: 630,
-          alt: seo.title
-        }
-      ]
     },
   };
 }
@@ -176,6 +153,7 @@ const RootLayout = async ({
       <body className="w-full min-h-full antialiased font-sans" suppressHydrationWarning>
         <SystemSettingsProvider systemSettings={publicSystemSettings} aboutStoryContent={publicAboutStoryContent} brandHistory={brandHistory} footerContent={footerContent}>
           <TranslationProvider initialTranslations={translations}>
+            <AnalyticsRuntime />
             <LayoutWrapper>{children}</LayoutWrapper>
           </TranslationProvider>
         </SystemSettingsProvider>

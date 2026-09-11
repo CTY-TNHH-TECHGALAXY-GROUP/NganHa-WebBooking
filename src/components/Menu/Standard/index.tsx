@@ -51,6 +51,7 @@ import { CartItem, Service, ServiceOptions, SheetState } from '@/components/Menu
 import { getServices } from '@/components/Menu/getServices'; // Đảm bảo đường dẫn đúng
 import { useMenuData } from '@/components/Menu/MenuContext'; // Import Hook Context
 import { getCartSelectionKey } from '@/components/Menu/cartSelection';
+import { trackAnalytics } from '@/lib/analytics/client';
 
 interface StandardMenuProps {
     lang: string;
@@ -124,6 +125,7 @@ export default function StandardMenu({ lang, onBack, onCheckout }: StandardMenuP
 
     // [QUAN TRỌNG] Khi bấm vào Card ở List -> Nhận vào 1 NHÓM (Service[])
     const handleServiceClick = (group: Service[]) => {
+        if (group[0]?.id) trackAnalytics('service_view', { identifier: group[0].id });
         setSheet({ isOpen: true, type: 'MAIN', data: group });
     };
 
@@ -147,6 +149,7 @@ export default function StandardMenu({ lang, onBack, onCheckout }: StandardMenuP
         }
         const selection = selections[0];
         setSelectionQuantity(selection, selection.totalQty + delta);
+        trackAnalytics(delta > 0 ? 'cart_add' : 'cart_remove', { identifier: selection.id });
     };
 
     // Hàm cập nhật Cart (Dùng cho cả MainSheet và ReviewSheet)
@@ -159,6 +162,8 @@ export default function StandardMenu({ lang, onBack, onCheckout }: StandardMenuP
         if (service) {
             // Never replace other durations or customised selections of this service.
             const newAddedId = contextAddToCart(service, qty, options);
+            trackAnalytics('cart_add', { identifier: service.id });
+            trackAnalytics('service_option_select', { identifier: service.id });
 
             // Custom For You is completed once for this quantity selection.
             setLastAddedCartIds([newAddedId]);
@@ -189,6 +194,7 @@ export default function StandardMenu({ lang, onBack, onCheckout }: StandardMenuP
 
     // Mở giỏ hàng tổng (Sẽ làm CartDrawer sau)
     const handleOpenCart = () => {
+        trackAnalytics('cart_open');
         setSheet({ isOpen: true, type: 'CART', data: null });
     };
 

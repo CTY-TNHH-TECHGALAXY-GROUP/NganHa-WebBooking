@@ -27,6 +27,10 @@ export interface BookingEmailPayload {
   notes?: string;
   focusAreaNote?: string;
   receptionEmail?: string;
+  /** Additional private copies configured by the authenticated admin settings flow. */
+  bccRecipients?: string[];
+  /** Read diagnostics from the private notification settings loader. */
+  bccConfiguration?: 'NOTIFICATION_SETTINGS_UNAVAILABLE' | 'NOTIFICATION_SETTINGS_INVALID';
 }
 
 export interface BookingEmailSendOptions {
@@ -58,6 +62,15 @@ export interface BookingEmailAttempt {
   code: BookingEmailDiagnosticCode;
 }
 
+export interface BookingEmailBccDiagnostics {
+  configuredCount: number;
+  acceptedCount: number;
+  rejectedCount: number;
+  unknownCount: number;
+  outcome: 'accepted' | 'failed' | 'unknown';
+  code: BookingEmailDiagnosticCode;
+}
+
 export interface BookingEmailResult {
   /** Legacy caller field. True only when the intended recipient has accepted evidence. */
   success: boolean;
@@ -72,6 +85,9 @@ export interface BookingEmailResult {
   reason?: 'No recipient email' | 'Transporter not configured';
   /** Preserved fixed string used by older callers for an unclassified send failure. */
   error?: 'Notification delivery failed.';
+  /** Safe counts only. Recipient addresses never cross this boundary. */
+  bcc?: BookingEmailBccDiagnostics;
+  bccConfiguration?: 'NOTIFICATION_SETTINGS_UNAVAILABLE' | 'NOTIFICATION_SETTINGS_INVALID';
 }
 
 const I18N_TEMPLATE_1: Record<string, {
@@ -119,7 +135,7 @@ const I18N_TEMPLATE_1: Record<string, {
     locationLabel: "Location",
     bookingCodeLabel: "Booking Code",
     totalLabel: "Estimated Total",
-    preferencesLabel: "Treatment Preferences & Focus Areas",
+    preferencesLabel: "Service Preferences & Notes",
     notesLabel: "Special Requests / Notes",
     followUp: "You'll receive a confirmation email shortly once we've secured your appointment. If we need to adjust anything, we'll be in touch.",
     questions: (phone) => `Questions in the meantime? Just reply to this email or call us at ${phone}.`,
@@ -145,7 +161,7 @@ const I18N_TEMPLATE_1: Record<string, {
     locationLabel: "Chi nhánh",
     bookingCodeLabel: "Mã đặt lịch",
     totalLabel: "Tổng thanh toán dự kiến",
-    preferencesLabel: "Yêu cầu & Lưu ý trị liệu",
+    preferencesLabel: "Yêu cầu & Lưu ý dịch vụ",
     notesLabel: "Ghi chú của khách hàng",
     followUp: "Bạn sẽ nhận được email xác nhận chính thức ngay sau khi lịch hẹn được sắp xếp hoàn tất. Nếu cần điều chỉnh bất kỳ điều gì, chúng tôi sẽ chủ động liên hệ với bạn.",
     questions: (phone) => `Trong thời gian chờ đợi, nếu có bất kỳ thắc mắc nào, bạn chỉ cần phản hồi email này hoặc gọi cho chúng tôi qua số ${phone}.`,
@@ -171,7 +187,7 @@ const I18N_TEMPLATE_1: Record<string, {
     locationLabel: "水疗中心地址",
     bookingCodeLabel: "预约编号",
     totalLabel: "预计总额",
-    preferencesLabel: "护理偏好与特别要求",
+    preferencesLabel: "服务偏好与特别要求",
     notesLabel: "客户特别备注",
     followUp: "预约确认后，我们将在第一时间向您发送正式确认邮件。如需对时间或项目进行微调，我们将主动与您取得联系。",
     questions: (phone) => `在此期间如有任何疑问或需要协助，欢迎直接回复此邮件，或致电联系我们：${phone}。`,
@@ -197,7 +213,7 @@ const I18N_TEMPLATE_1: Record<string, {
     locationLabel: "店舗所在地",
     bookingCodeLabel: "ご予約番号",
     totalLabel: "お支払い概算",
-    preferencesLabel: "施術のご要望・特記事項",
+    preferencesLabel: "サービスのご要望・特記事項",
     notesLabel: "お客様からのご要望・メモ",
     followUp: "ご予約枠が確定いたしましたら、改めて正式な「ご予約確定メール」をお送りいたします。万が一、日時の調整が必要な場合には、担当スタッフより速やかにご連絡申し上げます。",
     questions: (phone) => `ご不明な点やご相談がございましたら、本メールにご返信いただくか、お電話（${phone}）にてお気軽にお問い合わせください。`,
@@ -223,7 +239,7 @@ const I18N_TEMPLATE_1: Record<string, {
     locationLabel: "지점 위치",
     bookingCodeLabel: "예약 번호",
     totalLabel: "예상 결제 금액",
-    preferencesLabel: "맞춤 케어 요청 및 참고 사항",
+    preferencesLabel: "서비스 요청 및 참고 사항",
     notesLabel: "고객 요청 메모",
     followUp: "예약 일정이 확정되는 즉시 공식 확정 안내 이메일을 발송해 드리겠습니다. 일정 조정이 필요한 경우 사전에 미리 연락드리겠습니다.",
     questions: (phone) => `문의 사항이 있으실 경우, 본 이메일에 답장해 주시거나 ${phone} 번으로 편하게 연락해 주시기 바랍니다.`,
@@ -231,6 +247,9 @@ const I18N_TEMPLATE_1: Record<string, {
     signoffTeam: "Oria Spa 팀 드림",
   },
 };
+
+let cachedTransporter: any = null;
+let cachedKey = '';
 
 function getTransporter(portOverride?: number) {
   const host = process.env.SMTP_HOST || 'smtp.zoho.com';
@@ -244,15 +263,30 @@ function getTransporter(portOverride?: number) {
     return null;
   }
 
-  return nodemailer.createTransport({
+  const key = `${host}:${port}:${user}:${secure}`;
+  if (!portOverride && cachedTransporter && cachedKey === key) {
+    return cachedTransporter;
+  }
+
+  const transporter = nodemailer.createTransport({
     host,
     port,
     secure,
     auth: { user, pass },
-    connectionTimeout: 15000,
-    greetingTimeout: 10000,
-    socketTimeout: 15000,
+    pool: true,
+    maxConnections: 3,
+    maxMessages: 100,
+    connectionTimeout: 8000,
+    greetingTimeout: 6000,
+    socketTimeout: 10000,
   });
+
+  if (!portOverride) {
+    cachedTransporter = transporter;
+    cachedKey = key;
+  }
+
+  return transporter;
 }
 
 function safeSmtpErrorDetails(error: unknown): Record<string, string | number> {
@@ -401,6 +435,33 @@ function normalizeEmailRecipient(value: unknown): string | null {
   return /^[^\s@<>,;:]+@[^\s@<>,;:]+\.[^\s@<>,;:]+$/.test(email) ? email : null;
 }
 
+const MAX_BCC_RECIPIENTS = 5;
+
+function normalizeConfiguredBccRecipients(value: unknown): {
+  recipients: string[];
+  invalid: boolean;
+} {
+  if (value === undefined) return { recipients: [], invalid: false };
+  if (!Array.isArray(value)) {
+    return { recipients: [], invalid: true };
+  }
+
+  const recipients: string[] = [];
+  const seen = new Set<string>();
+  for (const item of value) {
+    if (typeof item !== 'string') return { recipients: [], invalid: true };
+    const normalized = normalizeEmailRecipient(item);
+    if (!normalized || normalized.length > 254) return { recipients: [], invalid: true };
+    const key = normalized.toLowerCase();
+    if (!seen.has(key)) {
+      seen.add(key);
+      recipients.push(key);
+    }
+  }
+  if (recipients.length > MAX_BCC_RECIPIENTS) return { recipients: [], invalid: true };
+  return { recipients, invalid: false };
+}
+
 function resolveReceptionEmail(value: unknown): string | null {
   return (
     normalizeEmailRecipient(value) ||
@@ -410,8 +471,48 @@ function resolveReceptionEmail(value: unknown): string | null {
   );
 }
 
+function classifyBccSendInfo(info: unknown, recipients: string[]): BookingEmailBccDiagnostics | undefined {
+  if (recipients.length === 0) return undefined;
+
+  let acceptedCount = 0;
+  let rejectedCount = 0;
+  let unknownCount = 0;
+  for (const recipient of recipients) {
+    if (recipientWasListed(info, 'accepted', recipient)) acceptedCount += 1;
+    else if (recipientWasListed(info, 'rejected', recipient)) rejectedCount += 1;
+    else unknownCount += 1;
+  }
+
+  const outcome = rejectedCount > 0 ? 'failed' : unknownCount > 0 ? 'unknown' : 'accepted';
+  return {
+    configuredCount: recipients.length,
+    acceptedCount,
+    rejectedCount,
+    unknownCount,
+    outcome,
+    code: rejectedCount > 0
+      ? 'SMTP_RECIPIENT_REJECTED'
+      : unknownCount > 0
+        ? 'EMAIL_RESULT_UNKNOWN'
+        : 'SMTP_ACCEPTED',
+  };
+}
+
+function classifyBccError(error: unknown, recipients: string[]): BookingEmailBccDiagnostics | undefined {
+  if (recipients.length === 0) return undefined;
+  const classification = classifySmtpError(error);
+  return {
+    configuredCount: recipients.length,
+    acceptedCount: 0,
+    rejectedCount: classification.code === 'SMTP_RECIPIENT_REJECTED' ? recipients.length : 0,
+    unknownCount: classification.code === 'SMTP_RECIPIENT_REJECTED' ? 0 : recipients.length,
+    outcome: classification.code === 'SMTP_RECIPIENT_REJECTED' ? 'failed' : 'unknown',
+    code: classification.code,
+  };
+}
+
 function formatVND(amount: number) {
-  return new Intl.NumberFormat('vi-VN').format(amount) + '\u00A0₫';
+  return new Intl.NumberFormat('vi-VN').format(amount) + ' VND';
 }
 
 function renderPreferenceItemHtml(item: string): string {
@@ -815,6 +916,8 @@ export async function sendBookingConfirmationEmail(
 ) : Promise<BookingEmailResult> {
   let stage: BookingEmailStage = 'preparation';
   const attempts: BookingEmailAttempt[] = [];
+  let bccDiagnostics: BookingEmailBccDiagnostics | undefined;
+  let bccConfiguration: BookingEmailResult['bccConfiguration'];
 
   try {
     const {
@@ -837,6 +940,8 @@ export async function sendBookingConfirmationEmail(
     const customerRecipient = normalizeEmailRecipient(customerEmail);
     const hasCustomerEmail = Boolean(customerRecipient);
     const rawReception = resolveReceptionEmail(payload.receptionEmail);
+    const normalizedConfiguredBcc = normalizeConfiguredBccRecipients(payload.bccRecipients);
+    bccConfiguration = payload.bccConfiguration || (normalizedConfiguredBcc.invalid ? 'NOTIFICATION_SETTINGS_INVALID' : undefined);
 
     if (!hasCustomerEmail && !rawReception) {
       console.log('[Mailer] Skipped email: neither customer email nor reception email available');
@@ -847,6 +952,7 @@ export async function sendBookingConfirmationEmail(
         code: 'EMAIL_RECIPIENT_INVALID',
         attempts,
         reason: 'No recipient email',
+        ...(bccConfiguration ? { bccConfiguration } : {}),
       });
     }
 
@@ -872,6 +978,7 @@ export async function sendBookingConfirmationEmail(
         stage: 'preparation',
         code: 'EMAIL_TEST_SKIPPED',
         attempts,
+        ...(bccConfiguration ? { bccConfiguration } : {}),
       });
     }
 
@@ -887,6 +994,7 @@ export async function sendBookingConfirmationEmail(
         code: 'EMAIL_CONFIGURATION_UNAVAILABLE',
         attempts,
         reason: 'Transporter not configured',
+        ...(bccConfiguration ? { bccConfiguration } : {}),
       });
     }
     stage = 'preparation';
@@ -970,15 +1078,27 @@ ${t.signoffTeam}
       : [];
 
     let toRecipient: string;
-    let bccRecipient: string | undefined = undefined;
+    const bccRecipients: string[] = [];
 
     if (hasCustomerEmail) {
       toRecipient = customerRecipient!;
       if (rawReception && rawReception.toLowerCase() !== customerRecipient!.toLowerCase()) {
-        bccRecipient = rawReception;
+        bccRecipients.push(rawReception);
       }
     } else {
       toRecipient = rawReception!;
+    }
+
+    const excludedRecipients = new Set(
+      [customerRecipient, rawReception]
+        .filter((recipient): recipient is string => Boolean(recipient))
+        .map((recipient) => recipient.toLowerCase()),
+    );
+    for (const recipient of normalizedConfiguredBcc.recipients) {
+      const normalized = recipient.toLowerCase();
+      if (!excludedRecipients.has(normalized) && !bccRecipients.some((item) => item.toLowerCase() === normalized)) {
+        bccRecipients.push(recipient);
+      }
     }
 
     const phoneTag = customerPhone ? ` - ${customerPhone}` : '';
@@ -996,8 +1116,10 @@ ${t.signoffTeam}
       attachments,
     };
 
-    if (bccRecipient) {
-      mailOptions.bcc = bccRecipient;
+    if (bccRecipients.length > 0) {
+      // Keep the old single-string shape for the existing reception BCC while
+      // using an array only when additional configured copies are present.
+      mailOptions.bcc = bccRecipients.length === 1 ? bccRecipients[0] : bccRecipients;
     }
 
     const expectedRecipient = customerRecipient || toRecipient;
@@ -1008,10 +1130,12 @@ ${t.signoffTeam}
       try {
         const info = await candidate.sendMail(mailOptions);
         const classification = classifySendInfo(info, expectedRecipient);
+        bccDiagnostics = classifyBccSendInfo(info, bccRecipients);
         attempts.push({ attempt, stage: 'smtp', code: classification.code });
-        return { info, classification };
+        return { info, classification, bccDiagnostics };
       } catch (error) {
         const classification = classifySmtpError(error);
+        bccDiagnostics = classifyBccError(error, bccRecipients);
         attempts.push({ attempt, stage: 'smtp', code: classification.code });
         throw error;
       }
@@ -1026,6 +1150,8 @@ ${t.signoffTeam}
         stage: 'smtp',
         code: classification.code,
         attempts,
+        ...(bccDiagnostics ? { bcc: bccDiagnostics } : {}),
+        ...(bccConfiguration ? { bccConfiguration } : {}),
       });
     } catch (primaryErr: any) {
       if (!canRetryWithFallback(primaryErr)) throw primaryErr;
@@ -1045,6 +1171,8 @@ ${t.signoffTeam}
           stage: 'smtp',
           code: classification.code,
           attempts,
+          ...(bccDiagnostics ? { bcc: bccDiagnostics } : {}),
+          ...(bccConfiguration ? { bccConfiguration } : {}),
         });
       } catch (fallbackErr: any) {
         console.error('[Mailer] Fallback SMTP attempt failed', {
@@ -1075,6 +1203,8 @@ ${t.signoffTeam}
       code: classification.code,
       attempts,
       error: 'Notification delivery failed.',
+      ...(bccDiagnostics ? { bcc: bccDiagnostics } : {}),
+      ...(bccConfiguration ? { bccConfiguration } : {}),
     });
   }
 }

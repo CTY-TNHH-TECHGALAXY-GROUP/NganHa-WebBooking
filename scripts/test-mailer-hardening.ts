@@ -2,6 +2,9 @@ import assert from 'node:assert/strict';
 const { generateBookingConfirmationHtml, sendBookingConfirmationEmail } = await import(
   new URL('../src/lib/mailer.ts', import.meta.url).href
 );
+const { normalizeBccRecipients, parseNotificationSettingsValue, readNotificationSettings } = await import(
+  new URL('../src/lib/notificationSettings.ts', import.meta.url).href
+);
 
 type BookingEmailPayload = {
   bookingId: string;
@@ -164,6 +167,109 @@ async function run() {
     );
     assert.equal(customerAndReceptionSent[0].to, payload.customerEmail);
     assert.equal(customerAndReceptionSent[0].bcc, 'desk@booking.example.org');
+
+    const normalizedBcc = normalizeBccRecipients([
+      ' Ops@booking.example.org ',
+      'ops@booking.example.org',
+      'guest@booking.example.org',
+      'desk@booking.example.org',
+      'second@booking.example.org',
+      'second@booking.example.org',
+    ]);
+    assert.deepEqual(normalizedBcc, {
+      ok: true,
+      recipients: ['ops@booking.example.org', 'guest@booking.example.org', 'desk@booking.example.org', 'second@booking.example.org'],
+    });
+    assert.equal(normalizeBccRecipients([
+      'one@booking.example.org',
+      'two@booking.example.org',
+      'three@booking.example.org',
+      'four@booking.example.org',
+      'five@booking.example.org',
+      'six@booking.example.org',
+    ]).ok, false);
+    assert.equal(normalizeBccRecipients(['ok@booking.example.org\r\nBcc: injected@example.org']).ok, false);
+    assert.deepEqual(parseNotificationSettingsValue({ bccEnabled: false, bccRecipients: ['OPS@booking.example.org'] }), {
+      ok: true,
+      bccEnabled: false,
+      bccRecipients: ['ops@booking.example.org'],
+      revision: 0,
+    });
+
+    const fakeSettingsReader = (result: { data: unknown; error?: unknown }) => ({
+      from: () => ({
+        select: () => ({
+          eq: () => ({ maybeSingle: async () => result }),
+        }),
+      }),
+    });
+    const absentSettings = await readNotificationSettings(fakeSettingsReader({ data: null }));
+    assert.deepEqual(absentSettings, { state: 'absent', bccEnabled: false, bccRecipients: [], revision: 0 });
+    const unavailableSettings = await readNotificationSettings(fakeSettingsReader({ data: null, error: { code: '42P01' } }));
+    assert.deepEqual(unavailableSettings, {
+      state: 'unavailable',
+      bccEnabled: false,
+      bccRecipients: [],
+      revision: 0,
+      diagnostic: 'NOTIFICATION_SETTINGS_UNAVAILABLE',
+    });
+
+    const bccSent: MailOptions[] = [];
+    const bccResult = await sendBookingConfirmationEmail(
+      {
+        ...payload,
+        receptionEmail: 'desk@booking.example.org',
+        bccRecipients: [' Ops@booking.example.org ', 'ops@booking.example.org', payload.customerEmail!, 'desk@booking.example.org', 'second@booking.example.org'],
+      },
+      {
+        createTransporter: () => ({
+          async sendMail(mailOptions: MailOptions) {
+            bccSent.push(mailOptions);
+            const bcc = Array.isArray(mailOptions.bcc) ? mailOptions.bcc : [mailOptions.bcc];
+            return { messageId: 'bcc-happy', accepted: [mailOptions.to, ...bcc] };
+          },
+        }) as any,
+      },
+    );
+    assert.equal(bccResult.success, true);
+    assert.deepEqual(bccSent[0].bcc, ['desk@booking.example.org', 'ops@booking.example.org', 'second@booking.example.org']);
+    assert.deepEqual(bccResult.bcc, {
+      configuredCount: 3,
+      acceptedCount: 3,
+      rejectedCount: 0,
+      unknownCount: 0,
+      outcome: 'accepted',
+      code: 'SMTP_ACCEPTED',
+    });
+
+    const bccPartialResult = await sendBookingConfirmationEmail(
+      { ...payload, receptionEmail: 'desk@booking.example.org', bccRecipients: ['ops@booking.example.org', 'second@booking.example.org'] },
+      {
+        createTransporter: () => ({
+          async sendMail(mailOptions: MailOptions) {
+            const bcc = Array.isArray(mailOptions.bcc) ? mailOptions.bcc : [mailOptions.bcc];
+            return { messageId: 'bcc-partial', accepted: [mailOptions.to, bcc[0], bcc[2]], rejected: [bcc[1]] };
+          },
+        }) as any,
+      },
+    );
+    assert.equal(bccPartialResult.success, true);
+    assert.equal(bccPartialResult.code, 'SMTP_ACCEPTED');
+    assert.deepEqual(bccPartialResult.bcc, {
+      configuredCount: 3,
+      acceptedCount: 2,
+      rejectedCount: 1,
+      unknownCount: 0,
+      outcome: 'failed',
+      code: 'SMTP_RECIPIENT_REJECTED',
+    });
+
+    const invalidBccResult = await sendBookingConfirmationEmail(
+      { ...payload, bccRecipients: ['valid@booking.example.org', 'bad-value\nBcc: injected@example.org'] },
+      { createTransporter: () => fakeTransporter([], 'invalid-bcc') as any },
+    );
+    assert.equal(invalidBccResult.success, true);
+    assert.equal(invalidBccResult.bccConfiguration, 'NOTIFICATION_SETTINGS_INVALID');
 
     const retryPorts: Array<number | undefined> = [];
     const retrySent: MailOptions[] = [];

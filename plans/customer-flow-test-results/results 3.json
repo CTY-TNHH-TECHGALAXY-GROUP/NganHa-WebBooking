@@ -1,0 +1,140 @@
+{
+  "testedAt": "2026-09-08T17:07:18.873Z",
+  "target": "https://oria-spa.vercel.app",
+  "recipient": "nghik22@gmail.com",
+  "mode": "Live HTTP checks and read-only DB metadata; not browser E2E",
+  "results": [
+    {
+      "id": "CF01",
+      "name": "Catalog: active services and original DB prices",
+      "status": "PASS",
+      "actual": {
+        "count": 80,
+        "serviceId": "NHS0008",
+        "priceVND": 580000,
+        "priceUSD": 24
+      }
+    },
+    {
+      "id": "CF02",
+      "name": "Single service: signed quote matches catalog VND/USD",
+      "status": "FAIL",
+      "actual": "The expression evaluated to a falsy value:\n\n  assert.ok(r.data.quote)\n"
+    },
+    {
+      "id": "CF03",
+      "name": "Quantity 1 to 2: total doubles without changing unit price",
+      "status": "PASS",
+      "actual": {
+        "quantity": 2,
+        "totalVND": 1160000
+      }
+    },
+    {
+      "id": "CF04",
+      "name": "Multiple durations: selected lines remain separate",
+      "status": "PASS",
+      "actual": {
+        "services": [
+          {
+            "id": "NHS0008",
+            "duration": 60
+          },
+          {
+            "id": "NHS0009",
+            "duration": 70
+          }
+        ]
+      }
+    },
+    {
+      "id": "CF05",
+      "name": "Private room add-on: correct DB add-on charge",
+      "status": "PASS",
+      "actual": {
+        "addonId": "NHS0900",
+        "totalVND": 685000
+      }
+    },
+    {
+      "id": "CF06",
+      "name": "Five language checkout pages load",
+      "status": "PASS",
+      "actual": {
+        "pages": [
+          {
+            "lang": "vi",
+            "status": 200
+          },
+          {
+            "lang": "en",
+            "status": 200
+          },
+          {
+            "lang": "jp",
+            "status": 200
+          },
+          {
+            "lang": "kr",
+            "status": 200
+          },
+          {
+            "lang": "cn",
+            "status": 200
+          }
+        ],
+        "limitation": "HTTP rendering only; not proof of complete translations or browser interactions."
+      }
+    },
+    {
+      "id": "CF07",
+      "name": "Reject missing name, invalid phone and invalid email",
+      "status": "PASS",
+      "actual": {
+        "status": 400,
+        "limitation": "Combined invalid contact payload rejected; individual fields not independently tested."
+      }
+    },
+    {
+      "id": "CF08",
+      "name": "Reject out-of-hours and past booking slots",
+      "status": "FAIL",
+      "actual": {
+        "status": 200,
+        "expectedStatus": 400,
+        "testedSlot": "2099-09-08 08:30",
+        "unexpectedBookingCreated": true,
+        "bookingId": "WB-08092099-53UPD855",
+        "bookingStatus": "NEW",
+        "verifiedBy": "Read-back of QA time validation / nghik22@gmail.com in configured DB",
+        "remainingSlots": "NOT RUN: stopped immediately at first failed assertion",
+        "confirmationEmail": "Not independently verified; check recipient inbox"
+      }
+    },
+    {
+      "id": "CF09",
+      "name": "Reject invalid quantity and recover forged cart prices",
+      "status": "FAIL",
+      "actual": {
+        "testedQuantity": 0,
+        "status": 200,
+        "expectedStatus": 400,
+        "remainingChecks": "NOT RUN: negative/fractional/excess quantity and tampered price checks stopped after quantity zero failed"
+      }
+    },
+    {
+      "id": "CF10",
+      "name": "Booking persistence and confirmation email readiness",
+      "status": "BLOCKED",
+      "actual": {
+        "atomicRpc": false,
+        "hasKey": false,
+        "hasFingerprint": false,
+        "bookingCreated": "No separate CF10 booking; CF08 unexpectedly created a NEW booking",
+        "bookingEmailSent": false,
+        "limitation": "Local configured DB metadata; production env identity not independently verified.",
+        "reason": "Local source dependencies absent in DB. Valid booking flow and idempotency not verified. Legacy live endpoint DID create the invalid-slot QA booking in CF08."
+      }
+    }
+  ]
+}

@@ -98,6 +98,9 @@ function harness(scenario = {}) {
       if (name === 'next/server') return { NextResponse: { json: (value, options) => Response.json(value, options) } };
       if (name === '@/lib/supabase-server') return { getSupabaseAdmin: () => supabase };
       if (name === '@/lib/booking/contract') return contract;
+      if (name === '@/lib/notificationSettings') return {
+        readNotificationSettings: async () => ({ state: 'absent', bccEnabled: false, bccRecipients: [], revision: 0 }),
+      };
       if (name === '@/lib/mailer') return { sendBookingConfirmationEmail: async () => {
         calls.mail++;
         calls.trace.push({ stage: 'mailer' });

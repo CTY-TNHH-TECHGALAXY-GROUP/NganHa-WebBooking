@@ -1,9 +1,10 @@
 import { NextRequest } from 'next/server';
 import { revalidatePath } from 'next/cache';
-import { withAuth } from '@/lib/api/withAuth';
+import { withCapability } from '@/lib/api/withAuth';
 import { apiResponse } from '@/lib/api/apiResponse';
 import { recordContentRevisions } from '@/lib/api/contentRevision';
 import { createHash } from 'node:crypto';
+import { authorizeCapability } from '@/lib/auth/adminCapabilities';
 
 function canonicalize(obj: unknown): unknown {
   if (obj === null || typeof obj !== 'object') {
@@ -23,7 +24,7 @@ function canonicalize(obj: unknown): unknown {
 const revisionToken = (value: unknown) =>
   createHash('sha256').update(JSON.stringify(canonicalize(value ?? null))).digest('hex');
 
-export const GET = withAuth(async (_request, { supabase }) => {
+export const GET = withCapability(async (_request, { supabase }) => {
   const { data, error } = await supabase
     .from('SystemConfigs')
     .select('key, value')
@@ -35,9 +36,14 @@ export const GET = withAuth(async (_request, { supabase }) => {
     brand_history: data?.value || null,
     revision: revisionToken(data?.value || null),
   });
-});
+}, 'content.read', { scope: 'history' });
 
-export const POST = withAuth(async (request: NextRequest, { supabase, user }) => {
+export const POST = withCapability(async (request: NextRequest, access) => {
+  const { supabase, user } = access;
+  const publishAuthorization = await authorizeCapability(access, 'content.publish', { scope: 'history', mutation: true });
+  if (!publishAuthorization.allowed) {
+    return apiResponse.error(publishAuthorization.error, publishAuthorization.code, publishAuthorization.status);
+  }
   const body = await request.json();
   if (!body || !Object.prototype.hasOwnProperty.call(body, 'brand_history')) {
     return apiResponse.error('brand_history là bắt buộc.', 'VALIDATION_ERROR', 400);
@@ -86,4 +92,4 @@ export const POST = withAuth(async (request: NextRequest, { supabase, user }) =>
   revalidatePath('/');
   revalidatePath('/[lang]', 'layout');
   return apiResponse.success({ revision: revisionToken(data.value) });
-});
+}, 'content.write', { scope: 'history', mutation: true });

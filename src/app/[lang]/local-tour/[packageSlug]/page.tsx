@@ -3,6 +3,8 @@ import LocalTourPackagePage from '@/components/LocalTour/LocalTourPackagePage';
 import type { Locale } from '@/lib/constants';
 import { getSupabaseAdmin } from '@/lib/supabase-server';
 import { DEFAULT_LOCAL_TOUR_CONFIG, hydrateLocalTourConfig, getPackageBySlugOrId, type LocalTourConfig } from '@/data/localTourData';
+import { getPageMetadata } from '@/lib/seo/metadata';
+import SeoStructuredData from '@/components/Seo/SeoStructuredData';
 
 export const dynamic = 'force-dynamic';
 
@@ -37,14 +39,31 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     : 'Local Tour | Oria Spa';
   const description = pkg?.tagline?.[locale] || pkg?.tagline?.vi || 'Discover Saigon the Oria Spa Way.';
 
-  return {
-    title,
-    description,
-  };
+  return getPageMetadata({
+    routeKey: 'local-tour-detail',
+    pathname: `/${lang}/local-tour/${packageSlug}`,
+    locale,
+    localized: true,
+    defaultPathname: `/local-tour/${packageSlug}`,
+  }, { title, description });
 }
 
 export default async function Page({ params }: PageProps) {
   const { lang, packageSlug } = await params;
   const initialConfig = await getServerTourConfig();
-  return <LocalTourPackagePage packageSlug={packageSlug} initialConfig={initialConfig} initialLang={lang as Locale} />;
+  const pkg = getPackageBySlugOrId(packageSlug, initialConfig.packages);
+  const title = pkg?.title?.[lang] || pkg?.title?.vi || pkg?.title?.en || 'Local Tour';
+  const description = pkg?.tagline?.[lang] || pkg?.tagline?.vi || pkg?.tagline?.en || 'Discover Saigon with Oria Spa.';
+  return (
+    <>
+      <LocalTourPackagePage packageSlug={packageSlug} initialConfig={initialConfig} initialLang={lang as Locale} />
+      <SeoStructuredData
+        routeKey="local-tour-detail"
+        locale={lang as Locale}
+        pathname={`/${lang}/local-tour/${packageSlug}`}
+        breadcrumbs={[{ name: 'Home', path: `/${lang}` }, { name: 'Local Tour', path: `/${lang}/local-tour` }, { name: title, path: `/${lang}/local-tour/${packageSlug}` }]}
+        article={{ headline: title, description, image: pkg?.heroImage }}
+      />
+    </>
+  );
 }

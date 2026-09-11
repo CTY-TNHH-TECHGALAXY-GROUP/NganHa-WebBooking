@@ -1,9 +1,9 @@
 import { NextRequest } from 'next/server';
-import { withAuth } from '@/lib/api/withAuth';
+import { withCapability } from '@/lib/api/withAuth';
 import { apiResponse } from '@/lib/api/apiResponse';
 import { toWebbookingLostFoundItem, toWebbookingLostFoundPayload } from '@/lib/webbookingLostFound';
 
-export const PUT = withAuth(async (request: NextRequest, { supabase }, params) => {
+export const PUT = withCapability(async (request: NextRequest, { supabase }, params) => {
   const resolvedParams = params instanceof Promise ? await params : params;
   const id = resolvedParams?.id;
   const body = await request.json();
@@ -28,9 +28,9 @@ export const PUT = withAuth(async (request: NextRequest, { supabase }, params) =
   }
 
   return apiResponse.success(toWebbookingLostFoundItem(data));
-});
+}, 'lost_found.write', { mutation: true });
 
-export const DELETE = withAuth(async (_request, { supabase }, params) => {
+export const DELETE = withCapability(async (_request, { supabase }, params) => {
   const resolvedParams = params instanceof Promise ? await params : params;
   const id = resolvedParams?.id;
   const { error } = await supabase.from('WebbookingLostFound').delete().eq('id', id);
@@ -48,4 +48,4 @@ export const DELETE = withAuth(async (_request, { supabase }, params) => {
   }
 
   return apiResponse.success({ success: true });
-});
+}, 'lost_found.delete', { mutation: true });

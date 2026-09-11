@@ -1,12 +1,16 @@
 import { NextRequest } from 'next/server';
 import { apiResponse } from './apiResponse';
-import { requireAdmin, type WebbookingAdminRole } from './requireAdmin';
+import {
+  requireAdmin,
+  requireCapability,
+  requireCapabilities,
+  type WebbookingAdminRole,
+  type AdminAccess,
+  type AdminCapability,
+  type CapabilityCheckOptions,
+} from './requireAdmin';
 
-export type AuthContext = {
-  user: any;
-  supabase: any;
-  role: WebbookingAdminRole;
-};
+export type AuthContext = AdminAccess;
 
 export type AuthHandler = (
   req: NextRequest,
@@ -35,6 +39,52 @@ export const withAuth = (handler: AuthHandler, allowedRoles?: WebbookingAdminRol
       return await handler(req, result.access, params);
     } catch (error: any) {
       console.error('[API Error]', error);
+      return apiResponse.error(error.message || 'Lỗi hệ thống', error.code || 'INTERNAL_ERROR', error.status || 500);
+    }
+  };
+};
+
+/**
+ * HOC for route handlers protected by a shared capability. Unlike menu/UI
+ * checks, this gate runs on the server for every request.
+ */
+export const withCapability = (
+  handler: AuthHandler,
+  capability: AdminCapability,
+  options: CapabilityCheckOptions = {},
+) => {
+  return async (req: NextRequest, context: any = {}) => {
+    const { params } = context;
+    try {
+      const result = await requireCapability(capability, options);
+      if ('error' in result) {
+        return apiResponse.error(result.error, result.code, result.status);
+      }
+
+      return await handler(req, result.access, params);
+    } catch (error: any) {
+      console.error('[Capability API Error]', error);
+      return apiResponse.error(error.message || 'Lỗi hệ thống', error.code || 'INTERNAL_ERROR', error.status || 500);
+    }
+  };
+};
+
+export const withCapabilities = (
+  handler: AuthHandler,
+  capabilities: readonly AdminCapability[],
+  options: CapabilityCheckOptions = {},
+) => {
+  return async (req: NextRequest, context: any = {}) => {
+    const { params } = context;
+    try {
+      const result = await requireCapabilities(capabilities, options);
+      if ('error' in result) {
+        return apiResponse.error(result.error, result.code, result.status);
+      }
+
+      return await handler(req, result.access, params);
+    } catch (error: any) {
+      console.error('[Capabilities API Error]', error);
       return apiResponse.error(error.message || 'Lỗi hệ thống', error.code || 'INTERNAL_ERROR', error.status || 500);
     }
   };

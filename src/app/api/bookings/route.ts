@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getSupabaseAdmin } from '@/lib/supabase-server';
 import { sendBookingConfirmationEmail } from '@/lib/mailer';
+import { readNotificationSettings } from '@/lib/notificationSettings';
 import {
   BRANCH_DEFAULT,
   MAX_BODY_BYTES,
@@ -77,6 +78,16 @@ type EmailStatus = EmailDiagnostics & {
   sent: boolean;
   messageId?: string;
   pending?: boolean;
+  bcc?: BccEmailDiagnostics;
+};
+
+type BccEmailDiagnostics = {
+  configuredCount: number;
+  acceptedCount: number;
+  rejectedCount: number;
+  unknownCount: number;
+  outcome: 'accepted' | 'failed' | 'unknown';
+  code: EmailCode;
 };
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -147,6 +158,29 @@ function emailAttempts(result: Record<string, unknown>): EmailAttempt[] | undefi
   return parsed;
 }
 
+function bccDiagnosticsFromMailerResult(result: Record<string, unknown>): BccEmailDiagnostics | undefined {
+  if (!isRecord(result.bcc)) return undefined;
+  const value = result.bcc;
+  const isCount = (candidate: unknown): candidate is number => typeof candidate === 'number'
+    && Number.isInteger(candidate)
+    && candidate >= 0
+    && candidate <= 6;
+  const outcome = value.outcome === 'accepted' || value.outcome === 'failed' || value.outcome === 'unknown'
+    ? value.outcome
+    : undefined;
+  const code = emailCode(value.code);
+  if (!outcome || !code || !isCount(value.configuredCount) || !isCount(value.acceptedCount) || !isCount(value.rejectedCount) || !isCount(value.unknownCount)) return undefined;
+  if (value.acceptedCount > value.configuredCount || value.rejectedCount > value.configuredCount || value.unknownCount > value.configuredCount) return undefined;
+  return {
+    configuredCount: value.configuredCount,
+    acceptedCount: value.acceptedCount,
+    rejectedCount: value.rejectedCount,
+    unknownCount: value.unknownCount,
+    outcome,
+    code,
+  };
+}
+
 function emailStatusFromMailerResult(result: unknown): EmailStatus {
   if (!isRecord(result)) {
     return { sent: false, pending: true, diagnosticsVersion: 1, outcome: 'unknown', stage: 'unknown', code: 'EMAIL_RESULT_UNKNOWN', attempts: [] };
@@ -178,6 +212,7 @@ function emailStatusFromMailerResult(result: unknown): EmailStatus {
   let outcome = reportedOutcome || outcomeForEmailCode(code);
   if (!success && outcome === 'accepted') outcome = 'unknown';
   const sent = success && outcome === 'accepted';
+  const bcc = bccDiagnosticsFromMailerResult(result);
   const status: EmailStatus = {
     sent,
     ...(sent ? { messageId: safeMessageId(result.messageId) } : {}),
@@ -187,6 +222,7 @@ function emailStatusFromMailerResult(result: unknown): EmailStatus {
     stage: emailStage(result.stage) || emailStage(smtp?.stage) || stageForEmailCode(code),
     code,
     attempts,
+    ...(bcc ? { bcc } : {}),
   };
   if (!status.messageId) delete status.messageId;
   return status;
@@ -711,21 +747,17 @@ export async function POST(request: Request) {
   const quoteCheck = verifyQuote(booking.quote, [booking.intentFingerprint, cartIntentFingerprint(booking.selectedServices)], catalogDigest(catalog));
   if (!quoteCheck.ok) return jsonError('PRICE_CHANGED', 'The service catalog changed. Please review your booking again.', 409, [{ field: 'quote', code: quoteCheck.reason, message: 'The quote is no longer current.' }]);
 
-  // Close the catalog read window before the atomic writer call.
-  const { data: latestCatalogRows, error: latestCatalogError } = await supabase.from('Services').select('id, nameVN, nameEN, nameCN, nameJP, nameKR, priceVND, priceUSD, duration, isActive, showPreferences, showNotes, showGender, showStrength, showFocus, focusConfig').in('id', ids);
-  if (latestCatalogError) return jsonError('BOOKING_TEMPORARILY_UNAVAILABLE', 'Booking is temporarily unavailable. Please try again later.', 503);
-  if (catalogDigest((latestCatalogRows || []) as CatalogService[]) !== catalogDigest(catalog)) return jsonError('PRICE_CHANGED', 'The service catalog changed. Please review your booking again.', 409, [{ field: 'quote', code: 'PRICE_CHANGED', message: 'The catalog changed before commit.' }]);
-
   // The allocator supplies only the identifier. The website writer owns the
   // atomic parent/items commit; there is deliberately no insert fallback.
   // Allocate first so a missing counter cannot leave a customer-only side effect.
-  let customerId: string | null = null;
-  let customerResolved = false;
   const bookingDate = new Date(`${booking.date}T${booking.time}:00+07:00`).toISOString();
   let committedId = '';
+  let customerId: string | null = null;
+  let customerResolved = false;
   let bookingPayload: Record<string, unknown> | null = null;
   let items: Record<string, unknown>[] = [];
   let writerReplay = false;
+
   for (let attempt = 0; attempt < 5 && !committedId; attempt += 1) {
     try {
       committedId = await allocateBookingId(supabase, bookingDate);
@@ -736,8 +768,6 @@ export async function POST(request: Request) {
       try {
         customerId = await resolveCustomerId(supabase, booking);
       } catch (error: any) {
-        // Preserve the established booking flow if customer master lookup is
-        // temporarily unavailable. The operations system can reconcile the row.
         console.warn('[API Bookings] Customer lookup unavailable:', error?.message || 'unknown error');
       }
       customerResolved = true;
@@ -784,21 +814,43 @@ export async function POST(request: Request) {
   if (!replayIdentityMatches(committedSnapshot, booking) || !replayLinesMatch(committedSnapshot, booking) || committedSnapshot.totalAmount !== pricing.totalAmountVND) {
     return responseForIncompleteBooking(committedId);
   }
+
   const receptionEmail = await resolveReceptionEmail(supabase);
+  const notificationSettings = await readNotificationSettings(supabase);
+  const bccRecipients = notificationSettings.bccEnabled ? notificationSettings.bccRecipients : [];
   let emailStatus: EmailStatus = emailStatusForMailerThrow();
   console.info('[API Bookings] Email dispatch started', {
     bookingId: committedSnapshot.bookingId,
     customerEmailPresent: Boolean(committedSnapshot.customerEmail),
     receptionEmailPresent: Boolean(receptionEmail),
+    bccRecipientCount: bccRecipients.length,
+    bccConfiguration: notificationSettings.diagnostic,
   });
   try {
     const mail = await sendBookingConfirmationEmail({
-      bookingId: committedSnapshot.bookingId, customerName: committedSnapshot.customerName, customerEmail: committedSnapshot.customerEmail,
-      customerPhone: committedSnapshot.customerPhone || '', date: committedSnapshot.date, time: committedSnapshot.time || '', guests: committedSnapshot.guests,
+      bookingId: committedSnapshot.bookingId,
+      customerName: committedSnapshot.customerName,
+      customerEmail: committedSnapshot.customerEmail,
+      customerPhone: committedSnapshot.customerPhone || '',
+      date: committedSnapshot.date,
+      time: committedSnapshot.time || '',
+      guests: committedSnapshot.guests,
       branchName: committedSnapshot.branchName,
-      services: pricing.items.map((item) => ({ name: serviceName(item.catalog, booking.lang), duration: item.duration * item.quantity, priceVND: item.priceVND * item.quantity, quantity: item.quantity, options: item.options })) as any,
-      totalAmount: committedSnapshot.totalAmount, therapist: pricing.items.find((item) => item.options.therapist)?.options.therapist || 'any',
-      lang: committedSnapshot.lang, notes: committedSnapshot.notes || undefined, focusAreaNote: committedSnapshot.focusAreaNote || undefined, receptionEmail,
+      services: pricing.items.map((item) => ({
+        name: serviceName(item.catalog, booking.lang),
+        duration: item.duration * item.quantity,
+        priceVND: item.priceVND * item.quantity,
+        quantity: item.quantity,
+        options: item.options,
+      })) as any,
+      totalAmount: committedSnapshot.totalAmount,
+      therapist: pricing.items.find((item) => item.options.therapist)?.options.therapist || 'any',
+      lang: committedSnapshot.lang,
+      notes: committedSnapshot.notes || undefined,
+      focusAreaNote: committedSnapshot.focusAreaNote || undefined,
+      receptionEmail,
+      bccRecipients,
+      bccConfiguration: notificationSettings.diagnostic,
     });
     emailStatus = emailStatusFromMailerResult(mail);
     console.info('[API Bookings] Email dispatch result', {
@@ -809,6 +861,10 @@ export async function POST(request: Request) {
       code: emailStatus.code,
       attempts: emailStatus.attempts.length,
       messageIdPresent: Boolean(emailStatus.messageId),
+      bccOutcome: emailStatus.bcc?.outcome,
+      bccCode: emailStatus.bcc?.code,
+      bccAccepted: emailStatus.bcc?.acceptedCount,
+      bccRejected: emailStatus.bcc?.rejectedCount,
     });
   } catch {
     emailStatus = emailStatusForMailerThrow();

@@ -38,6 +38,7 @@ const PUBLIC_EMAIL_STATUS_KEYS = new Set([
   'stage',
   'code',
   'attempts',
+  'bcc',
 ]);
 const ATTEMPT_KEYS = new Set(['attempt', 'stage', 'code']);
 
@@ -109,6 +110,20 @@ function assertEmailStatus(status, label, { requireLegacyFields = true } = {}) {
   }
   if (new Set(['preparation', 'configuration']).has(status.stage)) {
     assert.deepEqual(status.attempts, [], `${label} pre-SMTP outcome must have no attempts`);
+  }
+
+  if ('bcc' in status) {
+    const bcc = status.bcc;
+    assert.equal(typeof bcc, 'object', `${label}.bcc must be an object`);
+    assert.ok(bcc && !Array.isArray(bcc), `${label}.bcc must not be an array`);
+    const bccKeys = new Set(['configuredCount', 'acceptedCount', 'rejectedCount', 'unknownCount', 'outcome', 'code']);
+    for (const key of Object.keys(bcc)) assert.ok(bccKeys.has(key), `${label}.bcc leaked field: ${key}`);
+    for (const key of ['configuredCount', 'acceptedCount', 'rejectedCount', 'unknownCount']) {
+      assert.ok(Number.isInteger(bcc[key]) && bcc[key] >= 0 && bcc[key] <= 6, `${label}.bcc.${key} must be bounded`);
+    }
+    assert.equal(bcc.acceptedCount + bcc.rejectedCount + bcc.unknownCount, bcc.configuredCount, `${label}.bcc counts must reconcile`);
+    assert.ok(['accepted', 'failed', 'unknown'].includes(bcc.outcome), `${label}.bcc has invalid outcome`);
+    assert.ok(CODES.has(bcc.code), `${label}.bcc has invalid code`);
   }
 }
 
@@ -286,6 +301,9 @@ function harness(scenario = {}) {
       if (name === 'next/server') return { NextResponse: { json: (value, options) => Response.json(value, options) } };
       if (name === '@/lib/supabase-server') return { getSupabaseAdmin: () => supabase };
       if (name === '@/lib/booking/contract') return contract;
+      if (name === '@/lib/notificationSettings') return {
+        readNotificationSettings: async () => ({ state: 'absent', bccEnabled: false, bccRecipients: [], revision: 0 }),
+      };
       if (name === '@/lib/mailer') return {
         sendBookingConfirmationEmail: async () => {
           calls.mail += 1;

@@ -1,10 +1,10 @@
 import { NextRequest } from 'next/server';
-import { withAuth } from '@/lib/api/withAuth';
+import { withCapability } from '@/lib/api/withAuth';
 import { apiResponse } from '@/lib/api/apiResponse';
 import { MediaService } from '@/lib/services/media.service';
 import { validateUpload, UploadValidationError } from '@/lib/uploads/validateUpload';
 
-export const GET = withAuth(async (req, { supabase }) => {
+export const GET = withCapability(async (req, { supabase }) => {
   const { data, error } = await supabase
     .from('MarketingMedia')
     .select('*')
@@ -15,9 +15,9 @@ export const GET = withAuth(async (req, { supabase }) => {
   }
 
   return apiResponse.success(data);
-});
+}, 'media.read');
 
-export const POST = withAuth(async (req, { supabase }) => {
+export const POST = withCapability(async (req, { supabase }) => {
   try {
     const contentType = req.headers.get('content-type') || '';
 
@@ -111,4 +111,4 @@ export const POST = withAuth(async (req, { supabase }) => {
     console.error('[API /admin/media-library POST] Error:', err);
     return apiResponse.error(err.message || 'Lỗi lưu thông tin media', 'INTERNAL_ERROR', 500);
   }
-}, ['owner', 'editor']);
+}, 'media.upload', { mutation: true });

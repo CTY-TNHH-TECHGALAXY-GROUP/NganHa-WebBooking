@@ -12,6 +12,11 @@ export const ADMIN_ALLOWED_ROLES: readonly WebbookingAdminRole[] = [
   'reception',
 ] as const;
 
+export function isWebbookingAdminRole(value: unknown): value is WebbookingAdminRole {
+  return typeof value === 'string'
+    && (ADMIN_ALLOWED_ROLES as readonly string[]).includes(value);
+}
+
 export interface AdminMembership {
   user_id: string;
   role: WebbookingAdminRole;
@@ -23,6 +28,8 @@ export interface AdminAccess {
   role: WebbookingAdminRole;
   membership: AdminMembership;
   supabase: SupabaseClient;
+  /** Request-time bridge consumed by capability-aware modules such as SEO/AEO. */
+  hasCapability?: (capability: string) => Promise<boolean>;
 }
 
 export type AdminAccessResult =
@@ -103,7 +110,17 @@ export async function validateAdminMembership(
       };
     }
 
-    const userRole = membership.role as WebbookingAdminRole;
+    if (!isWebbookingAdminRole(membership.role)) {
+      console.error('[validateAdminMembership] Unsupported role in WebbookingAdminUsers:', membership.role);
+      return {
+        success: false,
+        error: 'Cấu hình vai trò quản trị không hợp lệ',
+        code: 'INVALID_ADMIN_ROLE',
+        status: 500,
+      };
+    }
+
+    const userRole = membership.role;
     const validRoles = allowedRoles && allowedRoles.length > 0 ? allowedRoles : ADMIN_ALLOWED_ROLES;
 
     if (!validRoles.includes(userRole)) {
@@ -183,7 +200,7 @@ export async function getAuthenticatedAdminSession(
     }
 
     const membershipResult = await validateAdminMembership(user.id, allowedRoles);
-    if (!membershipResult.success) {
+    if ('error' in membershipResult) {
       return {
         success: false,
         error: membershipResult.error,
@@ -193,15 +210,19 @@ export async function getAuthenticatedAdminSession(
     }
 
     const supabaseAdmin = getSupabaseAdmin();
-    return {
-      success: true,
-      access: {
-        user: { id: user.id, email: user.email },
-        role: membershipResult.membership.role,
-        membership: membershipResult.membership,
-        supabase: supabaseAdmin,
-      },
+    const access: AdminAccess = {
+      user: { id: user.id, email: user.email },
+      role: membershipResult.membership.role,
+      membership: membershipResult.membership,
+      supabase: supabaseAdmin,
     };
+    access.hasCapability = async (capability) => {
+      const { authorizeCapability } = await import('./adminCapabilities');
+      const authorization = await authorizeCapability(access, capability);
+      return authorization.allowed;
+    };
+
+    return { success: true, access };
   } catch (err: any) {
     console.error('[getAuthenticatedAdminSession] Unexpected error:', err);
     return {

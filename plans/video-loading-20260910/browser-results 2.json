@@ -1,0 +1,77 @@
+[
+  {
+    "name": "desktop",
+    "status": 200,
+    "errors": [],
+    "media": [
+      "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/homepage/0807(1).mp4",
+      "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/homepage/0807(1).mp4",
+      "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/homepage/0807(1).mp4"
+    ],
+    "config": [],
+    "state": {
+      "title": "Oria Spa in District 1, HCMC",
+      "videos": [
+        {
+          "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/homepage/0807(1).mp4",
+          "readyState": 4,
+          "time": 16.736515,
+          "paused": false
+        }
+      ],
+      "overflow": false,
+      "text": "ĐẶT LỊCH\n\nHERITAGE & DESTINATION\n\nHệ Thống Oria Barbershop & Spa\n\nOur story\n\n11 NGÔ ĐỨC KẾ\nSÀI GÒN, VIỆT NAM\n01\nVị Trí Vàng và Kết Nối\n\nTọa lạc ngay bên sông Sài Gòn, khu vực đường Ngô Đức Kế, Quận 1 là một trong những tuyến phố có vị trí đắc địa và mang tính biểu tượng cao tại trung tâm Thành phố H"
+    }
+  },
+  {
+    "name": "mobile-vi",
+    "status": 200,
+    "errors": [],
+    "media": [
+      "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/homepage/0807(1).mp4",
+      "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/homepage/0807(1).mp4",
+      "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/homepage/0807(1).mp4"
+    ],
+    "config": [],
+    "state": {
+      "title": "Oria Spa in District 1, HCMC",
+      "videos": [
+        {
+          "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/homepage/0807(1).mp4",
+          "readyState": 4,
+          "time": 17.049747,
+          "paused": false
+        }
+      ],
+      "overflow": false,
+      "text": "ĐẶT LỊCH\n\nHERITAGE & DESTINATION\n\nHệ Thống Oria Barbershop & Spa\n\nOur story\n\n11 NGÔ ĐỨC KẾ\nSÀI GÒN, VIỆT NAM\n01\nVị Trí Vàng và Kết Nối\n\nTọa lạc ngay bên sông Sài Gòn, khu vực đường Ngô Đức Kế, Quận 1 là một trong những tuyến phố có vị trí đắc địa và mang tính biểu tượng cao tại trung tâm Thành phố H"
+    }
+  },
+  {
+    "name": "video-error",
+    "status": 200,
+    "errors": [],
+    "media": [
+      "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/homepage/0807(1).mp4",
+      "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/homepage/0807(1).mp4",
+      "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/homepage/0807(1).mp4",
+      "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/homepage/0807(1).mp4"
+    ],
+    "config": [],
+    "state": {
+      "title": "Oria Spa in District 1, HCMC",
+      "loader": "Video trang chu nay khong the tai.Thu lai",
+      "videos": [
+        {
+          "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/homepage/0807(1).mp4",
+          "readyState": 0,
+          "time": 0,
+          "paused": true
+        }
+      ],
+      "overflow": false,
+      "text": "ĐẶT LỊCH\n\nVideo trang chu nay khong the tai.\n\nThu lai\n\nHERITAGE & DESTINATION\n\nHệ Thống Oria Barbershop & Spa\n\nOur story\n\n11 NGÔ ĐỨC KẾ\nSÀI GÒN, VIỆT NAM\n01\nVị Trí Vàng và Kết Nối\n\nTọa lạc ngay bên sông Sài Gòn, khu vực đường Ngô Đức Kế, Quận 1 là một trong những tuyến phố có vị trí đắc địa và mang ",
+      "retryRecovered": true
+    }
+  }
+]

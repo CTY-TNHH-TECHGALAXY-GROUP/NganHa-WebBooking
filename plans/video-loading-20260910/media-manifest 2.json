@@ -1,0 +1,13 @@
+{
+  "status": "blocked_no_encoder",
+  "source": null,
+  "candidates": [],
+  "tools": {
+    "ffmpeg": false,
+    "ffprobe": false,
+    "avconvert": true,
+    "avmediainfo": true
+  },
+  "productionChanged": false,
+  "note": "No candidate was generated because the available environment lacks ffmpeg/ffprobe and the live source was not reachable from the agent environment. Generate and verify a fast-start candidate in an approved encoding-capable environment before changing stored config."
+}

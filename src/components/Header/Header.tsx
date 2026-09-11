@@ -12,6 +12,7 @@ import type { CartItem } from '@/components/Menu/types';
 import { formatCurrency } from '@/components/Menu/utils';
 import { readBookingCart, removeBookingCartItemByCartId, updateBookingCartItemQuantity, updateBookingCartItemNote } from '@/lib/bookingCartStorage';
 import { useHeaderLogic, LANGUAGES } from './Header.logic';
+import { trackAnalytics } from '@/lib/analytics/client';
 import { useSystemSettings } from '@/components/SystemSettingsProvider';
 import { Locale } from '@/lib/constants';
 import { getDictionary } from '@/lib/dictionaries';
@@ -318,6 +319,7 @@ const Header = () => {
   }, []);
 
   const handleCartClick = () => {
+    trackAnalytics('cart_open');
     refreshCartSnapshot();
     setIsCartOpen(true);
   };
@@ -328,14 +330,18 @@ const Header = () => {
   };
 
   const handleRemoveCartItem = (cartId: string) => {
+    const removedItem = cartSnapshot.find((item) => item.cartId === cartId);
     const nextCart = removeBookingCartItemByCartId(cartId);
+    if (removedItem) trackAnalytics('cart_remove', { identifier: removedItem.id });
     setCartSnapshot(nextCart);
     setCartCount(countCartItems(nextCart));
     window.dispatchEvent(new CustomEvent('nganha:cart-updated', { detail: { cart: nextCart } }));
   };
 
   const handleQuantityChange = (cartId: string, delta: number) => {
+    const changedItem = cartSnapshot.find((item) => item.cartId === cartId);
     const nextCart = updateBookingCartItemQuantity(cartId, delta);
+    if (changedItem && delta !== 0) trackAnalytics(delta > 0 ? 'cart_add' : 'cart_remove', { identifier: changedItem.id });
     setCartSnapshot(nextCart);
     setCartCount(countCartItems(nextCart));
     window.dispatchEvent(new CustomEvent('nganha:cart-updated', { detail: { cart: nextCart } }));
@@ -562,7 +568,10 @@ const Header = () => {
                     <button
                       key={lang.code}
                       className="lang-dropdown-item"
-                      onClick={() => handleSelectLanguage(lang)}
+                      onClick={() => {
+                        trackAnalytics('language_change', { language: lang.code });
+                        handleSelectLanguage(lang);
+                      }}
                     >
                       <img
                         src={`https://flagcdn.com/w40/${lang.countryCode}.png`}

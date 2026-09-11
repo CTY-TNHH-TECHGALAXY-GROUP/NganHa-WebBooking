@@ -1,9 +1,9 @@
 import { NextRequest } from 'next/server';
-import { withAuth } from '@/lib/api/withAuth';
+import { withCapability } from '@/lib/api/withAuth';
 import { apiResponse } from '@/lib/api/apiResponse';
 import { toWebbookingLostFoundItem, toWebbookingLostFoundPayload } from '@/lib/webbookingLostFound';
 
-export const GET = withAuth(async (_request, { supabase }) => {
+export const GET = withCapability(async (_request, { supabase }) => {
   const { data, error } = await supabase
     .from('WebbookingLostFound')
     .select('*')
@@ -12,9 +12,9 @@ export const GET = withAuth(async (_request, { supabase }) => {
 
   if (error) return apiResponse.error(error.message, 'DB_ERROR', 500);
   return apiResponse.success((data || []).map(toWebbookingLostFoundItem));
-});
+}, 'lost_found.read');
 
-export const POST = withAuth(async (request: NextRequest, { supabase }) => {
+export const POST = withCapability(async (request: NextRequest, { supabase }) => {
   const body = await request.json();
   const payload = toWebbookingLostFoundPayload(body);
   const { data, error } = await supabase
@@ -37,4 +37,4 @@ export const POST = withAuth(async (request: NextRequest, { supabase }) => {
   }
 
   return apiResponse.success(toWebbookingLostFoundItem(data), undefined, 201);
-});
+}, 'lost_found.write', { mutation: true });

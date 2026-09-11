@@ -14,6 +14,7 @@ import type { CartItem, Service, SupportedLanguage } from '@/components/Menu/typ
 import { formatCurrency } from '@/components/Menu/utils';
 import { getDictionary } from '@/lib/dictionaries';
 import { useTranslation } from '@/components/TranslationProvider';
+import { trackAnalytics } from '@/lib/analytics/client';
 import styles from './checkout-demo.module.css';
 
 type PageParams = Promise<{ lang: string; menuType: string }>;
@@ -368,9 +369,13 @@ const renderCheckoutServiceMedia = (
 };
 
 const categoryName = (categoryId: string, lang: string) => {
-  const category = CATEGORIES.find((item) => item.id === categoryId);
+  const norm = categoryId.trim().toLowerCase();
+  const category = CATEGORIES.find((item) => 
+    item.id.toLowerCase() === norm ||
+    (item.names && Object.values(item.names).some((n) => typeof n === 'string' && n.toLowerCase() === norm))
+  );
   return category?.names?.[langKey(lang)] || category?.names?.en || categoryId;
-}
+};
 
 const DurationDrawer = ({
   group,
@@ -461,7 +466,10 @@ const DurationDrawer = ({
                 <div className={styles.drawerSavedOption} key={item.cartId}>
                   <div>
                     <strong>{item.timeValue} {dict.checkout?.mins || 'mins'}</strong>
-                    <span>{item.options?.therapist || ''}{item.options?.strength ? ` · ${item.options.strength}` : ''}</span>
+                    <span>
+                      {item.options?.therapist ? ((dict.options?.therapist_options as any)?.[item.options.therapist.toLowerCase()] || item.options.therapist).toLowerCase() : ''}
+                      {item.options?.strength ? ` · ${((dict.options?.strength_levels as any)?.[item.options.strength.toLowerCase()] || item.options.strength).toLowerCase()}` : ''}
+                    </span>
                   </div>
                   <div className={styles.drawerQuantityControl}>
                     <button type="button" onClick={() => onUpdateCartItem(item.cartId, item.qty - 1)} aria-label="Decrease quantity"><Minus size={14} /></button>
@@ -643,8 +651,8 @@ const CheckoutGroupedServiceCard = ({
                 title="Click to customize"
               >
                 <span>{item.timeValue} {dict.checkout?.mins || 'mins'}</span>
-                {item.options?.therapist ? <span> · {item.options.therapist}</span> : ''}
-                {item.options?.strength ? <span> · {item.options.strength}</span> : ''}
+                {item.options?.therapist ? <span> · {((dict.options?.therapist_options as any)?.[item.options.therapist.toLowerCase()] || item.options.therapist).toLowerCase()}</span> : ''}
+                {item.options?.strength ? <span> · {((dict.options?.strength_levels as any)?.[item.options.strength.toLowerCase()] || item.options.strength).toLowerCase()}</span> : ''}
                 <strong>×{item.qty}</strong>
               </button>
             ))}
@@ -770,6 +778,10 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
   const [isVideoPreviewClosing, setIsVideoPreviewClosing] = useState(false);
   const [alertState, setAlertState] = useState<{ isOpen: boolean; message: string; type?: 'error' | 'success' | 'info' }>({ isOpen: false, message: '' });
   const [activeDrawerGroup, setActiveDrawerGroup] = useState<Service[] | null>(null);
+
+  useEffect(() => {
+    trackAnalytics('checkout_view', { language: lang });
+  }, [lang]);
 
   useEffect(() => {
     setCustomerInfo((prev) => ({ ...prev, gender: t(genderKey, lang) }));
@@ -1027,6 +1039,8 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
       bodyParts: prefs.bodyParts,
       addons: prefs.addons
     });
+    trackAnalytics('cart_add', { identifier: customizingService.id, language: lang });
+    trackAnalytics('service_option_select', { identifier: customizingService.id, language: lang });
     setPendingServiceQuantity(1);
     setCustomizingService(null);
     if (returnToConfirmAfterEdit) {
@@ -1114,7 +1128,10 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
   };
 
   const handleConfirmOrder = async () => {
-    if (!validate()) return;
+    if (!validate()) {
+      trackAnalytics('booking_failed', { identifier: 'validation', language: lang });
+      return;
+    }
     if (quoteLoading.current) return;
     quoteLoading.current = true;
     try {
@@ -1141,6 +1158,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
     bookingDate?: string;
     bookingTime?: string;
   }) => {
+    trackAnalytics('booking_submit', { language: lang });
     const chosenMethod = data?.paymentMethod || paymentMethod || 'cash_vnd';
     setPaymentMethod(chosenMethod);
 
@@ -1200,8 +1218,10 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
       });
     } catch (error) {
       if (error instanceof DOMException && error.name === 'AbortError') {
+        trackAnalytics('booking_failed', { identifier: 'network', language: lang });
         throw new Error(t('submitTimeout', lang));
       }
+      trackAnalytics('booking_failed', { identifier: 'network', language: lang });
       throw new Error(t('temporaryUnavailable', lang));
     } finally {
       window.clearTimeout(timeoutId);
@@ -1209,6 +1229,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
 
     const resData = await response.json().catch(() => ({}));
     if (!response.ok || resData?.success === false) {
+      trackAnalytics('booking_failed', { identifier: 'server', language: lang });
       if (resData?.code === 'CART_REQUIRES_REVIEW' || resData?.code === 'PRICE_CHANGED') {
         await revalidateCart();
         setIsConfirmOpen(false);
@@ -1672,7 +1693,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                         <small>{formatUSD(item.priceUSD * item.qty)}</small>
                       </span>
                       <button onClick={() => { setEditingCartId(item.cartId); setEditServiceId(item.id); setEditBaseName(null); setEditNote(item.options?.notes?.content || ''); }} className="text-[#c9a96e] hover:text-white transition-colors" title={t('edit', lang) || 'Edit'}><Edit2 size={16} /></button>
-                      <button onClick={() => removeFromCart(item.cartId)} className="text-[#c9a96e] hover:text-red-500 transition-colors" title={t('remove', lang) || 'Remove'}><Trash2 size={16} /></button>
+                      <button onClick={() => { removeFromCart(item.cartId); trackAnalytics('cart_remove', { identifier: item.id, language: lang }); }} className="text-[#c9a96e] hover:text-red-500 transition-colors" title={t('remove', lang) || 'Remove'}><Trash2 size={16} /></button>
                     </div>
                   </div>
                   <div className={styles.detail}>
