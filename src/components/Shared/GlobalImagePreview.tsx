@@ -65,7 +65,7 @@ export default function GlobalImagePreview() {
       } else if (target.classList.contains('media-watermark') || target.tagName.toLowerCase() === 'figcaption') {
         img = target.parentElement?.querySelector('img') || null;
       } else {
-        const container = target.closest('figure, [class*="filmFrame"], [class*="facilityImageFrame"], [class*="storyPhotoFrame"], [class*="pillarMedia"], [class*="thumb"]');
+        const container = target.closest('figure, [class*="filmFrame"], [class*="facilityImageFrame"], [class*="storyPhotoFrame"], [class*="highlightSlide"], [class*="highlightImgWrap"], [class*="filmScroller"], [class*="pillarMedia"], [class*="thumb"]');
         if (container) {
           img = container.querySelector('img');
         }

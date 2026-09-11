@@ -276,8 +276,12 @@ main article img:not([data-no-preview]),
 main [class*="filmFrame"] img,
 main [class*="facilityImageFrame"] img,
 main [class*="pillarMedia"] img,
+main [class*="highlightSlide"] img,
+main [class*="highlightImgWrap"] img,
+main [class*="storyPhotoFrame"] img,
 main .cursor-zoom-in img,
-footer [role="button"] img {
+main .cursor-zoom-in {
   cursor: zoom-in;
 }
+
 

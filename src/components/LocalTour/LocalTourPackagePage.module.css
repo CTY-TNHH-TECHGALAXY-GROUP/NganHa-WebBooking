@@ -303,6 +303,7 @@
   aspect-ratio: 16 / 11;
   overflow: hidden;
   background: #090605;
+  cursor: zoom-in;
 }
 
 .highlightImgWrap img {
@@ -646,6 +647,7 @@
   border-radius: 20px;
   overflow: hidden;
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+  cursor: zoom-in;
 }
 
 .storyPhotoFrame img {

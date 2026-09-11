@@ -3,7 +3,7 @@
 import React, { useMemo, useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
 import { motion, useReducedMotion } from 'framer-motion';
-import { Clock, MapPin, Compass, Phone, ArrowRight } from 'lucide-react';
+import { Clock, MapPin, Compass, Phone, ArrowRight, ZoomIn } from 'lucide-react';
 import { useTranslation } from '@/components/TranslationProvider';
 import { useSystemSettings } from '@/components/SystemSettingsProvider';
 import type { Locale } from '@/lib/constants';
@@ -40,6 +40,7 @@ function HighlightCardItem({
   getText: (s?: Record<string, string>) => string;
   reduceMotion: boolean | null;
 }) {
+  const { currentLang: lang } = useTranslation();
   const images = Array.isArray(hl.images) && hl.images.length > 0
     ? hl.images.filter(Boolean)
     : (hl.image ? [hl.image] : []);
@@ -81,12 +82,35 @@ function HighlightCardItem({
               onScroll={handleScroll}
             >
               {images.map((imgUrl, iIdx) => (
-                <div key={'img-' + iIdx} className={styles.highlightSlide}>
+                <div 
+                  key={'img-' + iIdx} 
+                  className={`${styles.highlightSlide} cursor-zoom-in relative group/slide`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    window.dispatchEvent(new CustomEvent('open-media-preview', {
+                      detail: {
+                        mediaUrl: imgUrl,
+                        title: getText(hl.title),
+                        description: getText(hl.subtitle)
+                      }
+                    }));
+                  }}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`${getText(hl.title)} (${iIdx + 1}/${images.length})`}
+                  title={lang === 'vi' ? 'Xem ảnh toàn màn hình' : 'Click to view full screen'}
+                >
                   <img
                     src={imgUrl}
                     alt={`${getText(hl.title)} (${iIdx + 1}/${images.length})`}
                     loading="lazy"
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover/slide:scale-105"
                   />
+                  <div className="absolute inset-0 bg-black/25 opacity-0 group-hover/slide:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
+                    <div className="w-8 h-8 rounded-full bg-black/75 text-[#C9A96E] border border-[#C9A96E]/40 flex items-center justify-center shadow-md">
+                      <ZoomIn size={15} strokeWidth={2.2} />
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>
@@ -141,7 +165,35 @@ function HighlightCardItem({
             </div>
           </>
         ) : (
-          <img src={images[0] || hl.image} alt={getText(hl.title)} loading="lazy" />
+          <div
+            className="w-full h-full cursor-zoom-in relative group/slide"
+            onClick={(e) => {
+              e.stopPropagation();
+              window.dispatchEvent(new CustomEvent('open-media-preview', {
+                detail: {
+                  mediaUrl: images[0] || hl.image,
+                  title: getText(hl.title),
+                  description: getText(hl.subtitle)
+                }
+              }));
+            }}
+            role="button"
+            tabIndex={0}
+            aria-label={getText(hl.title)}
+            title={lang === 'vi' ? 'Xem ảnh toàn màn hình' : 'Click to view full screen'}
+          >
+            <img 
+              src={images[0] || hl.image} 
+              alt={getText(hl.title)} 
+              loading="lazy" 
+              className="w-full h-full object-cover transition-transform duration-500 group-hover/slide:scale-105"
+            />
+            <div className="absolute inset-0 bg-black/25 opacity-0 group-hover/slide:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
+              <div className="w-8 h-8 rounded-full bg-black/75 text-[#C9A96E] border border-[#C9A96E]/40 flex items-center justify-center shadow-md">
+                <ZoomIn size={15} strokeWidth={2.2} />
+              </div>
+            </div>
+          </div>
         )}
 
         {hl.watermarkEnabled !== false && <div className="media-watermark" aria-hidden="true" />}
@@ -335,23 +387,67 @@ export default function LocalTourPackagePage({
                   </p>
                   {/* 2 Khung ảnh minh họa câu chuyện hành trình (như hình 2) */}
                   {pIdx === 0 && (pkg.storyPhotos?.[0] || pkg.id === 'pkg-1') && (
-                    <div className={styles.storyPhotoFrame}>
+                    <div 
+                      className={`${styles.storyPhotoFrame} cursor-zoom-in relative group/storyPhoto overflow-hidden`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        const photoUrl = pkg.storyPhotos?.[0] || "https://images.unsplash.com/photo-1563492065599-3520f775eeed?auto=format&fit=crop&w=1200&q=80";
+                        window.dispatchEvent(new CustomEvent('open-media-preview', {
+                          detail: {
+                            mediaUrl: photoUrl,
+                            title: getText(pkg.title)
+                          }
+                        }));
+                      }}
+                      role="button"
+                      tabIndex={0}
+                      aria-label="Xem ảnh minh họa hành trình"
+                      title={lang === 'vi' ? 'Xem ảnh toàn màn hình' : 'Click to view full screen'}
+                    >
                       <img
                         src={pkg.storyPhotos?.[0] || "https://images.unsplash.com/photo-1563492065599-3520f775eeed?auto=format&fit=crop&w=1200&q=80"}
                         alt={lang === 'vi' ? 'Ảnh minh họa hành trình 1' : 'Tour story photo 1'}
                         loading="lazy"
+                        className="transition-transform duration-500 group-hover/storyPhoto:scale-105"
                       />
                       {pkg.storyPhotosWatermark?.[0] !== false && <div className="media-watermark" aria-hidden="true" />}
+                      <div className="absolute inset-0 bg-black/25 opacity-0 group-hover/storyPhoto:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
+                        <div className="w-10 h-10 rounded-full bg-black/75 text-[#C9A96E] border border-[#C9A96E]/40 flex items-center justify-center shadow-md">
+                          <ZoomIn size={18} strokeWidth={2.2} />
+                        </div>
+                      </div>
                     </div>
                   )}
                   {((pkg.paragraphs.length > 2 && pIdx === 2) || (pkg.paragraphs.length <= 2 && pIdx === pkg.paragraphs.length - 1)) && (pkg.storyPhotos?.[1] || (pkg.id === 'pkg-1' && pIdx === 2)) && (
-                    <div className={styles.storyPhotoFrame}>
+                    <div 
+                      className={`${styles.storyPhotoFrame} cursor-zoom-in relative group/storyPhoto overflow-hidden`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        const photoUrl = pkg.storyPhotos?.[1] || "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=1200&q=80";
+                        window.dispatchEvent(new CustomEvent('open-media-preview', {
+                          detail: {
+                            mediaUrl: photoUrl,
+                            title: getText(pkg.title)
+                          }
+                        }));
+                      }}
+                      role="button"
+                      tabIndex={0}
+                      aria-label="Xem ảnh minh họa hành trình"
+                      title={lang === 'vi' ? 'Xem ảnh toàn màn hình' : 'Click to view full screen'}
+                    >
                       <img
                         src={pkg.storyPhotos?.[1] || "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=1200&q=80"}
                         alt={lang === 'vi' ? 'Ảnh minh họa hành trình 2' : 'Tour story photo 2'}
                         loading="lazy"
+                        className="transition-transform duration-500 group-hover/storyPhoto:scale-105"
                       />
                       {pkg.storyPhotosWatermark?.[1] !== false && <div className="media-watermark" aria-hidden="true" />}
+                      <div className="absolute inset-0 bg-black/25 opacity-0 group-hover/storyPhoto:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
+                        <div className="w-10 h-10 rounded-full bg-black/75 text-[#C9A96E] border border-[#C9A96E]/40 flex items-center justify-center shadow-md">
+                          <ZoomIn size={18} strokeWidth={2.2} />
+                        </div>
+                      </div>
                     </div>
                   )}
                 </React.Fragment>

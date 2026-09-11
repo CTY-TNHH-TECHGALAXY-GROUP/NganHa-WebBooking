@@ -5,7 +5,6 @@ import { useSystemSettings } from '@/components/SystemSettingsProvider';
 import { useTranslation } from '@/components/TranslationProvider';
 import SmartLogo from '@/components/SmartLogo';
 import { HeartPulse, ShieldCheck, X, Check, Copy } from 'lucide-react';
-import MediaPreviewModal from '@/components/Shared/MediaPreviewModal';
 
 const WeChatIcon = ({ size = 18, className = "" }: { size?: number; className?: string }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" className={className}>
@@ -108,7 +107,6 @@ const Footer = () => {
 
   const [footerData, setFooterData] = useState<any>(initialFooter || {});
   const [settingsData, setSettingsData] = useState<any>(initialSettings || {});
-  const [previewMedia, setPreviewMedia] = useState<{ url: string; title?: string } | null>(null);
 
   useEffect(() => {
     if (initialFooter && Object.keys(initialFooter).length > 0) {
@@ -339,28 +337,13 @@ const Footer = () => {
               const hasImage = Boolean(value.imgSrc);
               return (
                 <div key={value.id || index} className="flex flex-col items-center gap-5">
-                  <div 
-                    className={`w-24 h-24 rounded-full flex items-center justify-center transition-transform hover:scale-105 duration-300 ${hasImage ? 'cursor-pointer' : ''}`}
-                    onClick={() => {
-                      if (hasImage && value.imgSrc) {
-                        setPreviewMedia({ url: value.imgSrc, title: itemTitle });
-                      }
-                    }}
-                    role={hasImage ? "button" : undefined}
-                    tabIndex={hasImage ? 0 : undefined}
-                    onKeyDown={hasImage ? (e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        if (value.imgSrc) setPreviewMedia({ url: value.imgSrc, title: itemTitle });
-                      }
-                    } : undefined}
-                    aria-label={hasImage ? `Xem ảnh ${itemTitle}` : undefined}
-                  >
+                  <div className="w-24 h-24 rounded-full flex items-center justify-center transition-transform hover:scale-105 duration-300">
                     {hasImage ? (
                       <img 
                         src={value.imgSrc!} 
                         alt={itemTitle} 
-                        className="w-16 h-16 md:w-20 md:h-20 object-contain"
+                        data-no-preview="true"
+                        className="w-16 h-16 md:w-20 md:h-20 object-contain pointer-events-none"
                         style={value.applyGoldFilter ? {
                           filter: 'brightness(0) saturate(100%) invert(92%) sepia(16%) saturate(444%) hue-rotate(350deg) brightness(101%) contrast(94%)',
                           WebkitFilter: 'brightness(0) saturate(100%) invert(92%) sepia(16%) saturate(444%) hue-rotate(350deg) brightness(101%) contrast(94%)',
@@ -546,16 +529,6 @@ const Footer = () => {
           </div>
         </div>
       )}
-
-      {/* Media Preview Modal for Core Values */}
-      <MediaPreviewModal
-        isOpen={Boolean(previewMedia?.url)}
-        onClose={() => setPreviewMedia(null)}
-        mediaUrl={previewMedia?.url || ''}
-        mediaType="image"
-        title={previewMedia?.title}
-        lang={currentLang}
-      />
     </footer>
   );
 };
