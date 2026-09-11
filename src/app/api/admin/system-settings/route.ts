@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { withAuth } from '@/lib/api/withAuth';
+import { withCapabilities } from '@/lib/api/withAuth';
 import { recordContentRevisions } from '@/lib/api/contentRevision';
+import { authorizeCapability } from '@/lib/auth/adminCapabilities';
 import { validateHomepageStyling, sanitizeHomepageStyling } from '@/lib/config/stylingSanitizer';
 import { CTA_KEYS, normalizeReceptionEmail, sanitizeCtaLinks, validateConfigUrl } from '@/lib/config/urlSettings';
 
@@ -8,7 +9,8 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
 }
 
-export const GET = withAuth(async (_request, { supabase }) => {
+export const GET = withCapabilities(async (_request, access) => {
+  const { supabase } = access;
   try {
     // Fetch editable site-content collections.
     const { data, error } = await supabase
@@ -63,14 +65,25 @@ export const GET = withAuth(async (_request, { supabase }) => {
       });
     }
 
+    const notificationAuthorization = await authorizeCapability(
+      access,
+      'notification_settings.manage',
+    );
+    if (!notificationAuthorization.allowed) {
+      result.system_settings = isRecord(result.system_settings)
+        ? { ...result.system_settings, receptionEmail: '' }
+        : result.system_settings;
+    }
+
     return NextResponse.json(result);
   } catch (error) {
     console.error('API Error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
-});
+}, ['content.read']);
 
-export const POST = withAuth(async (request: NextRequest, { supabase, user }) => {
+export const POST = withCapabilities(async (request: NextRequest, access) => {
+  const { supabase, user } = access;
   try {
     const {
       system_settings,
@@ -87,6 +100,20 @@ export const POST = withAuth(async (request: NextRequest, { supabase, user }) =>
     } = await request.json();
 
     const upsertData = [];
+
+    if (isRecord(system_settings) && Object.prototype.hasOwnProperty.call(system_settings, 'receptionEmail')) {
+      const notificationAuthorization = await authorizeCapability(
+        access,
+        'notification_settings.manage',
+        { mutation: true },
+      );
+      if (!notificationAuthorization.allowed) {
+        return NextResponse.json(
+          { error: notificationAuthorization.error, code: notificationAuthorization.code },
+          { status: notificationAuthorization.status },
+        );
+      }
+    }
 
     if (system_settings !== undefined) {
       const { data: existingSettings } = await supabase
@@ -291,4 +318,4 @@ export const POST = withAuth(async (request: NextRequest, { supabase, user }) =>
     console.error('API Error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
-});
+}, ['content.write', 'content.publish'], { mutation: true });

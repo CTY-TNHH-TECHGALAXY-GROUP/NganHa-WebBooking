@@ -66,6 +66,7 @@ Shared authorization and tests:
 - `src/lib/auth/__tests__/adminCapabilities.test.ts`: allow/deny, role baseline, revoke, malformed input, self-grant, protected capability, and normalization cases.
 - `scripts/test-admin-permissions.cjs`: TypeScript test harness usable without a database.
 - `plans/admin-bcc-permissions-analytics-20260911/agent-2-migration.sql`: draft-only grant/revision/audit/RPC and capability-aware storage policy changes; not executed.
+- `src/app/api/admin/system-settings/route.ts`: content read/write/publish gates, with `receptionEmail` redacted unless notification management is authorized.
 
 Editor management:
 
