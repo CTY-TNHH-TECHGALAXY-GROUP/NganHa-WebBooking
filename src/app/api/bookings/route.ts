@@ -489,7 +489,7 @@ function replayLineKeysFromRequest(booking: NormalizedBooking): string[] {
       ...(strength ? { strength } : {}),
       ...(options.bodyParts?.focus.length ? { focus: options.bodyParts.focus } : {}),
       ...(options.bodyParts?.avoid.length ? { avoid: options.bodyParts.avoid } : {}),
-      ...(options.therapist ? { therapist: options.therapist === 'male' ? 'Nam' : options.therapist === 'female' ? 'Nữ' : 'Ngẫu nhiên' } : {}),
+      ...(options.therapist && String(options.therapist).toLowerCase() !== 'random' && String(options.therapist).toLowerCase() !== 'ngẫu nhiên' ? { therapist: options.therapist === 'male' ? 'Nam' : options.therapist === 'female' ? 'Nữ' : 'Ngẫu nhiên' } : {}),
       ...(noteParts.length ? { note: noteParts.join(' - ') } : {}),
     };
     const base = { serviceId: item.id, quantity: item.quantity, options: Object.keys(baseOptions).length ? baseOptions : null };
