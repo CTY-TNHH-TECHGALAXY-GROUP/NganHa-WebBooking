@@ -5,8 +5,7 @@ export const revalidate = 3600; // Edge revalidation interval (1 hour)
 
 export async function GET() {
   const PLACE_ID = process.env.GOOGLE_PLACE_ID || 'ChIJ2ULTMCAvdTERA4I7Sei7vyY';
-  // Fallback to active valid Places key to prevent hardcoded freezing on Vercel
-  const API_KEY = process.env.GOOGLE_PLACES_API_KEY || 'AIzaSyBnDLPbnJa56HHZi7iH7y-GhelBRhfalwo';
+  const API_KEY = process.env.GOOGLE_PLACES_API_KEY;
 
   const cacheHeaders = {
     'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=1800'
