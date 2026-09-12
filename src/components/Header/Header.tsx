@@ -528,15 +528,40 @@ const Header = () => {
               {/* Book Button */}
               <Link 
                 href={`/${currentLang.code}/new-user/standard/checkout`}
-                className="text-[#f7ebc7] hover:text-[#f7ebc7]/80 active:opacity-50 font-bold text-[13px] sm:text-sm uppercase tracking-wider mr-2 sm:mr-3 lg:mr-6 transition-all duration-300 inline-flex items-center"
+                className="relative group mr-2 sm:mr-3 lg:mr-6 inline-flex flex-col items-center justify-center transition-all duration-300"
               >
-                {BOOK_COPY[currentLang.code] || 'Book'}
+                <span
+                  className="font-extrabold text-[13px] sm:text-sm uppercase tracking-wider select-none transition-all duration-300 group-hover:brightness-110"
+                  style={{
+                    background: 'linear-gradient(135deg, #FFF5D1 0%, #F5D789 25%, #D4AF37 50%, #B8860B 75%, #8A6A08 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    filter: 'drop-shadow(0 0 8px rgba(245, 215, 137, 0.45))',
+                  }}
+                >
+                  {BOOK_COPY[currentLang.code] || 'Book'}
+                </span>
+                {/* Golden light flare accent underneath BOOK */}
+                <span
+                  className="w-8 sm:w-10 h-[1.5px] mt-0.5 rounded-full pointer-events-none relative transition-opacity duration-300 opacity-90 group-hover:opacity-100"
+                  style={{
+                    background: 'radial-gradient(ellipse at center, #FFF5D1 0%, rgba(245, 215, 137, 0.9) 30%, rgba(212, 175, 55, 0.3) 70%, transparent 100%)',
+                    boxShadow: '0 0 6px 1px rgba(245, 215, 137, 0.65)',
+                  }}
+                >
+                  <span
+                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1 h-1 rounded-full bg-[#FFF5D1]"
+                    style={{
+                      boxShadow: '0 0 5px 2px rgba(255, 245, 209, 0.85)',
+                    }}
+                  />
+                </span>
               </Link>
 
               {/* Cart Button */}
               <button 
                 type="button"
-                className="header-nav-cart relative text-[#f7ebc7] hover:text-[#D4AF37] mr-3 sm:mr-4 lg:mr-6 transition-colors duration-300 flex items-center justify-center p-1"
+                className="header-nav-cart relative mr-3 sm:mr-4 lg:mr-6 transition-all duration-300 flex items-center justify-center p-1 group hover:scale-105 active:scale-95"
                 data-nav-cart-button
                 onClick={handleCartClick}
                 aria-label={
@@ -548,8 +573,9 @@ const Header = () => {
                 }
               >
                 <div 
-                  className="w-[30px] h-[30px] bg-[#f7ebc7]" 
+                  className="w-[30px] h-[30px] transition-all duration-300 group-hover:brightness-110" 
                   style={{
+                    background: 'linear-gradient(135deg, #FFF5D1 0%, #F5D789 25%, #D4AF37 50%, #B8860B 75%, #8A6A08 100%)',
                     maskImage: 'url(/icons/shopping-cart.png)',
                     WebkitMaskImage: 'url(/icons/shopping-cart.png)',
                     maskSize: 'contain',
@@ -557,7 +583,8 @@ const Header = () => {
                     maskRepeat: 'no-repeat',
                     WebkitMaskRepeat: 'no-repeat',
                     maskPosition: 'center',
-                    WebkitMaskPosition: 'center'
+                    WebkitMaskPosition: 'center',
+                    filter: 'drop-shadow(0 0 8px rgba(245, 215, 137, 0.65)) drop-shadow(0 0 2px rgba(255, 245, 209, 0.85))',
                   }}
                   aria-hidden="true"
                 />
