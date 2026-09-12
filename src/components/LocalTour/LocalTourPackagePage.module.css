@@ -318,7 +318,23 @@
   transform: scale(1.06);
 }
 
-/* Horizontal Photo Scroller for Highlight Card */
+/* Horizontal Photo Slider for Highlight Card */
+.highlightSliderContainer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  touch-action: pan-y;
+}
+
+.highlightTrack {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.42s cubic-bezier(0.25, 1, 0.5, 1);
+  will-change: transform;
+}
+
 .highlightScroller {
   display: flex;
   overflow-x: auto;
@@ -335,10 +351,12 @@
 
 .highlightSlide {
   flex: 0 0 100%;
+  min-width: 100%;
   width: 100%;
   height: 100%;
   scroll-snap-align: start;
   position: relative;
+  overflow: hidden;
 }
 
 .highlightSlide img {

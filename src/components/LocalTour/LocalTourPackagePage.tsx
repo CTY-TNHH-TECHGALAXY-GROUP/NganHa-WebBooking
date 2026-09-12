@@ -46,31 +46,47 @@ function HighlightCardItem({
     ? hl.images.filter(Boolean)
     : (hl.image ? [hl.image] : []);
   const [activeImgIdx, setActiveImgIdx] = useState(0);
-  const scrollerRef = useRef<HTMLDivElement>(null);
+  const touchStartRef = useRef<{ x: number; y: number; time: number } | null>(null);
   const pointerStartRef = useRef<{ x: number; y: number } | null>(null);
 
-  const handleScroll = () => {
-    if (!scrollerRef.current) return;
-    const { scrollLeft, clientWidth } = scrollerRef.current;
-    if (clientWidth > 0) {
-      const newIdx = Math.round(scrollLeft / clientWidth);
-      if (newIdx !== activeImgIdx && newIdx >= 0 && newIdx < images.length) {
-        setActiveImgIdx(newIdx);
-      }
+  const goToPrev = (e?: React.MouseEvent | React.TouchEvent) => {
+    if (e) {
+      e.stopPropagation();
+      e.preventDefault();
     }
+    setActiveImgIdx((prev) => (prev > 0 ? prev - 1 : images.length - 1));
   };
 
-  const scrollToImage = (newIdx: number) => {
-    if (!scrollerRef.current || newIdx < 0 || newIdx >= images.length) return;
-    const scroller = scrollerRef.current;
-    const targetChild = scroller.children[newIdx] as HTMLElement;
-    if (targetChild && typeof targetChild.offsetLeft === 'number') {
-      scroller.scrollTo({ left: targetChild.offsetLeft, behavior: 'smooth' });
-    } else {
-      const targetLeft = newIdx * scroller.clientWidth;
-      scroller.scrollTo({ left: targetLeft, behavior: 'smooth' });
+  const goToNext = (e?: React.MouseEvent | React.TouchEvent) => {
+    if (e) {
+      e.stopPropagation();
+      e.preventDefault();
     }
-    setActiveImgIdx(newIdx);
+    setActiveImgIdx((prev) => (prev < images.length - 1 ? prev + 1 : 0));
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartRef.current = {
+      x: e.touches[0].clientX,
+      y: e.touches[0].clientY,
+      time: Date.now(),
+    };
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (!touchStartRef.current) return;
+    const dx = e.changedTouches[0].clientX - touchStartRef.current.x;
+    const dy = e.changedTouches[0].clientY - touchStartRef.current.y;
+    const dt = Date.now() - touchStartRef.current.time;
+    touchStartRef.current = null;
+
+    if (Math.abs(dx) > 35 && Math.abs(dx) > Math.abs(dy) && dt < 800) {
+      if (dx < 0) {
+        goToNext();
+      } else {
+        goToPrev();
+      }
+    }
   };
 
   return (
@@ -85,50 +101,57 @@ function HighlightCardItem({
         {images.length > 1 ? (
           <>
             <div
-              ref={scrollerRef}
-              className={styles.highlightScroller}
-              onScroll={handleScroll}
+              className={styles.highlightSliderContainer}
+              onTouchStart={handleTouchStart}
+              onTouchEnd={handleTouchEnd}
             >
-              {images.map((imgUrl, iIdx) => (
-                <div 
-                  key={'img-' + iIdx} 
-                  className={`${styles.highlightSlide} cursor-zoom-in relative group/slide`}
-                  onPointerDown={(e) => {
-                    pointerStartRef.current = { x: e.clientX, y: e.clientY };
-                  }}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    if (pointerStartRef.current) {
-                      const dx = Math.abs(e.clientX - pointerStartRef.current.x);
-                      const dy = Math.abs(e.clientY - pointerStartRef.current.y);
-                      if (dx > 10 || dy > 10) return; // User was dragging/swiping to scroll!
-                    }
-                    window.dispatchEvent(new CustomEvent('open-media-preview', {
-                      detail: {
-                        mediaUrl: imgUrl,
-                        title: getText(hl.title),
-                        description: getText(hl.subtitle)
+              <div
+                className={styles.highlightTrack}
+                style={{
+                  transform: `translate3d(-${activeImgIdx * 100}%, 0, 0)`,
+                }}
+              >
+                {images.map((imgUrl, iIdx) => (
+                  <div 
+                    key={'img-' + iIdx} 
+                    className={`${styles.highlightSlide} cursor-zoom-in relative group/slide`}
+                    onPointerDown={(e) => {
+                      pointerStartRef.current = { x: e.clientX, y: e.clientY };
+                    }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (pointerStartRef.current) {
+                        const dx = Math.abs(e.clientX - pointerStartRef.current.x);
+                        const dy = Math.abs(e.clientY - pointerStartRef.current.y);
+                        if (dx > 10 || dy > 10) return; // User was dragging/swiping
                       }
-                    }));
-                  }}
-                  role="button"
-                  tabIndex={0}
-                  aria-label={`${getText(hl.title)} (${iIdx + 1}/${images.length})`}
-                  title={lang === 'vi' ? 'Xem ảnh toàn màn hình' : 'Click to view full screen'}
-                >
-                  <img
-                    src={imgUrl}
-                    alt={`${getText(hl.title)} (${iIdx + 1}/${images.length})`}
-                    loading="lazy"
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover/slide:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-black/25 opacity-0 group-hover/slide:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
-                    <div className="w-8 h-8 rounded-full bg-black/75 text-[#C9A96E] border border-[#C9A96E]/40 flex items-center justify-center shadow-md">
-                      <ZoomIn size={15} strokeWidth={2.2} />
+                      window.dispatchEvent(new CustomEvent('open-media-preview', {
+                        detail: {
+                          mediaUrl: imgUrl,
+                          title: getText(hl.title),
+                          description: getText(hl.subtitle)
+                        }
+                      }));
+                    }}
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`${getText(hl.title)} (${iIdx + 1}/${images.length})`}
+                    title={lang === 'vi' ? 'Xem ảnh toàn màn hình' : 'Click to view full screen'}
+                  >
+                    <img
+                      src={imgUrl}
+                      alt={`${getText(hl.title)} (${iIdx + 1}/${images.length})`}
+                      loading="lazy"
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover/slide:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-black/25 opacity-0 group-hover/slide:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
+                      <div className="w-8 h-8 rounded-full bg-black/75 text-[#C9A96E] border border-[#C9A96E]/40 flex items-center justify-center shadow-md">
+                        <ZoomIn size={15} strokeWidth={2.2} />
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
 
             {/* Photo count badge */}
@@ -140,15 +163,10 @@ function HighlightCardItem({
             <button
               type="button"
               className={`${styles.highlightNavBtn} ${styles.highlightNavPrev} ${activeImgIdx === 0 ? styles.highlightNavEdge : ''}`}
-              onClick={(e) => {
-                e.stopPropagation();
-                e.preventDefault();
-                if (activeImgIdx > 0) {
-                  scrollToImage(activeImgIdx - 1);
-                } else {
-                  scrollToImage(images.length - 1);
-                }
-              }}
+              onPointerDown={(e) => e.stopPropagation()}
+              onTouchStart={(e) => e.stopPropagation()}
+              onTouchEnd={(e) => e.stopPropagation()}
+              onClick={goToPrev}
               aria-label="Previous photo"
               title={lang === 'vi' ? 'Ảnh trước' : 'Previous photo'}
             >
@@ -157,15 +175,10 @@ function HighlightCardItem({
             <button
               type="button"
               className={`${styles.highlightNavBtn} ${styles.highlightNavNext} ${activeImgIdx === images.length - 1 ? styles.highlightNavEdge : ''}`}
-              onClick={(e) => {
-                e.stopPropagation();
-                e.preventDefault();
-                if (activeImgIdx < images.length - 1) {
-                  scrollToImage(activeImgIdx + 1);
-                } else {
-                  scrollToImage(0);
-                }
-              }}
+              onPointerDown={(e) => e.stopPropagation()}
+              onTouchStart={(e) => e.stopPropagation()}
+              onTouchEnd={(e) => e.stopPropagation()}
+              onClick={goToNext}
               aria-label="Next photo"
               title={lang === 'vi' ? 'Ảnh tiếp theo' : 'Next photo'}
             >
@@ -178,10 +191,13 @@ function HighlightCardItem({
                 <button
                   key={'dot-' + dotIdx}
                   type="button"
+                  onPointerDown={(e) => e.stopPropagation()}
+                  onTouchStart={(e) => e.stopPropagation()}
+                  onTouchEnd={(e) => e.stopPropagation()}
                   onClick={(e) => {
                     e.stopPropagation();
                     e.preventDefault();
-                    scrollToImage(dotIdx);
+                    setActiveImgIdx(dotIdx);
                   }}
                   className={`${styles.highlightDot} ${dotIdx === activeImgIdx ? styles.highlightDotActive : ''}`}
                   aria-label={`Go to photo ${dotIdx + 1}`}
