@@ -23,6 +23,7 @@ const ALLOWED_SYSTEM_SETTINGS_KEYS = new Set([
   'wechatQr',
   'kakaotalk',
   'mediaWatermarkEnabled',
+  'mediaWatermarkOpacity',
   'ctaLinks',
   'lost_and_found',
   'homepage_content',
@@ -116,6 +117,12 @@ export function sanitizePublicSystemSettings(settings: unknown): Record<string, 
 
     if (key === 'mediaWatermarkEnabled') {
       result[key] = Boolean(val);
+      continue;
+    }
+
+    if (key === 'mediaWatermarkOpacity') {
+      const num = typeof val === 'number' ? val : parseInt(String(val), 10);
+      result[key] = !isNaN(num) && num >= 0 && num <= 100 ? Math.round(num) : 15;
       continue;
     }
 

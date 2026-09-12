@@ -123,7 +123,13 @@ export default function LocalTourPage({ initialConfig, initialLang }: LocalTourP
                         alt={getText(pkg.title)}
                         loading="lazy"
                       />
-                      {pkg.heroWatermarkEnabled !== false && <div className="media-watermark" aria-hidden="true" />}
+                      {pkg.heroWatermarkEnabled !== false && (
+                        <div
+                          className="media-watermark"
+                          aria-hidden="true"
+                          style={{ opacity: (pkg.heroWatermarkOpacity ?? 15) / 100 }}
+                        />
+                      )}
                       <span className={styles.showcaseOrderBadge}>GÓI {pkg.orderNumber}</span>
                     </div>
                   </Link>

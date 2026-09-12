@@ -94,7 +94,11 @@ export default function HomeSpaPage({
             )
           )}
           {config.heroWatermarkEnabled !== false && (
-            <div className="media-watermark" aria-hidden="true" />
+            <div
+              className="media-watermark"
+              aria-hidden="true"
+              style={{ opacity: (config.heroWatermarkOpacity ?? 15) / 100 }}
+            />
           )}
           <div className={styles.heroGradient} />
           <div className={styles.heroVignette} />
@@ -104,16 +108,15 @@ export default function HomeSpaPage({
           <motion.div
             initial={reduceMotion ? false : { opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 0.6 }}
           >
-            <h1 className={styles.heroTitle}>{getText(config.pageTitle)}</h1>
             <p className={styles.heroSubtitle}>{getText(config.pageSubtitle)}</p>
-            <div className={styles.heroDivider} />
+            <h1 className={styles.heroTitle}>{getText(config.pageTitle)}</h1>
           </motion.div>
         </div>
       </section>
 
-      {/* 2. EDITORIAL ARTICLE CONTAINER */}
+      {/* 2. EDITORIAL ESSAY */}
       <main className={styles.articleContainer}>
         {config.sections.map((section, sIdx) => (
           <React.Fragment key={section.id || 'sec-' + sIdx}>
@@ -125,9 +128,8 @@ export default function HomeSpaPage({
               transition={{ duration: 0.6 }}
             >
               <h2 className={styles.sectionHeading}>{getText(section.heading)}</h2>
-
               {section.paragraphs.map((para, pIdx) => (
-                <p key={'p-' + sIdx + '-' + pIdx} className={styles.paragraph}>
+                <p key={'sec-' + sIdx + '-p-' + pIdx} className={styles.paragraph}>
                   {getText(para)}
                 </p>
               ))}
@@ -148,7 +150,11 @@ export default function HomeSpaPage({
                   loading="lazy"
                 />
                 {config.storyPhotosWatermark?.[0] !== false && (
-                  <div className="media-watermark" aria-hidden="true" />
+                  <div
+                    className="media-watermark"
+                    aria-hidden="true"
+                    style={{ opacity: (config.storyPhotosWatermarkOpacity?.[0] ?? 15) / 100 }}
+                  />
                 )}
               </motion.div>
             )}
@@ -168,7 +174,11 @@ export default function HomeSpaPage({
                   loading="lazy"
                 />
                 {config.storyPhotosWatermark?.[1] !== false && (
-                  <div className="media-watermark" aria-hidden="true" />
+                  <div
+                    className="media-watermark"
+                    aria-hidden="true"
+                    style={{ opacity: (config.storyPhotosWatermarkOpacity?.[1] ?? 15) / 100 }}
+                  />
                 )}
               </motion.div>
             )}
@@ -188,7 +198,11 @@ export default function HomeSpaPage({
                   loading="lazy"
                 />
                 {config.storyPhotosWatermark?.[2] !== false && (
-                  <div className="media-watermark" aria-hidden="true" />
+                  <div
+                    className="media-watermark"
+                    aria-hidden="true"
+                    style={{ opacity: (config.storyPhotosWatermarkOpacity?.[2] ?? 15) / 100 }}
+                  />
                 )}
               </motion.div>
             )}

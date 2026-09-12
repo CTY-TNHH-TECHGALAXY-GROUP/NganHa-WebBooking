@@ -35,6 +35,7 @@ function HighlightCardItem({
     title: Record<string, string>;
     subtitle: Record<string, string>;
     watermarkEnabled?: boolean;
+    watermarkOpacity?: number;
   };
   idx: number;
   getText: (s?: Record<string, string>) => string;
@@ -196,7 +197,13 @@ function HighlightCardItem({
           </div>
         )}
 
-        {hl.watermarkEnabled !== false && <div className="media-watermark" aria-hidden="true" />}
+        {hl.watermarkEnabled !== false && (
+          <div
+            className="media-watermark"
+            aria-hidden="true"
+            style={{ opacity: (hl.watermarkOpacity ?? 15) / 100 }}
+          />
+        )}
 
         <span className={styles.highlightNumber}>{String(idx + 1).padStart(2, '0')}</span>
       </div>
@@ -306,7 +313,13 @@ export default function LocalTourPackagePage({
             src={pkg.heroImage || pkgDestinations[0]?.image || 'https://images.unsplash.com/photo-1563492065599-3520f775eeed?auto=format&fit=crop&w=1800&q=85'}
             alt={getText(pkg.title)}
           />
-          {pkg.heroWatermarkEnabled !== false && <div className="media-watermark" aria-hidden="true" />}
+          {pkg.heroWatermarkEnabled !== false && (
+            <div
+              className="media-watermark"
+              aria-hidden="true"
+              style={{ opacity: (pkg.heroWatermarkOpacity ?? 15) / 100 }}
+            />
+          )}
           <div className={styles.heroGradient} />
           <div className={styles.heroVignette} />
         </div>
@@ -410,7 +423,13 @@ export default function LocalTourPackagePage({
                         loading="lazy"
                         className="transition-transform duration-500 group-hover/storyPhoto:scale-105"
                       />
-                      {pkg.storyPhotosWatermark?.[0] !== false && <div className="media-watermark" aria-hidden="true" />}
+                      {pkg.storyPhotosWatermark?.[0] !== false && (
+                        <div
+                          className="media-watermark"
+                          aria-hidden="true"
+                          style={{ opacity: (pkg.storyPhotosWatermarkOpacity?.[0] ?? 15) / 100 }}
+                        />
+                      )}
                       <div className="absolute inset-0 bg-black/25 opacity-0 group-hover/storyPhoto:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
                         <div className="w-10 h-10 rounded-full bg-black/75 text-[#C9A96E] border border-[#C9A96E]/40 flex items-center justify-center shadow-md">
                           <ZoomIn size={18} strokeWidth={2.2} />
@@ -442,7 +461,13 @@ export default function LocalTourPackagePage({
                         loading="lazy"
                         className="transition-transform duration-500 group-hover/storyPhoto:scale-105"
                       />
-                      {pkg.storyPhotosWatermark?.[1] !== false && <div className="media-watermark" aria-hidden="true" />}
+                      {pkg.storyPhotosWatermark?.[1] !== false && (
+                        <div
+                          className="media-watermark"
+                          aria-hidden="true"
+                          style={{ opacity: (pkg.storyPhotosWatermarkOpacity?.[1] ?? 15) / 100 }}
+                        />
+                      )}
                       <div className="absolute inset-0 bg-black/25 opacity-0 group-hover/storyPhoto:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
                         <div className="w-10 h-10 rounded-full bg-black/75 text-[#C9A96E] border border-[#C9A96E]/40 flex items-center justify-center shadow-md">
                           <ZoomIn size={18} strokeWidth={2.2} />

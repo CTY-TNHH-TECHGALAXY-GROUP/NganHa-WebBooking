@@ -254,7 +254,7 @@ body,
   background-repeat: no-repeat;
   filter: invert(1);
   mix-blend-mode: screen;
-  opacity: 0.15;
+  opacity: var(--media-watermark-opacity, 0.15);
   z-index: 10;
   pointer-events: none;
 }

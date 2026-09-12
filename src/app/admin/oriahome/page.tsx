@@ -23,6 +23,7 @@ import {
   hydrateHomeSpaConfig,
   type HomeSpaConfig,
 } from '@/data/homeSpaData';
+import { WatermarkControl } from '@/components/Admin/WatermarkControl';
 
 const LANGUAGES = [
   { code: 'vi', label: 'Tiếng Việt', flag: '🇻🇳' },
@@ -31,28 +32,6 @@ const LANGUAGES = [
   { code: 'jp', label: '日本語', flag: '🇯🇵' },
   { code: 'kr', label: '한국어', flag: '🇰🇷' },
 ];
-
-const WatermarkToggle = ({ checked, onChange }: { checked: boolean; onChange: (checked: boolean) => void }) => (
-  <div className="flex items-center justify-between gap-3 rounded-lg border border-admin-line bg-admin-card/70 px-3 py-2.5">
-    <div>
-      <p className="text-xs font-bold text-admin-text">Logo mờ trên khung này</p>
-      <p className="mt-0.5 text-[10px] text-admin-text-faint">{checked ? 'Đang hiển thị' : 'Đang ẩn'}</p>
-    </div>
-    <button
-      type="button"
-      role="switch"
-      aria-checked={checked}
-      onClick={() => onChange(!checked)}
-      className={`relative inline-flex h-7 w-12 shrink-0 items-center rounded-full border transition-colors focus:outline-none focus:ring-2 focus:ring-admin-gold/50 ${
-        checked ? 'border-green-500 bg-green-500' : 'border-admin-line-strong bg-admin-line'
-      }`}
-      title={checked ? 'Tắt logo mờ cho khung này' : 'Bật logo mờ cho khung này'}
-    >
-      <span className={`block h-5 w-5 rounded-full bg-white shadow transition-transform ${checked ? 'translate-x-[22px]' : 'translate-x-1'}`} />
-      <span className="sr-only">Bật hoặc tắt logo mờ cho khung media này</span>
-    </button>
-  </div>
-);
 
 export default function HomeSpaAdminPage() {
   const [config, setConfig] = useState<HomeSpaConfig>(DEFAULT_HOME_SPA_CONFIG);
@@ -378,6 +357,12 @@ export default function HomeSpaAdminPage() {
                     <span className="text-[10px] text-admin-text-faint">Dán link URL hoặc tải ảnh / video từ máy tính (MP4, MOV, WebM, JPG, PNG)</span>
                   </div>
                 )}
+                {config.heroImage && config.heroWatermarkEnabled !== false && (
+                  <div
+                    className="media-watermark pointer-events-none"
+                    style={{ opacity: (config.heroWatermarkOpacity ?? 15) / 100 }}
+                  />
+                )}
                 {uploadingKey === 'hero' && (
                   <div className="absolute inset-0 bg-black/75 flex items-center justify-center text-xs text-admin-gold font-semibold">
                     Đang tải lên...
@@ -488,10 +473,14 @@ export default function HomeSpaAdminPage() {
                 </div>
 
                 <div className="pt-2">
-                  <WatermarkToggle
+                  <WatermarkControl
                     checked={config.heroWatermarkEnabled !== false}
-                    onChange={(checked) => {
+                    opacity={config.heroWatermarkOpacity ?? 15}
+                    onChangeChecked={(checked) => {
                       updateConfig((prev) => ({ ...prev, heroWatermarkEnabled: checked }));
+                    }}
+                    onChangeOpacity={(opacity) => {
+                      updateConfig((prev) => ({ ...prev, heroWatermarkOpacity: opacity }));
                     }}
                   />
                 </div>
@@ -656,6 +645,12 @@ export default function HomeSpaAdminPage() {
                     <span className="text-[10px] text-admin-text-faint">Dán link URL hoặc tải ảnh từ máy tính</span>
                   </div>
                 )}
+                {config.storyPhotos?.[0] && config.storyPhotosWatermark?.[0] !== false && (
+                  <div
+                    className="media-watermark pointer-events-none"
+                    style={{ opacity: (config.storyPhotosWatermarkOpacity?.[0] ?? 15) / 100 }}
+                  />
+                )}
                 {uploadingKey === 'story-0' && (
                   <div className="absolute inset-0 bg-black/75 flex items-center justify-center text-xs text-admin-gold font-semibold">
                     Đang tải ảnh lên...
@@ -763,13 +758,23 @@ export default function HomeSpaAdminPage() {
                 </div>
 
                 <div className="pt-2">
-                  <WatermarkToggle
+                  <WatermarkControl
                     checked={config.storyPhotosWatermark?.[0] !== false}
-                    onChange={(checked) => {
+                    opacity={config.storyPhotosWatermarkOpacity?.[0] ?? 15}
+                    onChangeChecked={(checked) => {
                       updateConfig((prev) => {
-                        const nextWm = [...(prev.storyPhotosWatermark || [true, true])];
+                        const nextWm = [...(prev.storyPhotosWatermark || [true, true, true])];
+                        while (nextWm.length < 3) nextWm.push(true);
                         nextWm[0] = checked;
                         return { ...prev, storyPhotosWatermark: nextWm };
+                      });
+                    }}
+                    onChangeOpacity={(opacity) => {
+                      updateConfig((prev) => {
+                        const nextO = [...(prev.storyPhotosWatermarkOpacity || [15, 15, 15])];
+                        while (nextO.length < 3) nextO.push(15);
+                        nextO[0] = opacity;
+                        return { ...prev, storyPhotosWatermarkOpacity: nextO };
                       });
                     }}
                   />
@@ -801,6 +806,12 @@ export default function HomeSpaAdminPage() {
                     <span>Chưa có Khung Ảnh 02</span>
                     <span className="text-[10px] text-admin-text-faint">Dán link URL hoặc tải ảnh từ máy tính</span>
                   </div>
+                )}
+                {config.storyPhotos?.[1] && config.storyPhotosWatermark?.[1] !== false && (
+                  <div
+                    className="media-watermark pointer-events-none"
+                    style={{ opacity: (config.storyPhotosWatermarkOpacity?.[1] ?? 15) / 100 }}
+                  />
                 )}
                 {uploadingKey === 'story-1' && (
                   <div className="absolute inset-0 bg-black/75 flex items-center justify-center text-xs text-admin-gold font-semibold">
@@ -909,13 +920,23 @@ export default function HomeSpaAdminPage() {
                 </div>
 
                 <div className="pt-2">
-                  <WatermarkToggle
+                  <WatermarkControl
                     checked={config.storyPhotosWatermark?.[1] !== false}
-                    onChange={(checked) => {
+                    opacity={config.storyPhotosWatermarkOpacity?.[1] ?? 15}
+                    onChangeChecked={(checked) => {
                       updateConfig((prev) => {
                         const nextWm = [...(prev.storyPhotosWatermark || [true, true, true])];
+                        while (nextWm.length < 3) nextWm.push(true);
                         nextWm[1] = checked;
                         return { ...prev, storyPhotosWatermark: nextWm };
+                      });
+                    }}
+                    onChangeOpacity={(opacity) => {
+                      updateConfig((prev) => {
+                        const nextO = [...(prev.storyPhotosWatermarkOpacity || [15, 15, 15])];
+                        while (nextO.length < 3) nextO.push(15);
+                        nextO[1] = opacity;
+                        return { ...prev, storyPhotosWatermarkOpacity: nextO };
                       });
                     }}
                   />
@@ -947,6 +968,12 @@ export default function HomeSpaAdminPage() {
                     <span>Chưa có Khung Ảnh 03</span>
                     <span className="text-[10px] text-admin-text-faint">Dán link URL hoặc tải ảnh từ máy tính</span>
                   </div>
+                )}
+                {config.storyPhotos?.[2] && config.storyPhotosWatermark?.[2] !== false && (
+                  <div
+                    className="media-watermark pointer-events-none"
+                    style={{ opacity: (config.storyPhotosWatermarkOpacity?.[2] ?? 15) / 100 }}
+                  />
                 )}
                 {uploadingKey === 'story-2' && (
                   <div className="absolute inset-0 bg-black/75 flex items-center justify-center text-xs text-admin-gold font-semibold">
@@ -1055,13 +1082,23 @@ export default function HomeSpaAdminPage() {
                 </div>
 
                 <div className="pt-2">
-                  <WatermarkToggle
+                  <WatermarkControl
                     checked={config.storyPhotosWatermark?.[2] !== false}
-                    onChange={(checked) => {
+                    opacity={config.storyPhotosWatermarkOpacity?.[2] ?? 15}
+                    onChangeChecked={(checked) => {
                       updateConfig((prev) => {
                         const nextWm = [...(prev.storyPhotosWatermark || [true, true, true])];
+                        while (nextWm.length < 3) nextWm.push(true);
                         nextWm[2] = checked;
                         return { ...prev, storyPhotosWatermark: nextWm };
+                      });
+                    }}
+                    onChangeOpacity={(opacity) => {
+                      updateConfig((prev) => {
+                        const nextO = [...(prev.storyPhotosWatermarkOpacity || [15, 15, 15])];
+                        while (nextO.length < 3) nextO.push(15);
+                        nextO[2] = opacity;
+                        return { ...prev, storyPhotosWatermarkOpacity: nextO };
                       });
                     }}
                   />

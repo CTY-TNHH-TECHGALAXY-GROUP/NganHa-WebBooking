@@ -12,9 +12,11 @@ export interface FarmRetreatConfig {
   heroImage?: string;
   heroMediaType?: 'image' | 'video';
   heroWatermarkEnabled?: boolean;
+  heroWatermarkOpacity?: number;
   introParagraphs: LocalizedString[];
   storyPhotos?: string[];
   storyPhotosWatermark?: boolean[];
+  storyPhotosWatermarkOpacity?: number[];
   sections: FarmRetreatSection[];
   highlights: Record<string, string[]>;
   closingText: LocalizedString;
@@ -40,6 +42,10 @@ export const DEFAULT_FARM_RETREAT_CONFIG: FarmRetreatConfig = {
   heroImage: '',
   heroMediaType: 'image',
   heroWatermarkEnabled: true,
+  heroWatermarkOpacity: 15,
+  storyPhotos: ['', '', '', '', ''],
+  storyPhotosWatermark: [true, true, true, true, true],
+  storyPhotosWatermarkOpacity: [15, 15, 15, 15, 15],
   introParagraphs: [
     {
       vi: 'Không phải lúc nào bạn cũng cần một chuyến đi dài để thực sự được nghỉ ngơi.',
@@ -70,8 +76,6 @@ export const DEFAULT_FARM_RETREAT_CONFIG: FarmRetreatConfig = {
       jp: 'Oria Farm Retreat は、自然に囲まれて過ごすデイリトリートです。数時間でも、1日ゆっくりでも。食事を楽しみ、休み、スチーム、温かいバスタイム、全身マッサージを受けながら、いつもとはまったく違う時間の流れを感じてから街へ戻ることができます。',
     },
   ],
-  storyPhotos: ['', '', '', '', ''],
-  storyPhotosWatermark: [true, true, true, true, true],
   sections: [
     {
       id: 'sec-1',
@@ -327,12 +331,24 @@ export function hydrateFarmRetreatConfig(raw: any): FarmRetreatConfig {
     typeof url === 'string' && !url.includes('unsplash.com') ? url.trim() : ''
   );
 
+  const heroWatermarkOpacity =
+    typeof raw.heroWatermarkOpacity === 'number' && raw.heroWatermarkOpacity >= 0 && raw.heroWatermarkOpacity <= 100
+      ? Math.round(raw.heroWatermarkOpacity)
+      : 15;
+
+  const rawWmOpacity = Array.isArray(raw.storyPhotosWatermarkOpacity) ? raw.storyPhotosWatermarkOpacity : [];
+  const storyPhotosWatermarkOpacity: number[] = storyPhotos.map((_, idx) => {
+    const val = rawWmOpacity[idx];
+    return typeof val === 'number' && val >= 0 && val <= 100 ? Math.round(val) : 15;
+  });
+
   return {
     pageTitle: raw.pageTitle || DEFAULT_FARM_RETREAT_CONFIG.pageTitle,
     pageSubtitle: raw.pageSubtitle || DEFAULT_FARM_RETREAT_CONFIG.pageSubtitle,
     heroImage,
     heroMediaType,
     heroWatermarkEnabled: raw.heroWatermarkEnabled !== false,
+    heroWatermarkOpacity,
     introParagraphs: Array.isArray(raw.introParagraphs) && raw.introParagraphs.length > 0
       ? raw.introParagraphs
       : DEFAULT_FARM_RETREAT_CONFIG.introParagraphs,
@@ -340,6 +356,7 @@ export function hydrateFarmRetreatConfig(raw: any): FarmRetreatConfig {
     storyPhotosWatermark: Array.isArray(raw.storyPhotosWatermark)
       ? raw.storyPhotosWatermark
       : [true, true, true, true, true],
+    storyPhotosWatermarkOpacity,
     sections: hydratedSections,
     highlights: raw.highlights || DEFAULT_FARM_RETREAT_CONFIG.highlights,
     closingText: raw.closingText || DEFAULT_FARM_RETREAT_CONFIG.closingText,

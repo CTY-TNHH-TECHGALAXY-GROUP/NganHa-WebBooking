@@ -10,6 +10,7 @@ export interface OurStoryFilmFrame {
   desc: LocalizedString;
   image: string;
   watermarkEnabled?: boolean;
+  watermarkOpacity?: number;
 }
 
 export interface OurStoryPillar {
@@ -18,6 +19,7 @@ export interface OurStoryPillar {
   title: LocalizedString;
   desc: LocalizedString;
   watermarkEnabled?: boolean;
+  watermarkOpacity?: number;
 }
 
 export interface OurStoryMenuNiche {
@@ -32,6 +34,7 @@ export interface OurStoryMenuNiche {
   note?: LocalizedString;
   image: string;
   watermarkEnabled?: boolean;
+  watermarkOpacity?: number;
   ctaText?: LocalizedString;
   ctaLink?: string | null;
 }
@@ -59,10 +62,12 @@ export interface OurStoryConfig {
     connections: LocalizedString[];
     cityImage: string;
     cityImageWatermarkEnabled?: boolean;
+    cityImageWatermarkOpacity?: number;
     cityCaptionLeft: LocalizedString;
     cityCaptionRight: LocalizedString;
     streetSignImage: string;
     streetSignImageWatermarkEnabled?: boolean;
+    streetSignImageWatermarkOpacity?: number;
     imageCaption: LocalizedString;
   };
   architectureSection: {
@@ -83,6 +88,7 @@ export interface OurStoryConfig {
     landmark: LocalizedString;
     nightStreetImage: string;
     nightStreetImageWatermarkEnabled?: boolean;
+    nightStreetImageWatermarkOpacity?: number;
     imageCaption: LocalizedString;
   };
   specialtySection: {
@@ -845,6 +851,7 @@ export const hydrateOurStoryConfig = (saved: any): OurStoryConfig => {
         ...(defaults.specialtySection.pillars[idx] || {}),
         ...item,
         watermarkEnabled: item.watermarkEnabled !== false,
+        watermarkOpacity: typeof item.watermarkOpacity === 'number' ? Math.min(100, Math.max(5, item.watermarkOpacity)) : 15,
         image: item.image || defaults.specialtySection.pillars[idx]?.image,
         title: { ...(defaults.specialtySection.pillars[idx]?.title || {}), ...(item.title || {}) },
         desc: { ...(defaults.specialtySection.pillars[idx]?.desc || {}), ...(item.desc || {}) },
@@ -869,6 +876,7 @@ export const hydrateOurStoryConfig = (saved: any): OurStoryConfig => {
           order: item.order || fallback?.order || String(idx + 1).padStart(2, '0'),
           image: item.image || fallback?.image || '/images/about-treatment.png',
           watermarkEnabled: item.watermarkEnabled !== false,
+          watermarkOpacity: typeof item.watermarkOpacity === 'number' ? Math.min(100, Math.max(5, item.watermarkOpacity)) : 15,
           title: { ...(fallback?.title || {}), ...(item.title || {}) },
           tagline: { ...(fallback?.tagline || {}), ...(item.tagline || {}) },
           summary: { ...(fallback?.summary || {}), ...(item.summary || {}) },
@@ -904,10 +912,12 @@ export const hydrateOurStoryConfig = (saved: any): OurStoryConfig => {
         : defaults.locationSection.connections,
       cityImage: saved.locationSection?.cityImage || defaults.locationSection.cityImage,
       cityImageWatermarkEnabled: saved.locationSection?.cityImageWatermarkEnabled !== false,
+      cityImageWatermarkOpacity: typeof saved.locationSection?.cityImageWatermarkOpacity === 'number' ? Math.min(100, Math.max(5, saved.locationSection.cityImageWatermarkOpacity)) : 15,
       cityCaptionLeft: { ...defaults.locationSection.cityCaptionLeft, ...(saved.locationSection?.cityCaptionLeft || {}) },
       cityCaptionRight: { ...defaults.locationSection.cityCaptionRight, ...(saved.locationSection?.cityCaptionRight || {}) },
       streetSignImage: saved.locationSection?.streetSignImage || defaults.locationSection.streetSignImage,
       streetSignImageWatermarkEnabled: saved.locationSection?.streetSignImageWatermarkEnabled !== false,
+      streetSignImageWatermarkOpacity: typeof saved.locationSection?.streetSignImageWatermarkOpacity === 'number' ? Math.min(100, Math.max(5, saved.locationSection.streetSignImageWatermarkOpacity)) : 15,
       imageCaption: { ...defaults.locationSection.imageCaption, ...(saved.locationSection?.imageCaption || {}) },
     },
     architectureSection: {
@@ -934,6 +944,7 @@ export const hydrateOurStoryConfig = (saved: any): OurStoryConfig => {
             ...(defaults.filmReel.frames[idx] || { id: idx + 1, frameTag: `KODAK 500T • ${idx + 1}A ▶` }),
             ...item,
             watermarkEnabled: item.watermarkEnabled !== false,
+            watermarkOpacity: typeof item.watermarkOpacity === 'number' ? Math.min(100, Math.max(5, item.watermarkOpacity)) : 15,
             badge: { ...(defaults.filmReel.frames[idx]?.badge || {}), ...(item.badge || {}) },
             title: { ...(defaults.filmReel.frames[idx]?.title || {}), ...(item.title || {}) },
             desc: { ...(defaults.filmReel.frames[idx]?.desc || {}), ...(item.desc || {}) },
@@ -947,6 +958,7 @@ export const hydrateOurStoryConfig = (saved: any): OurStoryConfig => {
       landmark: { ...defaults.atmosphereSection.landmark, ...(saved.atmosphereSection?.landmark || {}) },
       nightStreetImage: saved.atmosphereSection?.nightStreetImage || defaults.atmosphereSection.nightStreetImage,
       nightStreetImageWatermarkEnabled: saved.atmosphereSection?.nightStreetImageWatermarkEnabled !== false,
+      nightStreetImageWatermarkOpacity: typeof saved.atmosphereSection?.nightStreetImageWatermarkOpacity === 'number' ? Math.min(100, Math.max(5, saved.atmosphereSection.nightStreetImageWatermarkOpacity)) : 15,
       imageCaption: { ...defaults.atmosphereSection.imageCaption, ...(saved.atmosphereSection?.imageCaption || {}) },
     },
     specialtySection: {

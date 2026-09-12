@@ -83,7 +83,11 @@ const OurStory = () => {
                 alt={getLocalizedText(config.locationSection.title, lang)}
               />
               {config.locationSection.cityImageWatermarkEnabled !== false && (
-                <div className="media-watermark" aria-hidden="true" />
+                <div
+                  className="media-watermark"
+                  aria-hidden="true"
+                  style={{ opacity: (config.locationSection.cityImageWatermarkOpacity ?? 15) / 100 }}
+                />
               )}
               <figcaption>
                 <span>{getLocalizedText(config.locationSection.cityCaptionLeft, lang)}</span>
@@ -98,7 +102,11 @@ const OurStory = () => {
                 loading="lazy"
               />
               {config.locationSection.streetSignImageWatermarkEnabled !== false && (
-                <div className="media-watermark" aria-hidden="true" />
+                <div
+                  className="media-watermark"
+                  aria-hidden="true"
+                  style={{ opacity: (config.locationSection.streetSignImageWatermarkOpacity ?? 15) / 100 }}
+                />
               )}
               <figcaption>{getLocalizedText(config.locationSection.imageCaption, lang)}</figcaption>
             </figure>
@@ -173,7 +181,11 @@ const OurStory = () => {
                         loading="lazy"
                       />
                       {frame.watermarkEnabled !== false && (
-                        <div className="media-watermark" aria-hidden="true" />
+                        <div
+                          className="media-watermark"
+                          aria-hidden="true"
+                          style={{ opacity: (frame.watermarkOpacity ?? 15) / 100 }}
+                        />
                       )}
                       <span>{String(index + 1).padStart(2, '0')}</span>
                     </motion.figure>
@@ -209,7 +221,11 @@ const OurStory = () => {
               loading="lazy"
             />
             {config.atmosphereSection.nightStreetImageWatermarkEnabled !== false && (
-              <div className="media-watermark" aria-hidden="true" />
+              <div
+                className="media-watermark"
+                aria-hidden="true"
+                style={{ opacity: (config.atmosphereSection.nightStreetImageWatermarkOpacity ?? 15) / 100 }}
+              />
             )}
             <figcaption>{getLocalizedText(config.atmosphereSection.imageCaption, lang)}</figcaption>
           </figure>
@@ -243,7 +259,11 @@ const OurStory = () => {
                     loading="lazy"
                   />
                   {pillar.watermarkEnabled !== false && (
-                    <div className="media-watermark" aria-hidden="true" />
+                    <div
+                      className="media-watermark"
+                      aria-hidden="true"
+                      style={{ opacity: (pillar.watermarkOpacity ?? 15) / 100 }}
+                    />
                   )}
                 </figure>
                 <div className={styles.pillarCopy}>
@@ -263,7 +283,11 @@ const OurStory = () => {
                     loading="lazy"
                   />
                   {menu.watermarkEnabled !== false && (
-                    <div className="media-watermark" aria-hidden="true" />
+                    <div
+                      className="media-watermark"
+                      aria-hidden="true"
+                      style={{ opacity: (menu.watermarkOpacity ?? 15) / 100 }}
+                    />
                   )}
                 </figure>
                 <div className={styles.pillarCopy}>

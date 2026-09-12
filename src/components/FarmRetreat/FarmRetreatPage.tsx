@@ -148,7 +148,11 @@ export default function FarmRetreatPage({
             )
           )}
           {config.heroWatermarkEnabled !== false && (
-            <div className="media-watermark" aria-hidden="true" />
+            <div
+              className="media-watermark"
+              aria-hidden="true"
+              style={{ opacity: (config.heroWatermarkOpacity ?? 15) / 100 }}
+            />
           )}
           <div className={styles.heroGradient} />
           <div className={styles.heroVignette} />
@@ -158,38 +162,33 @@ export default function FarmRetreatPage({
           <motion.div
             initial={reduceMotion ? false : { opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 0.6 }}
           >
-            <h1 className={styles.heroTitle}>{getText(config.pageTitle)}</h1>
             <p className={styles.heroSubtitle}>{getText(config.pageSubtitle)}</p>
-            <div className={styles.heroDivider} />
+            <h1 className={styles.heroTitle}>{getText(config.pageTitle)}</h1>
           </motion.div>
         </div>
       </section>
 
-      {/* 2. EDITORIAL ARTICLE CONTAINER */}
+      {/* 2. EDITORIAL PHOTO ESSAY & RETREAT RHYTHM */}
       <main className={styles.articleContainer}>
-        {/* INTRO BLOCK */}
-        {config.introParagraphs && config.introParagraphs.length > 0 && (
-          <motion.div
-            className={styles.introBlock}
-            initial={reduceMotion ? false : { opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.6 }}
-          >
-            {config.introParagraphs.map((para, pIdx) => (
-              <p
-                key={'intro-p-' + pIdx}
-                className={pIdx === 0 ? styles.introLead : styles.introParagraph}
-              >
-                {getText(para)}
-              </p>
-            ))}
-          </motion.div>
-        )}
+        {/* Intro Paragraphs */}
+        <section className={styles.introSection}>
+          {config.introParagraphs.map((para, idx) => (
+            <motion.p
+              key={'intro-p-' + idx}
+              className={styles.introParagraph}
+              initial={reduceMotion ? false : { opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.5, delay: idx * 0.1 }}
+            >
+              {getText(para)}
+            </motion.p>
+          ))}
+        </section>
 
-        {/* Media Frame 0 (Khung Ảnh 01 - Bungalow giữa thiên nhiên) */}
+        {/* Media Frame 0 (Khung Ảnh 01 - Toàn cảnh kiến trúc Bungalow gỗ) */}
         {Boolean(config.storyPhotos?.[0]) && (
           <motion.div
             className={styles.storyPhotoFrame}
@@ -204,7 +203,11 @@ export default function FarmRetreatPage({
               loading="lazy"
             />
             {config.storyPhotosWatermark?.[0] !== false && (
-              <div className="media-watermark" aria-hidden="true" />
+              <div
+                className="media-watermark"
+                aria-hidden="true"
+                style={{ opacity: (config.storyPhotosWatermarkOpacity?.[0] ?? 15) / 100 }}
+              />
             )}
           </motion.div>
         )}
@@ -242,7 +245,11 @@ export default function FarmRetreatPage({
               loading="lazy"
             />
             {config.storyPhotosWatermark?.[1] !== false && (
-              <div className="media-watermark" aria-hidden="true" />
+              <div
+                className="media-watermark"
+                aria-hidden="true"
+                style={{ opacity: (config.storyPhotosWatermarkOpacity?.[1] ?? 15) / 100 }}
+              />
             )}
           </motion.div>
         )}
@@ -299,7 +306,11 @@ export default function FarmRetreatPage({
               loading="lazy"
             />
             {config.storyPhotosWatermark?.[2] !== false && (
-              <div className="media-watermark" aria-hidden="true" />
+              <div
+                className="media-watermark"
+                aria-hidden="true"
+                style={{ opacity: (config.storyPhotosWatermarkOpacity?.[2] ?? 15) / 100 }}
+              />
             )}
           </motion.div>
         )}
@@ -337,7 +348,11 @@ export default function FarmRetreatPage({
               loading="lazy"
             />
             {config.storyPhotosWatermark?.[3] !== false && (
-              <div className="media-watermark" aria-hidden="true" />
+              <div
+                className="media-watermark"
+                aria-hidden="true"
+                style={{ opacity: (config.storyPhotosWatermarkOpacity?.[3] ?? 15) / 100 }}
+              />
             )}
           </motion.div>
         )}
@@ -392,7 +407,11 @@ export default function FarmRetreatPage({
               loading="lazy"
             />
             {config.storyPhotosWatermark?.[4] !== false && (
-              <div className="media-watermark" aria-hidden="true" />
+              <div
+                className="media-watermark"
+                aria-hidden="true"
+                style={{ opacity: (config.storyPhotosWatermarkOpacity?.[4] ?? 15) / 100 }}
+              />
             )}
           </motion.div>
         )}

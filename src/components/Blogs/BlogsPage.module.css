@@ -39,7 +39,7 @@
   background-repeat: no-repeat;
   filter: invert(1);
   mix-blend-mode: screen;
-  opacity: 0.15;
+  opacity: var(--media-watermark-opacity, 0.15);
   z-index: 1;
   pointer-events: none;
 }

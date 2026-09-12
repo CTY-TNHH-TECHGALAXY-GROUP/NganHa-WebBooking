@@ -267,6 +267,66 @@ export default function SystemSettingsPage() {
               <p className={`mt-4 text-xs font-semibold ${systemSettings.mediaWatermarkEnabled !== false ? 'text-green-600' : 'text-gray-500'}`}>
                 {systemSettings.mediaWatermarkEnabled !== false ? 'Đang bật' : 'Đang tắt'}
               </p>
+
+              {/* Opacity slider & presets if enabled */}
+              {systemSettings.mediaWatermarkEnabled !== false && (
+                <div className="mt-5 pt-4 border-t border-gray-100 space-y-3">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-gray-600 font-medium">Độ mờ logo mặc định toàn website (Watermark Capacity / Opacity):</span>
+                    <span className="font-mono font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded text-xs">
+                      {typeof systemSettings.mediaWatermarkOpacity === 'number' ? systemSettings.mediaWatermarkOpacity : 15}%
+                    </span>
+                  </div>
+
+                  <input
+                    type="range"
+                    min={5}
+                    max={100}
+                    step={5}
+                    value={typeof systemSettings.mediaWatermarkOpacity === 'number' ? systemSettings.mediaWatermarkOpacity : 15}
+                    onChange={(e) =>
+                      setSystemSettings({
+                        ...systemSettings,
+                        mediaWatermarkOpacity: Number(e.target.value),
+                      })
+                    }
+                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-amber-600"
+                  />
+
+                  {/* Preset buttons */}
+                  <div className="flex flex-wrap gap-2 pt-1">
+                    {[
+                      { label: '10%', value: 10 },
+                      { label: '15% Chuẩn', value: 15 },
+                      { label: '30%', value: 30 },
+                      { label: '50%', value: 50 },
+                      { label: '80%', value: 80 },
+                    ].map((p) => {
+                      const cur = typeof systemSettings.mediaWatermarkOpacity === 'number' ? systemSettings.mediaWatermarkOpacity : 15;
+                      const isSelected = cur === p.value;
+                      return (
+                        <button
+                          key={p.value}
+                          type="button"
+                          onClick={() =>
+                            setSystemSettings({
+                              ...systemSettings,
+                              mediaWatermarkOpacity: p.value,
+                            })
+                          }
+                          className={`px-3 py-1 text-xs rounded-lg border transition-colors ${
+                            isSelected
+                              ? 'bg-amber-600 text-white font-bold border-amber-600'
+                              : 'bg-gray-50 text-gray-600 hover:text-gray-900 border-gray-200 hover:border-gray-300'
+                          }`}
+                        >
+                          {p.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
             </section>
 
             <section className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">

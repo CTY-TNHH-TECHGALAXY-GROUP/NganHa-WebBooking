@@ -22,6 +22,7 @@ export interface SystemSettings {
   receptionEmail?: string;
   ctaLinks?: CtaLinks;
   mediaWatermarkEnabled?: boolean;
+  mediaWatermarkOpacity?: number;
   homepage_content?: any;
   blog_content?: any;
   lost_and_found?: any;
@@ -121,14 +122,23 @@ export const SystemSettingsProvider = ({
   footerContent?: any;
 }) => {
   const mediaWatermarkEnabled = systemSettings?.mediaWatermarkEnabled !== false;
+  const mediaWatermarkOpacity =
+    typeof systemSettings?.mediaWatermarkOpacity === 'number'
+      ? systemSettings.mediaWatermarkOpacity
+      : 15;
 
   useEffect(() => {
     document.documentElement.dataset.mediaWatermark = mediaWatermarkEnabled ? 'on' : 'off';
+    document.documentElement.style.setProperty(
+      '--media-watermark-opacity',
+      `${mediaWatermarkOpacity / 100}`
+    );
 
     return () => {
       delete document.documentElement.dataset.mediaWatermark;
+      document.documentElement.style.removeProperty('--media-watermark-opacity');
     };
-  }, [mediaWatermarkEnabled]);
+  }, [mediaWatermarkEnabled, mediaWatermarkOpacity]);
   
   const getLocalizedText = (textObj: Record<string, string> | string | undefined, locale: Locale, fallback = '') => {
     if (!textObj) return fallback;

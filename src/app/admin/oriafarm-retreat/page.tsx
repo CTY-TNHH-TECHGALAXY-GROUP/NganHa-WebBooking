@@ -24,6 +24,7 @@ import {
   hydrateFarmRetreatConfig,
   type FarmRetreatConfig,
 } from '@/data/farmRetreatData';
+import { WatermarkControl } from '@/components/Admin/WatermarkControl';
 
 const LANGUAGES = [
   { code: 'vi', label: 'Tiếng Việt', flag: '🇻🇳' },
@@ -32,31 +33,6 @@ const LANGUAGES = [
   { code: 'jp', label: '日本語', flag: '🇯🇵' },
   { code: 'kr', label: '한국어', flag: '🇰🇷' },
 ];
-
-const WatermarkToggle = ({ checked, onChange }: { checked: boolean; onChange: (checked: boolean) => void }) => (
-  <div className="flex items-center justify-between gap-3 rounded-lg border border-admin-line bg-admin-card/70 px-3 py-2.5">
-    <div>
-      <p className="text-xs font-bold text-admin-text">Logo mờ trên khung này</p>
-      <p className="mt-0.5 text-[10px] text-admin-text-faint">{checked ? 'Đang hiển thị' : 'Đang ẩn'}</p>
-    </div>
-    <button
-      type="button"
-      role="switch"
-      aria-checked={checked}
-      onClick={() => onChange(!checked)}
-      className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
-        checked ? 'bg-admin-gold' : 'bg-admin-line'
-      }`}
-    >
-      <span
-        aria-hidden="true"
-        className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out ${
-          checked ? 'translate-x-5' : 'translate-x-0'
-        }`}
-      />
-    </button>
-  </div>
-);
 
 export default function FarmRetreatAdminPage() {
   const [config, setConfig] = useState<FarmRetreatConfig>(DEFAULT_FARM_RETREAT_CONFIG);
@@ -371,6 +347,13 @@ export default function FarmRetreatAdminPage() {
                     </span>
                   </div>
                 )}
+                {config.heroWatermarkEnabled !== false && Boolean(config.heroImage) && (
+                  <div
+                    className="media-watermark pointer-events-none"
+                    aria-hidden="true"
+                    style={{ opacity: (config.heroWatermarkOpacity ?? 15) / 100 }}
+                  />
+                )}
                 {uploadingKey === 'hero' && (
                   <div className="absolute inset-0 bg-black/75 flex items-center justify-center text-xs text-admin-gold font-semibold">
                     Đang tải lên...
@@ -481,10 +464,14 @@ export default function FarmRetreatAdminPage() {
                 </div>
 
                 <div className="pt-2">
-                  <WatermarkToggle
+                  <WatermarkControl
                     checked={config.heroWatermarkEnabled !== false}
-                    onChange={(checked) => {
+                    opacity={config.heroWatermarkOpacity ?? 15}
+                    onChangeChecked={(checked) => {
                       updateConfig((prev) => ({ ...prev, heroWatermarkEnabled: checked }));
+                    }}
+                    onChangeOpacity={(opacity) => {
+                      updateConfig((prev) => ({ ...prev, heroWatermarkOpacity: opacity }));
                     }}
                   />
                 </div>
@@ -620,6 +607,13 @@ export default function FarmRetreatAdminPage() {
                               </span>
                             </div>
                           )}
+                          {watermarkOn && Boolean(currentPhotoUrl) && (
+                            <div
+                              className="media-watermark pointer-events-none"
+                              aria-hidden="true"
+                              style={{ opacity: (config.storyPhotosWatermarkOpacity?.[sIdx] ?? 15) / 100 }}
+                            />
+                          )}
                           {uploadingKey === `story-${sIdx}` && (
                             <div className="absolute inset-0 bg-black/75 flex items-center justify-center text-xs text-admin-gold font-semibold">
                               Đang tải ảnh lên...
@@ -734,14 +728,23 @@ export default function FarmRetreatAdminPage() {
                           </button>
                         </div>
 
-                        <WatermarkToggle
+                        <WatermarkControl
                           checked={watermarkOn}
-                          onChange={(checked) => {
+                          opacity={config.storyPhotosWatermarkOpacity?.[sIdx] ?? 15}
+                          onChangeChecked={(checked) => {
                             updateConfig((prev) => {
                               const nextW = [...(prev.storyPhotosWatermark || [true, true, true, true, true])];
                               while (nextW.length < 5) nextW.push(true);
                               nextW[sIdx] = checked;
                               return { ...prev, storyPhotosWatermark: nextW };
+                            });
+                          }}
+                          onChangeOpacity={(opacity) => {
+                            updateConfig((prev) => {
+                              const nextO = [...(prev.storyPhotosWatermarkOpacity || [15, 15, 15, 15, 15])];
+                              while (nextO.length < 5) nextO.push(15);
+                              nextO[sIdx] = opacity;
+                              return { ...prev, storyPhotosWatermarkOpacity: nextO };
                             });
                           }}
                         />
@@ -845,6 +848,13 @@ export default function FarmRetreatAdminPage() {
                           Dán link URL hoặc tải ảnh từ máy tính
                         </span>
                       </div>
+                    )}
+                    {config.storyPhotosWatermark?.[4] !== false && Boolean(config.storyPhotos?.[4]) && (
+                      <div
+                        className="media-watermark pointer-events-none"
+                        aria-hidden="true"
+                        style={{ opacity: (config.storyPhotosWatermarkOpacity?.[4] ?? 15) / 100 }}
+                      />
                     )}
                     {uploadingKey === 'story-4' && (
                       <div className="absolute inset-0 bg-black/75 flex items-center justify-center text-xs text-admin-gold font-semibold">
@@ -960,14 +970,23 @@ export default function FarmRetreatAdminPage() {
                     </button>
                   </div>
 
-                  <WatermarkToggle
+                  <WatermarkControl
                     checked={config.storyPhotosWatermark?.[4] !== false}
-                    onChange={(checked) => {
+                    opacity={config.storyPhotosWatermarkOpacity?.[4] ?? 15}
+                    onChangeChecked={(checked) => {
                       updateConfig((prev) => {
                         const nextW = [...(prev.storyPhotosWatermark || [true, true, true, true, true])];
                         while (nextW.length < 5) nextW.push(true);
                         nextW[4] = checked;
                         return { ...prev, storyPhotosWatermark: nextW };
+                      });
+                    }}
+                    onChangeOpacity={(opacity) => {
+                      updateConfig((prev) => {
+                        const nextO = [...(prev.storyPhotosWatermarkOpacity || [15, 15, 15, 15, 15])];
+                        while (nextO.length < 5) nextO.push(15);
+                        nextO[4] = opacity;
+                        return { ...prev, storyPhotosWatermarkOpacity: nextO };
                       });
                     }}
                   />

@@ -12,8 +12,10 @@ export interface HomeSpaConfig {
   heroImage?: string;
   heroMediaType?: 'image' | 'video';
   heroWatermarkEnabled?: boolean;
+  heroWatermarkOpacity?: number;
   storyPhotos?: string[];
   storyPhotosWatermark?: boolean[];
+  storyPhotosWatermarkOpacity?: number[];
   sections: HomeSpaSection[];
   closingText: LocalizedString;
   ctaText: LocalizedString;
@@ -38,8 +40,10 @@ export const DEFAULT_HOME_SPA_CONFIG: HomeSpaConfig = {
   heroImage: '',
   heroMediaType: 'image',
   heroWatermarkEnabled: true,
+  heroWatermarkOpacity: 15,
   storyPhotos: ['', '', ''],
   storyPhotosWatermark: [true, true, true],
+  storyPhotosWatermarkOpacity: [15, 15, 15],
   sections: [
     {
       id: 'sec-1',
@@ -192,16 +196,29 @@ export function hydrateHomeSpaConfig(raw: any): HomeSpaConfig {
     typeof url === 'string' && !url.includes('unsplash.com') ? url.trim() : ''
   );
 
+  const heroWatermarkOpacity =
+    typeof raw.heroWatermarkOpacity === 'number' && raw.heroWatermarkOpacity >= 0 && raw.heroWatermarkOpacity <= 100
+      ? Math.round(raw.heroWatermarkOpacity)
+      : 15;
+
+  const rawWmOpacity = Array.isArray(raw.storyPhotosWatermarkOpacity) ? raw.storyPhotosWatermarkOpacity : [];
+  const storyPhotosWatermarkOpacity: number[] = storyPhotos.map((_, idx) => {
+    const val = rawWmOpacity[idx];
+    return typeof val === 'number' && val >= 0 && val <= 100 ? Math.round(val) : 15;
+  });
+
   return {
     pageTitle: raw.pageTitle || DEFAULT_HOME_SPA_CONFIG.pageTitle,
     pageSubtitle: raw.pageSubtitle || DEFAULT_HOME_SPA_CONFIG.pageSubtitle,
     heroImage,
     heroMediaType,
     heroWatermarkEnabled: raw.heroWatermarkEnabled !== false,
+    heroWatermarkOpacity,
     storyPhotos,
     storyPhotosWatermark: Array.isArray(raw.storyPhotosWatermark)
       ? raw.storyPhotosWatermark
       : [true, true, true],
+    storyPhotosWatermarkOpacity,
     sections: hydratedSections,
     closingText: raw.closingText || DEFAULT_HOME_SPA_CONFIG.closingText,
     ctaText: raw.ctaText || DEFAULT_HOME_SPA_CONFIG.ctaText,

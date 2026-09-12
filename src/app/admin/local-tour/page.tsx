@@ -31,6 +31,7 @@ import {
   type LocalTourConfig,
   type LocalTourPackage,
 } from '@/data/localTourData';
+import { WatermarkControl } from '@/components/Admin/WatermarkControl';
 
 const LANGUAGES = [
   { code: 'vi', label: 'Tiếng Việt', flag: '🇻🇳' },
@@ -39,28 +40,6 @@ const LANGUAGES = [
   { code: 'jp', label: '日本語', flag: '🇯🇵' },
   { code: 'kr', label: '한국어', flag: '🇰🇷' },
 ];
-
-const WatermarkToggle = ({ checked, onChange }: { checked: boolean; onChange: (checked: boolean) => void }) => (
-  <div className="flex items-center justify-between gap-3 rounded-lg border border-admin-line bg-admin-card/70 px-3 py-2.5">
-    <div>
-      <p className="text-xs font-bold text-admin-text">Logo mờ trên khung này</p>
-      <p className="mt-0.5 text-[10px] text-admin-text-faint">{checked ? 'Đang hiển thị' : 'Đang ẩn'}</p>
-    </div>
-    <button
-      type="button"
-      role="switch"
-      aria-checked={checked}
-      onClick={() => onChange(!checked)}
-      className={`relative inline-flex h-7 w-12 shrink-0 items-center rounded-full border transition-colors focus:outline-none focus:ring-2 focus:ring-admin-gold/50 ${
-        checked ? 'border-green-500 bg-green-500' : 'border-admin-line-strong bg-admin-line'
-      }`}
-      title={checked ? 'Tắt logo mờ cho khung này' : 'Bật logo mờ cho khung này'}
-    >
-      <span className={`block h-5 w-5 rounded-full bg-white shadow transition-transform ${checked ? 'translate-x-[22px]' : 'translate-x-1'}`} />
-      <span className="sr-only">Bật hoặc tắt logo mờ cho khung media này</span>
-    </button>
-  </div>
-);
 
 export default function LocalTourAdminPage() {
   const [config, setConfig] = useState<LocalTourConfig>(DEFAULT_LOCAL_TOUR_CONFIG);
@@ -752,6 +731,12 @@ export default function LocalTourAdminPage() {
                   <span className="absolute bottom-2 left-2 text-[10px] font-bold uppercase tracking-wider bg-admin-gold text-[#241804] px-2 py-0.5 rounded shadow">
                     Hero Preview
                   </span>
+                  {activePackage.heroWatermarkEnabled !== false && (
+                    <div
+                      className="media-watermark pointer-events-none"
+                      style={{ opacity: (activePackage.heroWatermarkOpacity ?? 15) / 100 }}
+                    />
+                  )}
                   {uploadingHlKey === `pkg-${activePackageTab}-hero` && (
                     <div className="absolute inset-0 bg-black/70 flex items-center justify-center text-admin-gold text-xs font-semibold">
                       Đang tải ảnh lên...
@@ -834,13 +819,23 @@ export default function LocalTourAdminPage() {
                   </p>
 
                   <div className="pt-2">
-                    <WatermarkToggle
+                    <WatermarkControl
                       checked={activePackage.heroWatermarkEnabled !== false}
-                      onChange={(checked) => {
+                      opacity={activePackage.heroWatermarkOpacity ?? 15}
+                      onChangeChecked={(checked) => {
                         updateConfig((prev) => {
                           const nextPackages = [...prev.packages];
                           const pkg = { ...nextPackages[activePackageTab] };
                           pkg.heroWatermarkEnabled = checked;
+                          nextPackages[activePackageTab] = pkg;
+                          return { ...prev, packages: nextPackages };
+                        });
+                      }}
+                      onChangeOpacity={(opacity) => {
+                        updateConfig((prev) => {
+                          const nextPackages = [...prev.packages];
+                          const pkg = { ...nextPackages[activePackageTab] };
+                          pkg.heroWatermarkOpacity = opacity;
                           nextPackages[activePackageTab] = pkg;
                           return { ...prev, packages: nextPackages };
                         });
@@ -970,6 +965,12 @@ export default function LocalTourAdminPage() {
                       alt="Story photo 1"
                       className="w-full h-full object-cover"
                     />
+                    {activePackage.storyPhotosWatermark?.[0] !== false && (
+                      <div
+                        className="media-watermark pointer-events-none"
+                        style={{ opacity: (activePackage.storyPhotosWatermarkOpacity?.[0] ?? 15) / 100 }}
+                      />
+                    )}
                     {uploadingHlKey === `pkg-${activePackageTab}-story-0` && (
                       <div className="absolute inset-0 bg-black/75 flex items-center justify-center text-xs text-admin-gold font-semibold">
                         Đang tải ảnh lên...
@@ -1048,15 +1049,27 @@ export default function LocalTourAdminPage() {
                   </p>
 
                   <div className="pt-2">
-                    <WatermarkToggle
+                    <WatermarkControl
                       checked={activePackage.storyPhotosWatermark?.[0] !== false}
-                      onChange={(checked) => {
+                      opacity={activePackage.storyPhotosWatermarkOpacity?.[0] ?? 15}
+                      onChangeChecked={(checked) => {
                         updateConfig((prev) => {
                           const nextPackages = [...prev.packages];
                           const pkg = { ...nextPackages[activePackageTab] };
                           const nextWm = [...(pkg.storyPhotosWatermark || [true, true])];
                           nextWm[0] = checked;
                           pkg.storyPhotosWatermark = nextWm;
+                          nextPackages[activePackageTab] = pkg;
+                          return { ...prev, packages: nextPackages };
+                        });
+                      }}
+                      onChangeOpacity={(opacity) => {
+                        updateConfig((prev) => {
+                          const nextPackages = [...prev.packages];
+                          const pkg = { ...nextPackages[activePackageTab] };
+                          const nextO = [...(pkg.storyPhotosWatermarkOpacity || [15, 15])];
+                          nextO[0] = opacity;
+                          pkg.storyPhotosWatermarkOpacity = nextO;
                           nextPackages[activePackageTab] = pkg;
                           return { ...prev, packages: nextPackages };
                         });
@@ -1086,6 +1099,12 @@ export default function LocalTourAdminPage() {
                       alt="Story photo 2"
                       className="w-full h-full object-cover"
                     />
+                    {activePackage.storyPhotosWatermark?.[1] !== false && (
+                      <div
+                        className="media-watermark pointer-events-none"
+                        style={{ opacity: (activePackage.storyPhotosWatermarkOpacity?.[1] ?? 15) / 100 }}
+                      />
+                    )}
                     {uploadingHlKey === `pkg-${activePackageTab}-story-1` && (
                       <div className="absolute inset-0 bg-black/75 flex items-center justify-center text-xs text-admin-gold font-semibold">
                         Đang tải ảnh lên...
@@ -1164,15 +1183,27 @@ export default function LocalTourAdminPage() {
                   </p>
 
                   <div className="pt-2">
-                    <WatermarkToggle
+                    <WatermarkControl
                       checked={activePackage.storyPhotosWatermark?.[1] !== false}
-                      onChange={(checked) => {
+                      opacity={activePackage.storyPhotosWatermarkOpacity?.[1] ?? 15}
+                      onChangeChecked={(checked) => {
                         updateConfig((prev) => {
                           const nextPackages = [...prev.packages];
                           const pkg = { ...nextPackages[activePackageTab] };
                           const nextWm = [...(pkg.storyPhotosWatermark || [true, true])];
                           nextWm[1] = checked;
                           pkg.storyPhotosWatermark = nextWm;
+                          nextPackages[activePackageTab] = pkg;
+                          return { ...prev, packages: nextPackages };
+                        });
+                      }}
+                      onChangeOpacity={(opacity) => {
+                        updateConfig((prev) => {
+                          const nextPackages = [...prev.packages];
+                          const pkg = { ...nextPackages[activePackageTab] };
+                          const nextO = [...(pkg.storyPhotosWatermarkOpacity || [15, 15])];
+                          nextO[1] = opacity;
+                          pkg.storyPhotosWatermarkOpacity = nextO;
                           nextPackages[activePackageTab] = pkg;
                           return { ...prev, packages: nextPackages };
                         });
@@ -1273,16 +1304,28 @@ export default function LocalTourAdminPage() {
                       </div>
                     </div>
 
-                    {/* Watermark toggle for highlight card */}
+                    {/* Watermark control for highlight card */}
                     <div className="pt-1">
-                      <WatermarkToggle
+                      <WatermarkControl
                         checked={hl.watermarkEnabled !== false}
-                        onChange={(checked) => {
+                        opacity={hl.watermarkOpacity ?? 15}
+                        onChangeChecked={(checked) => {
                           updateConfig((prev) => {
                             const nextPackages = [...prev.packages];
                             const pkg = { ...nextPackages[activePackageTab] };
                             const nextHls = [...(pkg.highlights || [])];
                             nextHls[hlIdx] = { ...nextHls[hlIdx], watermarkEnabled: checked };
+                            pkg.highlights = nextHls;
+                            nextPackages[activePackageTab] = pkg;
+                            return { ...prev, packages: nextPackages };
+                          });
+                        }}
+                        onChangeOpacity={(opacity) => {
+                          updateConfig((prev) => {
+                            const nextPackages = [...prev.packages];
+                            const pkg = { ...nextPackages[activePackageTab] };
+                            const nextHls = [...(pkg.highlights || [])];
+                            nextHls[hlIdx] = { ...nextHls[hlIdx], watermarkOpacity: opacity };
                             pkg.highlights = nextHls;
                             nextPackages[activePackageTab] = pkg;
                             return { ...prev, packages: nextPackages };
@@ -1314,6 +1357,12 @@ export default function LocalTourAdminPage() {
                               alt=""
                               className="w-full h-full object-cover"
                             />
+                            {hl.watermarkEnabled !== false && (
+                              <div
+                                className="media-watermark pointer-events-none"
+                                style={{ opacity: (hl.watermarkOpacity ?? 15) / 100 }}
+                              />
+                            )}
                             <div className="absolute top-1 left-1 px-1.5 py-0.5 rounded bg-black/70 text-[9px] text-admin-gold font-mono">
                               #{imgIdx + 1}
                             </div>

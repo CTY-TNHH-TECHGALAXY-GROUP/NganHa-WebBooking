@@ -16,6 +16,7 @@ import {
   hydrateOurStoryConfig,
   LocalizedString
 } from '@/components/OurStory/OurStory.data';
+import { WatermarkControl } from '@/components/Admin/WatermarkControl';
 
 const LANGUAGES = [
   { code: 'vi', label: 'Tiếng Việt', flag: '🇻🇳' },
@@ -24,28 +25,6 @@ const LANGUAGES = [
   { code: 'jp', label: '日本語', flag: '🇯🇵' },
   { code: 'kr', label: '한국어', flag: '🇰🇷' },
 ];
-
-const WatermarkToggle = ({ checked, onChange }: { checked: boolean; onChange: (checked: boolean) => void }) => (
-  <div className="flex items-center justify-between gap-3 rounded-lg border border-admin-line bg-admin-card/70 px-3 py-2.5">
-    <div>
-      <p className="text-xs font-bold text-admin-text">Logo mờ trên khung này</p>
-      <p className="mt-0.5 text-[10px] text-admin-text-faint">{checked ? 'Đang hiển thị' : 'Đang ẩn'}</p>
-    </div>
-    <button
-      type="button"
-      role="switch"
-      aria-checked={checked}
-      onClick={() => onChange(!checked)}
-      className={`relative inline-flex h-7 w-12 shrink-0 items-center rounded-full border transition-colors focus:outline-none focus:ring-2 focus:ring-admin-gold/50 ${
-        checked ? 'border-green-500 bg-green-500' : 'border-admin-line-strong bg-admin-line'
-      }`}
-      title={checked ? 'Tắt logo mờ cho khung này' : 'Bật logo mờ cho khung này'}
-    >
-      <span className={`block h-5 w-5 rounded-full bg-white shadow transition-transform ${checked ? 'translate-x-[22px]' : 'translate-x-1'}`} />
-      <span className="sr-only">Bật hoặc tắt logo mờ cho khung media này</span>
-    </button>
-  </div>
-);
 
 export default function OurStoryAdminPage() {
   const [config, setConfig] = useState<OurStoryConfig>(createDefaultOurStoryConfig());
@@ -423,12 +402,19 @@ export default function OurStoryAdminPage() {
                 </div>
 
                 <div className="mt-3">
-                  <WatermarkToggle
+                  <WatermarkControl
                     checked={config.locationSection.cityImageWatermarkEnabled !== false}
-                    onChange={(checked) =>
+                    opacity={config.locationSection.cityImageWatermarkOpacity ?? 15}
+                    onChangeChecked={(checked) =>
                       setConfig({
                         ...config,
                         locationSection: { ...config.locationSection, cityImageWatermarkEnabled: checked },
+                      })
+                    }
+                    onChangeOpacity={(opacity) =>
+                      setConfig({
+                        ...config,
+                        locationSection: { ...config.locationSection, cityImageWatermarkOpacity: opacity },
                       })
                     }
                   />
@@ -483,12 +469,18 @@ export default function OurStoryAdminPage() {
               <div className="flex flex-col items-center justify-center p-4 bg-admin-bg rounded-xl border border-admin-line">
                 <span className="text-xs font-bold text-admin-text-faint uppercase mb-2">Xem Trước Ảnh Thành Phố:</span>
                 {config.locationSection.cityImage ? (
-                  <div className="max-w-[280px] w-full rounded-lg overflow-hidden border border-admin-line shadow-md">
+                  <div className="relative max-w-[280px] w-full rounded-lg overflow-hidden border border-admin-line shadow-md">
                     <img
                       src={config.locationSection.cityImage}
                       alt="City preview"
                       className="w-full h-44 object-cover"
                     />
+                    {config.locationSection.cityImageWatermarkEnabled !== false && (
+                      <div
+                        className="media-watermark pointer-events-none"
+                        style={{ opacity: (config.locationSection.cityImageWatermarkOpacity ?? 15) / 100 }}
+                      />
+                    )}
                     <div className="p-2 text-[11px] flex justify-between text-admin-text-dim italic bg-black/60">
                       <span>{config.locationSection.cityCaptionLeft?.[activeLang] || config.locationSection.cityCaptionLeft?.vi}</span>
                       <span>{config.locationSection.cityCaptionRight?.[activeLang] || config.locationSection.cityCaptionRight?.vi}</span>
@@ -554,12 +546,19 @@ export default function OurStoryAdminPage() {
                 </div>
 
                 <div className="mt-3">
-                  <WatermarkToggle
+                  <WatermarkControl
                     checked={config.locationSection.streetSignImageWatermarkEnabled !== false}
-                    onChange={(checked) =>
+                    opacity={config.locationSection.streetSignImageWatermarkOpacity ?? 15}
+                    onChangeChecked={(checked) =>
                       setConfig({
                         ...config,
                         locationSection: { ...config.locationSection, streetSignImageWatermarkEnabled: checked },
+                      })
+                    }
+                    onChangeOpacity={(opacity) =>
+                      setConfig({
+                        ...config,
+                        locationSection: { ...config.locationSection, streetSignImageWatermarkOpacity: opacity },
                       })
                     }
                   />
@@ -590,12 +589,18 @@ export default function OurStoryAdminPage() {
               <div className="flex flex-col items-center justify-center p-4 bg-admin-bg rounded-xl border border-admin-line">
                 <span className="text-xs font-bold text-admin-text-faint uppercase mb-2">Xem Trước Ảnh Biển Báo:</span>
                 {config.locationSection.streetSignImage ? (
-                  <div className="max-w-[260px] w-full rounded-lg overflow-hidden border border-admin-line shadow-md">
+                  <div className="relative max-w-[260px] w-full rounded-lg overflow-hidden border border-admin-line shadow-md">
                     <img
                       src={config.locationSection.streetSignImage}
                       alt="Street sign preview"
                       className="w-full h-48 object-cover"
                     />
+                    {config.locationSection.streetSignImageWatermarkEnabled !== false && (
+                      <div
+                        className="media-watermark pointer-events-none"
+                        style={{ opacity: (config.locationSection.streetSignImageWatermarkOpacity ?? 15) / 100 }}
+                      />
+                    )}
                     <p className="p-2 text-[11px] text-center text-admin-text-dim italic bg-black/60">
                       {config.locationSection.imageCaption?.[activeLang] || config.locationSection.imageCaption?.vi}
                     </p>
@@ -967,11 +972,21 @@ export default function OurStoryAdminPage() {
                       </label>
 
                       <div className="mt-2">
-                        <WatermarkToggle
+                        <WatermarkControl
                           checked={frame.watermarkEnabled !== false}
-                          onChange={(checked) => {
+                          opacity={frame.watermarkOpacity ?? 15}
+                          onChangeChecked={(checked) => {
                             const newFrames = config.filmReel.frames.map((item, frameIndex) =>
                               frameIndex === index ? { ...item, watermarkEnabled: checked } : item,
+                            );
+                            setConfig({
+                              ...config,
+                              filmReel: { ...config.filmReel, frames: newFrames },
+                            });
+                          }}
+                          onChangeOpacity={(opacity) => {
+                            const newFrames = config.filmReel.frames.map((item, frameIndex) =>
+                              frameIndex === index ? { ...item, watermarkOpacity: opacity } : item,
                             );
                             setConfig({
                               ...config,
@@ -982,8 +997,14 @@ export default function OurStoryAdminPage() {
                       </div>
 
                       {frame.image && (
-                        <div className="mt-2 h-28 rounded-lg overflow-hidden border border-admin-line">
+                        <div className="relative mt-2 h-28 rounded-lg overflow-hidden border border-admin-line">
                           <img src={frame.image} alt={frame.title?.vi} className="w-full h-full object-cover" />
+                          {frame.watermarkEnabled !== false && (
+                            <div
+                              className="media-watermark pointer-events-none"
+                              style={{ opacity: (frame.watermarkOpacity ?? 15) / 100 }}
+                            />
+                          )}
                         </div>
                       )}
                     </div>
@@ -1131,14 +1152,24 @@ export default function OurStoryAdminPage() {
                 </div>
 
                 <div className="mt-3">
-                  <WatermarkToggle
+                  <WatermarkControl
                     checked={config.atmosphereSection.nightStreetImageWatermarkEnabled !== false}
-                    onChange={(checked) =>
+                    opacity={config.atmosphereSection.nightStreetImageWatermarkOpacity ?? 15}
+                    onChangeChecked={(checked) =>
                       setConfig({
                         ...config,
                         atmosphereSection: {
                           ...config.atmosphereSection,
                           nightStreetImageWatermarkEnabled: checked,
+                        },
+                      })
+                    }
+                    onChangeOpacity={(opacity) =>
+                      setConfig({
+                        ...config,
+                        atmosphereSection: {
+                          ...config.atmosphereSection,
+                          nightStreetImageWatermarkOpacity: opacity,
                         },
                       })
                     }
@@ -1170,12 +1201,18 @@ export default function OurStoryAdminPage() {
               <div className="flex flex-col items-center justify-center p-4 bg-admin-bg rounded-xl border border-admin-line">
                 <span className="text-xs font-bold text-admin-text-faint uppercase mb-2">Xem Trước Ảnh Phố Đêm:</span>
                 {config.atmosphereSection.nightStreetImage ? (
-                  <div className="w-full max-w-sm rounded-lg overflow-hidden border border-admin-line shadow-md">
+                  <div className="relative w-full max-w-sm rounded-lg overflow-hidden border border-admin-line shadow-md">
                     <img
                       src={config.atmosphereSection.nightStreetImage}
                       alt="Night street preview"
                       className="w-full h-44 object-cover"
                     />
+                    {config.atmosphereSection.nightStreetImageWatermarkEnabled !== false && (
+                      <div
+                        className="media-watermark pointer-events-none"
+                        style={{ opacity: (config.atmosphereSection.nightStreetImageWatermarkOpacity ?? 15) / 100 }}
+                      />
+                    )}
                     <p className="p-2 text-[11px] text-center text-admin-text-dim italic bg-black/60">
                       {config.atmosphereSection.imageCaption?.[activeLang] || config.atmosphereSection.imageCaption?.vi}
                     </p>
@@ -1440,9 +1477,10 @@ export default function OurStoryAdminPage() {
                           />
                         </label>
                       </div>
-                      <WatermarkToggle
+                      <WatermarkControl
                         checked={pillar.watermarkEnabled !== false}
-                        onChange={(checked) => {
+                        opacity={pillar.watermarkOpacity ?? 15}
+                        onChangeChecked={(checked) => {
                           const newPillars = config.specialtySection.pillars.map((item, pillarIndex) =>
                             pillarIndex === idx ? { ...item, watermarkEnabled: checked } : item,
                           );
@@ -1451,13 +1489,30 @@ export default function OurStoryAdminPage() {
                             specialtySection: { ...config.specialtySection, pillars: newPillars },
                           });
                         }}
+                        onChangeOpacity={(opacity) => {
+                          const newPillars = config.specialtySection.pillars.map((item, pillarIndex) =>
+                            pillarIndex === idx ? { ...item, watermarkOpacity: opacity } : item,
+                          );
+                          setConfig({
+                            ...config,
+                            specialtySection: { ...config.specialtySection, pillars: newPillars },
+                          });
+                        }}
                       />
                       {pillar.image ? (
-                        <img
-                          src={pillar.image}
-                          alt=""
-                          className="w-full h-28 object-cover rounded-lg border border-admin-line"
-                        />
+                        <div className="relative w-full h-28 rounded-lg overflow-hidden border border-admin-line">
+                          <img
+                            src={pillar.image}
+                            alt=""
+                            className="w-full h-full object-cover"
+                          />
+                          {pillar.watermarkEnabled !== false && (
+                            <div
+                              className="media-watermark pointer-events-none"
+                              style={{ opacity: (pillar.watermarkOpacity ?? 15) / 100 }}
+                            />
+                          )}
+                        </div>
                       ) : null}
                     </div>
                   </div>
@@ -1665,16 +1720,26 @@ export default function OurStoryAdminPage() {
                             />
                           </label>
                         </div>
-                        <WatermarkToggle
+                        <WatermarkControl
                           checked={menu.watermarkEnabled !== false}
-                          onChange={(checked) => updateMenuField('watermarkEnabled', checked)}
+                          opacity={menu.watermarkOpacity ?? 15}
+                          onChangeChecked={(checked) => updateMenuField('watermarkEnabled', checked)}
+                          onChangeOpacity={(opacity) => updateMenuField('watermarkOpacity', opacity)}
                         />
                         {menu.image ? (
-                          <img
-                            src={menu.image}
-                            alt=""
-                            className="w-full h-36 object-cover rounded-lg border border-admin-line"
-                          />
+                          <div className="relative w-full h-36 rounded-lg overflow-hidden border border-admin-line">
+                            <img
+                              src={menu.image}
+                              alt=""
+                              className="w-full h-full object-cover"
+                            />
+                            {menu.watermarkEnabled !== false && (
+                              <div
+                                className="media-watermark pointer-events-none"
+                                style={{ opacity: (menu.watermarkOpacity ?? 15) / 100 }}
+                              />
+                            )}
+                          </div>
                         ) : null}
                       </div>
 

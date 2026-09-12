@@ -12,6 +12,7 @@ export interface LocalTourHighlight {
   title: LocalizedString;
   subtitle: LocalizedString;
   watermarkEnabled?: boolean;
+  watermarkOpacity?: number;
 }
 
 export interface LocalTourPackage {
@@ -22,8 +23,10 @@ export interface LocalTourPackage {
   tagline?: LocalizedString;
   heroImage?: string;
   heroWatermarkEnabled?: boolean;
+  heroWatermarkOpacity?: number;
   storyPhotos?: string[];
   storyPhotosWatermark?: boolean[];
+  storyPhotosWatermarkOpacity?: number[];
   time: LocalizedString;
   durationLabel?: LocalizedString;
   schedule?: LocalizedString[];
@@ -759,6 +762,7 @@ export function hydrateLocalTourConfig(raw: any): LocalTourConfig {
             images: imagesList.length > 0 ? imagesList : (hl.image ? [hl.image] : []),
             image: hl.image || imagesList[0] || '',
             watermarkEnabled: hl.watermarkEnabled !== false,
+            watermarkOpacity: typeof hl.watermarkOpacity === 'number' ? Math.min(100, Math.max(5, hl.watermarkOpacity)) : 15,
           };
         })
       : defaultPkg?.highlights;
@@ -773,10 +777,14 @@ export function hydrateLocalTourConfig(raw: any): LocalTourConfig {
       slug: pkg.slug || defaultPkg?.slug || pkg.id,
       heroImage: pkg.heroImage || defaultPkg?.heroImage,
       heroWatermarkEnabled: pkg.heroWatermarkEnabled !== false,
+      heroWatermarkOpacity: typeof pkg.heroWatermarkOpacity === 'number' ? Math.min(100, Math.max(5, pkg.heroWatermarkOpacity)) : 15,
       storyPhotos,
       storyPhotosWatermark: Array.isArray(pkg.storyPhotosWatermark)
         ? pkg.storyPhotosWatermark
         : [true, true],
+      storyPhotosWatermarkOpacity: Array.isArray(pkg.storyPhotosWatermarkOpacity)
+        ? pkg.storyPhotosWatermarkOpacity.map((op: any) => (typeof op === 'number' ? Math.min(100, Math.max(5, op)) : 15))
+        : [15, 15],
       tagline: pkg.tagline || defaultPkg?.tagline,
       durationLabel: pkg.durationLabel || defaultPkg?.durationLabel,
       highlights: hydratedHighlights,
