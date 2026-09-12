@@ -64,6 +64,10 @@ const COPY = {
 } as const;
 
 export default function AnalyticsConsentControl() {
+  return null;
+}
+
+function _UnusedAnalyticsConsentControl() {
   const pathname = usePathname() || '/';
   const { currentLang } = useTranslation();
   const [consent, setConsent] = useState<AnalyticsConsent>('unknown');

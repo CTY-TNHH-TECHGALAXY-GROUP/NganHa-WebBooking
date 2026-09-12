@@ -63,7 +63,8 @@ const safeStorage = (kind: 'local' | 'session'): Storage | null => {
 
 export const getAnalyticsConsent = (): AnalyticsConsent => {
   const value = safeStorage('local')?.getItem(ANALYTICS_CONSENT_KEY);
-  return isAnalyticsConsent(value) && value !== 'unknown' ? value : 'unknown';
+  if (value === 'denied') return 'denied';
+  return 'granted';
 };
 
 export const setAnalyticsConsent = (consent: AnalyticsConsent) => {
