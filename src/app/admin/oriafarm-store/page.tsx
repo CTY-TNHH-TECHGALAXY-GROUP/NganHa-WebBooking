@@ -17,6 +17,11 @@ import {
   HelpCircle,
   ExternalLink,
   Store,
+  Plus,
+  ChevronUp,
+  ChevronDown,
+  Trash2,
+  Layers,
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase';
 import {
@@ -138,47 +143,104 @@ export default function FarmStoreAdminPage() {
     }
   };
 
-  // Media Upload handler for Supabase (Image & Video)
+  // Media Upload handler for Supabase (Single & Multiple Image/Video)
   const handleFileUpload = async (
     e: React.ChangeEvent<HTMLInputElement>,
-    target: 'hero' | `story-${number}`
+    target: 'hero' | 'batch' | `story-${number}`
   ) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    const isVideo = file.type.startsWith('video/') || /\.(mp4|mov|webm)$/i.test(file.name);
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
 
     setUploadingKey(target);
     try {
       const supabase = createClient();
-      const ext = file.name.split('.').pop() || (isVideo ? 'mp4' : 'jpg');
-      const fileName = `oriafarm-store/${target}-${Date.now()}.${ext}`;
 
-      const { data, error } = await supabase.storage
-        .from('media-uploads')
-        .upload(fileName, file, { upsert: true });
+      if (target === 'batch') {
+        const uploadedUrls: string[] = [];
+        for (let i = 0; i < files.length; i++) {
+          const file = files[i];
+          const isVid = file.type.startsWith('video/') || /\.(mp4|mov|webm)$/i.test(file.name);
+          const ext = file.name.split('.').pop() || (isVid ? 'mp4' : 'jpg');
+          const fileName = `oriafarm-store/story-batch-${Date.now()}-${i}.${ext}`;
 
-      if (error) throw error;
+          const { error } = await supabase.storage
+            .from('media-uploads')
+            .upload(fileName, file, { upsert: true });
 
-      const { data: publicUrlData } = supabase.storage
-        .from('media-uploads')
-        .getPublicUrl(fileName);
+          if (error) throw error;
 
-      const url = publicUrlData.publicUrl;
+          const { data: publicUrlData } = supabase.storage
+            .from('media-uploads')
+            .getPublicUrl(fileName);
+          uploadedUrls.push(publicUrlData.publicUrl);
+        }
 
-      if (target === 'hero') {
+        updateConfig((prev) => {
+          const nextPhotos = [...(prev.storyPhotos || ['', '', '', '', '', ''])];
+          const nextWm = [...(prev.storyPhotosWatermark || [true, true, true, true, true, true])];
+
+          // Fill into any existing empty slots first, then append remaining
+          let uploadIdx = 0;
+          for (let i = 0; i < nextPhotos.length && uploadIdx < uploadedUrls.length; i++) {
+            if (!nextPhotos[i] || !nextPhotos[i].trim()) {
+              nextPhotos[i] = uploadedUrls[uploadIdx];
+              nextWm[i] = true;
+              uploadIdx++;
+            }
+          }
+          while (uploadIdx < uploadedUrls.length) {
+            nextPhotos.push(uploadedUrls[uploadIdx]);
+            nextWm.push(true);
+            uploadIdx++;
+          }
+
+          return { ...prev, storyPhotos: nextPhotos, storyPhotosWatermark: nextWm };
+        });
+      } else if (target === 'hero') {
+        const file = files[0];
+        const isVid = file.type.startsWith('video/') || /\.(mp4|mov|webm)$/i.test(file.name);
+        const ext = file.name.split('.').pop() || (isVid ? 'mp4' : 'jpg');
+        const fileName = `oriafarm-store/${target}-${Date.now()}.${ext}`;
+
+        const { error } = await supabase.storage
+          .from('media-uploads')
+          .upload(fileName, file, { upsert: true });
+
+        if (error) throw error;
+
+        const { data: publicUrlData } = supabase.storage
+          .from('media-uploads')
+          .getPublicUrl(fileName);
+
         updateConfig((prev) => ({
           ...prev,
-          heroImage: url,
-          heroMediaType: isVideo ? 'video' : 'image',
+          heroImage: publicUrlData.publicUrl,
+          heroMediaType: isVid ? 'video' : 'image',
         }));
       } else {
+        const file = files[0];
+        const isVid = file.type.startsWith('video/') || /\.(mp4|mov|webm)$/i.test(file.name);
+        const ext = file.name.split('.').pop() || (isVid ? 'mp4' : 'jpg');
+        const fileName = `oriafarm-store/${target}-${Date.now()}.${ext}`;
+
+        const { error } = await supabase.storage
+          .from('media-uploads')
+          .upload(fileName, file, { upsert: true });
+
+        if (error) throw error;
+
+        const { data: publicUrlData } = supabase.storage
+          .from('media-uploads')
+          .getPublicUrl(fileName);
+
         const idx = parseInt(target.replace('story-', ''), 10);
         updateConfig((prev) => {
           const nextPhotos = [...(prev.storyPhotos || ['', '', '', '', '', ''])];
-          while (nextPhotos.length < 6) nextPhotos.push('');
-          nextPhotos[idx] = url;
-          return { ...prev, storyPhotos: nextPhotos };
+          const nextWm = [...(prev.storyPhotosWatermark || [true, true, true, true, true, true])];
+          while (nextPhotos.length <= idx) nextPhotos.push('');
+          while (nextWm.length <= idx) nextWm.push(true);
+          nextPhotos[idx] = publicUrlData.publicUrl;
+          return { ...prev, storyPhotos: nextPhotos, storyPhotosWatermark: nextWm };
         });
       }
     } catch (err: any) {
@@ -187,6 +249,69 @@ export default function FarmStoreAdminPage() {
       setUploadingKey(null);
       e.target.value = '';
     }
+  };
+
+  // Add new empty media frame
+  const handleAddMediaFrame = () => {
+    updateConfig((prev) => {
+      const nextPhotos = [...(prev.storyPhotos || ['', '', '', '', '', ''])];
+      const nextWm = [...(prev.storyPhotosWatermark || [true, true, true, true, true, true])];
+      nextPhotos.push('');
+      nextWm.push(true);
+      return { ...prev, storyPhotos: nextPhotos, storyPhotosWatermark: nextWm };
+    });
+  };
+
+  // Reorder frames
+  const handleMoveFrame = (idx: number, direction: 'up' | 'down') => {
+    updateConfig((prev) => {
+      const nextPhotos = [...(prev.storyPhotos || ['', '', '', '', '', ''])];
+      const nextWm = [...(prev.storyPhotosWatermark || [true, true, true, true, true, true])];
+      const targetIdx = direction === 'up' ? idx - 1 : idx + 1;
+      if (targetIdx < 0 || targetIdx >= nextPhotos.length) return prev;
+
+      const tempPhoto = nextPhotos[idx];
+      nextPhotos[idx] = nextPhotos[targetIdx];
+      nextPhotos[targetIdx] = tempPhoto;
+
+      const tempWm = nextWm[idx];
+      nextWm[idx] = nextWm[targetIdx];
+      nextWm[targetIdx] = tempWm;
+
+      return { ...prev, storyPhotos: nextPhotos, storyPhotosWatermark: nextWm };
+    });
+  };
+
+  // Remove or clear frame
+  const handleDeleteFrame = (idx: number) => {
+    updateConfig((prev) => {
+      const nextPhotos = [...(prev.storyPhotos || ['', '', '', '', '', ''])];
+      const nextWm = [...(prev.storyPhotosWatermark || [true, true, true, true, true, true])];
+
+      if (idx >= 6) {
+        // Can completely remove additional frames
+        nextPhotos.splice(idx, 1);
+        nextWm.splice(idx, 1);
+      } else {
+        // Clear slot for main editorial frame
+        nextPhotos[idx] = '';
+      }
+
+      return { ...prev, storyPhotos: nextPhotos, storyPhotosWatermark: nextWm };
+    });
+  };
+
+  // Get frame label
+  const getFrameLabel = (idx: number) => {
+    const STANDARD_LABELS: Record<number, string> = {
+      0: 'Khung 01: Toàn cảnh khu vườn Oria Farm (Panorama)',
+      1: 'Khung 02: Thu hoạch tươi nguyên (Cặp 1/2)',
+      2: 'Khung 03: Chế biến nguyên liệu sạch (Cặp 2/2)',
+      3: 'Khung 04: Thức uống năng lượng & ngũ cốc (Cặp 1/2)',
+      4: 'Khung 05: Ly nước cầm trên tay giữa ngày (Cặp 2/2)',
+      5: 'Khung 06: Nghệ thuật F&B giữa thiên nhiên (Artistic)',
+    };
+    return STANDARD_LABELS[idx] || `Khung ${idx + 1 < 10 ? '0' + (idx + 1) : idx + 1}: Media mở rộng / Bộ sưu tập (${idx - 5})`;
   };
 
   const isVideo = (url?: string) => {
@@ -437,58 +562,108 @@ export default function FarmStoreAdminPage() {
         </section>
 
         {/* ========================================================================= */}
-        {/* 4. SIX MEDIA FRAMES CONTROLLER                                           */}
+        {/* 4. MEDIA FRAMES CONTROLLER (EDITORIAL + DYNAMIC EXPANSION)                */}
         {/* ========================================================================= */}
         <section className="rounded-2xl border border-admin-line bg-admin-card p-6 shadow-sm">
-          <div className="border-b border-admin-line pb-4">
+          <div className="flex flex-col gap-4 border-b border-admin-line pb-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-2.5">
               <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-admin-gold/10 text-admin-gold">
                 <ImageIcon size={18} />
               </div>
               <div>
-                <h2 className="text-base font-bold text-admin-text">Bộ 6 Khung Media Xen Kẽ Trong Bài</h2>
+                <div className="flex items-center gap-2">
+                  <h2 className="text-base font-bold text-admin-text">Hệ Thống Media & Hình Ảnh Oria Farm Store</h2>
+                  <span className="rounded-full bg-admin-gold/10 px-2 py-0.5 text-[11px] font-semibold text-admin-gold">
+                    {config.storyPhotos?.length || 0} khung
+                  </span>
+                </div>
                 <p className="text-xs text-admin-text-faint">
-                  Bố cục đa ảnh: Khung 1 toàn cảnh, Cặp 2-3 đối xứng, Cặp 4-5 đối xứng, Khung 6 nghệ thuật F&B.
+                  6 khung chính định hình bài viết + hỗ trợ thêm không giới hạn ảnh/video cho bộ sưu tập mở rộng.
                 </p>
               </div>
+            </div>
+
+            {/* Action buttons */}
+            <div className="flex flex-wrap items-center gap-2">
+              {/* Batch Upload */}
+              <label className="relative flex cursor-pointer items-center gap-1.5 rounded-lg border border-admin-gold/40 bg-admin-gold/10 px-3 py-2 text-xs font-semibold text-admin-gold hover:bg-admin-gold/20 transition-colors">
+                <Upload size={14} />
+                <span>{uploadingKey === 'batch' ? 'Đang tải lên...' : 'Tải lên nhiều ảnh cùng lúc'}</span>
+                <input
+                  type="file"
+                  multiple
+                  accept="image/*,video/mp4,video/webm"
+                  className="hidden"
+                  disabled={uploadingKey === 'batch'}
+                  onChange={(e) => handleFileUpload(e, 'batch')}
+                />
+              </label>
+
+              {/* Add Single Frame */}
+              <button
+                type="button"
+                onClick={handleAddMediaFrame}
+                className="flex items-center gap-1.5 rounded-lg bg-admin-gold px-3 py-2 text-xs font-semibold text-black hover:brightness-110 transition-all shadow-sm active:scale-95"
+              >
+                <Plus size={14} />
+                <span>Thêm khung Media</span>
+              </button>
             </div>
           </div>
 
           <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {[
-              { idx: 0, label: 'Khung 01: Toàn cảnh khu vườn Oria Farm (Panorama)' },
-              { idx: 1, label: 'Khung 02: Thu hoạch tươi nguyên (Cặp 1/2)' },
-              { idx: 2, label: 'Khung 03: Chế biến nguyên liệu sạch (Cặp 2/2)' },
-              { idx: 3, label: 'Khung 04: Thức uống năng lượng & ngũ cốc (Cặp 1/2)' },
-              { idx: 4, label: 'Khung 05: Ly nước cầm trên tay giữa ngày (Cặp 2/2)' },
-              { idx: 5, label: 'Khung 06: Nghệ thuật F&B giữa thiên nhiên (Artistic)' },
-            ].map(({ idx, label }) => {
-              const url = config.storyPhotos?.[idx] || '';
+            {(config.storyPhotos || ['', '', '', '', '', '']).map((url, idx) => {
               const wmChecked = config.storyPhotosWatermark?.[idx] !== false;
               const uploadKey = `story-${idx}` as const;
+              const isFirst = idx === 0;
+              const isLast = idx === (config.storyPhotos?.length || 1) - 1;
+              const isExtra = idx >= 6;
 
               return (
-                <div key={idx} className="flex flex-col justify-between rounded-xl border border-admin-line bg-admin-bg/60 p-4">
+                <div key={idx} className={`flex flex-col justify-between rounded-xl border ${isExtra ? 'border-admin-gold/40 bg-admin-gold/[0.03]' : 'border-admin-line bg-admin-bg/60'} p-4 transition-all`}>
                   <div>
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-xs font-bold text-admin-gold">Khung #{idx + 1}</span>
-                      {Boolean(url) && (
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-xs font-bold text-admin-gold">Khung #{idx + 1}</span>
+                        {isExtra && (
+                          <span className="rounded bg-admin-gold/15 px-1.5 py-0.5 text-[9px] font-bold text-admin-gold">
+                            Mở rộng
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Control buttons: Move Up, Move Down, Delete */}
+                      <div className="flex items-center gap-1">
                         <button
                           type="button"
-                          onClick={() =>
-                            updateConfig((prev) => {
-                              const next = [...(prev.storyPhotos || ['', '', '', '', '', ''])];
-                              next[idx] = '';
-                              return { ...prev, storyPhotos: next };
-                            })
-                          }
-                          className="text-[11px] text-admin-text-faint hover:text-rose-400"
+                          disabled={isFirst}
+                          onClick={() => handleMoveFrame(idx, 'up')}
+                          title="Di chuyển lên trước"
+                          className="rounded p-1 text-admin-text-faint hover:bg-admin-line hover:text-admin-text disabled:opacity-20 disabled:pointer-events-none transition-colors"
                         >
-                          Xóa ảnh
+                          <ChevronUp size={14} />
                         </button>
-                      )}
+                        <button
+                          type="button"
+                          disabled={isLast}
+                          onClick={() => handleMoveFrame(idx, 'down')}
+                          title="Di chuyển xuống sau"
+                          className="rounded p-1 text-admin-text-faint hover:bg-admin-line hover:text-admin-text disabled:opacity-20 disabled:pointer-events-none transition-colors"
+                        >
+                          <ChevronDown size={14} />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteFrame(idx)}
+                          title={isExtra ? 'Xóa khung này' : 'Xóa ảnh trong khung'}
+                          className="rounded p-1 text-admin-text-faint hover:bg-rose-500/15 hover:text-rose-400 transition-colors ml-1"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
                     </div>
-                    <p className="text-[11px] text-admin-text-faint line-clamp-1 mb-3">{label}</p>
+
+                    <p className="text-[11px] text-admin-text-faint line-clamp-1 mb-3">{getFrameLabel(idx)}</p>
 
                     {/* Preview box */}
                     <div className="relative aspect-[16/10] w-full overflow-hidden rounded-lg border border-admin-line bg-black/40 flex items-center justify-center mb-3">
@@ -517,7 +692,7 @@ export default function FarmStoreAdminPage() {
                           return { ...prev, storyPhotos: next };
                         })
                       }
-                      placeholder="Dán link ảnh URL..."
+                      placeholder="Dán link ảnh / video URL..."
                       className="w-full rounded-lg border border-admin-line bg-admin-card px-3 py-2 text-xs text-admin-text placeholder:text-admin-text-faint/40 focus:border-admin-gold focus:outline-none mb-3"
                     />
                   </div>
@@ -540,6 +715,7 @@ export default function FarmStoreAdminPage() {
                       onChange={(val) =>
                         updateConfig((prev) => {
                           const nextWm = [...(prev.storyPhotosWatermark || [true, true, true, true, true, true])];
+                          while (nextWm.length <= idx) nextWm.push(true);
                           nextWm[idx] = val;
                           return { ...prev, storyPhotosWatermark: nextWm };
                         })

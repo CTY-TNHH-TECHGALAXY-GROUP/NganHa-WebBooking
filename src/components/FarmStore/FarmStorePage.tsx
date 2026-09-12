@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { ArrowUpRight, MapPin } from 'lucide-react';
 import { useTranslation } from '@/components/TranslationProvider';
@@ -61,6 +61,22 @@ export default function FarmStorePage({
   }, []);
 
   const config = remoteConfig || DEFAULT_FARM_STORE_CONFIG;
+
+  const extraMediaItems = useMemo(() => {
+    if (!config.storyPhotos || config.storyPhotos.length <= 6) return [];
+    return config.storyPhotos
+      .map((url, originalIdx) => ({ url, originalIdx }))
+      .slice(6)
+      .filter((item) => Boolean(item.url && item.url.trim()));
+  }, [config.storyPhotos]);
+
+  const EXTRA_MEDIA_COPY: Record<string, { pre: string; title: string }> = {
+    vi: { pre: 'Bộ Sưu Tập Hình Ảnh', title: 'Khoảnh Khắc Tại Oria Farm Store' },
+    en: { pre: 'Visual Collection', title: 'Moments at Oria Farm Store' },
+    cn: { pre: '视觉图集', title: 'ORIAFARM STORE 精选瞬间' },
+    jp: { pre: 'フォトコレクション', title: 'ORIAFARM STOREのひととき' },
+    kr: { pre: '포토 컬렉션', title: 'ORIAFARM STORE의 특별한 순간들' },
+  };
 
   const getText = (localized?: Record<string, string>): string => {
     if (!localized) return '';
@@ -350,6 +366,54 @@ export default function FarmStorePage({
               <div className="media-watermark" aria-hidden="true" />
             )}
           </motion.div>
+        )}
+
+        {/* Additional Media Showcase (Khung 07+) */}
+        {extraMediaItems.length > 0 && (
+          <section className={styles.extraMediaSection}>
+            <div className={styles.extraMediaHeader}>
+              <span className={styles.extraMediaPre}>
+                {EXTRA_MEDIA_COPY[lang]?.pre || EXTRA_MEDIA_COPY.vi.pre}
+              </span>
+              <h2 className={styles.extraMediaTitle}>
+                {EXTRA_MEDIA_COPY[lang]?.title || EXTRA_MEDIA_COPY.vi.title}
+              </h2>
+              <div className={styles.extraMediaDivider} />
+            </div>
+
+            <div className={styles.extraMediaGrid}>
+              {extraMediaItems.map((item: { url: string; originalIdx: number }, idx: number) => (
+                <motion.div
+                  key={'extra-photo-' + item.originalIdx}
+                  className={styles.extraMediaCard}
+                  initial={reduceMotion ? false : { opacity: 0, y: 16 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.15 }}
+                  transition={{ duration: 0.6, delay: (idx % 2) * 0.1 }}
+                >
+                  {isVideoUrl(item.url) ? (
+                    <video
+                      src={item.url}
+                      autoPlay
+                      muted
+                      loop
+                      playsInline
+                      preload="metadata"
+                    />
+                  ) : (
+                    <img
+                      src={item.url}
+                      alt={`Oria Farm Store ${item.originalIdx + 1}`}
+                      loading="lazy"
+                    />
+                  )}
+                  {config.storyPhotosWatermark?.[item.originalIdx] !== false && (
+                    <div className="media-watermark" aria-hidden="true" />
+                  )}
+                </motion.div>
+              ))}
+            </div>
+          </section>
         )}
 
         {/* 3. SANCTUARY CLOSING & EDITORIAL CTA */}

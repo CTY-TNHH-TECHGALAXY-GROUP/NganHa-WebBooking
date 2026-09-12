@@ -316,24 +316,14 @@ export function hydrateFarmStoreConfig(raw: any): FarmStoreConfig {
   const heroWatermarkEnabled = raw.heroWatermarkEnabled !== false;
 
   const rawPhotos = Array.isArray(raw.storyPhotos) ? raw.storyPhotos : [];
-  const storyPhotos: string[] = [
-    sanitizeFarmStorePhoto(rawPhotos[0]),
-    sanitizeFarmStorePhoto(rawPhotos[1]),
-    sanitizeFarmStorePhoto(rawPhotos[2]),
-    sanitizeFarmStorePhoto(rawPhotos[3]),
-    sanitizeFarmStorePhoto(rawPhotos[4]),
-    sanitizeFarmStorePhoto(rawPhotos[5]),
-  ];
+  const storyPhotos: string[] = rawPhotos.map(sanitizeFarmStorePhoto);
+  // Ensure at least 6 slots for core editorial section structure
+  while (storyPhotos.length < 6) {
+    storyPhotos.push('');
+  }
 
   const rawWm = Array.isArray(raw.storyPhotosWatermark) ? raw.storyPhotosWatermark : [];
-  const storyPhotosWatermark: boolean[] = [
-    rawWm[0] !== false,
-    rawWm[1] !== false,
-    rawWm[2] !== false,
-    rawWm[3] !== false,
-    rawWm[4] !== false,
-    rawWm[5] !== false,
-  ];
+  const storyPhotosWatermark: boolean[] = storyPhotos.map((_, idx) => rawWm[idx] !== false);
 
   return {
     heroImage: heroRaw,
