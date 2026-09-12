@@ -110,7 +110,11 @@ export default function FarmStorePage({
             )
           )}
           {config.heroWatermarkEnabled !== false && (
-            <div className="media-watermark" aria-hidden="true" />
+            <div
+              className="media-watermark"
+              aria-hidden="true"
+              style={{ opacity: (config.heroWatermarkOpacity ?? 15) / 100 }}
+            />
           )}
           <div className={styles.heroGradient} />
           <div className={styles.heroVignette} />
@@ -175,7 +179,11 @@ export default function FarmStorePage({
               />
             )}
             {config.storyPhotosWatermark?.[0] !== false && (
-              <div className="media-watermark" aria-hidden="true" />
+              <div
+                className="media-watermark"
+                aria-hidden="true"
+                style={{ opacity: (config.storyPhotosWatermarkOpacity?.[0] ?? 15) / 100 }}
+              />
             )}
           </motion.div>
         )}
@@ -215,7 +223,11 @@ export default function FarmStorePage({
                   <img src={config.storyPhotos?.[1]} alt="Oria Farm Harvest 1" loading="lazy" />
                 )}
                 {config.storyPhotosWatermark?.[1] !== false && (
-                  <div className="media-watermark" aria-hidden="true" />
+                  <div
+                    className="media-watermark"
+                    aria-hidden="true"
+                    style={{ opacity: (config.storyPhotosWatermarkOpacity?.[1] ?? 15) / 100 }}
+                  />
                 )}
               </div>
             )}
@@ -227,7 +239,11 @@ export default function FarmStorePage({
                   <img src={config.storyPhotos?.[2]} alt="Oria Farm Harvest 2" loading="lazy" />
                 )}
                 {config.storyPhotosWatermark?.[2] !== false && (
-                  <div className="media-watermark" aria-hidden="true" />
+                  <div
+                    className="media-watermark"
+                    aria-hidden="true"
+                    style={{ opacity: (config.storyPhotosWatermarkOpacity?.[2] ?? 15) / 100 }}
+                  />
                 )}
               </div>
             )}
@@ -300,7 +316,11 @@ export default function FarmStorePage({
                   <img src={config.storyPhotos?.[3]} alt="Oria Farm Beverage 1" loading="lazy" />
                 )}
                 {config.storyPhotosWatermark?.[3] !== false && (
-                  <div className="media-watermark" aria-hidden="true" />
+                  <div
+                    className="media-watermark"
+                    aria-hidden="true"
+                    style={{ opacity: (config.storyPhotosWatermarkOpacity?.[3] ?? 15) / 100 }}
+                  />
                 )}
               </div>
             )}
@@ -312,7 +332,11 @@ export default function FarmStorePage({
                   <img src={config.storyPhotos?.[4]} alt="Oria Farm Beverage 2" loading="lazy" />
                 )}
                 {config.storyPhotosWatermark?.[4] !== false && (
-                  <div className="media-watermark" aria-hidden="true" />
+                  <div
+                    className="media-watermark"
+                    aria-hidden="true"
+                    style={{ opacity: (config.storyPhotosWatermarkOpacity?.[4] ?? 15) / 100 }}
+                  />
                 )}
               </div>
             )}
@@ -363,7 +387,11 @@ export default function FarmStorePage({
               />
             )}
             {config.storyPhotosWatermark?.[5] !== false && (
-              <div className="media-watermark" aria-hidden="true" />
+              <div
+                className="media-watermark"
+                aria-hidden="true"
+                style={{ opacity: (config.storyPhotosWatermarkOpacity?.[5] ?? 15) / 100 }}
+              />
             )}
           </motion.div>
         )}
@@ -408,7 +436,11 @@ export default function FarmStorePage({
                     />
                   )}
                   {config.storyPhotosWatermark?.[item.originalIdx] !== false && (
-                    <div className="media-watermark" aria-hidden="true" />
+                    <div
+                      className="media-watermark"
+                      aria-hidden="true"
+                      style={{ opacity: (config.storyPhotosWatermarkOpacity?.[item.originalIdx] ?? 15) / 100 }}
+                    />
                   )}
                 </motion.div>
               ))}

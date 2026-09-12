@@ -38,30 +38,100 @@ const LANGUAGES = [
   { code: 'kr', label: '한국어', flag: '🇰🇷' },
 ];
 
-const WatermarkToggle = ({ checked, onChange }: { checked: boolean; onChange: (checked: boolean) => void }) => (
-  <div className="flex items-center justify-between gap-3 rounded-lg border border-admin-line bg-admin-card/70 px-3 py-2.5">
-    <div>
-      <p className="text-xs font-bold text-admin-text">Logo mờ trên khung này</p>
-      <p className="mt-0.5 text-[10px] text-admin-text-faint">{checked ? 'Đang hiển thị' : 'Đang ẩn'}</p>
+const OPACITY_PRESETS = [
+  { label: '10%', value: 10 },
+  { label: '15% Chuẩn', value: 15 },
+  { label: '30%', value: 30 },
+  { label: '50%', value: 50 },
+  { label: '80%', value: 80 },
+];
+
+const WatermarkControl = ({
+  checked,
+  opacity = 15,
+  onChangeChecked,
+  onChangeOpacity,
+}: {
+  checked: boolean;
+  opacity?: number;
+  onChangeChecked: (checked: boolean) => void;
+  onChangeOpacity: (opacity: number) => void;
+}) => {
+  const currentOpacity = typeof opacity === 'number' ? Math.max(5, Math.min(100, opacity)) : 15;
+
+  return (
+    <div className="rounded-lg border border-admin-line bg-admin-card/70 p-3 space-y-2.5">
+      {/* Toggle row */}
+      <div className="flex items-center justify-between gap-3">
+        <div>
+          <p className="text-xs font-bold text-admin-text">Watermark (Logo mờ)</p>
+          <p className="mt-0.5 text-[10px] text-admin-text-faint">
+            {checked ? `Đang bật (Độ mờ: ${currentOpacity}%)` : 'Đang tắt'}
+          </p>
+        </div>
+        <button
+          type="button"
+          role="switch"
+          aria-checked={checked}
+          onClick={() => onChangeChecked(!checked)}
+          className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+            checked ? 'bg-admin-gold' : 'bg-admin-line'
+          }`}
+        >
+          <span
+            aria-hidden="true"
+            className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out ${
+              checked ? 'translate-x-5' : 'translate-x-0'
+            }`}
+          />
+        </button>
+      </div>
+
+      {/* Opacity slider & presets */}
+      {checked && (
+        <div className="pt-2 border-t border-admin-line/60 space-y-2">
+          <div className="flex items-center justify-between text-[11px]">
+            <span className="text-admin-text-faint font-medium">Độ mờ logo (Capacity / Opacity):</span>
+            <span className="font-mono font-bold text-admin-gold bg-admin-gold/10 px-1.5 py-0.5 rounded text-[11px]">
+              {currentOpacity}%
+            </span>
+          </div>
+
+          <input
+            type="range"
+            min={5}
+            max={100}
+            step={5}
+            value={currentOpacity}
+            onChange={(e) => onChangeOpacity(Number(e.target.value))}
+            className="w-full h-1.5 bg-admin-bg rounded-lg appearance-none cursor-pointer accent-admin-gold"
+          />
+
+          {/* Quick preset pills */}
+          <div className="flex flex-wrap gap-1 pt-0.5">
+            {OPACITY_PRESETS.map((p) => {
+              const isSelected = currentOpacity === p.value;
+              return (
+                <button
+                  key={p.value}
+                  type="button"
+                  onClick={() => onChangeOpacity(p.value)}
+                  className={`px-2 py-0.5 text-[10px] rounded border transition-colors ${
+                    isSelected
+                      ? 'bg-admin-gold text-white font-bold border-admin-gold'
+                      : 'bg-admin-bg text-admin-text-faint hover:text-admin-text border-admin-line hover:border-admin-gold/40'
+                  }`}
+                >
+                  {p.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
     </div>
-    <button
-      type="button"
-      role="switch"
-      aria-checked={checked}
-      onClick={() => onChange(!checked)}
-      className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
-        checked ? 'bg-admin-gold' : 'bg-admin-line'
-      }`}
-    >
-      <span
-        aria-hidden="true"
-        className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out ${
-          checked ? 'translate-x-5' : 'translate-x-0'
-        }`}
-      />
-    </button>
-  </div>
-);
+  );
+};
 
 export default function FarmStoreAdminPage() {
   const [config, setConfig] = useState<FarmStoreConfig>(DEFAULT_FARM_STORE_CONFIG);
@@ -178,6 +248,7 @@ export default function FarmStoreAdminPage() {
         updateConfig((prev) => {
           const nextPhotos = [...(prev.storyPhotos || ['', '', '', '', '', ''])];
           const nextWm = [...(prev.storyPhotosWatermark || [true, true, true, true, true, true])];
+          const nextWmOpacity = [...(prev.storyPhotosWatermarkOpacity || [15, 15, 15, 15, 15, 15])];
 
           // Fill into any existing empty slots first, then append remaining
           let uploadIdx = 0;
@@ -185,16 +256,23 @@ export default function FarmStoreAdminPage() {
             if (!nextPhotos[i] || !nextPhotos[i].trim()) {
               nextPhotos[i] = uploadedUrls[uploadIdx];
               nextWm[i] = true;
+              nextWmOpacity[i] = 15;
               uploadIdx++;
             }
           }
           while (uploadIdx < uploadedUrls.length) {
             nextPhotos.push(uploadedUrls[uploadIdx]);
             nextWm.push(true);
+            nextWmOpacity.push(15);
             uploadIdx++;
           }
 
-          return { ...prev, storyPhotos: nextPhotos, storyPhotosWatermark: nextWm };
+          return {
+            ...prev,
+            storyPhotos: nextPhotos,
+            storyPhotosWatermark: nextWm,
+            storyPhotosWatermarkOpacity: nextWmOpacity,
+          };
         });
       } else if (target === 'hero') {
         const file = files[0];
@@ -237,10 +315,17 @@ export default function FarmStoreAdminPage() {
         updateConfig((prev) => {
           const nextPhotos = [...(prev.storyPhotos || ['', '', '', '', '', ''])];
           const nextWm = [...(prev.storyPhotosWatermark || [true, true, true, true, true, true])];
+          const nextWmOpacity = [...(prev.storyPhotosWatermarkOpacity || [15, 15, 15, 15, 15, 15])];
           while (nextPhotos.length <= idx) nextPhotos.push('');
           while (nextWm.length <= idx) nextWm.push(true);
+          while (nextWmOpacity.length <= idx) nextWmOpacity.push(15);
           nextPhotos[idx] = publicUrlData.publicUrl;
-          return { ...prev, storyPhotos: nextPhotos, storyPhotosWatermark: nextWm };
+          return {
+            ...prev,
+            storyPhotos: nextPhotos,
+            storyPhotosWatermark: nextWm,
+            storyPhotosWatermarkOpacity: nextWmOpacity,
+          };
         });
       }
     } catch (err: any) {
@@ -256,9 +341,16 @@ export default function FarmStoreAdminPage() {
     updateConfig((prev) => {
       const nextPhotos = [...(prev.storyPhotos || ['', '', '', '', '', ''])];
       const nextWm = [...(prev.storyPhotosWatermark || [true, true, true, true, true, true])];
+      const nextWmOpacity = [...(prev.storyPhotosWatermarkOpacity || [15, 15, 15, 15, 15, 15])];
       nextPhotos.push('');
       nextWm.push(true);
-      return { ...prev, storyPhotos: nextPhotos, storyPhotosWatermark: nextWm };
+      nextWmOpacity.push(15);
+      return {
+        ...prev,
+        storyPhotos: nextPhotos,
+        storyPhotosWatermark: nextWm,
+        storyPhotosWatermarkOpacity: nextWmOpacity,
+      };
     });
   };
 
@@ -267,6 +359,7 @@ export default function FarmStoreAdminPage() {
     updateConfig((prev) => {
       const nextPhotos = [...(prev.storyPhotos || ['', '', '', '', '', ''])];
       const nextWm = [...(prev.storyPhotosWatermark || [true, true, true, true, true, true])];
+      const nextWmOpacity = [...(prev.storyPhotosWatermarkOpacity || [15, 15, 15, 15, 15, 15])];
       const targetIdx = direction === 'up' ? idx - 1 : idx + 1;
       if (targetIdx < 0 || targetIdx >= nextPhotos.length) return prev;
 
@@ -278,7 +371,16 @@ export default function FarmStoreAdminPage() {
       nextWm[idx] = nextWm[targetIdx];
       nextWm[targetIdx] = tempWm;
 
-      return { ...prev, storyPhotos: nextPhotos, storyPhotosWatermark: nextWm };
+      const tempWmOpacity = nextWmOpacity[idx] ?? 15;
+      nextWmOpacity[idx] = nextWmOpacity[targetIdx] ?? 15;
+      nextWmOpacity[targetIdx] = tempWmOpacity;
+
+      return {
+        ...prev,
+        storyPhotos: nextPhotos,
+        storyPhotosWatermark: nextWm,
+        storyPhotosWatermarkOpacity: nextWmOpacity,
+      };
     });
   };
 
@@ -287,17 +389,24 @@ export default function FarmStoreAdminPage() {
     updateConfig((prev) => {
       const nextPhotos = [...(prev.storyPhotos || ['', '', '', '', '', ''])];
       const nextWm = [...(prev.storyPhotosWatermark || [true, true, true, true, true, true])];
+      const nextWmOpacity = [...(prev.storyPhotosWatermarkOpacity || [15, 15, 15, 15, 15, 15])];
 
       if (idx >= 6) {
         // Can completely remove additional frames
         nextPhotos.splice(idx, 1);
         nextWm.splice(idx, 1);
+        nextWmOpacity.splice(idx, 1);
       } else {
         // Clear slot for main editorial frame
         nextPhotos[idx] = '';
       }
 
-      return { ...prev, storyPhotos: nextPhotos, storyPhotosWatermark: nextWm };
+      return {
+        ...prev,
+        storyPhotos: nextPhotos,
+        storyPhotosWatermark: nextWm,
+        storyPhotosWatermarkOpacity: nextWmOpacity,
+      };
     });
   };
 
@@ -444,9 +553,11 @@ export default function FarmStoreAdminPage() {
                 )}
 
                 {config.heroWatermarkEnabled !== false && Boolean(config.heroImage) && (
-                  <div className="absolute top-3 left-3 rounded bg-black/50 px-2 py-0.5 text-[10px] font-medium text-white/80 backdrop-blur-sm">
-                    Watermark ON
-                  </div>
+                  <div
+                    className="media-watermark pointer-events-none"
+                    aria-hidden="true"
+                    style={{ opacity: (config.heroWatermarkOpacity ?? 15) / 100 }}
+                  />
                 )}
               </div>
             </div>
@@ -484,7 +595,7 @@ export default function FarmStoreAdminPage() {
                 </div>
               </div>
 
-              {/* Upload button & Watermark Toggle */}
+              {/* Upload button & Watermark Control */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
                 <label className="relative flex cursor-pointer items-center justify-center gap-2 rounded-lg border border-dashed border-admin-gold/40 bg-admin-gold/5 px-4 py-3 text-xs font-bold text-admin-gold hover:bg-admin-gold/10 transition-colors">
                   <Upload size={15} />
@@ -498,10 +609,14 @@ export default function FarmStoreAdminPage() {
                   />
                 </label>
 
-                <WatermarkToggle
+                <WatermarkControl
                   checked={config.heroWatermarkEnabled !== false}
-                  onChange={(checked) =>
+                  opacity={config.heroWatermarkOpacity ?? 15}
+                  onChangeChecked={(checked) =>
                     updateConfig((prev) => ({ ...prev, heroWatermarkEnabled: checked }))
+                  }
+                  onChangeOpacity={(opacity) =>
+                    updateConfig((prev) => ({ ...prev, heroWatermarkOpacity: opacity }))
                   }
                 />
               </div>
@@ -614,6 +729,7 @@ export default function FarmStoreAdminPage() {
           <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             {(config.storyPhotos || ['', '', '', '', '', '']).map((url, idx) => {
               const wmChecked = config.storyPhotosWatermark?.[idx] !== false;
+              const wmOpacity = config.storyPhotosWatermarkOpacity?.[idx] ?? 15;
               const uploadKey = `story-${idx}` as const;
               const isFirst = idx === 0;
               const isLast = idx === (config.storyPhotos?.length || 1) - 1;
@@ -679,6 +795,13 @@ export default function FarmStoreAdminPage() {
                           <span className="text-[10px] text-admin-text-faint/60">Khung ảnh trống</span>
                         </div>
                       )}
+                      {wmChecked && Boolean(url) && (
+                        <div
+                          className="media-watermark pointer-events-none"
+                          aria-hidden="true"
+                          style={{ opacity: wmOpacity / 100 }}
+                        />
+                      )}
                     </div>
 
                     {/* URL Input */}
@@ -710,14 +833,25 @@ export default function FarmStoreAdminPage() {
                       />
                     </label>
 
-                    <WatermarkToggle
+                    <WatermarkControl
                       checked={wmChecked}
-                      onChange={(val) =>
+                      opacity={wmOpacity}
+                      onChangeChecked={(val) =>
                         updateConfig((prev) => {
                           const nextWm = [...(prev.storyPhotosWatermark || [true, true, true, true, true, true])];
                           while (nextWm.length <= idx) nextWm.push(true);
                           nextWm[idx] = val;
                           return { ...prev, storyPhotosWatermark: nextWm };
+                        })
+                      }
+                      onChangeOpacity={(val) =>
+                        updateConfig((prev) => {
+                          const nextWmOpacity = [
+                            ...(prev.storyPhotosWatermarkOpacity || [15, 15, 15, 15, 15, 15]),
+                          ];
+                          while (nextWmOpacity.length <= idx) nextWmOpacity.push(15);
+                          nextWmOpacity[idx] = val;
+                          return { ...prev, storyPhotosWatermarkOpacity: nextWmOpacity };
                         })
                       }
                     />

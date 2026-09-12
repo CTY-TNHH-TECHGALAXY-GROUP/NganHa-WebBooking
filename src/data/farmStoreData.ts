@@ -15,6 +15,7 @@ export interface FarmStoreConfig {
   heroImage: string;
   heroMediaType: 'image' | 'video';
   heroWatermarkEnabled: boolean;
+  heroWatermarkOpacity?: number;
   preTitle: Record<Locale, string>;
   pageTitle: Record<Locale, string>;
   pageSubtitle: Record<Locale, string>;
@@ -22,6 +23,7 @@ export interface FarmStoreConfig {
   introParagraphs: Record<Locale, string>[];
   storyPhotos: string[];
   storyPhotosWatermark: boolean[];
+  storyPhotosWatermarkOpacity?: number[];
   pillars: FarmStorePillar[];
   sections: FarmStoreSection[];
   motto: Record<Locale, string>;
@@ -37,6 +39,7 @@ export const DEFAULT_FARM_STORE_CONFIG: FarmStoreConfig = {
   heroImage: '',
   heroMediaType: 'image',
   heroWatermarkEnabled: true,
+  heroWatermarkOpacity: 15,
   preTitle: {
     vi: '',
     en: '',
@@ -76,6 +79,7 @@ export const DEFAULT_FARM_STORE_CONFIG: FarmStoreConfig = {
   ],
   storyPhotos: ['', '', '', '', '', ''],
   storyPhotosWatermark: [true, true, true, true, true, true],
+  storyPhotosWatermarkOpacity: [15, 15, 15, 15, 15, 15],
   pillars: [
     {
       title: {
@@ -314,6 +318,10 @@ export function hydrateFarmStoreConfig(raw: any): FarmStoreConfig {
   const heroRaw = sanitizeFarmStorePhoto(raw.heroImage);
   const heroMediaType = raw.heroMediaType === 'video' || isVideoUrl(heroRaw) ? 'video' : 'image';
   const heroWatermarkEnabled = raw.heroWatermarkEnabled !== false;
+  const heroWatermarkOpacity =
+    typeof raw.heroWatermarkOpacity === 'number' && raw.heroWatermarkOpacity >= 0 && raw.heroWatermarkOpacity <= 100
+      ? Math.round(raw.heroWatermarkOpacity)
+      : 15;
 
   const rawPhotos = Array.isArray(raw.storyPhotos) ? raw.storyPhotos : [];
   const storyPhotos: string[] = rawPhotos.map(sanitizeFarmStorePhoto);
@@ -325,10 +333,17 @@ export function hydrateFarmStoreConfig(raw: any): FarmStoreConfig {
   const rawWm = Array.isArray(raw.storyPhotosWatermark) ? raw.storyPhotosWatermark : [];
   const storyPhotosWatermark: boolean[] = storyPhotos.map((_, idx) => rawWm[idx] !== false);
 
+  const rawWmOpacity = Array.isArray(raw.storyPhotosWatermarkOpacity) ? raw.storyPhotosWatermarkOpacity : [];
+  const storyPhotosWatermarkOpacity: number[] = storyPhotos.map((_, idx) => {
+    const val = rawWmOpacity[idx];
+    return typeof val === 'number' && val >= 0 && val <= 100 ? Math.round(val) : 15;
+  });
+
   return {
     heroImage: heroRaw,
     heroMediaType,
     heroWatermarkEnabled,
+    heroWatermarkOpacity,
     preTitle: { ...DEFAULT_FARM_STORE_CONFIG.preTitle, ...(raw.preTitle || {}) },
     pageTitle: { ...DEFAULT_FARM_STORE_CONFIG.pageTitle, ...(raw.pageTitle || {}) },
     pageSubtitle: { ...DEFAULT_FARM_STORE_CONFIG.pageSubtitle, ...(raw.pageSubtitle || {}) },
@@ -338,6 +353,7 @@ export function hydrateFarmStoreConfig(raw: any): FarmStoreConfig {
       : DEFAULT_FARM_STORE_CONFIG.introParagraphs,
     storyPhotos,
     storyPhotosWatermark,
+    storyPhotosWatermarkOpacity,
     pillars: Array.isArray(raw.pillars) && raw.pillars.length === 3
       ? raw.pillars
       : DEFAULT_FARM_STORE_CONFIG.pillars,
