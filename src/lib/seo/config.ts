@@ -171,7 +171,8 @@ function safePublicUrl(value: unknown, fallback = ''): string {
 
 function safeInternalPath(value: unknown, fallback = ''): string {
   const candidate = stringValue(value);
-  return candidate.startsWith('/') && !candidate.startsWith('//') && !/[?#\\\u0000-\u001f\u007f]/.test(candidate) ? candidate : fallback;
+  const looksLikeHostnamePath = /^\/[a-z0-9](?:[a-z0-9-]*[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)+(?=\/|$)/i.test(candidate);
+  return candidate.startsWith('/') && !candidate.startsWith('//') && !looksLikeHostnamePath && !/[?#\\\u0000-\u001f\u007f]/.test(candidate) ? candidate : fallback;
 }
 
 function normalizeSeoFields(value: unknown, fallback: SeoLocaleFields): SeoLocaleFields {
@@ -343,9 +344,10 @@ export function resolvePublicSeoFields(
 ): SeoLocaleFields {
   const global = getVersioned(config.global[locale], 'published') || getVersioned(config.global[DEFAULT_LOCALE], 'published');
   const page = getVersioned(config.pages[routeKey]?.locales[locale], 'published');
+  const { canonicalPath: _globalCanonicalPath, ...globalDefaults } = global || {};
   return {
     ...DEFAULT_LOCALE_SEO[locale],
-    ...(global || {}),
+    ...globalDefaults,
     ...fallback,
     ...(page || {}),
   };

@@ -1,0 +1,25 @@
+{
+  "status": "pending_deploy",
+  "officialOrigin": "https://oria-spa.vercel.app",
+  "db": {
+    "rowId": "9f8ab19e-899f-4c0a-a211-33dddaa611d4",
+    "beforeHash": "8635c51d7144f459cfde277a794351c311e4486c3acbefc3a9f0487e1de30f7b",
+    "afterHash": "a688977fb753978e4d878728ab9bafca92906787369ea3e48e43154d281f7749",
+    "changedPaths": ["global.vi.published.canonicalPath"],
+    "canonicalPathAfter": ""
+  },
+  "deployment": {
+    "sourceSha": null,
+    "productionSha": null,
+    "previewUrl": null,
+    "productionUrl": null
+  },
+  "live": {
+    "status": "awaiting_deploy"
+  },
+  "pending": [
+    "Vercel NEXT_PUBLIC_SITE_URL environment scope requires authenticated project access.",
+    "web_booking_url consumer/project ownership is not established.",
+    "Legacy alias redirect ownership is not established."
+  ]
+}

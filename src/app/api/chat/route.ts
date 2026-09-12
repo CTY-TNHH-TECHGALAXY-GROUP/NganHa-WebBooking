@@ -100,7 +100,7 @@ const buildSystemPrompt = (locale: string, systemSettings: any): string => {
    - Lưu ý: Available 11am - 7pm
 
 ### Website đặt lịch
-- URL: https://nganha.vercel.app/
+- URL: https://oria-spa.vercel.app/
 - Khách có thể đặt lịch online qua website
 `;
 

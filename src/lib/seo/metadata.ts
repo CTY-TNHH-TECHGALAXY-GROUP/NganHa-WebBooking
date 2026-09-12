@@ -13,13 +13,16 @@ const LOCALE_HREFLANG: Record<Locale, string> = {
 
 export function getSiteOrigin(): URL {
   const configured = process.env.NEXT_PUBLIC_SITE_URL?.trim();
-  const fallback = 'https://ngan-ha-web-booking.vercel.app';
+  const fallback = 'https://oria-spa.vercel.app';
   try {
     const candidate = new URL(configured || fallback);
     if (candidate.protocol !== 'https:' && candidate.hostname !== 'localhost' && candidate.hostname !== '127.0.0.1') {
       return new URL(fallback);
     }
-    return candidate;
+    if (candidate.username || candidate.password || candidate.search || candidate.hash) {
+      return new URL(fallback);
+    }
+    return new URL(`${candidate.protocol}//${candidate.host}`);
   } catch {
     return new URL(fallback);
   }
@@ -72,7 +75,8 @@ function getLocaleAlternates(config: SeoConfig, descriptor: SeoRouteDescriptor):
 export function buildPageMetadata(config: SeoConfig, descriptor: SeoRouteDescriptor, fallback: Partial<ReturnType<typeof resolvePublicSeoFields>> = {}): Metadata {
   const locale = descriptor.locale || DEFAULT_LOCALE;
   const fields = resolvePublicSeoFields(config, descriptor.routeKey, locale, fallback);
-  const configuredCanonical = /^\/(?!\/)[^?#\\\u0000-\u001f\u007f]*$/.test(fields.canonicalPath) ? fields.canonicalPath : '';
+  const looksLikeHostnamePath = /^\/[a-z0-9](?:[a-z0-9-]*[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)+(?=\/|$)/i.test(fields.canonicalPath);
+  const configuredCanonical = /^\/(?!\/)[^?#\\\u0000-\u001f\u007f]*$/.test(fields.canonicalPath) && !looksLikeHostnamePath ? fields.canonicalPath : '';
   const canonicalPath = configuredCanonical || descriptor.pathname;
   const canonical = absoluteUrl(canonicalPath);
   const image = fields.ogImage

@@ -101,7 +101,11 @@ export const POST = withAuth(async (request: NextRequest, access) => {
   const nextConfig = JSON.parse(JSON.stringify(config)) as SeoConfig;
   if (section === 'seo' && routeKey === 'global') {
     const entry = nextConfig.global[locale] || {};
-    nextConfig.global[locale] = { ...entry, [status]: validated.value, updatedAt: new Date().toISOString() };
+    nextConfig.global[locale] = {
+      ...entry,
+      [status]: { ...validated.value, canonicalPath: '' },
+      updatedAt: new Date().toISOString(),
+    };
   } else if (section === 'seo') {
     const page = nextConfig.pages[routeKey] || { locales: {} };
     const entry = page.locales[locale] || {};

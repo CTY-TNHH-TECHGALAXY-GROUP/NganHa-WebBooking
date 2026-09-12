@@ -47,7 +47,8 @@ function list(value: unknown, field: string, errors: string[], maxItems = 20): s
 
 function validateInternalPath(value: unknown, field: string, errors: string[]): string {
   if (value === undefined || value === null || value === '') return '';
-  if (typeof value !== 'string' || !value.startsWith('/') || value.startsWith('//') || /[?#\\\u0000-\u001f\u007f]/.test(value)) {
+  const looksLikeHostnamePath = typeof value === 'string' && /^\/[a-z0-9](?:[a-z0-9-]*[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)+(?=\/|$)/i.test(value);
+  if (typeof value !== 'string' || !value.startsWith('/') || value.startsWith('//') || looksLikeHostnamePath || /[?#\\\u0000-\u001f\u007f]/.test(value)) {
     errors.push(`${field} phải là đường dẫn nội bộ`);
     return '';
   }

@@ -1,0 +1,38 @@
+{
+  "capturedAt": "2026-09-12T22:03:42Z",
+  "productionOrigin": "https://oria-spa.vercel.app",
+  "sourceSha": "a827bfce79cd9da9df1f0580412b9facc7782224",
+  "routes": {
+    "checked": ["/", "/vi", "/en", "/cn", "/jp", "/kr", "/history", "/space", "/vi/oriahome", "/local-tour"],
+    "httpStatus": 200,
+    "canonical": "https://ngan-ha-web-booking.vercel.app/oria-spa.vercel.app",
+    "ogUrl": "https://ngan-ha-web-booking.vercel.app/oria-spa.vercel.app",
+    "hreflang": "legacy host / malformed path",
+    "jsonLd": "legacy host"
+  },
+  "robots": {
+    "httpStatus": 200,
+    "sitemap": "https://ngan-ha-web-booking.vercel.app/sitemap.xml"
+  },
+  "sitemap": {
+    "httpStatus": 200,
+    "locCount": 1,
+    "loc": "https://ngan-ha-web-booking.vercel.app/oria-spa.vercel.app"
+  },
+  "seoConfig": {
+    "rowId": "9f8ab19e-899f-4c0a-a211-33dddaa611d4",
+    "updatedAt": "2026-08-16T18:33:08.044365+00:00",
+    "rawHash": "8635c51d7144f459cfde277a794351c311e4486c3acbefc3a9f0487e1de30f7b",
+    "globalViPublishedCanonicalPath": "/oria-spa.vercel.app"
+  },
+  "legacyConfig": {
+    "web_booking_url": "https://nganha.vercel.app/",
+    "ownership": "consumer/project not established; update intentionally pending"
+  },
+  "aliases": {
+    "ngan-ha-web-booking.vercel.app": "404 without redirect",
+    "nganha.vercel.app": "redirects to https://oriaspa.vercel.app/en/new-user/standard/menu",
+    "oriaspa.vercel.app": "root redirects to /en/new-user/standard/menu",
+    "nganhaspa.vn": "DNS did not resolve in audit"
+  }
+}

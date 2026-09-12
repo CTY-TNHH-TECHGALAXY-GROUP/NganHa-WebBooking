@@ -22,7 +22,7 @@ npm run dev
 ## Branch & Deploy
 
 - Branch deploy can luu y: `vercel`.
-- Website hien tai: [https://ngan-ha-web-booking.vercel.app/](https://ngan-ha-web-booking.vercel.app/)
+- Website hien tai: [https://oria-spa.vercel.app/](https://oria-spa.vercel.app/)
 - Truoc khi commit/push, luon kiem tra branch bang `git branch --show-current`.
 
 ## Main Routes

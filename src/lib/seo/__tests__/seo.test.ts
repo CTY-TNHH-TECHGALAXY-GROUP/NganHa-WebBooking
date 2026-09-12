@@ -80,6 +80,19 @@ export async function runSeoTests() {
   assert.equal(String(canonicalMetadata.alternates?.languages?.vi).endsWith('/vi'), true);
   assert.equal(String(canonicalMetadata.alternates?.languages?.en).endsWith('/en'), true);
 
+  const staleGlobalConfig: SeoConfig = {
+    ...testConfig,
+    global: { vi: { published: { ...publishedSeo, canonicalPath: '/oria-spa.vercel.app' } } },
+  };
+  const staleGlobalMetadata = buildPageMetadata(staleGlobalConfig, {
+    routeKey: 'home',
+    pathname: '/en',
+    locale: 'en',
+    localized: true,
+    defaultPathname: '/',
+  });
+  assert.equal(String(staleGlobalMetadata.alternates?.canonical), 'https://oria-spa.vercel.app/en');
+
   const noDefaultConfig: SeoConfig = {
     ...canonicalConfig,
     pages: {
@@ -104,6 +117,8 @@ export async function runSeoTests() {
   assert.equal(invalidSeo.ok, false);
   const invalidCanonical = validateSeoFields({ ...publishedSeo, canonicalPath: 'https://evil.example', indexable: true });
   assert.equal(invalidCanonical.ok, false);
+  const invalidHostnamePath = validateSeoFields({ ...publishedSeo, canonicalPath: '/oria-spa.vercel.app', indexable: true });
+  assert.equal(invalidHostnamePath.ok, false);
   const invalidKeyword = validateSeoFields({ ...publishedSeo, keywords: ['<script>'], indexable: true });
   assert.equal(invalidKeyword.ok, false);
 
