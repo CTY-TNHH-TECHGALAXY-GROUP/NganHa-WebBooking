@@ -4,6 +4,8 @@ import { useCallback, useEffect, useState } from 'react';
 
 type Dashboard = {
   status: 'ready' | 'not_configured';
+  metricQuality: { sessions: 'exact' | 'bucket_total'; funnel: 'ordered_sessions' | 'event_counts' };
+  truncation: { any: boolean; aggregate: boolean; rawEvents: boolean; recentActivity: boolean };
   overview: { sessions: number; events: number; engagedMs: number; conversions: number };
   funnel: Array<{ key: string; label: string; count: number }>;
   trend: Array<{ date: string; sessions: number; events: number; conversions: number }>;
@@ -19,6 +21,7 @@ const initialFilters = {
   language: '',
   device: '',
   entry_page: '',
+  include_test: false,
 };
 
 const formatMinutes = (milliseconds: number) => `${Math.round(milliseconds / 60000)} min`;
@@ -33,7 +36,14 @@ export default function AnalyticsDashboard() {
     setLoading(true);
     setError('');
     try {
-      const query = new URLSearchParams(Object.entries(filters).filter(([, value]) => Boolean(value)));
+      const query = new URLSearchParams();
+      Object.entries(filters).forEach(([key, value]) => {
+        if (key === 'include_test') {
+          if (value) query.set('include_test', '1');
+        } else if (value) {
+          query.set(key, String(value));
+        }
+      });
       const response = await fetch(`/api/admin/analytics?${query.toString()}`, { cache: 'no-store' });
       const body = await response.json();
       if (!response.ok || !body.success) throw new Error(body.error?.message || 'Unable to load analytics');
@@ -69,6 +79,7 @@ export default function AnalyticsDashboard() {
           <label className="text-xs text-admin-text-dim">Language<select className="mt-1 w-full bg-admin-bg border border-admin-line p-2 text-sm text-admin-text" value={filters.language} onChange={(event) => setFilters({ ...filters, language: event.target.value })}><option value="">All</option><option value="vi">vi</option><option value="en">en</option><option value="cn">cn</option><option value="jp">jp</option><option value="kr">kr</option></select></label>
           <label className="text-xs text-admin-text-dim">Device<select className="mt-1 w-full bg-admin-bg border border-admin-line p-2 text-sm text-admin-text" value={filters.device} onChange={(event) => setFilters({ ...filters, device: event.target.value })}><option value="">All</option><option value="mobile">Mobile</option><option value="tablet">Tablet</option><option value="desktop">Desktop</option></select></label>
           <label className="text-xs text-admin-text-dim">Entry page<input className="mt-1 w-full bg-admin-bg border border-admin-line p-2 text-sm text-admin-text" placeholder="/" value={filters.entry_page} onChange={(event) => setFilters({ ...filters, entry_page: event.target.value })} /></label>
+          <label className="flex items-center gap-2 text-xs text-admin-text-dim lg:col-span-5"><input className="h-4 w-4 accent-admin-gold" type="checkbox" checked={filters.include_test} onChange={(event) => setFilters({ ...filters, include_test: event.target.checked })} />Include TEST traffic</label>
           <button type="submit" className="sm:col-span-2 lg:col-span-5 justify-self-start bg-admin-gold text-[#241804] px-4 py-2 text-sm font-semibold">Apply filters</button>
         </form>
 
@@ -77,9 +88,11 @@ export default function AnalyticsDashboard() {
         {dashboard && (
           <>
             {dashboard.status === 'not_configured' && <p className="border border-admin-gold/30 bg-admin-panel p-4 text-sm text-admin-text-dim">{dashboard.note}</p>}
+            {dashboard.status === 'ready' && <p className="text-xs text-admin-text-dim">{dashboard.note}</p>}
+            {dashboard.truncation.any && <p className="border border-admin-gold/30 bg-admin-panel p-4 text-sm text-admin-text-dim">Some analytics rows are truncated. Refresh or narrow the date range for a complete view.</p>}
             <section className="grid grid-cols-2 lg:grid-cols-4 gap-3">
               {[
-                ['Sessions', dashboard.overview.sessions.toLocaleString()],
+                [dashboard.metricQuality.sessions === 'exact' ? 'Sessions' : 'Sessions (bucket total)', dashboard.overview.sessions.toLocaleString()],
                 ['Events', dashboard.overview.events.toLocaleString()],
                 ['Estimated engaged', formatMinutes(dashboard.overview.engagedMs)],
                 ['Verified bookings', dashboard.overview.conversions.toLocaleString()],
@@ -87,7 +100,7 @@ export default function AnalyticsDashboard() {
             </section>
 
             <section className="grid lg:grid-cols-2 gap-6">
-              <article className="bg-admin-panel border border-admin-line p-5"><h2 className="font-semibold mb-4">Funnel</h2><div className="space-y-3">{dashboard.funnel.map((step) => <div key={step.key} className="flex items-center justify-between text-sm"><span>{step.label}</span><strong>{step.count.toLocaleString()}</strong></div>)}</div></article>
+              <article className="bg-admin-panel border border-admin-line p-5"><h2 className="font-semibold mb-4">{dashboard.metricQuality.funnel === 'ordered_sessions' ? 'Funnel' : 'Funnel events'}</h2><div className="space-y-3">{dashboard.funnel.map((step) => <div key={step.key} className="flex items-center justify-between text-sm"><span>{step.label}</span><strong>{step.count.toLocaleString()}</strong></div>)}</div></article>
               <article className="bg-admin-panel border border-admin-line p-5"><h2 className="font-semibold mb-4">Top actions</h2><div className="space-y-3">{dashboard.topActions.map((action) => <div key={action.eventName} className="flex items-center justify-between text-sm"><span className="font-mono text-xs">{action.eventName}</span><strong>{action.count.toLocaleString()}</strong></div>)}</div></article>
             </section>
 

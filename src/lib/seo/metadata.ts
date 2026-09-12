@@ -57,9 +57,15 @@ function getLocaleAlternates(config: SeoConfig, descriptor: SeoRouteDescriptor):
   for (const locale of SUPPORTED_LOCALES) {
     const fields = resolvePublicSeoFields(config, descriptor.routeKey, locale);
     if (!fields.indexable) continue;
-    languages[LOCALE_HREFLANG[locale]] = absoluteUrl(localizedPath(descriptor.pathname, locale));
+    const localizedCanonical = fields.canonicalPath || localizedPath(descriptor.pathname, locale);
+    languages[LOCALE_HREFLANG[locale]] = absoluteUrl(localizedCanonical);
   }
-  if (routeAllowsDefault(descriptor)) languages['x-default'] = absoluteUrl(descriptor.defaultPathname as string);
+  if (routeAllowsDefault(descriptor)) {
+    const defaultFields = resolvePublicSeoFields(config, descriptor.routeKey, DEFAULT_LOCALE);
+    if (defaultFields.indexable) {
+      languages['x-default'] = absoluteUrl(defaultFields.canonicalPath || (descriptor.defaultPathname as string));
+    }
+  }
   return languages;
 }
 

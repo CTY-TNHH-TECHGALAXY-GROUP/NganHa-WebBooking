@@ -58,6 +58,48 @@ export async function runSeoTests() {
   assert.equal(String(metadata.alternates?.languages?.['x-default']).endsWith('/'), true);
   assert.deepEqual(metadata.robots, { index: false, follow: false });
 
+  const canonicalConfig: SeoConfig = {
+    ...testConfig,
+    global: { vi: { published: { ...publishedSeo, canonicalPath: '/vi' } } },
+    pages: {
+      home: {
+        locales: {
+          vi: { published: { ...publishedSeo, canonicalPath: '/vi' } },
+          en: { published: { ...publishedSeo, canonicalPath: '/en' } },
+        },
+      },
+    },
+  };
+  const canonicalMetadata = buildPageMetadata(canonicalConfig, {
+    routeKey: 'home',
+    pathname: '/en',
+    locale: 'en',
+    localized: true,
+    defaultPathname: '/',
+  });
+  assert.equal(String(canonicalMetadata.alternates?.languages?.vi).endsWith('/vi'), true);
+  assert.equal(String(canonicalMetadata.alternates?.languages?.en).endsWith('/en'), true);
+
+  const noDefaultConfig: SeoConfig = {
+    ...canonicalConfig,
+    pages: {
+      home: {
+        locales: {
+          vi: { published: { ...publishedSeo, indexable: false } },
+          en: { published: { ...publishedSeo, canonicalPath: '/en' } },
+        },
+      },
+    },
+  };
+  const noDefaultMetadata = buildPageMetadata(noDefaultConfig, {
+    routeKey: 'home',
+    pathname: '/en',
+    locale: 'en',
+    localized: true,
+    defaultPathname: '/',
+  });
+  assert.equal(noDefaultMetadata.alternates?.languages?.['x-default'], undefined);
+
   const invalidSeo = validateSeoFields({ ...publishedSeo, title: '<script>alert(1)</script>', indexable: true });
   assert.equal(invalidSeo.ok, false);
   const invalidCanonical = validateSeoFields({ ...publishedSeo, canonicalPath: 'https://evil.example', indexable: true });

@@ -7,7 +7,7 @@ import type { AeoFaq, AeoLocaleFields, SeoConfig, SeoLocaleFields } from '@/lib/
 
 type Section = 'seo' | 'aeo';
 type Toast = { message: string; type: 'success' | 'error' } | null;
-type SectionResponse = { version: 2; global?: SeoConfig['global']; pages: SeoConfig['pages'] | SeoConfig['aeo'] };
+type SectionResponse = { version: 2; global?: SeoConfig['global']; pages: SeoConfig['pages'] | SeoConfig['aeo']; revision: string };
 
 const ROUTES = [
   { key: 'global', label: 'Global defaults' },
@@ -75,6 +75,8 @@ export default function SeoAdminPage() {
   const [aeoConfig, setAeoConfig] = useState<SeoConfig>(EMPTY_CONFIG);
   const [seoForm, setSeoForm] = useState<SeoLocaleFields>(EMPTY_SEO);
   const [aeoForm, setAeoForm] = useState<AeoLocaleFields>(EMPTY_AEO);
+  const [seoRevision, setSeoRevision] = useState('');
+  const [aeoRevision, setAeoRevision] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState<Section | null>(null);
   const [toast, setToast] = useState<Toast>(null);
@@ -98,11 +100,13 @@ export default function SeoAdminPage() {
         if (cancelled) return;
         if (seoResult.status === 'fulfilled') {
           setSeoConfig({ version: 2, global: seoResult.value.global || {}, pages: seoResult.value.pages as SeoConfig['pages'], aeo: {} });
+          setSeoRevision(seoResult.value.revision);
         } else {
           showToast(seoResult.reason instanceof Error ? seoResult.reason.message : 'Không thể tải SEO metadata', 'error');
         }
         if (aeoResult.status === 'fulfilled') {
           setAeoConfig({ version: 2, global: {}, pages: {}, aeo: aeoResult.value.pages as SeoConfig['aeo'] });
+          setAeoRevision(aeoResult.value.revision);
         }
       })
       .finally(() => { if (!cancelled) setIsLoading(false); });
@@ -138,14 +142,23 @@ export default function SeoAdminPage() {
       const response = await fetch('/api/admin/seo', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ section: target, routeKey, locale, status, data }),
+        body: JSON.stringify({
+          section: target,
+          routeKey,
+          locale,
+          status,
+          data,
+          expectedRevision: target === 'seo' ? seoRevision : aeoRevision,
+        }),
       });
       const json = await response.json();
       if (!response.ok || !json.success) throw new Error(json.error?.message || 'Không thể lưu');
       if (target === 'seo') {
         setSeoConfig((current) => ({ ...current, global: json.data.document.global || {}, pages: json.data.document.pages || {} }));
+        setSeoRevision(json.data.revision);
       } else {
         setAeoConfig((current) => ({ ...current, aeo: json.data.document.pages || {} }));
+        setAeoRevision(json.data.revision);
       }
       showToast(status === 'published' ? 'Đã xuất bản nội dung.' : 'Đã lưu bản nháp.', 'success');
     } catch (error) {

@@ -6,10 +6,15 @@ import {
   getAuthenticatedAdminSession,
   type WebbookingAdminRole,
 } from './adminAuth';
+import { authorizeCapability } from './adminCapabilities';
 
 export interface VerifyAdminResult {
   ok: boolean;
   role?: WebbookingAdminRole;
+  navigation?: {
+    analytics: boolean;
+    editorPermissions: boolean;
+  };
   error?: string;
   status?: number;
 }
@@ -37,6 +42,10 @@ export async function verifyAdminSessionAction(
     return {
       ok: true,
       role: result.access.role,
+      navigation: {
+        analytics: (await authorizeCapability(result.access, 'analytics.read')).allowed,
+        editorPermissions: (await authorizeCapability(result.access, 'editor_permissions.manage')).allowed,
+      },
     };
   } catch (err: any) {
     console.error('[verifyAdminSessionAction] Unexpected error:', err);

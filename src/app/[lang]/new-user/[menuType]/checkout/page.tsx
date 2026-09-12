@@ -15,7 +15,7 @@ import { formatCurrency } from '@/components/Menu/utils';
 import { getDictionary } from '@/lib/dictionaries';
 import { resolveServiceCapabilities } from '@/lib/booking/capabilities';
 import { useTranslation } from '@/components/TranslationProvider';
-import { trackAnalytics } from '@/lib/analytics/client';
+import { getAnalyticsAttributionHeaders, trackAnalytics } from '@/lib/analytics/client';
 import styles from './checkout-demo.module.css';
 
 type PageParams = Promise<{ lang: string; menuType: string }>;
@@ -1220,6 +1220,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
 
     const controller = new AbortController();
     const timeoutId = window.setTimeout(() => controller.abort(), 20_000);
+    const analyticsHeaders = getAnalyticsAttributionHeaders();
     let response: Response;
     try {
       response = await fetch('/api/bookings', {
@@ -1227,6 +1228,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
         headers: {
           'Content-Type': 'application/json',
           'Idempotency-Key': idempotencyKey,
+          ...analyticsHeaders,
         },
         signal: controller.signal,
         body: JSON.stringify({

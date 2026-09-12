@@ -112,7 +112,9 @@ export function validateEditorCapabilityUpdate(
   if (!ADMIN_USER_ID_PATTERN.test(targetUserId)) {
     return { ok: false, message: 'ID editor không hợp lệ', code: 'INVALID_USER_ID', status: 400 };
   }
-  if (targetUserId === actorUserId) {
+  const normalizedActorUserId = typeof actorUserId === 'string' ? actorUserId.trim().toLowerCase() : '';
+  const normalizedTargetUserId = targetUserId.toLowerCase();
+  if (normalizedTargetUserId === normalizedActorUserId) {
     return { ok: false, message: 'Không được tự cấp hoặc tự thay đổi capability của chính mình', code: 'SELF_ESCALATION', status: 403 };
   }
   if (expectedRevision === null) {
@@ -137,7 +139,7 @@ export function validateEditorCapabilityUpdate(
 
   return {
     ok: true,
-    targetUserId,
+    targetUserId: normalizedTargetUserId,
     expectedRevision,
     capabilities: uniqueCapabilities as AdminCapability[],
   };

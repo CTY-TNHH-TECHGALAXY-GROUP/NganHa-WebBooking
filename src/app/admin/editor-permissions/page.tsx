@@ -88,10 +88,20 @@ export default function EditorPermissionsPage() {
         }),
       });
       const json = await response.json();
+      if (response.status === 409 || json.error?.code === 'PERMISSION_CONFLICT') {
+        setMessage({ text: 'Quyền editor vừa được thay đổi ở cửa sổ khác. Hãy tải lại danh sách trước khi lưu lại.', error: true });
+        return;
+      }
       if (!response.ok || !json.success) throw new Error(json.error?.message || 'Không thể lưu capability');
 
       if (typeof json.data?.revision === 'number') {
         setRevisions((current) => ({ ...current, [editor.user_id]: json.data.revision }));
+      }
+      if (Array.isArray(json.data?.capabilities)) {
+        setDrafts((current) => ({
+          ...current,
+          [editor.user_id]: json.data.capabilities.filter((key: unknown): key is string => allKeys.includes(key as string)),
+        }));
       }
       setMessage({ text: `Đã cập nhật quyền cho ${editor.email || editor.user_id}` });
     } catch (error) {

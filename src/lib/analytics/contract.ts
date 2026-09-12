@@ -28,6 +28,7 @@ export const ANALYTICS_EVENT_NAMES = [
 export type AnalyticsEventName = (typeof ANALYTICS_EVENT_NAMES)[number];
 export type ClientAnalyticsEventName = Exclude<AnalyticsEventName, 'booking_received'>;
 export type AnalyticsConsent = 'unknown' | 'granted' | 'denied';
+export const ANALYTICS_CONSENT_VALUES = ['unknown', 'granted', 'denied'] as const;
 export type AnalyticsLanguage = 'vi' | 'en' | 'cn' | 'jp' | 'kr' | 'unknown';
 export type AnalyticsDeviceCategory = 'mobile' | 'tablet' | 'desktop' | 'unknown';
 export type AnalyticsTrafficSource =
@@ -121,6 +122,9 @@ const containsPiiLikeText = (value: string) => {
 export const isAnalyticsEventName = (value: unknown): value is AnalyticsEventName =>
   typeof value === 'string' && (ANALYTICS_EVENT_NAMES as readonly string[]).includes(value);
 
+export const isAnalyticsConsent = (value: unknown): value is AnalyticsConsent =>
+  typeof value === 'string' && (ANALYTICS_CONSENT_VALUES as readonly string[]).includes(value);
+
 export const isUuid = (value: unknown): value is string =>
   typeof value === 'string' && UUID_PATTERN.test(value);
 
@@ -138,7 +142,7 @@ export const normalizePagePath = (value: unknown): string | null => {
   return normalized || '/';
 };
 
-const validateCampaign = (value: unknown): AnalyticsCampaign | undefined => {
+export const validateAnalyticsCampaign = (value: unknown): AnalyticsCampaign | undefined => {
   if (value === undefined) return undefined;
   if (!isRecord(value)) return undefined;
 
@@ -202,7 +206,7 @@ export const validateAnalyticsEvent = (
     return { ok: false, reason: 'traffic_source is invalid' };
   }
 
-  const campaign = validateCampaign(value.campaign);
+  const campaign = validateAnalyticsCampaign(value.campaign);
   if (value.campaign !== undefined && !campaign) return { ok: false, reason: 'campaign is invalid' };
   const identifier = value.identifier;
   if (identifier !== undefined && !isOpaqueIdentifier(identifier)) {

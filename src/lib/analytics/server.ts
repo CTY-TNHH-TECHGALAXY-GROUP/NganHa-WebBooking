@@ -4,11 +4,12 @@ import {
   ANALYTICS_MAX_EVENTS_PER_BATCH,
   ANALYTICS_SCHEMA_VERSION,
   isBotUserAgent,
-  isOpaqueIdentifier,
   isTestCampaign,
   isTestPagePath,
+  isOpaqueIdentifier,
   isUuid,
   normalizePagePath,
+  validateAnalyticsCampaign,
   validateAnalyticsEvent,
   type AnalyticsEvent,
   type ServerAnalyticsEvent,
@@ -22,6 +23,13 @@ export { ANALYTICS_MAX_BODY_BYTES } from './contract';
 export type AnalyticsStore = {
   from: (table: string) => unknown;
   rpc?: (functionName: string) => unknown;
+};
+
+type AnalyticsUpsertBuilder = {
+  upsert: (
+    values: unknown,
+    options: { onConflict: string; ignoreDuplicates: boolean },
+  ) => PromiseLike<{ error?: unknown | null }>;
 };
 
 export type IngestRequestContext = {
@@ -108,6 +116,7 @@ export const createVerifiedBookingConversionEvent = (input: {
   pagePath?: string;
   language?: AnalyticsEvent['language'];
   deviceCategory?: AnalyticsEvent['device_category'];
+  campaign?: AnalyticsEvent['campaign'];
   nowMs?: number;
 }): ServerAnalyticsEvent => {
   if (!isOpaqueIdentifier(input.conversionKey) || input.conversionKey.length > 128) {
@@ -119,6 +128,8 @@ export const createVerifiedBookingConversionEvent = (input: {
 
   const nowMs = input.nowMs ?? Date.now();
   const pagePath = normalizePagePath(input.pagePath || '/unknown') || '/unknown';
+  const campaign = validateAnalyticsCampaign(input.campaign);
+  if (input.campaign !== undefined && !campaign) throw new Error('campaign is invalid');
   const eventId = createHash('sha256')
     .update(`webbooking:verified-booking:${input.conversionKey}`)
     .digest('hex');
@@ -134,9 +145,10 @@ export const createVerifiedBookingConversionEvent = (input: {
     language: input.language || 'unknown',
     device_category: input.deviceCategory || 'unknown',
     identifier: 'verified_booking',
+    ...(campaign && Object.keys(campaign).length > 0 ? { campaign } : {}),
     source: 'server',
     conversion_key: input.conversionKey,
-    is_test: false,
+    is_test: isTestCampaign(campaign) || isTestPagePath(pagePath),
     is_bot: false,
     is_admin: false,
   };
@@ -161,19 +173,18 @@ export const storeAnalyticsEvents = async (
       campaign_name: campaign?.name || '',
     };
   });
-  const insertBuilder = store.from(ANALYTICS_EVENTS_TABLE) as {
-    insert: (values: unknown, options: { onConflict: string; ignoreDuplicates: boolean }) => PromiseLike<{ error?: unknown | null }>;
-  };
-  const result = await insertBuilder.insert(rows, { onConflict: 'event_id', ignoreDuplicates: true });
+  const upsertBuilder = store.from(ANALYTICS_EVENTS_TABLE) as AnalyticsUpsertBuilder;
+  const result = await upsertBuilder.upsert(rows, { onConflict: 'event_id', ignoreDuplicates: true });
   const error = isRecord(result) ? result.error : null;
   if (isRecord(error)) throw new Error(typeof error.message === 'string' ? error.message : 'analytics storage failed');
   return { stored: events.length };
 };
 
 /**
- * Integration point for the booking owner: call this only after the verified
- * booking transaction/commit succeeds. Never call it from the client success
- * screen, before commit, or as part of the current /api/bookings route here.
+ * This helper is intentionally awaitable. The booking owner must call it only
+ * after the verified booking transaction/commit succeeds and isolate failures
+ * with a surrounding try/catch. Never call it from a client success screen or
+ * before the booking commit is verified.
  */
 export const recordVerifiedBookingConversion = async (
   store: AnalyticsStore,
@@ -181,10 +192,8 @@ export const recordVerifiedBookingConversion = async (
 ) => {
   const event = createVerifiedBookingConversionEvent(input);
   const { timestamp, campaign, ...eventFields } = event;
-  const insertBuilder = store.from(ANALYTICS_EVENTS_TABLE) as {
-    insert: (values: unknown, options: { onConflict: string; ignoreDuplicates: boolean }) => PromiseLike<{ error?: unknown | null }>;
-  };
-  const result = await insertBuilder.insert({
+  const upsertBuilder = store.from(ANALYTICS_EVENTS_TABLE) as AnalyticsUpsertBuilder;
+  const result = await upsertBuilder.upsert({
       ...eventFields,
       occurred_at: timestamp,
       campaign: campaign || {},

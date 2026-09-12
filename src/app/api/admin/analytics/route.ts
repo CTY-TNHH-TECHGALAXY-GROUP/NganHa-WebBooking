@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server';
 import { apiResponse } from '@/lib/api/apiResponse';
 import { requireAnalyticsRead } from '@/lib/analytics/adminAccess';
 import { getAnalyticsDashboard, type AnalyticsDashboardFilters } from '@/lib/analytics/dashboard';
+import { normalizePagePath } from '@/lib/analytics/contract';
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 const SUPPORTED_LANGUAGES = new Set(['vi', 'en', 'cn', 'jp', 'kr']);
@@ -32,7 +33,9 @@ export async function GET(request: NextRequest) {
     dateTo: dateOrDefault(search.get('date_to'), today),
     ...(language && SUPPORTED_LANGUAGES.has(language) ? { language } : {}),
     ...(device && SUPPORTED_DEVICES.has(device) ? { device } : {}),
-    ...(entryPage && entryPage.startsWith('/') && !entryPage.includes('?') ? { entryPage: entryPage.slice(0, 200) } : {}),
+    ...((entryPage && !entryPage.includes('?') && normalizePagePath(entryPage) === entryPage)
+      ? { entryPage: entryPage.slice(0, 200) }
+      : {}),
     ...(campaign && /^[a-zA-Z0-9][a-zA-Z0-9._-]{0,49}$/.test(campaign) ? { campaign } : {}),
     includeTest: search.get('include_test') === '1',
   };

@@ -95,6 +95,14 @@ export async function runAdminCapabilityTests() {
   assert.strictEqual(selfGrant.ok, false);
   if (!selfGrant.ok) assert.strictEqual(selfGrant.code, 'SELF_ESCALATION');
 
+  const caseVariantSelfGrant = validateEditorCapabilityUpdate({
+    user_id: ACTOR_ID.toUpperCase(),
+    capabilities: ['analytics.read'],
+    expected_revision: 1,
+  }, ACTOR_ID);
+  assert.strictEqual(caseVariantSelfGrant.ok, false);
+  if (!caseVariantSelfGrant.ok) assert.strictEqual(caseVariantSelfGrant.code, 'SELF_ESCALATION');
+
   const malformedGrant = validateEditorCapabilityUpdate({
     user_id: EDITOR_ID,
     capabilities: ['not-a-capability'],

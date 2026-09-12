@@ -4,6 +4,7 @@ import LayoutWrapper from "@/components/LayoutWrapper";
 import { TranslationProvider } from "@/components/TranslationProvider";
 import { SystemSettingsProvider } from "@/components/SystemSettingsProvider";
 import AnalyticsRuntime from "@/lib/analytics/AnalyticsRuntime";
+import AnalyticsConsentControl from "@/components/Analytics/AnalyticsConsentControl";
 import { getSupabaseAdmin } from "@/lib/supabase-server";
 import {
   sanitizeHomepageStyling,
@@ -154,6 +155,7 @@ const RootLayout = async ({
         <SystemSettingsProvider systemSettings={publicSystemSettings} aboutStoryContent={publicAboutStoryContent} brandHistory={brandHistory} footerContent={footerContent}>
           <TranslationProvider initialTranslations={translations}>
             <AnalyticsRuntime />
+            <AnalyticsConsentControl />
             <LayoutWrapper>{children}</LayoutWrapper>
           </TranslationProvider>
         </SystemSettingsProvider>

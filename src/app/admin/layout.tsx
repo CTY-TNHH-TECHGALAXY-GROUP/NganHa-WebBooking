@@ -6,14 +6,17 @@ import { usePathname, useRouter } from 'next/navigation';
 import { createBrowserClient } from '@supabase/ssr';
 import {
   LayoutDashboard, BookOpen, FileText, Wrench, Film, Search, Globe, Settings, ArchiveRestore,
-  Menu, X, ChevronRight, LogOut, ImagePlus, Compass, Home, Trees, Store
+  Menu, X, ChevronRight, LogOut, ImagePlus, Compass, Home, Trees, Store, BarChart3, UserCog, type LucideIcon
 } from 'lucide-react';
 import { verifyAdminSessionAction } from '@/lib/auth/adminAction';
 
 // 🔧 UI CONFIGURATION
 const SIDEBAR_WIDTH = '260px';
 
-const NAV_ITEMS = [
+type NavigationGate = 'analytics' | 'editorPermissions';
+type AdminNavItem = { label: string; href: string; icon: LucideIcon; gate?: NavigationGate };
+
+const NAV_ITEMS: AdminNavItem[] = [
   { label: 'Tổng quan', href: '/admin', icon: LayoutDashboard },
   { label: 'Câu chuyện (Our Story)', href: '/admin/our-story', icon: BookOpen },
   { label: 'Oria Home Spa', href: '/admin/oriahome', icon: Home },
@@ -31,6 +34,8 @@ const NAV_ITEMS = [
   { label: 'Nội dung Đa Ngôn Ngữ', href: '/admin/content/homepage', icon: Globe },
   { label: 'Cấu hình Giao diện', href: '/admin/homepage-styling', icon: LayoutDashboard },
   { label: 'Cấu hình SEO', href: '/admin/seo', icon: Search },
+  { label: 'Analytics', href: '/admin/analytics', icon: BarChart3, gate: 'analytics' },
+  { label: 'Quyền Editor', href: '/admin/editor-permissions', icon: UserCog, gate: 'editorPermissions' },
   { label: 'Cấu hình hệ thống', href: '/admin/system-settings', icon: Settings },
 ];
 
@@ -39,6 +44,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [authStatus, setAuthStatus] = useState<'loading' | 'authorized' | 'unauthorized'>('loading');
+  const [navigationAccess, setNavigationAccess] = useState({ analytics: false, editorPermissions: false });
 
   const isLoginPage = pathname === '/admin/login' || pathname?.startsWith('/admin/login/');
 
@@ -78,6 +84,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
         }
         router.replace('/admin/login');
       } else {
+        setNavigationAccess(res.navigation || { analytics: false, editorPermissions: false });
         setAuthStatus('authorized');
       }
     } catch (err) {
@@ -203,7 +210,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
 
         {/* Navigation */}
         <nav className="flex-1 py-4 px-3 space-y-1 overflow-y-auto">
-          {NAV_ITEMS.map((item) => {
+          {NAV_ITEMS.filter((item) => !item.gate || navigationAccess[item.gate]).map((item) => {
             const Icon = item.icon;
             const active = isActive(item.href);
             return (

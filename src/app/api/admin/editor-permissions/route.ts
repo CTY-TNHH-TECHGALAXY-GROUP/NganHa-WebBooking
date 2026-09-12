@@ -161,8 +161,11 @@ export const PUT = withCapability(async (request: NextRequest, { supabase, user 
     if (isMissingRpcError(error)) {
       return apiResponse.error('Chưa triển khai RPC cập nhật capability', 'CAPABILITY_SCHEMA_UNAVAILABLE', 503);
     }
-    if (error.code === '40001' || error.code === 'P0001' || /revision|concurr|changed/i.test(error.message || '')) {
+    if (error.code === '40001' || /revision|concurr|changed/i.test(error.message || '')) {
       return apiResponse.error('Capability editor đã được thay đổi ở cửa sổ khác', 'PERMISSION_CONFLICT', 409);
+    }
+    if (error.code === 'P0001') {
+      return apiResponse.error('Tài khoản không còn được phép thay đổi capability editor', 'FORBIDDEN', 403);
     }
     console.error('[admin/editor-permissions PUT] Capability update failed:', error.message);
     return apiResponse.error('Không thể cập nhật capability editor', 'DB_ERROR', 500);

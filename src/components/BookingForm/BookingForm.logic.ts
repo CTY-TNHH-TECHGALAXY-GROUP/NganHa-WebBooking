@@ -15,6 +15,7 @@ import {
   getGroupedServiceName,
 } from '@/lib/groupServices';
 import { INTENT_FILTERS, IntentKey } from '@/data/categoryImages';
+import { getAnalyticsAttributionHeaders } from '@/lib/analytics/client';
 
 // 🔧 CONFIGURATION
 const MAX_GUESTS = 10;
@@ -443,7 +444,7 @@ export const useBookingForm = () => {
 
         const res = await fetch('/api/bookings', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Idempotency-Key': payload.idempotencyKey },
+          headers: { 'Content-Type': 'application/json', 'Idempotency-Key': payload.idempotencyKey, ...getAnalyticsAttributionHeaders() },
           body: JSON.stringify(payload),
         });
 

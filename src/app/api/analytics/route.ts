@@ -28,6 +28,10 @@ const isRateLimited = (key: string, now: number) => {
 };
 
 export async function POST(request: NextRequest) {
+  if (request.headers.get('x-analytics-consent') !== 'granted') {
+    return apiResponse.error('Analytics consent is required', 'CONSENT_REQUIRED', 403);
+  }
+
   const now = Date.now();
   const networkKey = getRateKey(request);
   if (isRateLimited(networkKey, now)) {

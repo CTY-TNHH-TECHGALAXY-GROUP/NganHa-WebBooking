@@ -2,22 +2,15 @@ import { NextRequest, NextResponse } from 'next/server';
 import { withCapability } from '@/lib/api/withAuth';
 import {
   MAX_BCC_RECIPIENTS,
-  NOTIFICATION_SETTINGS_KEY,
   normalizeBccRecipients,
-  parseNotificationSettingsValue,
   readNotificationSettings,
+  saveNotificationSettings,
 } from '@/lib/notificationSettings';
 
 export const dynamic = 'force-dynamic';
 
 const NOTIFICATION_SETTINGS_CAPABILITY = 'notification_settings.manage' as const;
 const MAX_BODY_BYTES = 16 * 1024;
-
-function safeDatabaseErrorCode(error: unknown): string | undefined {
-  if (!error || typeof error !== 'object') return undefined;
-  const code = (error as Record<string, unknown>).code;
-  return typeof code === 'string' && /^[A-Z][A-Z0-9_:-]{1,31}$/.test(code) ? code : undefined;
-}
 
 function privateJson(data: unknown, status = 200) {
   return NextResponse.json(data, {
@@ -81,54 +74,34 @@ export const PATCH = withCapability(async (request: NextRequest, { supabase }) =
   const normalized = normalizeBccRecipients(requested.bccRecipients);
   if (!normalized.ok) return invalidRecipientsResponse();
 
-  const current = await readNotificationSettings(supabase);
-  if (current.state === 'unavailable') {
-    return privateJson(
-      { success: false, error: { code: 'NOTIFICATION_SETTINGS_UNAVAILABLE', message: 'Notification settings are temporarily unavailable.' } },
-      503,
-    );
-  }
-  if (current.state === 'invalid') {
-    return privateJson(
-      { success: false, error: { code: 'NOTIFICATION_SETTINGS_INVALID', message: 'Notification settings need repair before they can be edited.' } },
-      500,
-    );
-  }
-  if (requested.revision !== current.revision) {
+  const saved = await saveNotificationSettings(supabase, {
+    bccEnabled: requested.bccEnabled,
+    bccRecipients: normalized.recipients,
+    expectedRevision: requested.revision,
+  });
+
+  if (saved.state === 'conflict') {
     return privateJson(
       { success: false, error: { code: 'REVISION_CONFLICT', message: 'Notification settings changed. Reload and try again.' } },
       409,
     );
   }
-
-  const value = {
-    bccEnabled: requested.bccEnabled,
-    bccRecipients: normalized.recipients,
-    revision: current.revision + 1,
-  };
-  const { error } = await supabase
-    .from('SystemConfigs')
-    .upsert({
-      key: NOTIFICATION_SETTINGS_KEY,
-      value,
-      updated_at: new Date().toISOString(),
-    }, { onConflict: 'key' });
-
-  if (error) {
-    console.error('[NotificationSettings] Configuration write failed', {
-      code: safeDatabaseErrorCode(error),
-    });
+  if (saved.state === 'unavailable') {
     return privateJson(
-      { success: false, error: { code: 'NOTIFICATION_SETTINGS_WRITE_FAILED', message: 'Notification settings could not be saved.' } },
-      500,
+      { success: false, error: { code: 'NOTIFICATION_SETTINGS_UNAVAILABLE', message: 'Notification settings are temporarily unavailable.' } },
+      503,
     );
   }
-
-  // Keep this parser as the final shape check before returning the private result.
-  const saved = parseNotificationSettingsValue(value);
-  if (!saved.ok) {
+  if (saved.state === 'invalid') {
+    const code = saved.error === 'INVALID_RECIPIENTS' ? 'INVALID_BCC_RECIPIENTS' : 'INVALID_SETTINGS';
     return privateJson(
-      { success: false, error: { code: 'NOTIFICATION_SETTINGS_INVALID', message: 'Notification settings could not be normalized.' } },
+      { success: false, error: { code, message: 'Notification settings are invalid.' } },
+      400,
+    );
+  }
+  if (saved.state === 'failed') {
+    return privateJson(
+      { success: false, error: { code: 'NOTIFICATION_SETTINGS_WRITE_FAILED', message: 'Notification settings could not be saved.' } },
       500,
     );
   }
@@ -136,9 +109,9 @@ export const PATCH = withCapability(async (request: NextRequest, { supabase }) =
   return privateJson({
     success: true,
     data: {
-      bccEnabled: saved.bccEnabled,
-      bccRecipients: saved.bccRecipients,
-      revision: saved.revision,
+      bccEnabled: saved.value.bccEnabled,
+      bccRecipients: saved.value.bccRecipients,
+      revision: saved.value.revision,
     },
   });
 }, NOTIFICATION_SETTINGS_CAPABILITY, { mutation: true });

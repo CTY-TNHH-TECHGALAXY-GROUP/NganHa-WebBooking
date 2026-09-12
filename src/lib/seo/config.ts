@@ -276,27 +276,59 @@ export function normalizeSeoConfig(value: unknown): SeoConfig {
   };
 }
 
-export async function getSeoConfig(supabase?: SupabaseClient): Promise<SeoConfig> {
+export type SeoConfigSnapshot = {
+  config: SeoConfig;
+  rawValue: unknown | null;
+  exists: boolean;
+};
+
+export async function getSeoConfigSnapshot(supabase?: SupabaseClient): Promise<SeoConfigSnapshot> {
   try {
     const client = supabase || getSupabaseAdmin();
     const { data, error } = await client.from('SystemConfigs').select('value').eq('key', SEO_CONFIG_KEY).maybeSingle();
-    if (!error && data?.value) return normalizeSeoConfig(data.value);
+    if (!error && data) return { config: normalizeSeoConfig(data.value), rawValue: data.value ?? null, exists: true };
     if (error && error.code !== 'PGRST116') console.error('[seo] Error reading seo_config:', error.message);
   } catch (error) {
     if (!(error instanceof Error && error.message.includes('Missing Supabase env vars'))) {
       console.error('[seo] Error reading seo_config:', error);
     }
   }
-  return DEFAULT_SEO_CONFIG;
+  return { config: DEFAULT_SEO_CONFIG, rawValue: null, exists: false };
 }
 
-export async function saveSeoConfig(supabase: SupabaseClient, config: SeoConfig) {
-  const { error } = await supabase.from('SystemConfigs').upsert({
-    key: SEO_CONFIG_KEY,
+export async function getSeoConfig(supabase?: SupabaseClient): Promise<SeoConfig> {
+  return (await getSeoConfigSnapshot(supabase)).config;
+}
+
+export async function saveSeoConfigIfCurrent(
+  supabase: SupabaseClient,
+  config: SeoConfig,
+  expectedRawValue: unknown | null,
+  expectedRowExists: boolean,
+) {
+  if (!expectedRowExists) {
+    const { data, error } = await supabase.from('SystemConfigs').insert({
+      key: SEO_CONFIG_KEY,
+      value: config,
+      description: 'Cấu hình SEO/AEO đã kiểm soát bản nháp và xuất bản',
+    }).select('value').maybeSingle();
+    if (error) {
+      return { ok: false as const, conflict: error.code === '23505', error };
+    }
+    return data ? { ok: true as const, conflict: false as const } : { ok: false as const, conflict: true as const };
+  }
+
+  const expectedFilterValue = JSON.stringify(expectedRawValue);
+  if (!expectedFilterValue) {
+    return { ok: false as const, conflict: true as const };
+  }
+
+  const { data, error } = await supabase.from('SystemConfigs').update({
     value: config,
     description: 'Cấu hình SEO/AEO đã kiểm soát bản nháp và xuất bản',
-  }, { onConflict: 'key' });
-  return error ? { ok: false as const, error } : { ok: true as const };
+  }).eq('key', SEO_CONFIG_KEY).eq('value', expectedFilterValue).select('value').maybeSingle();
+  if (error) return { ok: false as const, conflict: false as const, error };
+  return data ? { ok: true as const, conflict: false as const } : { ok: false as const, conflict: true as const };
 }
 
 function getVersioned<T>(entry: VersionedLocale<T> | undefined, status: ContentStatus): T | undefined {

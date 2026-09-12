@@ -21,6 +21,8 @@ const mailDispatchStart = routeSource.indexOf('const mail = await sendBookingCon
 const writerReplayStart = routeSource.indexOf('if (writerReplay)');
 const reconcileStart = routeSource.indexOf('async function reconcileAfterUncertainCommit');
 const localizedServicesStart = routeSource.indexOf('function localizedServices');
+const conversionHelperStart = routeSource.indexOf('recordConversionAfterVerifiedCommit');
+const conversionCallStart = routeSource.indexOf('await recordConversionAfterVerifiedCommit(supabase, committedSnapshot');
 
 assert.ok(replayStart >= 0, 'booking route must retain an idempotent replay branch');
 assert.ok(mailDispatchStart > replayStart, 'mail dispatch must remain after replay handling');
@@ -36,6 +38,11 @@ assert.ok(writerReplayStart > replayStart && writerReplayStart < mailDispatchSta
 assert.doesNotMatch(routeSource.slice(writerReplayStart, mailDispatchStart), /sendBookingConfirmationEmail\s*\(/);
 assert.ok(reconcileStart >= 0 && localizedServicesStart > reconcileStart, 'uncertain commit reconciliation branch must remain explicit');
 assert.doesNotMatch(routeSource.slice(reconcileStart, localizedServicesStart), /sendBookingConfirmationEmail\s*\(/);
+assert.ok(conversionHelperStart >= 0, 'verified conversion helper boundary must remain explicit');
+assert.ok(conversionCallStart >= 0 && conversionCallStart < mailDispatchStart, 'verified conversion must be awaited before email dispatch');
+assert.doesNotMatch(routeSource, /void\s+recordVerifiedBookingConversion\s*\(/);
+assert.match(routeSource, /request\.headers\.get\('x-analytics-consent'\) !== 'granted'/);
+assert.match(routeSource, /rawSessionId && isUuid\(rawSessionId\)/);
 assert.match(routeSource, /BOOKING_TIME_IN_PAST/);
 assert.match(contractSource, /INVALID_PHONE/);
 assert.match(routeSource, /BOOKING_TEMPORARILY_UNAVAILABLE/);

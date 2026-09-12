@@ -11,6 +11,19 @@ export type ParsedNotificationSettings =
   | { ok: true; bccEnabled: boolean; bccRecipients: string[]; revision: number }
   | { ok: false; error: 'INVALID_SETTINGS' | 'INVALID_RECIPIENTS' | 'INVALID_REVISION' };
 
+export type NotificationSettingsValue = {
+  bccEnabled: boolean;
+  bccRecipients: string[];
+  revision: number;
+};
+
+export type NotificationSettingsSaveResult =
+  | { state: 'saved'; value: NotificationSettingsValue }
+  | { state: 'conflict' }
+  | { state: 'invalid'; error: 'INVALID_SETTINGS' | 'INVALID_RECIPIENTS' | 'INVALID_REVISION' }
+  | { state: 'unavailable' }
+  | { state: 'failed' };
+
 export type NotificationSettingsRead = {
   state: 'absent' | 'configured' | 'disabled' | 'unavailable' | 'invalid';
   bccEnabled: boolean;
@@ -29,6 +42,19 @@ type NotificationSettingsQuery = {
       maybeSingle: () => PromiseLike<{ data: Record<string, unknown> | null; error?: unknown }>;
     };
   };
+};
+
+type NotificationSettingsMutationBuilder = {
+  eq: (column: string, value: string) => NotificationSettingsMutationBuilder;
+  or: (filters: string) => NotificationSettingsMutationBuilder;
+  select: (columns: string) => {
+    maybeSingle: () => PromiseLike<{ data: Record<string, unknown> | null; error?: unknown }>;
+  };
+};
+
+type NotificationSettingsWriteTable = {
+  update: (values: Record<string, unknown>) => NotificationSettingsMutationBuilder;
+  insert: (values: Record<string, unknown>) => NotificationSettingsMutationBuilder;
 };
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -153,5 +179,85 @@ export async function readNotificationSettings(supabase: NotificationSettingsSup
       revision: 0,
       diagnostic: 'NOTIFICATION_SETTINGS_UNAVAILABLE',
     };
+  }
+}
+
+function isUniqueViolation(error: unknown): boolean {
+  return Boolean(error)
+    && typeof error === 'object'
+    && (error as Record<string, unknown>).code === '23505';
+}
+
+/**
+ * Persist settings with a database-side revision predicate. The read above is
+ * only for diagnostics; the conditional UPDATE/INSERT decides the winner.
+ */
+export async function saveNotificationSettings(
+  supabase: NotificationSettingsSupabase,
+  input: { bccEnabled: unknown; bccRecipients: unknown; expectedRevision: unknown },
+): Promise<NotificationSettingsSaveResult> {
+  if (typeof input.bccEnabled !== 'boolean') {
+    return { state: 'invalid', error: 'INVALID_SETTINGS' };
+  }
+
+  const recipients = normalizeBccRecipients(input.bccRecipients);
+  if (!recipients.ok) return { state: 'invalid', error: 'INVALID_RECIPIENTS' };
+
+  if (
+    typeof input.expectedRevision !== 'number'
+    || !Number.isSafeInteger(input.expectedRevision)
+    || input.expectedRevision < 0
+  ) {
+    return { state: 'invalid', error: 'INVALID_REVISION' };
+  }
+
+  const current = await readNotificationSettings(supabase);
+  if (current.state === 'unavailable') return { state: 'unavailable' };
+  if (current.state === 'invalid') return { state: 'invalid', error: 'INVALID_SETTINGS' };
+  if (current.revision !== input.expectedRevision) return { state: 'conflict' };
+
+  const value: NotificationSettingsValue = {
+    bccEnabled: input.bccEnabled,
+    bccRecipients: recipients.recipients,
+    revision: input.expectedRevision + 1,
+  };
+  const row = {
+    key: NOTIFICATION_SETTINGS_KEY,
+    value,
+    updated_at: new Date().toISOString(),
+  };
+
+  try {
+    const table = supabase.from('SystemConfigs') as NotificationSettingsWriteTable;
+
+    if (current.state === 'absent') {
+      // A unique-key insert makes first-time creation a single atomic winner.
+      const { error } = await table.insert(row).select('value').maybeSingle();
+      if (!error) return { state: 'saved', value };
+      if (isUniqueViolation(error)) return { state: 'conflict' };
+      console.error('[NotificationSettings] Initial configuration write failed', {
+        code: safeDatabaseErrorCode(error),
+      });
+      return { state: 'failed' };
+    }
+
+    const update = table.update({ value, updated_at: row.updated_at }).eq('key', NOTIFICATION_SETTINGS_KEY);
+    // Older rows may omit revision; the parser treats that shape as revision 0.
+    const conditionalUpdate = input.expectedRevision === 0
+      ? update.or('value->>revision.eq.0,value->>revision.is.null')
+      : update.eq('value->>revision', String(input.expectedRevision));
+
+    const { data, error } = await conditionalUpdate.select('value').maybeSingle();
+    if (error) {
+      console.error('[NotificationSettings] Conditional configuration write failed', {
+        code: safeDatabaseErrorCode(error),
+      });
+      return { state: 'failed' };
+    }
+    if (!data) return { state: 'conflict' };
+    return { state: 'saved', value };
+  } catch {
+    console.error('[NotificationSettings] Configuration write threw an exception');
+    return { state: 'failed' };
   }
 }

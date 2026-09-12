@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
-const { normalizeBccRecipients, parseNotificationSettingsValue, readNotificationSettings } = await import(
+const { normalizeBccRecipients, parseNotificationSettingsValue, readNotificationSettings, saveNotificationSettings } = await import(
   new URL('../src/lib/notificationSettings.ts', import.meta.url).href,
 );
 const { sendBookingConfirmationEmail } = await import(
@@ -54,6 +54,76 @@ function fakeSettingsClient(result: unknown) {
   return { from() { return builder; } };
 }
 
+function fakeConditionalSettingsClient(initialValue: Record<string, unknown> | null) {
+  let storedValue = initialValue;
+  const writes: string[] = [];
+
+  const readBuilder = {
+    select() { return readBuilder; },
+    eq() { return readBuilder; },
+    maybeSingle() {
+      return Promise.resolve({
+        data: storedValue ? { value: storedValue } : null,
+        error: null,
+      });
+    },
+  };
+
+  const client = {
+    from() {
+      return {
+        select() { return readBuilder; },
+        update(next: { value: Record<string, unknown> }) {
+          let revision: string | null = null;
+          let allowMissingRevision = false;
+          const builder = {
+            eq(column: string, value: string) {
+              if (column === 'value->>revision') revision = value;
+              return builder;
+            },
+            or(filters: string) {
+              allowMissingRevision = filters.includes('value->>revision.is.null');
+              if (filters.includes('value->>revision.eq.0')) revision = '0';
+              return builder;
+            },
+            select() {
+              return {
+                maybeSingle: async () => {
+                  const currentRevision = storedValue?.revision;
+                  const matches = storedValue !== null
+                    && ((revision === '0' && allowMissingRevision && currentRevision === undefined)
+                      || String(currentRevision) === revision);
+                  if (!matches) return { data: null, error: null };
+                  storedValue = next.value;
+                  writes.push('update');
+                  return { data: { value: storedValue }, error: null };
+                },
+              };
+            },
+          };
+          return builder;
+        },
+        insert(next: { value: Record<string, unknown> }) {
+          return {
+            select() {
+              return {
+                maybeSingle: async () => {
+                  if (storedValue !== null) return { data: null, error: { code: '23505' } };
+                  storedValue = next.value;
+                  writes.push('insert');
+                  return { data: { value: storedValue }, error: null };
+                },
+              };
+            },
+          };
+        },
+      };
+    },
+  };
+
+  return { client, writes, getValue: () => storedValue };
+}
+
 async function send(overrides: Record<string, unknown> = {}, rejected: string[] = []) {
   const sent: MailOptions[] = [];
   const result = await sendBookingConfirmationEmail(
@@ -99,6 +169,44 @@ async function run() {
     state: 'disabled', bccEnabled: false, bccRecipients: ['copy@oria.example.org'], revision: 2,
   });
   assert.equal((await readNotificationSettings(fakeSettingsClient({ data: null, error: { code: 'PGRST205' } }))).state, 'unavailable');
+
+  const initialRace = fakeConditionalSettingsClient(null);
+  const initialResults = await Promise.all([
+    saveNotificationSettings(initialRace.client, {
+      bccEnabled: true,
+      bccRecipients: ['one@oria.example.org'],
+      expectedRevision: 0,
+    }),
+    saveNotificationSettings(initialRace.client, {
+      bccEnabled: false,
+      bccRecipients: ['two@oria.example.org'],
+      expectedRevision: 0,
+    }),
+  ]);
+  assert.deepEqual(initialResults.map((result) => result.state).sort(), ['conflict', 'saved']);
+  assert.deepEqual(initialRace.writes, ['insert'], 'first-time creation must have one atomic winner');
+  assert.equal(initialRace.getValue()?.revision, 1);
+
+  const revisionRace = fakeConditionalSettingsClient({
+    bccEnabled: false,
+    bccRecipients: ['old@oria.example.org'],
+    revision: 4,
+  });
+  const revisionResults = await Promise.all([
+    saveNotificationSettings(revisionRace.client, {
+      bccEnabled: true,
+      bccRecipients: ['one@oria.example.org'],
+      expectedRevision: 4,
+    }),
+    saveNotificationSettings(revisionRace.client, {
+      bccEnabled: true,
+      bccRecipients: ['two@oria.example.org'],
+      expectedRevision: 4,
+    }),
+  ]);
+  assert.deepEqual(revisionResults.map((result) => result.state).sort(), ['conflict', 'saved']);
+  assert.deepEqual(revisionRace.writes, ['update'], 'same-revision writes must have one atomic winner');
+  assert.equal(revisionRace.getValue()?.revision, 5);
 
   const happy = await send({
     bccRecipients: ['one@oria.example.org', 'two@oria.example.org'],

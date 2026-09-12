@@ -16,7 +16,7 @@ import {
   ArrowLeft, ArrowRight, User, Phone, Mail, Calendar,
   Clock, MapPin, Check, Users, Sparkles, MessageSquare
 } from 'lucide-react';
-import { trackAnalytics } from '@/lib/analytics/client';
+import { getAnalyticsAttributionHeaders, trackAnalytics } from '@/lib/analytics/client';
 
 // 🔧 UI CONFIGURATION
 const ANIMATION_DURATION = 300;
@@ -176,10 +176,11 @@ const BookingCheckout = ({ lang, onBack }: BookingCheckoutProps) => {
         quantity: item.qty,
         customOptions: item.options || {},
       }));
+      const analyticsHeaders = getAnalyticsAttributionHeaders();
 
       const res = await fetch('/api/bookings', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Idempotency-Key': idempotencyKey },
+        headers: { 'Content-Type': 'application/json', 'Idempotency-Key': idempotencyKey, ...analyticsHeaders },
         body: JSON.stringify({
           idempotencyKey,
           quote: await fetchBookingQuote(selectedServices, lang),

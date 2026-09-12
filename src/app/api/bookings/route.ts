@@ -3,6 +3,15 @@ import { getSupabaseAdmin } from '@/lib/supabase-server';
 import { sendBookingConfirmationEmail } from '@/lib/mailer';
 import { readNotificationSettings } from '@/lib/notificationSettings';
 import {
+  isUuid,
+  normalizePagePath,
+  validateAnalyticsCampaign,
+  type AnalyticsCampaign,
+  type AnalyticsDeviceCategory,
+  type AnalyticsLanguage,
+} from '@/lib/analytics/contract';
+import { recordVerifiedBookingConversion } from '@/lib/analytics/server';
+import {
   BRANCH_DEFAULT,
   MAX_BODY_BYTES,
   PRIVATE_ROOM_SERVICE_ID,
@@ -40,6 +49,13 @@ type BookingSnapshot = {
   services?: unknown[];
   notes?: string | null;
   focusAreaNote?: string | null;
+};
+
+type AnalyticsAttribution = {
+  sessionId?: string;
+  pagePath?: string;
+  deviceCategory?: AnalyticsDeviceCategory;
+  campaign?: AnalyticsCampaign;
 };
 
 const jsonError = (code: string, message: string, status: number, fieldErrors?: unknown[]) =>
@@ -300,6 +316,63 @@ function responseForUnverifiedBooking(): NextResponse {
   );
 }
 
+function analyticsAttributionFromRequest(request: Request): AnalyticsAttribution {
+  if (request.headers.get('x-analytics-consent') !== 'granted') return {};
+  const rawSessionId = request.headers.get('x-analytics-session-id');
+  const rawPagePath = request.headers.get('x-analytics-page-path');
+  const rawDevice = request.headers.get('x-analytics-device');
+  const rawCampaign = request.headers.get('x-analytics-campaign');
+  const pagePath = rawPagePath ? normalizePagePath(rawPagePath) : null;
+  const deviceCategory: AnalyticsDeviceCategory | undefined = rawDevice === 'mobile'
+    || rawDevice === 'tablet'
+    || rawDevice === 'desktop'
+    || rawDevice === 'unknown'
+    ? rawDevice
+    : undefined;
+  let campaign: AnalyticsCampaign | undefined;
+  if (rawCampaign) {
+    try {
+      campaign = validateAnalyticsCampaign(JSON.parse(rawCampaign));
+    } catch {
+      campaign = undefined;
+    }
+  }
+  return {
+    ...(rawSessionId && isUuid(rawSessionId) ? { sessionId: rawSessionId } : {}),
+    ...(pagePath ? { pagePath } : {}),
+    ...(deviceCategory ? { deviceCategory } : {}),
+    ...(campaign ? { campaign } : {}),
+  };
+}
+
+async function recordConversionAfterVerifiedCommit(
+  supabase: any,
+  snapshot: BookingSnapshot,
+  attribution: AnalyticsAttribution,
+) {
+  if (!attribution.sessionId) return;
+  const language = ['vi', 'en', 'cn', 'jp', 'kr'].includes(snapshot.lang)
+    ? snapshot.lang as AnalyticsLanguage
+    : 'unknown';
+  try {
+    await recordVerifiedBookingConversion(supabase, {
+      conversionKey: `booking:${snapshot.bookingId}`,
+      sessionId: attribution.sessionId,
+      pagePath: attribution.pagePath || `/${language}/new-user/standard/checkout`,
+      language,
+      deviceCategory: attribution.deviceCategory,
+      campaign: attribution.campaign,
+    });
+  } catch (error: any) {
+    // Analytics is isolated after the booking commit; a storage outage must not
+    // change the verified booking or email result.
+    console.error('[API Bookings] Verified conversion analytics unavailable', {
+      bookingId: snapshot.bookingId,
+      code: error?.code || 'unknown',
+    });
+  }
+}
+
 function dateOnly(value: unknown): string {
   if (typeof value !== 'string') return '';
   return value.slice(0, 10);
@@ -548,24 +621,26 @@ function replayLinesMatch(snapshot: BookingSnapshot, booking: NormalizedBooking)
   return saved.length > 0 && stableStringify(saved) === stableStringify(current);
 }
 
-async function resolveReplayConflict(supabase: any, key: string, booking: NormalizedBooking): Promise<NextResponse> {
+async function resolveReplayConflict(supabase: any, key: string, booking: NormalizedBooking, attribution: AnalyticsAttribution): Promise<NextResponse> {
   const replay = await findReplay(supabase, key, { waitForItems: true });
   if (replay.state === 'complete') {
     if (!replayIdentityMatches(replay.snapshot, booking) || !replayLinesMatch(replay.snapshot, booking)) {
       return jsonError('IDEMPOTENCY_KEY_REUSED', 'This booking request key is already linked to a different booking.', 409);
     }
+    await recordConversionAfterVerifiedCommit(supabase, replay.snapshot, attribution);
     return responseForSnapshot(replay.snapshot, true);
   }
   if (replay.state === 'incomplete') return responseForIncompleteBooking(replay.bookingId);
   return responseForUnverifiedBooking();
 }
 
-async function reconcileAfterUncertainCommit(supabase: any, key: string, booking: NormalizedBooking): Promise<NextResponse> {
+async function reconcileAfterUncertainCommit(supabase: any, key: string, booking: NormalizedBooking, attribution: AnalyticsAttribution): Promise<NextResponse> {
   const replay = await findReplay(supabase, key, { waitForItems: true });
   if (replay.state === 'complete') {
     if (!replayIdentityMatches(replay.snapshot, booking) || !replayLinesMatch(replay.snapshot, booking)) {
       return jsonError('IDEMPOTENCY_KEY_REUSED', 'This booking request key is already linked to a different booking.', 409);
     }
+    await recordConversionAfterVerifiedCommit(supabase, replay.snapshot, attribution);
     return responseForSnapshot(replay.snapshot, true);
   }
   if (replay.state === 'incomplete') return responseForIncompleteBooking(replay.bookingId);
@@ -735,6 +810,7 @@ export async function POST(request: Request) {
   const parsed = parseBookingRequest(body, request, { allowPastForReplay: true });
   if (!parsed.ok) return jsonError('VALIDATION_ERROR', 'Please correct the highlighted fields.', 400, parsed.errors);
   const booking = parsed.value;
+  const analyticsAttribution = analyticsAttributionFromRequest(request);
   // Preserve compatibility with older clients while keeping retries stable for
   // the current checkout, which supplies an explicit request key.
   const finalKey = booking.idempotencyKey || `hash_${booking.intentFingerprint.slice(0, 48)}`;
@@ -747,6 +823,7 @@ export async function POST(request: Request) {
     if (!replayIdentityMatches(replay.snapshot, booking) || !replayLinesMatch(replay.snapshot, booking)) {
       return jsonError('IDEMPOTENCY_KEY_REUSED', 'This booking request key is already linked to a different booking.', 409);
     }
+    await recordConversionAfterVerifiedCommit(supabase, replay.snapshot, analyticsAttribution);
     return responseForSnapshot(replay.snapshot, true);
   }
   if (replay.state === 'incomplete') return responseForIncompleteBooking(replay.bookingId);
@@ -817,17 +894,17 @@ export async function POST(request: Request) {
     try {
       const result = await commitBookingAtomically(supabase, bookingPayload, items);
       if (result.state === 'incomplete') return responseForIncompleteBooking(result.bookingId);
-      if (result.state === 'unavailable') return reconcileAfterUncertainCommit(supabase, finalKey, canonicalBooking);
+      if (result.state === 'unavailable') return reconcileAfterUncertainCommit(supabase, finalKey, canonicalBooking, analyticsAttribution);
       committedId = result.bookingId;
       writerReplay = result.replay;
     } catch (writerError: any) {
-      if (isWriterIdempotencyConflict(writerError)) return resolveReplayConflict(supabase, finalKey, canonicalBooking);
+      if (isWriterIdempotencyConflict(writerError)) return resolveReplayConflict(supabase, finalKey, canonicalBooking, analyticsAttribution);
       if (isBookingIdentifierConflict(writerError)) {
         committedId = '';
         continue;
       }
       if (isRetryableWriterError(writerError)) {
-        return reconcileAfterUncertainCommit(supabase, finalKey, canonicalBooking);
+        return reconcileAfterUncertainCommit(supabase, finalKey, canonicalBooking, analyticsAttribution);
       }
       const mapped = mapWriterError(writerError);
       if (mapped) return mapped;
@@ -846,6 +923,7 @@ export async function POST(request: Request) {
     if (!replayIdentityMatches(committedSnapshot, canonicalBooking) || !replayLinesMatch(committedSnapshot, canonicalBooking) || committedSnapshot.totalAmount !== pricing.totalAmountVND) {
       return jsonError('IDEMPOTENCY_KEY_REUSED', 'This booking request key is already linked to a different booking.', 409);
     }
+    await recordConversionAfterVerifiedCommit(supabase, committedSnapshot, analyticsAttribution);
     return responseForSnapshot(committedSnapshot, true);
   }
   // Never acknowledge or email from a read that proves only a partial item
@@ -854,6 +932,8 @@ export async function POST(request: Request) {
   if (!replayIdentityMatches(committedSnapshot, canonicalBooking) || !replayLinesMatch(committedSnapshot, canonicalBooking) || committedSnapshot.totalAmount !== pricing.totalAmountVND) {
     return responseForIncompleteBooking(committedId);
   }
+
+  await recordConversionAfterVerifiedCommit(supabase, committedSnapshot, analyticsAttribution);
 
   const receptionEmail = await resolveReceptionEmail(supabase);
   const notificationSettings = await readNotificationSettings(supabase);

@@ -16,6 +16,7 @@ import {
   type ClientAnalyticsEventName,
   type AnalyticsEvent,
   isUuid,
+  isAnalyticsConsent,
   validateAnalyticsEvent,
   normalizePagePath,
 } from './contract';
@@ -62,7 +63,7 @@ const safeStorage = (kind: 'local' | 'session'): Storage | null => {
 
 export const getAnalyticsConsent = (): AnalyticsConsent => {
   const value = safeStorage('local')?.getItem(ANALYTICS_CONSENT_KEY);
-  return value === 'granted' || value === 'denied' ? value : 'unknown';
+  return isAnalyticsConsent(value) && value !== 'unknown' ? value : 'unknown';
 };
 
 export const setAnalyticsConsent = (consent: AnalyticsConsent) => {
@@ -109,6 +110,28 @@ const getSessionId = () => {
   } catch {
     return getMemorySession();
   }
+};
+
+/** Only expose the anonymous session used for conversion attribution after opt-in. */
+export const getAnalyticsSessionId = (): string | null => {
+  if (!isBrowser() || getAnalyticsConsent() !== 'granted') return null;
+  const sessionId = getSessionId();
+  return isUuid(sessionId) ? sessionId : null;
+};
+
+export const getAnalyticsAttributionHeaders = (): Record<string, string> => {
+  const sessionId = getAnalyticsSessionId();
+  const pagePath = isBrowser() ? normalizePagePath(window.location.pathname) : null;
+  if (!sessionId || !pagePath) return {};
+  const deviceCategory = getDeviceCategory();
+  const campaign = getCampaign();
+  return {
+    'X-Analytics-Consent': 'granted',
+    'X-Analytics-Session-Id': sessionId,
+    'X-Analytics-Page-Path': pagePath,
+    'X-Analytics-Device': deviceCategory,
+    ...(campaign ? { 'X-Analytics-Campaign': JSON.stringify(campaign) } : {}),
+  };
 };
 
 const getDeviceCategory = (): AnalyticsDeviceCategory => {
@@ -195,19 +218,14 @@ export const trackAnalytics = (eventName: ClientAnalyticsEventName, fields: Clie
 };
 
 const sendBatch = async (events: QueuedEvent[], beacon: boolean) => {
-  if (!events.length || !isBrowser()) return true;
+  if (!events.length || !isBrowser() || getAnalyticsConsent() !== 'granted') return true;
   const body = JSON.stringify({ events });
   if (new TextEncoder().encode(body).byteLength > ANALYTICS_MAX_BODY_BYTES) return false;
-
-  if (beacon && typeof navigator.sendBeacon === 'function') {
-    const sent = navigator.sendBeacon('/api/analytics', new Blob([body], { type: 'application/json' }));
-    if (sent) return true;
-  }
 
   try {
     const response = await fetch('/api/analytics', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'X-Analytics-Consent': 'granted' },
       body,
       keepalive: beacon,
       credentials: 'same-origin',
@@ -230,7 +248,9 @@ export const flushAnalytics = async (options: { beacon?: boolean } = {}) => {
   flushInFlight = true;
   const events = queue.splice(0, ANALYTICS_MAX_EVENTS_PER_BATCH);
   const sent = await sendBatch(events, options.beacon === true);
-  if (!sent && !options.beacon) queue = [...events, ...queue].slice(-ANALYTICS_MAX_EVENTS_PER_BATCH);
+  if (!sent && !options.beacon && getAnalyticsConsent() === 'granted') {
+    queue = [...events, ...queue].slice(-ANALYTICS_MAX_EVENTS_PER_BATCH);
+  }
   flushInFlight = false;
   if (flushAgain) {
     const nextOptions = { beacon: flushAgainBeacon };

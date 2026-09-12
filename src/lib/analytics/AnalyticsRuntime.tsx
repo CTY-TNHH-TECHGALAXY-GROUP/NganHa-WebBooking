@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import {
   analyticsConsentEventName,
@@ -12,12 +12,19 @@ import {
 
 export default function AnalyticsRuntime() {
   const pathname = usePathname() || '/';
-  const firstPathRef = useRef<string | null>(null);
+  const trackedPathRef = useRef<string | null>(null);
+
+  const trackCurrentPath = useCallback(() => {
+    if (getAnalyticsConsent() !== 'granted' || trackedPathRef.current === pathname) return;
+    trackedPathRef.current = pathname;
+    trackAnalytics('page_view', { page_path: pathname });
+  }, [pathname]);
 
   useEffect(() => {
     const syncRuntime = () => {
       if (getAnalyticsConsent() === 'granted') startAnalyticsRuntime();
       else stopAnalyticsRuntime();
+      trackCurrentPath();
     };
 
     syncRuntime();
@@ -27,13 +34,11 @@ export default function AnalyticsRuntime() {
       window.removeEventListener(analyticsConsentEventName, syncRuntime);
       window.removeEventListener('storage', syncRuntime);
     };
-  }, []);
+  }, [pathname, trackCurrentPath]);
 
   useEffect(() => {
-    if (firstPathRef.current === pathname) return;
-    firstPathRef.current = pathname;
-    trackAnalytics('page_view', { page_path: pathname });
-  }, [pathname]);
+    trackCurrentPath();
+  }, [pathname, trackCurrentPath]);
 
   return null;
 }

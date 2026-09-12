@@ -5,7 +5,7 @@ import { withAuth } from '@/lib/api/withAuth';
 import { apiResponse } from '@/lib/api/apiResponse';
 import { recordContentRevisions } from '@/lib/api/contentRevision';
 import { hasSeoAeoCapability } from '@/lib/seo/capabilities';
-import { getSeoConfig, saveSeoConfig } from '@/lib/seo/config';
+import { getSeoConfigSnapshot, saveSeoConfigIfCurrent } from '@/lib/seo/config';
 import { isSupportedSeoLocale, isValidSeoRouteKey, validateAeoFields, validateSeoFields } from '@/lib/seo/validation';
 import { AEO_CAPABILITIES, SEO_CAPABILITIES, type ContentStatus, type SeoConfig } from '@/lib/seo/types';
 
@@ -45,8 +45,11 @@ export const GET = withAuth(async (request, access) => {
     return apiResponse.error('Tài khoản chưa được cấp quyền đọc nội dung SEO/AEO', 'CAPABILITY_REQUIRED', 403);
   }
 
-  const config = await getSeoConfig(access.supabase);
-  return apiResponse.success(getSectionDocument(config, section));
+  const snapshot = await getSeoConfigSnapshot(access.supabase);
+  return apiResponse.success({
+    ...getSectionDocument(snapshot.config, section),
+    revision: revisionToken(snapshot.rawValue),
+  });
 });
 
 export const POST = withAuth(async (request: NextRequest, access) => {
@@ -89,11 +92,9 @@ export const POST = withAuth(async (request: NextRequest, access) => {
   const validated = section === 'seo' ? validateSeoFields(rawData) : validateAeoFields(rawData);
   if (!validated.ok) return apiResponse.error(validated.errors.join('; '), 'INVALID_CONTENT', 422);
 
-  const config = await getSeoConfig(access.supabase);
-  const currentPage = section === 'seo' ? config.pages[routeKey] : config.aeo[routeKey];
-  const currentLocale = section === 'seo' && routeKey === 'global' ? config.global[locale] : currentPage?.locales[locale];
-  const currentValue = currentLocale?.[status];
-  if (body.expectedRevision !== undefined && body.expectedRevision !== revisionToken(currentValue || null)) {
+  const snapshot = await getSeoConfigSnapshot(access.supabase);
+  const config = snapshot.config;
+  if (typeof body.expectedRevision !== 'string' || body.expectedRevision !== revisionToken(snapshot.rawValue)) {
     return apiResponse.error('Nội dung đã được thay đổi ở cửa sổ khác. Hãy tải lại trước khi lưu.', 'SEO_CONTENT_CONFLICT', 409);
   }
 
@@ -113,8 +114,11 @@ export const POST = withAuth(async (request: NextRequest, access) => {
     nextConfig.aeo[routeKey] = page;
   }
 
-  const saved = await saveSeoConfig(access.supabase, nextConfig);
-  if (!saved.ok) return apiResponse.error('Không thể lưu cấu hình SEO/AEO', 'DB_ERROR', 500);
+  const saved = await saveSeoConfigIfCurrent(access.supabase, nextConfig, snapshot.rawValue, snapshot.exists);
+  if (!saved.ok) {
+    if (saved.conflict) return apiResponse.error('Nội dung đã được thay đổi ở cửa sổ khác. Hãy tải lại trước khi lưu.', 'SEO_CONTENT_CONFLICT', 409);
+    return apiResponse.error('Không thể lưu cấu hình SEO/AEO', 'DB_ERROR', 500);
+  }
 
   await recordContentRevisions(access.supabase, [{
     content_key: `SystemConfigs:${section}:${routeKey}:${locale}:${status}`,
@@ -127,6 +131,6 @@ export const POST = withAuth(async (request: NextRequest, access) => {
     section,
     document: getSectionDocument(nextConfig, section),
     status: status as ContentStatus,
-    revision: revisionToken(validated.value),
+    revision: revisionToken(nextConfig),
   });
 });
