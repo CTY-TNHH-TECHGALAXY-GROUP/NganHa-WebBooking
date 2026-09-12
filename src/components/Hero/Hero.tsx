@@ -211,6 +211,8 @@ const Hero = ({ initialHeroConfig, initialVideos }: HeroProps) => {
   const [readyAttemptKey, setReadyAttemptKey] = useState<string | null>(null);
   const [autoplayBlocked, setAutoplayBlocked] = useState(false);
   const [mediaFailure, setMediaFailure] = useState<MediaFailure | null>(null);
+  const [heroInViewport, setHeroInViewport] = useState(true);
+  const [documentVisible, setDocumentVisible] = useState(true);
 
   const videoCount = homepageVideos?.length ?? 0;
 
@@ -273,6 +275,26 @@ const Hero = ({ initialHeroConfig, initialVideos }: HeroProps) => {
   const startedAttemptKeyRef = useRef<string | null>(null);
   const failedAttemptKeyRef = useRef<string | null>(null);
   const pendingFrameRequestRef = useRef<PendingFrameRequest | null>(null);
+
+  useEffect(() => {
+    const hero = document.getElementById('hero');
+    if (!hero || !('IntersectionObserver' in window)) return;
+
+    const observer = new IntersectionObserver(([entry]) => {
+      setHeroInViewport(Boolean(entry?.isIntersecting));
+    }, { threshold: 0.01 });
+    observer.observe(hero);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const syncDocumentVisibility = () => {
+      setDocumentVisible(document.visibilityState === 'visible');
+    };
+    syncDocumentVisibility();
+    document.addEventListener('visibilitychange', syncDocumentVisibility);
+    return () => document.removeEventListener('visibilitychange', syncDocumentVisibility);
+  }, []);
 
   const activeVideo = selectionReady && homepageVideos
     ? homepageVideos[activeVideoIndex] || homepageVideos[0]
@@ -443,7 +465,7 @@ const Hero = ({ initialHeroConfig, initialVideos }: HeroProps) => {
 
   // Auto-retry silently in background when video fails or times out without disturbing the spinner
   useEffect(() => {
-    if (playbackState !== 'error') return;
+    if (playbackState !== 'error' || !heroInViewport || !documentVisible) return;
 
     const timer = setTimeout(() => {
       if (videoCount > 1) {
@@ -454,7 +476,7 @@ const Hero = ({ initialHeroConfig, initialVideos }: HeroProps) => {
     }, 3000);
 
     return () => clearTimeout(timer);
-  }, [playbackState, videoCount, handleNextVideo, handleRetry]);
+  }, [documentVisible, handleNextVideo, handleRetry, heroInViewport, playbackState, videoCount]);
 
   const handleManualPlay = useCallback(() => {
     const video = videoRef.current;
@@ -493,6 +515,19 @@ const Hero = ({ initialHeroConfig, initialVideos }: HeroProps) => {
     playbackState === 'ready' &&
     readyAttemptKey === activeAttemptKey,
   );
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    if (!heroInViewport || !documentVisible) {
+      video.pause();
+      return;
+    }
+    if (heroReady && activeAttemptKey && !autoplayBlocked) {
+      void video.play().catch(() => undefined);
+    }
+  }, [activeAttemptKey, autoplayBlocked, documentVisible, heroInViewport, heroReady]);
+
   return (
     <section id="hero" className="hero-section hero-section--cinematic" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
       <style>{'@keyframes hero-video-loading-spin { to { transform: rotate(360deg); } }'}</style>

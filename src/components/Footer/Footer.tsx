@@ -343,6 +343,8 @@ const Footer = () => {
                         src={value.imgSrc!} 
                         alt={itemTitle} 
                         data-no-preview="true"
+                        loading="lazy"
+                        decoding="async"
                         className="w-16 h-16 md:w-20 md:h-20 object-contain pointer-events-none"
                         style={value.applyGoldFilter ? {
                           filter: 'brightness(0) saturate(100%) invert(92%) sepia(16%) saturate(444%) hue-rotate(350deg) brightness(101%) contrast(94%)',

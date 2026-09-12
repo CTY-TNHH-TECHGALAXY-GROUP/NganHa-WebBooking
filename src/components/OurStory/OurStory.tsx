@@ -81,6 +81,8 @@ const OurStory = () => {
               <img
                 src={config.locationSection.cityImage || '/images/about-street.png'}
                 alt={getLocalizedText(config.locationSection.title, lang)}
+                loading="lazy"
+                decoding="async"
               />
               {config.locationSection.cityImageWatermarkEnabled !== false && (
                 <div

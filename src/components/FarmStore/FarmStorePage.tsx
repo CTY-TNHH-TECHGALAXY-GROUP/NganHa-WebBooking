@@ -12,6 +12,7 @@ import {
   isVideoUrl,
   type FarmStoreConfig,
 } from '@/data/farmStoreData';
+import ViewportVideo from '@/components/Shared/ViewportVideo';
 import styles from './FarmStorePage.module.css';
 
 interface FarmStorePageProps {
@@ -93,13 +94,11 @@ export default function FarmStorePage({
         <div className={styles.heroBackdrop}>
           {Boolean(config.heroImage) && (
             isVideoUrl(config.heroImage) ? (
-              <video
+              <ViewportVideo
                 src={config.heroImage}
-                autoPlay
-                muted
                 loop
                 playsInline
-                preload="auto"
+                eager
                 aria-label={getText(config.pageTitle)}
               />
             ) : (
@@ -163,13 +162,10 @@ export default function FarmStorePage({
             transition={{ duration: 0.7 }}
           >
             {isVideoUrl(config.storyPhotos?.[0]) ? (
-              <video
+              <ViewportVideo
                 src={config.storyPhotos?.[0]}
-                autoPlay
-                muted
                 loop
                 playsInline
-                preload="metadata"
               />
             ) : (
               <img
@@ -218,7 +214,7 @@ export default function FarmStorePage({
             {Boolean(config.storyPhotos?.[1]) && (
               <div className={styles.diptychFrame}>
                 {isVideoUrl(config.storyPhotos?.[1]) ? (
-                  <video src={config.storyPhotos?.[1]} autoPlay muted loop playsInline preload="metadata" />
+                  <ViewportVideo src={config.storyPhotos?.[1]} loop playsInline />
                 ) : (
                   <img src={config.storyPhotos?.[1]} alt="Oria Farm Harvest 1" loading="lazy" />
                 )}
@@ -234,7 +230,7 @@ export default function FarmStorePage({
             {Boolean(config.storyPhotos?.[2]) && (
               <div className={styles.diptychFrame}>
                 {isVideoUrl(config.storyPhotos?.[2]) ? (
-                  <video src={config.storyPhotos?.[2]} autoPlay muted loop playsInline preload="metadata" />
+                  <ViewportVideo src={config.storyPhotos?.[2]} loop playsInline />
                 ) : (
                   <img src={config.storyPhotos?.[2]} alt="Oria Farm Harvest 2" loading="lazy" />
                 )}
@@ -311,7 +307,7 @@ export default function FarmStorePage({
             {Boolean(config.storyPhotos?.[3]) && (
               <div className={styles.diptychFrame}>
                 {isVideoUrl(config.storyPhotos?.[3]) ? (
-                  <video src={config.storyPhotos?.[3]} autoPlay muted loop playsInline preload="metadata" />
+                  <ViewportVideo src={config.storyPhotos?.[3]} loop playsInline />
                 ) : (
                   <img src={config.storyPhotos?.[3]} alt="Oria Farm Beverage 1" loading="lazy" />
                 )}
@@ -327,7 +323,7 @@ export default function FarmStorePage({
             {Boolean(config.storyPhotos?.[4]) && (
               <div className={styles.diptychFrame}>
                 {isVideoUrl(config.storyPhotos?.[4]) ? (
-                  <video src={config.storyPhotos?.[4]} autoPlay muted loop playsInline preload="metadata" />
+                  <ViewportVideo src={config.storyPhotos?.[4]} loop playsInline />
                 ) : (
                   <img src={config.storyPhotos?.[4]} alt="Oria Farm Beverage 2" loading="lazy" />
                 )}
@@ -371,13 +367,10 @@ export default function FarmStorePage({
             transition={{ duration: 0.7 }}
           >
             {isVideoUrl(config.storyPhotos?.[5]) ? (
-              <video
+              <ViewportVideo
                 src={config.storyPhotos?.[5]}
-                autoPlay
-                muted
                 loop
                 playsInline
-                preload="metadata"
               />
             ) : (
               <img
@@ -420,13 +413,10 @@ export default function FarmStorePage({
                   transition={{ duration: 0.6, delay: (idx % 2) * 0.1 }}
                 >
                   {isVideoUrl(item.url) ? (
-                    <video
+                    <ViewportVideo
                       src={item.url}
-                      autoPlay
-                      muted
                       loop
                       playsInline
-                      preload="metadata"
                     />
                   ) : (
                     <img

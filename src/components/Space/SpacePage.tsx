@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useTranslation } from '@/components/TranslationProvider';
 import { useSystemSettings } from '@/components/SystemSettingsProvider';
 import { resolveConfigUrl } from '@/lib/config/urlSettings';
+import ViewportVideo from '@/components/Shared/ViewportVideo';
 import styles from './SpacePage.module.css';
 import { getSpaceContent } from './SpacePage.localization';
 
@@ -173,33 +174,49 @@ export default function SpacePage({ initialMedia }: { initialMedia?: any } = {})
   }, [contentMedia, space.gallery]);
 
 // Move MediaRenderer outside to prevent remounts on every SpacePage render
-const MediaRenderer = ({ mediaObj, className, alt, onEnded }: { mediaObj: {src: string, type: string, objectPosition?: string}, className?: string, alt?: string, onEnded?: () => void }) => {
+const MediaRenderer = ({ mediaObj, className, alt, onEnded, eager = false }: { mediaObj: {src: string, type: string, objectPosition?: string}, className?: string, alt?: string, onEnded?: () => void, eager?: boolean }) => {
+  const mediaNodeRef = useRef<HTMLImageElement | null>(null);
+  const [mediaVisible, setMediaVisible] = useState(false);
+
   useEffect(() => {
-    if (mediaObj.type !== 'video' && onEnded) {
-      const timer = setTimeout(() => {
-        onEnded();
-      }, 6000);
-      return () => clearTimeout(timer);
+    if (mediaObj.type === 'video' || !onEnded) return;
+
+    setMediaVisible(false);
+    const node = mediaNodeRef.current;
+    if (!node || !('IntersectionObserver' in window)) {
+      setMediaVisible(true);
+      return;
     }
+
+    const observer = new IntersectionObserver(([entry]) => {
+      setMediaVisible(Boolean(entry?.isIntersecting));
+    }, { threshold: 0.01 });
+    observer.observe(node);
+    return () => observer.disconnect();
   }, [mediaObj.src, mediaObj.type, onEnded]);
+
+  useEffect(() => {
+    if (mediaObj.type === 'video' || !onEnded || !mediaVisible) return;
+    const timer = setTimeout(onEnded, 6000);
+    return () => clearTimeout(timer);
+  }, [mediaObj.src, mediaObj.type, mediaVisible, onEnded]);
 
   if (mediaObj.type === 'video') {
     return (
-      <video 
-        key={mediaObj.src} // Ensure video element updates properly when src changes
-        src={mediaObj.src} 
+      <ViewportVideo
+        key={mediaObj.src}
+        src={mediaObj.src}
         className={className} 
-        autoPlay 
         muted 
-        loop={!onEnded} 
+        loop={!onEnded}
         playsInline 
         onEnded={onEnded}
-        preload="auto"
+        eager={eager}
         style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: mediaObj.objectPosition || 'center', display: 'block' }}
       />
     );
   }
-  return <img key={mediaObj.src} src={mediaObj.src} alt={alt || ""} className={className} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: mediaObj.objectPosition || 'center', display: 'block' }} />;
+  return <img ref={mediaNodeRef} key={mediaObj.src} src={mediaObj.src} alt={alt || ""} className={className} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: mediaObj.objectPosition || 'center', display: 'block' }} />;
 };
 
   useEffect(() => {
@@ -286,7 +303,7 @@ const MediaRenderer = ({ mediaObj, className, alt, onEnded }: { mediaObj: {src: 
       </div>
 
       <section className={styles.hero} id="hero">
-        <MediaRenderer mediaObj={getMedia('hero', defaultMedia.hero)} alt="Oria Spa" className={styles.heroMedia} />
+        <MediaRenderer mediaObj={getMedia('hero', defaultMedia.hero)} alt="Oria Spa" className={styles.heroMedia} eager />
         <div className={styles['media-watermark']}></div>
         <div className={styles.heroCopy}>
           <h1>{space.hero.title}<br/><em>{space.hero.titleEm}</em></h1>

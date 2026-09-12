@@ -511,6 +511,9 @@ const DEFAULT_HISTORY_IMAGE_PATHS = new Set(
   chaptersVi.flatMap(chapter => chapter.scenes.map(scene => scene.image)).filter(Boolean),
 );
 
+// Keeps the stage and thumbnail dimensions stable without starting an image request.
+const HISTORY_MEDIA_PLACEHOLDER = 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
+
 /** Keep confirmed custom media intact, but repair the old extension used by the bundled history assets. */
 export const normalizeHistoryImagePath = (value: string) => {
   if (!value || !value.startsWith('/images/history/')) return value;
@@ -699,7 +702,12 @@ export const hydrateBrandHistoryConfig = (config?: any) => {
   };
 };
 
-export const History = () => {
+type HistoryProps = {
+  /** The History route renders this hero at the top of the document. */
+  aboveFold?: boolean;
+};
+
+export const History = ({ aboveFold = false }: HistoryProps) => {
   const { currentLang } = useTranslation();
   const locale = normalizeHistoryLocale(currentLang);
   const copy = HISTORY_INTERFACE_COPY[locale];
@@ -729,18 +737,10 @@ export const History = () => {
   }, [hydratedHistory, locale]);
   const [activeChapter, setActiveChapter] = useState(0);
   const [activeScenes, setActiveScenes] = useState<Record<string, number>>({});
-  const [cacheBuster, setCacheBuster] = useState('');
-  
-  useEffect(() => {
-    setCacheBuster(`v=${Date.now()}`);
+  const [nearbyChapters, setNearbyChapters] = useState<Set<number>>(() => new Set());
+  const getHistoryImageUrl = useCallback((url: string) => {
+    return normalizeHistoryImagePath(url);
   }, []);
-
-  const getBustedUrl = useCallback((url: string) => {
-    const normalizedUrl = normalizeHistoryImagePath(url);
-    if (!normalizedUrl) return '';
-    if (!cacheBuster) return normalizedUrl;
-    return normalizedUrl.includes('?') ? `${normalizedUrl}&${cacheBuster}` : `${normalizedUrl}?${cacheBuster}`;
-  }, [cacheBuster]);
 
   const shellRef = useRef<HTMLElement | null>(null);
   const timelineRef = useRef<HTMLDivElement | null>(null);
@@ -817,16 +817,68 @@ export const History = () => {
   }, [chapters]);
 
   useEffect(() => {
+    let observer: IntersectionObserver | null = null;
+    let frame = 0;
+    const setup = () => {
+      const nodes = Array.from(shellRef.current?.querySelectorAll<HTMLElement>('[data-history-chapter]') || []);
+      if (!nodes.length) {
+        frame = window.requestAnimationFrame(setup);
+        return;
+      }
+      if (!('IntersectionObserver' in window)) {
+        setNearbyChapters(prev => (prev.size ? prev : new Set([0])));
+        return;
+      }
+
+      const indexByNode = new Map(nodes.map((node, index) => [node, index]));
+      observer = new IntersectionObserver(entries => {
+        setNearbyChapters(prev => {
+          const next = new Set(prev);
+          let changed = false;
+          entries.forEach(entry => {
+            if (!entry.isIntersecting) return;
+            const index = indexByNode.get(entry.target as HTMLElement);
+            if (index !== undefined && !next.has(index)) {
+              next.add(index);
+              changed = true;
+            }
+          });
+          return changed ? next : prev;
+        });
+      }, { rootMargin: '600px 0px' });
+
+      nodes.forEach(node => observer?.observe(node));
+    };
+    frame = window.requestAnimationFrame(setup);
+
+    return () => {
+      if (frame) window.cancelAnimationFrame(frame);
+      observer?.disconnect();
+    };
+  }, [chapters.length]);
+
+  useEffect(() => {
     Object.values(timersRef.current).forEach(clearInterval);
     timersRef.current = {};
 
-    chapters.forEach(restartSceneTimer);
+    const active = chapters[activeChapter];
+    if (active && typeof document !== 'undefined' && document.visibilityState === 'visible') {
+      restartSceneTimer(active);
+    }
+
+    const syncTimerWithVisibility = () => {
+      Object.values(timersRef.current).forEach(clearInterval);
+      timersRef.current = {};
+      if (document.visibilityState === 'visible' && active) restartSceneTimer(active);
+    };
+    document.addEventListener('visibilitychange', syncTimerWithVisibility);
 
     return () => {
+      document.removeEventListener('visibilitychange', syncTimerWithVisibility);
       Object.values(timersRef.current).forEach(clearInterval);
       timersRef.current = {};
     };
-  }, [chapters, restartSceneTimer]);
+  }, [activeChapter, chapters, restartSceneTimer]);
 
   const handlePointerMove = (event: PointerEvent<HTMLElement>) => {
     const rect = event.currentTarget.getBoundingClientRect();
@@ -848,7 +900,9 @@ export const History = () => {
       ...prev,
       [chapter.year]: index,
     }));
-    restartSceneTimer(chapter);
+    if (chapter.year === chapters[activeChapter]?.year && document.visibilityState === 'visible') {
+      restartSceneTimer(chapter);
+    }
   };
 
   const cycleScene = (chapter: Chapter, currentIndex: number, direction: -1 | 1) => {
@@ -902,11 +956,11 @@ export const History = () => {
       >
         <div className={styles.heroMedia}>
           <Image
-            src={getBustedUrl(hydratedHistory.hero?.image || "/images/about-bg.png")}
+            src={getHistoryImageUrl(hydratedHistory.hero?.image || "/images/about-bg.png")}
             alt={resolveHistoryText(hydratedHistory.hero?.title2, locale, 'Oria Spa')}
             fill
             unoptimized
-            priority
+            priority={aboveFold}
             sizes="100vw"
           />
         </div>
@@ -956,6 +1010,7 @@ export const History = () => {
           const sceneIndex = activeScenes[chapter.year] || 0;
           const scene = chapter.scenes[sceneIndex];
           const isActive = chapterIndex === activeChapter;
+          const chapterMediaReady = nearbyChapters.has(chapterIndex);
 
           return (
             <article
@@ -1012,7 +1067,9 @@ export const History = () => {
                   {chapter.scenes.map((item: any, index: number) => (
                     <div key={item.title} className={`${styles.slide} ${index === sceneIndex ? styles.slideActive : ''}`}>
                       <Image
-                        src={getBustedUrl(item.image)}
+                        src={chapterMediaReady && (index === sceneIndex || index === (sceneIndex + 1) % chapter.scenes.length)
+                          ? getHistoryImageUrl(item.image)
+                          : HISTORY_MEDIA_PLACEHOLDER}
                         alt={item.alt}
                         fill
                         unoptimized
@@ -1090,7 +1147,13 @@ export const History = () => {
                         aria-label={`${copy.viewImage} ${index + 1}: ${item.label}`}
                       >
                         <span className={styles.sceneThumb}>
-                          <Image src={getBustedUrl(item.image)} alt="" fill sizes="96px" unoptimized />
+                          <Image
+                            src={chapterMediaReady ? getHistoryImageUrl(item.image) : HISTORY_MEDIA_PLACEHOLDER}
+                            alt=""
+                            fill
+                            sizes="96px"
+                            unoptimized
+                          />
                         </span>
                         <span className={styles.sceneText}>
                           <small>{String(index + 1).padStart(2, '0')}</small>

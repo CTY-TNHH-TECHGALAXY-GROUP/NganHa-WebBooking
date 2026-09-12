@@ -3,7 +3,7 @@ import History from '@/components/History/History';
 const HistoryPage = () => {
   return (
     <main>
-      <History />
+      <History aboveFold />
     </main>
   );
 };

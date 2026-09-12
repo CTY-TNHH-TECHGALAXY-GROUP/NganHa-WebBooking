@@ -1,0 +1,738 @@
+{
+  "runId": "history-webp-20260912171255",
+  "mode": "apply",
+  "bucket": "media-uploads",
+  "prefix": "history",
+  "contentType": "image/webp",
+  "sourceConfigRevision": "2c02c628edef1944b1767b86f19f864e46d6ecb67475ce0ff90aab2db50f3a7f",
+  "sourceUpdatedAt": "2026-09-11T16:11:54.973+00:00",
+  "sourceRowId": "2913c39e-886f-4c01-9382-69f03136acf9",
+  "referenceCount": 23,
+  "uniqueCount": 23,
+  "sourceBytes": 56604252,
+  "targetBytes": 41104680,
+  "savedBytes": 15499572,
+  "applied": true,
+  "postConfigRevision": "588f5493a736c0579a6118da2689f639996d83026cc0dd2c8a1abb00785f204a",
+  "entries": [
+    {
+      "sourceUrl": "/images/history/2015-ngan-ha-storefront.png",
+      "sourcePath": "public/images/history/2015-ngan-ha-storefront.png",
+      "references": [
+        {
+          "rawUrl": "/images/history/2015-ngan-ha-storefront.png",
+          "sourcePath": "/Users/charlotte/Desktop/NGÂN HÀ/CTY TechGalaxy Group/NganHa-WebBooking/public/images/history/2015-ngan-ha-storefront.png",
+          "pointer": "/chapters/0/scenes/0/image",
+          "chapterId": "17858516665540",
+          "sceneId": "178585166655400"
+        }
+      ],
+      "sourceMime": "image/png",
+      "sourceBytes": 2719992,
+      "sourceSha256": "89d624a698e97f1c15d9b44ff60b1bce00b8c76546e4b0b2f07a21767d1bceb7",
+      "width": 1448,
+      "height": 1086,
+      "targetPath": "history/2015-ngan-ha-storefront-4e987528a724c6ac.webp",
+      "targetUrl": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2015-ngan-ha-storefront-4e987528a724c6ac.webp",
+      "targetBytes": 2012298,
+      "targetSha256": "4e987528a724c6ac6a94f6230c7a9bf23f9d386a562dbab69de4893fabd9b12c",
+      "targetWidth": 1448,
+      "targetHeight": 1086,
+      "conversionOptions": {
+        "format": "webp",
+        "lossless": true,
+        "effort": 6
+      },
+      "pixelExact": true,
+      "status": "uploaded_verified"
+    },
+    {
+      "sourceUrl": "/images/history/2015-ngan-ha-commitment-flowers.png",
+      "sourcePath": "public/images/history/2015-ngan-ha-commitment-flowers.png",
+      "references": [
+        {
+          "rawUrl": "/images/history/2015-ngan-ha-commitment-flowers.png",
+          "sourcePath": "/Users/charlotte/Desktop/NGÂN HÀ/CTY TechGalaxy Group/NganHa-WebBooking/public/images/history/2015-ngan-ha-commitment-flowers.png",
+          "pointer": "/chapters/0/scenes/1/image",
+          "chapterId": "17858516665540",
+          "sceneId": "178585166655401"
+        }
+      ],
+      "sourceMime": "image/png",
+      "sourceBytes": 2508045,
+      "sourceSha256": "01c58932e428bfe6c16eb3d1ae59ed1595daf71fb0f4a74b5b5bcd35c8bfded9",
+      "width": 1086,
+      "height": 1448,
+      "targetPath": "history/2015-ngan-ha-commitment-flowers-a897c76aa9aad0de.webp",
+      "targetUrl": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2015-ngan-ha-commitment-flowers-a897c76aa9aad0de.webp",
+      "targetBytes": 1903242,
+      "targetSha256": "a897c76aa9aad0de0eeeec9e995b7f0da926cbec00627c973a8c633cd053dcf2",
+      "targetWidth": 1086,
+      "targetHeight": 1448,
+      "conversionOptions": {
+        "format": "webp",
+        "lossless": true,
+        "effort": 6
+      },
+      "pixelExact": true,
+      "status": "uploaded_verified"
+    },
+    {
+      "sourceUrl": "/images/history/2015-ngan-ha-team.png",
+      "sourcePath": "public/images/history/2015-ngan-ha-team.png",
+      "references": [
+        {
+          "rawUrl": "/images/history/2015-ngan-ha-team.png",
+          "sourcePath": "/Users/charlotte/Desktop/NGÂN HÀ/CTY TechGalaxy Group/NganHa-WebBooking/public/images/history/2015-ngan-ha-team.png",
+          "pointer": "/chapters/0/scenes/2/image",
+          "chapterId": "17858516665540",
+          "sceneId": "178585166655402"
+        }
+      ],
+      "sourceMime": "image/png",
+      "sourceBytes": 2259531,
+      "sourceSha256": "05192366cf232b5eb912311d3893b9f304c0c09336cd41b9e3bfb7dcd00413d1",
+      "width": 1254,
+      "height": 1254,
+      "targetPath": "history/2015-ngan-ha-team-7ae80ca354c4d75e.webp",
+      "targetUrl": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2015-ngan-ha-team-7ae80ca354c4d75e.webp",
+      "targetBytes": 1606262,
+      "targetSha256": "7ae80ca354c4d75eb83763bc2c844a29e80d837d14f000486003acf394649ddd",
+      "targetWidth": 1254,
+      "targetHeight": 1254,
+      "conversionOptions": {
+        "format": "webp",
+        "lossless": true,
+        "effort": 6
+      },
+      "pixelExact": true,
+      "status": "uploaded_verified"
+    },
+    {
+      "sourceUrl": "/images/history/2018-ngan-ha-facade-day.png",
+      "sourcePath": "public/images/history/2018-ngan-ha-facade-day.png",
+      "references": [
+        {
+          "rawUrl": "/images/history/2018-ngan-ha-facade-day.png",
+          "sourcePath": "/Users/charlotte/Desktop/NGÂN HÀ/CTY TechGalaxy Group/NganHa-WebBooking/public/images/history/2018-ngan-ha-facade-day.png",
+          "pointer": "/chapters/1/scenes/0/image",
+          "chapterId": "17858516665541",
+          "sceneId": "178585166655410"
+        }
+      ],
+      "sourceMime": "image/png",
+      "sourceBytes": 3164062,
+      "sourceSha256": "0434a1070dd32151c13216cbec4c7c28d22047039be3abb39ab497dedf00ef65",
+      "width": 1122,
+      "height": 1402,
+      "targetPath": "history/2018-ngan-ha-facade-day-1b803631d779226c.webp",
+      "targetUrl": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2018-ngan-ha-facade-day-1b803631d779226c.webp",
+      "targetBytes": 2162996,
+      "targetSha256": "1b803631d779226cfcca33881d488392ba066cde1c03523bdb071b25a3ee20c1",
+      "targetWidth": 1122,
+      "targetHeight": 1402,
+      "conversionOptions": {
+        "format": "webp",
+        "lossless": true,
+        "effort": 6
+      },
+      "pixelExact": true,
+      "status": "uploaded_verified"
+    },
+    {
+      "sourceUrl": "/images/history/2018-ngan-ha-salon-station-compact.png",
+      "sourcePath": "public/images/history/2018-ngan-ha-salon-station-compact.png",
+      "references": [
+        {
+          "rawUrl": "/images/history/2018-ngan-ha-salon-station-compact.png",
+          "sourcePath": "/Users/charlotte/Desktop/NGÂN HÀ/CTY TechGalaxy Group/NganHa-WebBooking/public/images/history/2018-ngan-ha-salon-station-compact.png",
+          "pointer": "/chapters/1/scenes/1/image",
+          "chapterId": "17858516665541",
+          "sceneId": "178585166655411"
+        }
+      ],
+      "sourceMime": "image/png",
+      "sourceBytes": 2258877,
+      "sourceSha256": "67ac516ae72ea2a0c6a42b81e674606408db1e7dc3e571a2d8e7d86170572e55",
+      "width": 1122,
+      "height": 1402,
+      "targetPath": "history/2018-ngan-ha-salon-station-compact-a8210fa294a18a65.webp",
+      "targetUrl": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2018-ngan-ha-salon-station-compact-a8210fa294a18a65.webp",
+      "targetBytes": 1578818,
+      "targetSha256": "a8210fa294a18a6503f37bd702ec7bb26a39b58f220b7fc22a7b5aa247ebbfe0",
+      "targetWidth": 1122,
+      "targetHeight": 1402,
+      "conversionOptions": {
+        "format": "webp",
+        "lossless": true,
+        "effort": 6
+      },
+      "pixelExact": true,
+      "status": "uploaded_verified"
+    },
+    {
+      "sourceUrl": "/images/history/2018-ngan-ha-facade-night.png",
+      "sourcePath": "public/images/history/2018-ngan-ha-facade-night.png",
+      "references": [
+        {
+          "rawUrl": "/images/history/2018-ngan-ha-facade-night.png",
+          "sourcePath": "/Users/charlotte/Desktop/NGÂN HÀ/CTY TechGalaxy Group/NganHa-WebBooking/public/images/history/2018-ngan-ha-facade-night.png",
+          "pointer": "/chapters/1/scenes/2/image",
+          "chapterId": "17858516665541",
+          "sceneId": "178585166655413"
+        }
+      ],
+      "sourceMime": "image/png",
+      "sourceBytes": 2160582,
+      "sourceSha256": "7288381dccbb318a8cb6d618b168724a55ffd17c779ff34ee38d45b981701562",
+      "width": 1122,
+      "height": 1402,
+      "targetPath": "history/2018-ngan-ha-facade-night-bde4fba13fed67b5.webp",
+      "targetUrl": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2018-ngan-ha-facade-night-bde4fba13fed67b5.webp",
+      "targetBytes": 1584732,
+      "targetSha256": "bde4fba13fed67b5ada9fe13950aac506a38ddd98561963c15ad186df862ae3b",
+      "targetWidth": 1122,
+      "targetHeight": 1402,
+      "conversionOptions": {
+        "format": "webp",
+        "lossless": true,
+        "effort": 6
+      },
+      "pixelExact": true,
+      "status": "uploaded_verified"
+    },
+    {
+      "sourceUrl": "/images/history/2020-ngan-ha-salon-signboard.png",
+      "sourcePath": "public/images/history/2020-ngan-ha-salon-signboard.png",
+      "references": [
+        {
+          "rawUrl": "/images/history/2020-ngan-ha-salon-signboard.png",
+          "sourcePath": "/Users/charlotte/Desktop/NGÂN HÀ/CTY TechGalaxy Group/NganHa-WebBooking/public/images/history/2020-ngan-ha-salon-signboard.png",
+          "pointer": "/chapters/2/scenes/0/image",
+          "chapterId": "17858516665542",
+          "sceneId": "178585166655420"
+        }
+      ],
+      "sourceMime": "image/png",
+      "sourceBytes": 2536127,
+      "sourceSha256": "d26721c3904f5d5c50c0cc44d2d4b7de6165e06fd50e900942a55f795982d166",
+      "width": 1024,
+      "height": 1536,
+      "targetPath": "history/2020-ngan-ha-salon-signboard-db9a3fc0d9c95c29.webp",
+      "targetUrl": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2020-ngan-ha-salon-signboard-db9a3fc0d9c95c29.webp",
+      "targetBytes": 1735162,
+      "targetSha256": "db9a3fc0d9c95c2991207fab4be5bdc295dc62869bdb0abd80775ff275b28e40",
+      "targetWidth": 1024,
+      "targetHeight": 1536,
+      "conversionOptions": {
+        "format": "webp",
+        "lossless": true,
+        "effort": 6
+      },
+      "pixelExact": true,
+      "status": "uploaded_verified"
+    },
+    {
+      "sourceUrl": "/images/history/2020-ngan-ha-team-blue.png",
+      "sourcePath": "public/images/history/2020-ngan-ha-team-blue.png",
+      "references": [
+        {
+          "rawUrl": "/images/history/2020-ngan-ha-team-blue.png",
+          "sourcePath": "/Users/charlotte/Desktop/NGÂN HÀ/CTY TechGalaxy Group/NganHa-WebBooking/public/images/history/2020-ngan-ha-team-blue.png",
+          "pointer": "/chapters/2/scenes/1/image",
+          "chapterId": "17858516665542",
+          "sceneId": "178585166655421"
+        }
+      ],
+      "sourceMime": "image/png",
+      "sourceBytes": 2118787,
+      "sourceSha256": "6e40dfa8dfb26a0b5988a99eac65c1124461d92de99d0875385f6bbd4dd00ab5",
+      "width": 1448,
+      "height": 1086,
+      "targetPath": "history/2020-ngan-ha-team-blue-6582d69365849dee.webp",
+      "targetUrl": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2020-ngan-ha-team-blue-6582d69365849dee.webp",
+      "targetBytes": 1546892,
+      "targetSha256": "6582d69365849dee32e51785d276de991e52b160f8368772551c19995a04c951",
+      "targetWidth": 1448,
+      "targetHeight": 1086,
+      "conversionOptions": {
+        "format": "webp",
+        "lossless": true,
+        "effort": 6
+      },
+      "pixelExact": true,
+      "status": "uploaded_verified"
+    },
+    {
+      "sourceUrl": "/images/history/2020-ngan-ha-interior-entrance.png",
+      "sourcePath": "public/images/history/2020-ngan-ha-interior-entrance.png",
+      "references": [
+        {
+          "rawUrl": "/images/history/2020-ngan-ha-interior-entrance.png",
+          "sourcePath": "/Users/charlotte/Desktop/NGÂN HÀ/CTY TechGalaxy Group/NganHa-WebBooking/public/images/history/2020-ngan-ha-interior-entrance.png",
+          "pointer": "/chapters/2/scenes/2/image",
+          "chapterId": "17858516665542",
+          "sceneId": "178585166655422"
+        }
+      ],
+      "sourceMime": "image/png",
+      "sourceBytes": 2073418,
+      "sourceSha256": "f009133bfbe8e553cafc143ad0cdab5ee494ebd3817eabe3d2765a396ae911f6",
+      "width": 1448,
+      "height": 1086,
+      "targetPath": "history/2020-ngan-ha-interior-entrance-363515eec249dc00.webp",
+      "targetUrl": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2020-ngan-ha-interior-entrance-363515eec249dc00.webp",
+      "targetBytes": 1534372,
+      "targetSha256": "363515eec249dc003468d675605068ed1048e8ebe5f94bb0990867495a9cad78",
+      "targetWidth": 1448,
+      "targetHeight": 1086,
+      "conversionOptions": {
+        "format": "webp",
+        "lossless": true,
+        "effort": 6
+      },
+      "pixelExact": true,
+      "status": "uploaded_verified"
+    },
+    {
+      "sourceUrl": "/images/history/2020-ngan-ha-team-ao-dai.jpg",
+      "sourcePath": "public/images/history/2020-ngan-ha-team-ao-dai.png",
+      "references": [
+        {
+          "rawUrl": "/images/history/2020-ngan-ha-team-ao-dai.jpg",
+          "sourcePath": "/Users/charlotte/Desktop/NGÂN HÀ/CTY TechGalaxy Group/NganHa-WebBooking/public/images/history/2020-ngan-ha-team-ao-dai.png",
+          "pointer": "/chapters/2/scenes/3/image",
+          "chapterId": "17858516665542",
+          "sceneId": "178585166655423"
+        }
+      ],
+      "sourceMime": "image/png",
+      "sourceBytes": 2195057,
+      "sourceSha256": "e62bf3af0b17f831468f0da619014428108f8a78e4200445abdd2994632def85",
+      "width": 1448,
+      "height": 1086,
+      "targetPath": "history/2020-ngan-ha-team-ao-dai-aed81fe14e7e7096.webp",
+      "targetUrl": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2020-ngan-ha-team-ao-dai-aed81fe14e7e7096.webp",
+      "targetBytes": 1573892,
+      "targetSha256": "aed81fe14e7e709663336d089fa6211b2689bd2f24c96fa397082c740534c5ee",
+      "targetWidth": 1448,
+      "targetHeight": 1086,
+      "conversionOptions": {
+        "format": "webp",
+        "lossless": true,
+        "effort": 6
+      },
+      "pixelExact": true,
+      "status": "uploaded_verified"
+    },
+    {
+      "sourceUrl": "/images/history/2021-ngan-ha-ngo-duc-ke-gold-sign.png",
+      "sourcePath": "public/images/history/2021-ngan-ha-ngo-duc-ke-gold-sign.png",
+      "references": [
+        {
+          "rawUrl": "/images/history/2021-ngan-ha-ngo-duc-ke-gold-sign.png",
+          "sourcePath": "/Users/charlotte/Desktop/NGÂN HÀ/CTY TechGalaxy Group/NganHa-WebBooking/public/images/history/2021-ngan-ha-ngo-duc-ke-gold-sign.png",
+          "pointer": "/chapters/3/scenes/0/image",
+          "chapterId": "17858516665543",
+          "sceneId": "178585166655430"
+        }
+      ],
+      "sourceMime": "image/png",
+      "sourceBytes": 2307925,
+      "sourceSha256": "abc49adadb9c5045721b805c45e6b7e1341a591d3ac0ec3360ac7bb5e7d404bb",
+      "width": 1448,
+      "height": 1086,
+      "targetPath": "history/2021-ngan-ha-ngo-duc-ke-gold-sign-dd45ef3b6a1bfca6.webp",
+      "targetUrl": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2021-ngan-ha-ngo-duc-ke-gold-sign-dd45ef3b6a1bfca6.webp",
+      "targetBytes": 1789110,
+      "targetSha256": "dd45ef3b6a1bfca697472a5ddf17dd25fee2a552c39e1aea8174dcd8d11bb57a",
+      "targetWidth": 1448,
+      "targetHeight": 1086,
+      "conversionOptions": {
+        "format": "webp",
+        "lossless": true,
+        "effort": 6
+      },
+      "pixelExact": true,
+      "status": "uploaded_verified"
+    },
+    {
+      "sourceUrl": "/images/history/2021-ngan-ha-service-floor-guests.png",
+      "sourcePath": "public/images/history/2021-ngan-ha-service-floor-guests.png",
+      "references": [
+        {
+          "rawUrl": "/images/history/2021-ngan-ha-service-floor-guests.png",
+          "sourcePath": "/Users/charlotte/Desktop/NGÂN HÀ/CTY TechGalaxy Group/NganHa-WebBooking/public/images/history/2021-ngan-ha-service-floor-guests.png",
+          "pointer": "/chapters/3/scenes/1/image",
+          "chapterId": "17858516665543",
+          "sceneId": "178585166655432"
+        }
+      ],
+      "sourceMime": "image/png",
+      "sourceBytes": 2533868,
+      "sourceSha256": "49bb7423530cbe8fb137f852a92c18ce69d417ca9f47b60f1b900fb09b039ac9",
+      "width": 1448,
+      "height": 1086,
+      "targetPath": "history/2021-ngan-ha-service-floor-guests-fa4e28efead89f54.webp",
+      "targetUrl": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2021-ngan-ha-service-floor-guests-fa4e28efead89f54.webp",
+      "targetBytes": 1755940,
+      "targetSha256": "fa4e28efead89f5480d7670642f67d62c8981cb787b2e0a1839617c6c59127f5",
+      "targetWidth": 1448,
+      "targetHeight": 1086,
+      "conversionOptions": {
+        "format": "webp",
+        "lossless": true,
+        "effort": 6
+      },
+      "pixelExact": true,
+      "status": "uploaded_verified"
+    },
+    {
+      "sourceUrl": "/images/history/2021-ngan-ha-treatment-beds.png",
+      "sourcePath": "public/images/history/2021-ngan-ha-treatment-beds.png",
+      "references": [
+        {
+          "rawUrl": "/images/history/2021-ngan-ha-treatment-beds.png",
+          "sourcePath": "/Users/charlotte/Desktop/NGÂN HÀ/CTY TechGalaxy Group/NganHa-WebBooking/public/images/history/2021-ngan-ha-treatment-beds.png",
+          "pointer": "/chapters/3/scenes/2/image",
+          "chapterId": "17858516665543",
+          "sceneId": "178585166655433"
+        }
+      ],
+      "sourceMime": "image/png",
+      "sourceBytes": 2819267,
+      "sourceSha256": "57cbd60b57eb68a32d224f222a197c8a08783b565d69856f597f29689b409612",
+      "width": 1254,
+      "height": 1254,
+      "targetPath": "history/2021-ngan-ha-treatment-beds-ae25aa0c2e0daaf6.webp",
+      "targetUrl": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2021-ngan-ha-treatment-beds-ae25aa0c2e0daaf6.webp",
+      "targetBytes": 1955432,
+      "targetSha256": "ae25aa0c2e0daaf667f6425d570eaacb20bf9e890684b58ab48cdf4bcfd4a490",
+      "targetWidth": 1254,
+      "targetHeight": 1254,
+      "conversionOptions": {
+        "format": "webp",
+        "lossless": true,
+        "effort": 6
+      },
+      "pixelExact": true,
+      "status": "uploaded_verified"
+    },
+    {
+      "sourceUrl": "/images/history/2023-ngan-ha-branch-2-thi-sach-facade.png",
+      "sourcePath": "public/images/history/2023-ngan-ha-branch-2-thi-sach-facade.png",
+      "references": [
+        {
+          "rawUrl": "/images/history/2023-ngan-ha-branch-2-thi-sach-facade.png",
+          "sourcePath": "/Users/charlotte/Desktop/NGÂN HÀ/CTY TechGalaxy Group/NganHa-WebBooking/public/images/history/2023-ngan-ha-branch-2-thi-sach-facade.png",
+          "pointer": "/chapters/4/scenes/0/image",
+          "chapterId": "17858516665544",
+          "sceneId": "178585166655440"
+        }
+      ],
+      "sourceMime": "image/png",
+      "sourceBytes": 2883056,
+      "sourceSha256": "dd7302b4a88ec7719d514e79318b5dd489035b1b0dbd528c0e075ac60d1d17e9",
+      "width": 1448,
+      "height": 1086,
+      "targetPath": "history/2023-ngan-ha-branch-2-thi-sach-facade-9fd2549041708c5a.webp",
+      "targetUrl": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2023-ngan-ha-branch-2-thi-sach-facade-9fd2549041708c5a.webp",
+      "targetBytes": 2134176,
+      "targetSha256": "9fd2549041708c5af96e28a6d35d6006f559c2277be869293735a2fd023d9915",
+      "targetWidth": 1448,
+      "targetHeight": 1086,
+      "conversionOptions": {
+        "format": "webp",
+        "lossless": true,
+        "effort": 6
+      },
+      "pixelExact": true,
+      "status": "uploaded_verified"
+    },
+    {
+      "sourceUrl": "/images/history/2023-ngan-ha-branch-2-menu-boo.png",
+      "sourcePath": "public/images/history/2023-ngan-ha-branch-2-menu-boo.png",
+      "references": [
+        {
+          "rawUrl": "/images/history/2023-ngan-ha-branch-2-menu-boo.png",
+          "sourcePath": "/Users/charlotte/Desktop/NGÂN HÀ/CTY TechGalaxy Group/NganHa-WebBooking/public/images/history/2023-ngan-ha-branch-2-menu-boo.png",
+          "pointer": "/chapters/4/scenes/1/image",
+          "chapterId": "17858516665544",
+          "sceneId": "178585166655441"
+        }
+      ],
+      "sourceMime": "image/png",
+      "sourceBytes": 2815965,
+      "sourceSha256": "15e7c73dbb48211e248445ff3e47aaa728d784f48a15d39662af6869ae8229ce",
+      "width": 1448,
+      "height": 1086,
+      "targetPath": "history/2023-ngan-ha-branch-2-menu-boo-615f6b49f88627a1.webp",
+      "targetUrl": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2023-ngan-ha-branch-2-menu-boo-615f6b49f88627a1.webp",
+      "targetBytes": 2045228,
+      "targetSha256": "615f6b49f88627a1fba32dbce13cee70893ad6a6ffc9528701076045477d98d0",
+      "targetWidth": 1448,
+      "targetHeight": 1086,
+      "conversionOptions": {
+        "format": "webp",
+        "lossless": true,
+        "effort": 6
+      },
+      "pixelExact": true,
+      "status": "uploaded_verified"
+    },
+    {
+      "sourceUrl": "/images/history/2024-ngan-ha-ngo-duc-ke-new-signboard.png",
+      "sourcePath": "public/images/history/2024-ngan-ha-ngo-duc-ke-new-signboard.png",
+      "references": [
+        {
+          "rawUrl": "/images/history/2024-ngan-ha-ngo-duc-ke-new-signboard.png",
+          "sourcePath": "/Users/charlotte/Desktop/NGÂN HÀ/CTY TechGalaxy Group/NganHa-WebBooking/public/images/history/2024-ngan-ha-ngo-duc-ke-new-signboard.png",
+          "pointer": "/chapters/5/scenes/0/image",
+          "chapterId": "17858516665545",
+          "sceneId": "178585166655450"
+        }
+      ],
+      "sourceMime": "image/png",
+      "sourceBytes": 2644961,
+      "sourceSha256": "d814eeb80e4d08fc78914025199c9dbe8e07ea391176e92c46ae18eb2affcd6a",
+      "width": 1672,
+      "height": 941,
+      "targetPath": "history/2024-ngan-ha-ngo-duc-ke-new-signboard-5fa2f00bd876a9db.webp",
+      "targetUrl": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2024-ngan-ha-ngo-duc-ke-new-signboard-5fa2f00bd876a9db.webp",
+      "targetBytes": 1983170,
+      "targetSha256": "5fa2f00bd876a9dbb5d1e3da73e1649334919bf013de3cff4e280bc919f77384",
+      "targetWidth": 1672,
+      "targetHeight": 941,
+      "conversionOptions": {
+        "format": "webp",
+        "lossless": true,
+        "effort": 6
+      },
+      "pixelExact": true,
+      "status": "uploaded_verified"
+    },
+    {
+      "sourceUrl": "/images/history/2024-ngan-ha-updated-interior-space.png",
+      "sourcePath": "public/images/history/2024-ngan-ha-updated-interior-space.png",
+      "references": [
+        {
+          "rawUrl": "/images/history/2024-ngan-ha-updated-interior-space.png",
+          "sourcePath": "/Users/charlotte/Desktop/NGÂN HÀ/CTY TechGalaxy Group/NganHa-WebBooking/public/images/history/2024-ngan-ha-updated-interior-space.png",
+          "pointer": "/chapters/5/scenes/1/image",
+          "chapterId": "17858516665545",
+          "sceneId": "178585166655451"
+        }
+      ],
+      "sourceMime": "image/png",
+      "sourceBytes": 2696589,
+      "sourceSha256": "19b849dd98885ab45dfb86d1552cff78ec7e2e4c6a587678898fd48c488a835a",
+      "width": 1254,
+      "height": 1254,
+      "targetPath": "history/2024-ngan-ha-updated-interior-space-56a5dc902fda7305.webp",
+      "targetUrl": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2024-ngan-ha-updated-interior-space-56a5dc902fda7305.webp",
+      "targetBytes": 1873372,
+      "targetSha256": "56a5dc902fda730514e69268104b7fb19cea93c71b7092bb34b93763cd25b90d",
+      "targetWidth": 1254,
+      "targetHeight": 1254,
+      "conversionOptions": {
+        "format": "webp",
+        "lossless": true,
+        "effort": 6
+      },
+      "pixelExact": true,
+      "status": "uploaded_verified"
+    },
+    {
+      "sourceUrl": "/images/history/2024-ngan-ha-hcmtoplist-feature.png",
+      "sourcePath": "public/images/history/2024-ngan-ha-hcmtoplist-feature.png",
+      "references": [
+        {
+          "rawUrl": "/images/history/2024-ngan-ha-hcmtoplist-feature.png",
+          "sourcePath": "/Users/charlotte/Desktop/NGÂN HÀ/CTY TechGalaxy Group/NganHa-WebBooking/public/images/history/2024-ngan-ha-hcmtoplist-feature.png",
+          "pointer": "/chapters/5/scenes/2/image",
+          "chapterId": "17858516665545",
+          "sceneId": "178585166655452"
+        }
+      ],
+      "sourceMime": "image/png",
+      "sourceBytes": 1438671,
+      "sourceSha256": "f0ae69629e6cf0867018dbaaea0d8246e76ec9cb9fe6267fa72e71cbaabc4312",
+      "width": 1672,
+      "height": 941,
+      "targetPath": "history/2024-ngan-ha-hcmtoplist-feature-b9afe0015140c81a.webp",
+      "targetUrl": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2024-ngan-ha-hcmtoplist-feature-b9afe0015140c81a.webp",
+      "targetBytes": 1017238,
+      "targetSha256": "b9afe0015140c81a3dcabf55d603c9f9795b2c3787df3701a9f455930fd63f10",
+      "targetWidth": 1672,
+      "targetHeight": 941,
+      "conversionOptions": {
+        "format": "webp",
+        "lossless": true,
+        "effort": 6
+      },
+      "pixelExact": true,
+      "status": "uploaded_verified"
+    },
+    {
+      "sourceUrl": "/images/history/2024-ngan-ha-naver-recognition-blog.png",
+      "sourcePath": "public/images/history/2024-ngan-ha-naver-recognition-blog.png",
+      "references": [
+        {
+          "rawUrl": "/images/history/2024-ngan-ha-naver-recognition-blog.png",
+          "sourcePath": "/Users/charlotte/Desktop/NGÂN HÀ/CTY TechGalaxy Group/NganHa-WebBooking/public/images/history/2024-ngan-ha-naver-recognition-blog.png",
+          "pointer": "/chapters/5/scenes/3/image",
+          "chapterId": "17858516665545",
+          "sceneId": "178585166655453"
+        }
+      ],
+      "sourceMime": "image/png",
+      "sourceBytes": 1758980,
+      "sourceSha256": "9cc2faa13ebc1ff421cfc5126668d7ba4a1af2227186d1ac670c2bd538ee0d56",
+      "width": 1448,
+      "height": 1086,
+      "targetPath": "history/2024-ngan-ha-naver-recognition-blog-af8293779e70e739.webp",
+      "targetUrl": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2024-ngan-ha-naver-recognition-blog-af8293779e70e739.webp",
+      "targetBytes": 1290174,
+      "targetSha256": "af8293779e70e73947b83eab88d38535f73183cf49f48bc6869db4e9418262d0",
+      "targetWidth": 1448,
+      "targetHeight": 1086,
+      "conversionOptions": {
+        "format": "webp",
+        "lossless": true,
+        "effort": 6
+      },
+      "pixelExact": true,
+      "status": "uploaded_verified"
+    },
+    {
+      "sourceUrl": "/images/history/2024-ngan-ha-naver-review-street.png",
+      "sourcePath": "public/images/history/2024-ngan-ha-naver-review-street.png",
+      "references": [
+        {
+          "rawUrl": "/images/history/2024-ngan-ha-naver-review-street.png",
+          "sourcePath": "/Users/charlotte/Desktop/NGÂN HÀ/CTY TechGalaxy Group/NganHa-WebBooking/public/images/history/2024-ngan-ha-naver-review-street.png",
+          "pointer": "/chapters/5/scenes/4/image",
+          "chapterId": "17858516665545",
+          "sceneId": "178585166655454"
+        }
+      ],
+      "sourceMime": "image/png",
+      "sourceBytes": 1942794,
+      "sourceSha256": "d521523e1284b93fc0b739bd6409333d5e77261c09fc5cfb599f957a03ee8ec8",
+      "width": 1355,
+      "height": 1161,
+      "targetPath": "history/2024-ngan-ha-naver-review-street-185dff583fa48026.webp",
+      "targetUrl": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2024-ngan-ha-naver-review-street-185dff583fa48026.webp",
+      "targetBytes": 1456112,
+      "targetSha256": "185dff583fa48026c964fd2db5f2c72747dda06c84f2ec12d564efe37459ac58",
+      "targetWidth": 1355,
+      "targetHeight": 1161,
+      "conversionOptions": {
+        "format": "webp",
+        "lossless": true,
+        "effort": 6
+      },
+      "pixelExact": true,
+      "status": "uploaded_verified"
+    },
+    {
+      "sourceUrl": "/images/history/2026-oria-spa-tech-galaxy-sign.png",
+      "sourcePath": "public/images/history/2026-oria-spa-tech-galaxy-sign.png",
+      "references": [
+        {
+          "rawUrl": "/images/history/2026-oria-spa-tech-galaxy-sign.png",
+          "sourcePath": "/Users/charlotte/Desktop/NGÂN HÀ/CTY TechGalaxy Group/NganHa-WebBooking/public/images/history/2026-oria-spa-tech-galaxy-sign.png",
+          "pointer": "/chapters/6/scenes/0/image",
+          "chapterId": "17858516665546",
+          "sceneId": "178585166655460"
+        }
+      ],
+      "sourceMime": "image/png",
+      "sourceBytes": 2795083,
+      "sourceSha256": "7f01c467a6b3af5fcaa90865d55193f07e71bbc9473a8864dcef247655955905",
+      "width": 1266,
+      "height": 1242,
+      "targetPath": "history/2026-oria-spa-tech-galaxy-sign-59d37697dd24ed48.webp",
+      "targetUrl": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2026-oria-spa-tech-galaxy-sign-59d37697dd24ed48.webp",
+      "targetBytes": 2200496,
+      "targetSha256": "59d37697dd24ed4800b14eda63aad5387f4582af8bbbd1a953bb8b19ca19658c",
+      "targetWidth": 1266,
+      "targetHeight": 1242,
+      "conversionOptions": {
+        "format": "webp",
+        "lossless": true,
+        "effort": 6
+      },
+      "pixelExact": true,
+      "status": "uploaded_verified"
+    },
+    {
+      "sourceUrl": "/images/history/2026-oriafarm-storefront.png",
+      "sourcePath": "public/images/history/2026-oriafarm-storefront.png",
+      "references": [
+        {
+          "rawUrl": "/images/history/2026-oriafarm-storefront.png",
+          "sourcePath": "/Users/charlotte/Desktop/NGÂN HÀ/CTY TechGalaxy Group/NganHa-WebBooking/public/images/history/2026-oriafarm-storefront.png",
+          "pointer": "/chapters/6/scenes/1/image",
+          "chapterId": "17858516665546",
+          "sceneId": "178585166655461"
+        }
+      ],
+      "sourceMime": "image/png",
+      "sourceBytes": 2855245,
+      "sourceSha256": "83ce986624deb5a9ecb0e9093cbbea5a640ca050b9c4ae3a3889f7063a12e57d",
+      "width": 941,
+      "height": 1672,
+      "targetPath": "history/2026-oriafarm-storefront-2579ba954aa16f08.webp",
+      "targetUrl": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2026-oriafarm-storefront-2579ba954aa16f08.webp",
+      "targetBytes": 2069738,
+      "targetSha256": "2579ba954aa16f08574dcbfc0b54d1e04a9dd60926a78b18f2fc132c83b13d3a",
+      "targetWidth": 941,
+      "targetHeight": 1672,
+      "conversionOptions": {
+        "format": "webp",
+        "lossless": true,
+        "effort": 6
+      },
+      "pixelExact": true,
+      "status": "uploaded_verified"
+    },
+    {
+      "sourceUrl": "/images/history/2026-oriafarm-fnb-display.png",
+      "sourcePath": "public/images/history/2026-oriafarm-fnb-display.png",
+      "references": [
+        {
+          "rawUrl": "/images/history/2026-oriafarm-fnb-display.png",
+          "sourcePath": "/Users/charlotte/Desktop/NGÂN HÀ/CTY TechGalaxy Group/NganHa-WebBooking/public/images/history/2026-oriafarm-fnb-display.png",
+          "pointer": "/chapters/6/scenes/2/image",
+          "chapterId": "17858516665546",
+          "sceneId": "178585166655462"
+        }
+      ],
+      "sourceMime": "image/png",
+      "sourceBytes": 3117370,
+      "sourceSha256": "c3cea6805dfa0346ce8d2fe828762967f8f2405d67498b6dcae19457b1268136",
+      "width": 1086,
+      "height": 1448,
+      "targetPath": "history/2026-oriafarm-fnb-display-2c55c6ebe5b3fbce.webp",
+      "targetUrl": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2026-oriafarm-fnb-display-2c55c6ebe5b3fbce.webp",
+      "targetBytes": 2295828,
+      "targetSha256": "2c55c6ebe5b3fbce9654cfcb6e15c74f87a439503d5a774a5f2eda50b4b7420e",
+      "targetWidth": 1086,
+      "targetHeight": 1448,
+      "conversionOptions": {
+        "format": "webp",
+        "lossless": true,
+        "effort": 6
+      },
+      "pixelExact": true,
+      "status": "uploaded_verified"
+    }
+  ],
+  "excluded": [
+    {
+      "path": "/images/about-bg.png",
+      "reason": "outside public/images/history and may be shared"
+    }
+  ]
+}
