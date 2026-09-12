@@ -1,8 +1,8 @@
 # Khẩn cấp: tải media theo vị trí cuộn
 
-Ngày: 12/09/2026, cập nhật thực thi 13/09/2026. Tài liệu tổng hợp kế hoạch tải media theo scroll và chuyển ảnh History local sang WebP trên Supabase. W0–W5 đã triển khai; W6 đã kiểm thử local và ghi nhận trong `plans/scroll-media-20260912/execution-report.md`. Production rollout, baseline live và kiểm thử Safari/device thật chưa chạy. Branch ghi nhận khi audit là master; nếu được giao deploy phải kiểm tra branch `vercel` trước khi làm. Worktree có nhiều thay đổi khác: không đưa chúng vào bản sửa media.
+Ngày: 12/09/2026, cập nhật thực thi 13/09/2026. Tài liệu tổng hợp kế hoạch tải media theo scroll và chuyển ảnh History local sang WebP trên Supabase. W0–W5 đã triển khai; W6 đã kiểm thử local và changeset `0580851` đã deploy thành công Preview từ `vercel` và Production từ `master` theo Vercel GitHub status. Live browser smoke test chưa chạy được vì Deployment Protection yêu cầu SSO; domain README hiện trả `DEPLOYMENT_NOT_FOUND`. Worktree có nhiều thay đổi khác: không đưa chúng vào bản sửa media.
 
-Tiến độ đã hoàn thành riêng theo yêu cầu trước: chatbot đã chuyển từ PNG 1,657,247 B sang WebP lossless 621,658 B (giảm khoảng 62.5%) và FloatingWidgets đã dùng URL WebP trong workspace. Giữ nguyên 1024×1024, pixel nhìn thấy và alpha đã được đối chiếu; PNG gốc còn giữ nhưng code không còn tham chiếu. Chưa deploy; không làm lại hoặc tự resize trong lượt cập nhật plan này.
+Tiến độ đã hoàn thành riêng theo yêu cầu trước: chatbot đã chuyển từ PNG 1,657,247 B sang WebP lossless 621,658 B (giảm khoảng 62.5%) và FloatingWidgets đã dùng URL WebP trong workspace. Giữ nguyên 1024×1024, pixel nhìn thấy và alpha đã được đối chiếu; PNG gốc còn giữ nhưng code không còn tham chiếu. Đã deploy; không làm lại hoặc tự resize trong lượt cập nhật plan này.
 
 ## 1. Chẩn đoán có bằng chứng
 
@@ -81,7 +81,7 @@ Bằng chứng source: cấu hình ở `SystemConfigs` với key `brand_history`
 3. **P0 homepage (`done` trên local):** đã sửa cache key History và priority theo context; chỉ tải active/next scene khi chapter gần màn hình; lazy city/footer; chatbot dùng WebP. Derivatives History theo giai đoạn tiếp của mục 3.1. Đã kiểm tra `/history`; production homepage/locale/checkout cần revalidate sau deploy.
 4. **P1 vòng đời media (`done` trên local):** đã tích hợp Hero pause/resume, History timer theo viewport, và `ViewportVideo` cho Space/FarmStore; gate source video dưới fold, ngừng playback ngoài viewport, unload xa có debounce. Không đổi transition book/Galaxy hoặc iframe bridge.
 5. **P1 ảnh responsive còn lại:** lần lượt OurStory, Space, Farm và gallery; route nào chưa đo thì không blanket rewrite. Font/config/API khác để kế hoạch riêng.
-6. **Nghiệm thu và rollout (`local verification done; production pending`):** typecheck/build/lint targeted và browser trace local đã pass. Khi được giao deploy, deploy từng nhóm đã qua gate lên `vercel`, cùng profile before/after. Rollback commit media khi lỗi blank frame, re-download hoặc visual regression; rollback URL Supabase theo mục 3.1 vì git revert không phục hồi DB. Không gộp thay đổi admin/analytics đang có trong worktree.
+6. **Nghiệm thu và rollout (`local verification done; production deployment done; live smoke blocked`):** typecheck/build/lint targeted và browser trace local đã pass. Commit `0580851` đã push `origin/vercel` (Preview) và `origin/master` (Production); cả hai deployment đều success theo Vercel GitHub status. Cần URL production public hoặc SSO bypass để hoàn tất đo CDN/browser, Safari/device thật và cold/warm runs. Rollback commit media khi lỗi blank frame, re-download hoặc visual regression; rollback URL Supabase theo mục 3.1 vì git revert không phục hồi DB. Không gộp thay đổi admin/analytics đang có trong worktree.
 
 Ước lượng theo phạm vi, chưa tính lỗi build tồn tại, thời gian Safari thiết bị thật hoặc pipeline xử lý remote asset. P0 có thể phát hành trước P1 nếu đạt gate; không cần chờ refactor toàn website.
 
@@ -111,7 +111,7 @@ Thực hiện tuần tự các work package W0–W6 dưới đây; ghi trạng t
 
 ### 6.2. W0 — Chốt môi trường, baseline và hồ sơ thực thi
 
-1. Đọc `git status --short`, branch, HEAD; ghi danh sách thay đổi có trước. Nếu branch/worktree không phù hợp, chuẩn bị checkout cô lập mà không reset, stash hoặc ghi đè công việc của user. Deploy đích vercel; không push master.
+1. Đọc `git status --short`, branch, HEAD; ghi danh sách thay đổi có trước. Nếu branch/worktree không phù hợp, chuẩn bị checkout cô lập mà không reset, stash hoặc ghi đè công việc của user. Deploy Preview đích `vercel`; chỉ promote Production branch khi user đã giao publish và metadata Vercel xác nhận branch production (project này là `master`).
 2. Ghi phiên bản Next/Node thực cài, lockfile và build đang đo; tìm docs bundled, nếu thiếu dùng docs chính thức đúng phiên bản. Không tự nâng dependencies.
 3. Tạo thư mục bằng chứng `plans/scroll-media-20260912/` cho báo cáo đã loại secrets. Snapshot DB nguyên bản, signed URL và thông tin truy cập lưu ở thư mục ngoài git phù hợp, chỉ ghi vị trí lưu an toàn vào báo cáo.
 4. Tái sử dụng `scripts/audit-live-performance.cjs` sau khi đọc script. Bổ sung kịch bản scroll riêng nếu thiếu; không chạy bất kỳ endpoint tạo booking/mail nào để đo media.
@@ -216,7 +216,7 @@ Tích hợp theo thứ tự Hero → Space → FarmStore; kiểm tra từng rout
 
 Đầu ra W5: request/playing trace theo viewport, test timer unload được hủy, resume/src race, tab background và Safari. Không hứa browser sẽ giữ video buffer sau unload; report phần đo được.
 
-### 6.8. W6 — Ma trận nghiệm thu, bàn giao và định nghĩa hoàn tất (`local verification done`)
+### 6.8. W6 — Ma trận nghiệm thu, bàn giao và định nghĩa hoàn tất (`local verification done; production deployment done; live smoke blocked`)
 
 | Case | Thao tác | Bằng chứng pass |
 | --- | --- | --- |
@@ -234,14 +234,14 @@ Tích hợp theo thứ tự Hero → Space → FarmStore; kiểm tra từng rout
 
 1. Chạy type/lint/build đúng tooling sau đọc package; nếu baseline đã lỗi, ghi command và lỗi sẵn có, không tự sửa ngoài scope. Với docs-only không cần chạy app tests.
 2. Rà toàn bộ diff từng dòng, bao gồm asset paths và config diff. Chỉ stage explicit paths thuộc package; không git add toàn worktree.
-3. Trước deploy, kiểm tra build/preview của phần đã sửa và branch vercel. Chỉ deploy nếu nhiệm vụ triển khai đã bao gồm publish; bản plan hiện tại không yêu cầu publish.
-4. Sau deploy, xác minh URL/build thật, chạy cùng kịch bản cold/warm và kiểm tra CDN MIME/cache headers. Không kết luận chỉ từ local.
+3. Trước deploy, kiểm tra build/preview của phần đã sửa và branch `vercel`. Chỉ push Production khi nhiệm vụ triển khai đã bao gồm publish và metadata Vercel xác nhận branch production; ghi rõ môi trường trong report.
+4. Sau deploy, xác minh URL/build thật, chạy cùng kịch bản cold/warm và kiểm tra CDN MIME/cache headers. Nếu Deployment Protection/SSO chặn truy cập, ghi blocker và không kết luận live runtime từ local.
 5. `execution-report.md` phải ghi: trạng thái W0–W6; file/code commit; số ảnh/bytes trước-sau; vị trí snapshot an toàn; mapping public đã sanitize; QA pass/fail; metric median/range; lỗi còn lại; cách rollback code riêng với dữ liệu.
 6. Hoàn tất chuyển ảnh khi W1–W3 đạt gate; hoàn tất toàn plan khi các package được user giao đều đạt gate. Nếu chưa giảm first-frame/LCP đủ mục tiêu, báo số thực và nguyên nhân chưa rõ, không báo đã fix toàn bộ chỉ dựa vào giảm dung lượng WebP.
 
 ## 7. Giới hạn và nguồn
 
-Phân tích dựa trên source hiện tại + kích thước asset local, kết quả chuyển chatbot và execution report W0–W3. Metrics live kế thừa báo cáo `plans/PERFORMANCE_LIVE_RESEARCH_AND_ACTION_PLAN_20260911.md`; chưa đo lại deploy hiện tại hoặc chứng minh LCP/first-frame đã cải thiện. Thư mục `node_modules/next/dist/docs/` không tồn tại trong workspace lúc kiểm tra; package khai báo Next ^15.5.14. Trước viết code tiếp theo xác minh phiên bản cài và đọc guide tương ứng.
+Phân tích dựa trên source hiện tại + kích thước asset local, kết quả chuyển chatbot và execution report W0–W6. Commit `0580851` đã có Vercel Preview/Production deployment success; chưa đo lại CDN/browser production vì Deployment Protection yêu cầu SSO và domain README trả `DEPLOYMENT_NOT_FOUND`, nên chưa chứng minh LCP/first-frame đã cải thiện live. Thư mục `node_modules/next/dist/docs/` không tồn tại trong workspace lúc kiểm tra; package khai báo Next ^15.5.14. Trước viết code tiếp theo xác minh phiên bản cài và đọc guide tương ứng.
 
 - Next Image v15 (lazy, priority, sizes, unoptimized): https://nextjs.org/docs/15/app/api-reference/components/image
 - IntersectionObserver và rootMargin: https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API

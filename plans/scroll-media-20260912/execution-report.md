@@ -1,7 +1,7 @@
-# Scroll media execution report — W0/W6 local verification
+# Scroll media execution report — W0/W6 production rollout
 
 Ngày cập nhật: 13/09/2026
-Trạng thái: `W0 done`, `W1 done`, `W2 done`, `W3 done`, `W4 done`, `W5 done`, `W6 local verification done`. Chưa deploy production; baseline live, Safari/device thật và 5 cold + 5 warm runs vẫn pending.
+Trạng thái: `W0 done`, `W1 done`, `W2 done`, `W3 done`, `W4 done`, `W5 done`, `W6 local verification done`, `production deployment done`. Commit `0580851` đã deploy Preview từ `vercel` và Production từ `master`; Vercel GitHub status báo success. Live runtime smoke test qua deployment URL bị Vercel Deployment Protection (SSO) chặn; domain README hiện trả `DEPLOYMENT_NOT_FOUND`, nên chưa có số đo CDN/browser production. Safari/device thật và 5 cold + 5 warm runs vẫn pending.
 
 ## W4 — Runtime tải ảnh theo viewport
 
@@ -35,7 +35,7 @@ Trạng thái: `W0 done`, `W1 done`, `W2 done`, `W3 done`, `W4 done`, `W5 done`,
 - Code thuộc package: `src/components/History/History.tsx`, `src/app/history/page.tsx`, `src/components/Hero/Hero.tsx`, `src/components/Shared/ViewportVideo.tsx`, `src/components/Space/SpacePage.tsx`, `src/components/FarmStore/FarmStorePage.tsx`, `src/components/OurStory/OurStory.tsx`, `src/components/Footer/Footer.tsx`, `src/components/FloatingWidgets/FloatingWidgets.tsx`.
 - Asset mới: `public/images/chatbot-icon.webp`; PNG gốc giữ nguyên để rollback.
 - Kế hoạch và artefact: `plans/URGENT_SCROLL_MEDIA_PLAN_20260912.md`, `plans/scroll-media-20260912/`.
-- Chưa tạo commit/deploy vì worktree có thay đổi không thuộc package. Khi đóng gói phải stage explicit các path trên, rà `git diff` từng dòng và giữ nguyên phần ngoài phạm vi.
+- Changeset đã stage explicit, rà `git diff --check`, commit `0580851` và push thành công lên `origin/vercel` rồi `origin/master`; worktree deploy cô lập không chứa thay đổi ngoài package. Worktree chính vẫn giữ nguyên các thay đổi không thuộc phạm vi.
 
 ## Phạm vi lượt chạy
 
@@ -105,8 +105,8 @@ Không xóa file/object gốc. Nếu cần rollback, đọc revision mới nhấ
 
 ## Bước kế tiếp
 
-- Nếu user giao rollout, deploy/revalidate code trên branch `vercel`, sau đó kiểm tra production headers và render từng locale.
-- Chạy lại ma trận cold/warm, Safari/iPhone, CLS/LCP/first-frame và memory trend trên build production; local pass không thay thế số đo live.
+- Vercel đã nhận commit `0580851`: Preview từ `vercel` và Production từ `master` đều `success` theo GitHub Deployment API. Deployment URL hiện bật SSO protection; cần người có quyền project cung cấp phiên đăng nhập/bypass để chạy browser smoke test live. Domain README `ngan-ha-web-booking.vercel.app` đang trả `DEPLOYMENT_NOT_FOUND`, cần kiểm tra alias/domain trong Vercel project.
+- Khi có URL production public hoặc quyền bypass, chạy lại ma trận cold/warm, Safari/iPhone, CLS/LCP/first-frame và memory trend; local pass không thay thế số đo live.
 - Không convert lại object có hash. Chỉ xem xét xóa PNG/object cũ trong một nhiệm vụ riêng sau audit nơi dùng chung và kiểm tra rollback.
 
 ## Giới hạn
