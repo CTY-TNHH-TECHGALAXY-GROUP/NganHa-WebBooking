@@ -533,26 +533,26 @@ const Header = () => {
                 <span
                   className="font-extrabold text-[13px] sm:text-sm uppercase tracking-wider select-none transition-all duration-300 group-hover:brightness-110"
                   style={{
-                    background: 'linear-gradient(135deg, #FFF5D1 0%, #F5D789 25%, #D4AF37 50%, #B8860B 75%, #8A6A08 100%)',
+                    background: 'linear-gradient(135deg, #FFF0D4 0%, #EFC57A 28%, #D88E3E 62%, #B8742E 85%, #965B20 100%)',
                     WebkitBackgroundClip: 'text',
                     WebkitTextFillColor: 'transparent',
-                    filter: 'drop-shadow(0 0 8px rgba(245, 215, 137, 0.45))',
+                    filter: 'drop-shadow(0 0 8px rgba(239, 197, 122, 0.45)) drop-shadow(0 0 2px rgba(184, 116, 46, 0.35))',
                   }}
                 >
                   {BOOK_COPY[currentLang.code] || 'Book'}
                 </span>
-                {/* Golden light flare accent underneath BOOK */}
+                {/* Golden/warm amber light flare accent underneath BOOK */}
                 <span
                   className="w-8 sm:w-10 h-[1.5px] mt-0.5 rounded-full pointer-events-none relative transition-opacity duration-300 opacity-90 group-hover:opacity-100"
                   style={{
-                    background: 'radial-gradient(ellipse at center, #FFF5D1 0%, rgba(245, 215, 137, 0.9) 30%, rgba(212, 175, 55, 0.3) 70%, transparent 100%)',
-                    boxShadow: '0 0 6px 1px rgba(245, 215, 137, 0.65)',
+                    background: 'radial-gradient(ellipse at center, #FFF0D4 0%, rgba(239, 197, 122, 0.95) 30%, rgba(184, 116, 46, 0.5) 70%, transparent 100%)',
+                    boxShadow: '0 0 6px 1px rgba(239, 197, 122, 0.65), 0 0 10px 2px rgba(184, 116, 46, 0.35)',
                   }}
                 >
                   <span
-                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1 h-1 rounded-full bg-[#FFF5D1]"
+                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1 h-1 rounded-full bg-[#FFF0D4]"
                     style={{
-                      boxShadow: '0 0 5px 2px rgba(255, 245, 209, 0.85)',
+                      boxShadow: '0 0 6px 2px rgba(239, 197, 122, 0.9), 0 0 10px 3px rgba(184, 116, 46, 0.5)',
                     }}
                   />
                 </span>
@@ -575,7 +575,7 @@ const Header = () => {
                 <div 
                   className="w-[30px] h-[30px] transition-all duration-300 group-hover:brightness-110" 
                   style={{
-                    background: 'linear-gradient(135deg, #FFF5D1 0%, #F5D789 25%, #D4AF37 50%, #B8860B 75%, #8A6A08 100%)',
+                    background: 'linear-gradient(135deg, #FFF0D4 0%, #EFC57A 28%, #D88E3E 62%, #B8742E 85%, #965B20 100%)',
                     maskImage: 'url(/icons/shopping-cart.png)',
                     WebkitMaskImage: 'url(/icons/shopping-cart.png)',
                     maskSize: 'contain',
@@ -584,7 +584,7 @@ const Header = () => {
                     WebkitMaskRepeat: 'no-repeat',
                     maskPosition: 'center',
                     WebkitMaskPosition: 'center',
-                    filter: 'drop-shadow(0 0 8px rgba(245, 215, 137, 0.65)) drop-shadow(0 0 2px rgba(255, 245, 209, 0.85))',
+                    filter: 'drop-shadow(0 0 8px rgba(239, 197, 122, 0.65)) drop-shadow(0 0 3px rgba(184, 116, 46, 0.75))',
                   }}
                   aria-hidden="true"
                 />
