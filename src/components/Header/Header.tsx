@@ -133,6 +133,11 @@ const DEFAULT_NAV_ITEMS: NavItem[] = [
       { id: 'local_tour_pkg3', label: 'Gói 3: Sài Gòn Về Đêm', href: '/local-tour/saigon-ve-dem' },
     ],
   },
+  { id: 'lost_and_found', label: 'Lost & Found', href: '/lost-and-found' },
+  { id: 'blogs', label: 'Blogs', href: '/blogs' },
+  { id: 'privileges', label: 'Your privileges', href: '/privileges' },
+  { id: 'our_story', label: 'Our story', href: '/#our-story' },
+  { id: 'history', label: 'History', href: '/#history' },
   {
     id: 'academy',
     label: 'Academy',
@@ -144,11 +149,6 @@ const DEFAULT_NAV_ITEMS: NavItem[] = [
       { id: 'academy_understand', label: 'Understand Yourself', href: '/academy/understand-yourself' },
     ],
   },
-  { id: 'lost_and_found', label: 'Lost & Found', href: '/lost-and-found' },
-  { id: 'blogs', label: 'Blogs', href: '/blogs' },
-  { id: 'privileges', label: 'Your privileges', href: '/privileges' },
-  { id: 'our_story', label: 'Our story', href: '/#our-story' },
-  { id: 'history', label: 'History', href: '/#history' },
 ];
 
 const CART_COPY = {
@@ -298,6 +298,11 @@ const Header = () => {
           },
         ],
       },
+      { id: 'lost_and_found', label: getLocalizedText(hpNav?.lostAndFound, lang, getNavFallback('lost_and_found', lang)), href: '/lost-and-found' },
+      { id: 'blogs', label: getLocalizedText(hpNav?.blogs, lang, getNavFallback('blogs', lang)), href: '/blogs' },
+      { id: 'privileges', label: getLocalizedText(hpNav?.privileges, lang, getNavFallback('privileges', lang)), href: '/privileges' },
+      { id: 'our_story', label: getLocalizedText(hpNav?.ourStory, lang, getNavFallback('our_story', lang)), href: '/#our-story' },
+      { id: 'history', label: getLocalizedText(hpNav?.history, lang, getNavFallback('history', lang)), href: '/#history' },
       {
         id: 'academy',
         label: getLocalizedText(hpNav?.academy, lang, getNavFallback('academy', lang)),
@@ -309,11 +314,6 @@ const Header = () => {
           { id: 'academy_understand', label: getLocalizedText(hpNav?.understandYourself, lang, getNavFallback('academy_understand', lang)), href: '/academy/understand-yourself' },
         ],
       },
-      { id: 'lost_and_found', label: getLocalizedText(hpNav?.lostAndFound, lang, getNavFallback('lost_and_found', lang)), href: '/lost-and-found' },
-      { id: 'blogs', label: getLocalizedText(hpNav?.blogs, lang, getNavFallback('blogs', lang)), href: '/blogs' },
-      { id: 'privileges', label: getLocalizedText(hpNav?.privileges, lang, getNavFallback('privileges', lang)), href: '/privileges' },
-      { id: 'our_story', label: getLocalizedText(hpNav?.ourStory, lang, getNavFallback('our_story', lang)), href: '/#our-story' },
-      { id: 'history', label: getLocalizedText(hpNav?.history, lang, getNavFallback('history', lang)), href: '/#history' },
     ] as NavItem[];
   }, [hpNav, lang, getLocalizedText]);
 
@@ -670,18 +670,18 @@ const Header = () => {
               <div className="nav-fullscreen-inner">
                 {/* Left Panel: Navigation Links */}
                 <div className="nav-panel-left">
-                  {/* Mobile Flow (<768px): 1 unified sequential list in exact order: 1. Space -> 2. Services -> 3. Local tour -> 4. Academy -> 5. Blogs -> 6. Privileges -> 7. History */}
+                  {/* Mobile Flow (<768px): 1 unified sequential list in exact order: 1. Space -> 2. Services -> 3. Local tour -> 4. Lost & Found -> 5. Blogs -> 6. Privileges -> 7. Our story -> 8. History -> 9. Academy */}
                   <div className="nav-links-mobile md:hidden flex flex-col gap-7 w-full">
                     {NAV_ITEMS.map((item) => renderCategory(item))}
                   </div>
 
-                  {/* Tablet Flow (768px - 1023px): 2 balanced columns: Col 1 (Space, Services), Col 2 (Local tour, Academy, Blogs, Privileges, History) */}
+                  {/* Tablet Flow (768px - 1023px): 2 balanced columns: Col 1 (Space, Services), Col 2 (Local tour, Lost & Found, Blogs, Privileges, History, Academy) */}
                   <div className="nav-links-tablet hidden md:flex lg:hidden gap-10 w-full">
                     <div className="nav-links-col flex-1 flex flex-col gap-8">
                       {NAV_ITEMS.filter(item => !!item.id && ['spaces', 'services'].includes(item.id)).map(item => renderCategory(item))}
                     </div>
                     <div className="nav-links-col flex-1 flex flex-col gap-8">
-                      {NAV_ITEMS.filter(item => !!item.id && ['local_tour', 'academy', 'lost_and_found', 'blogs', 'privileges', 'history'].includes(item.id)).map(item => renderCategory(item))}
+                      {NAV_ITEMS.filter(item => !!item.id && ['local_tour', 'lost_and_found', 'blogs', 'privileges', 'history', 'academy'].includes(item.id)).map(item => renderCategory(item))}
                     </div>
                   </div>
 
@@ -691,7 +691,7 @@ const Header = () => {
                       {NAV_ITEMS.filter(item => !!item.id && ['spaces', 'services'].includes(item.id)).map(item => renderCategory(item))}
                     </div>
                     <div className="nav-links-col flex-1 flex flex-col gap-10">
-                      {NAV_ITEMS.filter(item => !!item.id && ['local_tour', 'academy', 'lost_and_found', 'blogs', 'privileges', 'history'].includes(item.id)).map(item => renderCategory(item))}
+                      {NAV_ITEMS.filter(item => !!item.id && ['local_tour', 'lost_and_found', 'blogs', 'privileges', 'history', 'academy'].includes(item.id)).map(item => renderCategory(item))}
                     </div>
                   </div>
                 </div>
