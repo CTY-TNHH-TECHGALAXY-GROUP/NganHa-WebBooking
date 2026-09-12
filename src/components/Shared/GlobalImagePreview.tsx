@@ -71,9 +71,8 @@ export default function GlobalImagePreview() {
 
       if (!img) return;
 
-      // Exclusions:
       // A. Explicit no-preview attribute
-      if (img.hasAttribute('data-no-preview') || img.closest('[data-no-preview="true"]')) {
+      if (img.hasAttribute('data-no-preview') || img.closest('[data-no-preview="true"]') || target.closest('[data-no-preview="true"]')) {
         return;
       }
 
@@ -93,15 +92,9 @@ export default function GlobalImagePreview() {
         return;
       }
 
-      // E. Form buttons / action controls
-      const btn = target.closest('button');
-      if (btn && (
-        btn.type === 'submit' ||
-        btn.getAttribute('aria-label')?.includes('Decrease') ||
-        btn.getAttribute('aria-label')?.includes('Increase') ||
-        btn.getAttribute('aria-label')?.includes('quantity') ||
-        btn.getAttribute('aria-label')?.includes('Add service')
-      )) {
+      // E. Buttons & interactive controls (carousel nav arrows, dots, cart buttons, action controls)
+      const btn = target.closest('button, [data-no-preview="true"], input, select, textarea');
+      if (btn) {
         return;
       }
 

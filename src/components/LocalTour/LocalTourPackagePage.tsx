@@ -162,10 +162,8 @@ function HighlightCardItem({
             {/* Arrow Nav Buttons: centered vertically, always accessible */}
             <button
               type="button"
+              data-no-preview="true"
               className={`${styles.highlightNavBtn} ${styles.highlightNavPrev} ${activeImgIdx === 0 ? styles.highlightNavEdge : ''}`}
-              onPointerDown={(e) => e.stopPropagation()}
-              onTouchStart={(e) => e.stopPropagation()}
-              onTouchEnd={(e) => e.stopPropagation()}
               onClick={goToPrev}
               aria-label="Previous photo"
               title={lang === 'vi' ? 'Ảnh trước' : 'Previous photo'}
@@ -174,10 +172,8 @@ function HighlightCardItem({
             </button>
             <button
               type="button"
+              data-no-preview="true"
               className={`${styles.highlightNavBtn} ${styles.highlightNavNext} ${activeImgIdx === images.length - 1 ? styles.highlightNavEdge : ''}`}
-              onPointerDown={(e) => e.stopPropagation()}
-              onTouchStart={(e) => e.stopPropagation()}
-              onTouchEnd={(e) => e.stopPropagation()}
               onClick={goToNext}
               aria-label="Next photo"
               title={lang === 'vi' ? 'Ảnh tiếp theo' : 'Next photo'}
@@ -186,14 +182,12 @@ function HighlightCardItem({
             </button>
 
             {/* Pagination Dots */}
-            <div className={styles.highlightDots}>
+            <div className={styles.highlightDots} data-no-preview="true">
               {images.map((_, dotIdx) => (
                 <button
                   key={'dot-' + dotIdx}
                   type="button"
-                  onPointerDown={(e) => e.stopPropagation()}
-                  onTouchStart={(e) => e.stopPropagation()}
-                  onTouchEnd={(e) => e.stopPropagation()}
+                  data-no-preview="true"
                   onClick={(e) => {
                     e.stopPropagation();
                     e.preventDefault();
