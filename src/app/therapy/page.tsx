@@ -1,9 +1,13 @@
 import ComingSoon from '@/components/ComingSoon/ComingSoon';
-import { Metadata } from 'next';
+import type { Metadata } from 'next';
+import { getPageMetadata } from '@/lib/seo/metadata';
 
-export const metadata: Metadata = {
-  title: 'Coming Soon | Oria Spa',
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return getPageMetadata({ routeKey: 'therapy', pathname: '/therapy', localized: false }, {
+    title: 'Coming Soon | Oria Spa',
+    description: 'Therapy services at Oria Spa.',
+  });
+}
 
 export default function TherapyPage() {
   return <ComingSoon />;

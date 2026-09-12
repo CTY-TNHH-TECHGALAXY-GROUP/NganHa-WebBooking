@@ -2,13 +2,16 @@ import type { Metadata } from 'next';
 import { getSupabaseAdmin } from '@/lib/supabase-server';
 import { toWebbookingLostFoundItem, type WebbookingLostFoundItem } from '@/lib/webbookingLostFound';
 import LostAndFoundPage from '@/components/LostAndFound/LostAndFoundPage';
+import { getPageMetadata } from '@/lib/seo/metadata';
 
 export const dynamic = 'force-dynamic';
 
-export const metadata: Metadata = {
-  title: 'Lost & Found | Oria Spa',
-  description: 'A thoughtful place to reconnect guests with belongings left at Oria Spa.',
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return getPageMetadata({ routeKey: 'lost-and-found', pathname: '/lost-and-found', localized: false }, {
+    title: 'Lost & Found | Oria Spa',
+    description: 'A thoughtful place to reconnect guests with belongings left at Oria Spa.',
+  });
+}
 
 export default async function Page() {
   let initialItems: WebbookingLostFoundItem[] = [];
