@@ -3,7 +3,7 @@
 import React, { useMemo, useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
 import { motion, useReducedMotion } from 'framer-motion';
-import { Clock, MapPin, Compass, Phone, ArrowRight, ZoomIn } from 'lucide-react';
+import { Clock, MapPin, Compass, Phone, ArrowRight, ZoomIn, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useTranslation } from '@/components/TranslationProvider';
 import { useSystemSettings } from '@/components/SystemSettingsProvider';
 import type { Locale } from '@/lib/constants';
@@ -47,6 +47,7 @@ function HighlightCardItem({
     : (hl.image ? [hl.image] : []);
   const [activeImgIdx, setActiveImgIdx] = useState(0);
   const scrollerRef = useRef<HTMLDivElement>(null);
+  const pointerStartRef = useRef<{ x: number; y: number } | null>(null);
 
   const handleScroll = () => {
     if (!scrollerRef.current) return;
@@ -61,8 +62,14 @@ function HighlightCardItem({
 
   const scrollToImage = (newIdx: number) => {
     if (!scrollerRef.current || newIdx < 0 || newIdx >= images.length) return;
-    const targetLeft = newIdx * scrollerRef.current.clientWidth;
-    scrollerRef.current.scrollTo({ left: targetLeft, behavior: 'smooth' });
+    const scroller = scrollerRef.current;
+    const targetChild = scroller.children[newIdx] as HTMLElement;
+    if (targetChild && typeof targetChild.offsetLeft === 'number') {
+      scroller.scrollTo({ left: targetChild.offsetLeft, behavior: 'smooth' });
+    } else {
+      const targetLeft = newIdx * scroller.clientWidth;
+      scroller.scrollTo({ left: targetLeft, behavior: 'smooth' });
+    }
     setActiveImgIdx(newIdx);
   };
 
@@ -86,8 +93,16 @@ function HighlightCardItem({
                 <div 
                   key={'img-' + iIdx} 
                   className={`${styles.highlightSlide} cursor-zoom-in relative group/slide`}
+                  onPointerDown={(e) => {
+                    pointerStartRef.current = { x: e.clientX, y: e.clientY };
+                  }}
                   onClick={(e) => {
                     e.stopPropagation();
+                    if (pointerStartRef.current) {
+                      const dx = Math.abs(e.clientX - pointerStartRef.current.x);
+                      const dy = Math.abs(e.clientY - pointerStartRef.current.y);
+                      if (dx > 10 || dy > 10) return; // User was dragging/swiping to scroll!
+                    }
                     window.dispatchEvent(new CustomEvent('open-media-preview', {
                       detail: {
                         mediaUrl: imgUrl,
@@ -121,33 +136,41 @@ function HighlightCardItem({
               {activeImgIdx + 1}/{images.length}
             </span>
 
-            {/* Arrow Nav Buttons */}
-            {activeImgIdx > 0 && (
-              <button
-                type="button"
-                className={`${styles.highlightNavBtn} ${styles.highlightNavPrev}`}
-                onClick={(e) => {
-                  e.stopPropagation();
+            {/* Arrow Nav Buttons: centered vertically, always accessible */}
+            <button
+              type="button"
+              className={`${styles.highlightNavBtn} ${styles.highlightNavPrev} ${activeImgIdx === 0 ? styles.highlightNavEdge : ''}`}
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                if (activeImgIdx > 0) {
                   scrollToImage(activeImgIdx - 1);
-                }}
-                aria-label="Previous photo"
-              >
-                ‹
-              </button>
-            )}
-            {activeImgIdx < images.length - 1 && (
-              <button
-                type="button"
-                className={`${styles.highlightNavBtn} ${styles.highlightNavNext}`}
-                onClick={(e) => {
-                  e.stopPropagation();
+                } else {
+                  scrollToImage(images.length - 1);
+                }
+              }}
+              aria-label="Previous photo"
+              title={lang === 'vi' ? 'Ảnh trước' : 'Previous photo'}
+            >
+              <ChevronLeft size={20} strokeWidth={2.5} />
+            </button>
+            <button
+              type="button"
+              className={`${styles.highlightNavBtn} ${styles.highlightNavNext} ${activeImgIdx === images.length - 1 ? styles.highlightNavEdge : ''}`}
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                if (activeImgIdx < images.length - 1) {
                   scrollToImage(activeImgIdx + 1);
-                }}
-                aria-label="Next photo"
-              >
-                ›
-              </button>
-            )}
+                } else {
+                  scrollToImage(0);
+                }
+              }}
+              aria-label="Next photo"
+              title={lang === 'vi' ? 'Ảnh tiếp theo' : 'Next photo'}
+            >
+              <ChevronRight size={20} strokeWidth={2.5} />
+            </button>
 
             {/* Pagination Dots */}
             <div className={styles.highlightDots}>
@@ -157,6 +180,7 @@ function HighlightCardItem({
                   type="button"
                   onClick={(e) => {
                     e.stopPropagation();
+                    e.preventDefault();
                     scrollToImage(dotIdx);
                   }}
                   className={`${styles.highlightDot} ${dotIdx === activeImgIdx ? styles.highlightDotActive : ''}`}

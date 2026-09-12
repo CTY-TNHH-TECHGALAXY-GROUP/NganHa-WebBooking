@@ -13,7 +13,7 @@ const GoogleG = () => (
 );
 
 const GoogleReviewWidget = () => {
-  const [data, setData] = useState({ rating: 4.8, user_ratings_total: 1330 });
+  const [data, setData] = useState({ rating: 4.8, user_ratings_total: 1243 });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
