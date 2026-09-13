@@ -14,6 +14,8 @@ Date: 2026-09-14 (Asia/Ho_Chi_Minh)
 - Base checked: `origin/master` at `735f5c0289e89b4b3042ace0588cd84a94906253`
 - Official origin: `https://oria-spa.vercel.app`
 - Production branch: `master` (user-confirmed); no branch protection bypass performed.
+- PR: [#11](https://github.com/CTY-TNHH-TECHGALAXY-GROUP/NganHa-WebBooking/pull/11), head `ea60c4c360e7c2dac265c7335fddedcaf624ae40`, base `735f5c0289e89b4b3042ace0588cd84a94906253`.
+- Vercel status for the PR head is `success`; preview alias is `https://ngan-ha-web-booking-git-codex-ps-integration-160cb4-tech-galaxy.vercel.app`. Direct unauthenticated requests return Vercel SSO `302`, so preview HTML/PSI is not counted as verified live evidence.
 
 ## Completed and verified in integration
 
@@ -44,6 +46,7 @@ Date: 2026-09-14 (Asia/Ho_Chi_Minh)
 - **W5:** forced reflow and long tasks remain unattributed in the available diagnostic capture. No safe runtime patch was made. A CPU/network-controlled Performance trace is required before changing scroll/layout/animation code.
 - **W6:** font/CSS/legacy-JS changes remain deferred. Existing audit Error/NO_LCP output cannot identify a safe selector or removable polyfill; coverage and font consumer/license mapping are required.
 - No equivalent three-run live PSI/Lighthouse before/after exists. The existing diagnostic LCP/aggregate bytes are not a live PageSpeed improvement claim.
+- Official production `oria-spa.vercel.app` has not served this candidate; production verification therefore remains open.
 
 ## Release blockers and next actions
 
