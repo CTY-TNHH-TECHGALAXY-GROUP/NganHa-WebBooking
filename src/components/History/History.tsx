@@ -1066,7 +1066,9 @@ export const History = ({ aboveFold = false }: HistoryProps) => {
                         src={chapterMediaReady && (index === sceneIndex || index === (sceneIndex + 1) % chapter.scenes.length)
                           ? getHistoryImageUrl(item.image)
                           : HISTORY_MEDIA_PLACEHOLDER}
-                        responsiveSources={chapterMediaReady ? item.responsiveSources : undefined}
+                        responsiveSources={chapterMediaReady && (index === sceneIndex || index === (sceneIndex + 1) % chapter.scenes.length)
+                          ? item.responsiveSources
+                          : undefined}
                         alt={item.alt}
                         sizes="(max-width: 760px) 85vw, 44vw"
                         style={{
