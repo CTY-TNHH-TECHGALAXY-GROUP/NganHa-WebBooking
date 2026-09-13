@@ -39,7 +39,6 @@ const defaultMedia = {
     haircutChair: '/images/barbershop.png',
     bodyBed: '/images/body-treatment-full.png',
     shampooBed: '/images/hair-wash.png',
-    facialArea: '/images/facial.png',
   },
 };
 
@@ -48,7 +47,6 @@ const facilityMediaKeys = [
   'capacity.haircutChair',
   'capacity.bodyBed',
   'capacity.shampooBed',
-  'capacity.facialArea',
 ] as const;
 
 export default function SpacePage({ initialMedia }: { initialMedia?: any } = {}) {
