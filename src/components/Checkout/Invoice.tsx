@@ -38,7 +38,7 @@ export default function Invoice({ cart, lang, dict, currency = 'VND', onCustomRe
                         const hasCustom = isStrengthCustom || isTherapistCustom || isBodyCustom || isNotesCustom;
 
                         // Total body parts count (must match BodyMap.tsx ALL_BODY_PARTS)
-                        const TOTAL_BODY_PARTS = 8; // HEAD, NECK, SHOULDER, ARM, BACK, THIGH, CALF, FOOT
+                        const TOTAL_BODY_PARTS = 9; // HEAD, NECK, SHOULDER, ARM, BACK, THIGH, KNEE, CALF, FOOT
 
                         const formatParts = (parts: string[]) => {
                             if (!parts || parts.length === 0) return '';

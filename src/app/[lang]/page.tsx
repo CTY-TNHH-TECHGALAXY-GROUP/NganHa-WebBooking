@@ -2,7 +2,6 @@ import { notFound } from 'next/navigation';
 import { SUPPORTED_LOCALES } from '@/lib/constants';
 import { getHeroVideoConfig } from '@/lib/config/heroVideos';
 import LocalizedHomePageClient from './LocalizedHomePageClient';
-import AeoAnswerContent from '@/components/Seo/AeoAnswerContent';
 import SeoStructuredData from '@/components/Seo/SeoStructuredData';
 import { getPageMetadata } from '@/lib/seo/metadata';
 import type { Locale } from '@/lib/constants';
@@ -36,7 +35,6 @@ export default async function LocalizedHomePage({ params }: PageProps) {
   return (
     <>
       <LocalizedHomePageClient lang={lang} initialHeroConfig={initialHeroConfig} />
-      <AeoAnswerContent routeKey="home" locale={lang as Locale} />
       <SeoStructuredData routeKey="home" locale={lang as Locale} pathname={`/${lang}`} />
     </>
   );
