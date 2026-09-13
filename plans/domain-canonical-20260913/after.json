@@ -19,7 +19,11 @@
     "githubVercelChecks": [
       "https://vercel.com/tech-galaxy/ngan-ha-web-booking/GFS2BCLw7gMDHyCPYHf9X5eCr6Ua",
       "https://vercel.com/tech-galaxy/ngan-ha-web-booking/De59zTFWuKJ1YpSizfvZUtueggVL"
-    ]
+    ],
+    "remoteBranchesAtEvidence": {
+      "master": "5005d34119b999142c94172cae8d5853982291b2",
+      "vercel": "e1c0b5f1e9a819dda431d77c95fabbee4b8ad207"
+    }
   },
   "live": {
     "status": "pass",

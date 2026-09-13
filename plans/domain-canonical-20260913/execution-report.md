@@ -2,7 +2,7 @@
 
 Official website origin: `https://oria-spa.vercel.app`.
 
-This report records the before/after evidence for the scoped canonical-domain fix. The main worktree was left untouched; implementation ran in `/private/tmp/nganha-domain-deploy` from source SHA `a827bfce79cd9da9df1f0580412b9facc7782224`.
+This report records the before/after evidence for the scoped canonical-domain fix. The main worktree was left untouched; implementation ran in `/private/tmp/nganha-domain-deploy` from source SHA `a827bfce79cd9da9df1f0580412b9facc7782224`. GitHub Vercel checks identify `vercel` as Preview and `master` as Production for project `tech-galaxy/ngan-ha-web-booking`; both refs were rechecked before their pushes.
 
 ## Before
 

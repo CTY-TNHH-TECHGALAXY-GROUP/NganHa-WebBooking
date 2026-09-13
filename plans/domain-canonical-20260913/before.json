@@ -1,6 +1,13 @@
 {
   "capturedAt": "2026-09-12T22:03:42Z",
   "productionOrigin": "https://oria-spa.vercel.app",
+  "git": {
+    "origin": "https://github.com/CTY-TNHH-TECHGALAXY-GROUP/NganHa-WebBooking.git",
+    "beforeRemoteTip": "a827bfce79cd9da9df1f0580412b9facc7782224",
+    "previewBranch": "vercel",
+    "productionBranch": "master",
+    "vercelProject": "tech-galaxy/ngan-ha-web-booking"
+  },
   "sourceSha": "a827bfce79cd9da9df1f0580412b9facc7782224",
   "routes": {
     "checked": ["/", "/vi", "/en", "/cn", "/jp", "/kr", "/history", "/space", "/vi/oriahome", "/local-tour"],
@@ -34,5 +41,9 @@
     "nganha.vercel.app": "redirects to https://oriaspa.vercel.app/en/new-user/standard/menu",
     "oriaspa.vercel.app": "root redirects to /en/new-user/standard/menu",
     "nganhaspa.vn": "DNS did not resolve in audit"
+  },
+  "ownership": {
+    "officialHost": "changed with this repository's Production deployment; Vercel API project list returned 403 without account auth",
+    "legacyHosts": "not assumed to be aliases of this project"
   }
 }
