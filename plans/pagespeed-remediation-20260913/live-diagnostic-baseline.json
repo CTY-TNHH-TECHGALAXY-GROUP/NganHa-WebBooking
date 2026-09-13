@@ -1,0 +1,2380 @@
+{
+  "at": "2026-09-13T12:57:00.466Z",
+  "profile": "390x844 DPR 2, mobile touch, CPU 4x, network unthrottled; diagnostic only",
+  "samples": [
+    {
+      "path": "/",
+      "errors": [],
+      "initial": {
+        "viewport": "width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover, user-scalable=no",
+        "longtasks": [
+          {
+            "start": 3887.899999976158,
+            "ms": 97
+          },
+          {
+            "start": 5393.099999904633,
+            "ms": 355
+          },
+          {
+            "start": 5866.299999952316,
+            "ms": 66
+          },
+          {
+            "start": 6055,
+            "ms": 50
+          }
+        ],
+        "lcp": {
+          "ms": 5764,
+          "url": "",
+          "tag": "SPAN"
+        },
+        "cls": 0,
+        "images": [
+          {
+            "src": "https://flagcdn.com/w80/vn.png",
+            "w": 40,
+            "h": 26,
+            "displayW": 28,
+            "displayH": 20,
+            "loading": "auto",
+            "srcset": true
+          },
+          {
+            "src": "https://flagcdn.com/w80/gb.png",
+            "w": 40,
+            "h": 20,
+            "displayW": 28,
+            "displayH": 20,
+            "loading": "auto",
+            "srcset": true
+          },
+          {
+            "src": "https://flagcdn.com/w80/cn.png",
+            "w": 40,
+            "h": 26,
+            "displayW": 28,
+            "displayH": 20,
+            "loading": "auto",
+            "srcset": true
+          },
+          {
+            "src": "https://flagcdn.com/w80/jp.png",
+            "w": 40,
+            "h": 26,
+            "displayW": 28,
+            "displayH": 20,
+            "loading": "auto",
+            "srcset": true
+          },
+          {
+            "src": "https://flagcdn.com/w80/kr.png",
+            "w": 40,
+            "h": 26,
+            "displayW": 28,
+            "displayH": 20,
+            "loading": "auto",
+            "srcset": true
+          },
+          {
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin.webp",
+            "w": 1122,
+            "h": 1402,
+            "displayW": 324,
+            "displayH": 405,
+            "loading": "lazy",
+            "srcset": false
+          },
+          {
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner.webp",
+            "w": 1254,
+            "h": 1254,
+            "displayW": 180.46875,
+            "displayH": 180.46875,
+            "loading": "lazy",
+            "srcset": false
+          },
+          {
+            "src": "",
+            "w": 0,
+            "h": 0,
+            "displayW": 176.75,
+            "displayH": 132.5625,
+            "loading": "lazy",
+            "srcset": false
+          },
+          {
+            "src": "",
+            "w": 0,
+            "h": 0,
+            "displayW": 176.75,
+            "displayH": 132.5625,
+            "loading": "lazy",
+            "srcset": false
+          },
+          {
+            "src": "",
+            "w": 0,
+            "h": 0,
+            "displayW": 176.75,
+            "displayH": 132.5625,
+            "loading": "lazy",
+            "srcset": false
+          },
+          {
+            "src": "",
+            "w": 0,
+            "h": 0,
+            "displayW": 176.75,
+            "displayH": 132.5625,
+            "loading": "lazy",
+            "srcset": false
+          },
+          {
+            "src": "",
+            "w": 0,
+            "h": 0,
+            "displayW": 358,
+            "displayH": 238.65625,
+            "loading": "lazy",
+            "srcset": false
+          },
+          {
+            "src": "",
+            "w": 0,
+            "h": 0,
+            "displayW": 358,
+            "displayH": 238.65625,
+            "loading": "lazy",
+            "srcset": false
+          },
+          {
+            "src": "",
+            "w": 0,
+            "h": 0,
+            "displayW": 358,
+            "displayH": 238.65625,
+            "loading": "lazy",
+            "srcset": false
+          },
+          {
+            "src": "",
+            "w": 0,
+            "h": 0,
+            "displayW": 358,
+            "displayH": 238.65625,
+            "loading": "lazy",
+            "srcset": false
+          },
+          {
+            "src": "",
+            "w": 0,
+            "h": 0,
+            "displayW": 358,
+            "displayH": 238.65625,
+            "loading": "lazy",
+            "srcset": false
+          },
+          {
+            "src": "",
+            "w": 0,
+            "h": 0,
+            "displayW": 358,
+            "displayH": 238.65625,
+            "loading": "lazy",
+            "srcset": false
+          },
+          {
+            "src": "",
+            "w": 0,
+            "h": 0,
+            "displayW": 358,
+            "displayH": 238.65625,
+            "loading": "lazy",
+            "srcset": false
+          },
+          {
+            "src": "",
+            "w": 0,
+            "h": 0,
+            "displayW": 358,
+            "displayH": 238.65625,
+            "loading": "lazy",
+            "srcset": false
+          },
+          {
+            "src": "",
+            "w": 0,
+            "h": 0,
+            "displayW": 358,
+            "displayH": 238.65625,
+            "loading": "lazy",
+            "srcset": false
+          },
+          {
+            "src": "",
+            "w": 0,
+            "h": 0,
+            "displayW": 405.5999755859375,
+            "displayH": 807.52734375,
+            "loading": "lazy",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 316.60107421875,
+            "displayH": 351.7783203125,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 325.5228271484375,
+            "displayH": 361.69140625,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 325.5228271484375,
+            "displayH": 361.69140625,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 41.76399230957031,
+            "displayH": 41.763671875,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 39.40000915527344,
+            "displayH": 39.400390625,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 39.39996337890625,
+            "displayH": 39.400390625,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 316.60107421875,
+            "displayH": 351.779296875,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 325.5228271484375,
+            "displayH": 361.69140625,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 325.5228271484375,
+            "displayH": 361.69140625,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 41.76399230957031,
+            "displayH": 41.763671875,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 39.40000915527344,
+            "displayH": 39.400390625,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 39.39996337890625,
+            "displayH": 39.400390625,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 316.60107421875,
+            "displayH": 351.779296875,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 325.5228271484375,
+            "displayH": 361.69140625,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 325.5228271484375,
+            "displayH": 361.69140625,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 325.5228271484375,
+            "displayH": 361.69140625,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 41.76399230957031,
+            "displayH": 41.763671875,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 39.40000915527344,
+            "displayH": 39.3984375,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 39.39996337890625,
+            "displayH": 39.3984375,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 39.39996337890625,
+            "displayH": 39.3984375,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 316.60107421875,
+            "displayH": 351.779296875,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 325.5228271484375,
+            "displayH": 361.69140625,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 325.5228271484375,
+            "displayH": 361.69140625,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 41.76399230957031,
+            "displayH": 41.763671875,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 39.40000915527344,
+            "displayH": 39.3984375,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 39.39996337890625,
+            "displayH": 39.3984375,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 316.60107421875,
+            "displayH": 351.779296875,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 325.5228271484375,
+            "displayH": 361.69140625,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 41.76399230957031,
+            "displayH": 41.763671875,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 39.40000915527344,
+            "displayH": 39.3984375,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 316.60107421875,
+            "displayH": 351.779296875,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 325.5228271484375,
+            "displayH": 361.69140625,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 325.5228271484375,
+            "displayH": 361.69140625,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 325.5228271484375,
+            "displayH": 361.69140625,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 325.5228271484375,
+            "displayH": 361.69140625,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 41.76399230957031,
+            "displayH": 41.763671875,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 39.40000915527344,
+            "displayH": 39.3984375,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 39.39996337890625,
+            "displayH": 39.3984375,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 39.39996337890625,
+            "displayH": 39.3984375,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 39.4000244140625,
+            "displayH": 39.3984375,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 316.60107421875,
+            "displayH": 351.779296875,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 325.5228271484375,
+            "displayH": 361.69140625,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 325.5228271484375,
+            "displayH": 361.69140625,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 41.76399230957031,
+            "displayH": 41.763671875,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 39.40000915527344,
+            "displayH": 39.3984375,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 39.39996337890625,
+            "displayH": 39.3984375,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "",
+            "w": 0,
+            "h": 0,
+            "displayW": 64,
+            "displayH": 64,
+            "loading": "lazy",
+            "srcset": false
+          },
+          {
+            "src": "",
+            "w": 0,
+            "h": 0,
+            "displayW": 64,
+            "displayH": 64,
+            "loading": "lazy",
+            "srcset": false
+          },
+          {
+            "src": "",
+            "w": 0,
+            "h": 0,
+            "displayW": 64,
+            "displayH": 64,
+            "loading": "lazy",
+            "srcset": false
+          },
+          {
+            "src": "",
+            "w": 0,
+            "h": 0,
+            "displayW": 64,
+            "displayH": 64,
+            "loading": "lazy",
+            "srcset": false
+          },
+          {
+            "src": "https://oria-spa.vercel.app/images/chatbot-icon.webp",
+            "w": 1024,
+            "h": 1024,
+            "displayW": 54,
+            "displayH": 54,
+            "loading": "auto",
+            "srcset": false
+          }
+        ],
+        "videos": [
+          {
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/homepage/0807(1).mp4",
+            "preload": "auto",
+            "paused": false,
+            "ready": 4
+          }
+        ],
+        "iframes": [],
+        "navigation": [
+          {
+            "ttfb": 488,
+            "dcl": 5809.799999952316,
+            "bytes": 111798
+          }
+        ]
+      },
+      "requests": [
+        {
+          "url": "https://oria-spa.vercel.app/images/chatbot-icon.webp",
+          "type": "Image",
+          "status": 200,
+          "mime": "image/webp",
+          "cache": "public, max-age=0, must-revalidate",
+          "disk": false,
+          "bytes": 622296
+        },
+        {
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin.webp",
+          "type": "Image",
+          "status": 200,
+          "mime": "image/webp",
+          "cache": "public, max-age=3600",
+          "disk": false,
+          "bytes": 542725
+        },
+        {
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner.webp",
+          "type": "Image",
+          "status": 200,
+          "mime": "image/webp",
+          "cache": "public, max-age=3600",
+          "disk": false,
+          "bytes": 410683
+        },
+        {
+          "url": "https://oria-spa.vercel.app/images/logo_fixed_slogan.png",
+          "type": "Image",
+          "status": 200,
+          "mime": "image/png",
+          "cache": "public, max-age=0, must-revalidate",
+          "disk": false,
+          "bytes": 137958
+        },
+        {
+          "url": "https://oria-spa.vercel.app/",
+          "type": "Document",
+          "status": 200,
+          "mime": "text/html",
+          "cache": "private, no-cache, no-store, max-age=0, must-revalidate",
+          "disk": false,
+          "bytes": 113038
+        },
+        {
+          "url": "https://oria-spa.vercel.app/_next/static/media/8e9860b6e62d6359-s.woff2",
+          "type": "Font",
+          "status": 200,
+          "mime": "font/woff2",
+          "cache": "public,max-age=31536000,immutable",
+          "disk": false,
+          "bytes": 85527
+        },
+        {
+          "url": "https://oria-spa.vercel.app/api/public/site-content",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "cache": "no-store, no-cache, must-revalidate, proxy-revalidate",
+          "disk": false,
+          "bytes": 80298
+        },
+        {
+          "url": "https://oria-spa.vercel.app/_next/static/chunks/4bd1b696-100b9d70ed4e49c1.js?dpl=dpl_EiYhRjrP1LQgkXCyLjxrr3yB9dkT",
+          "type": "Script",
+          "status": 200,
+          "mime": "application/javascript",
+          "cache": "public,max-age=31536000,immutable",
+          "disk": false,
+          "bytes": 55832
+        },
+        {
+          "url": "https://i.ibb.co/fs2MBD4/hero-spa-bg.jpg",
+          "type": "Image",
+          "status": 200,
+          "mime": "image/jpeg",
+          "cache": "max-age=315360000, public",
+          "disk": false,
+          "bytes": 49427
+        },
+        {
+          "url": "https://oria-spa.vercel.app/_next/static/media/e4af272ccee01ff0-s.p.woff2",
+          "type": "Font",
+          "status": 200,
+          "mime": "font/woff2",
+          "cache": "public,max-age=31536000,immutable",
+          "disk": false,
+          "bytes": 48641
+        },
+        {
+          "url": "https://oria-spa.vercel.app/_next/static/chunks/1255-5b2a424e4b1d44b9.js?dpl=dpl_EiYhRjrP1LQgkXCyLjxrr3yB9dkT",
+          "type": "Script",
+          "status": 200,
+          "mime": "application/javascript",
+          "cache": "public,max-age=31536000,immutable",
+          "disk": false,
+          "bytes": 46249
+        },
+        {
+          "url": "https://oria-spa.vercel.app/_next/static/chunks/8198-7f3765fdb04a7900.js?dpl=dpl_EiYhRjrP1LQgkXCyLjxrr3yB9dkT",
+          "type": "Script",
+          "status": 200,
+          "mime": "application/javascript",
+          "cache": "public,max-age=31536000,immutable",
+          "disk": false,
+          "bytes": 43572
+        },
+        {
+          "url": "https://oria-spa.vercel.app/_next/static/css/5770ffbb4fc249c9.css?dpl=dpl_EiYhRjrP1LQgkXCyLjxrr3yB9dkT",
+          "type": "Stylesheet",
+          "status": 200,
+          "mime": "text/css",
+          "cache": "public,max-age=31536000,immutable",
+          "disk": false,
+          "bytes": 42683
+        },
+        {
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/homepage/0807(1).mp4",
+          "type": "Media",
+          "status": 206,
+          "mime": "video/mp4",
+          "cache": "max-age=3600",
+          "disk": false,
+          "bytes": 39852
+        },
+        {
+          "url": "https://oria-spa.vercel.app/_next/static/media/78d0dd042ac6d54d-s.p.woff2",
+          "type": "Font",
+          "status": 200,
+          "mime": "font/woff2",
+          "cache": "public,max-age=31536000,immutable",
+          "disk": false,
+          "bytes": 39099
+        },
+        {
+          "url": "https://oria-spa.vercel.app/_next/static/media/eaead17c7dbfcd5d-s.p.woff2",
+          "type": "Font",
+          "status": 200,
+          "mime": "font/woff2",
+          "cache": "public,max-age=31536000,immutable",
+          "disk": false,
+          "bytes": 38661
+        },
+        {
+          "url": "https://oria-spa.vercel.app/images/logo.png?v=3",
+          "type": "Image",
+          "status": 200,
+          "mime": "image/png",
+          "cache": "public, max-age=0, must-revalidate",
+          "disk": false,
+          "bytes": 37345
+        },
+        {
+          "url": "https://oria-spa.vercel.app/_next/static/chunks/app/layout-d0f045bbab667e65.js?dpl=dpl_EiYhRjrP1LQgkXCyLjxrr3yB9dkT",
+          "type": "Script",
+          "status": 200,
+          "mime": "application/javascript",
+          "cache": "public,max-age=31536000,immutable",
+          "disk": false,
+          "bytes": 30630
+        },
+        {
+          "url": "https://oria-spa.vercel.app/_next/static/chunks/6230-1249017f86142fb9.js?dpl=dpl_EiYhRjrP1LQgkXCyLjxrr3yB9dkT",
+          "type": "Script",
+          "status": 200,
+          "mime": "application/javascript",
+          "cache": "public,max-age=31536000,immutable",
+          "disk": false,
+          "bytes": 30175
+        },
+        {
+          "url": "https://oria-spa.vercel.app/_next/static/chunks/462-fd7b3467abc6fbad.js?dpl=dpl_EiYhRjrP1LQgkXCyLjxrr3yB9dkT",
+          "type": "Script",
+          "status": 200,
+          "mime": "application/javascript",
+          "cache": "public,max-age=31536000,immutable",
+          "disk": false,
+          "bytes": 24155
+        },
+        {
+          "url": "https://oria-spa.vercel.app/_next/static/media/1926da171a0ba1a5-s.woff2",
+          "type": "Font",
+          "status": 200,
+          "mime": "font/woff2",
+          "cache": "public,max-age=31536000,immutable",
+          "disk": false,
+          "bytes": 23520
+        },
+        {
+          "url": "https://oria-spa.vercel.app/_next/static/media/28a2004cf8372660-s.woff2",
+          "type": "Font",
+          "status": 200,
+          "mime": "font/woff2",
+          "cache": "public,max-age=31536000,immutable",
+          "disk": false,
+          "bytes": 21169
+        },
+        {
+          "url": "https://oria-spa.vercel.app/icons/shopping-cart.png",
+          "type": "Image",
+          "status": 200,
+          "mime": "image/png",
+          "cache": "public, max-age=0, must-revalidate",
+          "disk": false,
+          "bytes": 18218
+        },
+        {
+          "url": "https://oria-spa.vercel.app/_next/static/chunks/8909-ccb9457e769638e2.js?dpl=dpl_EiYhRjrP1LQgkXCyLjxrr3yB9dkT",
+          "type": "Script",
+          "status": 200,
+          "mime": "application/javascript",
+          "cache": "public,max-age=31536000,immutable",
+          "disk": false,
+          "bytes": 11325
+        },
+        {
+          "url": "https://oria-spa.vercel.app/_next/static/media/df0a9ae256c0569c-s.p.woff2",
+          "type": "Font",
+          "status": 200,
+          "mime": "font/woff2",
+          "cache": "public,max-age=31536000,immutable",
+          "disk": false,
+          "bytes": 10470
+        },
+        {
+          "url": "https://oria-spa.vercel.app/_next/static/chunks/2821-e6c3a0513d4dc50d.js?dpl=dpl_EiYhRjrP1LQgkXCyLjxrr3yB9dkT",
+          "type": "Script",
+          "status": 200,
+          "mime": "application/javascript",
+          "cache": "public,max-age=31536000,immutable",
+          "disk": false,
+          "bytes": 10298
+        },
+        {
+          "url": "https://oria-spa.vercel.app/_next/static/media/000030d1699f2fb3-s.p.woff2",
+          "type": "Font",
+          "status": 200,
+          "mime": "font/woff2",
+          "cache": "public,max-age=31536000,immutable",
+          "disk": false,
+          "bytes": 9734
+        },
+        {
+          "url": "https://oria-spa.vercel.app/_next/static/css/fb68732f14d6bd45.css?dpl=dpl_EiYhRjrP1LQgkXCyLjxrr3yB9dkT",
+          "type": "Stylesheet",
+          "status": 200,
+          "mime": "text/css",
+          "cache": "public,max-age=31536000,immutable",
+          "disk": false,
+          "bytes": 9395
+        },
+        {
+          "url": "https://oria-spa.vercel.app/_next/static/media/4ead58c4dcc3f285-s.p.woff2",
+          "type": "Font",
+          "status": 200,
+          "mime": "font/woff2",
+          "cache": "public,max-age=31536000,immutable",
+          "disk": false,
+          "bytes": 9245
+        },
+        {
+          "url": "https://oria-spa.vercel.app/_next/static/chunks/5239-b1d8f74cd005e016.js?dpl=dpl_EiYhRjrP1LQgkXCyLjxrr3yB9dkT",
+          "type": "Script",
+          "status": 200,
+          "mime": "application/javascript",
+          "cache": "public,max-age=31536000,immutable",
+          "disk": false,
+          "bytes": 5814
+        },
+        {
+          "url": "https://oria-spa.vercel.app/_next/static/chunks/895-d0d3b45086f77acd.js?dpl=dpl_EiYhRjrP1LQgkXCyLjxrr3yB9dkT",
+          "type": "Script",
+          "status": 200,
+          "mime": "application/javascript",
+          "cache": "public,max-age=31536000,immutable",
+          "disk": false,
+          "bytes": 4693
+        },
+        {
+          "url": "https://oria-spa.vercel.app/_next/static/chunks/2619-04bc32f026a0d946.js?dpl=dpl_EiYhRjrP1LQgkXCyLjxrr3yB9dkT",
+          "type": "Script",
+          "status": 200,
+          "mime": "application/javascript",
+          "cache": "public,max-age=31536000,immutable",
+          "disk": false,
+          "bytes": 3724
+        },
+        {
+          "url": "https://oria-spa.vercel.app/_next/static/chunks/2077-f0e4bf245bbd9650.js?dpl=dpl_EiYhRjrP1LQgkXCyLjxrr3yB9dkT",
+          "type": "Script",
+          "status": 200,
+          "mime": "application/javascript",
+          "cache": "public,max-age=31536000,immutable",
+          "disk": false,
+          "bytes": 3679
+        },
+        {
+          "url": "https://oria-spa.vercel.app/_next/static/chunks/8207-fa8307fd7750f843.js?dpl=dpl_EiYhRjrP1LQgkXCyLjxrr3yB9dkT",
+          "type": "Script",
+          "status": 200,
+          "mime": "application/javascript",
+          "cache": "public,max-age=31536000,immutable",
+          "disk": false,
+          "bytes": 3312
+        },
+        {
+          "url": "https://oria-spa.vercel.app/_next/static/chunks/webpack-f15e4018448645d4.js?dpl=dpl_EiYhRjrP1LQgkXCyLjxrr3yB9dkT",
+          "type": "Script",
+          "status": 200,
+          "mime": "application/javascript",
+          "cache": "public,max-age=31536000,immutable",
+          "disk": false,
+          "bytes": 2459
+        },
+        {
+          "url": "https://oria-spa.vercel.app/_next/static/chunks/app/error-77a84a2c8b830b21.js?dpl=dpl_EiYhRjrP1LQgkXCyLjxrr3yB9dkT",
+          "type": "Script",
+          "status": 200,
+          "mime": "application/javascript",
+          "cache": "public,max-age=31536000,immutable",
+          "disk": false,
+          "bytes": 2022
+        },
+        {
+          "url": "https://oria-spa.vercel.app/_next/static/chunks/app/global-error-e7ed289ed1e2dc34.js?dpl=dpl_EiYhRjrP1LQgkXCyLjxrr3yB9dkT",
+          "type": "Script",
+          "status": 200,
+          "mime": "application/javascript",
+          "cache": "public,max-age=31536000,immutable",
+          "disk": false,
+          "bytes": 1373
+        },
+        {
+          "url": "https://flagcdn.com/w80/kr.png",
+          "type": "Image",
+          "status": 200,
+          "mime": "image/png",
+          "cache": "public, max-age=2678400, s-maxage=2678400",
+          "disk": false,
+          "bytes": 1265
+        },
+        {
+          "url": "https://oria-spa.vercel.app/_next/static/css/fbcc790945d8c3b7.css?dpl=dpl_EiYhRjrP1LQgkXCyLjxrr3yB9dkT",
+          "type": "Stylesheet",
+          "status": 200,
+          "mime": "text/css",
+          "cache": "public,max-age=31536000,immutable",
+          "disk": false,
+          "bytes": 1203
+        },
+        {
+          "url": "https://oria-spa.vercel.app/_next/static/css/9a87c93d1d94dd93.css?dpl=dpl_EiYhRjrP1LQgkXCyLjxrr3yB9dkT",
+          "type": "Stylesheet",
+          "status": 200,
+          "mime": "text/css",
+          "cache": "public,max-age=31536000,immutable",
+          "disk": false,
+          "bytes": 1166
+        },
+        {
+          "url": "https://flagcdn.com/w80/gb.png",
+          "type": "Image",
+          "status": 200,
+          "mime": "image/png",
+          "cache": "public, max-age=2678400, s-maxage=2678400",
+          "disk": false,
+          "bytes": 937
+        },
+        {
+          "url": "https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&display=swap",
+          "type": "Stylesheet",
+          "status": 200,
+          "mime": "text/css",
+          "cache": "private, max-age=86400, stale-while-revalidate=604800",
+          "disk": false,
+          "bytes": 905
+        },
+        {
+          "url": "https://oria-spa.vercel.app/_next/static/chunks/app/not-found-8a2efdce2cb2c5a2.js?dpl=dpl_EiYhRjrP1LQgkXCyLjxrr3yB9dkT",
+          "type": "Script",
+          "status": 200,
+          "mime": "application/javascript",
+          "cache": "public,max-age=31536000,immutable",
+          "disk": false,
+          "bytes": 819
+        },
+        {
+          "url": "https://oria-spa.vercel.app/_next/static/chunks/main-app-0ee650784ad95c4e.js?dpl=dpl_EiYhRjrP1LQgkXCyLjxrr3yB9dkT",
+          "type": "Script",
+          "status": 200,
+          "mime": "application/javascript",
+          "cache": "public,max-age=31536000,immutable",
+          "disk": false,
+          "bytes": 729
+        },
+        {
+          "url": "https://flagcdn.com/w80/jp.png",
+          "type": "Image",
+          "status": 200,
+          "mime": "image/png",
+          "cache": "public, max-age=2678400, s-maxage=2678400",
+          "disk": false,
+          "bytes": 653
+        },
+        {
+          "url": "https://flagcdn.com/w80/vn.png",
+          "type": "Image",
+          "status": 200,
+          "mime": "image/png",
+          "cache": "public, max-age=2678400, s-maxage=2678400",
+          "disk": false,
+          "bytes": 633
+        },
+        {
+          "url": "https://flagcdn.com/w80/cn.png",
+          "type": "Image",
+          "status": 200,
+          "mime": "image/png",
+          "cache": "public, max-age=2678400, s-maxage=2678400",
+          "disk": false,
+          "bytes": 609
+        },
+        {
+          "url": "https://oria-spa.vercel.app/_next/static/chunks/app/page-d127ec50d058befa.js?dpl=dpl_EiYhRjrP1LQgkXCyLjxrr3yB9dkT",
+          "type": "Script",
+          "status": 200,
+          "mime": "application/javascript",
+          "cache": "public,max-age=31536000,immutable",
+          "disk": false,
+          "bytes": 547
+        },
+        {
+          "url": "https://oria-spa.vercel.app/vi/new-user/standard/checkout?_rsc=3lb4g",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "text/x-component",
+          "cache": "private, no-cache, no-store, max-age=0, must-revalidate",
+          "disk": false,
+          "bytes": 420
+        },
+        {
+          "url": "https://oria-spa.vercel.app/api/google-reviews",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "cache": "public",
+          "disk": false,
+          "bytes": 254
+        },
+        {
+          "url": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "type": "Image",
+          "status": 200,
+          "mime": "image/gif",
+          "disk": false,
+          "bytes": 0
+        },
+        {
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/homepage/0807(1).mp4",
+          "type": "Media",
+          "status": 206,
+          "mime": "video/mp4",
+          "cache": "max-age=3600",
+          "disk": false
+        },
+        {
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/homepage/0807(1).mp4",
+          "type": "Media",
+          "status": 206,
+          "mime": "video/mp4",
+          "cache": "public, max-age=3600",
+          "disk": false
+        }
+      ],
+      "a11y": {
+        "violations": [
+          {
+            "id": "aria-prohibited-attr",
+            "impact": "serious",
+            "nodes": [
+              {
+                "target": [
+                  ".w-\\[min\\(300px\\,calc\\(100vw-48px\\)\\)\\]"
+                ],
+                "html": "<div class=\"w-[min(300px,calc(100vw-48px))] md:w-[450px] lg:w-[550px] h-auto object-contain drop-shadow-2xl\" aria-label=\"Oria Spa Logo\" style=\"display: inline-block; position: relative;\">",
+                "summary": "Fix all of the following:\n  aria-label attribute cannot be used on a div with no valid role attribute."
+              },
+              {
+                "target": [
+                  ".w-\\[220px\\]"
+                ],
+                "html": "<div class=\"w-[220px] h-auto object-contain\" style=\"display:inline-block;position:relative\" aria-label=\"Oria Spa Logo\">",
+                "summary": "Fix all of the following:\n  aria-label attribute cannot be used on a div with no valid role attribute."
+              }
+            ]
+          },
+          {
+            "id": "color-contrast",
+            "impact": "serious",
+            "nodes": [
+              {
+                "target": [
+                  ".text-\\[\\#f7ebc7\\]\\/40"
+                ],
+                "html": "<p class=\"text-xs text-[#f7ebc7]/40 tracking-[0.2em] uppercase\">© 2026 TECHGALAXY GROUP. All rights reserved.</p>",
+                "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.36 (foreground color: #7b6e5c, background color: #281b15, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+              }
+            ]
+          },
+          {
+            "id": "meta-viewport",
+            "impact": "moderate",
+            "nodes": [
+              {
+                "target": [
+                  "meta[name=\"viewport\"]"
+                ],
+                "html": "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover, user-scalable=no\">",
+                "summary": "Fix any of the following:\n  user-scalable=no on <meta> tag disables zooming on mobile devices"
+              }
+            ]
+          }
+        ],
+        "incomplete": [
+          {
+            "id": "aria-prohibited-attr",
+            "count": 7
+          },
+          {
+            "id": "color-contrast",
+            "count": 15
+          }
+        ]
+      },
+      "scrollA11y": {
+        "violations": [
+          {
+            "id": "aria-prohibited-attr",
+            "impact": "serious",
+            "nodes": [
+              {
+                "target": [
+                  ".w-\\[min\\(300px\\,calc\\(100vw-48px\\)\\)\\]"
+                ],
+                "html": "<div class=\"w-[min(300px,calc(100vw-48px))] md:w-[450px] lg:w-[550px] h-auto object-contain drop-shadow-2xl\" aria-label=\"Oria Spa Logo\" style=\"display: inline-block; position: relative;\">",
+                "summary": "Fix all of the following:\n  aria-label attribute cannot be used on a div with no valid role attribute."
+              },
+              {
+                "target": [
+                  ".w-\\[220px\\]"
+                ],
+                "html": "<div class=\"w-[220px] h-auto object-contain\" style=\"display:inline-block;position:relative\" aria-label=\"Oria Spa Logo\">",
+                "summary": "Fix all of the following:\n  aria-label attribute cannot be used on a div with no valid role attribute."
+              }
+            ]
+          },
+          {
+            "id": "color-contrast",
+            "impact": "serious",
+            "nodes": [
+              {
+                "target": [
+                  ".text-\\[\\#f7ebc7\\]\\/40"
+                ],
+                "html": "<p class=\"text-xs text-[#f7ebc7]/40 tracking-[0.2em] uppercase\">© 2026 TECHGALAXY GROUP. All rights reserved.</p>",
+                "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.36 (foreground color: #7b6e5c, background color: #281b15, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+              }
+            ]
+          },
+          {
+            "id": "meta-viewport",
+            "impact": "moderate",
+            "nodes": [
+              {
+                "target": [
+                  "meta[name=\"viewport\"]"
+                ],
+                "html": "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover, user-scalable=no\">",
+                "summary": "Fix any of the following:\n  user-scalable=no on <meta> tag disables zooming on mobile devices"
+              }
+            ]
+          }
+        ],
+        "incomplete": [
+          {
+            "id": "aria-prohibited-attr",
+            "count": 7
+          },
+          {
+            "id": "color-contrast",
+            "count": 16
+          }
+        ]
+      }
+    },
+    {
+      "path": "/history",
+      "errors": [],
+      "initial": {
+        "viewport": "width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover, user-scalable=no",
+        "longtasks": [
+          {
+            "start": 690.1000000238419,
+            "ms": 134
+          },
+          {
+            "start": 826.6000000238419,
+            "ms": 178
+          },
+          {
+            "start": 1273.1999999284744,
+            "ms": 73
+          }
+        ],
+        "lcp": {
+          "ms": 1092,
+          "url": "",
+          "tag": "H2"
+        },
+        "cls": 0,
+        "images": [
+          {
+            "src": "https://flagcdn.com/w80/vn.png",
+            "w": 40,
+            "h": 26,
+            "displayW": 28,
+            "displayH": 20,
+            "loading": "auto",
+            "srcset": true
+          },
+          {
+            "src": "https://flagcdn.com/w80/gb.png",
+            "w": 40,
+            "h": 20,
+            "displayW": 28,
+            "displayH": 20,
+            "loading": "auto",
+            "srcset": true
+          },
+          {
+            "src": "https://flagcdn.com/w80/cn.png",
+            "w": 40,
+            "h": 26,
+            "displayW": 28,
+            "displayH": 20,
+            "loading": "auto",
+            "srcset": true
+          },
+          {
+            "src": "https://flagcdn.com/w80/jp.png",
+            "w": 40,
+            "h": 26,
+            "displayW": 28,
+            "displayH": 20,
+            "loading": "auto",
+            "srcset": true
+          },
+          {
+            "src": "https://flagcdn.com/w80/kr.png",
+            "w": 40,
+            "h": 26,
+            "displayW": 28,
+            "displayH": 20,
+            "loading": "auto",
+            "srcset": true
+          },
+          {
+            "src": "https://oria-spa.vercel.app/images/about-bg.png",
+            "w": 640,
+            "h": 640,
+            "displayW": 405.5999755859375,
+            "displayH": 807.5274658203125,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2015-ngan-ha-storefront-4e987528a724c6ac.webp",
+            "w": 1448,
+            "h": 1086,
+            "displayW": 316.60107421875,
+            "displayH": 351.77880859375,
+            "loading": "lazy",
+            "srcset": false
+          },
+          {
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2015-ngan-ha-commitment-flowers-a897c76aa9aad0de.webp",
+            "w": 1086,
+            "h": 1448,
+            "displayW": 325.5228271484375,
+            "displayH": 361.69189453125,
+            "loading": "lazy",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 325.5228271484375,
+            "displayH": 361.69189453125,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2015-ngan-ha-storefront-4e987528a724c6ac.webp",
+            "w": 1448,
+            "h": 1086,
+            "displayW": 41.76399230957031,
+            "displayH": 41.76416015625,
+            "loading": "lazy",
+            "srcset": false
+          },
+          {
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2015-ngan-ha-commitment-flowers-a897c76aa9aad0de.webp",
+            "w": 1086,
+            "h": 1448,
+            "displayW": 39.40000915527344,
+            "displayH": 39.39990234375,
+            "loading": "lazy",
+            "srcset": false
+          },
+          {
+            "src": "",
+            "w": 0,
+            "h": 0,
+            "displayW": 39.39996337890625,
+            "displayH": 39.39990234375,
+            "loading": "lazy",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 316.60107421875,
+            "displayH": 351.77880859375,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 325.5228271484375,
+            "displayH": 361.69189453125,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 325.5228271484375,
+            "displayH": 361.69189453125,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 41.76399230957031,
+            "displayH": 41.76416015625,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 39.40000915527344,
+            "displayH": 39.39990234375,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 39.39996337890625,
+            "displayH": 39.39990234375,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 316.60107421875,
+            "displayH": 351.77880859375,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 325.5228271484375,
+            "displayH": 361.691650390625,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 325.5228271484375,
+            "displayH": 361.691650390625,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 325.5228271484375,
+            "displayH": 361.691650390625,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 41.76399230957031,
+            "displayH": 41.76416015625,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 39.40000915527344,
+            "displayH": 39.400390625,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 39.39996337890625,
+            "displayH": 39.400390625,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 39.39996337890625,
+            "displayH": 39.400390625,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 316.60107421875,
+            "displayH": 351.77880859375,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 325.5228271484375,
+            "displayH": 361.6923828125,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 325.5228271484375,
+            "displayH": 361.6923828125,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 41.76399230957031,
+            "displayH": 41.76416015625,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 39.40000915527344,
+            "displayH": 39.400390625,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 39.39996337890625,
+            "displayH": 39.400390625,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 316.60107421875,
+            "displayH": 351.77880859375,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 325.5228271484375,
+            "displayH": 361.69189453125,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 41.76399230957031,
+            "displayH": 41.76416015625,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 39.40000915527344,
+            "displayH": 39.400390625,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 316.60107421875,
+            "displayH": 351.77880859375,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 325.5228271484375,
+            "displayH": 361.69189453125,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 325.5228271484375,
+            "displayH": 361.69189453125,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 325.5228271484375,
+            "displayH": 361.69189453125,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 325.5228271484375,
+            "displayH": 361.69189453125,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 41.76399230957031,
+            "displayH": 41.76416015625,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 39.40000915527344,
+            "displayH": 39.400390625,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 39.39996337890625,
+            "displayH": 39.400390625,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 39.39996337890625,
+            "displayH": 39.400390625,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 39.4000244140625,
+            "displayH": 39.400390625,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 316.60107421875,
+            "displayH": 351.7783203125,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 325.5228271484375,
+            "displayH": 361.69140625,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 325.5228271484375,
+            "displayH": 361.69140625,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 41.76399230957031,
+            "displayH": 41.763671875,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 39.40000915527344,
+            "displayH": 39.400390625,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "w": 1,
+            "h": 1,
+            "displayW": 39.39996337890625,
+            "displayH": 39.400390625,
+            "loading": "auto",
+            "srcset": false
+          },
+          {
+            "src": "",
+            "w": 0,
+            "h": 0,
+            "displayW": 64,
+            "displayH": 64,
+            "loading": "lazy",
+            "srcset": false
+          },
+          {
+            "src": "",
+            "w": 0,
+            "h": 0,
+            "displayW": 64,
+            "displayH": 64,
+            "loading": "lazy",
+            "srcset": false
+          },
+          {
+            "src": "",
+            "w": 0,
+            "h": 0,
+            "displayW": 64,
+            "displayH": 64,
+            "loading": "lazy",
+            "srcset": false
+          },
+          {
+            "src": "",
+            "w": 0,
+            "h": 0,
+            "displayW": 64,
+            "displayH": 64,
+            "loading": "lazy",
+            "srcset": false
+          },
+          {
+            "src": "https://oria-spa.vercel.app/images/chatbot-icon.webp",
+            "w": 1024,
+            "h": 1024,
+            "displayW": 54,
+            "displayH": 54,
+            "loading": "auto",
+            "srcset": false
+          }
+        ],
+        "videos": [],
+        "iframes": [],
+        "navigation": [
+          {
+            "ttfb": 299.89999997615814,
+            "dcl": 1170.5,
+            "bytes": 108033
+          }
+        ]
+      },
+      "requests": [
+        {
+          "url": "https://oria-spa.vercel.app/history",
+          "type": "Document",
+          "status": 200,
+          "mime": "text/html",
+          "cache": "public, max-age=0, must-revalidate",
+          "disk": false,
+          "bytes": 108535
+        },
+        {
+          "url": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "type": "Image",
+          "status": 200,
+          "mime": "image/gif",
+          "disk": false,
+          "bytes": 0
+        },
+        {
+          "url": "https://oria-spa.vercel.app/_next/static/media/000030d1699f2fb3-s.p.woff2",
+          "type": "Font",
+          "status": 200,
+          "mime": "font/woff2",
+          "cache": "public,max-age=31536000,immutable",
+          "disk": false,
+          "bytes": 9795
+        },
+        {
+          "url": "https://oria-spa.vercel.app/_next/static/css/fbcc790945d8c3b7.css?dpl=dpl_EiYhRjrP1LQgkXCyLjxrr3yB9dkT",
+          "type": "Stylesheet",
+          "status": 200,
+          "mime": "text/css",
+          "cache": "public,max-age=31536000,immutable",
+          "disk": false,
+          "bytes": 1218
+        },
+        {
+          "url": "https://oria-spa.vercel.app/_next/static/css/5770ffbb4fc249c9.css?dpl=dpl_EiYhRjrP1LQgkXCyLjxrr3yB9dkT",
+          "type": "Stylesheet",
+          "status": 200,
+          "mime": "text/css",
+          "cache": "public,max-age=31536000,immutable",
+          "disk": false,
+          "bytes": 42683
+        },
+        {
+          "url": "https://oria-spa.vercel.app/_next/static/media/e4af272ccee01ff0-s.p.woff2",
+          "type": "Font",
+          "status": 200,
+          "mime": "font/woff2",
+          "cache": "public,max-age=31536000,immutable",
+          "disk": false,
+          "bytes": 48632
+        },
+        {
+          "url": "https://oria-spa.vercel.app/_next/static/media/eaead17c7dbfcd5d-s.p.woff2",
+          "type": "Font",
+          "status": 200,
+          "mime": "font/woff2",
+          "cache": "public,max-age=31536000,immutable",
+          "disk": false,
+          "bytes": 38660
+        },
+        {
+          "url": "https://oria-spa.vercel.app/_next/static/css/9a87c93d1d94dd93.css?dpl=dpl_EiYhRjrP1LQgkXCyLjxrr3yB9dkT",
+          "type": "Stylesheet",
+          "status": 200,
+          "mime": "text/css",
+          "cache": "public,max-age=31536000,immutable",
+          "disk": false,
+          "bytes": 1061
+        },
+        {
+          "url": "https://oria-spa.vercel.app/_next/static/media/df0a9ae256c0569c-s.p.woff2",
+          "type": "Font",
+          "status": 200,
+          "mime": "font/woff2",
+          "cache": "public,max-age=31536000,immutable",
+          "disk": false,
+          "bytes": 10461
+        },
+        {
+          "url": "https://oria-spa.vercel.app/images/chatbot-icon.webp",
+          "type": "Image",
+          "status": 200,
+          "mime": "image/webp",
+          "cache": "public, max-age=0, must-revalidate",
+          "disk": false,
+          "bytes": 622229
+        },
+        {
+          "url": "https://oria-spa.vercel.app/_next/static/media/78d0dd042ac6d54d-s.p.woff2",
+          "type": "Font",
+          "status": 200,
+          "mime": "font/woff2",
+          "cache": "public,max-age=31536000,immutable",
+          "disk": false,
+          "bytes": 39096
+        },
+        {
+          "url": "https://oria-spa.vercel.app/_next/static/chunks/webpack-f15e4018448645d4.js?dpl=dpl_EiYhRjrP1LQgkXCyLjxrr3yB9dkT",
+          "type": "Script",
+          "status": 200,
+          "mime": "application/javascript",
+          "cache": "public,max-age=31536000,immutable",
+          "disk": false,
+          "bytes": 2559
+        },
+        {
+          "url": "https://flagcdn.com/w80/jp.png",
+          "type": "Image",
+          "status": 200,
+          "mime": "image/png",
+          "cache": "public, max-age=2678400, s-maxage=2678400",
+          "disk": false,
+          "bytes": 892
+        },
+        {
+          "url": "https://flagcdn.com/w80/cn.png",
+          "type": "Image",
+          "status": 200,
+          "mime": "image/png",
+          "cache": "public, max-age=2678400, s-maxage=2678400",
+          "disk": false,
+          "bytes": 613
+        },
+        {
+          "url": "https://flagcdn.com/w80/gb.png",
+          "type": "Image",
+          "status": 200,
+          "mime": "image/png",
+          "cache": "public, max-age=2678400, s-maxage=2678400",
+          "disk": false,
+          "bytes": 696
+        },
+        {
+          "url": "https://flagcdn.com/w80/vn.png",
+          "type": "Image",
+          "status": 200,
+          "mime": "image/png",
+          "cache": "public, max-age=2678400, s-maxage=2678400",
+          "disk": false,
+          "bytes": 634
+        },
+        {
+          "url": "https://flagcdn.com/w80/kr.png",
+          "type": "Image",
+          "status": 200,
+          "mime": "image/png",
+          "cache": "public, max-age=2678400, s-maxage=2678400",
+          "disk": false,
+          "bytes": 1273
+        },
+        {
+          "url": "https://oria-spa.vercel.app/_next/static/chunks/app/history/page-ed79d1e24d4a0fb2.js?dpl=dpl_EiYhRjrP1LQgkXCyLjxrr3yB9dkT",
+          "type": "Script",
+          "status": 200,
+          "mime": "application/javascript",
+          "cache": "public,max-age=31536000,immutable",
+          "disk": false,
+          "bytes": 1176
+        },
+        {
+          "url": "https://oria-spa.vercel.app/_next/static/chunks/8207-fa8307fd7750f843.js?dpl=dpl_EiYhRjrP1LQgkXCyLjxrr3yB9dkT",
+          "type": "Script",
+          "status": 200,
+          "mime": "application/javascript",
+          "cache": "public,max-age=31536000,immutable",
+          "disk": false,
+          "bytes": 3312
+        },
+        {
+          "url": "https://oria-spa.vercel.app/_next/static/media/4ead58c4dcc3f285-s.p.woff2",
+          "type": "Font",
+          "status": 200,
+          "mime": "font/woff2",
+          "cache": "public,max-age=31536000,immutable",
+          "disk": false,
+          "bytes": 9248
+        },
+        {
+          "url": "https://oria-spa.vercel.app/images/about-bg.png",
+          "type": "Image",
+          "status": 200,
+          "mime": "image/png",
+          "cache": "public, max-age=0, must-revalidate",
+          "disk": false,
+          "bytes": 81274
+        },
+        {
+          "url": "https://oria-spa.vercel.app/_next/static/css/fb68732f14d6bd45.css?dpl=dpl_EiYhRjrP1LQgkXCyLjxrr3yB9dkT",
+          "type": "Stylesheet",
+          "status": 200,
+          "mime": "text/css",
+          "cache": "public,max-age=31536000,immutable",
+          "disk": false,
+          "bytes": 9379
+        },
+        {
+          "url": "https://oria-spa.vercel.app/images/logo.png?v=3",
+          "type": "Image",
+          "status": 200,
+          "mime": "image/png",
+          "cache": "public, max-age=0, must-revalidate",
+          "disk": false,
+          "bytes": 37380
+        },
+        {
+          "url": "https://oria-spa.vercel.app/_next/static/chunks/462-fd7b3467abc6fbad.js?dpl=dpl_EiYhRjrP1LQgkXCyLjxrr3yB9dkT",
+          "type": "Script",
+          "status": 200,
+          "mime": "application/javascript",
+          "cache": "public,max-age=31536000,immutable",
+          "disk": false,
+          "bytes": 24130
+        },
+        {
+          "url": "https://oria-spa.vercel.app/_next/static/chunks/5239-b1d8f74cd005e016.js?dpl=dpl_EiYhRjrP1LQgkXCyLjxrr3yB9dkT",
+          "type": "Script",
+          "status": 200,
+          "mime": "application/javascript",
+          "cache": "public,max-age=31536000,immutable",
+          "disk": false,
+          "bytes": 5757
+        },
+        {
+          "url": "https://oria-spa.vercel.app/_next/static/chunks/4bd1b696-100b9d70ed4e49c1.js?dpl=dpl_EiYhRjrP1LQgkXCyLjxrr3yB9dkT",
+          "type": "Script",
+          "status": 200,
+          "mime": "application/javascript",
+          "cache": "public,max-age=31536000,immutable",
+          "disk": false,
+          "bytes": 55861
+        },
+        {
+          "url": "https://oria-spa.vercel.app/_next/static/chunks/main-app-0ee650784ad95c4e.js?dpl=dpl_EiYhRjrP1LQgkXCyLjxrr3yB9dkT",
+          "type": "Script",
+          "status": 200,
+          "mime": "application/javascript",
+          "cache": "public,max-age=31536000,immutable",
+          "disk": false,
+          "bytes": 710
+        },
+        {
+          "url": "https://oria-spa.vercel.app/_next/static/chunks/8198-7f3765fdb04a7900.js?dpl=dpl_EiYhRjrP1LQgkXCyLjxrr3yB9dkT",
+          "type": "Script",
+          "status": 200,
+          "mime": "application/javascript",
+          "cache": "public,max-age=31536000,immutable",
+          "disk": false,
+          "bytes": 43572
+        },
+        {
+          "url": "https://oria-spa.vercel.app/_next/static/chunks/2619-04bc32f026a0d946.js?dpl=dpl_EiYhRjrP1LQgkXCyLjxrr3yB9dkT",
+          "type": "Script",
+          "status": 200,
+          "mime": "application/javascript",
+          "cache": "public,max-age=31536000,immutable",
+          "disk": false,
+          "bytes": 3714
+        },
+        {
+          "url": "https://oria-spa.vercel.app/_next/static/chunks/app/not-found-8a2efdce2cb2c5a2.js?dpl=dpl_EiYhRjrP1LQgkXCyLjxrr3yB9dkT",
+          "type": "Script",
+          "status": 200,
+          "mime": "application/javascript",
+          "cache": "public,max-age=31536000,immutable",
+          "disk": false,
+          "bytes": 839
+        },
+        {
+          "url": "https://oria-spa.vercel.app/_next/static/chunks/app/error-77a84a2c8b830b21.js?dpl=dpl_EiYhRjrP1LQgkXCyLjxrr3yB9dkT",
+          "type": "Script",
+          "status": 200,
+          "mime": "application/javascript",
+          "cache": "public,max-age=31536000,immutable",
+          "disk": false,
+          "bytes": 1995
+        },
+        {
+          "url": "https://oria-spa.vercel.app/_next/static/chunks/8909-ccb9457e769638e2.js?dpl=dpl_EiYhRjrP1LQgkXCyLjxrr3yB9dkT",
+          "type": "Script",
+          "status": 200,
+          "mime": "application/javascript",
+          "cache": "public,max-age=31536000,immutable",
+          "disk": false,
+          "bytes": 11315
+        },
+        {
+          "url": "https://oria-spa.vercel.app/_next/static/chunks/app/global-error-e7ed289ed1e2dc34.js?dpl=dpl_EiYhRjrP1LQgkXCyLjxrr3yB9dkT",
+          "type": "Script",
+          "status": 200,
+          "mime": "application/javascript",
+          "cache": "public,max-age=31536000,immutable",
+          "disk": false,
+          "bytes": 1346
+        },
+        {
+          "url": "https://oria-spa.vercel.app/_next/static/chunks/895-d0d3b45086f77acd.js?dpl=dpl_EiYhRjrP1LQgkXCyLjxrr3yB9dkT",
+          "type": "Script",
+          "status": 200,
+          "mime": "application/javascript",
+          "cache": "public,max-age=31536000,immutable",
+          "disk": false,
+          "bytes": 4693
+        },
+        {
+          "url": "https://oria-spa.vercel.app/_next/static/chunks/2077-f0e4bf245bbd9650.js?dpl=dpl_EiYhRjrP1LQgkXCyLjxrr3yB9dkT",
+          "type": "Script",
+          "status": 200,
+          "mime": "application/javascript",
+          "cache": "public,max-age=31536000,immutable",
+          "disk": false,
+          "bytes": 3701
+        },
+        {
+          "url": "https://oria-spa.vercel.app/_next/static/chunks/1255-5b2a424e4b1d44b9.js?dpl=dpl_EiYhRjrP1LQgkXCyLjxrr3yB9dkT",
+          "type": "Script",
+          "status": 200,
+          "mime": "application/javascript",
+          "cache": "public,max-age=31536000,immutable",
+          "disk": false,
+          "bytes": 46352
+        },
+        {
+          "url": "https://oria-spa.vercel.app/_next/static/chunks/app/layout-d0f045bbab667e65.js?dpl=dpl_EiYhRjrP1LQgkXCyLjxrr3yB9dkT",
+          "type": "Script",
+          "status": 200,
+          "mime": "application/javascript",
+          "cache": "public,max-age=31536000,immutable",
+          "disk": false,
+          "bytes": 30657
+        },
+        {
+          "url": "https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&display=swap",
+          "type": "Stylesheet",
+          "status": 200,
+          "mime": "text/css",
+          "cache": "private, max-age=86400, stale-while-revalidate=604800",
+          "disk": false,
+          "bytes": 905
+        },
+        {
+          "url": "https://oria-spa.vercel.app/icons/shopping-cart.png",
+          "type": "Image",
+          "status": 200,
+          "mime": "image/png",
+          "cache": "public, max-age=0, must-revalidate",
+          "disk": false,
+          "bytes": 18224
+        },
+        {
+          "url": "https://oria-spa.vercel.app/_next/static/media/8e9860b6e62d6359-s.woff2",
+          "type": "Font",
+          "status": 200,
+          "mime": "font/woff2",
+          "cache": "public,max-age=31536000,immutable",
+          "disk": false,
+          "bytes": 85562
+        },
+        {
+          "url": "https://oria-spa.vercel.app/_next/static/media/28a2004cf8372660-s.woff2",
+          "type": "Font",
+          "status": 200,
+          "mime": "font/woff2",
+          "cache": "public,max-age=31536000,immutable",
+          "disk": false,
+          "bytes": 21170
+        },
+        {
+          "url": "https://oria-spa.vercel.app/api/google-reviews",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "cache": "public",
+          "disk": false,
+          "bytes": 235
+        },
+        {
+          "url": "https://oria-spa.vercel.app/?_rsc=v4muy",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "text/x-component",
+          "cache": "private, no-cache, no-store, max-age=0, must-revalidate",
+          "disk": false,
+          "bytes": 264
+        },
+        {
+          "url": "https://oria-spa.vercel.app/vi/new-user/standard/checkout?_rsc=v4muy",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "text/x-component",
+          "cache": "private, no-cache, no-store, max-age=0, must-revalidate",
+          "disk": false,
+          "bytes": 309
+        },
+        {
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2015-ngan-ha-commitment-flowers-a897c76aa9aad0de.webp",
+          "type": "Image",
+          "status": 200,
+          "mime": "image/webp",
+          "cache": "public, max-age=31536000",
+          "disk": false,
+          "bytes": 1906004
+        },
+        {
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2015-ngan-ha-storefront-4e987528a724c6ac.webp",
+          "type": "Image",
+          "status": 200,
+          "mime": "image/webp",
+          "cache": "public, max-age=31536000",
+          "disk": false,
+          "bytes": 2014935
+        },
+        {
+          "url": "https://oria-spa.vercel.app/api/public/site-content",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "cache": "no-store, no-cache, must-revalidate, proxy-revalidate",
+          "disk": false,
+          "bytes": 80330
+        }
+      ],
+      "a11y": {
+        "violations": [
+          {
+            "id": "aria-prohibited-attr",
+            "impact": "serious",
+            "nodes": [
+              {
+                "target": [
+                  ".w-\\[220px\\]"
+                ],
+                "html": "<div class=\"w-[220px] h-auto object-contain\" style=\"display:inline-block;position:relative\" aria-label=\"Oria Spa Logo\">",
+                "summary": "Fix all of the following:\n  aria-label attribute cannot be used on a div with no valid role attribute."
+              }
+            ]
+          },
+          {
+            "id": "color-contrast",
+            "impact": "serious",
+            "nodes": [
+              {
+                "target": [
+                  ".text-\\[\\#f7ebc7\\]\\/40"
+                ],
+                "html": "<p class=\"text-xs text-[#f7ebc7]/40 tracking-[0.2em] uppercase\">© 2026 TECHGALAXY GROUP. All rights reserved.</p>",
+                "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.36 (foreground color: #7b6e5c, background color: #281b15, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+              }
+            ]
+          },
+          {
+            "id": "meta-viewport",
+            "impact": "moderate",
+            "nodes": [
+              {
+                "target": [
+                  "meta[name=\"viewport\"]"
+                ],
+                "html": "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover, user-scalable=no\">",
+                "summary": "Fix any of the following:\n  user-scalable=no on <meta> tag disables zooming on mobile devices"
+              }
+            ]
+          }
+        ],
+        "incomplete": [
+          {
+            "id": "aria-prohibited-attr",
+            "count": 7
+          },
+          {
+            "id": "color-contrast",
+            "count": 18
+          }
+        ]
+      },
+      "scrollA11y": {
+        "violations": [
+          {
+            "id": "aria-prohibited-attr",
+            "impact": "serious",
+            "nodes": [
+              {
+                "target": [
+                  ".w-\\[220px\\]"
+                ],
+                "html": "<div class=\"w-[220px] h-auto object-contain\" style=\"display:inline-block;position:relative\" aria-label=\"Oria Spa Logo\">",
+                "summary": "Fix all of the following:\n  aria-label attribute cannot be used on a div with no valid role attribute."
+              }
+            ]
+          },
+          {
+            "id": "color-contrast",
+            "impact": "serious",
+            "nodes": [
+              {
+                "target": [
+                  ".text-\\[\\#f7ebc7\\]\\/40"
+                ],
+                "html": "<p class=\"text-xs text-[#f7ebc7]/40 tracking-[0.2em] uppercase\">© 2026 TECHGALAXY GROUP. All rights reserved.</p>",
+                "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.36 (foreground color: #7b6e5c, background color: #281b15, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+              }
+            ]
+          },
+          {
+            "id": "meta-viewport",
+            "impact": "moderate",
+            "nodes": [
+              {
+                "target": [
+                  "meta[name=\"viewport\"]"
+                ],
+                "html": "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover, user-scalable=no\">",
+                "summary": "Fix any of the following:\n  user-scalable=no on <meta> tag disables zooming on mobile devices"
+              }
+            ]
+          }
+        ],
+        "incomplete": [
+          {
+            "id": "aria-prohibited-attr",
+            "count": 7
+          },
+          {
+            "id": "color-contrast",
+            "count": 40
+          }
+        ]
+      }
+    }
+  ]
+}

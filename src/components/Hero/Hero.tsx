@@ -515,6 +515,10 @@ const Hero = ({ initialHeroConfig, initialVideos }: HeroProps) => {
     playbackState === 'ready' &&
     readyAttemptKey === activeAttemptKey,
   );
+  // Keep the first paint usable while the video negotiates a range request or
+  // when autoplay/source loading fails. The poster is the visual fallback;
+  // the configured video still fades in once its first frame is decoded.
+  const heroVisible = heroReady || Boolean(activeVideo?.poster);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -547,7 +551,18 @@ const Hero = ({ initialHeroConfig, initialVideos }: HeroProps) => {
       <div className="hero-gradient-bg" />
 
       {/* The configured source is the only video mounted on the homepage. */}
-      <div className="hero-bg" aria-hidden={!heroReady}>
+      <div className="hero-bg" aria-hidden={!heroVisible}>
+        {activeVideo?.poster ? (
+          <img
+            className="hero-image"
+            src={activeVideo.poster}
+            alt=""
+            aria-hidden="true"
+            fetchPriority="high"
+            decoding="async"
+            style={{ position: 'absolute', inset: 0, zIndex: 0, opacity: heroReady ? 0 : 1, transition: 'opacity 800ms ease-in-out' }}
+          />
+        ) : null}
         {activeVideo && selectionReady ? (
           <div
             key={activeAttemptKey || activeVideoKey || activeVideo.id}
@@ -601,10 +616,10 @@ const Hero = ({ initialHeroConfig, initialVideos }: HeroProps) => {
             />
           </div>
         ) : null}
-        {heroReady ? <div className="hero-overlay" style={{ zIndex: 2 }} /> : null}
+        {heroVisible ? <div className="hero-overlay" style={{ zIndex: 2 }} /> : null}
       </div>
 
-      {!heroReady ? (
+      {!heroVisible ? (
         <div
           className="hero-video-loading-screen"
           role="status"
@@ -637,7 +652,7 @@ const Hero = ({ initialHeroConfig, initialVideos }: HeroProps) => {
         </div>
       ) : null}
 
-      {heroReady ? <motion.div
+      {heroVisible ? <motion.div
         className="hero-content"
         initial="hidden"
         animate="visible"
@@ -666,6 +681,23 @@ const Hero = ({ initialHeroConfig, initialVideos }: HeroProps) => {
           <motion.p className="hero-cinematic-tagline" variants={fadeInUp}>
             {getLocalizedText(systemSettings?.homepage_content?.hero?.tagline, currentLang as Locale, '')}
           </motion.p>
+        ) : null}
+
+        {mediaFailure && !heroReady ? (
+          <div
+            role="status"
+            aria-live="polite"
+            style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', color: '#f1d487', fontSize: '0.85rem' }}
+          >
+            <span>{mediaFailure.kind === 'timeout' ? statusCopy.videoTimeout : statusCopy.videoError}</span>
+            <button
+              type="button"
+              onClick={handleRetry}
+              style={{ border: '1px solid rgba(241, 212, 135, 0.7)', borderRadius: '6px', padding: '6px 10px', color: '#f1d487' }}
+            >
+              {statusCopy.retry}
+            </button>
+          </div>
         ) : null}
 
         {autoplayBlocked ? (

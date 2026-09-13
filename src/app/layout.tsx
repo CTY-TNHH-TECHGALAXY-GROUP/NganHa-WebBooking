@@ -67,8 +67,9 @@ export async function generateMetadata(): Promise<Metadata> {
 export const viewport = {
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false, // Prevent zooming
+  // Keep pinch-zoom available for guests who need to enlarge text or controls.
+  maximumScale: 5,
+  userScalable: true,
   viewportFit: "cover",
   themeColor: "#281b15",
 };

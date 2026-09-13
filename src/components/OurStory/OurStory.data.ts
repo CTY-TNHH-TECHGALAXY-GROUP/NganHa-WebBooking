@@ -61,11 +61,13 @@ export interface OurStoryConfig {
     connectionsTitle: LocalizedString;
     connections: LocalizedString[];
     cityImage: string;
+    cityImageResponsiveSources?: Record<string, string>;
     cityImageWatermarkEnabled?: boolean;
     cityImageWatermarkOpacity?: number;
     cityCaptionLeft: LocalizedString;
     cityCaptionRight: LocalizedString;
     streetSignImage: string;
+    streetSignImageResponsiveSources?: Record<string, string>;
     streetSignImageWatermarkEnabled?: boolean;
     streetSignImageWatermarkOpacity?: number;
     imageCaption: LocalizedString;
@@ -911,11 +913,13 @@ export const hydrateOurStoryConfig = (saved: any): OurStoryConfig => {
           }))
         : defaults.locationSection.connections,
       cityImage: saved.locationSection?.cityImage || defaults.locationSection.cityImage,
+      cityImageResponsiveSources: saved.locationSection?.cityImageResponsiveSources,
       cityImageWatermarkEnabled: saved.locationSection?.cityImageWatermarkEnabled !== false,
       cityImageWatermarkOpacity: typeof saved.locationSection?.cityImageWatermarkOpacity === 'number' ? Math.min(100, Math.max(5, saved.locationSection.cityImageWatermarkOpacity)) : 15,
       cityCaptionLeft: { ...defaults.locationSection.cityCaptionLeft, ...(saved.locationSection?.cityCaptionLeft || {}) },
       cityCaptionRight: { ...defaults.locationSection.cityCaptionRight, ...(saved.locationSection?.cityCaptionRight || {}) },
       streetSignImage: saved.locationSection?.streetSignImage || defaults.locationSection.streetSignImage,
+      streetSignImageResponsiveSources: saved.locationSection?.streetSignImageResponsiveSources,
       streetSignImageWatermarkEnabled: saved.locationSection?.streetSignImageWatermarkEnabled !== false,
       streetSignImageWatermarkOpacity: typeof saved.locationSection?.streetSignImageWatermarkOpacity === 'number' ? Math.min(100, Math.max(5, saved.locationSection.streetSignImageWatermarkOpacity)) : 15,
       imageCaption: { ...defaults.locationSection.imageCaption, ...(saved.locationSection?.imageCaption || {}) },

@@ -1,0 +1,1014 @@
+{
+  "runAt": "2026-09-13T14:28:37.283Z",
+  "mode": "apply",
+  "bucket": "media-uploads",
+  "widths": [
+    320,
+    640,
+    960
+  ],
+  "contentType": "image/webp",
+  "historyBefore": {
+    "id": "2913c39e-886f-4c01-9382-69f03136acf9",
+    "updatedAt": "2026-09-12T17:12:55.742+00:00",
+    "sha256": "588f5493a736c0579a6118da2689f639996d83026cc0dd2c8a1abb00785f204a"
+  },
+  "storyBefore": {
+    "id": "480d1466-0db0-4f86-aa14-e065b3907bc1",
+    "updatedAt": "2026-09-12T22:09:12.366+00:00",
+    "sha256": "ba4d2d44843b85015164f75ca8e21f111f0a14e4b9b07fe23e315fa9d042997b"
+  },
+  "entries": [
+    {
+      "group": "history",
+      "pointer": "/chapters/0/scenes/0/image",
+      "sourceUrl": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2015-ngan-ha-storefront-4e987528a724c6ac.webp",
+      "sourceObjectPath": "history/2015-ngan-ha-storefront-4e987528a724c6ac.webp",
+      "sourceBytes": 2719992,
+      "sourceSha256": "89d624a698e97f1c15d9b44ff60b1bce00b8c76546e4b0b2f07a21767d1bceb7",
+      "sourceWidth": 1448,
+      "sourceHeight": 1086,
+      "renditions": [
+        {
+          "width": 320,
+          "objectPath": "history/2015-ngan-ha-storefront-4e987528a724c6ac-w320.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2015-ngan-ha-storefront-4e987528a724c6ac-w320.webp",
+          "bytes": 21854,
+          "sha256": "ac84f540915075111f6cf10cd3cf92e4853425f56448c0d6ac86293771de54ea",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        },
+        {
+          "width": 640,
+          "objectPath": "history/2015-ngan-ha-storefront-4e987528a724c6ac-w640.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2015-ngan-ha-storefront-4e987528a724c6ac-w640.webp",
+          "bytes": 76812,
+          "sha256": "8528db7999aeb2d7d9579f8ea104e2fad7ecad1b8cfd71924782d39bbfd5b925",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        },
+        {
+          "width": 960,
+          "objectPath": "history/2015-ngan-ha-storefront-4e987528a724c6ac-w960.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2015-ngan-ha-storefront-4e987528a724c6ac-w960.webp",
+          "bytes": 153852,
+          "sha256": "e1a5a4d5139ee23d8f580ab560b3a926741b4d7bb979d63e9834296f5bd09b6d",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        }
+      ]
+    },
+    {
+      "group": "history",
+      "pointer": "/chapters/0/scenes/1/image",
+      "sourceUrl": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2015-ngan-ha-commitment-flowers-a897c76aa9aad0de.webp",
+      "sourceObjectPath": "history/2015-ngan-ha-commitment-flowers-a897c76aa9aad0de.webp",
+      "sourceBytes": 2508045,
+      "sourceSha256": "01c58932e428bfe6c16eb3d1ae59ed1595daf71fb0f4a74b5b5bcd35c8bfded9",
+      "sourceWidth": 1086,
+      "sourceHeight": 1448,
+      "renditions": [
+        {
+          "width": 320,
+          "objectPath": "history/2015-ngan-ha-commitment-flowers-a897c76aa9aad0de-w320.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2015-ngan-ha-commitment-flowers-a897c76aa9aad0de-w320.webp",
+          "bytes": 34134,
+          "sha256": "48ba4d1b10aabfb7174680bcba0d27d3d85c19b95be997ab64906476f81c739f",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        },
+        {
+          "width": 640,
+          "objectPath": "history/2015-ngan-ha-commitment-flowers-a897c76aa9aad0de-w640.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2015-ngan-ha-commitment-flowers-a897c76aa9aad0de-w640.webp",
+          "bytes": 101964,
+          "sha256": "0b06bc882e6a985af655afc0375afeae303dafd8a8d2eeee9199e924cfac2690",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        },
+        {
+          "width": 960,
+          "objectPath": "history/2015-ngan-ha-commitment-flowers-a897c76aa9aad0de-w960.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2015-ngan-ha-commitment-flowers-a897c76aa9aad0de-w960.webp",
+          "bytes": 178780,
+          "sha256": "82ab55c880c8fdb466987154d3a519d9341ef647872a972d81a6d0ca93c20c7d",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        }
+      ]
+    },
+    {
+      "group": "history",
+      "pointer": "/chapters/0/scenes/2/image",
+      "sourceUrl": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2015-ngan-ha-team-7ae80ca354c4d75e.webp",
+      "sourceObjectPath": "history/2015-ngan-ha-team-7ae80ca354c4d75e.webp",
+      "sourceBytes": 2259531,
+      "sourceSha256": "05192366cf232b5eb912311d3893b9f304c0c09336cd41b9e3bfb7dcd00413d1",
+      "sourceWidth": 1254,
+      "sourceHeight": 1254,
+      "renditions": [
+        {
+          "width": 320,
+          "objectPath": "history/2015-ngan-ha-team-7ae80ca354c4d75e-w320.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2015-ngan-ha-team-7ae80ca354c4d75e-w320.webp",
+          "bytes": 20322,
+          "sha256": "ffbe2c935237a274425d5b3a0d8f9cfdf2e26a71805de36c8a2688f73648f8ee",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        },
+        {
+          "width": 640,
+          "objectPath": "history/2015-ngan-ha-team-7ae80ca354c4d75e-w640.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2015-ngan-ha-team-7ae80ca354c4d75e-w640.webp",
+          "bytes": 58264,
+          "sha256": "ac61ac2cc2b32513f30417b18166c03ba76e2ec44dfb5fd57762b3ba9cd6c103",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        },
+        {
+          "width": 960,
+          "objectPath": "history/2015-ngan-ha-team-7ae80ca354c4d75e-w960.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2015-ngan-ha-team-7ae80ca354c4d75e-w960.webp",
+          "bytes": 103760,
+          "sha256": "4167121dfce46ea214ec84561e6c43bc98f290d822bb091fb1fc5f8af95ad4a9",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        }
+      ]
+    },
+    {
+      "group": "history",
+      "pointer": "/chapters/1/scenes/0/image",
+      "sourceUrl": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2018-ngan-ha-facade-day-1b803631d779226c.webp",
+      "sourceObjectPath": "history/2018-ngan-ha-facade-day-1b803631d779226c.webp",
+      "sourceBytes": 3164062,
+      "sourceSha256": "0434a1070dd32151c13216cbec4c7c28d22047039be3abb39ab497dedf00ef65",
+      "sourceWidth": 1122,
+      "sourceHeight": 1402,
+      "renditions": [
+        {
+          "width": 320,
+          "objectPath": "history/2018-ngan-ha-facade-day-1b803631d779226c-w320.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2018-ngan-ha-facade-day-1b803631d779226c-w320.webp",
+          "bytes": 43246,
+          "sha256": "3ac584aca35822a004a777556c409c316d6479844d5c312e70650112f1182cb7",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        },
+        {
+          "width": 640,
+          "objectPath": "history/2018-ngan-ha-facade-day-1b803631d779226c-w640.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2018-ngan-ha-facade-day-1b803631d779226c-w640.webp",
+          "bytes": 148738,
+          "sha256": "9ee156521faaf3a297fd999369d66785478f13b9905be49b406214d24b44270e",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        },
+        {
+          "width": 960,
+          "objectPath": "history/2018-ngan-ha-facade-day-1b803631d779226c-w960.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2018-ngan-ha-facade-day-1b803631d779226c-w960.webp",
+          "bytes": 287124,
+          "sha256": "52ce01d1fa4fe409a59afacb871ca5b9033cee7fd4e1777430d3fd1c8d92d316",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        }
+      ]
+    },
+    {
+      "group": "history",
+      "pointer": "/chapters/1/scenes/1/image",
+      "sourceUrl": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2018-ngan-ha-salon-station-compact-a8210fa294a18a65.webp",
+      "sourceObjectPath": "history/2018-ngan-ha-salon-station-compact-a8210fa294a18a65.webp",
+      "sourceBytes": 2258877,
+      "sourceSha256": "67ac516ae72ea2a0c6a42b81e674606408db1e7dc3e571a2d8e7d86170572e55",
+      "sourceWidth": 1122,
+      "sourceHeight": 1402,
+      "renditions": [
+        {
+          "width": 320,
+          "objectPath": "history/2018-ngan-ha-salon-station-compact-a8210fa294a18a65-w320.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2018-ngan-ha-salon-station-compact-a8210fa294a18a65-w320.webp",
+          "bytes": 21216,
+          "sha256": "de731931dbc80b387aa69826d7b1284b4b962ff68992ddd397fff7268401e58a",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        },
+        {
+          "width": 640,
+          "objectPath": "history/2018-ngan-ha-salon-station-compact-a8210fa294a18a65-w640.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2018-ngan-ha-salon-station-compact-a8210fa294a18a65-w640.webp",
+          "bytes": 64040,
+          "sha256": "4bf024dcefbeed5a7d83262dbdc87123ce89b929a45fd5b47eac70172f32681a",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        },
+        {
+          "width": 960,
+          "objectPath": "history/2018-ngan-ha-salon-station-compact-a8210fa294a18a65-w960.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2018-ngan-ha-salon-station-compact-a8210fa294a18a65-w960.webp",
+          "bytes": 121958,
+          "sha256": "9619ee0a7fe071e703cfa58c80eec3b9ff13b97b6af6ba2da23d044eeb906cc8",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        }
+      ]
+    },
+    {
+      "group": "history",
+      "pointer": "/chapters/1/scenes/2/image",
+      "sourceUrl": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2018-ngan-ha-facade-night-bde4fba13fed67b5.webp",
+      "sourceObjectPath": "history/2018-ngan-ha-facade-night-bde4fba13fed67b5.webp",
+      "sourceBytes": 2160582,
+      "sourceSha256": "7288381dccbb318a8cb6d618b168724a55ffd17c779ff34ee38d45b981701562",
+      "sourceWidth": 1122,
+      "sourceHeight": 1402,
+      "renditions": [
+        {
+          "width": 320,
+          "objectPath": "history/2018-ngan-ha-facade-night-bde4fba13fed67b5-w320.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2018-ngan-ha-facade-night-bde4fba13fed67b5-w320.webp",
+          "bytes": 28188,
+          "sha256": "f6486481535c2d6350e4cb41b2fd600b824437dd15cac95383d4b3f482834878",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        },
+        {
+          "width": 640,
+          "objectPath": "history/2018-ngan-ha-facade-night-bde4fba13fed67b5-w640.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2018-ngan-ha-facade-night-bde4fba13fed67b5-w640.webp",
+          "bytes": 82986,
+          "sha256": "921dc5c769bb8a63f0e42e85e67be73eef99df840777d6ef29a60f8280c8d6c1",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        },
+        {
+          "width": 960,
+          "objectPath": "history/2018-ngan-ha-facade-night-bde4fba13fed67b5-w960.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2018-ngan-ha-facade-night-bde4fba13fed67b5-w960.webp",
+          "bytes": 146416,
+          "sha256": "e93e3812dfafc6216b12b0bd623ec0cca7ab0bd2d8774a64829d3da8e6b8938c",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        }
+      ]
+    },
+    {
+      "group": "history",
+      "pointer": "/chapters/2/scenes/0/image",
+      "sourceUrl": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2020-ngan-ha-salon-signboard-db9a3fc0d9c95c29.webp",
+      "sourceObjectPath": "history/2020-ngan-ha-salon-signboard-db9a3fc0d9c95c29.webp",
+      "sourceBytes": 2536127,
+      "sourceSha256": "d26721c3904f5d5c50c0cc44d2d4b7de6165e06fd50e900942a55f795982d166",
+      "sourceWidth": 1024,
+      "sourceHeight": 1536,
+      "renditions": [
+        {
+          "width": 320,
+          "objectPath": "history/2020-ngan-ha-salon-signboard-db9a3fc0d9c95c29-w320.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2020-ngan-ha-salon-signboard-db9a3fc0d9c95c29-w320.webp",
+          "bytes": 33648,
+          "sha256": "cfaa0c18c4a2f0af7a545b7a22436fd4dba864b304f39fbbf299fad747a6caf6",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        },
+        {
+          "width": 640,
+          "objectPath": "history/2020-ngan-ha-salon-signboard-db9a3fc0d9c95c29-w640.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2020-ngan-ha-salon-signboard-db9a3fc0d9c95c29-w640.webp",
+          "bytes": 105806,
+          "sha256": "c90045e2ca5bdcbd04d9d743bf32d0f779629284b47057354aa21dd43593a701",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        },
+        {
+          "width": 960,
+          "objectPath": "history/2020-ngan-ha-salon-signboard-db9a3fc0d9c95c29-w960.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2020-ngan-ha-salon-signboard-db9a3fc0d9c95c29-w960.webp",
+          "bytes": 198096,
+          "sha256": "2caf2954825d52106c3167c37c19acf8faaac4fc8e1c9656b23da8c85a868814",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        }
+      ]
+    },
+    {
+      "group": "history",
+      "pointer": "/chapters/2/scenes/1/image",
+      "sourceUrl": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2020-ngan-ha-team-blue-6582d69365849dee.webp",
+      "sourceObjectPath": "history/2020-ngan-ha-team-blue-6582d69365849dee.webp",
+      "sourceBytes": 2118787,
+      "sourceSha256": "6e40dfa8dfb26a0b5988a99eac65c1124461d92de99d0875385f6bbd4dd00ab5",
+      "sourceWidth": 1448,
+      "sourceHeight": 1086,
+      "renditions": [
+        {
+          "width": 320,
+          "objectPath": "history/2020-ngan-ha-team-blue-6582d69365849dee-w320.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2020-ngan-ha-team-blue-6582d69365849dee-w320.webp",
+          "bytes": 15086,
+          "sha256": "f1358a7292189f2ffce798ac71b47bca299a302efa7d0b9a9ab9ff9010715cca",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        },
+        {
+          "width": 640,
+          "objectPath": "history/2020-ngan-ha-team-blue-6582d69365849dee-w640.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2020-ngan-ha-team-blue-6582d69365849dee-w640.webp",
+          "bytes": 40524,
+          "sha256": "c60ea3ba0d0f2aed7bfd46c7fe7a4a34986a49d9e6cce16e93e843353b7cb568",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        },
+        {
+          "width": 960,
+          "objectPath": "history/2020-ngan-ha-team-blue-6582d69365849dee-w960.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2020-ngan-ha-team-blue-6582d69365849dee-w960.webp",
+          "bytes": 72902,
+          "sha256": "426d7e03ba88f97298b3cfb77e625142b664f867c05dca695b9d14f0ca6a5d8c",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        }
+      ]
+    },
+    {
+      "group": "history",
+      "pointer": "/chapters/2/scenes/2/image",
+      "sourceUrl": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2020-ngan-ha-interior-entrance-363515eec249dc00.webp",
+      "sourceObjectPath": "history/2020-ngan-ha-interior-entrance-363515eec249dc00.webp",
+      "sourceBytes": 2073418,
+      "sourceSha256": "f009133bfbe8e553cafc143ad0cdab5ee494ebd3817eabe3d2765a396ae911f6",
+      "sourceWidth": 1448,
+      "sourceHeight": 1086,
+      "renditions": [
+        {
+          "width": 320,
+          "objectPath": "history/2020-ngan-ha-interior-entrance-363515eec249dc00-w320.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2020-ngan-ha-interior-entrance-363515eec249dc00-w320.webp",
+          "bytes": 13110,
+          "sha256": "bac7dc12b9c9f767be68250932ca00373fb1a23c7cf3ca1c9b1212f7ab19152a",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        },
+        {
+          "width": 640,
+          "objectPath": "history/2020-ngan-ha-interior-entrance-363515eec249dc00-w640.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2020-ngan-ha-interior-entrance-363515eec249dc00-w640.webp",
+          "bytes": 40722,
+          "sha256": "8326cf00aeb5ccd75c368793e7ffd997e048ef2ce9c3d0242aaa0407869f77a3",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        },
+        {
+          "width": 960,
+          "objectPath": "history/2020-ngan-ha-interior-entrance-363515eec249dc00-w960.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2020-ngan-ha-interior-entrance-363515eec249dc00-w960.webp",
+          "bytes": 81056,
+          "sha256": "3bb8764a7a77b417c6047377d7df0cb7c55d91f03c9a8939139027e8d995328a",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        }
+      ]
+    },
+    {
+      "group": "history",
+      "pointer": "/chapters/2/scenes/3/image",
+      "sourceUrl": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2020-ngan-ha-team-ao-dai-aed81fe14e7e7096.webp",
+      "sourceObjectPath": "history/2020-ngan-ha-team-ao-dai-aed81fe14e7e7096.webp",
+      "sourceBytes": 2195057,
+      "sourceSha256": "e62bf3af0b17f831468f0da619014428108f8a78e4200445abdd2994632def85",
+      "sourceWidth": 1448,
+      "sourceHeight": 1086,
+      "renditions": [
+        {
+          "width": 320,
+          "objectPath": "history/2020-ngan-ha-team-ao-dai-aed81fe14e7e7096-w320.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2020-ngan-ha-team-ao-dai-aed81fe14e7e7096-w320.webp",
+          "bytes": 17788,
+          "sha256": "ba68a89ffbc3e48c1ea0e76c3a6d0b12abbf78ee895a14d1275d33e584b08147",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        },
+        {
+          "width": 640,
+          "objectPath": "history/2020-ngan-ha-team-ao-dai-aed81fe14e7e7096-w640.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2020-ngan-ha-team-ao-dai-aed81fe14e7e7096-w640.webp",
+          "bytes": 49880,
+          "sha256": "452ee997cf3773e88a0e4c8ff9afee2b9ae6e02fae6d6089ba598db11bc0e784",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        },
+        {
+          "width": 960,
+          "objectPath": "history/2020-ngan-ha-team-ao-dai-aed81fe14e7e7096-w960.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2020-ngan-ha-team-ao-dai-aed81fe14e7e7096-w960.webp",
+          "bytes": 92734,
+          "sha256": "bafa47ea52c4cdc22dcf5fb2e9b26f3686bc91d6801991b33d13ec06254aefc1",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        }
+      ]
+    },
+    {
+      "group": "history",
+      "pointer": "/chapters/3/scenes/0/image",
+      "sourceUrl": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2021-ngan-ha-ngo-duc-ke-gold-sign-dd45ef3b6a1bfca6.webp",
+      "sourceObjectPath": "history/2021-ngan-ha-ngo-duc-ke-gold-sign-dd45ef3b6a1bfca6.webp",
+      "sourceBytes": 2307925,
+      "sourceSha256": "abc49adadb9c5045721b805c45e6b7e1341a591d3ac0ec3360ac7bb5e7d404bb",
+      "sourceWidth": 1448,
+      "sourceHeight": 1086,
+      "renditions": [
+        {
+          "width": 320,
+          "objectPath": "history/2021-ngan-ha-ngo-duc-ke-gold-sign-dd45ef3b6a1bfca6-w320.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2021-ngan-ha-ngo-duc-ke-gold-sign-dd45ef3b6a1bfca6-w320.webp",
+          "bytes": 17574,
+          "sha256": "a40e581a08b4366ba5cd303f7a5381cf4c2f99e8a761164f1b47e2154a1c7edd",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        },
+        {
+          "width": 640,
+          "objectPath": "history/2021-ngan-ha-ngo-duc-ke-gold-sign-dd45ef3b6a1bfca6-w640.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2021-ngan-ha-ngo-duc-ke-gold-sign-dd45ef3b6a1bfca6-w640.webp",
+          "bytes": 62372,
+          "sha256": "7ac9deeae26c3cc847d95159d53837efbdb57ad2608a801356e73e8cf54b5270",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        },
+        {
+          "width": 960,
+          "objectPath": "history/2021-ngan-ha-ngo-duc-ke-gold-sign-dd45ef3b6a1bfca6-w960.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2021-ngan-ha-ngo-duc-ke-gold-sign-dd45ef3b6a1bfca6-w960.webp",
+          "bytes": 122624,
+          "sha256": "c2ca23878dc9cdadbe5dd7459b2cb9b164b862e9a8f57843564b2f80499dbd2d",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        }
+      ]
+    },
+    {
+      "group": "history",
+      "pointer": "/chapters/3/scenes/1/image",
+      "sourceUrl": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2021-ngan-ha-service-floor-guests-fa4e28efead89f54.webp",
+      "sourceObjectPath": "history/2021-ngan-ha-service-floor-guests-fa4e28efead89f54.webp",
+      "sourceBytes": 2533868,
+      "sourceSha256": "49bb7423530cbe8fb137f852a92c18ce69d417ca9f47b60f1b900fb09b039ac9",
+      "sourceWidth": 1448,
+      "sourceHeight": 1086,
+      "renditions": [
+        {
+          "width": 320,
+          "objectPath": "history/2021-ngan-ha-service-floor-guests-fa4e28efead89f54-w320.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2021-ngan-ha-service-floor-guests-fa4e28efead89f54-w320.webp",
+          "bytes": 16844,
+          "sha256": "bb2d41c20e22d6b75994dc3a461488a36d2bb7a4422d543d6a3de08d8d1f980b",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        },
+        {
+          "width": 640,
+          "objectPath": "history/2021-ngan-ha-service-floor-guests-fa4e28efead89f54-w640.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2021-ngan-ha-service-floor-guests-fa4e28efead89f54-w640.webp",
+          "bytes": 55236,
+          "sha256": "49bd4c956405b5569a66223a8b145a5ca498841cbce973c9f6395307dae4846b",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        },
+        {
+          "width": 960,
+          "objectPath": "history/2021-ngan-ha-service-floor-guests-fa4e28efead89f54-w960.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2021-ngan-ha-service-floor-guests-fa4e28efead89f54-w960.webp",
+          "bytes": 109072,
+          "sha256": "de7994ae78184ad5b313ec0fd553179ebe3da152ff13b35a6839ef1446a3b216",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        }
+      ]
+    },
+    {
+      "group": "history",
+      "pointer": "/chapters/3/scenes/2/image",
+      "sourceUrl": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2021-ngan-ha-treatment-beds-ae25aa0c2e0daaf6.webp",
+      "sourceObjectPath": "history/2021-ngan-ha-treatment-beds-ae25aa0c2e0daaf6.webp",
+      "sourceBytes": 2819267,
+      "sourceSha256": "57cbd60b57eb68a32d224f222a197c8a08783b565d69856f597f29689b409612",
+      "sourceWidth": 1254,
+      "sourceHeight": 1254,
+      "renditions": [
+        {
+          "width": 320,
+          "objectPath": "history/2021-ngan-ha-treatment-beds-ae25aa0c2e0daaf6-w320.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2021-ngan-ha-treatment-beds-ae25aa0c2e0daaf6-w320.webp",
+          "bytes": 20552,
+          "sha256": "e2b6cf53ff9f437aa48547656295c0710c8156bf0e68532f4d5c536b978199af",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        },
+        {
+          "width": 640,
+          "objectPath": "history/2021-ngan-ha-treatment-beds-ae25aa0c2e0daaf6-w640.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2021-ngan-ha-treatment-beds-ae25aa0c2e0daaf6-w640.webp",
+          "bytes": 85920,
+          "sha256": "125c842f6dd8ac1203b6705e77559c2c144a8fbefd571614993d32d088423c64",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        },
+        {
+          "width": 960,
+          "objectPath": "history/2021-ngan-ha-treatment-beds-ae25aa0c2e0daaf6-w960.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2021-ngan-ha-treatment-beds-ae25aa0c2e0daaf6-w960.webp",
+          "bytes": 178682,
+          "sha256": "b4392347bf9219deebd86e19fb445f13bb80474b9fd11106ede100688ee25d3a",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        }
+      ]
+    },
+    {
+      "group": "history",
+      "pointer": "/chapters/4/scenes/0/image",
+      "sourceUrl": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2023-ngan-ha-branch-2-thi-sach-facade-9fd2549041708c5a.webp",
+      "sourceObjectPath": "history/2023-ngan-ha-branch-2-thi-sach-facade-9fd2549041708c5a.webp",
+      "sourceBytes": 2883056,
+      "sourceSha256": "dd7302b4a88ec7719d514e79318b5dd489035b1b0dbd528c0e075ac60d1d17e9",
+      "sourceWidth": 1448,
+      "sourceHeight": 1086,
+      "renditions": [
+        {
+          "width": 320,
+          "objectPath": "history/2023-ngan-ha-branch-2-thi-sach-facade-9fd2549041708c5a-w320.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2023-ngan-ha-branch-2-thi-sach-facade-9fd2549041708c5a-w320.webp",
+          "bytes": 20310,
+          "sha256": "7424670d9787ed494842d28122c9a78880ea00a80cfcbd253d72a65ae6883dd6",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        },
+        {
+          "width": 640,
+          "objectPath": "history/2023-ngan-ha-branch-2-thi-sach-facade-9fd2549041708c5a-w640.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2023-ngan-ha-branch-2-thi-sach-facade-9fd2549041708c5a-w640.webp",
+          "bytes": 76868,
+          "sha256": "5fb0e2c440c343a491e243cbf5d3e6475ed578b542503d06666f7175bfe3d822",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        },
+        {
+          "width": 960,
+          "objectPath": "history/2023-ngan-ha-branch-2-thi-sach-facade-9fd2549041708c5a-w960.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2023-ngan-ha-branch-2-thi-sach-facade-9fd2549041708c5a-w960.webp",
+          "bytes": 163346,
+          "sha256": "4db6a8217275e0e85ba88f7b95916f71ad34c19c274c2ccc092ec97e7463c4dc",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        }
+      ]
+    },
+    {
+      "group": "history",
+      "pointer": "/chapters/4/scenes/1/image",
+      "sourceUrl": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2023-ngan-ha-branch-2-menu-boo-615f6b49f88627a1.webp",
+      "sourceObjectPath": "history/2023-ngan-ha-branch-2-menu-boo-615f6b49f88627a1.webp",
+      "sourceBytes": 2815965,
+      "sourceSha256": "15e7c73dbb48211e248445ff3e47aaa728d784f48a15d39662af6869ae8229ce",
+      "sourceWidth": 1448,
+      "sourceHeight": 1086,
+      "renditions": [
+        {
+          "width": 320,
+          "objectPath": "history/2023-ngan-ha-branch-2-menu-boo-615f6b49f88627a1-w320.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2023-ngan-ha-branch-2-menu-boo-615f6b49f88627a1-w320.webp",
+          "bytes": 17570,
+          "sha256": "931f9a07916183c3805362095b1b3b6d2b7905ea789180bdc13928dc4fb5c75c",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        },
+        {
+          "width": 640,
+          "objectPath": "history/2023-ngan-ha-branch-2-menu-boo-615f6b49f88627a1-w640.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2023-ngan-ha-branch-2-menu-boo-615f6b49f88627a1-w640.webp",
+          "bytes": 61692,
+          "sha256": "54d76dc4c3829c0db5b49370466fd5f12c11f63ab7fe712bf12a188956e52499",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        },
+        {
+          "width": 960,
+          "objectPath": "history/2023-ngan-ha-branch-2-menu-boo-615f6b49f88627a1-w960.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2023-ngan-ha-branch-2-menu-boo-615f6b49f88627a1-w960.webp",
+          "bytes": 126630,
+          "sha256": "9b04226c77dd42b3dbbd0e57d8833696776ca78773b19412e11b04d6bbb5a054",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        }
+      ]
+    },
+    {
+      "group": "history",
+      "pointer": "/chapters/5/scenes/0/image",
+      "sourceUrl": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2024-ngan-ha-ngo-duc-ke-new-signboard-5fa2f00bd876a9db.webp",
+      "sourceObjectPath": "history/2024-ngan-ha-ngo-duc-ke-new-signboard-5fa2f00bd876a9db.webp",
+      "sourceBytes": 2644961,
+      "sourceSha256": "d814eeb80e4d08fc78914025199c9dbe8e07ea391176e92c46ae18eb2affcd6a",
+      "sourceWidth": 1672,
+      "sourceHeight": 941,
+      "renditions": [
+        {
+          "width": 320,
+          "objectPath": "history/2024-ngan-ha-ngo-duc-ke-new-signboard-5fa2f00bd876a9db-w320.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2024-ngan-ha-ngo-duc-ke-new-signboard-5fa2f00bd876a9db-w320.webp",
+          "bytes": 19086,
+          "sha256": "d67fe0a488dd1b907ba4c599d2f53c4f1fdda63dbd0de7cd4528a15ea6139f8d",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        },
+        {
+          "width": 640,
+          "objectPath": "history/2024-ngan-ha-ngo-duc-ke-new-signboard-5fa2f00bd876a9db-w640.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2024-ngan-ha-ngo-duc-ke-new-signboard-5fa2f00bd876a9db-w640.webp",
+          "bytes": 61898,
+          "sha256": "dbfac891544c65b71952de56b6dcaf0a8f1402d42ff86b6351f6616b0574ed0f",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        },
+        {
+          "width": 960,
+          "objectPath": "history/2024-ngan-ha-ngo-duc-ke-new-signboard-5fa2f00bd876a9db-w960.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2024-ngan-ha-ngo-duc-ke-new-signboard-5fa2f00bd876a9db-w960.webp",
+          "bytes": 123860,
+          "sha256": "50fbe03d2c1c0fc939f62e5aede232b9b468b65317c80e650560d3a9526c6cc9",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        }
+      ]
+    },
+    {
+      "group": "history",
+      "pointer": "/chapters/5/scenes/1/image",
+      "sourceUrl": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2024-ngan-ha-updated-interior-space-56a5dc902fda7305.webp",
+      "sourceObjectPath": "history/2024-ngan-ha-updated-interior-space-56a5dc902fda7305.webp",
+      "sourceBytes": 2696589,
+      "sourceSha256": "19b849dd98885ab45dfb86d1552cff78ec7e2e4c6a587678898fd48c488a835a",
+      "sourceWidth": 1254,
+      "sourceHeight": 1254,
+      "renditions": [
+        {
+          "width": 320,
+          "objectPath": "history/2024-ngan-ha-updated-interior-space-56a5dc902fda7305-w320.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2024-ngan-ha-updated-interior-space-56a5dc902fda7305-w320.webp",
+          "bytes": 23774,
+          "sha256": "b2585b5231907e11449847911f876f0f1ff94804b7c816ad59d4ce8aa53ebc79",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        },
+        {
+          "width": 640,
+          "objectPath": "history/2024-ngan-ha-updated-interior-space-56a5dc902fda7305-w640.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2024-ngan-ha-updated-interior-space-56a5dc902fda7305-w640.webp",
+          "bytes": 79328,
+          "sha256": "1298267a6a466060d0dea4e4d9c41ce889ca20c5e1f8c713651ff479749f1480",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        },
+        {
+          "width": 960,
+          "objectPath": "history/2024-ngan-ha-updated-interior-space-56a5dc902fda7305-w960.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2024-ngan-ha-updated-interior-space-56a5dc902fda7305-w960.webp",
+          "bytes": 160204,
+          "sha256": "b16733d1f954f3c500b17cad052b91cc2fe2f25c26fb648bea7429f1718397b2",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        }
+      ]
+    },
+    {
+      "group": "history",
+      "pointer": "/chapters/5/scenes/2/image",
+      "sourceUrl": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2024-ngan-ha-hcmtoplist-feature-b9afe0015140c81a.webp",
+      "sourceObjectPath": "history/2024-ngan-ha-hcmtoplist-feature-b9afe0015140c81a.webp",
+      "sourceBytes": 1438671,
+      "sourceSha256": "f0ae69629e6cf0867018dbaaea0d8246e76ec9cb9fe6267fa72e71cbaabc4312",
+      "sourceWidth": 1672,
+      "sourceHeight": 941,
+      "renditions": [
+        {
+          "width": 320,
+          "objectPath": "history/2024-ngan-ha-hcmtoplist-feature-b9afe0015140c81a-w320.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2024-ngan-ha-hcmtoplist-feature-b9afe0015140c81a-w320.webp",
+          "bytes": 12430,
+          "sha256": "4fde7b2916e805a3e38ad07a24ae0ed456edd2e9f947733e2b87596309e49fb7",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        },
+        {
+          "width": 640,
+          "objectPath": "history/2024-ngan-ha-hcmtoplist-feature-b9afe0015140c81a-w640.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2024-ngan-ha-hcmtoplist-feature-b9afe0015140c81a-w640.webp",
+          "bytes": 38002,
+          "sha256": "8a23efd6ac7e6af6d88c0cfac8d2c33240267c9a1da22b043d5d0de5cad4f53f",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        },
+        {
+          "width": 960,
+          "objectPath": "history/2024-ngan-ha-hcmtoplist-feature-b9afe0015140c81a-w960.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2024-ngan-ha-hcmtoplist-feature-b9afe0015140c81a-w960.webp",
+          "bytes": 70180,
+          "sha256": "f3d9baf8f6404f25b32356f3c4a1629a5b4f95f3b34ba531d315d311ee9173e5",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        }
+      ]
+    },
+    {
+      "group": "history",
+      "pointer": "/chapters/5/scenes/3/image",
+      "sourceUrl": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2024-ngan-ha-naver-recognition-blog-af8293779e70e739.webp",
+      "sourceObjectPath": "history/2024-ngan-ha-naver-recognition-blog-af8293779e70e739.webp",
+      "sourceBytes": 1758980,
+      "sourceSha256": "9cc2faa13ebc1ff421cfc5126668d7ba4a1af2227186d1ac670c2bd538ee0d56",
+      "sourceWidth": 1448,
+      "sourceHeight": 1086,
+      "renditions": [
+        {
+          "width": 320,
+          "objectPath": "history/2024-ngan-ha-naver-recognition-blog-af8293779e70e739-w320.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2024-ngan-ha-naver-recognition-blog-af8293779e70e739-w320.webp",
+          "bytes": 10466,
+          "sha256": "8202bd8bd3a950d3c7c0aa8ecfebd3dccf55f05eba1c8102dc733cea7ab931e4",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        },
+        {
+          "width": 640,
+          "objectPath": "history/2024-ngan-ha-naver-recognition-blog-af8293779e70e739-w640.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2024-ngan-ha-naver-recognition-blog-af8293779e70e739-w640.webp",
+          "bytes": 36456,
+          "sha256": "e7bee5a0310fd7b3710e7696c31a40416a69657a70e2b5fac810612942fd5e83",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        },
+        {
+          "width": 960,
+          "objectPath": "history/2024-ngan-ha-naver-recognition-blog-af8293779e70e739-w960.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2024-ngan-ha-naver-recognition-blog-af8293779e70e739-w960.webp",
+          "bytes": 72544,
+          "sha256": "086ab291a91937c294d69353aeebe8d7b6fef24a176433c3c0f99d315c3078b3",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        }
+      ]
+    },
+    {
+      "group": "history",
+      "pointer": "/chapters/5/scenes/4/image",
+      "sourceUrl": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2024-ngan-ha-naver-review-street-185dff583fa48026.webp",
+      "sourceObjectPath": "history/2024-ngan-ha-naver-review-street-185dff583fa48026.webp",
+      "sourceBytes": 1942794,
+      "sourceSha256": "d521523e1284b93fc0b739bd6409333d5e77261c09fc5cfb599f957a03ee8ec8",
+      "sourceWidth": 1355,
+      "sourceHeight": 1161,
+      "renditions": [
+        {
+          "width": 320,
+          "objectPath": "history/2024-ngan-ha-naver-review-street-185dff583fa48026-w320.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2024-ngan-ha-naver-review-street-185dff583fa48026-w320.webp",
+          "bytes": 15948,
+          "sha256": "11ea3e6762b0f39caf7258a9cc79b8f048a1f96094d9d3ae54c2bc38adb3acec",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        },
+        {
+          "width": 640,
+          "objectPath": "history/2024-ngan-ha-naver-review-street-185dff583fa48026-w640.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2024-ngan-ha-naver-review-street-185dff583fa48026-w640.webp",
+          "bytes": 56248,
+          "sha256": "9b2905d3ca548238ab3ef141a4199c3afc4242cabbe1739885a7a344b2109790",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        },
+        {
+          "width": 960,
+          "objectPath": "history/2024-ngan-ha-naver-review-street-185dff583fa48026-w960.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2024-ngan-ha-naver-review-street-185dff583fa48026-w960.webp",
+          "bytes": 110652,
+          "sha256": "25382d5d7921d3eff1bccc3188f88faf511555b05cec9b652c85b079c4e920d6",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        }
+      ]
+    },
+    {
+      "group": "history",
+      "pointer": "/chapters/6/scenes/0/image",
+      "sourceUrl": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2026-oria-spa-tech-galaxy-sign-59d37697dd24ed48.webp",
+      "sourceObjectPath": "history/2026-oria-spa-tech-galaxy-sign-59d37697dd24ed48.webp",
+      "sourceBytes": 2795083,
+      "sourceSha256": "7f01c467a6b3af5fcaa90865d55193f07e71bbc9473a8864dcef247655955905",
+      "sourceWidth": 1266,
+      "sourceHeight": 1242,
+      "renditions": [
+        {
+          "width": 320,
+          "objectPath": "history/2026-oria-spa-tech-galaxy-sign-59d37697dd24ed48-w320.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2026-oria-spa-tech-galaxy-sign-59d37697dd24ed48-w320.webp",
+          "bytes": 33590,
+          "sha256": "07287ae2bbaa4180f43ecf965417911da8a88fed3c765463d7a4d35ca76fab1f",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        },
+        {
+          "width": 640,
+          "objectPath": "history/2026-oria-spa-tech-galaxy-sign-59d37697dd24ed48-w640.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2026-oria-spa-tech-galaxy-sign-59d37697dd24ed48-w640.webp",
+          "bytes": 108742,
+          "sha256": "9b9a572945bb04ded468e104e2f0d4718359bb6b331950e58b7cc3ef96b16234",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        },
+        {
+          "width": 960,
+          "objectPath": "history/2026-oria-spa-tech-galaxy-sign-59d37697dd24ed48-w960.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2026-oria-spa-tech-galaxy-sign-59d37697dd24ed48-w960.webp",
+          "bytes": 212750,
+          "sha256": "5ff18c2bc2c57f94c105b9ebc753b3889581158b3a350e6d3045553f7f38595b",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        }
+      ]
+    },
+    {
+      "group": "history",
+      "pointer": "/chapters/6/scenes/1/image",
+      "sourceUrl": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2026-oriafarm-storefront-2579ba954aa16f08.webp",
+      "sourceObjectPath": "history/2026-oriafarm-storefront-2579ba954aa16f08.webp",
+      "sourceBytes": 2855245,
+      "sourceSha256": "83ce986624deb5a9ecb0e9093cbbea5a640ca050b9c4ae3a3889f7063a12e57d",
+      "sourceWidth": 941,
+      "sourceHeight": 1672,
+      "renditions": [
+        {
+          "width": 320,
+          "objectPath": "history/2026-oriafarm-storefront-2579ba954aa16f08-w320.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2026-oriafarm-storefront-2579ba954aa16f08-w320.webp",
+          "bytes": 42092,
+          "sha256": "d1d4b4cc5752a57ea73654094535643d7fd49558aa7f9d42d561c731bf6679e0",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        },
+        {
+          "width": 640,
+          "objectPath": "history/2026-oriafarm-storefront-2579ba954aa16f08-w640.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2026-oriafarm-storefront-2579ba954aa16f08-w640.webp",
+          "bytes": 155226,
+          "sha256": "6108a188f0a2374219b276ae8bdba7f37ed5a817d5fbdf7f0c4a7f8521779b45",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        },
+        {
+          "width": 960,
+          "objectPath": "history/2026-oriafarm-storefront-2579ba954aa16f08-w960.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2026-oriafarm-storefront-2579ba954aa16f08-w960.webp",
+          "bytes": 296708,
+          "sha256": "094763e1ec7820eca77e39e0930feed5c6e9904561f468931c88d01243a14cc6",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        }
+      ]
+    },
+    {
+      "group": "history",
+      "pointer": "/chapters/6/scenes/2/image",
+      "sourceUrl": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2026-oriafarm-fnb-display-2c55c6ebe5b3fbce.webp",
+      "sourceObjectPath": "history/2026-oriafarm-fnb-display-2c55c6ebe5b3fbce.webp",
+      "sourceBytes": 3117370,
+      "sourceSha256": "c3cea6805dfa0346ce8d2fe828762967f8f2405d67498b6dcae19457b1268136",
+      "sourceWidth": 1086,
+      "sourceHeight": 1448,
+      "renditions": [
+        {
+          "width": 320,
+          "objectPath": "history/2026-oriafarm-fnb-display-2c55c6ebe5b3fbce-w320.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2026-oriafarm-fnb-display-2c55c6ebe5b3fbce-w320.webp",
+          "bytes": 48418,
+          "sha256": "c8e32e0f4fc76705915014b1c0191002ae29ff5c459ebec22d0bd61cf4714ef8",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        },
+        {
+          "width": 640,
+          "objectPath": "history/2026-oriafarm-fnb-display-2c55c6ebe5b3fbce-w640.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2026-oriafarm-fnb-display-2c55c6ebe5b3fbce-w640.webp",
+          "bytes": 168824,
+          "sha256": "7811217be9f95a80d72a00094aab134f57489c67e54d245a4a81c34e6138b985",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        },
+        {
+          "width": 960,
+          "objectPath": "history/2026-oriafarm-fnb-display-2c55c6ebe5b3fbce-w960.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2026-oriafarm-fnb-display-2c55c6ebe5b3fbce-w960.webp",
+          "bytes": 322252,
+          "sha256": "9e39de9cb75c7139a466e750ad86aad3c5e45e896ef5555dfa0059d08ae8acb6",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        }
+      ]
+    },
+    {
+      "group": "our-story",
+      "pointer": "/locationSection/cityImage",
+      "sourceUrl": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin.webp",
+      "sourceObjectPath": "marketing/oria_spa_location_pin.webp",
+      "sourceBytes": 541504,
+      "sourceSha256": "e663f762e052a2f42e26f19821c9022c0f4741a98c6bd1444f3c07724a227d5b",
+      "sourceWidth": 1122,
+      "sourceHeight": 1402,
+      "renditions": [
+        {
+          "width": 320,
+          "objectPath": "marketing/oria_spa_location_pin-w320.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin-w320.webp",
+          "bytes": 36608,
+          "sha256": "9f70464c78915063f43f4fe75af2ed7c43fdffefbc8a021e722c3c0b1cc25827",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        },
+        {
+          "width": 640,
+          "objectPath": "marketing/oria_spa_location_pin-w640.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin-w640.webp",
+          "bytes": 122636,
+          "sha256": "675844b36d20d56a8e4b5a4a1ec904ed7fcb8b6e10aa14c16d8148d9f52df18e",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        },
+        {
+          "width": 960,
+          "objectPath": "marketing/oria_spa_location_pin-w960.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin-w960.webp",
+          "bytes": 224652,
+          "sha256": "731e742255a33a3da28dcbc104ce3b9d38efe85273b962953c0c868f427e8d1a",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        }
+      ]
+    },
+    {
+      "group": "our-story",
+      "pointer": "/locationSection/streetSignImage",
+      "sourceUrl": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner.webp",
+      "sourceObjectPath": "marketing/dong_khoi_corner.webp",
+      "sourceBytes": 409834,
+      "sourceSha256": "d5e2ab18bee37b4b14df82982a95c12081b6ea068902921b14db877d034daa26",
+      "sourceWidth": 1254,
+      "sourceHeight": 1254,
+      "renditions": [
+        {
+          "width": 320,
+          "objectPath": "marketing/dong_khoi_corner-w320.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner-w320.webp",
+          "bytes": 29970,
+          "sha256": "b77c444fb9d0630afb085c18b41e60f845ca839f140061b5574142e06d15a104",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        },
+        {
+          "width": 640,
+          "objectPath": "marketing/dong_khoi_corner-w640.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner-w640.webp",
+          "bytes": 90200,
+          "sha256": "e2de6dff03a7b87b88c9efb5905c2c222890f703a1e2034e5653ce41763b8cf3",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        },
+        {
+          "width": 960,
+          "objectPath": "marketing/dong_khoi_corner-w960.webp",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner-w960.webp",
+          "bytes": 156440,
+          "sha256": "d1272da4fe23d7ab905a9a7b3c20622379aa50428cfd6084462a498f931c4ef2",
+          "status": "uploaded-verified",
+          "contentType": "image/webp"
+        }
+      ]
+    }
+  ],
+  "updates": [
+    {
+      "key": "brand_history",
+      "after": {
+        "updatedAt": "2026-09-13T14:28:37.897+00:00",
+        "sha256": "975c911b872b120d7b600459b9d34903ea3fd53c029f9bbfe2d7583aefd563c5"
+      }
+    },
+    {
+      "key": "about_story_content",
+      "after": {
+        "updatedAt": "2026-09-13T14:28:38.349+00:00",
+        "sha256": "0a77adfcc61605ebb26d7b4005431d2ac0d493b2e64c3b4ea2254bc8a02543c3"
+      }
+    }
+  ]
+}

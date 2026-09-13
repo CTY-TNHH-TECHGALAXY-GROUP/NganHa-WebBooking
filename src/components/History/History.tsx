@@ -20,6 +20,7 @@ type Scene = {
   label: string;
   body: string;
   image: string;
+  responsiveSources?: Record<string, string>;
   alt: string;
   imageFit?: CSSProperties['objectFit'];
   imagePosition?: CSSProperties['objectPosition'];
@@ -514,6 +515,42 @@ const DEFAULT_HISTORY_IMAGE_PATHS = new Set(
 // Keeps the stage and thumbnail dimensions stable without starting an image request.
 const HISTORY_MEDIA_PLACEHOLDER = 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
 
+const getResponsiveSrcSet = (sources?: Record<string, string>) => {
+  if (!sources) return '';
+  return Object.entries(sources)
+    .filter(([width, url]) => /^\d+$/.test(width) && typeof url === 'string' && url.length > 0)
+    .sort(([a], [b]) => Number(a) - Number(b))
+    .map(([width, url]) => `${url} ${width}w`)
+    .join(', ');
+};
+
+type HistoryMediaProps = {
+  src: string;
+  alt: string;
+  sizes: string;
+  responsiveSources?: Record<string, string>;
+  className?: string;
+  style?: CSSProperties;
+};
+
+const HistoryMedia = ({ src, alt, sizes, responsiveSources, className, style }: HistoryMediaProps) => {
+  const srcSet = getResponsiveSrcSet(responsiveSources);
+  return (
+    <picture className={className}>
+      {srcSet && <source type="image/webp" srcSet={srcSet} sizes={sizes} />}
+      <img
+        src={src}
+        alt={alt}
+        loading="lazy"
+        decoding="async"
+        sizes={sizes}
+        className={className}
+        style={style}
+      />
+    </picture>
+  );
+};
+
 /** Keep confirmed custom media intact, but repair the old extension used by the bundled history assets. */
 export const normalizeHistoryImagePath = (value: string) => {
   if (!value || !value.startsWith('/images/history/')) return value;
@@ -623,6 +660,7 @@ export const createDefaultBrandHistoryConfig = () => ({
             jp: sceneTranslations.jp?.body, kr: sceneTranslations.kr?.body, cn: sceneTranslations.cn?.body,
           }),
           image: sceneVi.image,
+          responsiveSources: sceneVi.responsiveSources,
           alt: historyText(sceneVi.alt, sceneEn.alt, {
             jp: sceneTranslations.jp?.title, kr: sceneTranslations.kr?.title, cn: sceneTranslations.cn?.title,
           }),
@@ -727,6 +765,7 @@ export const History = ({ aboveFold = false }: HistoryProps) => {
           label: resolveHistoryText(scene.label, locale, ''),
           body: resolveHistoryText(scene.body, locale, ''),
           image: scene.image || '',
+          responsiveSources: scene.responsiveSources,
           alt: resolveHistoryText(scene.alt, locale, resolveHistoryText(scene.title, locale, '')),
           imageFit: scene.imageFit,
           imagePosition: scene.imagePosition,
@@ -1023,13 +1062,12 @@ export const History = ({ aboveFold = false }: HistoryProps) => {
                 >
                   {chapter.scenes.map((item: any, index: number) => (
                     <div key={item.title} className={`${styles.slide} ${index === sceneIndex ? styles.slideActive : ''}`}>
-                      <Image
+                      <HistoryMedia
                         src={chapterMediaReady && (index === sceneIndex || index === (sceneIndex + 1) % chapter.scenes.length)
                           ? getHistoryImageUrl(item.image)
                           : HISTORY_MEDIA_PLACEHOLDER}
+                        responsiveSources={chapterMediaReady ? item.responsiveSources : undefined}
                         alt={item.alt}
-                        fill
-                        unoptimized
                         sizes="(max-width: 760px) 85vw, 44vw"
                         style={{
                           objectFit: item.imageFit,
@@ -1104,12 +1142,11 @@ export const History = ({ aboveFold = false }: HistoryProps) => {
                         aria-label={`${copy.viewImage} ${index + 1}: ${item.label}`}
                       >
                         <span className={styles.sceneThumb}>
-                          <Image
+                          <HistoryMedia
                             src={chapterMediaReady ? getHistoryImageUrl(item.image) : HISTORY_MEDIA_PLACEHOLDER}
+                            responsiveSources={chapterMediaReady ? item.responsiveSources : undefined}
                             alt=""
-                            fill
                             sizes="96px"
-                            unoptimized
                           />
                         </span>
                         <span className={styles.sceneText}>

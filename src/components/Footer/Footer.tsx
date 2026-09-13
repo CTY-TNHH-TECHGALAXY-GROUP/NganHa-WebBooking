@@ -454,7 +454,7 @@ const Footer = () => {
 
         {/* Copyright */}
         <div className="max-w-6xl mx-auto mt-20 pt-8 border-t border-[rgba(212,175,55,0.15)] text-center">
-          <p className="text-xs text-[#f7ebc7]/40 tracking-[0.2em] uppercase">
+          <p className="text-xs text-[#f7ebc7]/70 tracking-[0.2em] uppercase">
             {copyrightText}
           </p>
         </div>

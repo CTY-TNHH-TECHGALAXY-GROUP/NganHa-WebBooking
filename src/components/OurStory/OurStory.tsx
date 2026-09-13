@@ -11,6 +11,22 @@ import { hydrateOurStoryConfig, hasValidOurStoryContent } from './OurStory.data'
 import { resolveConfigUrl } from '@/lib/config/urlSettings';
 import styles from './OurStory.module.css';
 
+const getResponsiveSrcSet = (sources?: Record<string, string>) => Object.entries(sources || {})
+  .filter(([width, url]) => /^\d+$/.test(width) && typeof url === 'string' && url.length > 0)
+  .sort(([a], [b]) => Number(a) - Number(b))
+  .map(([width, url]) => `${url} ${width}w`)
+  .join(', ');
+
+const StoryImage = ({ src, alt, sources, sizes }: { src: string; alt: string; sources?: Record<string, string>; sizes: string }) => {
+  const srcSet = getResponsiveSrcSet(sources);
+  return (
+    <picture>
+      {srcSet && <source type="image/webp" srcSet={srcSet} sizes={sizes} />}
+      <img src={src} alt={alt} loading="lazy" decoding="async" sizes={sizes} />
+    </picture>
+  );
+};
+
 const OurStory = () => {
   const { currentLang } = useTranslation();
   const { systemSettings, aboutStoryContent, getLocalizedText } = useSystemSettings();
@@ -78,11 +94,11 @@ const OurStory = () => {
 
           <div className={styles.visualStory}>
             <figure className={styles.cityFigure}>
-              <img
+              <StoryImage
                 src={config.locationSection.cityImage || '/images/about-street.png'}
+                sources={config.locationSection.cityImageResponsiveSources}
+                sizes="(max-width: 760px) 92vw, 52vw"
                 alt={getLocalizedText(config.locationSection.title, lang)}
-                loading="lazy"
-                decoding="async"
               />
               {config.locationSection.cityImageWatermarkEnabled !== false && (
                 <div
@@ -98,10 +114,11 @@ const OurStory = () => {
             </figure>
 
             <figure className={styles.offsetFigure}>
-              <img
+              <StoryImage
                 src={config.locationSection.streetSignImage}
+                sources={config.locationSection.streetSignImageResponsiveSources}
+                sizes="(max-width: 760px) 56vw, 24vw"
                 alt={getLocalizedText(config.locationSection.imageCaption, lang)}
-                loading="lazy"
               />
               {config.locationSection.streetSignImageWatermarkEnabled !== false && (
                 <div
@@ -153,6 +170,9 @@ const OurStory = () => {
 
           <div
             className={styles.journeyScroller}
+            role="region"
+            tabIndex={0}
+            aria-label={getLocalizedText(config.filmReel.title, lang)}
             style={{ '--film-frame-count': Math.max(config.filmReel.frames.length, 1) } as CSSProperties}
           >
             <motion.div

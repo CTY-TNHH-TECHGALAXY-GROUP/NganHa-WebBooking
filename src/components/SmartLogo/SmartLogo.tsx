@@ -10,13 +10,19 @@ interface SmartLogoProps {
 
 const SmartLogo: React.FC<SmartLogoProps> = ({ theme = 'dark', className = '', alt = 'Oria Spa Logo' }) => {
   return (
-    <div className={className} style={{ display: 'inline-block', position: 'relative' }} aria-label={alt}>
+    <div
+      className={className}
+      style={{ display: 'inline-block', position: 'relative' }}
+      role="img"
+      aria-label={alt}
+    >
       <svg 
         viewBox="0 0 1248 832" 
         width="100%" 
         height="100%" 
         preserveAspectRatio="xMidYMid meet"
         style={{ display: 'block', clipPath: 'inset(2px)' }}
+        aria-hidden="true"
       >
         <defs>
           <filter id="invert-logo-mask">

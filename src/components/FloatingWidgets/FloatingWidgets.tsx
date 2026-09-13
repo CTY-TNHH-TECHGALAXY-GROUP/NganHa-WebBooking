@@ -434,7 +434,21 @@ const FloatingWidgets = () => {
                 transition={{ duration: 0.2 }}
                 className="flex items-center justify-center w-full h-full"
               >
-                <img src="/images/chatbot-icon.webp" alt="Contact & AI Chatbot" className="w-full h-full object-cover" />
+                <picture className="block w-full h-full">
+                  <source
+                    type="image/webp"
+                    srcSet="/images/optimized/chatbot-icon-64.webp 64w, /images/optimized/chatbot-icon-128.webp 128w, /images/optimized/chatbot-icon-192.webp 192w"
+                    sizes="58px"
+                  />
+                  <img
+                    src="/images/optimized/chatbot-icon-128.webp"
+                    alt="Contact & AI Chatbot"
+                    width="128"
+                    height="128"
+                    decoding="async"
+                    className="w-full h-full object-cover"
+                  />
+                </picture>
               </motion.div>
             )}
           </AnimatePresence>

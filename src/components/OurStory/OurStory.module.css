@@ -218,6 +218,12 @@
   object-fit: cover;
 }
 
+.cityFigure > picture,
+.offsetFigure > picture {
+  display: block;
+  width: 100%;
+}
+
 .cityFigure figcaption {
   display: flex;
   justify-content: space-between;
