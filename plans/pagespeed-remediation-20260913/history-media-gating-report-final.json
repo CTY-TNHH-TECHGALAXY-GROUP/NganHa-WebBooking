@@ -1,0 +1,514 @@
+{
+  "baseUrl": "http://127.0.0.1:3322",
+  "route": "/history",
+  "viewport": {
+    "width": 390,
+    "height": 844,
+    "deviceScaleFactor": 2
+  },
+  "status": 200,
+  "before": [
+    {
+      "chapter": "0",
+      "activeIndex": 0,
+      "sourceIndices": [
+        0,
+        1
+      ],
+      "eligible": true,
+      "stageImages": [
+        {
+          "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2015-ngan-ha-storefront-4e987528a724c6ac.webp",
+          "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2015-ngan-ha-storefront-4e987528a724c6ac-fb74e52996d9423b-w960.webp",
+          "loading": "lazy"
+        },
+        {
+          "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2015-ngan-ha-commitment-flowers-a897c76aa9aad0de.webp",
+          "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2015-ngan-ha-commitment-flowers-a897c76aa9aad0de-cbc9dcbbb89708df-w960.webp",
+          "loading": "lazy"
+        },
+        {
+          "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "loading": "lazy"
+        }
+      ]
+    },
+    {
+      "chapter": "1",
+      "activeIndex": 0,
+      "sourceIndices": [],
+      "eligible": true,
+      "stageImages": [
+        {
+          "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "loading": "lazy"
+        },
+        {
+          "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "loading": "lazy"
+        },
+        {
+          "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "loading": "lazy"
+        }
+      ]
+    },
+    {
+      "chapter": "2",
+      "activeIndex": 0,
+      "sourceIndices": [],
+      "eligible": true,
+      "stageImages": [
+        {
+          "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "loading": "lazy"
+        },
+        {
+          "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "loading": "lazy"
+        },
+        {
+          "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "loading": "lazy"
+        },
+        {
+          "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "loading": "lazy"
+        }
+      ]
+    },
+    {
+      "chapter": "3",
+      "activeIndex": 0,
+      "sourceIndices": [],
+      "eligible": true,
+      "stageImages": [
+        {
+          "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "loading": "lazy"
+        },
+        {
+          "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "loading": "lazy"
+        },
+        {
+          "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "loading": "lazy"
+        }
+      ]
+    },
+    {
+      "chapter": "4",
+      "activeIndex": 0,
+      "sourceIndices": [],
+      "eligible": true,
+      "stageImages": [
+        {
+          "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "loading": "lazy"
+        },
+        {
+          "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "loading": "lazy"
+        }
+      ]
+    },
+    {
+      "chapter": "5",
+      "activeIndex": 0,
+      "sourceIndices": [],
+      "eligible": true,
+      "stageImages": [
+        {
+          "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "loading": "lazy"
+        },
+        {
+          "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "loading": "lazy"
+        },
+        {
+          "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "loading": "lazy"
+        },
+        {
+          "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "loading": "lazy"
+        },
+        {
+          "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "loading": "lazy"
+        }
+      ]
+    },
+    {
+      "chapter": "6",
+      "activeIndex": 0,
+      "sourceIndices": [],
+      "eligible": true,
+      "stageImages": [
+        {
+          "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "loading": "lazy"
+        },
+        {
+          "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "loading": "lazy"
+        },
+        {
+          "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "loading": "lazy"
+        }
+      ]
+    }
+  ],
+  "after": [
+    {
+      "chapter": "0",
+      "activeIndex": 0,
+      "sourceIndices": [
+        0,
+        1
+      ],
+      "eligible": true,
+      "stageImages": [
+        {
+          "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2015-ngan-ha-storefront-4e987528a724c6ac.webp",
+          "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2015-ngan-ha-storefront-4e987528a724c6ac-fb74e52996d9423b-w960.webp",
+          "loading": "lazy"
+        },
+        {
+          "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2015-ngan-ha-commitment-flowers-a897c76aa9aad0de.webp",
+          "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2015-ngan-ha-commitment-flowers-a897c76aa9aad0de-cbc9dcbbb89708df-w960.webp",
+          "loading": "lazy"
+        },
+        {
+          "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "loading": "lazy"
+        }
+      ]
+    },
+    {
+      "chapter": "1",
+      "activeIndex": 0,
+      "sourceIndices": [],
+      "eligible": true,
+      "stageImages": [
+        {
+          "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "loading": "lazy"
+        },
+        {
+          "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "loading": "lazy"
+        },
+        {
+          "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "loading": "lazy"
+        }
+      ]
+    },
+    {
+      "chapter": "2",
+      "activeIndex": 0,
+      "sourceIndices": [],
+      "eligible": true,
+      "stageImages": [
+        {
+          "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "loading": "lazy"
+        },
+        {
+          "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "loading": "lazy"
+        },
+        {
+          "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "loading": "lazy"
+        },
+        {
+          "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "loading": "lazy"
+        }
+      ]
+    },
+    {
+      "chapter": "3",
+      "activeIndex": 0,
+      "sourceIndices": [],
+      "eligible": true,
+      "stageImages": [
+        {
+          "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "loading": "lazy"
+        },
+        {
+          "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "loading": "lazy"
+        },
+        {
+          "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "loading": "lazy"
+        }
+      ]
+    },
+    {
+      "chapter": "4",
+      "activeIndex": 0,
+      "sourceIndices": [],
+      "eligible": true,
+      "stageImages": [
+        {
+          "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "loading": "lazy"
+        },
+        {
+          "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "loading": "lazy"
+        }
+      ]
+    },
+    {
+      "chapter": "5",
+      "activeIndex": 0,
+      "sourceIndices": [
+        0,
+        1
+      ],
+      "eligible": true,
+      "stageImages": [
+        {
+          "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2024-ngan-ha-ngo-duc-ke-new-signboard-5fa2f00bd876a9db.webp",
+          "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2024-ngan-ha-ngo-duc-ke-new-signboard-5fa2f00bd876a9db-7a236be5f691fc65-w960.webp",
+          "loading": "lazy"
+        },
+        {
+          "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2024-ngan-ha-updated-interior-space-56a5dc902fda7305.webp",
+          "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2024-ngan-ha-updated-interior-space-56a5dc902fda7305-e789679bec6bd447-w960.webp",
+          "loading": "lazy"
+        },
+        {
+          "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "loading": "lazy"
+        },
+        {
+          "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "loading": "lazy"
+        },
+        {
+          "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "loading": "lazy"
+        }
+      ]
+    },
+    {
+      "chapter": "6",
+      "activeIndex": 0,
+      "sourceIndices": [
+        0,
+        1
+      ],
+      "eligible": true,
+      "stageImages": [
+        {
+          "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2026-oria-spa-tech-galaxy-sign-59d37697dd24ed48.webp",
+          "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2026-oria-spa-tech-galaxy-sign-59d37697dd24ed48-9b046743456f50b6-w960.webp",
+          "loading": "lazy"
+        },
+        {
+          "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2026-oriafarm-storefront-2579ba954aa16f08.webp",
+          "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2026-oriafarm-storefront-2579ba954aa16f08-094763e1ec7820ec-w941.webp",
+          "loading": "lazy"
+        },
+        {
+          "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+          "loading": "lazy"
+        }
+      ]
+    }
+  ],
+  "thumbBefore": [
+    {
+      "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2015-ngan-ha-storefront-4e987528a724c6ac.webp",
+      "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2015-ngan-ha-storefront-4e987528a724c6ac-603411e25ca3dac9-w320.webp",
+      "loading": "lazy"
+    },
+    {
+      "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2015-ngan-ha-commitment-flowers-a897c76aa9aad0de.webp",
+      "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2015-ngan-ha-commitment-flowers-a897c76aa9aad0de-38c5bc740bb2a6b9-w320.webp",
+      "loading": "lazy"
+    },
+    {
+      "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2015-ngan-ha-team-7ae80ca354c4d75e.webp",
+      "currentSrc": "",
+      "loading": "lazy"
+    },
+    {
+      "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+      "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+      "loading": "lazy"
+    },
+    {
+      "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+      "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+      "loading": "lazy"
+    },
+    {
+      "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+      "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+      "loading": "lazy"
+    },
+    {
+      "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+      "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+      "loading": "lazy"
+    },
+    {
+      "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+      "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+      "loading": "lazy"
+    },
+    {
+      "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+      "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+      "loading": "lazy"
+    },
+    {
+      "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+      "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+      "loading": "lazy"
+    },
+    {
+      "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+      "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+      "loading": "lazy"
+    },
+    {
+      "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+      "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+      "loading": "lazy"
+    },
+    {
+      "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+      "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+      "loading": "lazy"
+    },
+    {
+      "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+      "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+      "loading": "lazy"
+    },
+    {
+      "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+      "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+      "loading": "lazy"
+    },
+    {
+      "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+      "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+      "loading": "lazy"
+    },
+    {
+      "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+      "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+      "loading": "lazy"
+    },
+    {
+      "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+      "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+      "loading": "lazy"
+    },
+    {
+      "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+      "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+      "loading": "lazy"
+    },
+    {
+      "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+      "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+      "loading": "lazy"
+    },
+    {
+      "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+      "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+      "loading": "lazy"
+    },
+    {
+      "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+      "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+      "loading": "lazy"
+    },
+    {
+      "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+      "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+      "loading": "lazy"
+    }
+  ],
+  "thumbAfter": {
+    "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2026-oria-spa-tech-galaxy-sign-59d37697dd24ed48.webp",
+    "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2026-oria-spa-tech-galaxy-sign-59d37697dd24ed48-1920c5fbad4f1a42-w320.webp",
+    "naturalWidth": 96,
+    "loading": "lazy",
+    "complete": true
+  },
+  "historyRequests": [
+    "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2015-ngan-ha-storefront-4e987528a724c6ac-fb74e52996d9423b-w960.webp",
+    "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2015-ngan-ha-commitment-flowers-a897c76aa9aad0de-cbc9dcbbb89708df-w960.webp",
+    "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2015-ngan-ha-storefront-4e987528a724c6ac-603411e25ca3dac9-w320.webp",
+    "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2015-ngan-ha-commitment-flowers-a897c76aa9aad0de-38c5bc740bb2a6b9-w320.webp",
+    "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2024-ngan-ha-ngo-duc-ke-new-signboard-5fa2f00bd876a9db-7a236be5f691fc65-w960.webp",
+    "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2024-ngan-ha-updated-interior-space-56a5dc902fda7305-e789679bec6bd447-w960.webp",
+    "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2024-ngan-ha-ngo-duc-ke-new-signboard-5fa2f00bd876a9db-06239731c41f79d0-w320.webp",
+    "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2024-ngan-ha-updated-interior-space-56a5dc902fda7305-15869f0a911a6f09-w320.webp",
+    "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2026-oria-spa-tech-galaxy-sign-59d37697dd24ed48-9b046743456f50b6-w960.webp",
+    "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2026-oriafarm-storefront-2579ba954aa16f08-094763e1ec7820ec-w941.webp",
+    "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2026-oria-spa-tech-galaxy-sign-59d37697dd24ed48-1920c5fbad4f1a42-w320.webp",
+    "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/history/2026-oriafarm-storefront-2579ba954aa16f08-08cab1095c1dfa6b-w320.webp"
+  ],
+  "assertions": {
+    "everyStageSourceIsActiveOrNextBeforeScroll": true,
+    "everyStageSourceIsActiveOrNextAfterScroll": true,
+    "inactiveStageImagesStayPlaceholders": true,
+    "thumbnailsAreLazy": true,
+    "thumbnailUsesSmallCandidate": true,
+    "stageUsesLargerCandidate": true
+  }
+}
