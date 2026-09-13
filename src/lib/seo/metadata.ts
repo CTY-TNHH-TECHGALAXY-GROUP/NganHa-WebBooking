@@ -16,6 +16,10 @@ export function getSiteOrigin(): URL {
   const fallback = 'https://oria-spa.vercel.app';
   try {
     const candidate = new URL(configured || fallback);
+    const localDevelopment = process.env.NODE_ENV !== 'production'
+      && ['localhost', '127.0.0.1'].includes(candidate.hostname)
+      && ['http:', 'https:'].includes(candidate.protocol);
+    if (!localDevelopment && candidate.origin !== fallback) return new URL(fallback);
     if (candidate.protocol !== 'https:' && candidate.hostname !== 'localhost' && candidate.hostname !== '127.0.0.1') {
       return new URL(fallback);
     }
