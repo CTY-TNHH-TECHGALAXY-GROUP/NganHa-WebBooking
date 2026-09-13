@@ -299,8 +299,11 @@ async function main() {
         else deleteAt(next, `${patch.pointer}/${patch.width}`);
         changed.push(`${patch.pointer}/${patch.width}`);
       }
-      const update = await supabase.from('SystemConfigs').update({ value: next }).eq('id', row.id).eq('key', row.key).eq('value', JSON.stringify(row.value)).select('id,key,value,updated_at').maybeSingle();
-      if (update.error) throw new Error(`rollback failed for ${row.key}: ${update.error.message}`);
+      const update = await supabase.from('SystemConfigs')
+        .update({ value: next, updated_at: new Date().toISOString() })
+        .eq('id', row.id).eq('key', row.key).eq('updated_at', row.updated_at)
+        .select('id,key,value,updated_at').maybeSingle();
+      if (update.error) throw new Error(`rollback failed for ${row.key}: ${JSON.stringify(update.error)}`);
       if (!update.data) throw new Error(`ROLLBACK_CONFLICT: conditional update affected zero rows for ${row.key}`);
       appendJournal({ runId, phase: 'rollback_result', configKey: row.key, changedPointers: changed, status: 'applied' });
     }
@@ -321,24 +324,35 @@ async function main() {
       fs.writeFileSync(manifestPath, `${JSON.stringify(base, null, 2)}\n`);
     }
   }
-  for (const item of renditionEntries.filter(entry => entry.configKey)) {
-    const row = rows.find(candidate => candidate.key === item.configKey);
+  for (const configKey of ['brand_history', 'about_story_content']) {
+    const row = rows.find(candidate => candidate.key === configKey);
+    const items = renditionEntries.filter(entry => entry.configKey === configKey);
+    if (!row || !items.length) continue;
     const next = clone(row.value);
     const changedPointers = [];
-    for (const reference of item.references) {
-      const pointer = siblingPointer(reference.pointer, reference.mediaKey);
-      const previous = getAt(next, pointer);
-      const updated = { ...(previous && typeof previous === 'object' ? previous : {}) };
-      for (const rendition of item.renditions) {
-        updated[String(rendition.width)] = rendition.targetUrl;
-        changedPointers.push(`${pointer}/${rendition.width}`);
+    for (const item of items) {
+      for (const reference of item.references) {
+        const pointer = siblingPointer(reference.pointer, reference.mediaKey);
+        const previous = getAt(next, pointer);
+        const updated = { ...(previous && typeof previous === 'object' ? previous : {}) };
+        for (const rendition of item.renditions) {
+          updated[String(rendition.width)] = rendition.targetUrl;
+          changedPointers.push(`${pointer}/${rendition.width}`);
+        }
+        setAt(next, pointer, updated);
       }
-      setAt(next, pointer, updated);
     }
     if (equalValues(next, row.value)) continue;
     appendJournal({ runId, phase: 'config_write_intent', configKey: row.key, sourceRevision: revisionOf(row.value), changedPointers });
-    const update = await supabase.from('SystemConfigs').update({ value: next }).eq('id', row.id).eq('key', row.key).eq('value', JSON.stringify(row.value)).select('id,key,value,updated_at').maybeSingle();
-    if (update.error) throw new Error(`config CAS failed for ${row.key}: ${update.error.message}`);
+    const latest = await supabase.from('SystemConfigs').select('id,key,value,updated_at').eq('id', row.id).eq('key', row.key).maybeSingle();
+    if (latest.error || !latest.data || revisionOf(latest.data.value) !== revisionOf(row.value)) {
+      throw new Error(`CONFIG_CONFLICT before write for ${row.key}`);
+    }
+    const update = await supabase.from('SystemConfigs')
+      .update({ value: next, updated_at: new Date().toISOString() })
+      .eq('id', row.id).eq('key', row.key).eq('updated_at', row.updated_at)
+      .select('id,key,value,updated_at').maybeSingle();
+    if (update.error) throw new Error(`config CAS failed for ${row.key}: ${JSON.stringify(update.error)}`);
     if (!update.data) throw new Error(`CONFIG_CONFLICT: conditional update affected zero rows for ${row.key}`);
     const readBack = await supabase.from('SystemConfigs').select('id,key,value,updated_at').eq('id', row.id).eq('key', row.key).maybeSingle();
     if (readBack.error || !readBack.data || revisionOf(readBack.data.value) !== revisionOf(next)) throw new Error(`config read-back failed for ${row.key}`);
