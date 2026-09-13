@@ -5,11 +5,15 @@
  */
 
 import BookingPage from './BookingPage';
+import type { Metadata } from 'next';
+import { getPageMetadata } from '@/lib/seo/metadata';
 
-export const metadata = {
-  title: 'Đặt Lịch | ORIA SPA',
-  description: 'Đặt lịch trực tuyến tại ORIA SPA — chọn dịch vụ, thời gian và chi nhánh.',
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return getPageMetadata({ routeKey: 'booking', pathname: '/booking', localized: false }, {
+    title: 'Đặt Lịch | ORIA SPA',
+    description: 'Đặt lịch trực tuyến tại ORIA SPA — chọn dịch vụ, thời gian và chi nhánh.',
+  });
+}
 
 const Page = () => {
   return <BookingPage />;
