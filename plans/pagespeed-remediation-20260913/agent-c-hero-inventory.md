@@ -1,8 +1,8 @@
 # Agent C — Hero video delivery inventory
 
-Date: 2026-09-13 22:52 ICT  
-Worktree: `/private/tmp/nganha-agent-c-20260913`  
-Branch: `codex/ps-hero-20260913`  
+Date: 2026-09-13 22:52 ICT
+Worktree: `/private/tmp/nganha-agent-c-20260913`
+Branch: `codex/ps-hero-20260913`
 Base: `e1c0b5f1e9a819dda431d77c95fabbee4b8ad207`
 
 ## Active production source
