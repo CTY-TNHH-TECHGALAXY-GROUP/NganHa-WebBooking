@@ -745,7 +745,6 @@ export const History = ({ aboveFold = false }: HistoryProps) => {
   const shellRef = useRef<HTMLElement | null>(null);
   const timelineRef = useRef<HTMLDivElement | null>(null);
   const [isNavVisible, setIsNavVisible] = useState(false);
-  const timersRef = useRef<Record<string, ReturnType<typeof setInterval>>>({});
   const timelineProgress = useMotionValue(0);
   const smoothTimelineProgress = useSpring(timelineProgress, {
     stiffness: 34,
@@ -753,22 +752,6 @@ export const History = ({ aboveFold = false }: HistoryProps) => {
     mass: 1.05,
     restDelta: 0.0008,
   });
-
-  const restartSceneTimer = useCallback((chapter: Chapter) => {
-    if (timersRef.current[chapter.year]) {
-      clearInterval(timersRef.current[chapter.year]);
-      delete timersRef.current[chapter.year];
-    }
-
-    if (chapter.scenes.length < 2) return;
-
-    timersRef.current[chapter.year] = setInterval(() => {
-      setActiveScenes(prev => ({
-        ...prev,
-        [chapter.year]: ((prev[chapter.year] || 0) + 1) % chapter.scenes.length,
-      }));
-    }, 3600);
-  }, []);
 
   useEffect(() => {
     const nodes = Array.from(document.querySelectorAll<HTMLElement>('[data-history-chapter]'));
@@ -857,29 +840,6 @@ export const History = ({ aboveFold = false }: HistoryProps) => {
     };
   }, [chapters.length]);
 
-  useEffect(() => {
-    Object.values(timersRef.current).forEach(clearInterval);
-    timersRef.current = {};
-
-    const active = chapters[activeChapter];
-    if (active && typeof document !== 'undefined' && document.visibilityState === 'visible') {
-      restartSceneTimer(active);
-    }
-
-    const syncTimerWithVisibility = () => {
-      Object.values(timersRef.current).forEach(clearInterval);
-      timersRef.current = {};
-      if (document.visibilityState === 'visible' && active) restartSceneTimer(active);
-    };
-    document.addEventListener('visibilitychange', syncTimerWithVisibility);
-
-    return () => {
-      document.removeEventListener('visibilitychange', syncTimerWithVisibility);
-      Object.values(timersRef.current).forEach(clearInterval);
-      timersRef.current = {};
-    };
-  }, [activeChapter, chapters, restartSceneTimer]);
-
   const handlePointerMove = (event: PointerEvent<HTMLElement>) => {
     const rect = event.currentTarget.getBoundingClientRect();
     const mx = ((event.clientX - rect.left) / rect.width) * 100;
@@ -900,9 +860,6 @@ export const History = ({ aboveFold = false }: HistoryProps) => {
       ...prev,
       [chapter.year]: index,
     }));
-    if (chapter.year === chapters[activeChapter]?.year && document.visibilityState === 'visible') {
-      restartSceneTimer(chapter);
-    }
   };
 
   const cycleScene = (chapter: Chapter, currentIndex: number, direction: -1 | 1) => {

@@ -866,22 +866,19 @@
   background: rgba(244, 237, 226, 0.16);
   opacity: 0.68;
   transform-origin: left center;
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 .sceneActive i {
   background: linear-gradient(90deg, var(--history-gold-soft), var(--history-gold));
   box-shadow: 0 0 12px rgba(246, 216, 140, 0.35);
-  animation: sceneProgress 3.6s linear both;
+  transform: scaleX(1);
+  opacity: 1;
 }
 
-@keyframes sceneProgress {
-  from {
-    transform: scaleX(0);
-  }
-
-  to {
-    transform: scaleX(1);
-  }
+.scene i {
+  transform: scaleX(0);
+  opacity: 0.2;
 }
 
 .singleStage .filmstrip {
