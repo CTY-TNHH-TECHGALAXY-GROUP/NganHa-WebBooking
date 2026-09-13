@@ -6,6 +6,7 @@ import { motion, useReducedMotion } from 'framer-motion';
 import { ArrowUpRight, Sparkles, Wind, Bath, Heart, Coffee } from 'lucide-react';
 import { useTranslation } from '@/components/TranslationProvider';
 import { useSystemSettings } from '@/components/SystemSettingsProvider';
+import ViewportVideo from '@/components/Shared/ViewportVideo';
 import type { Locale } from '@/lib/constants';
 import {
   DEFAULT_FARM_RETREAT_CONFIG,
@@ -13,6 +14,19 @@ import {
   type FarmRetreatConfig,
 } from '@/data/farmRetreatData';
 import styles from './FarmRetreatPage.module.css';
+
+function isVideoUrl(url?: string): boolean {
+  if (!url) return false;
+  return /\.(mp4|mov|webm|ogg)(\?.*)?$/i.test(url) || url.includes('/video/');
+}
+
+const EXTRA_MEDIA_COPY: Record<string, { pre: string; title: string }> = {
+  vi: { pre: 'BỘ SƯU TẬP HÌNH ẢNH & KHOẢNH KHẮC', title: 'Khoảnh Khắc Oria Farm Retreat' },
+  en: { pre: 'PHOTO & MOMENTS ESSAY', title: 'Oria Farm Retreat Moments' },
+  cn: { pre: '视觉记录与片刻时光', title: 'Oria Farm Retreat 光影时刻' },
+  jp: { pre: 'フォト＆モーメント・エッセイ', title: 'Oria Farm Retreat の瞬間' },
+  kr: { pre: '포토 & 모먼트 에세이', title: '오리아 팜 리트리트의 순간들' },
+};
 
 interface FarmRetreatPageProps {
   initialConfig?: FarmRetreatConfig;
@@ -75,13 +89,14 @@ export default function FarmRetreatPage({
   const hotline = systemSettings?.phone || '+84 964 090 277';
   const ctaHref = config.ctaLink || `tel:${hotline.replace(/\s+/g, '')}`;
 
-  const isVideoUrl = (url?: string) => {
-    if (!url) return false;
-    return Boolean(
-      config.heroMediaType === 'video' ||
-      /\.(mp4|mov|webm)(\?.*)?$/i.test(url)
-    );
-  };
+  const extraMediaItems = useMemo(() => {
+    const photos = config.storyPhotos || [];
+    if (photos.length <= 5) return [];
+    return photos
+      .slice(5)
+      .map((url, idx) => ({ url: url?.trim() || '', originalIdx: idx + 5 }))
+      .filter((item) => Boolean(item.url));
+  }, [config.storyPhotos]);
 
   // Step labels for Section 2 rhythm cards
   const rhythmStepTitles = useMemo(() => {
@@ -414,6 +429,55 @@ export default function FarmRetreatPage({
               />
             )}
           </motion.div>
+        )}
+
+        {/* Additional Media Showcase (Khung 06+ / Moments) */}
+        {extraMediaItems.length > 0 && (
+          <section className={styles.extraMediaSection}>
+            <div className={styles.extraMediaHeader}>
+              <span className={styles.extraMediaPre}>
+                {EXTRA_MEDIA_COPY[lang]?.pre || EXTRA_MEDIA_COPY.vi.pre}
+              </span>
+              <h2 className={styles.extraMediaTitle}>
+                {EXTRA_MEDIA_COPY[lang]?.title || EXTRA_MEDIA_COPY.vi.title}
+              </h2>
+              <div className={styles.extraMediaDivider} />
+            </div>
+
+            <div className={styles.extraMediaGrid}>
+              {extraMediaItems.map((item: { url: string; originalIdx: number }, idx: number) => (
+                <motion.div
+                  key={'extra-photo-' + item.originalIdx}
+                  className={styles.extraMediaCard}
+                  initial={reduceMotion ? false : { opacity: 0, y: 16 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.15 }}
+                  transition={{ duration: 0.6, delay: (idx % 2) * 0.1 }}
+                >
+                  {isVideoUrl(item.url) ? (
+                    <ViewportVideo
+                      src={item.url}
+                      loop
+                      playsInline
+                    />
+                  ) : (
+                    <img
+                      src={item.url}
+                      alt={`Oria Farm Retreat ${item.originalIdx + 1}`}
+                      loading="lazy"
+                    />
+                  )}
+                  {config.storyPhotosWatermark?.[item.originalIdx] !== false && (
+                    <div
+                      className="media-watermark"
+                      aria-hidden="true"
+                      style={{ opacity: (config.storyPhotosWatermarkOpacity?.[item.originalIdx] ?? 15) / 100 }}
+                    />
+                  )}
+                </motion.div>
+              ))}
+            </div>
+          </section>
         )}
 
         {/* 3. SANCTUARY CLOSING */}
