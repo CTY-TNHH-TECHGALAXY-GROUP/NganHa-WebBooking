@@ -10,8 +10,8 @@ Date: 2026-09-14 (Asia/Ho_Chi_Minh)
 
 - Integration worktree: `/private/tmp/nganha-pagespeed-integrator`
 - Integration branch: `codex/ps-integration-20260913`
-- Integration SHA: `9b72b7a4e1df4acf3a8d69c610af6c246005b2e8`
-- Base checked: `origin/master` at `6ce113eb1ac420f565399a21164dc8abd7502444`
+- Integration SHA: `1e64e1e6df8032d3f9f8bd8b0d4a70b4a3d5fced`
+- Base checked: `origin/master` at `735f5c0289e89b4b3042ace0588cd84a94906253`
 - Official origin: `https://oria-spa.vercel.app`
 - Production branch: `master` (user-confirmed); no branch protection bypass performed.
 
@@ -21,6 +21,7 @@ Date: 2026-09-14 (Asia/Ho_Chi_Minh)
 
 - History stage now exposes `src` and `srcset` only for the active and next eligible scene; other slides stay on a one-pixel placeholder. Integrated browser regression at 390×844 DPR2: HTTP 200, 12 unique History requests, all stage sources eligible, thumbnails lazy, thumbnail `w320` and stage `w960` candidates selected.
 - After a clean rebuild using the post-apply Supabase config, a second browser run again passed all gating assertions and confirmed all 12 captured History requests used two-part content-hash URLs (`sourceHash-outputHash-wN.webp`). Evidence: `history-media-gating-report-live-config.json`.
+- After merging the latest `origin/master`, the final integration run passed the same History assertions (12 requests, all content-hash URLs) and the 8-case accessibility run (0 axe violations, 0 failures). Evidence: `history-media-gating-report-final.json` and `remaining/agent-d/raw-axe-after.json`.
 - Supabase dry-run inventory found exactly 25 verified pointers and 78 candidates. Apply v2 uploaded/verified 75 Supabase WebP objects; each used `image/webp`, `upsert:false`, one-year cache, public HEAD/GET, byte hash and dimensions. Originals were not deleted or overwritten.
 - Two `SystemConfigs` rows were updated after private `0600` backups. The final script aggregates pointers per row, preflights canonical value hash, uses the exact `updated_at` snapshot as conditional, and verifies read-back. Independent read-back found 25/25 pointers with hash URLs and non-empty responsive maps.
 - Chatbot consumer now uses the three local content-hash WebP files (1.8 / 4.3 / 7.7 KiB). The old non-hash candidate files were removed from the integration candidate so immutable caching cannot pin them.
