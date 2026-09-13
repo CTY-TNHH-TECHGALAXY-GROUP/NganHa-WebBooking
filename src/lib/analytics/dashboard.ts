@@ -4,6 +4,8 @@ import {
   type AnalyticsStore,
 } from './server';
 
+export type AnalyticsGroupBy = 'day' | 'week' | 'month' | 'year' | 'weekday';
+
 export type AnalyticsDashboardFilters = {
   dateFrom: string;
   dateTo: string;
@@ -12,6 +14,7 @@ export type AnalyticsDashboardFilters = {
   entryPage?: string;
   campaign?: string;
   includeTest?: boolean;
+  groupBy?: AnalyticsGroupBy;
 };
 
 export type AnalyticsTruncation = {
