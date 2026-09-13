@@ -17,6 +17,11 @@ import {
   HelpCircle,
   ExternalLink,
   Trees,
+  Plus,
+  ChevronUp,
+  ChevronDown,
+  Trash2,
+  Layers,
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase';
 import {
@@ -114,74 +119,242 @@ export default function FarmRetreatAdminPage() {
     }
   };
 
-  // Media Upload handler for Supabase (Image & Video)
+  // Media Upload handler for Supabase (Single & Multiple Image/Video)
   const handleFileUpload = async (
     e: React.ChangeEvent<HTMLInputElement>,
-    target: 'hero' | 'story-0' | 'story-1' | 'story-2' | 'story-3' | 'story-4'
+    target: 'hero' | 'batch' | string
   ) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    const isVideo = file.type.startsWith('video/') || /\.(mp4|mov|webm)$/i.test(file.name);
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
 
     setUploadingKey(target);
     try {
       const supabase = createClient();
-      const ext = file.name.split('.').pop() || (isVideo ? 'mp4' : 'jpg');
-      const fileName = `oriafarm-retreat/${target}-${Date.now()}.${ext}`;
 
-      const { data, error } = await supabase.storage
-        .from('media-uploads')
-        .upload(fileName, file, { upsert: true });
+      if (target === 'batch') {
+        const uploadedUrls: string[] = [];
+        for (let i = 0; i < files.length; i++) {
+          const file = files[i];
+          const isVid = file.type.startsWith('video/') || /\.(mp4|mov|webm)$/i.test(file.name);
+          const ext = file.name.split('.').pop() || (isVid ? 'mp4' : 'jpg');
+          const fileName = `oriafarm-retreat/story-batch-${Date.now()}-${i}.${ext}`;
 
-      if (error) throw error;
+          const { error } = await supabase.storage
+            .from('media-uploads')
+            .upload(fileName, file, { upsert: true });
 
-      const { data: publicUrlData } = supabase.storage
-        .from('media-uploads')
-        .getPublicUrl(fileName);
+          if (error) throw error;
 
-      const url = publicUrlData.publicUrl;
+          const { data: publicUrlData } = supabase.storage
+            .from('media-uploads')
+            .getPublicUrl(fileName);
+          uploadedUrls.push(publicUrlData.publicUrl);
+        }
 
-      if (target === 'hero') {
+        updateConfig((prev) => {
+          const nextPhotos = [...(prev.storyPhotos || ['', '', '', '', ''])];
+          const nextWm = [...(prev.storyPhotosWatermark || [true, true, true, true, true])];
+          const nextWmOpacity = [...(prev.storyPhotosWatermarkOpacity || [15, 15, 15, 15, 15])];
+
+          // Fill into any existing empty slots first, then append remaining
+          let uploadIdx = 0;
+          for (let i = 0; i < nextPhotos.length && uploadIdx < uploadedUrls.length; i++) {
+            if (!nextPhotos[i] || !nextPhotos[i].trim()) {
+              nextPhotos[i] = uploadedUrls[uploadIdx];
+              nextWm[i] = true;
+              nextWmOpacity[i] = 15;
+              uploadIdx++;
+            }
+          }
+          while (uploadIdx < uploadedUrls.length) {
+            nextPhotos.push(uploadedUrls[uploadIdx]);
+            nextWm.push(true);
+            nextWmOpacity.push(15);
+            uploadIdx++;
+          }
+
+          return {
+            ...prev,
+            storyPhotos: nextPhotos,
+            storyPhotosWatermark: nextWm,
+            storyPhotosWatermarkOpacity: nextWmOpacity,
+          };
+        });
+
+        setMessage({
+          type: 'success',
+          text: `Đã tải lên thành công ${uploadedUrls.length} ảnh/video!`,
+        });
+        setTimeout(() => setMessage({ type: '', text: '' }), 3000);
+      } else if (target === 'hero') {
+        const file = files[0];
+        const isVid = file.type.startsWith('video/') || /\.(mp4|mov|webm)$/i.test(file.name);
+        const ext = file.name.split('.').pop() || (isVid ? 'mp4' : 'jpg');
+        const fileName = `oriafarm-retreat/${target}-${Date.now()}.${ext}`;
+
+        const { error } = await supabase.storage
+          .from('media-uploads')
+          .upload(fileName, file, { upsert: true });
+
+        if (error) throw error;
+
+        const { data: publicUrlData } = supabase.storage
+          .from('media-uploads')
+          .getPublicUrl(fileName);
+
         updateConfig((prev) => ({
           ...prev,
-          heroImage: url,
-          heroMediaType: isVideo ? 'video' : 'image',
+          heroImage: publicUrlData.publicUrl,
+          heroMediaType: isVid ? 'video' : 'image',
         }));
+
+        setMessage({
+          type: 'success',
+          text: isVid ? 'Tải video Hero thành công!' : 'Tải ảnh Hero thành công!',
+        });
+        setTimeout(() => setMessage({ type: '', text: '' }), 3000);
       } else {
+        const file = files[0];
+        const isVid = file.type.startsWith('video/') || /\.(mp4|mov|webm)$/i.test(file.name);
+        const ext = file.name.split('.').pop() || (isVid ? 'mp4' : 'jpg');
+        const fileName = `oriafarm-retreat/${target}-${Date.now()}.${ext}`;
+
+        const { error } = await supabase.storage
+          .from('media-uploads')
+          .upload(fileName, file, { upsert: true });
+
+        if (error) throw error;
+
+        const { data: publicUrlData } = supabase.storage
+          .from('media-uploads')
+          .getPublicUrl(fileName);
+
         const idx = parseInt(target.replace('story-', ''), 10);
         updateConfig((prev) => {
           const nextPhotos = [...(prev.storyPhotos || ['', '', '', '', ''])];
-          while (nextPhotos.length < 5) nextPhotos.push('');
-          nextPhotos[idx] = url;
-          return { ...prev, storyPhotos: nextPhotos };
+          const nextWm = [...(prev.storyPhotosWatermark || [true, true, true, true, true])];
+          const nextWmOpacity = [...(prev.storyPhotosWatermarkOpacity || [15, 15, 15, 15, 15])];
+          while (nextPhotos.length <= idx) nextPhotos.push('');
+          while (nextWm.length <= idx) nextWm.push(true);
+          while (nextWmOpacity.length <= idx) nextWmOpacity.push(15);
+          nextPhotos[idx] = publicUrlData.publicUrl;
+          return {
+            ...prev,
+            storyPhotos: nextPhotos,
+            storyPhotosWatermark: nextWm,
+            storyPhotosWatermarkOpacity: nextWmOpacity,
+          };
         });
-      }
 
-      setMessage({
-        type: 'success',
-        text: isVideo ? 'Tải video lên thành công!' : 'Tải ảnh lên thành công!',
-      });
-      setTimeout(() => setMessage({ type: '', text: '' }), 3000);
+        setMessage({
+          type: 'success',
+          text: isVid ? 'Tải video lên thành công!' : 'Tải ảnh lên thành công!',
+        });
+        setTimeout(() => setMessage({ type: '', text: '' }), 3000);
+      }
     } catch (err: any) {
       console.error('Upload failed:', err);
       setMessage({
         type: 'error',
-        text: (isVideo ? 'Tải video thất bại: ' : 'Tải ảnh thất bại: ') + err.message,
+        text: 'Tải tệp lên thất bại: ' + (err.message || 'Lỗi không xác định'),
       });
     } finally {
       setUploadingKey(null);
+      e.target.value = '';
     }
   };
 
-  // Story photo labels and descriptions
-  const STORY_PHOTO_LABELS = [
-    { label: 'Khung Ảnh 01: Bungalow giữa thiên nhiên', pos: 'Nằm sau phần Mở đầu / Trước Section 1' },
-    { label: 'Khung Ảnh 02: Góc thư giãn trà & sách', pos: 'Nằm sau Section 1 (Bungalow riêng cho ngày của bạn)' },
-    { label: 'Khung Ảnh 03: Trị liệu & Tắm bồn ấm', pos: 'Nằm sau Section 2 (Xông hơi · Tắm bồn · Xoa bóp)' },
-    { label: 'Khung Ảnh 04: Bàn ăn & Trà giữa thiên nhiên', pos: 'Nằm sau Section 3 (Ăn chậm lại)' },
-    { label: 'Khung Ảnh 05: Hoàng hôn & Khung cảnh tĩnh lặng', pos: 'Nằm sau Section 4 (Không cần đi thật xa)' },
-  ];
+  // Add new empty media frame
+  const handleAddMediaFrame = () => {
+    updateConfig((prev) => {
+      const nextPhotos = [...(prev.storyPhotos || ['', '', '', '', ''])];
+      const nextWm = [...(prev.storyPhotosWatermark || [true, true, true, true, true])];
+      const nextWmOpacity = [...(prev.storyPhotosWatermarkOpacity || [15, 15, 15, 15, 15])];
+      nextPhotos.push('');
+      nextWm.push(true);
+      nextWmOpacity.push(15);
+      return {
+        ...prev,
+        storyPhotos: nextPhotos,
+        storyPhotosWatermark: nextWm,
+        storyPhotosWatermarkOpacity: nextWmOpacity,
+      };
+    });
+  };
+
+  // Reorder frames
+  const handleMoveFrame = (idx: number, direction: 'up' | 'down') => {
+    updateConfig((prev) => {
+      const nextPhotos = [...(prev.storyPhotos || ['', '', '', '', ''])];
+      const nextWm = [...(prev.storyPhotosWatermark || [true, true, true, true, true])];
+      const nextWmOpacity = [...(prev.storyPhotosWatermarkOpacity || [15, 15, 15, 15, 15])];
+      const targetIdx = direction === 'up' ? idx - 1 : idx + 1;
+      if (targetIdx < 0 || targetIdx >= nextPhotos.length) return prev;
+
+      const tempPhoto = nextPhotos[idx];
+      nextPhotos[idx] = nextPhotos[targetIdx];
+      nextPhotos[targetIdx] = tempPhoto;
+
+      const tempWm = nextWm[idx];
+      nextWm[idx] = nextWm[targetIdx];
+      nextWm[targetIdx] = tempWm;
+
+      const tempWmOpacity = nextWmOpacity[idx] ?? 15;
+      nextWmOpacity[idx] = nextWmOpacity[targetIdx] ?? 15;
+      nextWmOpacity[targetIdx] = tempWmOpacity;
+
+      return {
+        ...prev,
+        storyPhotos: nextPhotos,
+        storyPhotosWatermark: nextWm,
+        storyPhotosWatermarkOpacity: nextWmOpacity,
+      };
+    });
+  };
+
+  // Remove or clear frame
+  const handleDeleteFrame = (idx: number) => {
+    updateConfig((prev) => {
+      const nextPhotos = [...(prev.storyPhotos || ['', '', '', '', ''])];
+      const nextWm = [...(prev.storyPhotosWatermark || [true, true, true, true, true])];
+      const nextWmOpacity = [...(prev.storyPhotosWatermarkOpacity || [15, 15, 15, 15, 15])];
+
+      if (idx >= 5) {
+        // Can completely remove additional frames
+        nextPhotos.splice(idx, 1);
+        nextWm.splice(idx, 1);
+        nextWmOpacity.splice(idx, 1);
+      } else {
+        // Clear slot for main editorial frame
+        nextPhotos[idx] = '';
+      }
+
+      return {
+        ...prev,
+        storyPhotos: nextPhotos,
+        storyPhotosWatermark: nextWm,
+        storyPhotosWatermarkOpacity: nextWmOpacity,
+      };
+    });
+  };
+
+  // Get frame label
+  const getFrameLabel = (idx: number) => {
+    const STANDARD_LABELS: Record<number, string> = {
+      0: 'Khung 01: Bungalow giữa thiên nhiên (Toàn cảnh kiến trúc)',
+      1: 'Khung 02: Góc thư giãn trà & sách (Bungalow riêng)',
+      2: 'Khung 03: Trị liệu & Tắm bồn ấm (Chăm sóc cơ thể)',
+      3: 'Khung 04: Bàn ăn & Trà giữa thiên nhiên (Ăn uống chậm rãi)',
+      4: 'Khung 05: Hoàng hôn & Khung cảnh tĩnh lặng (Chiều buông)',
+    };
+    return STANDARD_LABELS[idx] || `Khung #${idx + 1}: Khoảnh khắc Retreat mở rộng (Moments)`;
+  };
+
+  // Detect video url
+  const isVideo = (url?: string) => {
+    if (!url) return false;
+    return /\.(mp4|mov|webm)(\?.*)?$/i.test(url) || url.includes('/video/');
+  };
 
   if (loading) {
     return (
@@ -564,437 +737,342 @@ export default function FarmRetreatAdminPage() {
           </div>
         </section>
 
-        {/* 3. MEDIA FRAMES & EDITORIAL SECTIONS */}
-        <div className="space-y-8">
-          {config.sections.map((section, sIdx) => {
-            const photoConfig = STORY_PHOTO_LABELS[sIdx];
-            const currentPhotoUrl = config.storyPhotos?.[sIdx] || '';
-            const watermarkOn = config.storyPhotosWatermark?.[sIdx] !== false;
+        {/* ========================================================================= */}
+        {/* 3. MEDIA FRAMES CONTROLLER (EDITORIAL + DYNAMIC EXPANSION)                */}
+        {/* ========================================================================= */}
+        <section className="rounded-2xl border border-admin-line bg-admin-card p-6 shadow-sm">
+          <div className="flex flex-col gap-4 border-b border-admin-line pb-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-2.5">
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-admin-gold/10 text-admin-gold">
+                <ImageIcon size={18} />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h2 className="text-base font-bold text-admin-text">Hệ Thống Media &amp; Hình Ảnh Oria Farm Retreat</h2>
+                  <span className="rounded-full bg-admin-gold/10 px-2 py-0.5 text-[11px] font-semibold text-admin-gold">
+                    {config.storyPhotos?.length || 0} khung
+                  </span>
+                </div>
+                <p className="text-xs text-admin-text-faint">
+                  5 khung chính định hình bài viết + hỗ trợ thêm không giới hạn ảnh/video cho bộ sưu tập Khoảnh khắc (Moments) mở rộng.
+                </p>
+              </div>
+            </div>
 
-            return (
-              <div key={section.id || 'sec-' + sIdx} className="space-y-6">
-                {/* Media Frame Slot */}
-                {photoConfig && (
-                  <div className="p-6 rounded-2xl bg-admin-card border border-admin-line space-y-4">
-                    <div className="flex items-center justify-between border-b border-admin-line pb-3">
-                      <div>
-                        <h3 className="text-sm font-bold text-admin-gold flex items-center gap-2">
-                          <ImageIcon size={16} /> {photoConfig.label}
-                        </h3>
-                        <p className="text-[11px] text-admin-text-faint">{photoConfig.pos}</p>
-                      </div>
-                      <span className="text-[10px] text-admin-text-faint bg-black/40 px-2 py-0.5 rounded">
-                        Chung 5 ngôn ngữ
-                      </span>
-                    </div>
+            {/* Action buttons */}
+            <div className="flex flex-wrap items-center gap-2">
+              {/* Batch Upload */}
+              <label className="relative flex cursor-pointer items-center gap-1.5 rounded-lg border border-admin-gold/40 bg-admin-gold/10 px-3 py-2 text-xs font-semibold text-admin-gold hover:bg-admin-gold/20 transition-colors">
+                <Upload size={14} />
+                <span>{uploadingKey === 'batch' ? 'Đang tải lên...' : 'Tải lên nhiều ảnh cùng lúc'}</span>
+                <input
+                  type="file"
+                  multiple
+                  accept="image/*,video/mp4,video/webm"
+                  className="hidden"
+                  disabled={uploadingKey === 'batch'}
+                  onChange={(e) => handleFileUpload(e, 'batch')}
+                />
+              </label>
 
-                    <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
-                      {/* Photo preview */}
-                      <div className="md:col-span-5">
-                        <div className="relative rounded-xl overflow-hidden border border-admin-line w-full aspect-[16/9] bg-black/50">
-                          {currentPhotoUrl ? (
-                            <img
-                              src={currentPhotoUrl}
-                              alt={`Story photo ${sIdx + 1}`}
-                              className="w-full h-full object-cover"
-                            />
-                          ) : (
-                            <div className="w-full h-full flex flex-col items-center justify-center text-admin-text-dim text-xs gap-2 p-4 text-center">
-                              <ImageIcon size={24} className="opacity-40 text-admin-gold" />
-                              <span>Chưa có Khung Ảnh 0{sIdx + 1}</span>
-                              <span className="text-[10px] text-admin-text-faint">
-                                Dán link URL hoặc tải ảnh từ máy tính
-                              </span>
-                            </div>
-                          )}
-                          {watermarkOn && Boolean(currentPhotoUrl) && (
-                            <div
-                              className="media-watermark pointer-events-none"
-                              aria-hidden="true"
-                              style={{ opacity: (config.storyPhotosWatermarkOpacity?.[sIdx] ?? 15) / 100 }}
-                            />
-                          )}
-                          {uploadingKey === `story-${sIdx}` && (
-                            <div className="absolute inset-0 bg-black/75 flex items-center justify-center text-xs text-admin-gold font-semibold">
-                              Đang tải ảnh lên...
-                            </div>
-                          )}
-                        </div>
-                      </div>
+              {/* Add Single Frame */}
+              <button
+                type="button"
+                onClick={handleAddMediaFrame}
+                className="flex items-center gap-1.5 rounded-lg bg-admin-gold px-3 py-2 text-xs font-semibold text-black hover:brightness-110 transition-all shadow-sm active:scale-95"
+              >
+                <Plus size={14} />
+                <span>Thêm khung Media</span>
+              </button>
+            </div>
+          </div>
 
-                      {/* Photo inputs */}
-                      <div className="md:col-span-7 space-y-3">
-                        <label className="flex items-center justify-center gap-2 w-full py-2 bg-admin-line hover:bg-admin-line-strong text-admin-text text-xs font-semibold rounded-xl cursor-pointer transition-colors">
-                          <Upload size={14} />
-                          <span>Tải ảnh mới từ máy tính</span>
-                          <input
-                            type="file"
-                            accept="image/*"
-                            disabled={uploadingKey === `story-${sIdx}`}
-                            className="hidden"
-                            onChange={(e) => handleFileUpload(e, `story-${sIdx}` as any)}
-                          />
-                        </label>
+          <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {(config.storyPhotos || ['', '', '', '', '']).map((url, idx) => {
+              const wmChecked = config.storyPhotosWatermark?.[idx] !== false;
+              const wmOpacity = config.storyPhotosWatermarkOpacity?.[idx] ?? 15;
+              const uploadKey = `story-${idx}`;
+              const isFirst = idx === 0;
+              const isLast = idx === (config.storyPhotos?.length || 1) - 1;
+              const isExtra = idx >= 5;
 
-                        <div className="flex gap-2">
-                          <div className="relative flex-1">
-                            <input
-                              type="text"
-                              value={currentPhotoUrl}
-                              onFocus={(e) => e.target.select()}
-                              onChange={(e) => {
-                                const val = e.target.value;
-                                updateConfig((prev) => {
-                                  const nextP = [...(prev.storyPhotos || ['', '', '', '', ''])];
-                                  while (nextP.length < 5) nextP.push('');
-                                  nextP[sIdx] = val;
-                                  return { ...prev, storyPhotos: nextP };
-                                });
-                              }}
-                              onPaste={(e) => {
-                                const pasted = e.clipboardData.getData('text');
-                                if (pasted) {
-                                  e.preventDefault();
-                                  updateConfig((prev) => {
-                                    const nextP = [...(prev.storyPhotos || ['', '', '', '', ''])];
-                                    while (nextP.length < 5) nextP.push('');
-                                    nextP[sIdx] = pasted.trim();
-                                    return { ...prev, storyPhotos: nextP };
-                                  });
-                                }
-                              }}
-                              placeholder="Dán link URL ảnh mới vào đây..."
-                              className="w-full bg-admin-bg text-xs text-admin-text p-2.5 pr-8 rounded-xl border border-admin-line focus:border-admin-gold outline-none font-mono"
-                            />
-                            {currentPhotoUrl ? (
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  updateConfig((prev) => {
-                                    const nextP = [...(prev.storyPhotos || ['', '', '', '', ''])];
-                                    while (nextP.length < 5) nextP.push('');
-                                    nextP[sIdx] = '';
-                                    return { ...prev, storyPhotos: nextP };
-                                  });
-                                }}
-                                className="absolute right-2 top-1/2 -translate-y-1/2 text-admin-text-faint hover:text-red-400 p-1"
-                                title="Xóa link"
-                              >
-                                <X size={14} />
-                              </button>
-                            ) : null}
-                          </div>
-
-                          <button
-                            type="button"
-                            onClick={async () => {
-                              try {
-                                const text = await navigator.clipboard.readText();
-                                if (text && text.trim()) {
-                                  updateConfig((prev) => {
-                                    const nextP = [...(prev.storyPhotos || ['', '', '', '', ''])];
-                                    while (nextP.length < 5) nextP.push('');
-                                    nextP[sIdx] = text.trim();
-                                    return { ...prev, storyPhotos: nextP };
-                                  });
-                                } else {
-                                  const url = prompt(`Dán link URL Khung Ảnh 0${sIdx + 1} vào đây:`);
-                                  if (url) {
-                                    updateConfig((prev) => {
-                                      const nextP = [...(prev.storyPhotos || ['', '', '', '', ''])];
-                                      while (nextP.length < 5) nextP.push('');
-                                      nextP[sIdx] = url.trim();
-                                      return { ...prev, storyPhotos: nextP };
-                                    });
-                                  }
-                                }
-                              } catch {
-                                const url = prompt(`Dán link URL Khung Ảnh 0${sIdx + 1} vào đây:`);
-                                if (url) {
-                                  updateConfig((prev) => {
-                                    const nextP = [...(prev.storyPhotos || ['', '', '', '', ''])];
-                                    while (nextP.length < 5) nextP.push('');
-                                    nextP[sIdx] = url.trim();
-                                    return { ...prev, storyPhotos: nextP };
-                                  });
-                                }
-                              }
-                            }}
-                            className="px-3.5 py-2 bg-admin-line hover:bg-admin-line-strong text-admin-text text-xs font-semibold rounded-xl transition-all shrink-0 flex items-center gap-1.5"
-                            title="Dán link từ clipboard"
-                          >
-                            <ClipboardPaste size={14} className="text-admin-gold" />
-                            <span>Dán link</span>
-                          </button>
-                        </div>
-
-                        <WatermarkControl
-                          checked={watermarkOn}
-                          opacity={config.storyPhotosWatermarkOpacity?.[sIdx] ?? 15}
-                          onChangeChecked={(checked) => {
-                            updateConfig((prev) => {
-                              const nextW = [...(prev.storyPhotosWatermark || [true, true, true, true, true])];
-                              while (nextW.length < 5) nextW.push(true);
-                              nextW[sIdx] = checked;
-                              return { ...prev, storyPhotosWatermark: nextW };
-                            });
-                          }}
-                          onChangeOpacity={(opacity) => {
-                            updateConfig((prev) => {
-                              const nextO = [...(prev.storyPhotosWatermarkOpacity || [15, 15, 15, 15, 15])];
-                              while (nextO.length < 5) nextO.push(15);
-                              nextO[sIdx] = opacity;
-                              return { ...prev, storyPhotosWatermarkOpacity: nextO };
-                            });
-                          }}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Editorial Section Text Content */}
-                <div className="p-6 rounded-2xl bg-admin-card border border-admin-line space-y-4">
-                  <div className="flex items-center justify-between border-b border-admin-line pb-3">
-                    <h3 className="text-sm font-bold text-admin-gold flex items-center gap-2">
-                      <FileText size={16} /> Phần {sIdx + 1}: Tiêu đề &amp; Đoạn văn ({activeLang.toUpperCase()})
-                    </h3>
-                  </div>
-
-                  {/* Section heading */}
+              return (
+                <div key={idx} className={`flex flex-col justify-between rounded-xl border ${isExtra ? 'border-admin-gold/40 bg-admin-gold/[0.03]' : 'border-admin-line bg-admin-bg/60'} p-4 transition-all`}>
                   <div>
-                    <label className="text-xs uppercase tracking-wider text-admin-text-dim block mb-1.5 font-semibold">
-                      Tiêu đề phần ({activeLang.toUpperCase()})
-                    </label>
-                    <input
-                      type="text"
-                      value={section.heading?.[activeLang] ?? ''}
-                      onChange={(e) => {
-                        const val = e.target.value;
-                        updateConfig((prev) => {
-                          const nextSecs = [...prev.sections];
-                          nextSecs[sIdx] = {
-                            ...nextSecs[sIdx],
-                            heading: { ...nextSecs[sIdx].heading, [activeLang]: val },
-                          };
-                          return { ...prev, sections: nextSecs };
-                        });
-                      }}
-                      className="w-full bg-admin-bg text-sm text-admin-text p-3 rounded-xl border border-admin-line focus:border-admin-gold outline-none"
-                    />
-                  </div>
-
-                  {/* Section paragraphs */}
-                  <div className="space-y-3 pt-2">
-                    <label className="text-xs uppercase tracking-wider text-admin-text-dim block font-semibold">
-                      Các đoạn văn bản ({activeLang.toUpperCase()})
-                    </label>
-                    {section.paragraphs.map((p, pIdx) => (
-                      <div key={'p-' + sIdx + '-' + pIdx} className="space-y-1">
-                        <span className="text-[11px] text-admin-text-faint">Đoạn {pIdx + 1}:</span>
-                        <textarea
-                          rows={3}
-                          value={p?.[activeLang] ?? ''}
-                          onChange={(e) => {
-                            const val = e.target.value;
-                            updateConfig((prev) => {
-                              const nextSecs = [...prev.sections];
-                              const nextParas = [...nextSecs[sIdx].paragraphs];
-                              nextParas[pIdx] = { ...nextParas[pIdx], [activeLang]: val };
-                              nextSecs[sIdx] = { ...nextSecs[sIdx], paragraphs: nextParas };
-                              return { ...prev, sections: nextSecs };
-                            });
-                          }}
-                          className="w-full bg-admin-bg text-xs text-admin-text p-3 rounded-xl border border-admin-line focus:border-admin-gold outline-none leading-relaxed"
-                        />
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-xs font-bold text-admin-gold">Khung #{idx + 1}</span>
+                        {isExtra && (
+                          <span className="rounded bg-admin-gold/15 px-1.5 py-0.5 text-[9px] font-bold text-admin-gold">
+                            Mở rộng (Moments)
+                          </span>
+                        )}
                       </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            );
-          })}
 
-          {/* Fifth Media Frame Slot (Sunset / Landscape after Section 4) */}
-          {STORY_PHOTO_LABELS[4] && (
-            <div className="p-6 rounded-2xl bg-admin-card border border-admin-line space-y-4">
-              <div className="flex items-center justify-between border-b border-admin-line pb-3">
-                <div>
-                  <h3 className="text-sm font-bold text-admin-gold flex items-center gap-2">
-                    <ImageIcon size={16} /> {STORY_PHOTO_LABELS[4].label}
-                  </h3>
-                  <p className="text-[11px] text-admin-text-faint">{STORY_PHOTO_LABELS[4].pos}</p>
-                </div>
-                <span className="text-[10px] text-admin-text-faint bg-black/40 px-2 py-0.5 rounded">
-                  Chung 5 ngôn ngữ
-                </span>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
-                {/* Photo preview */}
-                <div className="md:col-span-5">
-                  <div className="relative rounded-xl overflow-hidden border border-admin-line w-full aspect-[16/9] bg-black/50">
-                    {config.storyPhotos?.[4] ? (
-                      <img
-                        src={config.storyPhotos[4]}
-                        alt="Story photo 5"
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex flex-col items-center justify-center text-admin-text-dim text-xs gap-2 p-4 text-center">
-                        <ImageIcon size={24} className="opacity-40 text-admin-gold" />
-                        <span>Chưa có Khung Ảnh 05</span>
-                        <span className="text-[10px] text-admin-text-faint">
-                          Dán link URL hoặc tải ảnh từ máy tính
-                        </span>
-                      </div>
-                    )}
-                    {config.storyPhotosWatermark?.[4] !== false && Boolean(config.storyPhotos?.[4]) && (
-                      <div
-                        className="media-watermark pointer-events-none"
-                        aria-hidden="true"
-                        style={{ opacity: (config.storyPhotosWatermarkOpacity?.[4] ?? 15) / 100 }}
-                      />
-                    )}
-                    {uploadingKey === 'story-4' && (
-                      <div className="absolute inset-0 bg-black/75 flex items-center justify-center text-xs text-admin-gold font-semibold">
-                        Đang tải ảnh lên...
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Photo inputs */}
-                <div className="md:col-span-7 space-y-3">
-                  <label className="flex items-center justify-center gap-2 w-full py-2 bg-admin-line hover:bg-admin-line-strong text-admin-text text-xs font-semibold rounded-xl cursor-pointer transition-colors">
-                    <Upload size={14} />
-                    <span>Tải ảnh mới từ máy tính</span>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      disabled={uploadingKey === 'story-4'}
-                      className="hidden"
-                      onChange={(e) => handleFileUpload(e, 'story-4')}
-                    />
-                  </label>
-
-                  <div className="flex gap-2">
-                    <div className="relative flex-1">
-                      <input
-                        type="text"
-                        value={config.storyPhotos?.[4] || ''}
-                        onFocus={(e) => e.target.select()}
-                        onChange={(e) => {
-                          const val = e.target.value;
-                          updateConfig((prev) => {
-                            const nextP = [...(prev.storyPhotos || ['', '', '', '', ''])];
-                            while (nextP.length < 5) nextP.push('');
-                            nextP[4] = val;
-                            return { ...prev, storyPhotos: nextP };
-                          });
-                        }}
-                        onPaste={(e) => {
-                          const pasted = e.clipboardData.getData('text');
-                          if (pasted) {
-                            e.preventDefault();
-                            updateConfig((prev) => {
-                              const nextP = [...(prev.storyPhotos || ['', '', '', '', ''])];
-                              while (nextP.length < 5) nextP.push('');
-                              nextP[4] = pasted.trim();
-                              return { ...prev, storyPhotos: nextP };
-                            });
-                          }
-                        }}
-                        placeholder="Dán link URL ảnh mới vào đây..."
-                        className="w-full bg-admin-bg text-xs text-admin-text p-2.5 pr-8 rounded-xl border border-admin-line focus:border-admin-gold outline-none font-mono"
-                      />
-                      {config.storyPhotos?.[4] ? (
+                      {/* Control buttons: Move Up, Move Down, Delete */}
+                      <div className="flex items-center gap-1">
                         <button
                           type="button"
-                          onClick={() => {
-                            updateConfig((prev) => {
-                              const nextP = [...(prev.storyPhotos || ['', '', '', '', ''])];
-                              while (nextP.length < 5) nextP.push('');
-                              nextP[4] = '';
-                              return { ...prev, storyPhotos: nextP };
-                            });
-                          }}
-                          className="absolute right-2 top-1/2 -translate-y-1/2 text-admin-text-faint hover:text-red-400 p-1"
-                          title="Xóa link"
+                          disabled={isFirst}
+                          onClick={() => handleMoveFrame(idx, 'up')}
+                          title="Di chuyển lên trước"
+                          className="rounded p-1 text-admin-text-faint hover:bg-admin-line hover:text-admin-text disabled:opacity-20 disabled:pointer-events-none transition-colors"
                         >
-                          <X size={14} />
+                          <ChevronUp size={14} />
                         </button>
-                      ) : null}
+                        <button
+                          type="button"
+                          disabled={isLast}
+                          onClick={() => handleMoveFrame(idx, 'down')}
+                          title="Di chuyển xuống sau"
+                          className="rounded p-1 text-admin-text-faint hover:bg-admin-line hover:text-admin-text disabled:opacity-20 disabled:pointer-events-none transition-colors"
+                        >
+                          <ChevronDown size={14} />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteFrame(idx)}
+                          title={isExtra ? 'Xóa khung này' : 'Xóa ảnh trong khung'}
+                          className="rounded p-1 text-admin-text-faint hover:bg-rose-500/15 hover:text-rose-400 transition-colors ml-1"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
                     </div>
 
-                    <button
-                      type="button"
-                      onClick={async () => {
-                        try {
-                          const text = await navigator.clipboard.readText();
-                          if (text && text.trim()) {
+                    <p className="text-[11px] text-admin-text-faint line-clamp-1 mb-3">{getFrameLabel(idx)}</p>
+
+                    {/* Preview box */}
+                    <div className="relative aspect-[16/10] w-full overflow-hidden rounded-lg border border-admin-line bg-black/40 flex items-center justify-center mb-3">
+                      {Boolean(url) ? (
+                        isVideo(url) ? (
+                          <video src={url} autoPlay muted loop playsInline className="h-full w-full object-cover" />
+                        ) : (
+                          <img src={url} alt={`Photo ${idx + 1}`} className="h-full w-full object-cover" />
+                        )
+                      ) : (
+                        <div className="text-center p-3">
+                          <ImageIcon className="mx-auto h-7 w-7 text-admin-text-faint/30 mb-1" />
+                          <span className="text-[10px] text-admin-text-faint/60">Khung ảnh trống</span>
+                        </div>
+                      )}
+                      {wmChecked && Boolean(url) && (
+                        <div
+                          className="media-watermark pointer-events-none"
+                          aria-hidden="true"
+                          style={{ opacity: wmOpacity / 100 }}
+                        />
+                      )}
+                      {uploadingKey === uploadKey && (
+                        <div className="absolute inset-0 bg-black/75 flex items-center justify-center text-xs text-admin-gold font-semibold">
+                          Đang tải lên...
+                        </div>
+                      )}
+                    </div>
+
+                    {/* URL Input */}
+                    <div className="flex gap-2 mb-3">
+                      <div className="relative flex-1">
+                        <input
+                          type="text"
+                          value={url}
+                          onFocus={(e) => e.target.select()}
+                          onChange={(e) =>
                             updateConfig((prev) => {
-                              const nextP = [...(prev.storyPhotos || ['', '', '', '', ''])];
-                              while (nextP.length < 5) nextP.push('');
-                              nextP[4] = text.trim();
-                              return { ...prev, storyPhotos: nextP };
-                            });
-                          } else {
-                            const url = prompt('Dán link URL Khung Ảnh 05 vào đây:');
-                            if (url) {
+                              const next = [...(prev.storyPhotos || ['', '', '', '', ''])];
+                              while (next.length <= idx) next.push('');
+                              next[idx] = e.target.value;
+                              return { ...prev, storyPhotos: next };
+                            })
+                          }
+                          placeholder="Dán link ảnh / video URL..."
+                          className="w-full rounded-lg border border-admin-line bg-admin-card px-3 py-2 pr-7 text-xs text-admin-text placeholder:text-admin-text-faint/40 focus:border-admin-gold focus:outline-none font-mono"
+                        />
+                        {Boolean(url) && (
+                          <button
+                            type="button"
+                            onClick={() =>
                               updateConfig((prev) => {
-                                const nextP = [...(prev.storyPhotos || ['', '', '', '', ''])];
-                                while (nextP.length < 5) nextP.push('');
-                                nextP[4] = url.trim();
-                                return { ...prev, storyPhotos: nextP };
+                                const next = [...(prev.storyPhotos || ['', '', '', '', ''])];
+                                while (next.length <= idx) next.push('');
+                                next[idx] = '';
+                                return { ...prev, storyPhotos: next };
+                              })
+                            }
+                            className="absolute right-2 top-1/2 -translate-y-1/2 text-admin-text-faint hover:text-red-400 p-0.5"
+                            title="Xóa link"
+                          >
+                            <X size={13} />
+                          </button>
+                        )}
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          try {
+                            const text = await navigator.clipboard.readText();
+                            if (text && text.trim()) {
+                              updateConfig((prev) => {
+                                const next = [...(prev.storyPhotos || ['', '', '', '', ''])];
+                                while (next.length <= idx) next.push('');
+                                next[idx] = text.trim();
+                                return { ...prev, storyPhotos: next };
+                              });
+                            } else {
+                              const promptUrl = prompt(`Dán link URL Khung #${idx + 1} vào đây:`);
+                              if (promptUrl) {
+                                updateConfig((prev) => {
+                                  const next = [...(prev.storyPhotos || ['', '', '', '', ''])];
+                                  while (next.length <= idx) next.push('');
+                                  next[idx] = promptUrl.trim();
+                                  return { ...prev, storyPhotos: next };
+                                });
+                              }
+                            }
+                          } catch {
+                            const promptUrl = prompt(`Dán link URL Khung #${idx + 1} vào đây:`);
+                            if (promptUrl) {
+                              updateConfig((prev) => {
+                                const next = [...(prev.storyPhotos || ['', '', '', '', ''])];
+                                while (next.length <= idx) next.push('');
+                                next[idx] = promptUrl.trim();
+                                return { ...prev, storyPhotos: next };
                               });
                             }
                           }
-                        } catch {
-                          const url = prompt('Dán link URL Khung Ảnh 05 vào đây:');
-                          if (url) {
-                            updateConfig((prev) => {
-                              const nextP = [...(prev.storyPhotos || ['', '', '', '', ''])];
-                              while (nextP.length < 5) nextP.push('');
-                              nextP[4] = url.trim();
-                              return { ...prev, storyPhotos: nextP };
-                            });
-                          }
-                        }
-                      }}
-                      className="px-3.5 py-2 bg-admin-line hover:bg-admin-line-strong text-admin-text text-xs font-semibold rounded-xl transition-all shrink-0 flex items-center gap-1.5"
-                      title="Dán link từ clipboard"
-                    >
-                      <ClipboardPaste size={14} className="text-admin-gold" />
-                      <span>Dán link</span>
-                    </button>
+                        }}
+                        className="px-2.5 py-2 bg-admin-line hover:bg-admin-line-strong text-admin-text text-xs font-semibold rounded-lg transition-all shrink-0 flex items-center gap-1"
+                        title="Dán link từ clipboard"
+                      >
+                        <ClipboardPaste size={13} className="text-admin-gold" />
+                        <span className="hidden sm:inline">Dán</span>
+                      </button>
+                    </div>
                   </div>
 
-                  <WatermarkControl
-                    checked={config.storyPhotosWatermark?.[4] !== false}
-                    opacity={config.storyPhotosWatermarkOpacity?.[4] ?? 15}
-                    onChangeChecked={(checked) => {
-                      updateConfig((prev) => {
-                        const nextW = [...(prev.storyPhotosWatermark || [true, true, true, true, true])];
-                        while (nextW.length < 5) nextW.push(true);
-                        nextW[4] = checked;
-                        return { ...prev, storyPhotosWatermark: nextW };
-                      });
-                    }}
-                    onChangeOpacity={(opacity) => {
-                      updateConfig((prev) => {
-                        const nextO = [...(prev.storyPhotosWatermarkOpacity || [15, 15, 15, 15, 15])];
-                        while (nextO.length < 5) nextO.push(15);
-                        nextO[4] = opacity;
-                        return { ...prev, storyPhotosWatermarkOpacity: nextO };
-                      });
-                    }}
-                  />
+                  <div className="space-y-2 pt-2 border-t border-admin-line">
+                    <label className="relative flex cursor-pointer items-center justify-center gap-1.5 rounded-lg border border-dashed border-admin-gold/40 bg-admin-gold/5 py-2 text-xs font-semibold text-admin-gold hover:bg-admin-gold/10 transition-colors">
+                      <Upload size={13} />
+                      <span>{uploadingKey === uploadKey ? 'Đang tải...' : 'Tải ảnh lên'}</span>
+                      <input
+                        type="file"
+                        accept="image/*,video/mp4,video/webm"
+                        className="hidden"
+                        disabled={uploadingKey === uploadKey}
+                        onChange={(e) => handleFileUpload(e, uploadKey)}
+                      />
+                    </label>
+
+                    <WatermarkControl
+                      checked={wmChecked}
+                      opacity={wmOpacity}
+                      onChangeChecked={(val) =>
+                        updateConfig((prev) => {
+                          const nextWm = [...(prev.storyPhotosWatermark || [true, true, true, true, true])];
+                          while (nextWm.length <= idx) nextWm.push(true);
+                          nextWm[idx] = val;
+                          return { ...prev, storyPhotosWatermark: nextWm };
+                        })
+                      }
+                      onChangeOpacity={(val) =>
+                        updateConfig((prev) => {
+                          const nextWmOpacity = [
+                            ...(prev.storyPhotosWatermarkOpacity || [15, 15, 15, 15, 15]),
+                          ];
+                          while (nextWmOpacity.length <= idx) nextWmOpacity.push(15);
+                          nextWmOpacity[idx] = val;
+                          return { ...prev, storyPhotosWatermarkOpacity: nextWmOpacity };
+                        })
+                      }
+                    />
+                  </div>
                 </div>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* ========================================================================= */}
+        {/* 4. BÀI VIẾT BIÊN TẬP & NỘI DUNG CHÍNH (EDITORIAL SECTIONS)                 */}
+        {/* ========================================================================= */}
+        <section className="rounded-2xl border border-admin-line bg-admin-card p-6 space-y-6">
+          <div className="flex items-center justify-between border-b border-admin-line pb-4">
+            <div className="flex items-center gap-2.5">
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-admin-gold/10 text-admin-gold">
+                <FileText size={18} />
+              </div>
+              <div>
+                <h2 className="text-base font-bold text-admin-text">Bài Viết Biên Tập &amp; Nội Dung Chính (Editorial Sections)</h2>
+                <p className="text-xs text-admin-text-faint">
+                  4 phần nội dung văn bản dẫn dắt trải nghiệm nghỉ ngơi tại Oria Farm Retreat.
+                </p>
               </div>
             </div>
-          )}
-        </div>
+          </div>
+
+          <div className="space-y-6">
+            {config.sections.map((section, sIdx) => (
+              <div key={section.id || 'sec-' + sIdx} className="rounded-xl border border-admin-line bg-admin-bg/60 p-5 space-y-4">
+                <div className="flex items-center justify-between border-b border-admin-line pb-2.5">
+                  <h3 className="text-sm font-bold text-admin-gold flex items-center gap-2">
+                    <FileText size={15} /> Phần {sIdx + 1}: {sIdx === 0 ? 'Bungalow riêng' : sIdx === 1 ? 'Xông hơi · Tắm bồn · Massage' : sIdx === 2 ? 'Ăn uống chậm lại' : 'Rời khỏi thành phố'} ({activeLang.toUpperCase()})
+                  </h3>
+                </div>
+
+                {/* Section heading */}
+                <div>
+                  <label className="text-xs uppercase tracking-wider text-admin-text-dim block mb-1.5 font-semibold">
+                    Tiêu đề phần ({activeLang.toUpperCase()})
+                  </label>
+                  <input
+                    type="text"
+                    value={section.heading?.[activeLang] ?? ''}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      updateConfig((prev) => {
+                        const nextSecs = [...prev.sections];
+                        nextSecs[sIdx] = {
+                          ...nextSecs[sIdx],
+                          heading: { ...nextSecs[sIdx].heading, [activeLang]: val },
+                        };
+                        return { ...prev, sections: nextSecs };
+                      });
+                    }}
+                    className="w-full bg-admin-card text-sm text-admin-text p-3 rounded-xl border border-admin-line focus:border-admin-gold outline-none"
+                  />
+                </div>
+
+                {/* Section paragraphs */}
+                <div className="space-y-3 pt-2">
+                  <label className="text-xs uppercase tracking-wider text-admin-text-dim block font-semibold">
+                    Các đoạn văn bản ({activeLang.toUpperCase()})
+                  </label>
+                  {section.paragraphs.map((p, pIdx) => (
+                    <div key={'p-' + sIdx + '-' + pIdx} className="space-y-1">
+                      <span className="text-[11px] text-admin-text-faint font-medium">Đoạn {pIdx + 1}:</span>
+                      <textarea
+                        rows={3}
+                        value={p?.[activeLang] ?? ''}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          updateConfig((prev) => {
+                            const nextSecs = [...prev.sections];
+                            const nextParas = [...nextSecs[sIdx].paragraphs];
+                            nextParas[pIdx] = { ...nextParas[pIdx], [activeLang]: val };
+                            nextSecs[sIdx] = { ...nextSecs[sIdx], paragraphs: nextParas };
+                            return { ...prev, sections: nextSecs };
+                          });
+                        }}
+                        className="w-full bg-admin-card text-xs text-admin-text p-3 rounded-xl border border-admin-line focus:border-admin-gold outline-none leading-relaxed"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
 
         {/* 4. CLOSING TEXT & CTA SECTION */}
         <section className="p-6 rounded-2xl bg-admin-card border border-admin-line space-y-4">

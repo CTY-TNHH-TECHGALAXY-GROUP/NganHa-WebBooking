@@ -330,11 +330,17 @@ export function hydrateFarmRetreatConfig(raw: any): FarmRetreatConfig {
   const storyPhotos = rawPhotos.map((url) =>
     typeof url === 'string' && !url.includes('unsplash.com') ? url.trim() : ''
   );
+  while (storyPhotos.length < 5) {
+    storyPhotos.push('');
+  }
 
   const heroWatermarkOpacity =
     typeof raw.heroWatermarkOpacity === 'number' && raw.heroWatermarkOpacity >= 0 && raw.heroWatermarkOpacity <= 100
       ? Math.round(raw.heroWatermarkOpacity)
       : 15;
+
+  const rawWm = Array.isArray(raw.storyPhotosWatermark) ? raw.storyPhotosWatermark : [];
+  const storyPhotosWatermark: boolean[] = storyPhotos.map((_, idx) => rawWm[idx] !== false);
 
   const rawWmOpacity = Array.isArray(raw.storyPhotosWatermarkOpacity) ? raw.storyPhotosWatermarkOpacity : [];
   const storyPhotosWatermarkOpacity: number[] = storyPhotos.map((_, idx) => {
@@ -353,9 +359,7 @@ export function hydrateFarmRetreatConfig(raw: any): FarmRetreatConfig {
       ? raw.introParagraphs
       : DEFAULT_FARM_RETREAT_CONFIG.introParagraphs,
     storyPhotos,
-    storyPhotosWatermark: Array.isArray(raw.storyPhotosWatermark)
-      ? raw.storyPhotosWatermark
-      : [true, true, true, true, true],
+    storyPhotosWatermark,
     storyPhotosWatermarkOpacity,
     sections: hydratedSections,
     highlights: raw.highlights || DEFAULT_FARM_RETREAT_CONFIG.highlights,
