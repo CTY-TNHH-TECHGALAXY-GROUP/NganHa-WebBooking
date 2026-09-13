@@ -19,7 +19,7 @@ See [`before.json`](./before.json). The live HTML, robots, and sitemap all expos
 
 ## Verification
 
-After deployment, [`after.json`](./after.json) records production SHA `4f6eda47e5c1bba86efe1f8757c62db98c463203`, successful Vercel Preview/Production checks, and the live route audit. Fifty-seven public/locale URLs returned HTTP 200 with exactly one official canonical and matching `og:url`; no legacy hostname appeared in their HTML. The sitemap has 47 unique official locs and robots points to the official sitemap. Redirects from `/local-tour`, `/spa-celestial-menu`, and `/academy` were followed and verified.
+After deployment, [`after.json`](./after.json) records production SHA `3ab779819a8424acdda301c460c87a4e1c6cb74c`, successful Vercel Preview/Production checks, and the live route audit. Fifty-seven public/locale URLs returned HTTP 200 with exactly one official canonical and matching `og:url`; no legacy hostname appeared in their HTML. The sitemap has 47 unique official locs and robots points to the official sitemap. Redirects from `/local-tour`, `/spa-celestial-menu`, and `/academy` were followed and verified.
 
 The Vercel Preview URL is SSO-protected, so it was not counted as public HTML evidence; production was audited directly at the official origin. `web_booking_url` remains pending until its shared consumer/project is identified. The legacy aliases remain outside the verified project ownership: `ngan-ha-web-booking.vercel.app` is 404, while `nganha.vercel.app` and `oriaspa.vercel.app` redirect to the legacy menu. `NEXT_PUBLIC_SITE_URL` environment scope also could not be inspected with the available Vercel account; the code fallback and live production output are correct.
 

@@ -1,6 +1,6 @@
 {
   "status": "production_verified",
-  "verifiedAt": "2026-09-13T08:44:04Z",
+  "verifiedAt": "2026-09-13T09:22:24Z",
   "officialOrigin": "https://oria-spa.vercel.app",
   "db": {
     "rowId": "9f8ab19e-899f-4c0a-a211-33dddaa611d4",
@@ -10,15 +10,15 @@
     "canonicalPathAfter": ""
   },
   "deployment": {
-    "sourceSha": "4f6eda47e5c1bba86efe1f8757c62db98c463203",
-    "productionSha": "4f6eda47e5c1bba86efe1f8757c62db98c463203",
+    "sourceSha": "3ab779819a8424acdda301c460c87a4e1c6cb74c",
+    "productionSha": "3ab779819a8424acdda301c460c87a4e1c6cb74c",
     "previewUrl": "https://ngan-ha-web-booking-gblif0c91-tech-galaxy.vercel.app",
-    "productionUrl": "https://ngan-ha-web-booking-amlv83nmx-tech-galaxy.vercel.app",
-    "previewStatus": "success (public URL requires Vercel SSO)",
+    "productionUrl": "https://ngan-ha-web-booking-7e7gxnv66-tech-galaxy.vercel.app",
+    "previewStatus": "success on parent SHA a1bcf1b; public URL requires Vercel SSO",
     "productionStatus": "success",
     "githubVercelChecks": [
-      "https://vercel.com/tech-galaxy/ngan-ha-web-booking/AhrmuofjKbjuqpEJadsCUpvTRUtX",
-      "https://vercel.com/tech-galaxy/ngan-ha-web-booking/3Vj2Qi7Lu4JyXucH1ohGQ7GAaKXC"
+      "https://vercel.com/tech-galaxy/ngan-ha-web-booking/GFS2BCLw7gMDHyCPYHf9X5eCr6Ua",
+      "https://vercel.com/tech-galaxy/ngan-ha-web-booking/De59zTFWuKJ1YpSizfvZUtueggVL"
     ]
   },
   "live": {
@@ -47,6 +47,16 @@
       "/local-tour": "200 after one 307 to /local-tour/saigon-xua",
       "/spa-celestial-menu": "200 after one 307 to /pure-relaxation",
       "/academy": "200 after one 307 to /academy/admissions"
+    },
+    "finalFullAudit": {
+      "sourceSha": "3ab779819a8424acdda301c460c87a4e1c6cb74c",
+      "routeCount": 57,
+      "http200": 57,
+      "canonicalExactlyOne": 57,
+      "canonicalOfficial": 57,
+      "ogMatchesCanonical": 57,
+      "legacyHtml": 0,
+      "errors": []
     }
   },
   "pending": [
