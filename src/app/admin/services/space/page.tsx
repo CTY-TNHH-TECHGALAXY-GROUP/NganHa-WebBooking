@@ -20,7 +20,6 @@ const spaceStructure = [
       'capacity.haircutChair',
       'capacity.bodyBed',
       'capacity.shampooBed',
-      'capacity.facialArea',
     ],
   },
   { id: 'cta', title: '05 / Call To Action (Banner Chân Trang & Nút Đặt Lịch)', keys: ['cta'] },
@@ -46,7 +45,6 @@ const KEY_LABELS: Record<string, string> = {
   'capacity.haircutChair': '04.2 / Ghế cắt tóc',
   'capacity.bodyBed': '04.3 / Giường chăm sóc cơ thể',
   'capacity.shampooBed': '04.4 / Giường gội đầu',
-  'capacity.facialArea': '04.5 / Khu vực chăm sóc da mặt',
 };
 
 const SpaceAdminPage = () => {
