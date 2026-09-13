@@ -17,6 +17,7 @@ import {
 // 🔧 UI CONFIGURATION
 const HERO_PARTICLE_COUNT = 30;
 const VIDEO_FIRST_FRAME_TIMEOUT_MS = 15000;
+const DEFAULT_HERO_POSTER = 'https://i.ibb.co/fs2MBD4/hero-spa-bg.jpg';
 
 /**
  * Server-to-client contract for the homepage hero configuration.
@@ -581,7 +582,7 @@ const Hero = ({ initialHeroConfig, initialVideos }: HeroProps) => {
               }}
               className="hero-video"
               src={activeVideo.url}
-              {...(activeVideo.poster ? { poster: activeVideo.poster } : {})}
+              poster={activeVideo.poster || DEFAULT_HERO_POSTER}
               autoPlay
               muted
               playsInline
