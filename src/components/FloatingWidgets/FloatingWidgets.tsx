@@ -437,11 +437,11 @@ const FloatingWidgets = () => {
                 <picture className="block w-full h-full">
                   <source
                     type="image/webp"
-                    srcSet="/images/optimized/chatbot-icon-64.webp 64w, /images/optimized/chatbot-icon-128.webp 128w, /images/optimized/chatbot-icon-192.webp 192w"
+                    srcSet="/images/optimized/chatbot-icon.2cc19db7ff379fbe.64.webp 64w, /images/optimized/chatbot-icon.7dcf5f07b8fe7e60.128.webp 128w, /images/optimized/chatbot-icon.479e9e0addd02daa.192.webp 192w"
                     sizes="58px"
                   />
                   <img
-                    src="/images/optimized/chatbot-icon-128.webp"
+                    src="/images/optimized/chatbot-icon.7dcf5f07b8fe7e60.128.webp"
                     alt="Contact & AI Chatbot"
                     width="128"
                     height="128"
