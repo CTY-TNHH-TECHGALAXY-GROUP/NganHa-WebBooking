@@ -15,6 +15,10 @@ export async function getVisibleAeoContent(routeKey: string, locale: Locale): Pr
 }
 
 export default async function AeoAnswerContent({ routeKey, locale }: { routeKey: string; locale: Locale }) {
+  return null;
+}
+
+async function _UnusedAeoAnswerContent({ routeKey, locale }: { routeKey: string; locale: Locale }) {
   const content = await getVisibleAeoContent(routeKey, locale);
   if (!content) return null;
   const labels = LABELS[locale];

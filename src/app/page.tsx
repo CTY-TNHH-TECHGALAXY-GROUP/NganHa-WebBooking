@@ -1,7 +1,6 @@
 import Hero from '@/components/Hero/Hero';
 import OurStory from '@/components/OurStory/OurStory';
 import History from '@/components/History/History';
-import AeoAnswerContent from '@/components/Seo/AeoAnswerContent';
 import SeoStructuredData from '@/components/Seo/SeoStructuredData';
 import { getHeroVideoConfig } from '@/lib/config/heroVideos';
 
@@ -21,8 +20,6 @@ const HomePage = async () => {
 
         {/* History / About Story Section */}
         <History />
-
-        <AeoAnswerContent routeKey="home" locale="vi" />
       </main>
       <SeoStructuredData routeKey="home" locale="vi" pathname="/" />
     </>
