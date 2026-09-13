@@ -12,7 +12,7 @@
   "deployment": {
     "sourceSha": "3ab779819a8424acdda301c460c87a4e1c6cb74c",
     "productionSha": "3ab779819a8424acdda301c460c87a4e1c6cb74c",
-    "previewUrl": "https://ngan-ha-web-booking-gblif0c91-tech-galaxy.vercel.app",
+    "previewUrl": null,
     "productionUrl": "https://ngan-ha-web-booking-7e7gxnv66-tech-galaxy.vercel.app",
     "previewStatus": "success on parent SHA a1bcf1b; public URL requires Vercel SSO",
     "productionStatus": "success",
