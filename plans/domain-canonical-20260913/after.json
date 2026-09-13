@@ -1,5 +1,6 @@
 {
-  "status": "pending_deploy",
+  "status": "production_verified",
+  "verifiedAt": "2026-09-13T08:44:04Z",
   "officialOrigin": "https://oria-spa.vercel.app",
   "db": {
     "rowId": "9f8ab19e-899f-4c0a-a211-33dddaa611d4",
@@ -9,17 +10,49 @@
     "canonicalPathAfter": ""
   },
   "deployment": {
-    "sourceSha": null,
-    "productionSha": null,
-    "previewUrl": null,
-    "productionUrl": null
+    "sourceSha": "4f6eda47e5c1bba86efe1f8757c62db98c463203",
+    "productionSha": "4f6eda47e5c1bba86efe1f8757c62db98c463203",
+    "previewUrl": "https://ngan-ha-web-booking-gblif0c91-tech-galaxy.vercel.app",
+    "productionUrl": "https://ngan-ha-web-booking-amlv83nmx-tech-galaxy.vercel.app",
+    "previewStatus": "success (public URL requires Vercel SSO)",
+    "productionStatus": "success",
+    "githubVercelChecks": [
+      "https://vercel.com/tech-galaxy/ngan-ha-web-booking/AhrmuofjKbjuqpEJadsCUpvTRUtX",
+      "https://vercel.com/tech-galaxy/ngan-ha-web-booking/3Vj2Qi7Lu4JyXucH1ohGQ7GAaKXC"
+    ]
   },
   "live": {
-    "status": "awaiting_deploy"
+    "status": "pass",
+    "routeCount": 57,
+    "http200Count": 57,
+    "canonicalExactlyOneCount": 57,
+    "canonicalOfficialOriginCount": 57,
+    "ogUrlMatchesCanonicalCount": 57,
+    "legacyHostInHtmlCount": 0,
+    "hreflangLocalizedRouteCount": 35,
+    "jsonLdLegacyHostCount": 0,
+    "robots": {
+      "status": 200,
+      "sitemap": "https://oria-spa.vercel.app/sitemap.xml",
+      "disallowRulesPreserved": true
+    },
+    "sitemap": {
+      "status": 200,
+      "locCount": 47,
+      "uniqueLocCount": 47,
+      "officialOriginOnly": true,
+      "legacyLocCount": 0
+    },
+    "specialRedirects": {
+      "/local-tour": "200 after one 307 to /local-tour/saigon-xua",
+      "/spa-celestial-menu": "200 after one 307 to /pure-relaxation",
+      "/academy": "200 after one 307 to /academy/admissions"
+    }
   },
   "pending": [
-    "Vercel NEXT_PUBLIC_SITE_URL environment scope requires authenticated project access.",
-    "web_booking_url consumer/project ownership is not established.",
-    "Legacy alias redirect ownership is not established."
+    "NEXT_PUBLIC_SITE_URL Vercel environment scope was not readable with the available account; runtime fallback now resolves to the official origin and live HTML is correct.",
+    "SystemConfigs.web_booking_url remains https://nganha.vercel.app/ because its shared consumer/project ownership is not established.",
+    "ngan-ha-web-booking.vercel.app is still HTTP 404; nganha.vercel.app and oriaspa.vercel.app still redirect to each other/legacy menu. Configure 308 redirects only in the owning Vercel project.",
+    "nganhaspa.vn did not resolve DNS during this audit."
   ]
 }
