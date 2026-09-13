@@ -1,0 +1,118 @@
+[
+  {
+    "viewport": "mobile",
+    "route": "/",
+    "zoom": {
+      "key": "unsupported",
+      "before": {
+        "innerWidth": 1280,
+        "visualScale": 1
+      },
+      "after": {
+        "innerWidth": 1280,
+        "visualScale": 1
+      }
+    },
+    "tabStates": [
+      {
+        "tag": "BODY",
+        "role": null,
+        "label": "Book@keyframes hero-video-loading-spin { to { transform: rotate(360deg); } }Heri"
+      },
+      {
+        "tag": "BODY",
+        "role": null,
+        "label": "Book@keyframes hero-video-loading-spin { to { transform: rotate(360deg); } }Heri"
+      },
+      {
+        "tag": "BODY",
+        "role": null,
+        "label": "Book@keyframes hero-video-loading-spin { to { transform: rotate(360deg); } }Heri"
+      },
+      {
+        "tag": "BODY",
+        "role": null,
+        "label": "Book@keyframes hero-video-loading-spin { to { transform: rotate(360deg); } }Heri"
+      },
+      {
+        "tag": "BODY",
+        "role": null,
+        "label": "Book@keyframes hero-video-loading-spin { to { transform: rotate(360deg); } }Heri"
+      },
+      {
+        "tag": "BODY",
+        "role": null,
+        "label": "Book@keyframes hero-video-loading-spin { to { transform: rotate(360deg); } }Heri"
+      },
+      {
+        "tag": "BODY",
+        "role": null,
+        "label": "Book@keyframes hero-video-loading-spin { to { transform: rotate(360deg); } }Heri"
+      },
+      {
+        "tag": "BODY",
+        "role": null,
+        "label": "Book@keyframes hero-video-loading-spin { to { transform: rotate(360deg); } }Heri"
+      }
+    ],
+    "viewportContract": "width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover, user-scalable=yes"
+  },
+  {
+    "viewport": "desktop",
+    "route": "/",
+    "zoom": {
+      "key": "unsupported",
+      "before": {
+        "innerWidth": 1280,
+        "visualScale": 1
+      },
+      "after": {
+        "innerWidth": 1280,
+        "visualScale": 1
+      }
+    },
+    "tabStates": [
+      {
+        "tag": "BODY",
+        "role": null,
+        "label": "Book@keyframes hero-video-loading-spin { to { transform: rotate(360deg); } }Heri"
+      },
+      {
+        "tag": "BODY",
+        "role": null,
+        "label": "Book@keyframes hero-video-loading-spin { to { transform: rotate(360deg); } }Heri"
+      },
+      {
+        "tag": "BODY",
+        "role": null,
+        "label": "Book@keyframes hero-video-loading-spin { to { transform: rotate(360deg); } }Heri"
+      },
+      {
+        "tag": "BODY",
+        "role": null,
+        "label": "Book@keyframes hero-video-loading-spin { to { transform: rotate(360deg); } }Heri"
+      },
+      {
+        "tag": "BODY",
+        "role": null,
+        "label": "Book@keyframes hero-video-loading-spin { to { transform: rotate(360deg); } }Heri"
+      },
+      {
+        "tag": "BODY",
+        "role": null,
+        "label": "Book@keyframes hero-video-loading-spin { to { transform: rotate(360deg); } }Heri"
+      },
+      {
+        "tag": "BODY",
+        "role": null,
+        "label": "Book@keyframes hero-video-loading-spin { to { transform: rotate(360deg); } }Heri"
+      },
+      {
+        "tag": "BODY",
+        "role": null,
+        "label": "Book@keyframes hero-video-loading-spin { to { transform: rotate(360deg); } }Heri"
+      }
+    ],
+    "viewportContract": "width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover, user-scalable=yes"
+  }
+]

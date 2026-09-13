@@ -1,0 +1,462 @@
+[
+  {
+    "viewport": "mobile",
+    "width": 390,
+    "route": "/",
+    "status": 200,
+    "errors": [],
+    "axe": {
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "aria-prohibited-attr",
+          "impact": "serious",
+          "nodes": 7
+        },
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "nodes": 92
+        },
+        {
+          "id": "video-caption",
+          "impact": "critical",
+          "nodes": 1
+        },
+        {
+          "id": "no-autoplay-audio",
+          "impact": "moderate",
+          "nodes": 1
+        }
+      ],
+      "passes": 28
+    },
+    "state": {
+      "viewportMeta": "width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover, user-scalable=yes",
+      "logoCount": 3,
+      "logos": [
+        {
+          "label": "Oria Spa Logo",
+          "svgHidden": "true"
+        },
+        {
+          "label": "Oria Spa Logo",
+          "svgHidden": "true"
+        },
+        {
+          "label": "Oria Spa Logo",
+          "svgHidden": "true"
+        }
+      ],
+      "copyright": {
+        "color": "rgba(244, 244, 244, 0.68)",
+        "opacity": "1",
+        "background": "rgba(0, 0, 0, 0)"
+      },
+      "journey": {
+        "role": "region",
+        "tabIndex": 0,
+        "label": "Thước Phim: Trải Nghiệm Sài Gòn & Oria"
+      },
+      "activeElement": "BODY"
+    }
+  },
+  {
+    "viewport": "mobile",
+    "width": 390,
+    "route": "/history",
+    "status": 200,
+    "errors": [],
+    "axe": {
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "aria-prohibited-attr",
+          "impact": "serious",
+          "nodes": 7
+        },
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "nodes": 23
+        }
+      ],
+      "passes": 28
+    },
+    "state": {
+      "viewportMeta": "width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover, user-scalable=yes",
+      "logoCount": 2,
+      "logos": [
+        {
+          "label": "Oria Spa Logo",
+          "svgHidden": "true"
+        },
+        {
+          "label": "Oria Spa Logo",
+          "svgHidden": "true"
+        }
+      ],
+      "copyright": {
+        "color": "rgba(244, 244, 244, 0.68)",
+        "opacity": "1",
+        "background": "rgba(0, 0, 0, 0)"
+      },
+      "journey": null,
+      "activeElement": "BODY"
+    }
+  },
+  {
+    "viewport": "mobile",
+    "width": 390,
+    "route": "/vi",
+    "status": 200,
+    "errors": [],
+    "axe": {
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "aria-prohibited-attr",
+          "impact": "serious",
+          "nodes": 7
+        },
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "nodes": 92
+        },
+        {
+          "id": "video-caption",
+          "impact": "critical",
+          "nodes": 1
+        },
+        {
+          "id": "no-autoplay-audio",
+          "impact": "moderate",
+          "nodes": 1
+        }
+      ],
+      "passes": 28
+    },
+    "state": {
+      "viewportMeta": "width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover, user-scalable=yes",
+      "logoCount": 3,
+      "logos": [
+        {
+          "label": "Oria Spa Logo",
+          "svgHidden": "true"
+        },
+        {
+          "label": "Oria Spa Logo",
+          "svgHidden": "true"
+        },
+        {
+          "label": "Oria Spa Logo",
+          "svgHidden": "true"
+        }
+      ],
+      "copyright": {
+        "color": "rgba(244, 244, 244, 0.68)",
+        "opacity": "1",
+        "background": "rgba(0, 0, 0, 0)"
+      },
+      "journey": {
+        "role": "region",
+        "tabIndex": 0,
+        "label": "Thước Phim: Trải Nghiệm Sài Gòn & Oria"
+      },
+      "activeElement": "BODY"
+    }
+  },
+  {
+    "viewport": "mobile",
+    "width": 390,
+    "route": "/en",
+    "status": 200,
+    "errors": [],
+    "axe": {
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "aria-prohibited-attr",
+          "impact": "serious",
+          "nodes": 7
+        },
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "nodes": 97
+        },
+        {
+          "id": "video-caption",
+          "impact": "critical",
+          "nodes": 1
+        },
+        {
+          "id": "no-autoplay-audio",
+          "impact": "moderate",
+          "nodes": 1
+        }
+      ],
+      "passes": 28
+    },
+    "state": {
+      "viewportMeta": "width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover, user-scalable=yes",
+      "logoCount": 3,
+      "logos": [
+        {
+          "label": "Oria Spa Logo",
+          "svgHidden": "true"
+        },
+        {
+          "label": "Oria Spa Logo",
+          "svgHidden": "true"
+        },
+        {
+          "label": "Oria Spa Logo",
+          "svgHidden": "true"
+        }
+      ],
+      "copyright": {
+        "color": "rgba(244, 244, 244, 0.68)",
+        "opacity": "1",
+        "background": "rgba(0, 0, 0, 0)"
+      },
+      "journey": {
+        "role": "region",
+        "tabIndex": 0,
+        "label": "Film Reel: Saigon Experience & Oria"
+      },
+      "activeElement": "BODY"
+    }
+  },
+  {
+    "viewport": "desktop",
+    "width": 1440,
+    "route": "/",
+    "status": 200,
+    "errors": [],
+    "axe": {
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "aria-prohibited-attr",
+          "impact": "serious",
+          "nodes": 7
+        },
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "nodes": 92
+        },
+        {
+          "id": "video-caption",
+          "impact": "critical",
+          "nodes": 1
+        },
+        {
+          "id": "no-autoplay-audio",
+          "impact": "moderate",
+          "nodes": 1
+        }
+      ],
+      "passes": 28
+    },
+    "state": {
+      "viewportMeta": "width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover, user-scalable=yes",
+      "logoCount": 3,
+      "logos": [
+        {
+          "label": "Oria Spa Logo",
+          "svgHidden": "true"
+        },
+        {
+          "label": "Oria Spa Logo",
+          "svgHidden": "true"
+        },
+        {
+          "label": "Oria Spa Logo",
+          "svgHidden": "true"
+        }
+      ],
+      "copyright": {
+        "color": "rgba(244, 244, 244, 0.68)",
+        "opacity": "1",
+        "background": "rgba(0, 0, 0, 0)"
+      },
+      "journey": {
+        "role": "region",
+        "tabIndex": 0,
+        "label": "Thước Phim: Trải Nghiệm Sài Gòn & Oria"
+      },
+      "activeElement": "BODY"
+    }
+  },
+  {
+    "viewport": "desktop",
+    "width": 1440,
+    "route": "/history",
+    "status": 200,
+    "errors": [],
+    "axe": {
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "aria-prohibited-attr",
+          "impact": "serious",
+          "nodes": 7
+        },
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "nodes": 23
+        }
+      ],
+      "passes": 28
+    },
+    "state": {
+      "viewportMeta": "width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover, user-scalable=yes",
+      "logoCount": 2,
+      "logos": [
+        {
+          "label": "Oria Spa Logo",
+          "svgHidden": "true"
+        },
+        {
+          "label": "Oria Spa Logo",
+          "svgHidden": "true"
+        }
+      ],
+      "copyright": {
+        "color": "rgba(244, 244, 244, 0.68)",
+        "opacity": "1",
+        "background": "rgba(0, 0, 0, 0)"
+      },
+      "journey": null,
+      "activeElement": "BODY"
+    }
+  },
+  {
+    "viewport": "desktop",
+    "width": 1440,
+    "route": "/vi",
+    "status": 200,
+    "errors": [],
+    "axe": {
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "aria-prohibited-attr",
+          "impact": "serious",
+          "nodes": 7
+        },
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "nodes": 92
+        },
+        {
+          "id": "video-caption",
+          "impact": "critical",
+          "nodes": 1
+        },
+        {
+          "id": "no-autoplay-audio",
+          "impact": "moderate",
+          "nodes": 1
+        }
+      ],
+      "passes": 28
+    },
+    "state": {
+      "viewportMeta": "width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover, user-scalable=yes",
+      "logoCount": 3,
+      "logos": [
+        {
+          "label": "Oria Spa Logo",
+          "svgHidden": "true"
+        },
+        {
+          "label": "Oria Spa Logo",
+          "svgHidden": "true"
+        },
+        {
+          "label": "Oria Spa Logo",
+          "svgHidden": "true"
+        }
+      ],
+      "copyright": {
+        "color": "rgba(244, 244, 244, 0.68)",
+        "opacity": "1",
+        "background": "rgba(0, 0, 0, 0)"
+      },
+      "journey": {
+        "role": "region",
+        "tabIndex": 0,
+        "label": "Thước Phim: Trải Nghiệm Sài Gòn & Oria"
+      },
+      "activeElement": "BODY"
+    }
+  },
+  {
+    "viewport": "desktop",
+    "width": 1440,
+    "route": "/en",
+    "status": 200,
+    "errors": [],
+    "axe": {
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "aria-prohibited-attr",
+          "impact": "serious",
+          "nodes": 7
+        },
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "nodes": 97
+        },
+        {
+          "id": "video-caption",
+          "impact": "critical",
+          "nodes": 1
+        },
+        {
+          "id": "no-autoplay-audio",
+          "impact": "moderate",
+          "nodes": 1
+        }
+      ],
+      "passes": 28
+    },
+    "state": {
+      "viewportMeta": "width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover, user-scalable=yes",
+      "logoCount": 3,
+      "logos": [
+        {
+          "label": "Oria Spa Logo",
+          "svgHidden": "true"
+        },
+        {
+          "label": "Oria Spa Logo",
+          "svgHidden": "true"
+        },
+        {
+          "label": "Oria Spa Logo",
+          "svgHidden": "true"
+        }
+      ],
+      "copyright": {
+        "color": "rgba(244, 244, 244, 0.68)",
+        "opacity": "1",
+        "background": "rgba(0, 0, 0, 0)"
+      },
+      "journey": {
+        "role": "region",
+        "tabIndex": 0,
+        "label": "Film Reel: Saigon Experience & Oria"
+      },
+      "activeElement": "BODY"
+    }
+  }
+]
