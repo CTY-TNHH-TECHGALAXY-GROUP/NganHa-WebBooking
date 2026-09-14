@@ -173,7 +173,12 @@ export function stripInternalMetadata<T>(data: T): T {
 export interface PublicSiteContentPayload {
   system_settings: Record<string, unknown>;
   about_story_content: Record<string, unknown>;
-  brand_history: unknown[];
+  /**
+   * The editor stores the current history document as an object containing
+   * chapters. Older installations may still hold an array, so preserve that
+   * compatible shape after removing internal metadata.
+   */
+  brand_history: Record<string, unknown> | unknown[] | null;
   homepage_content: Record<string, unknown>;
   footer_content: Record<string, unknown>;
   blog_content: Record<string, unknown>;
@@ -198,9 +203,9 @@ export function sanitizePublicSiteContent(raw: {
   return {
     system_settings: sanitizePublicSystemSettings(configs.system_settings),
     about_story_content: sanitizePublicAboutStoryContent(configs.about_story_content),
-    brand_history: Array.isArray(configs.brand_history)
-      ? stripInternalMetadata(configs.brand_history)
-      : [],
+    brand_history: configs.brand_history && typeof configs.brand_history === 'object'
+      ? stripInternalMetadata(configs.brand_history) as Record<string, unknown> | unknown[]
+      : null,
     homepage_content: (stripInternalMetadata(configs.homepage_content) || {}) as Record<string, unknown>,
     footer_content: (stripInternalMetadata(configs.footer_content) || {}) as Record<string, unknown>,
     blog_content: (stripInternalMetadata(configs.blog_content) || {}) as Record<string, unknown>,
