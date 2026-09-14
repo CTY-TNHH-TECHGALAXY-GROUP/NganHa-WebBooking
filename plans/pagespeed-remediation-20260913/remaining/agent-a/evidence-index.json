@@ -1,0 +1,36 @@
+{
+  "testedBaseSha": "e9463a4c9dd11cf4f4c314ff780232fd789566f6",
+  "timestamp": "2026-09-14T16:15:23Z",
+  "artifacts": [
+    {
+      "path": "/private/tmp/nganha-a-media-contract-test.txt",
+      "sha256": "9ac6fca5562e65af000a07a8a19af95c47dbd6c8a2f679136c22421d6bd76e2c",
+      "meaning": "PASS: source identity, legacy fallback, source replacement, malformed maps, locale hydration, and deferred-media states."
+    },
+    {
+      "path": "/private/tmp/nganha-a-tsc.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "meaning": "Empty stdout from successful npx tsc --noEmit."
+    },
+    {
+      "path": "/private/tmp/nganha-a-rendition-safety.txt",
+      "sha256": "20d7e50b7460c5003cff17d40bec16d271c7a5828dfef6102932ea16461eda1f",
+      "meaning": "PASS: existing B rendition/CAS safety regression."
+    },
+    {
+      "path": "/private/tmp/nganha-a-build.log",
+      "sha256": "7beb0d0cea013af28c7fa72194f1991cc20bd9817c6d3b8fd84a8144a1db88f6",
+      "meaning": "Build diagnostic: static export is blocked by the missing Supabase URL/API key at /admin/login; not browser acceptance evidence."
+    },
+    {
+      "path": "/private/tmp/nganha-a-server.log",
+      "sha256": "92422d3b4d564a1c451e46386f2f949bf7ae5aa927626ee80fdbd100e3989357",
+      "meaning": "next start diagnostic: missing prerender manifest after the blocked build."
+    }
+  ],
+  "notVerified": [
+    "No generated responsive asset inventory, intrinsic dimensions, or byte-budget evidence.",
+    "No production-bundle browser request, screenshot, decode, layout, cold/warm, or IntersectionObserver run because the isolated build cannot serve.",
+    "No writer/admin publish test until the B-owned CAS writer delta is integrated."
+  ]
+}

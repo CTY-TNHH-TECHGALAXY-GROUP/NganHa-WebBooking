@@ -1,4 +1,5 @@
 import { Locale } from '@/lib/constants';
+import { normalizeResponsiveSources, type ResponsiveSources } from '@/lib/media/responsiveSources';
 
 export type LocalizedString = Record<string, string>;
 
@@ -9,6 +10,8 @@ export interface OurStoryFilmFrame {
   title: LocalizedString;
   desc: LocalizedString;
   image: string;
+  responsiveSources?: ResponsiveSources;
+  responsiveSourceImage?: string;
   watermarkEnabled?: boolean;
   watermarkOpacity?: number;
 }
@@ -16,6 +19,8 @@ export interface OurStoryFilmFrame {
 export interface OurStoryPillar {
   icon: string;
   image?: string;
+  responsiveSources?: ResponsiveSources;
+  responsiveSourceImage?: string;
   title: LocalizedString;
   desc: LocalizedString;
   watermarkEnabled?: boolean;
@@ -33,6 +38,8 @@ export interface OurStoryMenuNiche {
   highlights: LocalizedString;
   note?: LocalizedString;
   image: string;
+  responsiveSources?: ResponsiveSources;
+  responsiveSourceImage?: string;
   watermarkEnabled?: boolean;
   watermarkOpacity?: number;
   ctaText?: LocalizedString;
@@ -61,13 +68,15 @@ export interface OurStoryConfig {
     connectionsTitle: LocalizedString;
     connections: LocalizedString[];
     cityImage: string;
-    cityImageResponsiveSources?: Record<string, string>;
+    cityImageResponsiveSources?: ResponsiveSources;
+    cityImageResponsiveSource?: string;
     cityImageWatermarkEnabled?: boolean;
     cityImageWatermarkOpacity?: number;
     cityCaptionLeft: LocalizedString;
     cityCaptionRight: LocalizedString;
     streetSignImage: string;
-    streetSignImageResponsiveSources?: Record<string, string>;
+    streetSignImageResponsiveSources?: ResponsiveSources;
+    streetSignImageResponsiveSource?: string;
     streetSignImageWatermarkEnabled?: boolean;
     streetSignImageWatermarkOpacity?: number;
     imageCaption: LocalizedString;
@@ -89,6 +98,8 @@ export interface OurStoryConfig {
     evening: LocalizedString;
     landmark: LocalizedString;
     nightStreetImage: string;
+    nightStreetImageResponsiveSources?: ResponsiveSources;
+    nightStreetImageResponsiveSource?: string;
     nightStreetImageWatermarkEnabled?: boolean;
     nightStreetImageWatermarkOpacity?: number;
     imageCaption: LocalizedString;
@@ -852,6 +863,8 @@ export const hydrateOurStoryConfig = (saved: any): OurStoryConfig => {
     ? saved.specialtySection.pillars.map((item: any, idx: number) => ({
         ...(defaults.specialtySection.pillars[idx] || {}),
         ...item,
+        responsiveSources: normalizeResponsiveSources(item.responsiveSources),
+        responsiveSourceImage: typeof item.responsiveSourceImage === 'string' ? item.responsiveSourceImage : undefined,
         watermarkEnabled: item.watermarkEnabled !== false,
         watermarkOpacity: typeof item.watermarkOpacity === 'number' ? Math.min(100, Math.max(5, item.watermarkOpacity)) : 15,
         image: item.image || defaults.specialtySection.pillars[idx]?.image,
@@ -877,6 +890,8 @@ export const hydrateOurStoryConfig = (saved: any): OurStoryConfig => {
           id: item.id || fallback?.id || `menu-niche-${idx + 1}`,
           order: item.order || fallback?.order || String(idx + 1).padStart(2, '0'),
           image: item.image || fallback?.image || '/images/about-treatment.png',
+          responsiveSources: normalizeResponsiveSources(item.responsiveSources),
+          responsiveSourceImage: typeof item.responsiveSourceImage === 'string' ? item.responsiveSourceImage : undefined,
           watermarkEnabled: item.watermarkEnabled !== false,
           watermarkOpacity: typeof item.watermarkOpacity === 'number' ? Math.min(100, Math.max(5, item.watermarkOpacity)) : 15,
           title: { ...(fallback?.title || {}), ...(item.title || {}) },
@@ -913,13 +928,15 @@ export const hydrateOurStoryConfig = (saved: any): OurStoryConfig => {
           }))
         : defaults.locationSection.connections,
       cityImage: saved.locationSection?.cityImage || defaults.locationSection.cityImage,
-      cityImageResponsiveSources: saved.locationSection?.cityImageResponsiveSources,
+      cityImageResponsiveSources: normalizeResponsiveSources(saved.locationSection?.cityImageResponsiveSources),
+      cityImageResponsiveSource: typeof saved.locationSection?.cityImageResponsiveSource === 'string' ? saved.locationSection.cityImageResponsiveSource : undefined,
       cityImageWatermarkEnabled: saved.locationSection?.cityImageWatermarkEnabled !== false,
       cityImageWatermarkOpacity: typeof saved.locationSection?.cityImageWatermarkOpacity === 'number' ? Math.min(100, Math.max(5, saved.locationSection.cityImageWatermarkOpacity)) : 15,
       cityCaptionLeft: { ...defaults.locationSection.cityCaptionLeft, ...(saved.locationSection?.cityCaptionLeft || {}) },
       cityCaptionRight: { ...defaults.locationSection.cityCaptionRight, ...(saved.locationSection?.cityCaptionRight || {}) },
       streetSignImage: saved.locationSection?.streetSignImage || defaults.locationSection.streetSignImage,
-      streetSignImageResponsiveSources: saved.locationSection?.streetSignImageResponsiveSources,
+      streetSignImageResponsiveSources: normalizeResponsiveSources(saved.locationSection?.streetSignImageResponsiveSources),
+      streetSignImageResponsiveSource: typeof saved.locationSection?.streetSignImageResponsiveSource === 'string' ? saved.locationSection.streetSignImageResponsiveSource : undefined,
       streetSignImageWatermarkEnabled: saved.locationSection?.streetSignImageWatermarkEnabled !== false,
       streetSignImageWatermarkOpacity: typeof saved.locationSection?.streetSignImageWatermarkOpacity === 'number' ? Math.min(100, Math.max(5, saved.locationSection.streetSignImageWatermarkOpacity)) : 15,
       imageCaption: { ...defaults.locationSection.imageCaption, ...(saved.locationSection?.imageCaption || {}) },
@@ -947,6 +964,8 @@ export const hydrateOurStoryConfig = (saved: any): OurStoryConfig => {
         ? saved.filmReel.frames.map((item: any, idx: number) => ({
             ...(defaults.filmReel.frames[idx] || { id: idx + 1, frameTag: `KODAK 500T • ${idx + 1}A ▶` }),
             ...item,
+            responsiveSources: normalizeResponsiveSources(item.responsiveSources),
+            responsiveSourceImage: typeof item.responsiveSourceImage === 'string' ? item.responsiveSourceImage : undefined,
             watermarkEnabled: item.watermarkEnabled !== false,
             watermarkOpacity: typeof item.watermarkOpacity === 'number' ? Math.min(100, Math.max(5, item.watermarkOpacity)) : 15,
             badge: { ...(defaults.filmReel.frames[idx]?.badge || {}), ...(item.badge || {}) },
@@ -961,6 +980,8 @@ export const hydrateOurStoryConfig = (saved: any): OurStoryConfig => {
       evening: { ...defaults.atmosphereSection.evening, ...(saved.atmosphereSection?.evening || {}) },
       landmark: { ...defaults.atmosphereSection.landmark, ...(saved.atmosphereSection?.landmark || {}) },
       nightStreetImage: saved.atmosphereSection?.nightStreetImage || defaults.atmosphereSection.nightStreetImage,
+      nightStreetImageResponsiveSources: normalizeResponsiveSources(saved.atmosphereSection?.nightStreetImageResponsiveSources),
+      nightStreetImageResponsiveSource: typeof saved.atmosphereSection?.nightStreetImageResponsiveSource === 'string' ? saved.atmosphereSection.nightStreetImageResponsiveSource : undefined,
       nightStreetImageWatermarkEnabled: saved.atmosphereSection?.nightStreetImageWatermarkEnabled !== false,
       nightStreetImageWatermarkOpacity: typeof saved.atmosphereSection?.nightStreetImageWatermarkOpacity === 'number' ? Math.min(100, Math.max(5, saved.atmosphereSection.nightStreetImageWatermarkOpacity)) : 15,
       imageCaption: { ...defaults.atmosphereSection.imageCaption, ...(saved.atmosphereSection?.imageCaption || {}) },

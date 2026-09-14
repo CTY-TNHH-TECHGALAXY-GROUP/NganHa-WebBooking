@@ -9,9 +9,16 @@ import { useSystemSettings } from '@/components/SystemSettingsProvider';
 import type { Locale } from '@/lib/constants';
 import { hydrateOurStoryConfig, hasValidOurStoryContent } from './OurStory.data';
 import { resolveConfigUrl } from '@/lib/config/urlSettings';
+import {
+  deferredMediaErrorAction,
+  deferredMediaStateAfterDecode,
+  responsiveSourcesForImage,
+  type DeferredMediaState,
+  type ResponsiveSources,
+} from '@/lib/media/responsiveSources';
 import styles from './OurStory.module.css';
 
-const getResponsiveSrcSet = (sources?: Record<string, string>) => Object.entries(sources || {})
+const getResponsiveSrcSet = (sources?: ResponsiveSources) => Object.entries(sources || {})
   .filter(([width, url]) => /^\d+$/.test(width) && typeof url === 'string' && url.length > 0)
   .sort(([a], [b]) => Number(a) - Number(b))
   .map(([width, url]) => `${url} ${width}w`)
@@ -22,7 +29,8 @@ const TRANSPARENT_IMAGE = 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAA
 type DeferredStoryImageProps = {
   src: string;
   alt: string;
-  sources?: Record<string, string>;
+  sources?: ResponsiveSources;
+  responsiveSourceImage?: string;
   sizes?: string;
 };
 
@@ -31,10 +39,19 @@ type DeferredStoryImageProps = {
  * the viewport. Keep Our Story's offscreen CMS media out of the request queue
  * until its own reserved slot is near the viewport instead.
  */
-const DeferredStoryImage = ({ src, alt, sources, sizes }: DeferredStoryImageProps) => {
+const DeferredStoryImage = ({ src, alt, sources, responsiveSourceImage, sizes }: DeferredStoryImageProps) => {
   const [shouldLoad, setShouldLoad] = useState(false);
+  const [loadState, setLoadState] = useState<DeferredMediaState>('deferred');
+  const [useResponsiveSource, setUseResponsiveSource] = useState(true);
   const slotRef = useRef<HTMLPictureElement>(null);
-  const srcSet = getResponsiveSrcSet(sources);
+  const fallbackAttemptedRef = useRef(false);
+  const srcSet = getResponsiveSrcSet(responsiveSourcesForImage(src, sources, responsiveSourceImage));
+
+  useEffect(() => {
+    fallbackAttemptedRef.current = false;
+    setUseResponsiveSource(true);
+    setLoadState(shouldLoad ? 'loading' : 'deferred');
+  }, [shouldLoad, src, srcSet]);
 
   useEffect(() => {
     const slot = slotRef.current;
@@ -42,6 +59,7 @@ const DeferredStoryImage = ({ src, alt, sources, sizes }: DeferredStoryImageProp
 
     if (!('IntersectionObserver' in window)) {
       setShouldLoad(true);
+      setLoadState('loading');
       return;
     }
 
@@ -49,6 +67,7 @@ const DeferredStoryImage = ({ src, alt, sources, sizes }: DeferredStoryImageProp
       ([entry]) => {
         if (!entry?.isIntersecting) return;
         setShouldLoad(true);
+        setLoadState('loading');
         observer.disconnect();
       },
       { rootMargin: '200px 0px' },
@@ -60,13 +79,30 @@ const DeferredStoryImage = ({ src, alt, sources, sizes }: DeferredStoryImageProp
 
   return (
     <picture ref={slotRef}>
-      {shouldLoad && srcSet && <source type="image/webp" srcSet={srcSet} sizes={sizes} />}
+      {shouldLoad && useResponsiveSource && srcSet && <source type="image/webp" srcSet={srcSet} sizes={sizes} />}
       <img
         src={shouldLoad ? src : TRANSPARENT_IMAGE}
         alt={alt}
         decoding="async"
         sizes={sizes}
-        aria-busy={!shouldLoad}
+        aria-busy={loadState === 'deferred' || loadState === 'loading'}
+        data-media-state={loadState}
+        onLoad={event => {
+          if (!shouldLoad) return;
+          const image = event.currentTarget;
+          const finish = () => setLoadState(deferredMediaStateAfterDecode(image.naturalWidth));
+          if (typeof image.decode !== 'function') {
+            finish();
+            return;
+          }
+          void image.decode().then(finish, finish);
+        }}
+        onError={() => {
+          const next = deferredMediaErrorAction(useResponsiveSource && Boolean(srcSet), fallbackAttemptedRef.current);
+          if (next.retryOriginal) fallbackAttemptedRef.current = true;
+          setUseResponsiveSource(next.useResponsiveSource);
+          setLoadState(next.state);
+        }}
       />
     </picture>
   );
@@ -142,6 +178,7 @@ const OurStory = () => {
               <DeferredStoryImage
                 src={config.locationSection.cityImage || '/images/about-street.png'}
                 sources={config.locationSection.cityImageResponsiveSources}
+                responsiveSourceImage={config.locationSection.cityImageResponsiveSource}
                 sizes="(max-width: 760px) 92vw, 52vw"
                 alt={getLocalizedText(config.locationSection.title, lang)}
               />
@@ -162,6 +199,7 @@ const OurStory = () => {
               <DeferredStoryImage
                 src={config.locationSection.streetSignImage}
                 sources={config.locationSection.streetSignImageResponsiveSources}
+                responsiveSourceImage={config.locationSection.streetSignImageResponsiveSource}
                 sizes="(max-width: 760px) 56vw, 24vw"
                 alt={getLocalizedText(config.locationSection.imageCaption, lang)}
               />
@@ -244,6 +282,8 @@ const OurStory = () => {
                     >
                       <DeferredStoryImage
                         src={frame.image}
+                        sources={frame.responsiveSources}
+                        responsiveSourceImage={frame.responsiveSourceImage}
                         alt={getLocalizedText(frame.title, lang)}
                         sizes="(max-width: 760px) 205px, 250px"
                       />
@@ -284,6 +324,8 @@ const OurStory = () => {
           <figure>
             <DeferredStoryImage
               src={config.atmosphereSection.nightStreetImage}
+              sources={config.atmosphereSection.nightStreetImageResponsiveSources}
+              responsiveSourceImage={config.atmosphereSection.nightStreetImageResponsiveSource}
               alt={getLocalizedText(config.atmosphereSection.imageCaption, lang)}
               sizes="(max-width: 760px) calc(100vw - 40px), 48vw"
             />
@@ -322,6 +364,8 @@ const OurStory = () => {
                 <figure className={styles.pillarMedia}>
                   <DeferredStoryImage
                     src={pillar.image || '/images/about-treatment.png'}
+                    sources={pillar.responsiveSources}
+                    responsiveSourceImage={pillar.responsiveSourceImage}
                     alt={getLocalizedText(pillar.title, lang)}
                     sizes="(max-width: 760px) calc(100vw - 40px), 45vw"
                   />
@@ -346,6 +390,8 @@ const OurStory = () => {
                 <figure className={styles.pillarMedia}>
                   <DeferredStoryImage
                     src={menu.image || '/images/about-treatment.png'}
+                    sources={menu.responsiveSources}
+                    responsiveSourceImage={menu.responsiveSourceImage}
                     alt={getLocalizedText(menu.title, lang)}
                     sizes="(max-width: 760px) calc(100vw - 40px), 45vw"
                   />
