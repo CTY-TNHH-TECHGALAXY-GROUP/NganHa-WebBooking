@@ -8,7 +8,9 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
-        source: '/images/optimized/:path*',
+        // Only content-addressed renditions may be cached indefinitely. An
+        // unversioned upload at the same public prefix must stay revalidatable.
+        source: '/images/optimized/:asset([A-Za-z0-9_-]+\\.[a-f0-9]{16}\\.[0-9]+\\.webp)',
         headers: [
           {
             key: 'Cache-Control',
