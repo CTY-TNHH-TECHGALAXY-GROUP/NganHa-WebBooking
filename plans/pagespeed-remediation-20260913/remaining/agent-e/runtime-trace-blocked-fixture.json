@@ -1,0 +1,9 @@
+{
+  "status": "BLOCKED",
+  "reason": "No local server/browser permission in the bounded run; no trace data was collected.",
+  "baseUrl": "http://127.0.0.1:3002",
+  "profile": "Chromium headless, 390x844, DPR2, touch, CPU4x; loopback diagnostic",
+  "externalRequests": 0,
+  "formsSubmitted": 0,
+  "note": "This fixture records the honest no-data outcome; rerun the harness for PASS/PARTIAL evidence."
+}

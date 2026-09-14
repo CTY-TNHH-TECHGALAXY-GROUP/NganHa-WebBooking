@@ -1,0 +1,25 @@
+{
+  "agent": "E",
+  "capturedAt": "2026-09-14",
+  "baseSha": "65fb5afdd08a4c740a6e8adfdb1c17fff2a159d8",
+  "profile": "Chromium headless, 390x844, DPR2, touch, CPU4x; loopback diagnostic",
+  "artifacts": [
+    {
+      "path": "scripts/trace-runtime-loopback.mjs",
+      "sha256": "c6f72f792a38bdf60b664cbc2579f73f08a853d130e48afe0a3ec9c0f4d6892c",
+      "meaning": "Reproducible loopback-only CDP/Playwright navigation, interaction, attribution, and honest status harness"
+    },
+    {
+      "path": "plans/pagespeed-remediation-20260913/remaining/agent-e/handoff.md",
+      "sha256": "c4ee0ee5def7da2ac5a5f4c76cbc6d213bb12f5615b4a24d816819d8d75331a8",
+      "meaning": "Scope, commands, status semantics, evidence limits, and handoff"
+    },
+    {
+      "path": "plans/pagespeed-remediation-20260913/remaining/agent-e/runtime-trace-blocked-fixture.json",
+      "sha256": "2a496093207f006a1c946903ce11176c68e0be306fc0ba8bce75eac0e45ce286",
+      "meaning": "Sanitized blocked/no-data result; no runtime metric claimed"
+    }
+  ],
+  "status": "BLOCKED",
+  "blocker": "Local server and Chromium launch permission were unavailable during bounded execution; rerun required for trace metrics"
+}
