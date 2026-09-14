@@ -4,8 +4,9 @@
 
 This handoff adds a diagnostic harness only. It does not change History, Hero,
 admin code, migration/CAS code, media assets, or any runtime source. The
-harness rejects non-loopback targets and never submits forms or calls an API,
-Supabase, Storage, Vercel, or an external URL.
+harness rejects non-loopback targets and never submits a form or directly calls
+Supabase, Storage, Vercel, or an external URL. The tested page may make its
+normal same-origin and configured media requests.
 
 ## Provenance
 
@@ -40,21 +41,21 @@ reported as `NO_DATA`; server/browser failures are `BLOCKED`; a mixed run is
 ## Validation
 
 - `node --check scripts/trace-runtime-loopback.mjs` — PASS.
-- Loopback run with no permitted local browser/server — BLOCKED, with a raw
-  report written under the agent-evidence directory; no trace or request data
-  was claimed.
+- A production-local loopback run must be recorded outside the repository and
+  reviewed together with its raw trace. The harness reports missing controls as
+  `NO_DATA` and a mixed result as `PARTIAL`; it does not recast either as a
+  passed measurement.
 - Non-loopback guard with `https://oria-spa.vercel.app/history` — BLOCKED before
   browser launch; no external request made.
 
 ## Current conclusion
 
-This worktree has no before/after runtime numbers because the local server and
-Chromium launch permission were unavailable in the bounded run. Existing
-production observations must not be relabeled as this candidate's trace. Run
-the harness against a production build of the integration SHA, then review
-each attribution before changing rAF reads/writes, animation behavior, or
-chunk boundaries. Preserve the existing History gating, Hero behavior, and
-reduced-motion behavior until that evidence exists.
+This worktree does not retain before/after runtime numbers. Existing production
+observations must not be relabeled as this harness's trace. Run it against a
+production build of the integration SHA, then review each attribution before
+changing rAF reads/writes, animation behavior, or chunk boundaries. Preserve
+the existing History gating, Hero behavior, and reduced-motion behavior until
+that evidence exists.
 
 ## Rollback and scope audit
 

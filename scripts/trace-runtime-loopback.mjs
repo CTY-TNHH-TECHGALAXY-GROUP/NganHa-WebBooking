@@ -3,9 +3,10 @@
 /**
  * Loopback-only runtime trace for Agent E.
  *
- * This harness is intentionally diagnostic: it never calls an API, storage
- * endpoint, Supabase, Vercel, or a form submit. If the local server or browser
- * is unavailable, it writes BLOCKED/NO_DATA instead of fabricating metrics.
+ * This harness is intentionally diagnostic: it targets loopback only and never
+ * submits a form or directly calls storage, Supabase, or Vercel. The page may
+ * make its normal same-origin requests. If the local server or browser is
+ * unavailable, it writes BLOCKED/NO_DATA instead of fabricating metrics.
  */
 
 import crypto from 'node:crypto';
@@ -155,14 +156,26 @@ try {
     await page.evaluate(value => window.__agentESetPhase?.(value), phase);
   }
 
+  async function captureAnimations() {
+    return page.evaluate(() => [...document.querySelectorAll('*')].flatMap(element => {
+      const style = getComputedStyle(element);
+      return style.animationName !== 'none' ? [{
+        tag: element.tagName,
+        className: String(element.className),
+        name: style.animationName,
+        duration: style.animationDuration,
+        playState: style.animationPlayState,
+      }] : [];
+    }).slice(0, 100));
+  }
+
   async function captureStep(name, action) {
-    const step = { name, startedAt: new Date().toISOString(), status: 'NO_DATA' };
+    const step = { name, startedAt: new Date().toISOString(), status: 'RUNNING' };
     report.steps.push(step);
     try {
       await markPhase(name);
       await action(step);
-      if (step.status === 'NO_DATA') return;
-      step.status = 'PASS';
+      if (step.status === 'RUNNING') step.status = 'PASS';
     } catch (error) {
       step.status = 'BLOCKED';
       step.reason = error instanceof Error ? error.message : String(error);
@@ -180,6 +193,7 @@ try {
       videos: [...document.querySelectorAll('video')].map(video => ({ src: video.currentSrc, preload: video.preload, readyState: video.readyState })),
       images: document.images.length,
     }));
+    step.animations = await captureAnimations();
   });
 
   await captureStep('history-scroll', async step => {
@@ -193,13 +207,21 @@ try {
       await markPhase(`history-scroll-${multiplier}`);
       await page.evaluate(value => window.scrollTo({ top: window.innerHeight * value, behavior: 'auto' }), multiplier);
       await page.waitForTimeout(350);
-      step.snapshots.push(await page.evaluate(() => ({
-        scrollY: window.scrollY,
-        scrollHeight: document.documentElement.scrollHeight,
-        chapters: document.querySelectorAll('[data-history-chapter]').length,
-        historyImages: [...document.querySelectorAll('[data-history-chapter] img')].map(image => ({ currentSrc: image.currentSrc, loading: image.loading, width: image.naturalWidth, height: image.naturalHeight })),
-      })));
+      step.snapshots.push(await page.evaluate(() => {
+        const historyImages = [...document.querySelectorAll('[data-history-chapter] img')].map(image => image.currentSrc);
+        const loadedImages = [...new Set(historyImages.filter(source => source.startsWith('http')))].sort();
+        return {
+          scrollY: window.scrollY,
+          scrollHeight: document.documentElement.scrollHeight,
+          chapters: document.querySelectorAll('[data-history-chapter]').length,
+          historyImageCount: historyImages.length,
+          loadedImages,
+          placeholderCount: historyImages.filter(source => source.startsWith('data:')).length,
+          emptyCount: historyImages.filter(source => !source).length,
+        };
+      }));
     }
+    step.animations = await captureAnimations();
   });
 
   await captureStep('menu', async step => {
@@ -208,6 +230,7 @@ try {
     await trigger.click();
     await page.waitForTimeout(250);
     step.snapshot = await page.evaluate(() => ({ url: location.href, dialogs: document.querySelectorAll('[role="dialog"]').length, expanded: [...document.querySelectorAll('button[aria-expanded="true"]')].length }));
+    step.animations = await captureAnimations();
     await page.keyboard.press('Escape').catch(() => {});
   });
 
@@ -217,6 +240,7 @@ try {
     await trigger.click();
     await page.waitForTimeout(250);
     step.snapshot = await page.evaluate(() => ({ url: location.href, dialogs: document.querySelectorAll('[role="dialog"]').length, images: document.images.length }));
+    step.animations = await captureAnimations();
     await page.keyboard.press('Escape').catch(() => {});
   });
 
@@ -225,6 +249,7 @@ try {
     step.httpStatus = response?.status() ?? null;
     await page.waitForTimeout(800);
     step.snapshot = await page.evaluate(() => ({ url: location.href, forms: document.forms.length, buttons: document.querySelectorAll('button').length }));
+    step.animations = await captureAnimations();
   });
 
   await cdp.send('Tracing.end');
@@ -232,23 +257,24 @@ try {
   fs.writeFileSync(tracePath, JSON.stringify({ traceEvents }));
   const finalState = await page.evaluate(() => {
     const runtime = window.__agentERuntimeTrace || {};
-    const animations = [...document.querySelectorAll('*')].flatMap(element => {
-      const style = getComputedStyle(element);
-      return style.animationName !== 'none' ? [{ tag: element.tagName, className: String(element.className), name: style.animationName, duration: style.animationDuration, playState: style.animationPlayState }] : [];
-    }).slice(0, 100);
-    return { runtime, animations, viewport: document.querySelector('meta[name="viewport"]')?.content || null };
+    return { runtime, viewport: document.querySelector('meta[name="viewport"]')?.content || null };
   });
   const layouts = traceEvents.filter(event => ['Layout', 'UpdateLayoutTree', 'ForcedLayout'].includes(event.name));
   const longTasks = finalState.runtime.longTasks || [];
   const geometry = finalState.runtime.geometryReads || [];
   report.finishedAt = new Date().toISOString();
-  report.status = report.steps.some(step => step.status === 'BLOCKED')
+  const hasPass = report.steps.some(step => step.status === 'PASS');
+  const hasBlocked = report.steps.some(step => step.status === 'BLOCKED');
+  const hasNoData = report.steps.some(step => step.status === 'NO_DATA');
+  report.status = hasBlocked || (hasPass && hasNoData)
     ? 'PARTIAL'
-    : report.steps.some(step => step.status === 'NO_DATA') ? 'NO_DATA' : 'PASS';
-  report.page = { viewport: finalState.viewport, animations: finalState.animations, runtime: finalState.runtime };
+    : hasNoData ? 'NO_DATA' : 'PASS';
+  report.page = { viewport: finalState.viewport, runtime: finalState.runtime };
   report.attribution = {
     traceEventCount: traceEvents.length,
-    layoutEvents: layouts.map(event => ({ name: event.name, ts: event.ts, durationMs: Number(event.dur || 0) / 1000, args: event.args?.data || event.args?.beginData || {} })),
+    // The raw trace preserves every event; keep the report reviewable by showing
+    // the 50 most expensive layout events.
+    slowestLayoutEvents: layouts.map(event => ({ name: event.name, ts: event.ts, durationMs: Number(event.dur || 0) / 1000, args: event.args?.data || event.args?.beginData || {} })).sort((a, b) => b.durationMs - a.durationMs).slice(0, 50),
     layoutEventCount: layouts.length,
     layoutDurationMs: layouts.reduce((sum, event) => sum + Number(event.dur || 0) / 1000, 0),
     geometryReadCount: geometry.length,
