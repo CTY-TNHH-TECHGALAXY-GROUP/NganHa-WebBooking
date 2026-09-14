@@ -19,17 +19,20 @@ import { createClient } from '@supabase/supabase-js';
 const root = process.cwd();
 const bucket = 'media-uploads';
 const planDir = path.join(root, 'plans', 'pagespeed-remediation-20260913', 'remaining', 'agent-b');
-const args = new Set(process.argv.slice(2));
-const modeArg = process.argv.find(value => value.startsWith('--mode='));
-const mode = (modeArg ? modeArg.slice('--mode='.length) : 'dry-run').toLowerCase();
-const configFilter = process.argv.find(value => value.startsWith('--config='))?.slice('--config='.length) || 'all';
-const manifestPath = process.argv.find(value => value.startsWith('--manifest='))?.slice('--manifest='.length)
-  || path.join(planDir, `rendition-manifest-${new Date().toISOString().slice(0, 10)}.json`);
-const journalPath = process.argv.find(value => value.startsWith('--journal='))?.slice('--journal='.length)
-  || path.join(planDir, `migration-journal-${new Date().toISOString().slice(0, 10)}.jsonl`);
+const option = name => process.argv.slice(2).find(value => value.startsWith(`--${name}=`))?.slice(name.length + 3);
+const modeArg = option('mode');
+const mode = (modeArg || 'dry-run').toLowerCase();
+const configFilter = option('config') || 'all';
+const requestedRunId = option('run-id');
+const runId = requestedRunId || `ps-b-${crypto.randomUUID()}`;
+if (!/^[A-Za-z0-9_-]{8,100}$/.test(runId)) throw new Error('run-id must contain only letters, digits, _ or -');
+const runDir = path.resolve(option('run-dir') || path.join(planDir, 'runs', runId));
+const manifestPath = path.resolve(option('manifest') || path.join(runDir, 'manifest.json'));
+const journalPath = path.resolve(option('journal') || path.join(runDir, 'journal.jsonl'));
+const releaseManifestPath = option('release-manifest') ? path.resolve(option('release-manifest')) : null;
+const backupDir = option('backup-dir') ? path.resolve(option('backup-dir')) : null;
 
 const historyWidths = [320, 640, 960];
-const chatbotWidths = [64, 128, 192];
 
 function parseEnvFile(filename) {
   if (!fs.existsSync(filename)) return {};
@@ -120,7 +123,8 @@ function siblingPointer(pointer, mediaKey) {
 }
 
 function privateBackupPath(runId, row) {
-  const dir = path.join('/private/tmp', 'nganha-pagespeed-agent-b', runId);
+  if (!backupDir) throw new Error('apply requires --backup-dir=<durable-private-directory>');
+  const dir = path.join(backupDir, runId);
   fs.mkdirSync(dir, { recursive: true, mode: 0o700 });
   try { fs.chmodSync(dir, 0o700); } catch { /* best effort on non-POSIX */ }
   const filename = path.join(dir, `${row.key}-backup.json`);
@@ -129,8 +133,33 @@ function privateBackupPath(runId, row) {
   return filename;
 }
 
+let runArtifactsInitialized = false;
+
+function initializeRunArtifacts() {
+  if (runArtifactsInitialized) return;
+  if (releaseManifestPath && releaseManifestPath === manifestPath) {
+    throw new Error('--release-manifest must not be the run output manifest');
+  }
+  fs.mkdirSync(runDir, { recursive: true, mode: 0o700 });
+  if (fs.existsSync(manifestPath) || fs.existsSync(journalPath)) {
+    throw new Error(`refusing to overwrite existing run artifacts: ${runDir}`);
+  }
+  fs.writeFileSync(journalPath, '', { flag: 'wx', mode: 0o600 });
+  runArtifactsInitialized = true;
+  appendJournal({ runId, phase: 'run_started', mode, manifestPath, journalPath });
+}
+
+function writeRunManifest(value) {
+  if (!runArtifactsInitialized) throw new Error('run artifacts are not initialized');
+  if (fs.existsSync(manifestPath)) {
+    fs.writeFileSync(manifestPath, `${JSON.stringify(value, null, 2)}\n`, { mode: 0o600 });
+  } else {
+    fs.writeFileSync(manifestPath, `${JSON.stringify(value, null, 2)}\n`, { flag: 'wx', mode: 0o600 });
+  }
+}
+
 function appendJournal(event) {
-  fs.mkdirSync(path.dirname(journalPath), { recursive: true });
+  if (!runArtifactsInitialized) throw new Error('run artifacts are not initialized');
   fs.appendFileSync(journalPath, `${JSON.stringify({ at: new Date().toISOString(), ...event })}\n`);
 }
 
@@ -221,34 +250,126 @@ function sanitizeEntry(entry) {
   return safe;
 }
 
+/**
+ * The JSON document itself is the revision token. Never replace this with a
+ * read/hash/update sequence: another writer could commit between those calls.
+ * The reviewed SQL migration grants this function only to service_role.
+ */
+async function compareAndSwapConfig(supabase, { key, expectedExists, expectedValue, nextValue }) {
+  const { data, error } = await supabase.rpc('webbooking_compare_and_swap_system_config', {
+    p_key: key,
+    p_expected_exists: expectedExists,
+    p_expected_value: expectedValue,
+    p_next_value: nextValue,
+  });
+  if (error) {
+    throw new Error(`config CAS RPC unavailable or failed for ${key}: ${error.message}`);
+  }
+  const row = Array.isArray(data) ? data[0] : data;
+  if (!row) return null;
+  if (row.key !== key || !Object.prototype.hasOwnProperty.call(row, 'value')) {
+    throw new Error(`config CAS RPC returned an invalid row for ${key}`);
+  }
+  return row;
+}
+
+function readReleaseManifest() {
+  if (!releaseManifestPath) throw new Error('rollback requires --release-manifest=<applied-manifest.json>');
+  const source = fs.readFileSync(releaseManifestPath);
+  const checksum = sha256(source);
+  const release = JSON.parse(source.toString('utf8'));
+  if (release.status !== 'applied_verified' && release.applied !== true) {
+    throw new Error('rollback requires an applied manifest');
+  }
+  return { release, checksum };
+}
+
 async function main() {
   if (!['dry-run', 'apply', 'rollback', 'inventory'].includes(mode)) throw new Error(`unsupported mode: ${mode}`);
+  if (!['all', 'brand_history', 'about_story_content'].includes(configFilter)) throw new Error(`unsupported config filter: ${configFilter}`);
   if (!env.NEXT_PUBLIC_SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) throw new Error('Supabase env vars are required for config inventory');
   const supabase = createClient(env.NEXT_PUBLIC_SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY, { auth: { persistSession: false, autoRefreshToken: false } });
-  const runId = `ps-b-${new Date().toISOString().replace(/[-:.TZ]/g, '').slice(0, 14)}`;
+  initializeRunArtifacts();
+
+  // Rollback is intentionally dispatched before any inventory, image build,
+  // or manifest write. Its release manifest is an immutable input; this run
+  // receives a separate journal and manifest under its own UUID directory.
+  if (mode === 'rollback') {
+    const { release, checksum } = readReleaseManifest();
+    const rollbackManifest = {
+      schemaVersion: 2,
+      runId,
+      mode,
+      status: 'rollback_started',
+      releaseManifest: { basename: path.basename(releaseManifestPath), sha256: checksum },
+      results: [],
+    };
+    writeRunManifest(rollbackManifest);
+    appendJournal({ runId, phase: 'rollback_release_loaded', releaseManifestSha256: checksum });
+    const releaseRows = await readRows(supabase);
+    if (releaseRows.length !== (configFilter === 'all' ? 2 : 1)) throw new Error(`missing requested config: ${configFilter}`);
+    for (const row of releaseRows) {
+      const items = (release.renditionEntries || []).filter(item => item.configKey === row.key);
+      if (!items.length) continue;
+      const next = clone(row.value);
+      const changedPointers = [];
+      for (const item of items) for (const rollbackPatch of item.rollbackPointers || []) {
+        const current = getAt(next, `${rollbackPatch.pointer}/${rollbackPatch.width}`);
+        if (current !== rollbackPatch.targetUrl) throw new Error(`ROLLBACK_CONFLICT at ${rollbackPatch.pointer}/${rollbackPatch.width}`);
+        if (rollbackPatch.hadPrevious) setAt(next, `${rollbackPatch.pointer}/${rollbackPatch.width}`, rollbackPatch.previousValue);
+        else deleteAt(next, `${rollbackPatch.pointer}/${rollbackPatch.width}`);
+        changedPointers.push(`${rollbackPatch.pointer}/${rollbackPatch.width}`);
+      }
+      appendJournal({ runId, phase: 'rollback_config_intent', configKey: row.key, changedPointers });
+      const updated = await compareAndSwapConfig(supabase, {
+        key: row.key,
+        expectedExists: true,
+        expectedValue: row.value,
+        nextValue: next,
+      });
+      if (!updated) throw new Error(`ROLLBACK_CONFLICT: config changed before CAS for ${row.key}`);
+      if (!equalValues(updated.value, next)) throw new Error(`rollback CAS returned unexpected value for ${row.key}`);
+      const result = { configKey: row.key, changedPointers, afterRevision: revisionOf(updated.value), status: 'applied_verified' };
+      rollbackManifest.results.push(result);
+      writeRunManifest(rollbackManifest);
+      appendJournal({ runId, phase: 'rollback_config_result', ...result });
+    }
+    rollbackManifest.status = 'rollback_applied_verified';
+    writeRunManifest(rollbackManifest);
+    console.log(JSON.stringify({ mode, status: rollbackManifest.status, manifestPath, journalPath }, null, 2));
+    return;
+  }
+
+  if (mode === 'apply' && !backupDir) throw new Error('apply requires --backup-dir=<durable-private-directory>');
   const rows = await readRows(supabase);
   if (rows.length !== (configFilter === 'all' ? 2 : 1)) throw new Error(`missing requested config: ${configFilter}`);
-  const backups = rows.map(row => ({ key: row.key, path: privateBackupPath(runId, row), revision: revisionOf(row.value), valueSha256: sha256(JSON.stringify(row.value)), rowId: row.id }));
-  appendJournal({ runId, phase: 'backup_created', mode, backups });
+  const backups = rows.map(row => ({
+    key: row.key,
+    ...(mode === 'apply' ? { path: privateBackupPath(runId, row) } : {}),
+    revision: revisionOf(row.value),
+    valueSha256: sha256(JSON.stringify(row.value)),
+    rowId: row.id,
+  }));
+  if (mode === 'apply') appendJournal({ runId, phase: 'backup_created', mode, backups });
   const sources = [];
   for (const row of rows) {
     for (const ref of collectMediaRefs(row.key, row.value)) {
       const safe = sanitizeUrl(ref.sourceUrl);
       if (!safe) continue;
-      const existing = sources.find(item => item.configKey === row.key && item.sourceUrl === safe.url);
+      if (safe.signed) throw new Error(`signed source URLs require a reviewed stable source: ${safe.path}`);
+      const existing = sources.find(item => item.configKey === row.key && item.sourceUrl === ref.sourceUrl);
       if (existing) existing.references.push({ pointer: ref.pointer, mediaKey: ref.mediaKey });
-      else sources.push({ configKey: row.key, sourceUrl: safe.url, sourceHost: safe.host, sourcePath: safe.path, references: [{ pointer: ref.pointer, mediaKey: ref.mediaKey }] });
+      else sources.push({ configKey: row.key, sourceUrl: ref.sourceUrl, sourceHost: safe.host, sourcePath: safe.path, references: [{ pointer: ref.pointer, mediaKey: ref.mediaKey }] });
     }
   }
   if (mode === 'inventory') {
-    const result = { schemaVersion: 1, runId, mode, bucket, sourceCount: sources.length, configRevisions: backups, sources };
-    fs.mkdirSync(path.dirname(manifestPath), { recursive: true });
-    fs.writeFileSync(manifestPath, `${JSON.stringify(result, null, 2)}\n`);
+    const result = { schemaVersion: 2, runId, mode, bucket, sourceCount: sources.length, configRevisions: backups, sources, status: 'inventoried' };
+    writeRunManifest(result);
+    appendJournal({ runId, phase: 'inventory_complete', sourceCount: sources.length });
     console.log(JSON.stringify({ mode, sourceCount: sources.length, manifestPath }, null, 2));
     return;
   }
   const renditionEntries = [];
-  const localBuilt = new Map();
   for (const source of sources) {
     const data = await readBytes(source.sourceUrl);
     const group = source.sourcePath.includes('/history/') || source.configKey === 'brand_history' ? 'history' : (source.sourcePath.split('/').at(-2) || 'marketing');
@@ -256,12 +377,6 @@ async function main() {
     const built = await buildRenditions({ ...data, url: source.sourceUrl, name }, historyWidths, group);
     renditionEntries.push({ configKey: source.configKey, sourceUrl: source.sourceUrl, sourcePath: source.sourcePath, references: source.references, sourceBytes: data.buffer.length, sourceSha256: sha256(data.buffer), sourceWidth: built.metadata.width, sourceHeight: built.metadata.height, sourceMime: built.metadata.format ? `image/${built.metadata.format}` : null, renditions: built.entries.map(sanitizeEntry) });
     source._built = built.entries;
-  }
-  const chatbotPath = path.join(root, 'public', 'images', 'chatbot-icon.webp');
-  if (fs.existsSync(chatbotPath)) {
-    const chatbot = await buildRenditions({ buffer: fs.readFileSync(chatbotPath), sourceFile: chatbotPath, url: '/images/chatbot-icon.webp', name: 'chatbot-icon.webp' }, chatbotWidths, 'local-optimized');
-    localBuilt.set('/images/chatbot-icon.webp', chatbot.entries);
-    renditionEntries.push({ configKey: null, sourceUrl: '/images/chatbot-icon.webp', sourcePath: '/images/chatbot-icon.webp', references: [{ consumer: 'FloatingWidgets', note: 'consumer wiring owned by Agent A' }], sourceBytes: fs.statSync(chatbotPath).size, sourceSha256: sha256(fs.readFileSync(chatbotPath)), sourceWidth: chatbot.metadata.width, sourceHeight: chatbot.metadata.height, sourceMime: 'image/webp', renditions: chatbot.entries.map((entry) => ({ ...sanitizeEntry(entry), targetPath: `public/images/optimized/chatbot-icon.${entry.targetSha256.slice(0, 16)}.${entry.width}.webp`, targetUrl: null })) });
   }
   for (const item of renditionEntries.filter(entry => entry.configKey)) {
     const row = rows.find(candidate => candidate.key === item.configKey);
@@ -275,39 +390,25 @@ async function main() {
       }
     }
   }
-  const base = { schemaVersion: 1, runId, mode, bucket, prefix: 'history', contentType: 'image/webp', sourceCount: sources.length, backupReferences: backups, renditionEntries };
-  fs.mkdirSync(path.dirname(manifestPath), { recursive: true });
-  fs.writeFileSync(manifestPath, `${JSON.stringify(base, null, 2)}\n`);
+  const base = {
+    schemaVersion: 2,
+    runId,
+    mode,
+    bucket,
+    prefix: 'history',
+    contentType: 'image/webp',
+    sourceCount: sources.length,
+    backupReferences: backups,
+    renditionEntries,
+    configResults: [],
+    status: 'built',
+  };
+  writeRunManifest(base);
   if (mode === 'dry-run') {
     appendJournal({ runId, phase: 'dry_run_complete', sourceCount: sources.length, renditionCount: renditionEntries.reduce((sum, item) => sum + item.renditions.length, 0), storageWrites: 0, configWrites: 0 });
+    base.status = 'dry_run_verified';
+    writeRunManifest(base);
     console.log(JSON.stringify({ mode, sourceCount: sources.length, renditionCount: renditionEntries.reduce((sum, item) => sum + item.renditions.length, 0), storageWrites: 0, configWrites: 0, manifestPath, journalPath }, null, 2));
-    return;
-  }
-  if (mode === 'rollback') {
-    const release = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
-    if (release.status !== 'applied_verified' && release.applied !== true) throw new Error('rollback requires an applied manifest');
-    const releaseRows = await readRows(supabase);
-    for (const row of releaseRows) {
-      const items = (release.renditionEntries || []).filter(item => item.configKey === row.key);
-      if (!items.length) continue;
-      const next = clone(row.value);
-      const changed = [];
-      for (const item of items) for (const patch of item.rollbackPointers || []) {
-        const current = getAt(next, `${patch.pointer}/${patch.width}`);
-        if (current !== patch.targetUrl) throw new Error(`ROLLBACK_CONFLICT at ${patch.pointer}/${patch.width}`);
-        if (patch.hadPrevious) setAt(next, `${patch.pointer}/${patch.width}`, patch.previousValue);
-        else deleteAt(next, `${patch.pointer}/${patch.width}`);
-        changed.push(`${patch.pointer}/${patch.width}`);
-      }
-      const update = await supabase.from('SystemConfigs')
-        .update({ value: next, updated_at: new Date().toISOString() })
-        .eq('id', row.id).eq('key', row.key).eq('updated_at', row.updated_at)
-        .select('id,key,value,updated_at').maybeSingle();
-      if (update.error) throw new Error(`rollback failed for ${row.key}: ${JSON.stringify(update.error)}`);
-      if (!update.data) throw new Error(`ROLLBACK_CONFLICT: conditional update affected zero rows for ${row.key}`);
-      appendJournal({ runId, phase: 'rollback_result', configKey: row.key, changedPointers: changed, status: 'applied' });
-    }
-    console.log(JSON.stringify({ mode, status: 'rollback_applied', manifestPath, journalPath }, null, 2));
     return;
   }
   appendJournal({ runId, phase: 'storage_write_begin', storageWrites: 0 });
@@ -321,7 +422,7 @@ async function main() {
       const verification = await verifyPublic({ ...entry, width: entry.width, height: entry.height });
       Object.assign(entry, verification, { status: 'uploaded_verified' });
       appendJournal({ runId, phase: 'storage_write_result', targetPath: entry.targetPath, status: 'uploaded_verified', verification });
-      fs.writeFileSync(manifestPath, `${JSON.stringify(base, null, 2)}\n`);
+      writeRunManifest(base);
     }
   }
   for (const configKey of ['brand_history', 'about_story_content']) {
@@ -344,36 +445,30 @@ async function main() {
     }
     if (equalValues(next, row.value)) continue;
     appendJournal({ runId, phase: 'config_write_intent', configKey: row.key, sourceRevision: revisionOf(row.value), changedPointers });
-    const latest = await supabase.from('SystemConfigs').select('id,key,value,updated_at').eq('id', row.id).eq('key', row.key).maybeSingle();
-    if (latest.error || !latest.data || revisionOf(latest.data.value) !== revisionOf(row.value)) {
-      throw new Error(`CONFIG_CONFLICT before write for ${row.key}`);
-    }
-    const update = await supabase.from('SystemConfigs')
-      .update({ value: next, updated_at: new Date().toISOString() })
-      .eq('id', row.id).eq('key', row.key).eq('updated_at', row.updated_at)
-      .select('id,key,value,updated_at').maybeSingle();
-    if (update.error) throw new Error(`config CAS failed for ${row.key}: ${JSON.stringify(update.error)}`);
-    if (!update.data) throw new Error(`CONFIG_CONFLICT: conditional update affected zero rows for ${row.key}`);
-    const readBack = await supabase.from('SystemConfigs').select('id,key,value,updated_at').eq('id', row.id).eq('key', row.key).maybeSingle();
-    if (readBack.error || !readBack.data || revisionOf(readBack.data.value) !== revisionOf(next)) throw new Error(`config read-back failed for ${row.key}`);
-    appendJournal({ runId, phase: 'config_write_result', configKey: row.key, status: 'applied_verified', afterRevision: revisionOf(readBack.data.value), changedPointers });
-  }
-  for (const item of renditionEntries.filter(entry => entry.configKey === null)) {
-    for (const rendition of item.renditions) {
-      const localTarget = path.join(root, rendition.targetPath);
-      const built = localBuilt.get(item.sourceUrl)?.find(entry => entry.width === rendition.width);
-      if (built) { fs.mkdirSync(path.dirname(localTarget), { recursive: true }); fs.writeFileSync(localTarget, built._buffer, { flag: 'wx' }); }
-    }
+    const updated = await compareAndSwapConfig(supabase, {
+      key: row.key,
+      expectedExists: true,
+      expectedValue: row.value,
+      nextValue: next,
+    });
+    if (!updated) throw new Error(`CONFIG_CONFLICT: config changed before CAS for ${row.key}`);
+    if (!equalValues(updated.value, next)) throw new Error(`config CAS returned unexpected value for ${row.key}`);
+    const result = { configKey: row.key, status: 'applied_verified', afterRevision: revisionOf(updated.value), changedPointers };
+    base.configResults.push(result);
+    writeRunManifest(base);
+    appendJournal({ runId, phase: 'config_write_result', ...result });
   }
   base.status = 'applied_verified';
   base.applied = true;
-  base.afterRevisions = (await readRows(supabase)).map(row => ({ key: row.key, revision: revisionOf(row.value) }));
-  fs.writeFileSync(manifestPath, `${JSON.stringify(base, null, 2)}\n`);
+  base.afterRevisions = base.configResults.map(result => ({ key: result.configKey, revision: result.afterRevision }));
+  writeRunManifest(base);
   console.log(JSON.stringify({ mode, status: 'applied_verified', sourceCount: sources.length, renditionCount: renditionEntries.reduce((sum, item) => sum + item.renditions.length, 0), manifestPath, journalPath }, null, 2));
 }
 
 main().catch(error => {
-  appendJournal({ phase: 'failed', message: error instanceof Error ? error.message : String(error) });
+  if (runArtifactsInitialized) {
+    appendJournal({ phase: 'failed', message: error instanceof Error ? error.message : String(error) });
+  }
   console.error(error instanceof Error ? error.message : String(error));
   process.exitCode = 1;
 });

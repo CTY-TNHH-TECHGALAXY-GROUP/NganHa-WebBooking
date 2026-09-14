@@ -3,26 +3,8 @@ import { revalidatePath } from 'next/cache';
 import { withCapability } from '@/lib/api/withAuth';
 import { apiResponse } from '@/lib/api/apiResponse';
 import { recordContentRevisions } from '@/lib/api/contentRevision';
-import { createHash } from 'node:crypto';
 import { authorizeCapability } from '@/lib/auth/adminCapabilities';
-
-function canonicalize(obj: unknown): unknown {
-  if (obj === null || typeof obj !== 'object') {
-    return obj;
-  }
-  if (Array.isArray(obj)) {
-    return obj.map(canonicalize);
-  }
-  const keys = Object.keys(obj as Record<string, unknown>).sort();
-  const sorted: Record<string, unknown> = {};
-  for (const key of keys) {
-    sorted[key] = canonicalize((obj as Record<string, unknown>)[key]);
-  }
-  return sorted;
-}
-
-const revisionToken = (value: unknown) =>
-  createHash('sha256').update(JSON.stringify(canonicalize(value ?? null))).digest('hex');
+import { systemConfigRevision } from '@/lib/config/systemConfigRevision';
 
 export const GET = withCapability(async (_request, { supabase }) => {
   const { data, error } = await supabase
@@ -34,7 +16,7 @@ export const GET = withCapability(async (_request, { supabase }) => {
   if (error) return apiResponse.error(error.message, 'DB_ERROR', 500);
   return apiResponse.success({
     brand_history: data?.value || null,
-    revision: revisionToken(data?.value || null),
+    revision: systemConfigRevision(data?.value || null),
   });
 }, 'content.read', { scope: 'history' });
 
@@ -48,6 +30,9 @@ export const POST = withCapability(async (request: NextRequest, access) => {
   if (!body || !Object.prototype.hasOwnProperty.call(body, 'brand_history')) {
     return apiResponse.error('brand_history là bắt buộc.', 'VALIDATION_ERROR', 400);
   }
+  if (!body.brand_history || typeof body.brand_history !== 'object' || Array.isArray(body.brand_history)) {
+    return apiResponse.error('brand_history phải là một document object.', 'VALIDATION_ERROR', 400);
+  }
   const expectedRevision = typeof body.expectedRevision === 'string' ? body.expectedRevision : null;
   const { data: current, error: readError } = await supabase
     .from('SystemConfigs')
@@ -56,8 +41,23 @@ export const POST = withCapability(async (request: NextRequest, access) => {
     .maybeSingle();
   if (readError) return apiResponse.error(readError.message, 'DB_ERROR', 500);
 
-  const actualRevision = revisionToken(current?.value || null);
+  const actualRevision = systemConfigRevision(current?.value || null);
   if (expectedRevision && actualRevision !== expectedRevision) {
+    return apiResponse.error('Lịch sử đã được thay đổi ở cửa sổ khác. Bản nháp của bạn vẫn được giữ lại.', 'CONTENT_CONFLICT', 409);
+  }
+
+  const { data, error } = await supabase.rpc('webbooking_compare_and_swap_system_config', {
+    p_key: 'brand_history',
+    p_expected_exists: Boolean(current),
+    p_expected_value: current?.value ?? null,
+    p_next_value: body.brand_history,
+  });
+
+  if (error) {
+    return apiResponse.error(error.message, 'DB_ERROR', 500);
+  }
+  const updated = Array.isArray(data) ? data[0] : data;
+  if (!updated || typeof updated !== 'object' || !Object.prototype.hasOwnProperty.call(updated, 'value')) {
     return apiResponse.error('Lịch sử đã được thay đổi ở cửa sổ khác. Bản nháp của bạn vẫn được giữ lại.', 'CONTENT_CONFLICT', 409);
   }
 
@@ -67,29 +67,8 @@ export const POST = withCapability(async (request: NextRequest, access) => {
     changed_by: user.id,
   }] : []);
 
-  const { data, error } = current
-    ? await supabase
-      .from('SystemConfigs')
-      .update({ value: body.brand_history })
-      .eq('key', 'brand_history')
-      .select('value')
-      .maybeSingle()
-    : await supabase
-      .from('SystemConfigs')
-      .insert({ key: 'brand_history', value: body.brand_history })
-      .select('value')
-      .maybeSingle();
-
-  if (error) {
-    if (expectedRevision && error.code === '23505') {
-      return apiResponse.error('Lịch sử đã được thay đổi ở cửa sổ khác. Bản nháp của bạn vẫn được giữ lại.', 'CONTENT_CONFLICT', 409);
-    }
-    return apiResponse.error(error.message, 'DB_ERROR', 500);
-  }
-  if (!data) return apiResponse.error('Lịch sử đã được thay đổi ở cửa sổ khác. Bản nháp của bạn vẫn được giữ lại.', 'CONTENT_CONFLICT', 409);
-
   revalidatePath('/history');
   revalidatePath('/');
   revalidatePath('/[lang]', 'layout');
-  return apiResponse.success({ revision: revisionToken(data.value) });
+  return apiResponse.success({ revision: systemConfigRevision(updated.value) });
 }, 'content.write', { scope: 'history', mutation: true });

@@ -4,6 +4,7 @@ import { recordContentRevisions } from '@/lib/api/contentRevision';
 import { authorizeCapability } from '@/lib/auth/adminCapabilities';
 import { validateHomepageStyling, sanitizeHomepageStyling } from '@/lib/config/stylingSanitizer';
 import { CTA_KEYS, normalizeReceptionEmail, sanitizeCtaLinks, validateConfigUrl } from '@/lib/config/urlSettings';
+import { systemConfigRevision } from '@/lib/config/systemConfigRevision';
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
@@ -97,9 +98,34 @@ export const POST = withCapabilities(async (request: NextRequest, access) => {
       home_spa_content,
       farm_retreat_content,
       farm_store_content,
+      expectedRevision,
     } = await request.json();
 
     const upsertData = [];
+    let historyMutation: {
+      exists: boolean;
+      value: Record<string, unknown> | null;
+      nextValue: Record<string, unknown>;
+    } | null = null;
+
+    const hasNonHistoryMutation = [
+      system_settings,
+      about_story_content,
+      homepage_content,
+      footer_content,
+      blog_content,
+      homepage_styling,
+      local_tour_content,
+      home_spa_content,
+      farm_retreat_content,
+      farm_store_content,
+    ].some(value => value !== undefined);
+    if (brand_history !== undefined && hasNonHistoryMutation) {
+      return NextResponse.json(
+        { error: 'brand_history phải được lưu trong một yêu cầu riêng để bảo toàn concurrent update.', code: 'VALIDATION_ERROR' },
+        { status: 400 },
+      );
+    }
 
     if (isRecord(system_settings) && Object.prototype.hasOwnProperty.call(system_settings, 'receptionEmail')) {
       const notificationAuthorization = await authorizeCapability(
@@ -175,11 +201,29 @@ export const POST = withCapabilities(async (request: NextRequest, access) => {
     }
 
     if (brand_history !== undefined) {
-      upsertData.push({
-        key: 'brand_history',
-        value: brand_history,
-        updated_at: new Date().toISOString(),
-      });
+      if (!isRecord(brand_history)) {
+        return NextResponse.json({ error: 'brand_history must be an object' }, { status: 400 });
+      }
+      const { data: currentHistory, error: currentHistoryError } = await supabase
+        .from('SystemConfigs')
+        .select('value')
+        .eq('key', 'brand_history')
+        .maybeSingle();
+      if (currentHistoryError) {
+        return NextResponse.json({ error: 'Failed to read brand_history' }, { status: 500 });
+      }
+      const expectedHistoryRevision = typeof expectedRevision === 'string' ? expectedRevision : null;
+      if (expectedHistoryRevision && systemConfigRevision(currentHistory?.value ?? null) !== expectedHistoryRevision) {
+        return NextResponse.json(
+          { error: 'Lịch sử đã được thay đổi ở cửa sổ khác. Bản nháp của bạn vẫn được giữ lại.', code: 'CONTENT_CONFLICT' },
+          { status: 409 },
+        );
+      }
+      historyMutation = {
+        exists: Boolean(currentHistory),
+        value: isRecord(currentHistory?.value) ? currentHistory.value : null,
+        nextValue: brand_history,
+      };
     }
 
     if (homepage_content !== undefined) {
@@ -293,10 +337,35 @@ export const POST = withCapabilities(async (request: NextRequest, access) => {
       }
     }
 
+    if (historyMutation) {
+      const { data, error } = await supabase.rpc('webbooking_compare_and_swap_system_config', {
+        p_key: 'brand_history',
+        p_expected_exists: historyMutation.exists,
+        p_expected_value: historyMutation.value,
+        p_next_value: historyMutation.nextValue,
+      });
+      if (error) {
+        return NextResponse.json({ error: 'Failed to atomically update brand_history' }, { status: 500 });
+      }
+      const updated = Array.isArray(data) ? data[0] : data;
+      if (!updated || typeof updated !== 'object' || !Object.prototype.hasOwnProperty.call(updated, 'value')) {
+        return NextResponse.json(
+          { error: 'Lịch sử đã được thay đổi ở cửa sổ khác. Bản nháp của bạn vẫn được giữ lại.', code: 'CONTENT_CONFLICT' },
+          { status: 409 },
+        );
+      }
+      await recordContentRevisions(supabase, historyMutation.exists && historyMutation.value ? [{
+        content_key: 'SystemConfigs:brand_history',
+        payload: historyMutation.value,
+        changed_by: user.id,
+      }] : []);
+    }
+
     try {
       const { revalidatePath } = require('next/cache');
       revalidatePath('/', 'layout');
       revalidatePath('/');
+      revalidatePath('/history');
       revalidatePath('/[lang]', 'layout');
       revalidatePath('/local-tour', 'layout');
       revalidatePath('/[lang]/local-tour', 'layout');
