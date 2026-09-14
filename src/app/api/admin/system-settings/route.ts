@@ -48,6 +48,10 @@ export const GET = withCapabilities(async (_request, access) => {
       home_spa_content: null as unknown,
       farm_retreat_content: null as unknown,
       farm_store_content: null as unknown,
+      revisions: {
+        about_story_content: null as string | null,
+        brand_history: null as string | null,
+      },
     };
 
     if (data) {
@@ -64,6 +68,11 @@ export const GET = withCapabilities(async (_request, access) => {
         if (item.key === 'farm_retreat_content') result.farm_retreat_content = item.value;
         if (item.key === 'farm_store_content') result.farm_store_content = item.value;
       });
+
+      for (const item of data) {
+        if (item.key === 'about_story_content') result.revisions.about_story_content = systemConfigRevision(item.value ?? null);
+        if (item.key === 'brand_history') result.revisions.brand_history = systemConfigRevision(item.value ?? null);
+      }
     }
 
     const notificationAuthorization = await authorizeCapability(
@@ -102,15 +111,15 @@ export const POST = withCapabilities(async (request: NextRequest, access) => {
     } = await request.json();
 
     const upsertData = [];
-    let historyMutation: {
+    let protectedContentMutation: {
+      key: 'brand_history' | 'about_story_content';
       exists: boolean;
       value: Record<string, unknown> | null;
       nextValue: Record<string, unknown>;
     } | null = null;
 
-    const hasNonHistoryMutation = [
+    const hasUnprotectedMutation = [
       system_settings,
-      about_story_content,
       homepage_content,
       footer_content,
       blog_content,
@@ -120,9 +129,10 @@ export const POST = withCapabilities(async (request: NextRequest, access) => {
       farm_retreat_content,
       farm_store_content,
     ].some(value => value !== undefined);
-    if (brand_history !== undefined && hasNonHistoryMutation) {
+    const protectedMutationCount = Number(about_story_content !== undefined) + Number(brand_history !== undefined);
+    if (protectedMutationCount > 1 || (protectedMutationCount > 0 && hasUnprotectedMutation)) {
       return NextResponse.json(
-        { error: 'brand_history phải được lưu trong một yêu cầu riêng để bảo toàn concurrent update.', code: 'VALIDATION_ERROR' },
+        { error: 'brand_history hoặc about_story_content phải được lưu trong một yêu cầu riêng để bảo toàn concurrent update.', code: 'VALIDATION_ERROR' },
         { status: 400 },
       );
     }
@@ -192,37 +202,35 @@ export const POST = withCapabilities(async (request: NextRequest, access) => {
       });
     }
 
-    if (about_story_content !== undefined) {
-      upsertData.push({
-        key: 'about_story_content',
-        value: about_story_content,
-        updated_at: new Date().toISOString(),
-      });
-    }
-
-    if (brand_history !== undefined) {
-      if (!isRecord(brand_history)) {
-        return NextResponse.json({ error: 'brand_history must be an object' }, { status: 400 });
+    const protectedContent = brand_history !== undefined
+      ? { key: 'brand_history' as const, value: brand_history }
+      : about_story_content !== undefined
+        ? { key: 'about_story_content' as const, value: about_story_content }
+        : null;
+    if (protectedContent) {
+      if (!isRecord(protectedContent.value)) {
+        return NextResponse.json({ error: `${protectedContent.key} must be an object` }, { status: 400 });
       }
       const { data: currentHistory, error: currentHistoryError } = await supabase
         .from('SystemConfigs')
         .select('value')
-        .eq('key', 'brand_history')
+        .eq('key', protectedContent.key)
         .maybeSingle();
       if (currentHistoryError) {
-        return NextResponse.json({ error: 'Failed to read brand_history' }, { status: 500 });
+        return NextResponse.json({ error: `Failed to read ${protectedContent.key}` }, { status: 500 });
       }
       const expectedHistoryRevision = typeof expectedRevision === 'string' ? expectedRevision : null;
       if (expectedHistoryRevision && systemConfigRevision(currentHistory?.value ?? null) !== expectedHistoryRevision) {
         return NextResponse.json(
-          { error: 'Lịch sử đã được thay đổi ở cửa sổ khác. Bản nháp của bạn vẫn được giữ lại.', code: 'CONTENT_CONFLICT' },
+          { error: 'Nội dung đã được thay đổi ở cửa sổ khác. Bản nháp của bạn vẫn được giữ lại.', code: 'CONTENT_CONFLICT' },
           { status: 409 },
         );
       }
-      historyMutation = {
+      protectedContentMutation = {
+        key: protectedContent.key,
         exists: Boolean(currentHistory),
         value: isRecord(currentHistory?.value) ? currentHistory.value : null,
-        nextValue: brand_history,
+        nextValue: protectedContent.value,
       };
     }
 
@@ -337,26 +345,26 @@ export const POST = withCapabilities(async (request: NextRequest, access) => {
       }
     }
 
-    if (historyMutation) {
+    if (protectedContentMutation) {
       const { data, error } = await supabase.rpc('webbooking_compare_and_swap_system_config', {
-        p_key: 'brand_history',
-        p_expected_exists: historyMutation.exists,
-        p_expected_value: historyMutation.value,
-        p_next_value: historyMutation.nextValue,
+        p_key: protectedContentMutation.key,
+        p_expected_exists: protectedContentMutation.exists,
+        p_expected_value: protectedContentMutation.value,
+        p_next_value: protectedContentMutation.nextValue,
       });
       if (error) {
-        return NextResponse.json({ error: 'Failed to atomically update brand_history' }, { status: 500 });
+        return NextResponse.json({ error: `Failed to atomically update ${protectedContentMutation.key}` }, { status: 500 });
       }
       const updated = Array.isArray(data) ? data[0] : data;
       if (!updated || typeof updated !== 'object' || !Object.prototype.hasOwnProperty.call(updated, 'value')) {
         return NextResponse.json(
-          { error: 'Lịch sử đã được thay đổi ở cửa sổ khác. Bản nháp của bạn vẫn được giữ lại.', code: 'CONTENT_CONFLICT' },
+          { error: 'Nội dung đã được thay đổi ở cửa sổ khác. Bản nháp của bạn vẫn được giữ lại.', code: 'CONTENT_CONFLICT' },
           { status: 409 },
         );
       }
-      await recordContentRevisions(supabase, historyMutation.exists && historyMutation.value ? [{
-        content_key: 'SystemConfigs:brand_history',
-        payload: historyMutation.value,
+      await recordContentRevisions(supabase, protectedContentMutation.exists && protectedContentMutation.value ? [{
+        content_key: `SystemConfigs:${protectedContentMutation.key}`,
+        payload: protectedContentMutation.value,
         changed_by: user.id,
       }] : []);
     }
@@ -382,7 +390,10 @@ export const POST = withCapabilities(async (request: NextRequest, access) => {
       console.error('Revalidation error:', e);
     }
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({
+      success: true,
+      data: protectedContentMutation ? { revision: systemConfigRevision(protectedContentMutation.nextValue) } : undefined,
+    });
   } catch (error) {
     console.error('API Error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

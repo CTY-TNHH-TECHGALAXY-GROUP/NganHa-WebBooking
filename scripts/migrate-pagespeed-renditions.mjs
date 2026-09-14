@@ -12,6 +12,7 @@
 
 import crypto from 'node:crypto';
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import sharp from 'sharp';
 import { createClient } from '@supabase/supabase-js';
@@ -122,18 +123,30 @@ function siblingPointer(pointer, mediaKey) {
   return tokens.join('/');
 }
 
-function privateBackupPath(runId, row) {
+function assertDurablePrivateBackupDir() {
   if (!backupDir) throw new Error('apply requires --backup-dir=<durable-private-directory>');
+  const temporaryDirectory = path.resolve(os.tmpdir());
+  if (backupDir === temporaryDirectory || backupDir.startsWith(`${temporaryDirectory}${path.sep}`)) {
+    throw new Error('backup-dir must be durable private storage, not the operating-system temporary directory');
+  }
+  if (backupDir === root || backupDir.startsWith(`${root}${path.sep}`)) {
+    throw new Error('backup-dir must be outside the repository');
+  }
+}
+
+function privateBackupPath(runId, row) {
+  assertDurablePrivateBackupDir();
   const dir = path.join(backupDir, runId);
   fs.mkdirSync(dir, { recursive: true, mode: 0o700 });
   try { fs.chmodSync(dir, 0o700); } catch { /* best effort on non-POSIX */ }
   const filename = path.join(dir, `${row.key}-backup.json`);
-  fs.writeFileSync(filename, `${JSON.stringify(row, null, 2)}\n`, { mode: 0o600 });
+  fs.writeFileSync(filename, `${JSON.stringify(row, null, 2)}\n`, { flag: 'wx', mode: 0o600 });
   try { fs.chmodSync(filename, 0o600); } catch { /* best effort on non-POSIX */ }
   return filename;
 }
 
 let runArtifactsInitialized = false;
+let activeManifest = null;
 
 function initializeRunArtifacts() {
   if (runArtifactsInitialized) return;
@@ -278,7 +291,7 @@ function readReleaseManifest() {
   const source = fs.readFileSync(releaseManifestPath);
   const checksum = sha256(source);
   const release = JSON.parse(source.toString('utf8'));
-  if (release.status !== 'applied_verified' && release.applied !== true) {
+  if (release.status !== 'applied_verified' || release.applied !== true) {
     throw new Error('rollback requires an applied manifest');
   }
   return { release, checksum };
@@ -287,6 +300,10 @@ function readReleaseManifest() {
 async function main() {
   if (!['dry-run', 'apply', 'rollback', 'inventory'].includes(mode)) throw new Error(`unsupported mode: ${mode}`);
   if (!['all', 'brand_history', 'about_story_content'].includes(configFilter)) throw new Error(`unsupported config filter: ${configFilter}`);
+  if ((mode === 'apply' || mode === 'rollback') && configFilter === 'all') {
+    throw new Error(`${mode} requires --config=brand_history or --config=about_story_content; one document per release avoids cross-row partial commits`);
+  }
+  if (mode === 'apply') assertDurablePrivateBackupDir();
   if (!env.NEXT_PUBLIC_SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) throw new Error('Supabase env vars are required for config inventory');
   const supabase = createClient(env.NEXT_PUBLIC_SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY, { auth: { persistSession: false, autoRefreshToken: false } });
   initializeRunArtifacts();
@@ -343,6 +360,11 @@ async function main() {
   if (mode === 'apply' && !backupDir) throw new Error('apply requires --backup-dir=<durable-private-directory>');
   const rows = await readRows(supabase);
   if (rows.length !== (configFilter === 'all' ? 2 : 1)) throw new Error(`missing requested config: ${configFilter}`);
+  for (const row of rows) {
+    if (!row.value || typeof row.value !== 'object' || Array.isArray(row.value)) {
+      throw new Error(`${row.key} must be a JSON object before building or applying renditions`);
+    }
+  }
   const backups = rows.map(row => ({
     key: row.key,
     ...(mode === 'apply' ? { path: privateBackupPath(runId, row) } : {}),
@@ -403,6 +425,7 @@ async function main() {
     configResults: [],
     status: 'built',
   };
+  activeManifest = base;
   writeRunManifest(base);
   if (mode === 'dry-run') {
     appendJournal({ runId, phase: 'dry_run_complete', sourceCount: sources.length, renditionCount: renditionEntries.reduce((sum, item) => sum + item.renditions.length, 0), storageWrites: 0, configWrites: 0 });
@@ -467,6 +490,16 @@ async function main() {
 
 main().catch(error => {
   if (runArtifactsInitialized) {
+    if (activeManifest && mode === 'apply') {
+      activeManifest.status = activeManifest.configResults?.length ? 'apply_partial' : 'apply_failed';
+      activeManifest.applied = false;
+      activeManifest.failure = {
+        message: error instanceof Error ? error.message : String(error),
+        at: new Date().toISOString(),
+        recovery: 'Do not reuse this run. Preserve its journal and use a new run only after an operator reviews any uploaded objects and config writes. A partially applied manifest is intentionally not rollback-eligible.',
+      };
+      try { writeRunManifest(activeManifest); } catch { /* preserve the original failure when evidence cannot be written */ }
+    }
     appendJournal({ phase: 'failed', message: error instanceof Error ? error.message : String(error) });
   }
   console.error(error instanceof Error ? error.message : String(error));

@@ -35,6 +35,7 @@ export default function OurStoryAdminPage() {
   const [activeMenuNicheIndex, setActiveMenuNicheIndex] = useState<number>(0);
   const [message, setMessage] = useState<{ type: 'success' | 'error' | ''; text: string }>({ type: '', text: '' });
   const [uploadingTarget, setUploadingTarget] = useState<string | null>(null);
+  const [revision, setRevision] = useState<string | null>(null);
 
   // Load existing configuration from API
   useEffect(() => {
@@ -43,6 +44,7 @@ export default function OurStoryAdminPage() {
       .then((data) => {
         const raw = data.about_story_content || data.homepage_content?.ourStory;
         setConfig(hydrateOurStoryConfig(raw));
+        setRevision(data.revisions?.about_story_content || null);
         setLoading(false);
       })
       .catch((err) => {
@@ -61,11 +63,16 @@ export default function OurStoryAdminPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           about_story_content: config,
+          expectedRevision: revision,
         }),
       });
 
       if (res.ok) {
+        const data = await res.json();
+        setRevision(data.data?.revision || null);
         setMessage({ type: 'success', text: '✅ Đã lưu cấu hình Our Story thành công!' });
+      } else if (res.status === 409) {
+        setMessage({ type: 'error', text: 'Nội dung đã đổi ở cửa sổ khác. Bản nháp hiện tại vẫn được giữ lại.' });
       } else {
         const err = await res.json();
         setMessage({ type: 'error', text: `Lỗi khi lưu: ${err.error || 'Vui lòng thử lại'}` });
