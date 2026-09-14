@@ -4,6 +4,7 @@ import React, { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { MenuProvider } from '@/components/Menu/MenuContext';
 import IOSViewportFix from '@/components/IOSViewportFix';
+import '../../../styles/luxury-font.css';
 
 export default function NewUserLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname() || '';

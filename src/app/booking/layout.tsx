@@ -4,6 +4,8 @@
  * This overrides the root layout to provide a clean booking experience
  */
 
+import '../../styles/luxury-font.css';
+
 const BookingLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="booking-layout">

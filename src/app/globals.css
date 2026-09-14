@@ -1,4 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 @source "../";
 
@@ -102,11 +101,6 @@ body,
 /*  IMPORTED FROM wrb-noi-bo-dev                  */
 /*  Shared styles for Menu, Sheets, Checkout      */
 /* ═══════════════════════════════════════════════ */
-
-/* FONT LUXURY */
-.font-luxury {
-  font-family: 'Cinzel', serif;
-}
 
 /* Glass effects */
 .glass-header {

@@ -1,0 +1,6 @@
+/* Loaded by booking and new-user layouts, the only route families that use this utility. */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&display=swap');
+
+.font-luxury {
+  font-family: 'Cinzel', serif;
+}
