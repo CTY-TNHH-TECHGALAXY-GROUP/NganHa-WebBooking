@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Playfair_Display, Inter } from "next/font/google";
 import LayoutWrapper from "@/components/LayoutWrapper";
 import { TranslationProvider } from "@/components/TranslationProvider";
@@ -64,12 +64,9 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export const viewport = {
+export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  // Keep pinch-zoom available for guests who need to enlarge text or controls.
-  maximumScale: 5,
-  userScalable: true,
   viewportFit: "cover",
   themeColor: "#281b15",
 };

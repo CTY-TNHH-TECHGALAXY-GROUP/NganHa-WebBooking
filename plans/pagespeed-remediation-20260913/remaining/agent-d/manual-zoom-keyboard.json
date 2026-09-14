@@ -3,116 +3,142 @@
     "viewport": "mobile",
     "route": "/",
     "zoom": {
-      "key": "unsupported",
-      "before": {
-        "innerWidth": 1280,
-        "visualScale": 1
-      },
-      "after": {
-        "innerWidth": 1280,
-        "visualScale": 1
-      }
+      "status": "manual_device_verification_required",
+      "viewportMetaAllowsZoom": true
     },
     "tabStates": [
       {
-        "tag": "BODY",
+        "tag": "BUTTON",
         "role": null,
-        "label": "Book@keyframes hero-video-loading-spin { to { transform: rotate(360deg); } }Heri"
+        "label": "Toggle menu"
       },
       {
-        "tag": "BODY",
+        "tag": "A",
         "role": null,
-        "label": "Book@keyframes hero-video-loading-spin { to { transform: rotate(360deg); } }Heri"
+        "label": "Oria Spa home"
       },
       {
-        "tag": "BODY",
+        "tag": "A",
         "role": null,
-        "label": "Book@keyframes hero-video-loading-spin { to { transform: rotate(360deg); } }Heri"
+        "label": "예약"
       },
       {
-        "tag": "BODY",
+        "tag": "BUTTON",
         "role": null,
-        "label": "Book@keyframes hero-video-loading-spin { to { transform: rotate(360deg); } }Heri"
+        "label": "장바구니, 0개 서비스 선택됨"
       },
       {
-        "tag": "BODY",
+        "tag": "BUTTON",
         "role": null,
-        "label": "Book@keyframes hero-video-loading-spin { to { transform: rotate(360deg); } }Heri"
+        "label": "Select language"
       },
       {
-        "tag": "BODY",
+        "tag": "A",
         "role": null,
-        "label": "Book@keyframes hero-video-loading-spin { to { transform: rotate(360deg); } }Heri"
+        "label": "Location"
       },
       {
-        "tag": "BODY",
+        "tag": "A",
         "role": null,
-        "label": "Book@keyframes hero-video-loading-spin { to { transform: rotate(360deg); } }Heri"
+        "label": "Oria Spa와 함께하는 사이공 로컬 투어 살펴보기"
       },
       {
-        "tag": "BODY",
+        "tag": "DIV",
+        "role": "region",
+        "label": "필름 릴: 사이공 경험 & Oria"
+      },
+      {
+        "tag": "A",
         "role": null,
-        "label": "Book@keyframes hero-video-loading-spin { to { transform: rotate(360deg); } }Heri"
+        "label": "스탠다드 메뉴 알아보기"
+      },
+      {
+        "tag": "A",
+        "role": null,
+        "label": "나만의 여정 설계하기"
+      },
+      {
+        "tag": "A",
+        "role": null,
+        "label": "딥테라피 예약하기"
+      },
+      {
+        "tag": "A",
+        "role": null,
+        "label": "Oria Home Spa 둘러보기"
       }
     ],
-    "viewportContract": "width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover, user-scalable=yes"
+    "viewportContract": "width=device-width, initial-scale=1, viewport-fit=cover"
   },
   {
     "viewport": "desktop",
     "route": "/",
     "zoom": {
-      "key": "unsupported",
-      "before": {
-        "innerWidth": 1280,
-        "visualScale": 1
-      },
-      "after": {
-        "innerWidth": 1280,
-        "visualScale": 1
-      }
+      "status": "manual_device_verification_required",
+      "viewportMetaAllowsZoom": true
     },
     "tabStates": [
       {
-        "tag": "BODY",
+        "tag": "BUTTON",
         "role": null,
-        "label": "Book@keyframes hero-video-loading-spin { to { transform: rotate(360deg); } }Heri"
+        "label": "Toggle menu"
       },
       {
-        "tag": "BODY",
+        "tag": "A",
         "role": null,
-        "label": "Book@keyframes hero-video-loading-spin { to { transform: rotate(360deg); } }Heri"
+        "label": "Oria Spa home"
       },
       {
-        "tag": "BODY",
+        "tag": "A",
         "role": null,
-        "label": "Book@keyframes hero-video-loading-spin { to { transform: rotate(360deg); } }Heri"
+        "label": "예약"
       },
       {
-        "tag": "BODY",
+        "tag": "BUTTON",
         "role": null,
-        "label": "Book@keyframes hero-video-loading-spin { to { transform: rotate(360deg); } }Heri"
+        "label": "장바구니, 0개 서비스 선택됨"
       },
       {
-        "tag": "BODY",
+        "tag": "BUTTON",
         "role": null,
-        "label": "Book@keyframes hero-video-loading-spin { to { transform: rotate(360deg); } }Heri"
+        "label": "Select language"
       },
       {
-        "tag": "BODY",
+        "tag": "A",
         "role": null,
-        "label": "Book@keyframes hero-video-loading-spin { to { transform: rotate(360deg); } }Heri"
+        "label": "Location"
       },
       {
-        "tag": "BODY",
+        "tag": "A",
         "role": null,
-        "label": "Book@keyframes hero-video-loading-spin { to { transform: rotate(360deg); } }Heri"
+        "label": "Oria Spa와 함께하는 사이공 로컬 투어 살펴보기"
       },
       {
-        "tag": "BODY",
+        "tag": "DIV",
+        "role": "region",
+        "label": "필름 릴: 사이공 경험 & Oria"
+      },
+      {
+        "tag": "A",
         "role": null,
-        "label": "Book@keyframes hero-video-loading-spin { to { transform: rotate(360deg); } }Heri"
+        "label": "스탠다드 메뉴 알아보기"
+      },
+      {
+        "tag": "A",
+        "role": null,
+        "label": "나만의 여정 설계하기"
+      },
+      {
+        "tag": "A",
+        "role": null,
+        "label": "딥테라피 예약하기"
+      },
+      {
+        "tag": "A",
+        "role": null,
+        "label": "Oria Home Spa 둘러보기"
       }
     ],
-    "viewportContract": "width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover, user-scalable=yes"
+    "viewportContract": "width=device-width, initial-scale=1, viewport-fit=cover"
   }
 ]

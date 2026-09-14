@@ -11,7 +11,13 @@ if (!['127.0.0.1', 'localhost'].includes(parsedBase.hostname)) {
 
 const evidenceDir = path.resolve('plans/pagespeed-remediation-20260913/remaining/agent-d');
 const axePath = createRequire(import.meta.url).resolve('axe-core/axe.min.js');
-const routes = ['/', '/history', '/vi', '/en'];
+const locales = ['vi', 'en', 'cn', 'jp', 'kr'];
+const routes = [
+  '/',
+  '/history',
+  ...locales.map(locale => `/${locale}`),
+  ...locales.map(locale => `/${locale}/new-user/standard/checkout`),
+];
 const viewports = [
   { name: 'mobile', width: 390, height: 844, deviceScaleFactor: 2 },
   { name: 'desktop', width: 1440, height: 900, deviceScaleFactor: 1 },
@@ -21,9 +27,22 @@ const browser = await chromium.launch({ headless: true });
 const rawAxe = [];
 const manualChecks = [];
 
+const serializeRule = ({ id, impact, help, helpUrl, nodes }) => ({
+  id,
+  impact,
+  help,
+  helpUrl,
+  nodes: nodes.map(({ target, html, failureSummary, impact: nodeImpact }) => ({
+    target,
+    html,
+    failureSummary,
+    impact: nodeImpact,
+  })),
+});
+
 try {
   for (const viewport of viewports) {
-    const context = await browser.newContext(viewport, { locale: 'en-US' });
+    const context = await browser.newContext({ ...viewport, locale: 'en-US' });
     const page = await context.newPage();
     for (const route of routes) {
       const errors = [];
@@ -36,8 +55,11 @@ try {
           runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa'] },
         });
         return {
-          violations: result.violations.map(({ id, impact, nodes }) => ({ id, impact, nodes: nodes.length })),
-          incomplete: result.incomplete.map(({ id, impact, nodes }) => ({ id, impact, nodes: nodes.length })),
+          testEngine: result.testEngine,
+          testRunner: result.testRunner,
+          testEnvironment: result.testEnvironment,
+          violations: result.violations,
+          incomplete: result.incomplete,
           passes: result.passes.length,
         };
       });
@@ -69,24 +91,26 @@ try {
           activeElement: document.activeElement?.tagName || null,
         };
       });
-      rawAxe.push({ viewport: viewport.name, width: viewport.width, route, status: response.status(), errors, axe, state });
+      rawAxe.push({
+        viewport: viewport.name,
+        width: viewport.width,
+        route,
+        status: response.status(),
+        errors,
+        axe: {
+          ...axe,
+          violations: axe.violations.map(serializeRule),
+          incomplete: axe.incomplete.map(serializeRule),
+        },
+        state,
+      });
       page.removeAllListeners('pageerror');
     }
 
     await page.goto(`${baseUrl}/`, { waitUntil: 'domcontentloaded', timeout: 60000 });
     await page.waitForTimeout(1000);
-    const zoomBefore = await page.evaluate(() => ({ innerWidth, visualScale: window.visualViewport?.scale || null }));
-    let zoomKey = 'unsupported';
-    try {
-      await page.keyboard.press('Control+Plus');
-      zoomKey = 'Control+Plus';
-    } catch {
-      // Headless Chromium can omit browser chrome zoom; the viewport contract is still recorded below.
-    }
-    await page.waitForTimeout(200);
-    const zoomAfter = await page.evaluate(() => ({ innerWidth, visualScale: window.visualViewport?.scale || null }));
     const tabStates = [];
-    for (let index = 0; index < 8; index += 1) {
+    for (let index = 0; index < 12; index += 1) {
       await page.keyboard.press('Tab');
       tabStates.push(await page.evaluate(() => ({
         tag: document.activeElement?.tagName || null,
@@ -97,7 +121,10 @@ try {
     manualChecks.push({
       viewport: viewport.name,
       route: '/',
-      zoom: { key: zoomKey, before: zoomBefore, after: zoomAfter },
+      zoom: {
+        status: 'manual_device_verification_required',
+        viewportMetaAllowsZoom: !/(?:maximum-scale|user-scalable\s*=\s*no)/i.test(await page.locator('meta[name="viewport"]').getAttribute('content') || ''),
+      },
       tabStates,
       viewportContract: await page.locator('meta[name="viewport"]').getAttribute('content'),
     });
@@ -111,11 +138,13 @@ await mkdir(evidenceDir, { recursive: true });
 await writeFile(path.join(evidenceDir, 'raw-axe-after.json'), `${JSON.stringify(rawAxe, null, 2)}\n`);
 await writeFile(path.join(evidenceDir, 'manual-zoom-keyboard.json'), `${JSON.stringify(manualChecks, null, 2)}\n`);
 const failures = rawAxe.filter(item => item.status >= 400 || item.errors.length || item.axe.violations.length);
+const keyboardFailures = manualChecks.filter(check => !check.tabStates.some(state => state.tag === 'A' || state.tag === 'BUTTON'));
 console.log(JSON.stringify({
   evidenceDir,
   cases: rawAxe.length,
   failures: failures.length,
   manualChecks: manualChecks.length,
+  keyboardFailures: keyboardFailures.length,
   axeViolations: rawAxe.reduce((count, item) => count + item.axe.violations.length, 0),
 }, null, 2));
-if (failures.length) process.exitCode = 1;
+if (failures.length || keyboardFailures.length) process.exitCode = 1;

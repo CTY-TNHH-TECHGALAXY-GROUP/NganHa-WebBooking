@@ -1546,6 +1546,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                     <input
                       ref={calendarInputRef}
                       type="date"
+                      aria-label={t('pickAnotherDate', lang)}
                       min={spaToday || undefined}
                       value={bookingDate}
                       onChange={(e) => handleCustomDateSelect(e.target.value)}
