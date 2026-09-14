@@ -13,6 +13,7 @@ import { trackAnalytics } from '@/lib/analytics/client';
 import {
   heroStagger, fadeInUp, heroTitle, scaleIn, branchEntrance,
 } from './Hero.animation';
+import { attachHeroVideoSource, selectHeroVideoSource } from './heroVideoSource.mjs';
 
 // 🔧 UI CONFIGURATION
 const HERO_PARTICLE_COUNT = 30;
@@ -30,6 +31,8 @@ export interface HeroVideoConfig {
   id?: string | number | null;
   url?: string | null;
   media_url?: string | null;
+  mobile_url?: string | null;
+  desktop_url?: string | null;
   poster?: string | null;
   poster_url?: string | null;
   sort_order?: number | null;
@@ -46,6 +49,8 @@ export interface HeroProps {
 interface ResolvedHeroVideo {
   id: string;
   url: string;
+  mobileUrl?: string;
+  desktopUrl?: string;
   poster?: string;
   sortOrder: number;
 }
@@ -165,8 +170,14 @@ const normalizeHeroVideos = (value: unknown): ResolvedHeroVideo[] => {
       const source = [video.url, video.media_url]
         .find((item): item is string => typeof item === 'string' && item.trim().length > 0)
         ?.trim();
+      const mobileSource = typeof video.mobile_url === 'string' && video.mobile_url.trim()
+        ? video.mobile_url.trim()
+        : undefined;
+      const desktopSource = typeof video.desktop_url === 'string' && video.desktop_url.trim()
+        ? video.desktop_url.trim()
+        : undefined;
 
-      if (!source) return [];
+      if (!source && !mobileSource && !desktopSource) return [];
 
       const poster = [video.poster, video.poster_url]
         .find((item): item is string => typeof item === 'string' && item.trim().length > 0)
@@ -174,7 +185,12 @@ const normalizeHeroVideos = (value: unknown): ResolvedHeroVideo[] => {
 
       return [{
         id: video.id === null || video.id === undefined ? `hero-video-${index}` : String(video.id),
-        url: source,
+        // Existing canonical-only configurations remain valid. A rendition-only
+        // record is also accepted so a versioned migration can add the optional
+        // fields without requiring an otherwise-unused duplicate URL.
+        url: source || mobileSource || desktopSource || '',
+        ...(mobileSource ? { mobileUrl: mobileSource } : {}),
+        ...(desktopSource ? { desktopUrl: desktopSource } : {}),
         poster,
         sortOrder: typeof video.sort_order === 'number' ? video.sort_order : index,
       }];
@@ -278,6 +294,11 @@ const Hero = ({ initialHeroConfig, initialVideos }: HeroProps) => {
   const startedAttemptKeyRef = useRef<string | null>(null);
   const failedAttemptKeyRef = useRef<string | null>(null);
   const pendingFrameRequestRef = useRef<PendingFrameRequest | null>(null);
+  const sourceAttachmentRef = useRef<{
+    attemptKey: string;
+    source: string;
+    video: HTMLVideoElement;
+  } | null>(null);
 
   useEffect(() => {
     const hero = document.getElementById('hero');
@@ -302,7 +323,29 @@ const Hero = ({ initialHeroConfig, initialVideos }: HeroProps) => {
   const activeVideo = selectionReady && homepageVideos
     ? homepageVideos[activeVideoIndex] || homepageVideos[0]
     : null;
-  const activeVideoKey = activeVideo ? `${activeVideo.id}|${activeVideo.url}` : null;
+  const activeVideoKey = activeVideo
+    ? `${activeVideo.id}|${activeVideo.url}|${activeVideo.mobileUrl || ''}|${activeVideo.desktopUrl || ''}`
+    : null;
+  const [sourceSelection, setSourceSelection] = useState<{ key: string; source: string | null } | null>(null);
+
+  useEffect(() => {
+    if (!activeVideo || !activeVideoKey) {
+      setSourceSelection(null);
+      return;
+    }
+
+    // This runs only for a new carousel item or explicit retry. Do not swap a
+    // playing rendition on resize, which would create a second transfer for a
+    // single view of the same video.
+    setSourceSelection({
+      key: activeVideoKey,
+      source: selectHeroVideoSource(activeVideo, window.innerWidth),
+    });
+  }, [activeVideo, activeVideoKey, videoRetryCount]);
+
+  const selectedVideoSource = sourceSelection?.key === activeVideoKey
+    ? sourceSelection.source
+    : null;
   const posterKey = activeVideo
     ? `${activeVideoKey}|${activeVideo.poster || ''}`
     : null;
@@ -312,8 +355,24 @@ const Hero = ({ initialHeroConfig, initialVideos }: HeroProps) => {
       ? posterFallback.source
       : configuredPoster || DEFAULT_HERO_POSTER
     : null;
-  const activeAttemptKey = activeVideoKey ? `${activeVideoKey}|${videoRetryCount}` : null;
+  const activeAttemptKey = activeVideoKey && selectedVideoSource
+    ? `${activeVideoKey}|${selectedVideoSource}|${videoRetryCount}`
+    : null;
   activeAttemptKeyRef.current = activeAttemptKey;
+
+  useEffect(() => {
+    if (!activeAttemptKey || !selectedVideoSource) return;
+
+    const video = videoRef.current;
+    if (!video) return;
+
+    sourceAttachmentRef.current = attachHeroVideoSource(
+      video,
+      selectedVideoSource,
+      activeAttemptKey,
+      sourceAttachmentRef.current,
+    );
+  }, [activeAttemptKey, selectedVideoSource]);
 
   useEffect(() => {
     if (!activeAttemptKey) return;
@@ -605,13 +664,12 @@ const Hero = ({ initialHeroConfig, initialVideos }: HeroProps) => {
               }}
               className="hero-video"
               aria-hidden="true"
-              src={activeVideo.url}
               poster={posterSource || DEFAULT_HERO_POSTER}
               autoPlay
               muted
               playsInline
               loop={videoCount === 1}
-              preload="auto"
+              preload={selectedVideoSource ? 'auto' : 'none'}
               onLoadedData={(event) => {
                 const attemptKey = activeAttemptKeyRef.current;
                 if (attemptKey) handleVideoLoadedData(event.currentTarget, attemptKey);

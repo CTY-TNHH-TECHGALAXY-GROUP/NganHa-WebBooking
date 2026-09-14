@@ -9,6 +9,8 @@ export type HeroVideo = {
   id: string;
   url?: string;
   media_url?: string;
+  mobile_url?: string;
+  desktop_url?: string;
   poster?: string;
   poster_url?: string;
   sort_order: number;
@@ -58,7 +60,9 @@ const normalizeVideo = (value: unknown, index: number): HeroVideo | null => {
 
   const url = readNonEmptyString(value.url);
   const mediaUrl = readNonEmptyString(value.media_url);
-  if (!url && !mediaUrl) return null;
+  const mobileUrl = readNonEmptyString(value.mobile_url);
+  const desktopUrl = readNonEmptyString(value.desktop_url);
+  if (!url && !mediaUrl && !mobileUrl && !desktopUrl) return null;
 
   const rawSortOrder = typeof value.sort_order === 'number'
     ? value.sort_order
@@ -68,6 +72,8 @@ const normalizeVideo = (value: unknown, index: number): HeroVideo | null => {
     id: readNonEmptyString(value.id) || (typeof value.id === 'number' ? String(value.id) : `hero-${index}`),
     ...(url ? { url: normalizeVideoUrl(url) } : {}),
     ...(mediaUrl ? { media_url: normalizeVideoUrl(mediaUrl) } : {}),
+    ...(mobileUrl ? { mobile_url: normalizeVideoUrl(mobileUrl) } : {}),
+    ...(desktopUrl ? { desktop_url: normalizeVideoUrl(desktopUrl) } : {}),
     ...(readNonEmptyString(value.poster) ? { poster: value.poster as string } : {}),
     ...(readNonEmptyString(value.poster_url) ? { poster_url: value.poster_url as string } : {}),
     sort_order: Number.isFinite(rawSortOrder) ? rawSortOrder : 0,
