@@ -1,17 +1,17 @@
 {
   "agent": "E",
   "capturedAt": "2026-09-14",
-  "baseSha": "65fb5afdd08a4c740a6e8adfdb1c17fff2a159d8",
+  "baseSha": "3e9ea30db99da1f2031df59fbcc36190609b8191",
   "profile": "Chromium headless, 390x844, DPR2, touch, CPU4x; loopback diagnostic",
   "artifacts": [
     {
       "path": "scripts/trace-runtime-loopback.mjs",
-      "sha256": "c6f72f792a38bdf60b664cbc2579f73f08a853d130e48afe0a3ec9c0f4d6892c",
-      "meaning": "Reproducible loopback-only CDP/Playwright navigation, interaction, attribution, and honest status harness"
+      "sha256": "fdb604527e8d3488d4fc78f87a56641a7c9ef8de7e34405c6be2bec2077aec25",
+      "meaning": "Reproducible loopback-only CDP/Playwright navigation, interaction, per-phase request attribution, and honest status harness"
     },
     {
       "path": "plans/pagespeed-remediation-20260913/remaining/agent-e/handoff.md",
-      "sha256": "c4ee0ee5def7da2ac5a5f4c76cbc6d213bb12f5615b4a24d816819d8d75331a8",
+      "sha256": "1a4445ecd5908b5a57633a4fc04883ed6e42ec788c60a7cb46c84bbc6d79fbe3",
       "meaning": "Scope, commands, status semantics, evidence limits, and handoff"
     },
     {
@@ -20,6 +20,6 @@
       "meaning": "Sanitized blocked/no-data result; no runtime metric claimed"
     }
   ],
-  "status": "BLOCKED",
-  "blocker": "Local server and Chromium launch permission were unavailable during bounded execution; rerun required for trace metrics"
+  "status": "PARTIAL",
+  "blocker": "The loopback harness has phase-attributed output, but the chat control has no allowlisted selector and CDP layout events still lack component-level attribution. Raw measurements remain outside git."
 }

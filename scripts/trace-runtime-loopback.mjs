@@ -54,6 +54,7 @@ let context;
 let page;
 const traceEvents = [];
 const requests = new Map();
+let currentPhase = 'boot';
 try {
   browser = await chromium.launch({ headless: true });
   context = await browser.newContext({
@@ -64,8 +65,12 @@ try {
   });
   page = await context.newPage();
   const cdp = await context.newCDPSession(page);
+  cdp.on('Network.requestWillBeSent', ({ requestId, request, type }) => {
+    requests.set(requestId, { url: request.url, type, phase: currentPhase, status: null, mime: null, bytes: 0 });
+  });
   cdp.on('Network.responseReceived', ({ requestId, response, type }) => {
-    requests.set(requestId, { url: response.url, type, status: response.status, mime: response.mimeType, bytes: 0 });
+    const request = requests.get(requestId) || { phase: currentPhase, bytes: 0 };
+    requests.set(requestId, { ...request, url: response.url, type, status: response.status, mime: response.mimeType });
   });
   cdp.on('Network.loadingFinished', ({ requestId, encodedDataLength }) => {
     const request = requests.get(requestId);
@@ -83,9 +88,11 @@ try {
       computedStyleReads: [],
       longTasks: [],
       layoutShifts: [],
+      suppressInstrumentation: false,
     };
     window.__agentERuntimeTrace = state;
     const record = (bucket, method) => {
+      if (state.suppressInstrumentation) return;
       const list = state[bucket];
       if (!list || list.length >= 500) return;
       list.push({
@@ -109,6 +116,24 @@ try {
       state.phase = phase;
       state.phases.push({ t: performance.now(), phase });
     };
+    window.__agentECollectAnimations = () => {
+      state.suppressInstrumentation = true;
+      try {
+        return [...document.querySelectorAll('*')].flatMap(element => {
+          const style = getComputedStyle(element);
+          return style.animationName !== 'none' ? [{
+            tag: element.tagName,
+            className: String(element.className),
+            name: style.animationName,
+            duration: style.animationDuration,
+            playState: style.animationPlayState,
+          }] : [];
+        }).slice(0, 100);
+      } finally {
+        state.suppressInstrumentation = false;
+      }
+    };
+    window.__agentECaptureRuntime = () => JSON.parse(JSON.stringify(state));
     if ('PerformanceObserver' in window) {
       try {
         new PerformanceObserver(list => {
@@ -153,20 +178,16 @@ try {
   });
 
   async function markPhase(phase) {
+    currentPhase = phase;
     await page.evaluate(value => window.__agentESetPhase?.(value), phase);
   }
 
   async function captureAnimations() {
-    return page.evaluate(() => [...document.querySelectorAll('*')].flatMap(element => {
-      const style = getComputedStyle(element);
-      return style.animationName !== 'none' ? [{
-        tag: element.tagName,
-        className: String(element.className),
-        name: style.animationName,
-        duration: style.animationDuration,
-        playState: style.animationPlayState,
-      }] : [];
-    }).slice(0, 100));
+    return page.evaluate(() => window.__agentECollectAnimations?.() || []);
+  }
+
+  async function captureRuntime() {
+    return page.evaluate(() => window.__agentECaptureRuntime?.() || null);
   }
 
   async function captureStep(name, action) {
@@ -175,6 +196,7 @@ try {
     try {
       await markPhase(name);
       await action(step);
+      step.runtime = await captureRuntime();
       if (step.status === 'RUNNING') step.status = 'PASS';
     } catch (error) {
       step.status = 'BLOCKED';
@@ -256,12 +278,12 @@ try {
   await traceComplete;
   fs.writeFileSync(tracePath, JSON.stringify({ traceEvents }));
   const finalState = await page.evaluate(() => {
-    const runtime = window.__agentERuntimeTrace || {};
-    return { runtime, viewport: document.querySelector('meta[name="viewport"]')?.content || null };
+    return { viewport: document.querySelector('meta[name="viewport"]')?.content || null };
   });
   const layouts = traceEvents.filter(event => ['Layout', 'UpdateLayoutTree', 'ForcedLayout'].includes(event.name));
-  const longTasks = finalState.runtime.longTasks || [];
-  const geometry = finalState.runtime.geometryReads || [];
+  const finalRuntime = report.steps.at(-1)?.runtime || null;
+  const longTasks = finalRuntime?.longTasks || [];
+  const geometry = finalRuntime?.geometryReads || [];
   report.finishedAt = new Date().toISOString();
   const hasPass = report.steps.some(step => step.status === 'PASS');
   const hasBlocked = report.steps.some(step => step.status === 'BLOCKED');
@@ -269,7 +291,7 @@ try {
   report.status = hasBlocked || (hasPass && hasNoData)
     ? 'PARTIAL'
     : hasNoData ? 'NO_DATA' : 'PASS';
-  report.page = { viewport: finalState.viewport, runtime: finalState.runtime };
+  report.page = { viewport: finalState.viewport, runtime: finalRuntime };
   report.attribution = {
     traceEventCount: traceEvents.length,
     // The raw trace preserves every event; keep the report reviewable by showing
@@ -283,6 +305,16 @@ try {
     longTaskDurationMs: longTasks.reduce((sum, task) => sum + task.duration, 0),
   };
   report.requests = [...requests.values()].filter(request => request.type === 'Image' || request.type === 'Script').sort((a, b) => b.bytes - a.bytes).slice(0, 100);
+  report.requestSummaryByPhase = report.requests.reduce((summary, request) => {
+    const phase = request.phase || 'unknown';
+    const entry = summary[phase] || { imageCount: 0, scriptCount: 0, bytes: 0, unknownBytes: 0 };
+    if (request.type === 'Image') entry.imageCount += 1;
+    if (request.type === 'Script') entry.scriptCount += 1;
+    if (request.bytes > 0) entry.bytes += request.bytes;
+    else entry.unknownBytes += 1;
+    summary[phase] = entry;
+    return summary;
+  }, {});
 } catch (error) {
   report.status = 'BLOCKED';
   report.reason = error instanceof Error ? error.message : String(error);
