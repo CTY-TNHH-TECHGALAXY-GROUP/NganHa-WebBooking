@@ -18,7 +18,7 @@ import {
 const HERO_PARTICLE_COUNT = 30;
 const VIDEO_FIRST_FRAME_TIMEOUT_MS = 15000;
 const DEFAULT_HERO_POSTER = 'https://i.ibb.co/fs2MBD4/hero-spa-bg.jpg';
-const LOCAL_HERO_POSTER_FALLBACK = '/images/hero-spa-bg.png';
+const LOCAL_HERO_POSTER_FALLBACK = '/images/hero-spa-poster.webp';
 
 /**
  * Server-to-client contract for the homepage hero configuration.

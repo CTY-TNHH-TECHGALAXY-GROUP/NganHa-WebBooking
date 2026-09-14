@@ -62,12 +62,35 @@ try {
       await route.continue();
     });
   }, async (page) => {
+    const fallbackResponsePromise = page.waitForResponse((response) => (
+      response.url().endsWith('/images/hero-spa-poster.webp')
+    ), { timeout: 20_000 });
     await openHero(page);
     const poster = page.getByTestId('hero-poster');
     await page.waitForFunction(() => (
-      document.querySelector('[data-testid="hero-poster"]')?.getAttribute('src') === '/images/hero-spa-bg.png'
+      document.querySelector('[data-testid="hero-poster"]')?.getAttribute('src') === '/images/hero-spa-poster.webp'
     ), undefined, { timeout: 20_000 });
-    assert.equal(await poster.getAttribute('src'), '/images/hero-spa-bg.png');
+    const fallbackResponse = await fallbackResponsePromise;
+    assert.equal(await poster.getAttribute('src'), '/images/hero-spa-poster.webp');
+    assert.match(fallbackResponse.headers()['content-type'] || '', /^image\/webp(?:;|$)/i);
+    const decoded = await poster.evaluate((image) => {
+      const canvas = document.createElement('canvas');
+      canvas.width = 1;
+      canvas.height = 1;
+      const context = canvas.getContext('2d');
+      context?.drawImage(image, 0, 0, 1, 1);
+      return {
+        complete: image.complete,
+        naturalWidth: image.naturalWidth,
+        naturalHeight: image.naturalHeight,
+        pixel: context ? Array.from(context.getImageData(0, 0, 1, 1).data) : [],
+      };
+    });
+    assert.equal(decoded.complete, true);
+    assert.equal(decoded.naturalWidth, 640);
+    assert.equal(decoded.naturalHeight, 640);
+    assert.equal(decoded.pixel.length, 4);
+    assert.ok(decoded.pixel.some((channel) => channel !== 0), 'fallback must decode to non-empty pixels');
     assert.equal(await poster.evaluate((image) => getComputedStyle(image).opacity), '1');
     assert.equal(await page.getByTestId('hero-video-wrapper').evaluate((wrapper) => getComputedStyle(wrapper).opacity), '0');
     assert.equal(await page.locator('.hero-video-loading-screen').count(), 0, 'poster fallback must keep Hero content usable');
