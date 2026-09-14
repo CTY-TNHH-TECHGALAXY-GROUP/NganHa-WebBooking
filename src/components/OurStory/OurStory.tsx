@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, type CSSProperties } from 'react';
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import Link from 'next/link';
 import { ArrowUpRight } from 'lucide-react';
 import { motion, useReducedMotion } from 'framer-motion';
@@ -17,12 +17,57 @@ const getResponsiveSrcSet = (sources?: Record<string, string>) => Object.entries
   .map(([width, url]) => `${url} ${width}w`)
   .join(', ');
 
-const StoryImage = ({ src, alt, sources, sizes }: { src: string; alt: string; sources?: Record<string, string>; sizes: string }) => {
+const TRANSPARENT_IMAGE = 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
+
+type DeferredStoryImageProps = {
+  src: string;
+  alt: string;
+  sources?: Record<string, string>;
+  sizes?: string;
+};
+
+/**
+ * Native lazy loading starts fetching a large distance before an image enters
+ * the viewport. Keep Our Story's offscreen CMS media out of the request queue
+ * until its own reserved slot is near the viewport instead.
+ */
+const DeferredStoryImage = ({ src, alt, sources, sizes }: DeferredStoryImageProps) => {
+  const [shouldLoad, setShouldLoad] = useState(false);
+  const slotRef = useRef<HTMLPictureElement>(null);
   const srcSet = getResponsiveSrcSet(sources);
+
+  useEffect(() => {
+    const slot = slotRef.current;
+    if (!slot) return;
+
+    if (!('IntersectionObserver' in window)) {
+      setShouldLoad(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry?.isIntersecting) return;
+        setShouldLoad(true);
+        observer.disconnect();
+      },
+      { rootMargin: '200px 0px' },
+    );
+
+    observer.observe(slot);
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <picture>
-      {srcSet && <source type="image/webp" srcSet={srcSet} sizes={sizes} />}
-      <img src={src} alt={alt} loading="lazy" decoding="async" sizes={sizes} />
+    <picture ref={slotRef}>
+      {shouldLoad && srcSet && <source type="image/webp" srcSet={srcSet} sizes={sizes} />}
+      <img
+        src={shouldLoad ? src : TRANSPARENT_IMAGE}
+        alt={alt}
+        decoding="async"
+        sizes={sizes}
+        aria-busy={!shouldLoad}
+      />
     </picture>
   );
 };
@@ -94,7 +139,7 @@ const OurStory = () => {
 
           <div className={styles.visualStory}>
             <figure className={styles.cityFigure}>
-              <StoryImage
+              <DeferredStoryImage
                 src={config.locationSection.cityImage || '/images/about-street.png'}
                 sources={config.locationSection.cityImageResponsiveSources}
                 sizes="(max-width: 760px) 92vw, 52vw"
@@ -114,7 +159,7 @@ const OurStory = () => {
             </figure>
 
             <figure className={styles.offsetFigure}>
-              <StoryImage
+              <DeferredStoryImage
                 src={config.locationSection.streetSignImage}
                 sources={config.locationSection.streetSignImageResponsiveSources}
                 sizes="(max-width: 760px) 56vw, 24vw"
@@ -197,10 +242,10 @@ const OurStory = () => {
                         y: { type: 'spring', stiffness: 150, damping: 22, delay: index * 0.07 },
                       }}
                     >
-                      <img
+                      <DeferredStoryImage
                         src={frame.image}
                         alt={getLocalizedText(frame.title, lang)}
-                        loading="lazy"
+                        sizes="(max-width: 760px) 205px, 250px"
                       />
                       {frame.watermarkEnabled !== false && (
                         <div
@@ -237,10 +282,10 @@ const OurStory = () => {
 
         <section className={styles.atmosphereSection}>
           <figure>
-            <img
+            <DeferredStoryImage
               src={config.atmosphereSection.nightStreetImage}
               alt={getLocalizedText(config.atmosphereSection.imageCaption, lang)}
-              loading="lazy"
+              sizes="(max-width: 760px) calc(100vw - 40px), 48vw"
             />
             {config.atmosphereSection.nightStreetImageWatermarkEnabled !== false && (
               <div
@@ -275,10 +320,10 @@ const OurStory = () => {
             {config.specialtySection.pillars.map((pillar, index) => (
               <article key={'pillar-' + index}>
                 <figure className={styles.pillarMedia}>
-                  <img
+                  <DeferredStoryImage
                     src={pillar.image || '/images/about-treatment.png'}
                     alt={getLocalizedText(pillar.title, lang)}
-                    loading="lazy"
+                    sizes="(max-width: 760px) calc(100vw - 40px), 45vw"
                   />
                   {pillar.watermarkEnabled !== false && (
                     <div
@@ -299,10 +344,10 @@ const OurStory = () => {
             {config.specialtySection.menuNiches && config.specialtySection.menuNiches.map((menu, index) => (
               <article key={menu.id || 'menu-niche-' + index}>
                 <figure className={styles.pillarMedia}>
-                  <img
+                  <DeferredStoryImage
                     src={menu.image || '/images/about-treatment.png'}
                     alt={getLocalizedText(menu.title, lang)}
-                    loading="lazy"
+                    sizes="(max-width: 760px) calc(100vw - 40px), 45vw"
                   />
                   {menu.watermarkEnabled !== false && (
                     <div

@@ -429,6 +429,12 @@
   transition: filter 650ms ease, transform 650ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+.filmFrame > picture,
+.atmosphereSection > figure > picture,
+.pillarMedia > picture {
+  display: block;
+}
+
 .filmFrame:hover img {
   filter: saturate(1.04) contrast(1.02);
   transform: scale(1.035);
