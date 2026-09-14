@@ -604,6 +604,7 @@ const Hero = ({ initialHeroConfig, initialVideos }: HeroProps) => {
                 videoRef.current = element;
               }}
               className="hero-video"
+              aria-hidden="true"
               src={activeVideo.url}
               poster={posterSource || DEFAULT_HERO_POSTER}
               autoPlay

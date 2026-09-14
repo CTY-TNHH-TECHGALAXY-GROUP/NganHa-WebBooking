@@ -1089,43 +1089,29 @@ export const History = ({ aboveFold = false }: HistoryProps) => {
                     <p>{scene.body}</p>
                   </div>
                   {chapter.scenes.length > 1 && (
-                    <div className={styles.stageArrows} aria-label={copy.changeImage}>
-                      <span
-                        role="link"
-                        tabIndex={0}
+                    <div className={styles.stageArrows} role="group" aria-label={copy.changeImage}>
+                      <button
+                        type="button"
                         className={styles.stageArrow}
                         aria-label={copy.previousImage}
                         onClick={event => {
                           event.stopPropagation();
                           cycleScene(chapter, sceneIndex, -1);
                         }}
-                        onKeyDown={event => {
-                          if (event.key !== 'Enter' && event.key !== ' ') return;
-                          event.preventDefault();
-                          event.stopPropagation();
-                          cycleScene(chapter, sceneIndex, -1);
-                        }}
                       >
                         ‹
-                      </span>
-                      <span
-                        role="link"
-                        tabIndex={0}
+                      </button>
+                      <button
+                        type="button"
                         className={styles.stageArrow}
                         aria-label={copy.nextImage}
                         onClick={event => {
                           event.stopPropagation();
                           cycleScene(chapter, sceneIndex, 1);
                         }}
-                        onKeyDown={event => {
-                          if (event.key !== 'Enter' && event.key !== ' ') return;
-                          event.preventDefault();
-                          event.stopPropagation();
-                          cycleScene(chapter, sceneIndex, 1);
-                        }}
                       >
                         ›
-                      </span>
+                      </button>
                     </div>
                   )}
                 </div>

@@ -74,6 +74,13 @@ try {
         const copyrightStyle = copyright ? getComputedStyle(copyright) : null;
         const footerStyle = footer ? getComputedStyle(footer) : null;
         const journey = document.querySelector('[class*="_journeyScroller__"]');
+        const videos = [...document.querySelectorAll('video')].map(video => ({
+          autoplay: video.autoplay,
+          muted: video.muted,
+          defaultMuted: video.defaultMuted,
+          controls: video.controls,
+          ariaHidden: video.getAttribute('aria-hidden'),
+        }));
         return {
           viewportMeta: viewportMeta?.getAttribute('content') || null,
           logoCount: logos.length,
@@ -88,6 +95,7 @@ try {
             tabIndex: journey.tabIndex,
             label: journey.getAttribute('aria-label'),
           } : null,
+          videos,
           activeElement: document.activeElement?.tagName || null,
         };
       });
@@ -139,12 +147,14 @@ await writeFile(path.join(evidenceDir, 'raw-axe-after.json'), `${JSON.stringify(
 await writeFile(path.join(evidenceDir, 'manual-zoom-keyboard.json'), `${JSON.stringify(manualChecks, null, 2)}\n`);
 const failures = rawAxe.filter(item => item.status >= 400 || item.errors.length || item.axe.violations.length);
 const keyboardFailures = manualChecks.filter(check => !check.tabStates.some(state => state.tag === 'A' || state.tag === 'BUTTON'));
+const autoplayAudioFailures = rawAxe.filter(item => item.state.videos.some(video => video.autoplay && !video.muted));
 console.log(JSON.stringify({
   evidenceDir,
   cases: rawAxe.length,
   failures: failures.length,
   manualChecks: manualChecks.length,
   keyboardFailures: keyboardFailures.length,
+  autoplayAudioFailures: autoplayAudioFailures.length,
   axeViolations: rawAxe.reduce((count, item) => count + item.axe.violations.length, 0),
 }, null, 2));
-if (failures.length || keyboardFailures.length) process.exitCode = 1;
+if (failures.length || keyboardFailures.length || autoplayAudioFailures.length) process.exitCode = 1;

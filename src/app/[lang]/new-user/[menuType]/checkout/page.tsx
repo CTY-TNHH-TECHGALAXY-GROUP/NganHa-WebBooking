@@ -1626,7 +1626,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                   )}
                 </div>
 
-                <div className={styles.dateScroller} aria-label={t('booking', lang)}>
+                <div className={styles.dateScroller} role="group" aria-label={t('booking', lang)}>
                   {dateOptions.map((iso) => {
                     return (
                       <button
