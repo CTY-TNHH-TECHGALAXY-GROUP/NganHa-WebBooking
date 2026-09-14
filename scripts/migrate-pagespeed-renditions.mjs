@@ -123,6 +123,14 @@ function siblingPointer(pointer, mediaKey) {
   return tokens.join('/');
 }
 
+function siblingIdentityPointer(pointer, mediaKey) {
+  const tokens = pointer.split('/');
+  tokens.pop();
+  const identityKey = mediaKey === 'image' ? 'responsiveSourceImage' : `${mediaKey}ResponsiveSource`;
+  tokens.push(identityKey);
+  return tokens.join('/');
+}
+
 function assertDurablePrivateBackupDir() {
   if (!backupDir) throw new Error('apply requires --backup-dir=<durable-private-directory>');
   const temporaryDirectory = path.resolve(os.tmpdir());
@@ -337,6 +345,13 @@ async function main() {
         else deleteAt(next, `${rollbackPatch.pointer}/${rollbackPatch.width}`);
         changedPointers.push(`${rollbackPatch.pointer}/${rollbackPatch.width}`);
       }
+      for (const item of items) for (const identityPatch of item.rollbackIdentityPatches || []) {
+        const current = getAt(next, identityPatch.pointer);
+        if (current !== identityPatch.targetValue) throw new Error(`ROLLBACK_CONFLICT at ${identityPatch.pointer}`);
+        if (identityPatch.hadPrevious) setAt(next, identityPatch.pointer, identityPatch.previousValue);
+        else deleteAt(next, identityPatch.pointer);
+        changedPointers.push(identityPatch.pointer);
+      }
       appendJournal({ runId, phase: 'rollback_config_intent', configKey: row.key, changedPointers });
       const updated = await compareAndSwapConfig(supabase, {
         key: row.key,
@@ -403,8 +418,17 @@ async function main() {
   for (const item of renditionEntries.filter(entry => entry.configKey)) {
     const row = rows.find(candidate => candidate.key === item.configKey);
     item.rollbackPointers = [];
+    item.rollbackIdentityPatches = [];
     for (const reference of item.references) {
       const pointer = siblingPointer(reference.pointer, reference.mediaKey);
+      const identityPointer = siblingIdentityPointer(reference.pointer, reference.mediaKey);
+      const sourceValue = getAt(row.value, reference.pointer);
+      item.rollbackIdentityPatches.push({
+        pointer: identityPointer,
+        targetValue: sourceValue,
+        hadPrevious: getAt(row.value, identityPointer) !== undefined,
+        previousValue: getAt(row.value, identityPointer) ?? null,
+      });
       for (const entry of item.renditions) {
         const existing = getAt(row.value, pointer);
         const widthKey = String(entry.width);
@@ -464,6 +488,10 @@ async function main() {
           changedPointers.push(`${pointer}/${rendition.width}`);
         }
         setAt(next, pointer, updated);
+        const identityPointer = siblingIdentityPointer(reference.pointer, reference.mediaKey);
+        const sourceValue = getAt(next, reference.pointer);
+        setAt(next, identityPointer, sourceValue);
+        changedPointers.push(identityPointer);
       }
     }
     if (equalValues(next, row.value)) continue;

@@ -5,6 +5,7 @@ import { apiResponse } from '@/lib/api/apiResponse';
 import { recordContentRevisions } from '@/lib/api/contentRevision';
 import { authorizeCapability } from '@/lib/auth/adminCapabilities';
 import { systemConfigRevision } from '@/lib/config/systemConfigRevision';
+import { clearStaleHistoryResponsiveSources } from '@/lib/media/responsiveSources';
 
 export const GET = withCapability(async (_request, { supabase }) => {
   const { data, error } = await supabase
@@ -46,11 +47,12 @@ export const POST = withCapability(async (request: NextRequest, access) => {
     return apiResponse.error('Lịch sử đã được thay đổi ở cửa sổ khác. Bản nháp của bạn vẫn được giữ lại.', 'CONTENT_CONFLICT', 409);
   }
 
+  const nextHistory = clearStaleHistoryResponsiveSources(current?.value, body.brand_history);
   const { data, error } = await supabase.rpc('webbooking_compare_and_swap_system_config', {
     p_key: 'brand_history',
     p_expected_exists: Boolean(current),
     p_expected_value: current?.value ?? null,
-    p_next_value: body.brand_history,
+    p_next_value: nextHistory,
   });
 
   if (error) {

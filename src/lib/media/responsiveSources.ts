@@ -57,6 +57,69 @@ export const replaceMediaSourceAndClearRenditions = <T extends Record<string, un
   return next as T;
 };
 
+type JsonRecord = Record<string, unknown>;
+
+const isRecord = (value: unknown): value is JsonRecord => (
+  Boolean(value) && typeof value === 'object' && !Array.isArray(value)
+);
+
+const cloneDocument = <T extends JsonRecord>(value: T): T => JSON.parse(JSON.stringify(value)) as T;
+
+const clearChangedMedia = (
+  previous: JsonRecord | undefined,
+  next: JsonRecord | undefined,
+  sourceKey: string,
+  renditionKey: string,
+  identityKey: string,
+) => {
+  if (!previous || !next || previous[sourceKey] === next[sourceKey]) return;
+  delete next[renditionKey];
+  delete next[identityKey];
+};
+
+const records = (value: unknown): JsonRecord[] => Array.isArray(value)
+  ? value.filter(isRecord)
+  : [];
+
+/**
+ * A stale editor draft may carry the previous original's map. Before the CAS
+ * writer saves a changed original, discard only that original's derivatives.
+ * Identity-less maps remain compatible when the original is unchanged.
+ */
+export const clearStaleHistoryResponsiveSources = <T extends JsonRecord>(previous: unknown, incoming: T): T => {
+  const next = cloneDocument(incoming);
+  const priorChapters = records(isRecord(previous) ? previous.chapters : undefined);
+  records(next.chapters).forEach((chapter, chapterIndex) => {
+    const priorScenes = records(priorChapters[chapterIndex]?.scenes);
+    records(chapter.scenes).forEach((scene, sceneIndex) => {
+      clearChangedMedia(priorScenes[sceneIndex], scene, 'image', 'responsiveSources', 'responsiveSourceImage');
+    });
+  });
+  return next;
+};
+
+export const clearStaleOurStoryResponsiveSources = <T extends JsonRecord>(previous: unknown, incoming: T): T => {
+  const next = cloneDocument(incoming);
+  const prior = isRecord(previous) ? previous : {};
+
+  const priorLocation = isRecord(prior.locationSection) ? prior.locationSection : undefined;
+  const nextLocation = isRecord(next.locationSection) ? next.locationSection : undefined;
+  clearChangedMedia(priorLocation, nextLocation, 'cityImage', 'cityImageResponsiveSources', 'cityImageResponsiveSource');
+  clearChangedMedia(priorLocation, nextLocation, 'streetSignImage', 'streetSignImageResponsiveSources', 'streetSignImageResponsiveSource');
+
+  const priorAtmosphere = isRecord(prior.atmosphereSection) ? prior.atmosphereSection : undefined;
+  const nextAtmosphere = isRecord(next.atmosphereSection) ? next.atmosphereSection : undefined;
+  clearChangedMedia(priorAtmosphere, nextAtmosphere, 'nightStreetImage', 'nightStreetImageResponsiveSources', 'nightStreetImageResponsiveSource');
+
+  const clearImageList = (previousItems: JsonRecord[], nextItems: JsonRecord[]) => {
+    nextItems.forEach((item, index) => clearChangedMedia(previousItems[index], item, 'image', 'responsiveSources', 'responsiveSourceImage'));
+  };
+  clearImageList(records(isRecord(prior.filmReel) ? prior.filmReel.frames : undefined), records(isRecord(next.filmReel) ? next.filmReel.frames : undefined));
+  clearImageList(records(isRecord(prior.specialtySection) ? prior.specialtySection.pillars : undefined), records(isRecord(next.specialtySection) ? next.specialtySection.pillars : undefined));
+  clearImageList(records(isRecord(prior.specialtySection) ? prior.specialtySection.menuNiches : undefined), records(isRecord(next.specialtySection) ? next.specialtySection.menuNiches : undefined));
+  return next;
+};
+
 export const deferredMediaStateAfterDecode = (naturalWidth: number): DeferredMediaState => (
   naturalWidth > 0 ? 'loaded' : 'error'
 );

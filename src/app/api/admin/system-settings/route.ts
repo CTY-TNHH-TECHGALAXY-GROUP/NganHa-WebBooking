@@ -5,6 +5,7 @@ import { authorizeCapability } from '@/lib/auth/adminCapabilities';
 import { validateHomepageStyling, sanitizeHomepageStyling } from '@/lib/config/stylingSanitizer';
 import { CTA_KEYS, normalizeReceptionEmail, sanitizeCtaLinks, validateConfigUrl } from '@/lib/config/urlSettings';
 import { systemConfigRevision } from '@/lib/config/systemConfigRevision';
+import { clearStaleHistoryResponsiveSources, clearStaleOurStoryResponsiveSources } from '@/lib/media/responsiveSources';
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
@@ -226,11 +227,14 @@ export const POST = withCapabilities(async (request: NextRequest, access) => {
           { status: 409 },
         );
       }
+      const nextValue = protectedContent.key === 'brand_history'
+        ? clearStaleHistoryResponsiveSources(currentHistory?.value, protectedContent.value)
+        : clearStaleOurStoryResponsiveSources(currentHistory?.value, protectedContent.value);
       protectedContentMutation = {
         key: protectedContent.key,
         exists: Boolean(currentHistory),
         value: isRecord(currentHistory?.value) ? currentHistory.value : null,
-        nextValue: protectedContent.value,
+        nextValue,
       };
     }
 

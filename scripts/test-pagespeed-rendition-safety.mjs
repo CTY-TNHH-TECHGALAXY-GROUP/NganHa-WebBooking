@@ -78,6 +78,8 @@ assert.match(retired.stderr, /retired and intentionally performs no work/);
 
 const source = readFileSync(migration, 'utf8');
 assert.match(source, /supabase\.rpc\('webbooking_compare_and_swap_system_config'/);
+assert.match(source, /responsiveSourceImage/);
+assert.match(source, /siblingIdentityPointer/);
 assert.doesNotMatch(source, /from\('SystemConfigs'\)\s*\.update\(/);
 assert.match(source, /--release-manifest must not be the run output manifest/);
 assert.match(source, /one document per release avoids cross-row partial commits/);
@@ -90,6 +92,7 @@ const adminHistoryRoute = readFileSync(join(repository, 'src', 'app', 'api', 'ad
 assert.match(adminHistoryRoute, /supabase\.rpc\('webbooking_compare_and_swap_system_config'/);
 assert.doesNotMatch(adminHistoryRoute, /from\('SystemConfigs'\)\s*\.update\(/);
 assert.match(adminHistoryRoute, /p_expected_exists:\s*Boolean\(current\)/);
+assert.match(adminHistoryRoute, /clearStaleHistoryResponsiveSources/);
 
 const systemSettingsRoute = readFileSync(join(repository, 'src', 'app', 'api', 'admin', 'system-settings', 'route.ts'), 'utf8');
 assert.match(systemSettingsRoute, /supabase\.rpc\('webbooking_compare_and_swap_system_config'/);
@@ -99,6 +102,7 @@ assert.doesNotMatch(systemSettingsRoute, /key:\s*'brand_history',\s*value:/);
 assert.doesNotMatch(systemSettingsRoute, /key:\s*'about_story_content',\s*value:/);
 assert.match(systemSettingsRoute, /key: 'brand_history' \| 'about_story_content'/);
 assert.match(systemSettingsRoute, /p_key: protectedContentMutation\.key/);
+assert.match(systemSettingsRoute, /clearStaleOurStoryResponsiveSources/);
 assert.match(systemSettingsRoute, /code: 'CONTENT_CONFLICT'/);
 assert.match(systemSettingsRoute, /data: protectedContentMutation \? \{ revision: systemConfigRevision\(protectedContentMutation\.nextValue\) \}/);
 assert.match(systemSettingsRoute, /result\.revisions\.about_story_content = systemConfigRevision/);

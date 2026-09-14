@@ -76,6 +76,25 @@ assert.deepEqual(
   'a source replacement removes only its stale map and identity',
 );
 
+const historyV1 = { chapters: [{ scenes: [{ ...imageV1 }] }] };
+assert.deepEqual(
+  media.clearStaleHistoryResponsiveSources(historyV1, { chapters: [{ scenes: [{ ...imageV1, title: { vi: 'Chỉ sửa chữ' } }] }] }),
+  { chapters: [{ scenes: [{ ...imageV1, title: { vi: 'Chỉ sửa chữ' } }] }] },
+  'a History text edit retains its rendition metadata',
+);
+assert.deepEqual(
+  media.clearStaleHistoryResponsiveSources(historyV1, { chapters: [{ scenes: [{ ...imageV1, image: originalV2 }] }] }),
+  { chapters: [{ scenes: [{ image: originalV2, title: imageV1.title }] }] },
+  'a History source replacement clears only the stale rendition metadata',
+);
+
+const storyV1 = { locationSection: { cityImage: originalV1, cityImageResponsiveSources: v1Renditions, cityImageResponsiveSource: originalV1, title: { vi: 'V1' } } };
+assert.deepEqual(
+  media.clearStaleOurStoryResponsiveSources(storyV1, { locationSection: { ...storyV1.locationSection, cityImage: originalV2 } }),
+  { locationSection: { cityImage: originalV2, title: { vi: 'V1' } } },
+  'an Our Story source replacement clears only its stale rendition metadata',
+);
+
 const hydrated = story.hydrateOurStoryConfig({
   contentVersion: 3,
   header: { badge: { vi: 'Bản tiếng Việt mới' } },

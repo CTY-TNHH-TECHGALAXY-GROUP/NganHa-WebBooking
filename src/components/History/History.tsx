@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { AnimatePresence, motion, useMotionValue, useSpring } from 'framer-motion';
 import { useSystemSettings } from '@/components/SystemSettingsProvider';
 import { useTranslation } from '@/components/TranslationProvider';
+import { responsiveSourcesForImage } from '@/lib/media/responsiveSources';
 import {
   HISTORY_CHAPTER_TRANSLATIONS,
   HISTORY_FINALE_DEFAULTS,
@@ -21,6 +22,7 @@ type Scene = {
   body: string;
   image: string;
   responsiveSources?: Record<string, string>;
+  responsiveSourceImage?: string;
   alt: string;
   imageFit?: CSSProperties['objectFit'];
   imagePosition?: CSSProperties['objectPosition'];
@@ -515,9 +517,10 @@ const DEFAULT_HISTORY_IMAGE_PATHS = new Set(
 // Keeps the stage and thumbnail dimensions stable without starting an image request.
 const HISTORY_MEDIA_PLACEHOLDER = 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
 
-const getResponsiveSrcSet = (sources?: Record<string, string>) => {
-  if (!sources) return '';
-  return Object.entries(sources)
+const getResponsiveSrcSet = (image: string, sources?: Record<string, string>, responsiveSourceImage?: string) => {
+  const accepted = responsiveSourcesForImage(image, sources, responsiveSourceImage);
+  if (!accepted) return '';
+  return Object.entries(accepted)
     .filter(([width, url]) => /^\d+$/.test(width) && typeof url === 'string' && url.length > 0)
     .sort(([a], [b]) => Number(a) - Number(b))
     .map(([width, url]) => `${url} ${width}w`)
@@ -529,12 +532,14 @@ type HistoryMediaProps = {
   alt: string;
   sizes: string;
   responsiveSources?: Record<string, string>;
+  responsiveSourceImage?: string;
+  sourceIdentity?: string;
   className?: string;
   style?: CSSProperties;
 };
 
-const HistoryMedia = ({ src, alt, sizes, responsiveSources, className, style }: HistoryMediaProps) => {
-  const srcSet = getResponsiveSrcSet(responsiveSources);
+const HistoryMedia = ({ src, alt, sizes, responsiveSources, responsiveSourceImage, sourceIdentity, className, style }: HistoryMediaProps) => {
+  const srcSet = getResponsiveSrcSet(sourceIdentity || src, responsiveSources, responsiveSourceImage);
   return (
     <picture className={className}>
       {srcSet && <source type="image/webp" srcSet={srcSet} sizes={sizes} />}
@@ -661,6 +666,7 @@ export const createDefaultBrandHistoryConfig = () => ({
           }),
           image: sceneVi.image,
           responsiveSources: sceneVi.responsiveSources,
+          responsiveSourceImage: sceneVi.responsiveSourceImage,
           alt: historyText(sceneVi.alt, sceneEn.alt, {
             jp: sceneTranslations.jp?.title, kr: sceneTranslations.kr?.title, cn: sceneTranslations.cn?.title,
           }),
@@ -766,6 +772,7 @@ export const History = ({ aboveFold = false }: HistoryProps) => {
           body: resolveHistoryText(scene.body, locale, ''),
           image: scene.image || '',
           responsiveSources: scene.responsiveSources,
+          responsiveSourceImage: scene.responsiveSourceImage,
           alt: resolveHistoryText(scene.alt, locale, resolveHistoryText(scene.title, locale, '')),
           imageFit: scene.imageFit,
           imagePosition: scene.imagePosition,
@@ -1069,6 +1076,8 @@ export const History = ({ aboveFold = false }: HistoryProps) => {
                         responsiveSources={chapterMediaReady && (index === sceneIndex || index === (sceneIndex + 1) % chapter.scenes.length)
                           ? item.responsiveSources
                           : undefined}
+                        responsiveSourceImage={item.responsiveSourceImage}
+                        sourceIdentity={item.image}
                         alt={item.alt}
                         sizes="(max-width: 760px) 85vw, 44vw"
                         style={{
@@ -1133,6 +1142,8 @@ export const History = ({ aboveFold = false }: HistoryProps) => {
                           <HistoryMedia
                             src={chapterMediaReady ? getHistoryImageUrl(item.image) : HISTORY_MEDIA_PLACEHOLDER}
                             responsiveSources={chapterMediaReady ? item.responsiveSources : undefined}
+                            responsiveSourceImage={item.responsiveSourceImage}
+                            sourceIdentity={item.image}
                             alt=""
                             sizes="96px"
                           />
