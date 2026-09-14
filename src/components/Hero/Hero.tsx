@@ -18,6 +18,7 @@ import {
 const HERO_PARTICLE_COUNT = 30;
 const VIDEO_FIRST_FRAME_TIMEOUT_MS = 15000;
 const DEFAULT_HERO_POSTER = 'https://i.ibb.co/fs2MBD4/hero-spa-bg.jpg';
+const LOCAL_HERO_POSTER_FALLBACK = '/images/hero-spa-bg.png';
 
 /**
  * Server-to-client contract for the homepage hero configuration.
@@ -214,6 +215,7 @@ const Hero = ({ initialHeroConfig, initialVideos }: HeroProps) => {
   const [mediaFailure, setMediaFailure] = useState<MediaFailure | null>(null);
   const [heroInViewport, setHeroInViewport] = useState(true);
   const [documentVisible, setDocumentVisible] = useState(true);
+  const [posterFallback, setPosterFallback] = useState<{ key: string; source: string } | null>(null);
 
   const videoCount = homepageVideos?.length ?? 0;
 
@@ -301,6 +303,15 @@ const Hero = ({ initialHeroConfig, initialVideos }: HeroProps) => {
     ? homepageVideos[activeVideoIndex] || homepageVideos[0]
     : null;
   const activeVideoKey = activeVideo ? `${activeVideo.id}|${activeVideo.url}` : null;
+  const posterKey = activeVideo
+    ? `${activeVideoKey}|${activeVideo.poster || ''}`
+    : null;
+  const configuredPoster = activeVideo?.poster?.trim();
+  const posterSource = activeVideo
+    ? posterFallback?.key === posterKey
+      ? posterFallback.source
+      : configuredPoster || DEFAULT_HERO_POSTER
+    : null;
   const activeAttemptKey = activeVideoKey ? `${activeVideoKey}|${videoRetryCount}` : null;
   activeAttemptKeyRef.current = activeAttemptKey;
 
@@ -519,7 +530,7 @@ const Hero = ({ initialHeroConfig, initialVideos }: HeroProps) => {
   // Keep the first paint usable while the video negotiates a range request or
   // when autoplay/source loading fails. The poster is the visual fallback;
   // the configured video still fades in once its first frame is decoded.
-  const heroVisible = heroReady || Boolean(activeVideo?.poster);
+  const heroVisible = heroReady || Boolean(activeVideo && posterSource);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -553,20 +564,31 @@ const Hero = ({ initialHeroConfig, initialVideos }: HeroProps) => {
 
       {/* The configured source is the only video mounted on the homepage. */}
       <div className="hero-bg" aria-hidden={!heroVisible}>
-        {activeVideo?.poster ? (
+        {activeVideo && selectionReady && posterSource ? (
           <img
+            data-testid="hero-poster"
             className="hero-image"
-            src={activeVideo.poster}
+            src={posterSource}
             alt=""
             aria-hidden="true"
             fetchPriority="high"
             decoding="async"
             style={{ position: 'absolute', inset: 0, zIndex: 0, opacity: heroReady ? 0 : 1, transition: 'opacity 800ms ease-in-out' }}
+            onError={() => {
+              if (!posterKey) return;
+              const nextSource = posterSource === DEFAULT_HERO_POSTER
+                ? LOCAL_HERO_POSTER_FALLBACK
+                : DEFAULT_HERO_POSTER;
+              if (posterSource !== LOCAL_HERO_POSTER_FALLBACK) {
+                setPosterFallback({ key: posterKey, source: nextSource });
+              }
+            }}
           />
         ) : null}
         {activeVideo && selectionReady ? (
           <div
             key={activeAttemptKey || activeVideoKey || activeVideo.id}
+            data-testid="hero-video-wrapper"
             className="hero-video-wrapper active"
             style={{
               position: 'absolute',
@@ -577,12 +599,13 @@ const Hero = ({ initialHeroConfig, initialVideos }: HeroProps) => {
             }}
           >
             <video
+              data-testid="hero-video"
               ref={(element) => {
                 videoRef.current = element;
               }}
               className="hero-video"
               src={activeVideo.url}
-              poster={activeVideo.poster || DEFAULT_HERO_POSTER}
+              poster={posterSource || DEFAULT_HERO_POSTER}
               autoPlay
               muted
               playsInline
