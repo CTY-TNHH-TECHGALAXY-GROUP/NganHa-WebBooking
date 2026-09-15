@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "role": "QA",
+  "generatedAt": "2026-09-15T18:55:00+07:00",
+  "baseSha": "c964977ca2af3081248c902a626612c4b11722af",
+  "testedCandidateShaBeforeQaCommit": "3a98d898fe23ca3cae69c8e85b3d85acc8f22076",
+  "branch": "codex/ps-reaccept-qa-20260915",
+  "worktree": "/private/tmp/nganha-pagespeed-role-qa",
+  "scope": "QA-only scripts and evidence; no application/data/deployment mutation",
+  "artifacts": [
+    { "path": "scripts/test-pagespeed-qa-closeout.mjs", "kind": "rerunnable-read-only-route-browser-cache-regression-audit", "sha256": "b619183bee48e296ca0592a48656607c55150ca9eb018b140bf1dab7021f2eb9" },
+    { "path": "plans/pagespeed-remediation-20260913/remaining/agent-qa/qa-closeout-20260915.json", "kind": "raw-QA-report", "testedSha": "3a98d898fe23ca3cae69c8e85b3d85acc8f22076", "sha256": "3b253502d694634507f2f852042e522c99902841897c2ce9cebe52fdd0d6c01e" },
+    { "path": "plans/pagespeed-remediation-20260913/remaining/agent-qa/route-matrix-20260915.csv", "kind": "router-seo-sitemap-route-ledger", "routeCount": 65, "sitemapCount": 47, "sha256": "1b17de7b38e0b51f2000ca90c2e9dc519ccd25f602db16ab3a85677fe8e6f5c0" },
+    { "path": "plans/pagespeed-remediation-20260913/remaining/agent-qa/our-story-browser-qa.json", "kind": "candidate-local-browser-media-replay", "status": "PASS_LOCAL_BROWSER", "profiles": 4, "sha256": "b617f3fa3556c3d24137feaa753218fbe4cc2e68cc39af9c329bd6af83dc611e" },
+    { "path": "plans/pagespeed-remediation-20260913/remaining/agent-qa/cas-postgres-replay.json", "kind": "real-DB-runner-fail-closed-report", "status": "NOT_VERIFIED", "sha256": "3fa88af790515da456585a377814977e9c338cb0d16bae8983dc743716d8b487" },
+    { "path": "plans/pagespeed-remediation-20260913/remaining/agent-qa/handoff.md", "kind": "QA-handoff-and-gate-table", "sha256": "63e43601f7bc486eee1f93e8f15283e2168c20782a21b91317c164e8548ce20d" },
+    { "path": "plans/pagespeed-remediation-20260913/remaining/agent-qa/screenshots/mobile-cold-1.png", "kind": "candidate-local-browser-screenshot", "sha256": "c91f39f51ff160114725834e847eff3d89fd9fd452a89720cd928fc952f5e3f5" },
+    { "path": "plans/pagespeed-remediation-20260913/remaining/agent-qa/screenshots/mobile-cold-2.png", "kind": "candidate-local-browser-screenshot", "sha256": "c91f39f51ff160114725834e847eff3d89fd9fd452a89720cd928fc952f5e3f5" },
+    { "path": "plans/pagespeed-remediation-20260913/remaining/agent-qa/screenshots/desktop-cold.png", "kind": "candidate-local-browser-screenshot", "sha256": "b7ba2f9de70e13874bc8593ec19cbbda2e5de826787cbbfd5bf8735ec546af14" },
+    { "path": "plans/pagespeed-remediation-20260913/remaining/agent-qa/screenshots/mobile-intersection-observer-absent.png", "kind": "candidate-local-browser-screenshot", "sha256": "c91f39f51ff160114725834e847eff3d89fd9fd452a89720cd928fc952f5e3f5" }
+  ],
+  "commands": [
+    { "command": "npx tsc --noEmit", "exitCode": 0 },
+    { "command": "npm run lint", "exitCode": 0, "note": "existing warnings retained" },
+    { "command": "npm run build", "exitCode": 0, "note": "approved network retry; Next 15.5.14, 70 static pages" },
+    { "command": "node scripts/test-pagespeed-qa-closeout.mjs", "exitCode": 0, "note": "route/browser report retains FAIL/NOT_VERIFIED statuses" },
+    { "command": "node scripts/test-cas-postgres.mjs --tested-sha=3a98d898fe23ca3cae69c8e85b3d85acc8f22076", "exitCode": 2, "status": "NOT_VERIFIED" }
+  ],
+  "gateStatus": {
+    "provenance": "PASS",
+    "typeLintBuild": "PASS_WITH_WARNINGS",
+    "routeInventory": "PASS_LOCAL",
+    "mediaBrowser": "PASS_LOCAL",
+    "cacheMimeCanonical": "PARTIAL_LOCAL",
+    "menuCartLocaleCheckout": "FAIL_MENU_AND_CHAT_ESCAPE",
+    "sqlCas": "NOT_VERIFIED",
+    "runtime": "NOT_VERIFIED",
+    "accessibilityManualDevice": "NOT_VERIFIED",
+    "heroTransfer": "NOT_VERIFIED",
+    "deploymentShaMapping": "NOT_VERIFIED",
+    "overall": "PARTIAL_BLOCKED"
+  },
+  "residuals": [
+    "Worker evidence SHA mismatch: B/D/F/Q mostly c964977; A/C f266c8e; QA local replay 3a98d89.",
+    "No disposable PostgreSQL server/URL; real CAS/ACL/concurrency/read-back and migration recovery open.",
+    "No matched 12-second active Hero transfer proof; local filesize is not transfer proof.",
+    "No matched production runtime TBT/attribution or PSI/Lighthouse evidence.",
+    "Menu Escape/close and chat Escape fail in both QA browser profiles; manual a11y residuals remain.",
+    "No Vercel project/deployment/SHA/alias mapping; HTTP 200 not treated as deployment proof."
+  ]
+}
