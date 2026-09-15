@@ -2,25 +2,28 @@
   "schemaVersion": 1,
   "role": "menu-chat-accessibility",
   "status": "PASS_LOCAL_PRODUCTION_BUILD",
-  "testedSha": "d129b6f0c184d937db8cc9f88342ca3c5e9ca20e",
+  "testedSha": "7958cf4005d6cd8cb60cfc7513a7c6a914e5b696",
   "branch": "codex/ps-integration-20260913",
-  "server": "http://127.0.0.1:3422",
+  "server": "http://127.0.0.1:3424",
   "artifacts": [
     {
-      "path": "plans/pagespeed-remediation-20260913/remaining/agent-final-menu/final-candidate/menu-focus-report-d129b6f.json",
-      "kind": "raw-browser-acceptance"
+      "path": "plans/pagespeed-remediation-20260913/remaining/agent-final-menu/final-candidate/menu-focus-report-7958cf4.json",
+      "kind": "raw-browser-acceptance",
+      "sha256": "a1e80f420f6864f7f901cde060b5193c7ea4df87208d8286766c02f4f636741a"
     },
     {
       "path": "scripts/test-final-menu-focus.mjs",
-      "kind": "rerunnable-browser-test"
+      "kind": "rerunnable-browser-test",
+      "sha256": "1149d58f178a75a24316898d6c7b6b57e7b98054b3dd8322331dfa1f9c9df5f8"
     },
     {
-      "path": "plans/pagespeed-remediation-20260913/remaining/agent-final-menu/final-candidate/handoff-d129b6f.md",
-      "kind": "handoff"
+      "path": "plans/pagespeed-remediation-20260913/remaining/agent-final-menu/final-candidate/handoff-7958cf4.md",
+      "kind": "handoff",
+      "sha256": "294746e6cba15808cadc2dbf41a293a7f04881596ee2656ce2d54feef6bcfd0e"
     }
   ],
   "commands": [
-    { "command": "MENU_FOCUS_BASE_URL=http://127.0.0.1:3422 MENU_FOCUS_TESTED_SHA=d129b6f0c184d937db8cc9f88342ca3c5e9ca20e node scripts/test-final-menu-focus.mjs", "exitCode": 0 }
+    { "command": "MENU_FOCUS_BASE_URL=http://127.0.0.1:3424 MENU_FOCUS_TESTED_SHA=7958cf4005d6cd8cb60cfc7513a7c6a914e5b696 node scripts/test-final-menu-focus.mjs", "exitCode": 0 }
   ],
   "residuals": [
     "Physical-device pinch/zoom and full manual WCAG/font review remain open.",

@@ -1,0 +1,55 @@
+{
+  "testedSha": "7958cf4005d6cd8cb60cfc7513a7c6a914e5b696",
+  "baseUrl": "http://127.0.0.1:3424",
+  "profiles": [
+    {
+      "profile": "mobile-390-dpr2",
+      "homepage": 200,
+      "headerMenu": {
+        "openFocus": "Close menu",
+        "escapeClosed": true,
+        "escapeFocus": "Toggle menu"
+      },
+      "contactMenu": {
+        "escapeClosed": true,
+        "escapeFocus": "Contact Us"
+      },
+      "environment": {
+        "innerWidth": 390,
+        "innerHeight": 844,
+        "devicePixelRatio": 2
+      },
+      "chat": {
+        "openFocus": "Close chat",
+        "escapeClosed": true,
+        "escapeFocus": "Open chat"
+      },
+      "status": "PASS"
+    },
+    {
+      "profile": "desktop-1440-dpr1",
+      "homepage": 200,
+      "headerMenu": {
+        "openFocus": "Close menu",
+        "escapeClosed": true,
+        "escapeFocus": "Toggle menu"
+      },
+      "contactMenu": {
+        "escapeClosed": true,
+        "escapeFocus": "Contact Us"
+      },
+      "environment": {
+        "innerWidth": 1440,
+        "innerHeight": 900,
+        "devicePixelRatio": 1
+      },
+      "chat": {
+        "openFocus": "Close chat",
+        "escapeClosed": true,
+        "escapeFocus": "Open chat"
+      },
+      "status": "PASS"
+    }
+  ],
+  "status": "PASS"
+}
