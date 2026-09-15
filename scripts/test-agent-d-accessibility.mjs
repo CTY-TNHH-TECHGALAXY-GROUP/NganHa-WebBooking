@@ -2,6 +2,7 @@ import { chromium } from 'playwright';
 import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { createRequire } from 'node:module';
+import assert from 'node:assert/strict';
 
 const baseUrl = process.env.TEST_BASE_URL || 'http://127.0.0.1:3312';
 const parsedBase = new URL(baseUrl);
@@ -42,7 +43,7 @@ const serializeRule = ({ id, impact, help, helpUrl, nodes }) => ({
 
 try {
   for (const viewport of viewports) {
-    const context = await browser.newContext({ ...viewport, locale: 'en-US' });
+    const context = await browser.newContext({ viewport: { width: viewport.width, height: viewport.height }, deviceScaleFactor: viewport.deviceScaleFactor, locale: 'en-US' });
     const page = await context.newPage();
     for (const route of routes) {
       const errors = [];
@@ -52,7 +53,7 @@ try {
       await page.addScriptTag({ path: axePath });
       const axe = await page.evaluate(async () => {
         const result = await window.axe.run(document, {
-          runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa'] },
+          runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'] },
         });
         return {
           testEngine: result.testEngine,
@@ -63,6 +64,8 @@ try {
           passes: result.passes.length,
         };
       });
+      assert.equal(axe.testEnvironment.windowWidth, viewport.width, 'Measured viewport must match evidence label');
+      assert.equal(axe.testEnvironment.windowHeight, viewport.height, 'Measured viewport height must match evidence label');
       const state = await page.evaluate(() => {
         const viewportMeta = document.querySelector('meta[name="viewport"]');
         const logos = [...document.querySelectorAll('[role="img"][aria-label]')].map(node => ({

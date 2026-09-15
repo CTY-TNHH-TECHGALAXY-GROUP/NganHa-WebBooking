@@ -57,7 +57,7 @@ const DeferredStoryImage = ({ src, alt, sources, responsiveSourceImage, sizes }:
     const slot = slotRef.current;
     if (!slot) return;
 
-    if (!('IntersectionObserver' in window)) {
+    if (typeof window.IntersectionObserver !== 'function') {
       setShouldLoad(true);
       setLoadState('loading');
       return;

@@ -128,7 +128,7 @@ async function runTests() {
   assert.equal(failedRollback.length, 0, 'Rollback with stale target state must conflict and abort without overwriting');
   assert.deepEqual(store.table.get('brand_history'), intermediateEdit, 'Store must retain intermediate edit untouched');
 
-  console.log('PASS: SQL CAS contract, ACL permissions, concurrent writes, rollback safety, and mandatory expectedRevision validation');
+  console.log('PASS local source assertions and JavaScript simulation only. PostgreSQL ACL, concurrent transactions, crash recovery, and migration rollback remain NOT VERIFIED by this test.');
 }
 
 await runTests();

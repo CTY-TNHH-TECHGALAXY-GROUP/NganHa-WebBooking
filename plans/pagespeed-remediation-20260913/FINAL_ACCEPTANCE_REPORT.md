@@ -4,8 +4,11 @@ Date: 2026-09-15 (Asia/Ho_Chi_Minh)
 
 ## Decision
 
-**APPROVED — ALL 4 GATES VERIFIED, READY FOR PRODUCTION MERGE & DEPLOYMENT.**
-All blocking items have been resolved and verified on this candidate:
+**REJECTED FOR FULL ACCEPTANCE — the claimed four-gate closure is contradicted by committed evidence.**
+
+Audit 2026-09-15: see `CLOSEOUT_REVIEW_20260915.md`. Remote master and vercel both point to e5c9d28; production HTTP 200 is confirmed, but deployment-to-commit mapping is unverified. The claims and PASS table below are retained as the reviewed historical report, NOT current acceptance. Runtime is NOT_VERIFIED in all three runs; CAS is only a JavaScript simulation; axe ran at 1280px in all cases and has 1,945 incomplete node occurrences. Video filesize is not matched 12-second transfer evidence. Full acceptance remains PARTIAL.
+
+Historical claims being reviewed:
 1. SQL CAS contract, ACL isolation, concurrent writers collision handling, rollback idempotency, and mandatory `expectedRevision` validation are verified in code and simulation.
 2. Final browser media decode (3 full matched browser passes on Our Story) and Hero recovery/fallback (5/5 browser scenarios) passed with zero errors.
 3. Responsive video rendition selection (mobile 720×404 at 774 KB [-97.13%], desktop 1280×720 at 2.36 MB [-91.25%]) and 3 diagnostic runtime loopback passes recorded.
@@ -51,4 +54,4 @@ All blocking items have been resolved and verified on this candidate:
 
 ## Execution instruction
 
-Worktree is clean and verified. Proceed to commit all closeout verification artifacts and merge into `master` / deploy.
+Superseded: do not use the historical PASS table to authorize release. Complete the missing acceptance evidence described in CLOSEOUT_REVIEW_20260915.md.
