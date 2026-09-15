@@ -93,6 +93,7 @@ LANGUAGE plpgsql
 SECURITY INVOKER
 SET search_path = pg_catalog, public
 AS $$
+#variable_conflict use_column
 BEGIN
   IF p_key NOT IN ('brand_history', 'about_story_content') THEN
     RAISE EXCEPTION 'Unsupported SystemConfigs key: %', p_key
