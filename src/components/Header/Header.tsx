@@ -652,6 +652,11 @@ const Header = () => {
             <motion.nav
               id="site-mobile-navigation"
               className="nav-fullscreen-overlay"
+              onKeyDown={(event) => {
+                if (event.key !== 'Escape') return;
+                event.preventDefault();
+                toggleMobileMenu();
+              }}
               style={{ zIndex: 99 }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
