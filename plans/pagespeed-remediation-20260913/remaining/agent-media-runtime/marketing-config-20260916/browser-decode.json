@@ -1,0 +1,10 @@
+{
+  "status": "PASS_REMOTE_ASSET_DECODE",
+  "environment": "Local headless Chromium via Playwright; direct staging Storage URLs, isolated video element",
+  "results": [
+    {"file":"hero-mobile-optimized-12s.mp4","width":640,"height":360,"duration":12,"readyState":4},
+    {"file":"hero-desktop-optimized-12s.mp4","width":1280,"height":720,"duration":12,"readyState":4}
+  ],
+  "selectionChecks": {"390":"mobile_url","767":"mobile_url","768":"desktop_url","1440":"desktop_url"},
+  "residual": "Direct asset decode and source-selection checks do not establish rendered application behavior or matched 12-second transfer reduction."
+}

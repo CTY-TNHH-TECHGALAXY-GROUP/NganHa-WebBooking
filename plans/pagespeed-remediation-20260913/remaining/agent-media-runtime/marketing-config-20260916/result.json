@@ -1,0 +1,21 @@
+{
+  "status": "PASS_STAGING_CONFIG_READBACK",
+  "completedAt": "2026-09-15T19:47:04.339Z",
+  "configKey": "hero_videos",
+  "assets": [
+    {
+      "field": "mobile_url",
+      "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/hero-mobile-optimized-12s.mp4",
+      "bytes": 1868253,
+      "sha256": "7aaf77c3e4d8748984188a7310d2181678b81c12dcedcbc3fc223391502dfee0"
+    },
+    {
+      "field": "desktop_url",
+      "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/hero-desktop-optimized-12s.mp4",
+      "bytes": 3015577,
+      "sha256": "eac8669e8f3cf85efb4785493852802a3d31b06deafa7f4914e61565a03850af"
+    }
+  ],
+  "rollback": "PATCH before.json only when current value equals candidate.json; preserve intervening edits.",
+  "cache": "Server config cache may take at least 60 seconds to revalidate; browser delivery not verified by this DB readback."
+}

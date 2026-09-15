@@ -1,0 +1,11 @@
+{
+  "status": "PASS_STORAGE_READBACK",
+  "authorization": "User confirmed staging media-uploads bucket and marketing folder",
+  "bucket": "media-uploads",
+  "objects": [
+    {"path":"marketing/hero-mobile-optimized-12s.mp4","bytes":1868253,"sha256":"7aaf77c3e4d8748984188a7310d2181678b81c12dcedcbc3fc223391502dfee0","contentType":"video/mp4","readback":"SHA256_MATCH"},
+    {"path":"marketing/hero-desktop-optimized-12s.mp4","bytes":3015577,"sha256":"eac8669e8f3cf85efb4785493852802a3d31b06deafa7f4914e61565a03850af","contentType":"video/mp4","readback":"SHA256_MATCH"}
+  ],
+  "configUpdated": false,
+  "residual": "Matched 12-second browser transfer reduction remains unverified. Storage byte equality does not establish transfer reduction."
+}
