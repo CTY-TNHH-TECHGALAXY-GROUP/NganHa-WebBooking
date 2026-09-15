@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "role": "menu-chat-accessibility",
+  "status": "PASS_LOCAL_PRODUCTION_BUILD",
+  "testedSha": "ef425e3",
+  "branch": "codex/ps-integration-20260913",
+  "baseSha": "3d5ed66f2e79d809721539f5f1c191688b3959b5",
+  "server": "http://127.0.0.1:3411",
+  "browser": "Chromium via Playwright",
+  "profiles": [
+    { "name": "mobile-390-dpr2", "viewport": { "width": 390, "height": 844 }, "deviceScaleFactor": 2 },
+    { "name": "desktop-1440-dpr1", "viewport": { "width": 1440, "height": 900 }, "deviceScaleFactor": 1 }
+  ],
+  "artifacts": [
+    {
+      "path": "plans/pagespeed-remediation-20260913/remaining/agent-final-menu/menu-focus-report-20260915.json",
+      "kind": "raw-browser-acceptance",
+      "sha256": "09f727238d3d7a881c96b82069da6ae5b65a87bf39d3a7fd88118553cf3e637b"
+    },
+    {
+      "path": "scripts/test-final-menu-focus.mjs",
+      "kind": "rerunnable-browser-test",
+      "sha256": "343b455be4b32e626844df44bad569ddfa911725070471520cae0f23468c29f9"
+    },
+    {
+      "path": "plans/pagespeed-remediation-20260913/remaining/agent-final-menu/handoff.md",
+      "kind": "handoff",
+      "sha256": "791fc1902b0a2ef2b2f80274f314e4259bcbc91c895df6b9dcd3aa3bb5d34c1b"
+    }
+  ],
+  "commands": [
+    { "command": "npm run build", "exitCode": 0 },
+    { "command": "node scripts/test-final-menu-focus.mjs", "exitCode": 0 }
+  ],
+  "residuals": [
+    "Physical-device pinch/zoom and full manual WCAG/font review remain open.",
+    "Production deployment SHA/alias mapping remains open."
+  ]
+}
