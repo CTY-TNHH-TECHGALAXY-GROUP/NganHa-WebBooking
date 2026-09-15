@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "status": "RENDERED_LOCAL_NOT_UPLOADED",
+  "source": {
+    "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/homepage/0807(1).mp4",
+    "bytes": 26974458
+  },
+  "outputs": [
+    {
+      "profile": "mobile",
+      "path": "/private/tmp/nganha-hero-renditions/hero-mobile-optimized-12s.mp4",
+      "container": "ISO MP4 (Apple M4V preset, .mp4 extension)",
+      "bytes": 1868253,
+      "sha256": "7aaf77c3e4d8748984188a7310d2181678b81c12dcedcbc3fc223391502dfee0",
+      "durationSeconds": 12,
+      "videoSize": "640x360",
+      "reductionVsSource": 0.93077
+    },
+    {
+      "profile": "desktop",
+      "path": "/private/tmp/nganha-hero-renditions/hero-desktop-optimized-12s.mp4",
+      "container": "ISO MP4 (Apple M4V preset, .mp4 extension)",
+      "bytes": 3015577,
+      "sha256": "eac8669e8f3cf85efb4785493852802a3d31b06deafa7f4914e61565a03850af",
+      "durationSeconds": 12,
+      "videoSize": "1280x720",
+      "reductionVsSource": 0.88825
+    }
+  ],
+  "renderCommands": [
+    "avconvert --source hero-source.mp4 --preset PresetAppleM4V480pSD --duration 12 --output hero-apple480-12s.m4v --replace",
+    "avconvert --source hero-source.mp4 --preset PresetAppleM4V720pHD --duration 12 --output hero-apple720-12s.m4v --replace"
+  ],
+  "browserDecode": {
+    "status": "PASS_LOCAL",
+    "readyState": 4,
+    "durations": [12, 12],
+    "videoSizes": ["640x360", "1280x720"]
+  },
+  "nextStep": "Upload these files only to an explicitly confirmed staging Storage bucket, update the staging hero_videos config, then run matched CDP transfer measurements. No upload or production mutation was performed."
+}
