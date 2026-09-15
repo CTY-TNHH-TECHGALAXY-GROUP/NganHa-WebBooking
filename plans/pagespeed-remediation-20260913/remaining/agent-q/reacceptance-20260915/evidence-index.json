@@ -14,7 +14,7 @@
   "runs": [
     {
       "profile": { "label": "c964977-mobile", "viewport": { "width": 390, "height": 844 }, "dpr": 2, "mobile": true, "touch": true, "cpuThrottleRate": 4 },
-      "report": { "path": "runtime-trace-c964977-mobile-3runs.json", "sha256": "07cb0e8461cf3fdef2a283a89440be8de303c0817f7b144feb9f8f64e1c6b71d" },
+      "report": { "path": "runtime-trace-c964977-mobile-3runs.json", "sha256": "fb2945b8422eedc84a598d9f237cea6da29f2b3eb86671f6d13d938ef2968793" },
       "traceGzipSha256": [
         "cee2817974fd063a531fefe8eb3c2c1a03beb9affbb30e1ef5b743bafef660e1",
         "93333018e93b2f157e497828b6941b55d8f86e90db261dfcc4788c7a65cbc2a1",
