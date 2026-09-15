@@ -14,6 +14,16 @@ const waitForVisible = async (locator, visible) => {
   else await locator.waitFor({ state: 'hidden', timeout: 3000 });
 };
 
+const waitForActionable = async (page, selector) => {
+  await page.waitForFunction((target) => {
+    const element = document.querySelector(target);
+    if (!(element instanceof HTMLElement)) return false;
+    const style = window.getComputedStyle(element);
+    const rect = element.getBoundingClientRect();
+    return rect.width > 0 && rect.height > 0 && style.pointerEvents !== 'none' && style.opacity !== '0';
+  }, selector, { timeout: 10000 });
+};
+
 const browser = await chromium.launch({ headless: true });
 const runs = [];
 try {
@@ -40,6 +50,7 @@ try {
       assert.equal(run.environment.innerHeight, profile.viewport.height);
       assert.equal(run.environment.devicePixelRatio, profile.deviceScaleFactor);
 
+      await waitForActionable(page, 'button[aria-label="Toggle menu"]');
       const menuTrigger = page.locator('button[aria-label="Toggle menu"]:visible').first();
       const menuOverlay = page.locator('nav.nav-fullscreen-overlay').first();
       const menuClose = page.locator('button[aria-label="Close menu"]:visible').first();
