@@ -131,17 +131,18 @@ async function browserSmoke() {
           muted: video.muted, playsInline: video.playsInline, readyState: video.readyState,
         })));
 
-        const menuToggle = page.getByRole('button', { name: 'Toggle menu' });
+        const menuToggle = page.locator('button[aria-label="Toggle menu"]:visible');
         if (await menuToggle.count()) {
           await menuToggle.first().click();
-          await page.waitForTimeout(150);
+          await page.locator('nav.nav-fullscreen-overlay').waitFor({ state: 'visible', timeout: 3000 });
           run.menu.opened = await page.locator('nav.nav-fullscreen-overlay').isVisible().catch(() => false);
           await page.keyboard.press('Escape');
-          await page.waitForTimeout(150);
+          await page.locator('nav.nav-fullscreen-overlay').waitFor({ state: 'hidden', timeout: 3000 }).catch(() => {});
           run.menu.escapeClosed = !(await page.locator('nav.nav-fullscreen-overlay').isVisible().catch(() => false));
           if (!run.menu.escapeClosed) {
-            const close = page.getByRole('button', { name: 'Close menu' });
+            const close = page.locator('button[aria-label="Close menu"]:visible');
             if (await close.count()) await close.first().click();
+            await page.locator('nav.nav-fullscreen-overlay').waitFor({ state: 'hidden', timeout: 3000 }).catch(() => {});
           }
           run.menu.explicitClosed = !(await page.locator('nav.nav-fullscreen-overlay').isVisible().catch(() => false));
           run.menu.status = run.menu.opened && run.menu.explicitClosed ? (run.menu.escapeClosed ? 'PASS' : 'FAIL_ESCAPE') : 'FAIL';
@@ -151,12 +152,12 @@ async function browserSmoke() {
         if (await cartButton.count()) {
           await cartButton.click();
           await page.waitForTimeout(150);
-          const closeCart = page.getByRole('button', { name: /close cart/i });
+          const closeCart = page.locator('aside[role="dialog"] button[aria-label="Close cart"]');
           run.cart.opened = await closeCart.count() > 0;
           run.cart.emptyLabelPresent = /no selected service|không có dịch vụ|chưa chọn dịch vụ/i.test(await page.locator('body').innerText());
           run.cart.status = run.cart.opened ? 'PASS' : 'FAIL';
           if (await closeCart.count()) {
-            await closeCart.first().click({ force: true });
+            await closeCart.first().click();
             await page.waitForTimeout(100);
           }
         } else run.cart.status = 'NOT_VERIFIED_NO_TRIGGER';
@@ -167,7 +168,7 @@ async function browserSmoke() {
           await page.waitForTimeout(200);
           run.chat.opened = await page.locator('.floating-widgets').isVisible().catch(() => false);
           await page.keyboard.press('Escape');
-          await page.waitForTimeout(150);
+          await page.locator('.floating-widgets [aria-label="Call hotline"]').waitFor({ state: 'hidden', timeout: 3000 }).catch(() => {});
           run.chat.escapeClosed = !(await page.locator('.floating-widgets [aria-label="Call hotline"]').isVisible().catch(() => false));
           run.chat.status = run.chat.opened ? (run.chat.escapeClosed ? 'PASS' : 'FAIL_ESCAPE') : 'FAIL';
         } else run.chat.status = 'NOT_VERIFIED_NO_TRIGGER';
