@@ -298,7 +298,7 @@ const FloatingWidgets = () => {
         </div>
 
         {/* Floating Greeting Bubble (Visible when menu is closed) */}
-        <AnimatePresence>
+        <AnimatePresence initial={false}>
           {!isMenuOpen && !isFooterVisible && !isGreetingDismissed && (
             <motion.div
               initial={{ opacity: 0, y: 10, scale: 0.95 }}
