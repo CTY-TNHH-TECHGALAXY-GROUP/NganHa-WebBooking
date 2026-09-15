@@ -1,5 +1,10 @@
 export type ResponsiveSources = Record<string, string>;
 
+export type ResponsiveSourceCandidate = {
+  width: number;
+  url: string;
+};
+
 export type DeferredMediaState = 'deferred' | 'loading' | 'loaded' | 'error';
 
 const validWidth = (width: string) => /^(?:[1-9]\d*)$/.test(width) && Number.isSafeInteger(Number(width));
@@ -37,6 +42,39 @@ export const responsiveSourcesForImage = (
     return undefined;
   }
   return normalized;
+};
+
+/**
+ * Selects the smallest available derivative that can cover a rendered box at
+ * its device-pixel ratio. The result deliberately exposes `undersized` when
+ * the manifest does not contain a wide enough candidate; callers can then
+ * keep the original instead of silently upscaling a derivative. Native
+ * `srcset` selection remains the browser's source of truth for rendered
+ * images, while this helper gives tests and editors a deterministic audit
+ * primitive for the same box × DPR rule.
+ */
+export const selectResponsiveSourceCandidate = (
+  image: string | null | undefined,
+  sources: unknown,
+  responsiveSourceImage: string | null | undefined,
+  boxCssWidth: number,
+  devicePixelRatio = 1,
+): (ResponsiveSourceCandidate & { requiredWidth: number; undersized: boolean }) | undefined => {
+  const accepted = responsiveSourcesForImage(image, sources, responsiveSourceImage);
+  const requiredWidth = Math.max(1, Math.ceil(
+    (Number.isFinite(boxCssWidth) ? boxCssWidth : 0)
+    * (Number.isFinite(devicePixelRatio) && devicePixelRatio > 0 ? devicePixelRatio : 1),
+  ));
+  if (!accepted) return undefined;
+
+  const candidates = Object.entries(accepted)
+    .map(([width, url]) => ({ width: Number(width), url }))
+    .filter(candidate => Number.isSafeInteger(candidate.width) && candidate.width > 0)
+    .sort((a, b) => a.width - b.width);
+  if (candidates.length === 0) return undefined;
+
+  const selected = candidates.find(candidate => candidate.width >= requiredWidth) || candidates[candidates.length - 1];
+  return { ...selected, requiredWidth, undersized: selected.width < requiredWidth };
 };
 
 /**
@@ -82,6 +120,36 @@ const records = (value: unknown): JsonRecord[] => Array.isArray(value)
   : [];
 
 /**
+ * Finds the previous item that represents the same editable media slot. CMS
+ * arrays can be reordered, so index-only pairing can clear a valid rendition
+ * map from an unchanged item or leave a stale map on the item whose source
+ * changed. Stable ids are preferred; legacy records use their existing label
+ * fields before falling back to the same index for source replacements.
+ */
+const recordIdentity = (value: JsonRecord): string | undefined => {
+  const stableFields = ['id', 'key', 'frameId', 'year', 'title', 'label', 'icon'];
+  for (const field of stableFields) {
+    const candidate = value[field];
+    if (typeof candidate === 'string' && candidate.trim()) return `${field}:${candidate.trim()}`;
+    if (typeof candidate === 'number' && Number.isFinite(candidate)) return `${field}:${candidate}`;
+  }
+  return undefined;
+};
+
+const pairPreviousRecord = (
+  previousItems: JsonRecord[],
+  nextItem: JsonRecord,
+  index: number,
+): JsonRecord | undefined => {
+  const identity = recordIdentity(nextItem);
+  if (identity) {
+    const matched = previousItems.find(item => recordIdentity(item) === identity);
+    if (matched) return matched;
+  }
+  return previousItems[index];
+};
+
+/**
  * A stale editor draft may carry the previous original's map. Before the CAS
  * writer saves a changed original, discard only that original's derivatives.
  * Identity-less maps remain compatible when the original is unchanged.
@@ -90,9 +158,16 @@ export const clearStaleHistoryResponsiveSources = <T extends JsonRecord>(previou
   const next = cloneDocument(incoming);
   const priorChapters = records(isRecord(previous) ? previous.chapters : undefined);
   records(next.chapters).forEach((chapter, chapterIndex) => {
-    const priorScenes = records(priorChapters[chapterIndex]?.scenes);
+    const priorChapter = pairPreviousRecord(priorChapters, chapter, chapterIndex);
+    const priorScenes = records(priorChapter?.scenes);
     records(chapter.scenes).forEach((scene, sceneIndex) => {
-      clearChangedMedia(priorScenes[sceneIndex], scene, 'image', 'responsiveSources', 'responsiveSourceImage');
+      clearChangedMedia(
+        pairPreviousRecord(priorScenes, scene, sceneIndex),
+        scene,
+        'image',
+        'responsiveSources',
+        'responsiveSourceImage',
+      );
     });
   });
   return next;
@@ -112,7 +187,13 @@ export const clearStaleOurStoryResponsiveSources = <T extends JsonRecord>(previo
   clearChangedMedia(priorAtmosphere, nextAtmosphere, 'nightStreetImage', 'nightStreetImageResponsiveSources', 'nightStreetImageResponsiveSource');
 
   const clearImageList = (previousItems: JsonRecord[], nextItems: JsonRecord[]) => {
-    nextItems.forEach((item, index) => clearChangedMedia(previousItems[index], item, 'image', 'responsiveSources', 'responsiveSourceImage'));
+    nextItems.forEach((item, index) => clearChangedMedia(
+      pairPreviousRecord(previousItems, item, index),
+      item,
+      'image',
+      'responsiveSources',
+      'responsiveSourceImage',
+    ));
   };
   clearImageList(records(isRecord(prior.filmReel) ? prior.filmReel.frames : undefined), records(isRecord(next.filmReel) ? next.filmReel.frames : undefined));
   clearImageList(records(isRecord(prior.specialtySection) ? prior.specialtySection.pillars : undefined), records(isRecord(next.specialtySection) ? next.specialtySection.pillars : undefined));

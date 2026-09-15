@@ -45,9 +45,12 @@ const DeferredStoryImage = ({ src, alt, sources, responsiveSourceImage, sizes }:
   const [useResponsiveSource, setUseResponsiveSource] = useState(true);
   const slotRef = useRef<HTMLPictureElement>(null);
   const fallbackAttemptedRef = useRef(false);
+  const mediaGenerationRef = useRef(0);
   const srcSet = getResponsiveSrcSet(responsiveSourcesForImage(src, sources, responsiveSourceImage));
+  const sourceKey = `${src}|${srcSet}|${useResponsiveSource ? 'responsive' : 'original'}`;
 
   useEffect(() => {
+    mediaGenerationRef.current += 1;
     fallbackAttemptedRef.current = false;
     setUseResponsiveSource(true);
     setLoadState(shouldLoad ? 'loading' : 'deferred');
@@ -81,6 +84,7 @@ const DeferredStoryImage = ({ src, alt, sources, responsiveSourceImage, sizes }:
     <picture ref={slotRef}>
       {shouldLoad && useResponsiveSource && srcSet && <source type="image/webp" srcSet={srcSet} sizes={sizes} />}
       <img
+        key={sourceKey}
         src={shouldLoad ? src : TRANSPARENT_IMAGE}
         alt={alt}
         decoding="async"
@@ -90,12 +94,18 @@ const DeferredStoryImage = ({ src, alt, sources, responsiveSourceImage, sizes }:
         onLoad={event => {
           if (!shouldLoad) return;
           const image = event.currentTarget;
+          const generation = mediaGenerationRef.current;
+          const expectedSourceKey = sourceKey;
           const finish = () => setLoadState(deferredMediaStateAfterDecode(image.naturalWidth));
-          if (typeof image.decode !== 'function') {
+          const finishIfCurrent = () => {
+            if (generation !== mediaGenerationRef.current || expectedSourceKey !== sourceKey) return;
             finish();
+          };
+          if (typeof image.decode !== 'function') {
+            finishIfCurrent();
             return;
           }
-          void image.decode().then(finish, finish);
+          void image.decode().then(finishIfCurrent, finishIfCurrent);
         }}
         onError={() => {
           const next = deferredMediaErrorAction(useResponsiveSource && Boolean(srcSet), fallbackAttemptedRef.current);
@@ -113,6 +123,11 @@ const OurStory = () => {
   const { systemSettings, aboutStoryContent, getLocalizedText } = useSystemSettings();
   const lang = (currentLang || 'vi') as Locale;
   const reduceMotion = useReducedMotion();
+  const [supportsViewportMotion, setSupportsViewportMotion] = useState(false);
+
+  useEffect(() => {
+    setSupportsViewportMotion(typeof window.IntersectionObserver === 'function');
+  }, []);
 
   const rawData = useMemo(() => {
     if (hasValidOurStoryContent(aboutStoryContent)) return aboutStoryContent;
@@ -260,9 +275,9 @@ const OurStory = () => {
           >
             <motion.div
               className={styles.journeyTrack}
-              initial={reduceMotion ? false : { opacity: 0.45, x: 54 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, amount: 0.18 }}
+              initial={!supportsViewportMotion || reduceMotion ? false : { opacity: 0.45, x: 54 }}
+              whileInView={supportsViewportMotion ? { opacity: 1, x: 0 } : undefined}
+              viewport={supportsViewportMotion ? { once: true, amount: 0.18 } : undefined}
               transition={{ duration: 1.05, ease: [0.22, 1, 0.36, 1] }}
             >
               <div className={styles.filmStrip}>
@@ -271,10 +286,10 @@ const OurStory = () => {
                     <motion.figure
                       key={'film-' + frame.id}
                       className={styles.filmFrame}
-                      initial={reduceMotion ? false : { opacity: 0.55, y: 18 }}
-                      whileInView={{ opacity: 1, y: 0 }}
+                      initial={!supportsViewportMotion || reduceMotion ? false : { opacity: 0.55, y: 18 }}
+                      whileInView={supportsViewportMotion ? { opacity: 1, y: 0 } : undefined}
                       whileHover={reduceMotion ? undefined : { y: -5 }}
-                      viewport={{ once: true, amount: 0.3 }}
+                      viewport={supportsViewportMotion ? { once: true, amount: 0.3 } : undefined}
                       transition={{
                         opacity: { duration: 0.55, delay: index * 0.07 },
                         y: { type: 'spring', stiffness: 150, damping: 22, delay: index * 0.07 },
@@ -304,9 +319,9 @@ const OurStory = () => {
                 {config.filmReel.frames.map((frame, index) => (
                   <motion.article
                     key={'caption-' + frame.id}
-                    initial={reduceMotion ? false : { opacity: 0, y: 12 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, amount: 0.4 }}
+                    initial={!supportsViewportMotion || reduceMotion ? false : { opacity: 0, y: 12 }}
+                    whileInView={supportsViewportMotion ? { opacity: 1, y: 0 } : undefined}
+                    viewport={supportsViewportMotion ? { once: true, amount: 0.4 } : undefined}
                     transition={{ duration: 0.55, delay: 0.16 + index * 0.07, ease: 'easeOut' }}
                   >
                     <small>{getLocalizedText(frame.badge, lang)}</small>

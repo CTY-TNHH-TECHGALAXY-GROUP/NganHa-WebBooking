@@ -302,7 +302,7 @@ const Hero = ({ initialHeroConfig, initialVideos }: HeroProps) => {
 
   useEffect(() => {
     const hero = document.getElementById('hero');
-    if (!hero || !('IntersectionObserver' in window)) return;
+    if (!hero || typeof window.IntersectionObserver !== 'function') return;
 
     const observer = new IntersectionObserver(([entry]) => {
       setHeroInViewport(Boolean(entry?.isIntersecting));

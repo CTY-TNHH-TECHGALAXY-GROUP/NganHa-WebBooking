@@ -55,9 +55,24 @@ const assertDecodedVisible = (phase) => {
     && image.ariaBusy === 'false'), 'visible slots must decode and finish aria-busy');
 };
 
+const scrollToSelector = async (page, selector) => {
+  await page.waitForFunction((value) => Boolean(document.querySelector(value)), selector, { timeout: 15_000 });
+  const found = await page.evaluate((value) => {
+    const target = document.querySelector(value);
+    if (!(target instanceof HTMLElement)) return false;
+    target.scrollIntoView({ behavior: 'auto', block: 'start', inline: 'nearest' });
+    return true;
+  }, selector);
+  assert.equal(found, true, `${selector} must be a real production DOM target`);
+};
+
 const runBrowserPass = async ({ disableIntersectionObserver = false } = {}) => {
   const browser = await chromium.launch({ headless: true });
-  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2 });
+  const context = await browser.newContext({
+    viewport: { width: 390, height: 844 },
+    deviceScaleFactor: 2,
+    serviceWorkers: 'block',
+  });
   if (disableIntersectionObserver) {
     await context.addInitScript(() => {
       Object.defineProperty(window, 'IntersectionObserver', { configurable: true, value: undefined });
@@ -73,12 +88,29 @@ const runBrowserPass = async ({ disableIntersectionObserver = false } = {}) => {
     const response = await page.goto(`${baseUrl}/`, { waitUntil: 'domcontentloaded', timeout: 60000 });
     assert.equal(response.status(), 200, 'homepage must return HTTP 200');
     assert.equal(new URL(response.url()).pathname, '/', 'homepage must finish on the expected URL');
+    await scrollToSelector(page, '#our-story');
     await page.waitForTimeout(700);
     const before = await snapshot(page);
 
     if (!disableIntersectionObserver) assertDeferredOutsideMargin(before);
 
-    await page.locator('#our-story').scrollIntoViewIfNeeded();
+    // The section reserves a long editorial layout; its top can be visible
+    // while the first image is still far below the fold. Scroll an actual
+    // deferred media slot so decode and +200px eligibility are measured at
+    // the requested geometry rather than inferred from the section anchor.
+    const mediaSlot = await page.evaluate(() => {
+      const target = document.querySelector('img[data-media-state]');
+      if (!(target instanceof HTMLElement)) {
+        return { found: false, mediaCount: document.querySelectorAll('img[data-media-state]').length };
+      }
+      target.scrollIntoView({ behavior: 'auto', block: 'start', inline: 'nearest' });
+      return { found: true, mediaCount: document.querySelectorAll('img[data-media-state]').length };
+    });
+    assert.equal(
+      mediaSlot.found,
+      true,
+      `Our Story must expose a deferred media slot in the production DOM (mediaCount=${mediaSlot.mediaCount}, url=${await page.url()})`,
+    );
     await page.waitForFunction(() => {
       const imgs = [...document.querySelectorAll('img[data-media-state]')].filter(img => {
         const rect = img.getBoundingClientRect();
@@ -90,7 +122,7 @@ const runBrowserPass = async ({ disableIntersectionObserver = false } = {}) => {
     const storyVisible = await snapshot(page);
     assertDecodedVisible(storyVisible);
 
-    await page.locator('#film-strip-reel').scrollIntoViewIfNeeded();
+    await scrollToSelector(page, '#film-strip-reel');
     await page.waitForTimeout(700);
     const filmBefore = await snapshot(page);
     const filmBeforeLoaded = filmBefore.images.filter(image => image.alt && image.state === 'loaded').map(image => image.index);

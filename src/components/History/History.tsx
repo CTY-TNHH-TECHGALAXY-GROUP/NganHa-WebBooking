@@ -757,6 +757,11 @@ export const History = ({ aboveFold = false }: HistoryProps) => {
   const copy = HISTORY_INTERFACE_COPY[locale];
   const { brandHistory } = useSystemSettings();
   const hydratedHistory = useMemo(() => hydrateBrandHistoryConfig(brandHistory), [brandHistory]);
+  const [supportsViewportMotion, setSupportsViewportMotion] = useState(false);
+
+  useEffect(() => {
+    setSupportsViewportMotion(typeof window.IntersectionObserver === 'function');
+  }, []);
 
   const chapters = useMemo(() => {
     if (hydratedHistory.chapters.length > 0) {
@@ -952,9 +957,9 @@ export const History = ({ aboveFold = false }: HistoryProps) => {
 
       <motion.header
         className={styles.hero}
-        initial={{ opacity: 0, y: 28 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.45 }}
+        initial={supportsViewportMotion ? { opacity: 0, y: 28 } : false}
+        whileInView={supportsViewportMotion ? { opacity: 1, y: 0 } : undefined}
+        viewport={supportsViewportMotion ? { once: true, amount: 0.45 } : undefined}
         transition={{ duration: 0.9, ease: [0.22, 0.8, 0.22, 1] }}
       >
         <div className={styles.heroMedia}>
@@ -1025,9 +1030,9 @@ export const History = ({ aboveFold = false }: HistoryProps) => {
             >
               <motion.div
                 className={styles.copy}
-                initial={{ opacity: 0, y: 36 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ amount: 0.34 }}
+                initial={supportsViewportMotion ? { opacity: 0, y: 36 } : false}
+                whileInView={supportsViewportMotion ? { opacity: 1, y: 0 } : undefined}
+                viewport={supportsViewportMotion ? { amount: 0.34 } : undefined}
                 transition={{ duration: 1.15, ease: [0.16, 1, 0.3, 1] }}
               >
                 <span className={styles.eyebrow}>{chapter.eyebrow}</span>
@@ -1048,9 +1053,9 @@ export const History = ({ aboveFold = false }: HistoryProps) => {
 
               <motion.div
                 className={`${styles.stage} ${chapter.scenes.length === 1 ? styles.singleStage : ''}`}
-                initial={{ opacity: 0, scale: 0.985 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ amount: 0.3 }}
+                initial={supportsViewportMotion ? { opacity: 0, scale: 0.985 } : false}
+                whileInView={supportsViewportMotion ? { opacity: 1, scale: 1 } : undefined}
+                viewport={supportsViewportMotion ? { amount: 0.3 } : undefined}
                 transition={{ duration: 1.35, ease: [0.16, 1, 0.3, 1] }}
               >
                 <div
@@ -1169,9 +1174,9 @@ export const History = ({ aboveFold = false }: HistoryProps) => {
 
       <motion.footer
         className={styles.finale}
-        initial={{ opacity: 0, y: 24 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.35 }}
+        initial={supportsViewportMotion ? { opacity: 0, y: 24 } : false}
+        whileInView={supportsViewportMotion ? { opacity: 1, y: 0 } : undefined}
+        viewport={supportsViewportMotion ? { once: true, amount: 0.35 } : undefined}
         transition={{ duration: 0.9, ease: [0.22, 0.8, 0.22, 1] }}
       >
         <div>

@@ -25,6 +25,7 @@ const story = loadTypeScriptModule(resolve(repository, 'src/components/OurStory/
   '@/lib/media/responsiveSources': media,
   '@/lib/constants': {},
 });
+const storyComponentSource = readFileSync(resolve(repository, 'src/components/OurStory/OurStory.tsx'), 'utf8');
 
 const originalV1 = 'https://example.test/original-v1.webp';
 const originalV2 = 'https://example.test/original-v2.webp';
@@ -88,6 +89,29 @@ assert.deepEqual(
   'a History source replacement clears only the stale rendition metadata',
 );
 
+const reorderedHistory = {
+  chapters: [{ scenes: [
+    { id: 'scene-a', image: originalV1, responsiveSources: v1Renditions, responsiveSourceImage: originalV1, title: 'A' },
+    { id: 'scene-b', image: 'https://example.test/original-b.webp', responsiveSources: { '320': 'https://example.test/original-b-w320.webp' }, responsiveSourceImage: 'https://example.test/original-b.webp', title: 'B' },
+  ] }],
+};
+const reorderedIncoming = {
+  chapters: [{ scenes: [
+    { id: 'scene-b', image: 'https://example.test/original-b-v2.webp', responsiveSources: { '320': 'https://example.test/original-b-w320.webp' }, responsiveSourceImage: 'https://example.test/original-b.webp', title: 'B' },
+    { id: 'scene-a', image: originalV1, responsiveSources: v1Renditions, responsiveSourceImage: originalV1, title: 'A' },
+  ] }],
+};
+assert.deepEqual(
+  media.clearStaleHistoryResponsiveSources(reorderedHistory, reorderedIncoming),
+  {
+    chapters: [{ scenes: [
+      { id: 'scene-b', image: 'https://example.test/original-b-v2.webp', title: 'B' },
+      { id: 'scene-a', image: originalV1, responsiveSources: v1Renditions, responsiveSourceImage: originalV1, title: 'A' },
+    ] }],
+  },
+  'a reorder pairs by stable identity: changed source clears its own map and unchanged source keeps its map',
+);
+
 const storyV1 = { locationSection: { cityImage: originalV1, cityImageResponsiveSources: v1Renditions, cityImageResponsiveSource: originalV1, title: { vi: 'V1' } } };
 assert.deepEqual(
   media.clearStaleOurStoryResponsiveSources(storyV1, { locationSection: { ...storyV1.locationSection, cityImage: originalV2 } }),
@@ -128,6 +152,25 @@ assert.equal(
   'hydrated V2 content still rejects an explicitly V1 map',
 );
 assert.deepEqual(hydrated.filmReel.frames[0].responsiveSources, { '128': 'https://example.test/original-v2-w128.webp' });
+
+assert.deepEqual(
+  media.selectResponsiveSourceCandidate(originalV1, { '64': '/64.webp', '128': '/128.webp', '192': '/192.webp' }, originalV1, 64, 1),
+  { width: 64, url: '/64.webp', requiredWidth: 64, undersized: false },
+  'thumbnail selection uses the smallest candidate covering box × DPR',
+);
+assert.deepEqual(
+  media.selectResponsiveSourceCandidate(originalV1, { '64': '/64.webp', '128': '/128.webp', '192': '/192.webp' }, originalV1, 64, 3),
+  { width: 192, url: '/192.webp', requiredWidth: 192, undersized: false },
+  'thumbnail selection scales its target by DPR',
+);
+assert.deepEqual(
+  media.selectResponsiveSourceCandidate(originalV1, { '64': '/64.webp', '128': '/128.webp' }, originalV1, 96, 3),
+  { width: 128, url: '/128.webp', requiredWidth: 288, undersized: true },
+  'missing width coverage is explicitly marked undersized instead of being reported as an exact fit',
+);
+assert.match(storyComponentSource, /mediaGenerationRef\.current \+= 1/, 'decode generation must invalidate stale source events');
+assert.match(storyComponentSource, /generation !== mediaGenerationRef\.current/, 'stale decode promises must not settle the current source');
+assert.match(storyComponentSource, /key=\{sourceKey\}/, 'fallback source changes must remount the image element');
 
 assert.equal(media.deferredMediaStateAfterDecode(320), 'loaded');
 assert.equal(media.deferredMediaStateAfterDecode(0), 'error');

@@ -127,7 +127,7 @@ const FloatingWidgets = () => {
 
   useEffect(() => {
     const footer = document.getElementById('footer');
-    if (!footer || !('IntersectionObserver' in window)) return;
+    if (!footer || typeof window.IntersectionObserver !== 'function') return;
 
     const observer = new IntersectionObserver(
       ([entry]) => setIsFooterVisible(entry.isIntersecting),
