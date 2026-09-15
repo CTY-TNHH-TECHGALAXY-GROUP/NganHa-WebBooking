@@ -1,0 +1,63 @@
+{
+  "role": "D/F",
+  "baseSha": "c964977ca2af3081248c902a626612c4b11722af",
+  "testedSha": "c964977ca2af3081248c902a626612c4b11722af",
+  "branch": "codex/ps-reaccept-d-f-20260915",
+  "worktree": "/private/tmp/nganha-pagespeed-role-df",
+  "server": "http://127.0.0.1:3312",
+  "browser": "Chromium 149.0.7827.55 / Playwright 1.61.1",
+  "axe": "axe-core 4.11.1",
+  "generatedAt": "2026-09-15T11:20:00+07:00",
+  "entries": [
+    {
+      "path": "scripts/test-agent-d-accessibility.mjs",
+      "sha256": "85b15b173d8d06051c9cde9536b3bb127b1444575a2a9eefdba376a6763091ea",
+      "kind": "existing rerunnable axe/viewport runner; unchanged in this commit"
+    },
+    {
+      "path": "scripts/test-font-delivery.mjs",
+      "sha256": "5146449e56bee0a09f167f08523974812a0b8fa4a65e8c99650327a0d4e9f095",
+      "kind": "new rerunnable five-locale font/CLS/resource audit"
+    },
+    {
+      "path": "plans/pagespeed-remediation-20260913/remaining/agent-d/raw-axe-candidate-20260915.json",
+      "sha256": "edb2a91c36c9f9fa18f13a0c399b878e0b61a9a892768aaf509ee7038a7255cd",
+      "kind": "24 route/state cases; 0 confirmed violations; 1357 incomplete nodes; versioned candidate output"
+    },
+    {
+      "path": "plans/pagespeed-remediation-20260913/remaining/agent-d/raw-axe-768-supplement.json",
+      "sha256": "465f818bf3bef85f4b2001597bab2e6fd8b6e78a976145aacda537b77c7de61f",
+      "kind": "raw /en 768x1024 DPR2 supplement; 0 violations; 114 incomplete nodes"
+    },
+    {
+      "path": "plans/pagespeed-remediation-20260913/remaining/agent-d/manual-zoom-keyboard.json",
+      "sha256": "a5ff90c4eb752c462421959f401a790ac0d16462e4a6c8c8dddb1d44dd0a0eb3",
+      "kind": "tab traversal and viewport meta evidence at 390/1440"
+    },
+    {
+      "path": "plans/pagespeed-remediation-20260913/remaining/agent-d/manual-interactions-20260915.json",
+      "sha256": "03ed1090bb29d4961d51f6e3ae32be09a4112958dd969d815ebd514682fe6436",
+      "kind": "menu/chat/QR/checkout/zoom/pinch smoke; includes menu Escape failure and NOT VERIFIED residuals"
+    },
+    {
+      "path": "plans/pagespeed-remediation-20260913/remaining/agent-d/font-matrix-scripted-20260915.json",
+      "sha256": "dfd63f10c2456c55a697af6d0036b5e751b5fbb046f0a4a90331addc863dd212",
+      "kind": "five locale font family/weight/check/resource/CLS matrix"
+    },
+    {
+      "path": "plans/pagespeed-remediation-20260913/remaining/agent-d/handoff.md",
+      "sha256": "021073c36cdfaeb547d6220b0e48bd92caa9b403148b14a4599171aa932afc75",
+      "kind": "role handoff, gate disposition and residual dependencies"
+    }
+  ],
+  "requiredDispositions": {
+    "contrastIncomplete": "NOT VERIFIED",
+    "menuEscapeAndFocusReturn": "FAIL",
+    "chatKeyboard": "NOT VERIFIED (trigger hidden in captured state)",
+    "zoom200": "NOT VERIFIED",
+    "zoom500": "NOT VERIFIED",
+    "pinch": "NOT VERIFIED (no physical device)",
+    "fontLicense": "NOT VERIFIED",
+    "playfair700": "OPEN — document.fonts.check false in all five sampled locale pages"
+  }
+}

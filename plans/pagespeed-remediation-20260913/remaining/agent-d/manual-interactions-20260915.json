@@ -1,0 +1,155 @@
+{
+  "testedSha": "c964977ca2af3081248c902a626612c4b11722af",
+  "browser": "Chromium 149.0.7827.55",
+  "timestamp": "2026-09-15T11:28:47.033Z",
+  "profile": {
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "deviceScaleFactor": 2
+  },
+  "checks": {
+    "menu": {
+      "opened": true,
+      "triggerAfterOpen": {
+        "tag": "BUTTON",
+        "aria": "Toggle menu"
+      },
+      "escapeClosed": false,
+      "escapeDisposition": "FAIL — Escape did not close menu",
+      "explicitCloseClosed": true,
+      "focusReturn": {
+        "tag": "BODY",
+        "aria": null
+      }
+    },
+    "chat": {
+      "available": true,
+      "visible": false
+    },
+    "qr": {
+      "triggerCount": 1,
+      "opened": true,
+      "escapeClosed": true,
+      "escapeDisposition": "PASS",
+      "explicitCloseClosed": true
+    },
+    "checkout": {
+      "status": 200,
+      "focusSteps": [
+        {
+          "tag": "BUTTON",
+          "aria": "Toggle menu",
+          "text": ""
+        },
+        {
+          "tag": "A",
+          "aria": "Oria Spa home",
+          "text": ""
+        },
+        {
+          "tag": "A",
+          "aria": null,
+          "text": "Book"
+        },
+        {
+          "tag": "BUTTON",
+          "aria": "Cart, 0 services selected",
+          "text": ""
+        },
+        {
+          "tag": "BUTTON",
+          "aria": "Select language",
+          "text": ""
+        },
+        {
+          "tag": "A",
+          "aria": "Location",
+          "text": ""
+        },
+        {
+          "tag": "BUTTON",
+          "aria": null,
+          "text": "Back"
+        },
+        {
+          "tag": "INPUT",
+          "aria": null,
+          "text": ""
+        },
+        {
+          "tag": "BUTTON",
+          "aria": "Gender",
+          "text": "Male⌄"
+        },
+        {
+          "tag": "INPUT",
+          "aria": null,
+          "text": ""
+        },
+        {
+          "tag": "INPUT",
+          "aria": null,
+          "text": ""
+        },
+        {
+          "tag": "BUTTON",
+          "aria": null,
+          "text": "+"
+        },
+        {
+          "tag": "BUTTON",
+          "aria": null,
+          "text": "Calendar"
+        },
+        {
+          "tag": "INPUT",
+          "aria": "Pick a date from calendar",
+          "text": ""
+        },
+        {
+          "tag": "INPUT",
+          "aria": "Pick a date from calendar",
+          "text": ""
+        },
+        {
+          "tag": "INPUT",
+          "aria": "Pick a date from calendar",
+          "text": ""
+        },
+        {
+          "tag": "INPUT",
+          "aria": "Pick a date from calendar",
+          "text": ""
+        },
+        {
+          "tag": "BUTTON",
+          "aria": null,
+          "text": "Today15Sep"
+        },
+        {
+          "tag": "BUTTON",
+          "aria": null,
+          "text": "Wed16Sep"
+        },
+        {
+          "tag": "BUTTON",
+          "aria": null,
+          "text": "Thu17Sep"
+        }
+      ],
+      "bookingSubmitted": false
+    },
+    "zoom200": {
+      "status": "NOT VERIFIED — no real browser zoom/device capture; viewport meta permits zoom",
+      "viewportMeta": "width=device-width, initial-scale=1, viewport-fit=cover"
+    },
+    "zoom500": {
+      "status": "NOT VERIFIED — no real browser zoom/device capture"
+    },
+    "pinch": {
+      "status": "NOT VERIFIED — no physical iOS/Android device available"
+    }
+  }
+}

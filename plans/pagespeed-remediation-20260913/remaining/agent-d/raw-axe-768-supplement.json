@@ -1,0 +1,4058 @@
+{
+  "timestamp": "2026-09-15T11:18:09.759Z",
+  "sha": "c964977ca2af3081248c902a626612c4b11722af",
+  "route": "/en",
+  "viewport": {
+    "width": 768,
+    "height": 1024,
+    "deviceScaleFactor": 2
+  },
+  "browser": "Chromium 149.0.7827.55",
+  "result": {
+    "measure": {
+      "innerWidth": 768,
+      "innerHeight": 1024,
+      "dpr": 2
+    },
+    "axe": {
+      "testEngine": {
+        "name": "axe-core",
+        "version": "4.11.1"
+      },
+      "testEnvironment": {
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/149.0.7827.55 Safari/537.36",
+        "windowWidth": 768,
+        "windowHeight": 1024,
+        "orientationAngle": 0,
+        "orientationType": "landscape-primary"
+      },
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "tags": [
+            "cat.color",
+            "wcag2aa",
+            "wcag143",
+            "TTv5",
+            "TT13.c",
+            "EN-301-549",
+            "EN-9.1.4.3",
+            "ACT",
+            "RGAAv4",
+            "RGAA-3.2.1"
+          ],
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.11/color-contrast?application=axeAPI",
+          "nodes": [
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "contrastRatio": 0,
+                    "fontSize": "10.5pt (14px)",
+                    "fontWeight": "bold",
+                    "messageKey": "bgOverlap",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined because it is overlapped by another element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<span class=\"font-extrabold text-...\" style=\"background:linear-gr...\">",
+              "target": [
+                ".font-extrabold"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "9.0pt (12px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<p class=\"OurStory_eyebrow__zVfZ6\">Heritage &amp; Destination</p>",
+              "target": [
+                ".OurStory_masthead__5EUCw > .OurStory_eyebrow__zVfZ6"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "27.0pt (36px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "3:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<h2>Oria Barbershop &amp; Spa System</h2>",
+              "target": [
+                ".OurStory_titleComposition__IV0ib > h2"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "66.0pt (88px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "3:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<p>Our story</p>",
+              "target": [
+                ".OurStory_titleComposition__IV0ib > p"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "8.3pt (11px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<span>11 Ngo Duc Ke</span>",
+              "target": [
+                ".OurStory_mastheadRule__mBb1n > span:nth-child(1)"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "8.3pt (11px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<span>Saigon, Vietnam</span>",
+              "target": [
+                ".OurStory_mastheadRule__mBb1n > span:nth-child(2)"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "8.3pt (11px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<span>01</span>",
+              "target": [
+                ".OurStory_locationStory__pMbEh > .OurStory_sectionMarker__JKRWi > span"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "23.3pt (31px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "3:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<h3>Prime Location &amp; Connectivity</h3>",
+              "target": [
+                ".OurStory_locationStory__pMbEh > .OurStory_sectionMarker__JKRWi > h3"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "10.5pt (14px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<p class=\"OurStory_goldPoint__K1101\">Strategic Position: Ngo Duc Ke Street lies entirely within District 1, the economic and commercial hub of the city. Measuring around 403m in length, it offers smooth two-way transit.</p>",
+              "target": [
+                ".OurStory_goldPoint__K1101"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "10.5pt (14px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<p class=\"OurStory_connectionIntro__QLf0b\">Crucial Junctions: Ngo Duc Ke Street connects and intersects with other premier avenues in District 1, forming an illustrious commercial golden triangle:</p>",
+              "target": [
+                ".OurStory_connectionIntro__QLf0b"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "7.5pt (10px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<span>01</span>",
+              "target": [
+                ".OurStory_connectionList__r_n0x > li:nth-child(1) > span"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "9.8pt (13px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<p>Originates at Me Linh Square (near Saigon River and Tran Hung Dao Monument).</p>",
+              "target": [
+                "li:nth-child(1) > p"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "7.5pt (10px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<span>02</span>",
+              "target": [
+                ".OurStory_connectionList__r_n0x > li:nth-child(2) > span"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "9.8pt (13px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<p>Crosses Dong Khoi Street (the most luxurious retail and heritage corridor).</p>",
+              "target": [
+                "li:nth-child(2) > p"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "7.5pt (10px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<span>03</span>",
+              "target": [
+                ".OurStory_connectionList__r_n0x > li:nth-child(3) > span"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "9.8pt (13px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<p>Crosses Nguyen Hue Boulevard (the iconic walking promenade and cultural event plaza).</p>",
+              "target": [
+                "li:nth-child(3) > p"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "7.5pt (10px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<span>04</span>",
+              "target": [
+                ".OurStory_connectionList__r_n0x > li:nth-child(4) > span"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "9.8pt (13px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<p>Concludes at the intersection with Ho Tung Mau &amp; Hai Trieu (adjacent to Bitexco Financial Tower).</p>",
+              "target": [
+                "li:nth-child(4) > p"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "14.3pt (19px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<span>Explore Saigon Local Tour the Oria Spa Way</span>",
+              "target": [
+                "a[href$=\"local-tour\"] > span"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "7.5pt (10px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<span>Saigon district 01</span>",
+              "target": [
+                "figcaption > span:nth-child(1)"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "7.5pt (10px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<span>City rhythm</span>",
+              "target": [
+                "figcaption > span:nth-child(2)"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "7.5pt (10px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<figcaption>Ngo Duc Ke Street intersecting with Dong Khoi • District 1 Center</figcaption>",
+              "target": [
+                ".OurStory_offsetFigure__hnXrJ > figcaption"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "8.3pt (11px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<span>02</span>",
+              "target": [
+                ".OurStory_architectureSection__13sIY > .OurStory_sectionMarker__JKRWi > span"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "23.3pt (31px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "3:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<h3>Architecture &amp; Commerce</h3>",
+              "target": [
+                ".OurStory_architectureSection__13sIY > .OurStory_sectionMarker__JKRWi > h3"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "8.3pt (11px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<span>01</span>",
+              "target": [
+                ".OurStory_featureList__xJsmK > article:nth-child(1) > span"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "8.3pt (11px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<span>02</span>",
+              "target": [
+                ".OurStory_featureList__xJsmK > article:nth-child(2) > span"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "15.0pt (20px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<p>Exciting Travel Activities:</p>",
+              "target": [
+                "aside > p"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "9.8pt (13px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<li><span>01</span>Panoramic city views on the double-decker open bus</li>",
+              "target": [
+                "ol > li:nth-child(1)"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "8.3pt (11px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<span>01</span>",
+              "target": [
+                "ol > li:nth-child(1) > span"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "9.8pt (13px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<li><span>04</span>Explore the scenic city route with Saigon Waterbus</li>",
+              "target": [
+                "ol > li:nth-child(2)"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "8.3pt (11px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<span>04</span>",
+              "target": [
+                "ol > li:nth-child(2) > span"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "9.8pt (13px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<li><span>02</span>Gourmet evening on Saigon Princess with river skyline vistas</li>",
+              "target": [
+                "ol > li:nth-child(3)"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "8.3pt (11px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<span>02</span>",
+              "target": [
+                "ol > li:nth-child(3) > span"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "9.8pt (13px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<li><span>03</span>Restorative foot reflexology at Oria after an eventful journey</li>",
+              "target": [
+                "ol > li:nth-child(4)"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "8.3pt (11px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<span>03</span>",
+              "target": [
+                "ol > li:nth-child(4) > span"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "8.3pt (11px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<span>03</span>",
+              "target": [
+                ".OurStory_journeyHeading__0fK5w > .OurStory_sectionMarker__JKRWi > span"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "23.3pt (31px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "3:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<h3>Film Reel: Saigon Experience &amp; Oria</h3>",
+              "target": [
+                ".OurStory_journeyHeading__0fK5w > .OurStory_sectionMarker__JKRWi > h3"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "12.0pt (16px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<div class=\"OurStory_filmStrip__MdXfG\">",
+                      "target": [
+                        ".OurStory_filmStrip__MdXfG"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<span>01</span>",
+              "target": [
+                ".OurStory_filmFrame___7fJy:nth-child(1) > span"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "12.0pt (16px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<div class=\"OurStory_filmStrip__MdXfG\">",
+                      "target": [
+                        ".OurStory_filmStrip__MdXfG"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<span>02</span>",
+              "target": [
+                ".OurStory_filmFrame___7fJy:nth-child(2) > span"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "12.0pt (16px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<div class=\"OurStory_filmStrip__MdXfG\">",
+                      "target": [
+                        ".OurStory_filmStrip__MdXfG"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<span>03</span>",
+              "target": [
+                ".OurStory_filmFrame___7fJy:nth-child(3) > span"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "8.3pt (11px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<span>04</span>",
+              "target": [
+                ".OurStory_atmosphereSection__o_KkI > div > .OurStory_sectionMarker__JKRWi > span"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "23.3pt (31px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "3:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<h3>Atmosphere &amp; Lifestyle</h3>",
+              "target": [
+                ".OurStory_atmosphereSection__o_KkI > div > .OurStory_sectionMarker__JKRWi > h3"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "9.0pt (12px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<p class=\"OurStory_eyebrow__zVfZ6\">Destination of Rejuvenation</p>",
+              "target": [
+                ".OurStory_specialtyIntro__aMGxr > .OurStory_eyebrow__zVfZ6"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "8.3pt (11px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<span>01</span>",
+              "target": [
+                "article:nth-child(1) > .OurStory_pillarCopy__aIgi9 > span"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "24.0pt (32px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "3:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<h4>A Place for Everyone at Oria Spa</h4>",
+              "target": [
+                "article:nth-child(1) > .OurStory_pillarCopy__aIgi9 > h4"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "8.3pt (11px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<span>02</span>",
+              "target": [
+                "article:nth-child(2) > .OurStory_pillarCopy__aIgi9 > span"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "24.0pt (32px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "3:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<h4>A Personal Experience for Each Guest</h4>",
+              "target": [
+                "article:nth-child(2) > .OurStory_pillarCopy__aIgi9 > h4"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "8.3pt (11px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<span>03</span>",
+              "target": [
+                "article:nth-child(3) > .OurStory_pillarCopy__aIgi9 > span"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "24.0pt (32px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "3:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<h4>A Complete Choice for Every Need</h4>",
+              "target": [
+                "article:nth-child(3) > .OurStory_pillarCopy__aIgi9 > h4"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "8.3pt (11px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<span>04</span>",
+              "target": [
+                "article:nth-child(4) > .OurStory_pillarCopy__aIgi9 > span"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "24.0pt (32px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "3:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<h4>A Complete Journey of Renewal</h4>",
+              "target": [
+                "article:nth-child(4) > .OurStory_pillarCopy__aIgi9 > h4"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "8.3pt (11px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<span>01</span>",
+              "target": [
+                "article:nth-child(5) > .OurStory_pillarCopy__aIgi9 > span"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "24.0pt (32px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "3:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<h4>Standard Menu</h4>",
+              "target": [
+                "article:nth-child(5) > .OurStory_pillarCopy__aIgi9 > h4"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "12.0pt (16px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<p class=\"OurStory_menuTagline__Y2nKW\">Full spa + barbershop services</p>",
+              "target": [
+                "article:nth-child(5) > .OurStory_pillarCopy__aIgi9 > .OurStory_menuTagline__Y2nKW"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "10.5pt (14px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<p>This is the foundational menu, bringing together body care and grooming services in one space — for guests who want to take care of multiple needs in a single visit, without moving between different locations.</p>",
+              "target": [
+                "article:nth-child(5) > .OurStory_pillarCopy__aIgi9 > p:nth-child(4)"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "10.1pt (13.5px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<p><strong>Included: </strong>Basic spa services (relaxation massage, facial care...), barbershop services (styling, face shaving...), and our signature professional ear-cleaning service that leaves you feeling instantly refreshed and relaxed.</p>",
+              "target": [
+                "article:nth-child(5) > .OurStory_pillarCopy__aIgi9 > .OurStory_menuDetails__nPW5V > p:nth-child(1)"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "10.1pt (13.5px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<strong>Included: </strong>",
+              "target": [
+                "article:nth-child(5) > .OurStory_pillarCopy__aIgi9 > .OurStory_menuDetails__nPW5V > p:nth-child(1) > strong"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "10.1pt (13.5px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<p><strong>Best for: </strong>Guests who want a quick, convenient one-stop experience — caring for both body and appearance in one visit; first-time visitors; guests looking for reasonable pricing; solving multiple needs in one go.</p>",
+              "target": [
+                "article:nth-child(5) > .OurStory_pillarCopy__aIgi9 > .OurStory_menuDetails__nPW5V > p:nth-child(2)"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "10.1pt (13.5px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<strong>Best for: </strong>",
+              "target": [
+                "article:nth-child(5) > .OurStory_pillarCopy__aIgi9 > .OurStory_menuDetails__nPW5V > p:nth-child(2) > strong"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "10.1pt (13.5px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<p><strong>Highlights: </strong>The most accessible menu — standard process, optimized service time, ideal for regular use without complex booking. Random staff assignment, spacious airy shared rooms. Signature ear cleaning is the distinctive highlight.</p>",
+              "target": [
+                "article:nth-child(5) > .OurStory_pillarCopy__aIgi9 > .OurStory_menuDetails__nPW5V > p:nth-child(3)"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "10.1pt (13.5px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<strong>Highlights: </strong>",
+              "target": [
+                "article:nth-child(5) > .OurStory_pillarCopy__aIgi9 > .OurStory_menuDetails__nPW5V > p:nth-child(3) > strong"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "14.3pt (19px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<a class=\"OurStory_textLink__S3_Dn\" href=\"/en/pure-relaxation\">",
+              "target": [
+                "a[href$=\"pure-relaxation\"]"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "8.3pt (11px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<span>02</span>",
+              "target": [
+                "article:nth-child(6) > .OurStory_pillarCopy__aIgi9 > span"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "24.0pt (32px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "3:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<h4>Luxury Menu — Design Your Journey</h4>",
+              "target": [
+                "article:nth-child(6) > .OurStory_pillarCopy__aIgi9 > h4"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "12.0pt (16px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<p class=\"OurStory_menuTagline__Y2nKW\">Private room · Design your own service · Choose preferred therapist</p>",
+              "target": [
+                "article:nth-child(6) > .OurStory_pillarCopy__aIgi9 > .OurStory_menuTagline__Y2nKW"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "10.1pt (13.5px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<p><strong>Included: </strong>Secluded private room throughout the session; Design your own service by combining multiple therapies to your exact needs; View therapist profiles and choose the specialist matching your preferences.</p>",
+              "target": [
+                "article:nth-child(6) > .OurStory_pillarCopy__aIgi9 > .OurStory_menuDetails__nPW5V > p:nth-child(1)"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "10.1pt (13.5px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<strong>Included: </strong>",
+              "target": [
+                "article:nth-child(6) > .OurStory_pillarCopy__aIgi9 > .OurStory_menuDetails__nPW5V > p:nth-child(1) > strong"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "10.1pt (13.5px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<p><strong>Best for: </strong>Experienced spa-goers who know their body's needs; guests valuing absolute privacy; those desiring a tailored luxury experience; special occasions: birthdays, anniversaries, and VIP partner hosting.</p>",
+              "target": [
+                "article:nth-child(6) > .OurStory_pillarCopy__aIgi9 > .OurStory_menuDetails__nPW5V > p:nth-child(2)"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "10.1pt (13.5px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<strong>Best for: </strong>",
+              "target": [
+                "article:nth-child(6) > .OurStory_pillarCopy__aIgi9 > .OurStory_menuDetails__nPW5V > p:nth-child(2) > strong"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "10.1pt (13.5px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<p><strong>Highlights: </strong>This isn't \"buying a service\" — it is \"designing an experience.\" The guest is in full control. Advance booking is required so Oria Spa can prepare the ideal room, specialist, and tailored amenities for you.</p>",
+              "target": [
+                "article:nth-child(6) > .OurStory_pillarCopy__aIgi9 > .OurStory_menuDetails__nPW5V > p:nth-child(3)"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "10.1pt (13.5px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<strong>Highlights: </strong>",
+              "target": [
+                "article:nth-child(6) > .OurStory_pillarCopy__aIgi9 > .OurStory_menuDetails__nPW5V > p:nth-child(3) > strong"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "14.3pt (19px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<a class=\"OurStory_textLink__S3_Dn\" href=\"tel:+84964090277\">",
+              "target": [
+                ".OurStory_textLink__S3_Dn[href=\"tel:+84964090277\"]"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "8.3pt (11px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<span>03</span>",
+              "target": [
+                "article:nth-child(7) > .OurStory_pillarCopy__aIgi9 > span"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "24.0pt (32px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "3:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<h4>Deep Body Therapy</h4>",
+              "target": [
+                "article:nth-child(7) > .OurStory_pillarCopy__aIgi9 > h4"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "12.0pt (16px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<p class=\"OurStory_menuTagline__Y2nKW\">Focused on massage and deep therapeutic treatment</p>",
+              "target": [
+                "article:nth-child(7) > .OurStory_pillarCopy__aIgi9 > .OurStory_menuTagline__Y2nKW"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "10.5pt (14px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<p>This specialized menu focuses 100% on one goal: resolving deep-seated body issues — chronic muscle tension, neck and shoulder pain, stress-related insomnia, and total energy recovery.</p>",
+              "target": [
+                "article:nth-child(7) > .OurStory_pillarCopy__aIgi9 > p:nth-child(4)"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "10.1pt (13.5px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<strong>Included: </strong>",
+              "target": [
+                "article:nth-child(7) > .OurStory_pillarCopy__aIgi9 > .OurStory_menuDetails__nPW5V > p:nth-child(1) > strong"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "10.1pt (13.5px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<p><strong>Best for: </strong>Office workers sitting long hours with chronic neck, shoulder, and lower back pain; those suffering insomnia from muscle tension; athletes needing muscle recovery; guests accustomed to strong pressure desiring deep relief.</p>",
+              "target": [
+                "article:nth-child(7) > .OurStory_pillarCopy__aIgi9 > .OurStory_menuDetails__nPW5V > p:nth-child(2)"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "10.1pt (13.5px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<strong>Best for: </strong>",
+              "target": [
+                "article:nth-child(7) > .OurStory_pillarCopy__aIgi9 > .OurStory_menuDetails__nPW5V > p:nth-child(2) > strong"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "10.1pt (13.5px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<p><strong>Highlights: </strong>The only menu explicitly positioned as \"therapy\" rather than \"relaxation\" — designed to create measurable physical improvement. Due to deep, strong pressure, not recommended for first-time massage guests.</p>",
+              "target": [
+                "article:nth-child(7) > .OurStory_pillarCopy__aIgi9 > .OurStory_menuDetails__nPW5V > p:nth-child(3)"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "10.1pt (13.5px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<strong>Highlights: </strong>",
+              "target": [
+                "article:nth-child(7) > .OurStory_pillarCopy__aIgi9 > .OurStory_menuDetails__nPW5V > p:nth-child(3) > strong"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "14.3pt (19px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<a class=\"OurStory_textLink__S3_Dn\" href=\"/en/new-user/standard/checkout\">",
+              "target": [
+                ".OurStory_pillarCopy__aIgi9 > .OurStory_textLink__S3_Dn[href$=\"checkout\"]"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "8.3pt (11px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<span>04</span>",
+              "target": [
+                "article:nth-child(8) > .OurStory_pillarCopy__aIgi9 > span"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "24.0pt (32px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "3:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<h4>Home Spa Menu</h4>",
+              "target": [
+                "article:nth-child(8) > .OurStory_pillarCopy__aIgi9 > h4"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "12.0pt (16px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<p class=\"OurStory_menuTagline__Y2nKW\">Therapist comes to you — spa experience without leaving home</p>",
+              "target": [
+                "article:nth-child(8) > .OurStory_pillarCopy__aIgi9 > .OurStory_menuTagline__Y2nKW"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "10.1pt (13.5px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<strong>Included: </strong>",
+              "target": [
+                "article:nth-child(8) > .OurStory_pillarCopy__aIgi9 > .OurStory_menuDetails__nPW5V > p:nth-child(1) > strong"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "10.1pt (13.5px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<p><strong>Best for: </strong>Busy guests with no time to travel; residents in distant areas; guests who prefer familiar private spaces; occasion-based groups: house parties, family wellness (multiple guests), elderly or postpartum women.</p>",
+              "target": [
+                "article:nth-child(8) > .OurStory_pillarCopy__aIgi9 > .OurStory_menuDetails__nPW5V > p:nth-child(2)"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "10.1pt (13.5px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<strong>Best for: </strong>",
+              "target": [
+                "article:nth-child(8) > .OurStory_pillarCopy__aIgi9 > .OurStory_menuDetails__nPW5V > p:nth-child(2) > strong"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "10.1pt (13.5px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<p><strong>Highlights: </strong>Homespa is not a scaled-down version of an in-spa visit, but a dedicated solution removing commute and weather barriers, making wellness effortlessly accessible in every circumstance.</p>",
+              "target": [
+                "article:nth-child(8) > .OurStory_pillarCopy__aIgi9 > .OurStory_menuDetails__nPW5V > p:nth-child(3)"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "10.1pt (13.5px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<strong>Highlights: </strong>",
+              "target": [
+                "article:nth-child(8) > .OurStory_pillarCopy__aIgi9 > .OurStory_menuDetails__nPW5V > p:nth-child(3) > strong"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "14.3pt (19px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<a class=\"OurStory_textLink__S3_Dn\" href=\"/en/oriahome\">",
+              "target": [
+                "a[href$=\"oriahome\"]"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "14.3pt (19px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<section class=\"OurStory_sectionRoot__spOye\" id=\"our-story\">",
+                      "target": [
+                        "#our-story"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<a class=\"OurStory_textLink__S3_Dn\" href=\"https://oria-spa.vercel.app/vi/new-user/standard/checkout\">",
+              "target": [
+                ".OurStory_specialtySection__gX1uk > .OurStory_textLink__S3_Dn"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "contrastRatio": 0,
+                    "fontSize": "9.4pt (12.48px)",
+                    "fontWeight": "bold",
+                    "messageKey": "bgGradient",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<div class=\"History_texture__YlUdN\" aria-hidden=\"true\"></div>",
+                      "target": [
+                        ".History_texture__YlUdN"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a background gradient"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<span class=\"History_eyebrow__bZBQH\">Cinematic timeline</span>",
+              "target": [
+                ".History_intro__UiGqA > div:nth-child(1) > .History_eyebrow__bZBQH"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "contrastRatio": 0,
+                    "fontSize": "27.6pt (36.8px)",
+                    "fontWeight": "normal",
+                    "messageKey": "bgGradient",
+                    "expectedContrastRatio": "3:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<div class=\"History_texture__YlUdN\" aria-hidden=\"true\"></div>",
+                      "target": [
+                        ".History_texture__YlUdN"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a background gradient"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<h2>A calmer way to feel the brand story.</h2>",
+              "target": [
+                ".History_intro__UiGqA > div:nth-child(1) > h2"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "contrastRatio": 0,
+                    "fontSize": "12.0pt (16px)",
+                    "fontWeight": "normal",
+                    "messageKey": "bgGradient",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<div class=\"History_texture__YlUdN\" aria-hidden=\"true\"></div>",
+                      "target": [
+                        ".History_texture__YlUdN"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a background gradient"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<p>The interface fades into the background; image, rhythm, and memory become the main experience.</p>",
+              "target": [
+                ".History_intro__UiGqA > div:nth-child(1) > p"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "contrastRatio": 0,
+                    "fontSize": "13.8pt (18.4px)",
+                    "fontWeight": "normal",
+                    "messageKey": "bgOverlap",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined because it is overlapped by another element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<span style=\"opacity: 0; transform: translateY(0.0554578px);\">2015</span>",
+              "target": [
+                ".History_stickyYear__lUOyU > span"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "69.1pt (92.16px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "3:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<div class=\"History_timeline__mfhyW\">",
+                      "target": [
+                        ".History_timeline__mfhyW"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<div class=\"History_yearFloat__o_yzM\" aria-hidden=\"true\">2015</div>",
+              "target": [
+                "#history-2015 > .History_yearFloat__o_yzM[aria-hidden=\"true\"]"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "69.1pt (92.16px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "3:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<div class=\"History_timeline__mfhyW\">",
+                      "target": [
+                        ".History_timeline__mfhyW"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<div class=\"History_yearFloat__o_yzM\" aria-hidden=\"true\">2018</div>",
+              "target": [
+                "#history-2018 > .History_yearFloat__o_yzM[aria-hidden=\"true\"]"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "69.1pt (92.16px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "3:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<div class=\"History_timeline__mfhyW\">",
+                      "target": [
+                        ".History_timeline__mfhyW"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<div class=\"History_yearFloat__o_yzM\" aria-hidden=\"true\">2020</div>",
+              "target": [
+                "#history-2020 > .History_yearFloat__o_yzM[aria-hidden=\"true\"]"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "69.1pt (92.16px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "3:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<div class=\"History_timeline__mfhyW\">",
+                      "target": [
+                        ".History_timeline__mfhyW"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<div class=\"History_yearFloat__o_yzM\" aria-hidden=\"true\">2021</div>",
+              "target": [
+                "#history-2021 > .History_yearFloat__o_yzM[aria-hidden=\"true\"]"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "69.1pt (92.16px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "3:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<div class=\"History_timeline__mfhyW\">",
+                      "target": [
+                        ".History_timeline__mfhyW"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<div class=\"History_yearFloat__o_yzM\" aria-hidden=\"true\">2023</div>",
+              "target": [
+                "#history-2023 > .History_yearFloat__o_yzM[aria-hidden=\"true\"]"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "69.1pt (92.16px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "3:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<div class=\"History_timeline__mfhyW\">",
+                      "target": [
+                        ".History_timeline__mfhyW"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<div class=\"History_yearFloat__o_yzM\" aria-hidden=\"true\">2024</div>",
+              "target": [
+                "#history-2024 > .History_yearFloat__o_yzM[aria-hidden=\"true\"]"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "fontSize": "69.1pt (92.16px)",
+                    "fontWeight": "normal",
+                    "messageKey": "pseudoContent",
+                    "expectedContrastRatio": "3:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<div class=\"History_timeline__mfhyW\">",
+                      "target": [
+                        ".History_timeline__mfhyW"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a pseudo element"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<div class=\"History_yearFloat__o_yzM\" aria-hidden=\"true\">2026</div>",
+              "target": [
+                "#history-2026 > .History_yearFloat__o_yzM[aria-hidden=\"true\"]"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "contrastRatio": 0,
+                    "fontSize": "16.2pt (21.6px)",
+                    "fontWeight": "bold",
+                    "messageKey": "bgGradient",
+                    "expectedContrastRatio": "3:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<a href=\"https://search.googl...\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"fixed bottom-4 md:bo...\" style=\"z-index:90;backgroun...\" aria-label=\"View our Google Revi...\">",
+                      "target": [
+                        ".left-4"
+                      ]
+                    },
+                    {
+                      "html": "<div class=\"hero-overlay\" style=\"z-index: 2;\"></div>",
+                      "target": [
+                        ".hero-overlay"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a background gradient"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<span class=\"text-2xl font-bold leading-none\">4.8</span>",
+              "target": [
+                ".text-2xl"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "contrastRatio": 0,
+                    "fontSize": "10.5pt (14px)",
+                    "fontWeight": "normal",
+                    "messageKey": "bgGradient",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<a href=\"https://search.googl...\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"fixed bottom-4 md:bo...\" style=\"z-index:90;backgroun...\" aria-label=\"View our Google Revi...\">",
+                      "target": [
+                        ".left-4"
+                      ]
+                    },
+                    {
+                      "html": "<div class=\"hero-overlay\" style=\"z-index: 2;\"></div>",
+                      "target": [
+                        ".hero-overlay"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a background gradient"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<span class=\"text-sm font-semibold leading-none\">/5</span>",
+              "target": [
+                ".font-semibold"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "contrastRatio": 0,
+                    "fontSize": "10.5pt (14px)",
+                    "fontWeight": "bold",
+                    "messageKey": "bgGradient",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<a href=\"https://search.googl...\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"fixed bottom-4 md:bo...\" style=\"z-index:90;backgroun...\" aria-label=\"View our Google Revi...\">",
+                      "target": [
+                        ".left-4"
+                      ]
+                    },
+                    {
+                      "html": "<div class=\"hero-overlay\" style=\"z-index: 2;\"></div>",
+                      "target": [
+                        ".hero-overlay"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a background gradient"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<span class=\"text-sm font-bold leading-tight\">Excellent</span>",
+              "target": [
+                ".text-sm.leading-tight.font-bold"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "contrastRatio": 0,
+                    "fontSize": "9.0pt (12px)",
+                    "fontWeight": "normal",
+                    "messageKey": "bgGradient",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<a href=\"https://search.googl...\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"fixed bottom-4 md:bo...\" style=\"z-index:90;backgroun...\" aria-label=\"View our Google Revi...\">",
+                      "target": [
+                        ".left-4"
+                      ]
+                    },
+                    {
+                      "html": "<div class=\"hero-overlay\" style=\"z-index: 2;\"></div>",
+                      "target": [
+                        ".hero-overlay"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element's background color could not be determined due to a background gradient"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<span class=\"text-xs text-gray-700 leading-tight\">",
+              "target": [
+                ".text-gray-700"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "contrastRatio": 0,
+                    "fontSize": "9.0pt (12px)",
+                    "fontWeight": "bold",
+                    "messageKey": "shortTextContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<a href=\"https://search.googl...\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"fixed bottom-4 md:bo...\" style=\"z-index:90;backgroun...\" aria-label=\"View our Google Revi...\">",
+                      "target": [
+                        ".left-4"
+                      ]
+                    },
+                    {
+                      "html": "<div class=\"hero-overlay\" style=\"z-index: 2;\"></div>",
+                      "target": [
+                        ".hero-overlay"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element content is too short to determine if it is actual text content"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<span style=\"color:#4285F4\" class=\"font-bold\">G</span>",
+              "target": [
+                ".text-gray-700 > .font-bold:nth-child(1)"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element content is too short to determine if it is actual text content"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "contrastRatio": 0,
+                    "fontSize": "9.0pt (12px)",
+                    "fontWeight": "bold",
+                    "messageKey": "shortTextContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<a href=\"https://search.googl...\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"fixed bottom-4 md:bo...\" style=\"z-index:90;backgroun...\" aria-label=\"View our Google Revi...\">",
+                      "target": [
+                        ".left-4"
+                      ]
+                    },
+                    {
+                      "html": "<div class=\"hero-overlay\" style=\"z-index: 2;\"></div>",
+                      "target": [
+                        ".hero-overlay"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element content is too short to determine if it is actual text content"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<span style=\"color:#EA4335\" class=\"font-bold\">o</span>",
+              "target": [
+                ".font-bold:nth-child(2)"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element content is too short to determine if it is actual text content"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "contrastRatio": 0,
+                    "fontSize": "9.0pt (12px)",
+                    "fontWeight": "bold",
+                    "messageKey": "shortTextContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<a href=\"https://search.googl...\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"fixed bottom-4 md:bo...\" style=\"z-index:90;backgroun...\" aria-label=\"View our Google Revi...\">",
+                      "target": [
+                        ".left-4"
+                      ]
+                    },
+                    {
+                      "html": "<div class=\"hero-overlay\" style=\"z-index: 2;\"></div>",
+                      "target": [
+                        ".hero-overlay"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element content is too short to determine if it is actual text content"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<span style=\"color:#FBBC05\" class=\"font-bold\">o</span>",
+              "target": [
+                ".font-bold:nth-child(3)"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element content is too short to determine if it is actual text content"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "contrastRatio": 0,
+                    "fontSize": "9.0pt (12px)",
+                    "fontWeight": "bold",
+                    "messageKey": "shortTextContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<a href=\"https://search.googl...\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"fixed bottom-4 md:bo...\" style=\"z-index:90;backgroun...\" aria-label=\"View our Google Revi...\">",
+                      "target": [
+                        ".left-4"
+                      ]
+                    },
+                    {
+                      "html": "<div class=\"hero-overlay\" style=\"z-index: 2;\"></div>",
+                      "target": [
+                        ".hero-overlay"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element content is too short to determine if it is actual text content"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<span style=\"color:#34A853\" class=\"font-bold\">g</span>",
+              "target": [
+                ".font-bold:nth-child(4)"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element content is too short to determine if it is actual text content"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "contrastRatio": 0,
+                    "fontSize": "9.0pt (12px)",
+                    "fontWeight": "bold",
+                    "messageKey": "shortTextContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<a href=\"https://search.googl...\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"fixed bottom-4 md:bo...\" style=\"z-index:90;backgroun...\" aria-label=\"View our Google Revi...\">",
+                      "target": [
+                        ".left-4"
+                      ]
+                    },
+                    {
+                      "html": "<div class=\"hero-overlay\" style=\"z-index: 2;\"></div>",
+                      "target": [
+                        ".hero-overlay"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element content is too short to determine if it is actual text content"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<span style=\"color:#EA4335\" class=\"font-bold\">l</span>",
+              "target": [
+                ".font-bold:nth-child(5)"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element content is too short to determine if it is actual text content"
+            },
+            {
+              "any": [
+                {
+                  "id": "color-contrast",
+                  "data": {
+                    "contrastRatio": 0,
+                    "fontSize": "9.0pt (12px)",
+                    "fontWeight": "bold",
+                    "messageKey": "shortTextContent",
+                    "expectedContrastRatio": "4.5:1"
+                  },
+                  "relatedNodes": [
+                    {
+                      "html": "<a href=\"https://search.googl...\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"fixed bottom-4 md:bo...\" style=\"z-index:90;backgroun...\" aria-label=\"View our Google Revi...\">",
+                      "target": [
+                        ".left-4"
+                      ]
+                    },
+                    {
+                      "html": "<div class=\"hero-overlay\" style=\"z-index: 2;\"></div>",
+                      "target": [
+                        ".hero-overlay"
+                      ]
+                    }
+                  ],
+                  "impact": "serious",
+                  "message": "Element content is too short to determine if it is actual text content"
+                }
+              ],
+              "all": [],
+              "none": [],
+              "impact": "serious",
+              "html": "<span style=\"color:#4285F4\" class=\"font-bold\">e</span>",
+              "target": [
+                ".font-bold:nth-child(6)"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element content is too short to determine if it is actual text content"
+            }
+          ]
+        },
+        {
+          "id": "no-autoplay-audio",
+          "impact": "moderate",
+          "tags": [
+            "cat.time-and-media",
+            "wcag2a",
+            "wcag142",
+            "TTv5",
+            "TT2.a",
+            "EN-301-549",
+            "EN-9.1.4.2",
+            "ACT",
+            "RGAAv4",
+            "RGAA-4.10.1"
+          ],
+          "description": "Ensure <video> or <audio> elements do not autoplay audio for more than 3 seconds without a control mechanism to stop or mute the audio",
+          "help": "<video> or <audio> elements must not play automatically",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.11/no-autoplay-audio?application=axeAPI",
+          "nodes": [
+            {
+              "any": [],
+              "all": [
+                {
+                  "id": "no-autoplay-audio",
+                  "data": null,
+                  "relatedNodes": [],
+                  "impact": "moderate",
+                  "message": "<video> or <audio> outputs audio for more than allowed duration and does not have a controls mechanism"
+                }
+              ],
+              "none": [],
+              "impact": "moderate",
+              "html": "<video data-testid=\"hero-video\" class=\"hero-video\" aria-hidden=\"true\" poster=\"https://i.ibb.co/fs2...\" autoplay=\"\" playsinline=\"\" loop=\"\" preload=\"auto\" src=\"https://adzfohfdindo...\" style=\"width: 100%; height:...\">",
+              "target": [
+                "video"
+              ],
+              "failureSummary": "Fix all of the following:\n  <video> or <audio> outputs audio for more than allowed duration and does not have a controls mechanism"
+            }
+          ]
+        }
+      ],
+      "passes": 28
+    },
+    "font": {
+      "status": "loading",
+      "faces": [
+        {
+          "family": "Playfair Display",
+          "weight": "400",
+          "style": "italic",
+          "status": "unloaded"
+        },
+        {
+          "family": "Playfair Display",
+          "weight": "400",
+          "style": "italic",
+          "status": "loaded"
+        },
+        {
+          "family": "Playfair Display",
+          "weight": "400",
+          "style": "italic",
+          "status": "loaded"
+        },
+        {
+          "family": "Playfair Display",
+          "weight": "400",
+          "style": "italic",
+          "status": "loaded"
+        },
+        {
+          "family": "Playfair Display",
+          "weight": "500",
+          "style": "italic",
+          "status": "unloaded"
+        },
+        {
+          "family": "Playfair Display",
+          "weight": "500",
+          "style": "italic",
+          "status": "unloaded"
+        },
+        {
+          "family": "Playfair Display",
+          "weight": "500",
+          "style": "italic",
+          "status": "unloaded"
+        },
+        {
+          "family": "Playfair Display",
+          "weight": "500",
+          "style": "italic",
+          "status": "unloaded"
+        },
+        {
+          "family": "Playfair Display",
+          "weight": "600",
+          "style": "italic",
+          "status": "unloaded"
+        },
+        {
+          "family": "Playfair Display",
+          "weight": "600",
+          "style": "italic",
+          "status": "unloaded"
+        },
+        {
+          "family": "Playfair Display",
+          "weight": "600",
+          "style": "italic",
+          "status": "unloaded"
+        },
+        {
+          "family": "Playfair Display",
+          "weight": "600",
+          "style": "italic",
+          "status": "unloaded"
+        },
+        {
+          "family": "Playfair Display",
+          "weight": "700",
+          "style": "italic",
+          "status": "unloaded"
+        },
+        {
+          "family": "Playfair Display",
+          "weight": "700",
+          "style": "italic",
+          "status": "unloaded"
+        },
+        {
+          "family": "Playfair Display",
+          "weight": "700",
+          "style": "italic",
+          "status": "unloaded"
+        },
+        {
+          "family": "Playfair Display",
+          "weight": "700",
+          "style": "italic",
+          "status": "unloaded"
+        },
+        {
+          "family": "Playfair Display",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Playfair Display",
+          "weight": "400",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Playfair Display",
+          "weight": "400",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Playfair Display",
+          "weight": "400",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Playfair Display",
+          "weight": "500",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Playfair Display",
+          "weight": "500",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Playfair Display",
+          "weight": "500",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Playfair Display",
+          "weight": "500",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Playfair Display",
+          "weight": "600",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Playfair Display",
+          "weight": "600",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Playfair Display",
+          "weight": "600",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Playfair Display",
+          "weight": "600",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Playfair Display",
+          "weight": "700",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Playfair Display",
+          "weight": "700",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Playfair Display",
+          "weight": "700",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Playfair Display",
+          "weight": "700",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Playfair Display Fallback",
+          "weight": "normal",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Inter",
+          "weight": "300",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Inter",
+          "weight": "300",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Inter",
+          "weight": "300",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Inter",
+          "weight": "300",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Inter",
+          "weight": "300",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Inter",
+          "weight": "300",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Inter",
+          "weight": "300",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Inter",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Inter",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Inter",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Inter",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Inter",
+          "weight": "400",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Inter",
+          "weight": "400",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Inter",
+          "weight": "400",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Inter",
+          "weight": "500",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Inter",
+          "weight": "500",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Inter",
+          "weight": "500",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Inter",
+          "weight": "500",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Inter",
+          "weight": "500",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Inter",
+          "weight": "500",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Inter",
+          "weight": "500",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Inter",
+          "weight": "600",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Inter",
+          "weight": "600",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Inter",
+          "weight": "600",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Inter",
+          "weight": "600",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Inter",
+          "weight": "600",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Inter",
+          "weight": "600",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Inter",
+          "weight": "600",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Inter Fallback",
+          "weight": "normal",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Abramo",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        }
+      ],
+      "checkPlayfair400": true,
+      "checkInter400": true,
+      "checkCinzel700": true,
+      "sampleWidth": 647.59375
+    },
+    "resources": [
+      "http://127.0.0.1:3312/_next/static/media/000030d1699f2fb3-s.p.woff2",
+      "http://127.0.0.1:3312/_next/static/media/4ead58c4dcc3f285-s.p.woff2",
+      "http://127.0.0.1:3312/_next/static/media/78d0dd042ac6d54d-s.p.woff2",
+      "http://127.0.0.1:3312/_next/static/media/df0a9ae256c0569c-s.p.woff2",
+      "http://127.0.0.1:3312/_next/static/media/e4af272ccee01ff0-s.p.woff2",
+      "http://127.0.0.1:3312/_next/static/media/eaead17c7dbfcd5d-s.p.woff2",
+      "http://127.0.0.1:3312/_next/static/media/8e9860b6e62d6359-s.woff2",
+      "http://127.0.0.1:3312/_next/static/media/28a2004cf8372660-s.woff2",
+      "http://127.0.0.1:3312/_next/static/media/1926da171a0ba1a5-s.woff2"
+    ]
+  }
+}

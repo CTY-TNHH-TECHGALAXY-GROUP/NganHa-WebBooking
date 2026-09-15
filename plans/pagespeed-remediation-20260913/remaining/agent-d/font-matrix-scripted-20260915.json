@@ -1,0 +1,4114 @@
+{
+  "testedSha": "c964977ca2af3081248c902a626612c4b11722af",
+  "server": "http://127.0.0.1:3312",
+  "browser": "Chromium 149.0.7827.55",
+  "timestamp": "2026-09-15T11:27:06.358Z",
+  "profile": {
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "deviceScaleFactor": 2,
+    "cache": "new context per locale",
+    "waitAfterFontsReadyMs": 300
+  },
+  "rows": [
+    {
+      "locale": "vi",
+      "browserLocale": "vi-VN",
+      "route": "/vi",
+      "startedAt": "2026-09-15T11:27:00.801Z",
+      "responseStatus": 200,
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "deviceScaleFactor": 2
+      },
+      "htmlLang": "vi",
+      "before": {
+        "innerWidth": 390,
+        "innerHeight": 844,
+        "dpr": 2,
+        "lang": "vi",
+        "status": "loaded",
+        "faces": [
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "italic",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "italic",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "italic",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display Fallback",
+            "weight": "normal",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter Fallback",
+            "weight": "normal",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Abramo",
+            "weight": "400",
+            "style": "normal",
+            "status": "unloaded"
+          }
+        ]
+      },
+      "after": {
+        "status": "loaded",
+        "faces": [
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "italic",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "italic",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "italic",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display Fallback",
+            "weight": "normal",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter Fallback",
+            "weight": "normal",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Abramo",
+            "weight": "400",
+            "style": "normal",
+            "status": "unloaded"
+          }
+        ],
+        "checks": {
+          "playfair400": true,
+          "playfair700": false,
+          "inter400": true,
+          "cinzel700": true
+        },
+        "sampleWidth": 262.21875,
+        "resources": [
+          "http://127.0.0.1:3312/_next/static/media/000030d1699f2fb3-s.p.woff2",
+          "http://127.0.0.1:3312/_next/static/media/4ead58c4dcc3f285-s.p.woff2",
+          "http://127.0.0.1:3312/_next/static/media/df0a9ae256c0569c-s.p.woff2",
+          "http://127.0.0.1:3312/_next/static/media/78d0dd042ac6d54d-s.p.woff2",
+          "http://127.0.0.1:3312/_next/static/media/e4af272ccee01ff0-s.p.woff2",
+          "http://127.0.0.1:3312/_next/static/media/eaead17c7dbfcd5d-s.p.woff2",
+          "http://127.0.0.1:3312/_next/static/media/8e9860b6e62d6359-s.woff2",
+          "http://127.0.0.1:3312/_next/static/media/28a2004cf8372660-s.woff2",
+          "http://127.0.0.1:3312/_next/static/media/1926da171a0ba1a5-s.woff2"
+        ],
+        "layoutShifts": [],
+        "cls": 0
+      },
+      "fontResourceCounts": {
+        "http://127.0.0.1:3312/_next/static/media/000030d1699f2fb3-s.p.woff2": 1,
+        "http://127.0.0.1:3312/_next/static/media/4ead58c4dcc3f285-s.p.woff2": 1,
+        "http://127.0.0.1:3312/_next/static/media/df0a9ae256c0569c-s.p.woff2": 1,
+        "http://127.0.0.1:3312/_next/static/media/78d0dd042ac6d54d-s.p.woff2": 1,
+        "http://127.0.0.1:3312/_next/static/media/e4af272ccee01ff0-s.p.woff2": 1,
+        "http://127.0.0.1:3312/_next/static/media/eaead17c7dbfcd5d-s.p.woff2": 1,
+        "http://127.0.0.1:3312/_next/static/media/8e9860b6e62d6359-s.woff2": 1,
+        "http://127.0.0.1:3312/_next/static/media/28a2004cf8372660-s.woff2": 1,
+        "http://127.0.0.1:3312/_next/static/media/1926da171a0ba1a5-s.woff2": 1
+      },
+      "duplicateFontUrls": [],
+      "licenseDisposition": "NOT_VERIFIED — repository has no machine-readable license reference for remote Google font responses or public/fonts assets"
+    },
+    {
+      "locale": "en",
+      "browserLocale": "en-US",
+      "route": "/en",
+      "startedAt": "2026-09-15T11:27:02.113Z",
+      "responseStatus": 200,
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "deviceScaleFactor": 2
+      },
+      "htmlLang": "vi",
+      "before": {
+        "innerWidth": 390,
+        "innerHeight": 844,
+        "dpr": 2,
+        "lang": "vi",
+        "status": "loading",
+        "faces": [
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "italic",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "italic",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "italic",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display Fallback",
+            "weight": "normal",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter Fallback",
+            "weight": "normal",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Abramo",
+            "weight": "400",
+            "style": "normal",
+            "status": "unloaded"
+          }
+        ]
+      },
+      "after": {
+        "status": "loaded",
+        "faces": [
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "italic",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "italic",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "italic",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display Fallback",
+            "weight": "normal",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter Fallback",
+            "weight": "normal",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Abramo",
+            "weight": "400",
+            "style": "normal",
+            "status": "unloaded"
+          }
+        ],
+        "checks": {
+          "playfair400": true,
+          "playfair700": false,
+          "inter400": true,
+          "cinzel700": true
+        },
+        "sampleWidth": 297.78125,
+        "resources": [
+          "http://127.0.0.1:3312/_next/static/media/000030d1699f2fb3-s.p.woff2",
+          "http://127.0.0.1:3312/_next/static/media/4ead58c4dcc3f285-s.p.woff2",
+          "http://127.0.0.1:3312/_next/static/media/df0a9ae256c0569c-s.p.woff2",
+          "http://127.0.0.1:3312/_next/static/media/78d0dd042ac6d54d-s.p.woff2",
+          "http://127.0.0.1:3312/_next/static/media/e4af272ccee01ff0-s.p.woff2",
+          "http://127.0.0.1:3312/_next/static/media/eaead17c7dbfcd5d-s.p.woff2",
+          "http://127.0.0.1:3312/_next/static/media/8e9860b6e62d6359-s.woff2",
+          "http://127.0.0.1:3312/_next/static/media/28a2004cf8372660-s.woff2",
+          "http://127.0.0.1:3312/_next/static/media/1926da171a0ba1a5-s.woff2"
+        ],
+        "layoutShifts": [],
+        "cls": 0
+      },
+      "fontResourceCounts": {
+        "http://127.0.0.1:3312/_next/static/media/000030d1699f2fb3-s.p.woff2": 1,
+        "http://127.0.0.1:3312/_next/static/media/4ead58c4dcc3f285-s.p.woff2": 1,
+        "http://127.0.0.1:3312/_next/static/media/df0a9ae256c0569c-s.p.woff2": 1,
+        "http://127.0.0.1:3312/_next/static/media/78d0dd042ac6d54d-s.p.woff2": 1,
+        "http://127.0.0.1:3312/_next/static/media/e4af272ccee01ff0-s.p.woff2": 1,
+        "http://127.0.0.1:3312/_next/static/media/eaead17c7dbfcd5d-s.p.woff2": 1,
+        "http://127.0.0.1:3312/_next/static/media/8e9860b6e62d6359-s.woff2": 1,
+        "http://127.0.0.1:3312/_next/static/media/28a2004cf8372660-s.woff2": 1,
+        "http://127.0.0.1:3312/_next/static/media/1926da171a0ba1a5-s.woff2": 1
+      },
+      "duplicateFontUrls": [],
+      "licenseDisposition": "NOT_VERIFIED — repository has no machine-readable license reference for remote Google font responses or public/fonts assets"
+    },
+    {
+      "locale": "cn",
+      "browserLocale": "zh-CN",
+      "route": "/cn",
+      "startedAt": "2026-09-15T11:27:03.098Z",
+      "responseStatus": 200,
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "deviceScaleFactor": 2
+      },
+      "htmlLang": "vi",
+      "before": {
+        "innerWidth": 390,
+        "innerHeight": 844,
+        "dpr": 2,
+        "lang": "vi",
+        "status": "loaded",
+        "faces": [
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "italic",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "italic",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "italic",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display Fallback",
+            "weight": "normal",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter Fallback",
+            "weight": "normal",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Abramo",
+            "weight": "400",
+            "style": "normal",
+            "status": "unloaded"
+          }
+        ]
+      },
+      "after": {
+        "status": "loading",
+        "faces": [
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "italic",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "italic",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "italic",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display Fallback",
+            "weight": "normal",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter Fallback",
+            "weight": "normal",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Abramo",
+            "weight": "400",
+            "style": "normal",
+            "status": "unloaded"
+          }
+        ],
+        "checks": {
+          "playfair400": true,
+          "playfair700": false,
+          "inter400": true,
+          "cinzel700": true
+        },
+        "sampleWidth": 129.15625,
+        "resources": [
+          "http://127.0.0.1:3312/_next/static/media/000030d1699f2fb3-s.p.woff2",
+          "http://127.0.0.1:3312/_next/static/media/4ead58c4dcc3f285-s.p.woff2",
+          "http://127.0.0.1:3312/_next/static/media/78d0dd042ac6d54d-s.p.woff2",
+          "http://127.0.0.1:3312/_next/static/media/df0a9ae256c0569c-s.p.woff2",
+          "http://127.0.0.1:3312/_next/static/media/e4af272ccee01ff0-s.p.woff2",
+          "http://127.0.0.1:3312/_next/static/media/eaead17c7dbfcd5d-s.p.woff2",
+          "http://127.0.0.1:3312/_next/static/media/8e9860b6e62d6359-s.woff2",
+          "http://127.0.0.1:3312/_next/static/media/28a2004cf8372660-s.woff2",
+          "http://127.0.0.1:3312/_next/static/media/1926da171a0ba1a5-s.woff2"
+        ],
+        "layoutShifts": [],
+        "cls": 0
+      },
+      "fontResourceCounts": {
+        "http://127.0.0.1:3312/_next/static/media/000030d1699f2fb3-s.p.woff2": 1,
+        "http://127.0.0.1:3312/_next/static/media/4ead58c4dcc3f285-s.p.woff2": 1,
+        "http://127.0.0.1:3312/_next/static/media/78d0dd042ac6d54d-s.p.woff2": 1,
+        "http://127.0.0.1:3312/_next/static/media/df0a9ae256c0569c-s.p.woff2": 1,
+        "http://127.0.0.1:3312/_next/static/media/e4af272ccee01ff0-s.p.woff2": 1,
+        "http://127.0.0.1:3312/_next/static/media/eaead17c7dbfcd5d-s.p.woff2": 1,
+        "http://127.0.0.1:3312/_next/static/media/8e9860b6e62d6359-s.woff2": 1,
+        "http://127.0.0.1:3312/_next/static/media/28a2004cf8372660-s.woff2": 1,
+        "http://127.0.0.1:3312/_next/static/media/1926da171a0ba1a5-s.woff2": 1
+      },
+      "duplicateFontUrls": [],
+      "licenseDisposition": "NOT_VERIFIED — repository has no machine-readable license reference for remote Google font responses or public/fonts assets"
+    },
+    {
+      "locale": "jp",
+      "browserLocale": "ja-JP",
+      "route": "/jp",
+      "startedAt": "2026-09-15T11:27:04.473Z",
+      "responseStatus": 200,
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "deviceScaleFactor": 2
+      },
+      "htmlLang": "vi",
+      "before": {
+        "innerWidth": 390,
+        "innerHeight": 844,
+        "dpr": 2,
+        "lang": "vi",
+        "status": "loaded",
+        "faces": [
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "italic",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "italic",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "italic",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display Fallback",
+            "weight": "normal",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter Fallback",
+            "weight": "normal",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Abramo",
+            "weight": "400",
+            "style": "normal",
+            "status": "unloaded"
+          }
+        ]
+      },
+      "after": {
+        "status": "loaded",
+        "faces": [
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "italic",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "italic",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "italic",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display Fallback",
+            "weight": "normal",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter Fallback",
+            "weight": "normal",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Abramo",
+            "weight": "400",
+            "style": "normal",
+            "status": "unloaded"
+          }
+        ],
+        "checks": {
+          "playfair400": true,
+          "playfair700": false,
+          "inter400": true,
+          "cinzel700": true
+        },
+        "sampleWidth": 96.875,
+        "resources": [
+          "http://127.0.0.1:3312/_next/static/media/000030d1699f2fb3-s.p.woff2",
+          "http://127.0.0.1:3312/_next/static/media/4ead58c4dcc3f285-s.p.woff2",
+          "http://127.0.0.1:3312/_next/static/media/78d0dd042ac6d54d-s.p.woff2",
+          "http://127.0.0.1:3312/_next/static/media/df0a9ae256c0569c-s.p.woff2",
+          "http://127.0.0.1:3312/_next/static/media/e4af272ccee01ff0-s.p.woff2",
+          "http://127.0.0.1:3312/_next/static/media/eaead17c7dbfcd5d-s.p.woff2",
+          "http://127.0.0.1:3312/_next/static/media/8e9860b6e62d6359-s.woff2",
+          "http://127.0.0.1:3312/_next/static/media/28a2004cf8372660-s.woff2",
+          "http://127.0.0.1:3312/_next/static/media/1926da171a0ba1a5-s.woff2"
+        ],
+        "layoutShifts": [
+          {
+            "value": 0.003560819613216235,
+            "startTime": 895.2999999523163
+          }
+        ],
+        "cls": 0.003560819613216235
+      },
+      "fontResourceCounts": {
+        "http://127.0.0.1:3312/_next/static/media/000030d1699f2fb3-s.p.woff2": 1,
+        "http://127.0.0.1:3312/_next/static/media/4ead58c4dcc3f285-s.p.woff2": 1,
+        "http://127.0.0.1:3312/_next/static/media/78d0dd042ac6d54d-s.p.woff2": 1,
+        "http://127.0.0.1:3312/_next/static/media/df0a9ae256c0569c-s.p.woff2": 1,
+        "http://127.0.0.1:3312/_next/static/media/e4af272ccee01ff0-s.p.woff2": 1,
+        "http://127.0.0.1:3312/_next/static/media/eaead17c7dbfcd5d-s.p.woff2": 1,
+        "http://127.0.0.1:3312/_next/static/media/8e9860b6e62d6359-s.woff2": 1,
+        "http://127.0.0.1:3312/_next/static/media/28a2004cf8372660-s.woff2": 1,
+        "http://127.0.0.1:3312/_next/static/media/1926da171a0ba1a5-s.woff2": 1
+      },
+      "duplicateFontUrls": [],
+      "licenseDisposition": "NOT_VERIFIED — repository has no machine-readable license reference for remote Google font responses or public/fonts assets"
+    },
+    {
+      "locale": "kr",
+      "browserLocale": "ko-KR",
+      "route": "/kr",
+      "startedAt": "2026-09-15T11:27:05.477Z",
+      "responseStatus": 200,
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "deviceScaleFactor": 2
+      },
+      "htmlLang": "vi",
+      "before": {
+        "innerWidth": 390,
+        "innerHeight": 844,
+        "dpr": 2,
+        "lang": "vi",
+        "status": "loaded",
+        "faces": [
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "italic",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "italic",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "italic",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display Fallback",
+            "weight": "normal",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter Fallback",
+            "weight": "normal",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Abramo",
+            "weight": "400",
+            "style": "normal",
+            "status": "unloaded"
+          }
+        ]
+      },
+      "after": {
+        "status": "loaded",
+        "faces": [
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "italic",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "italic",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "italic",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "italic",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "400",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "500",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "weight": "700",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display Fallback",
+            "weight": "normal",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "300",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "400",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "500",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "weight": "600",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter Fallback",
+            "weight": "normal",
+            "style": "normal",
+            "status": "loaded"
+          },
+          {
+            "family": "Abramo",
+            "weight": "400",
+            "style": "normal",
+            "status": "unloaded"
+          }
+        ],
+        "checks": {
+          "playfair400": true,
+          "playfair700": false,
+          "inter400": true,
+          "cinzel700": true
+        },
+        "sampleWidth": 83.046875,
+        "resources": [
+          "http://127.0.0.1:3312/_next/static/media/000030d1699f2fb3-s.p.woff2",
+          "http://127.0.0.1:3312/_next/static/media/4ead58c4dcc3f285-s.p.woff2",
+          "http://127.0.0.1:3312/_next/static/media/78d0dd042ac6d54d-s.p.woff2",
+          "http://127.0.0.1:3312/_next/static/media/df0a9ae256c0569c-s.p.woff2",
+          "http://127.0.0.1:3312/_next/static/media/e4af272ccee01ff0-s.p.woff2",
+          "http://127.0.0.1:3312/_next/static/media/eaead17c7dbfcd5d-s.p.woff2",
+          "http://127.0.0.1:3312/_next/static/media/8e9860b6e62d6359-s.woff2",
+          "http://127.0.0.1:3312/_next/static/media/28a2004cf8372660-s.woff2",
+          "http://127.0.0.1:3312/_next/static/media/1926da171a0ba1a5-s.woff2"
+        ],
+        "layoutShifts": [
+          {
+            "value": 0.003560819613216235,
+            "startTime": 781.8999999761581
+          }
+        ],
+        "cls": 0.003560819613216235
+      },
+      "fontResourceCounts": {
+        "http://127.0.0.1:3312/_next/static/media/000030d1699f2fb3-s.p.woff2": 1,
+        "http://127.0.0.1:3312/_next/static/media/4ead58c4dcc3f285-s.p.woff2": 1,
+        "http://127.0.0.1:3312/_next/static/media/78d0dd042ac6d54d-s.p.woff2": 1,
+        "http://127.0.0.1:3312/_next/static/media/df0a9ae256c0569c-s.p.woff2": 1,
+        "http://127.0.0.1:3312/_next/static/media/e4af272ccee01ff0-s.p.woff2": 1,
+        "http://127.0.0.1:3312/_next/static/media/eaead17c7dbfcd5d-s.p.woff2": 1,
+        "http://127.0.0.1:3312/_next/static/media/8e9860b6e62d6359-s.woff2": 1,
+        "http://127.0.0.1:3312/_next/static/media/28a2004cf8372660-s.woff2": 1,
+        "http://127.0.0.1:3312/_next/static/media/1926da171a0ba1a5-s.woff2": 1
+      },
+      "duplicateFontUrls": [],
+      "licenseDisposition": "NOT_VERIFIED — repository has no machine-readable license reference for remote Google font responses or public/fonts assets"
+    }
+  ],
+  "dispositions": {
+    "fouc": "NOT_VERIFIED — this lab run records font status before/after DOM readiness but does not replace a visual first-paint capture",
+    "cls": "Measured from PerformanceObserver layout-shift entries; this is lab evidence, not field p75",
+    "pinch": "NOT_VERIFIED — no physical iOS/Android device was available",
+    "zoom200": "NOT_VERIFIED — browser zoom requires real browser/device verification",
+    "zoom500": "NOT_VERIFIED — browser zoom requires real browser/device verification"
+  }
+}
