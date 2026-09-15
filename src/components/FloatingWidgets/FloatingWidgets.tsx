@@ -76,9 +76,11 @@ const FloatingWidgets = () => {
   const { currentLang } = useTranslation();
   const pathname = usePathname();
   const routeLang = pathname.split('/')[1];
+  const [hydrated, setHydrated] = useState(false);
+  useEffect(() => setHydrated(true), []);
   // Localized routes already specify the language during server rendering.
   // Avoid repainting the greeting from Vietnamese after hydration on /en, etc.
-  const lang = ['vi', 'en', 'cn', 'jp', 'kr'].includes(routeLang) ? routeLang : currentLang || 'vi';
+  const lang = !hydrated && ['vi', 'en', 'cn', 'jp', 'kr'].includes(routeLang) ? routeLang : currentLang || 'vi';
   const labels = LABELS[lang] || LABELS.vi;
   const wechatQrCopy = WECHAT_QR_COPY[lang] || WECHAT_QR_COPY.vi;
   const { systemSettings, getLocalizedText } = useSystemSettings();
