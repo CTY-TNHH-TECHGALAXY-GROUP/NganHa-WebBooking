@@ -34,7 +34,10 @@ export const POST = withCapability(async (request: NextRequest, access) => {
   if (!body.brand_history || typeof body.brand_history !== 'object' || Array.isArray(body.brand_history)) {
     return apiResponse.error('brand_history phải là một document object.', 'VALIDATION_ERROR', 400);
   }
-  const expectedRevision = typeof body.expectedRevision === 'string' ? body.expectedRevision : null;
+  if (typeof body.expectedRevision !== 'string' || !body.expectedRevision.trim()) {
+    return apiResponse.error('expectedRevision là bắt buộc để chống ghi đè dữ liệu.', 'VALIDATION_ERROR', 400);
+  }
+  const expectedRevision = body.expectedRevision.trim();
   const { data: current, error: readError } = await supabase
     .from('SystemConfigs')
     .select('key, value')
@@ -43,7 +46,7 @@ export const POST = withCapability(async (request: NextRequest, access) => {
   if (readError) return apiResponse.error(readError.message, 'DB_ERROR', 500);
 
   const actualRevision = systemConfigRevision(current?.value || null);
-  if (expectedRevision && actualRevision !== expectedRevision) {
+  if (actualRevision !== expectedRevision) {
     return apiResponse.error('Lịch sử đã được thay đổi ở cửa sổ khác. Bản nháp của bạn vẫn được giữ lại.', 'CONTENT_CONFLICT', 409);
   }
 

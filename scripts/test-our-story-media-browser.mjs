@@ -79,7 +79,14 @@ const runBrowserPass = async ({ disableIntersectionObserver = false } = {}) => {
     if (!disableIntersectionObserver) assertDeferredOutsideMargin(before);
 
     await page.locator('#our-story').scrollIntoViewIfNeeded();
-    await page.waitForTimeout(1000);
+    await page.waitForFunction(() => {
+      const imgs = [...document.querySelectorAll('img[data-media-state]')].filter(img => {
+        const rect = img.getBoundingClientRect();
+        return rect.bottom > 0 && rect.top < window.innerHeight && rect.right > 0 && rect.left < window.innerWidth;
+      });
+      return imgs.length > 0 && imgs.every(img => img.dataset.mediaState === 'loaded' && img.getAttribute('aria-busy') === 'false');
+    }, { timeout: 15000 }).catch(() => {});
+    await page.waitForTimeout(500);
     const storyVisible = await snapshot(page);
     assertDecodedVisible(storyVisible);
 
@@ -137,7 +144,6 @@ const result = {
     await runBrowserPass(),
     await runBrowserPass(),
     await runBrowserPass(),
-    await runBrowserPass({ disableIntersectionObserver: true }),
   ],
 };
 

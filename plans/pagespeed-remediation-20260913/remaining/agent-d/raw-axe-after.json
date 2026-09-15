@@ -800,7 +800,7 @@
               "target": [
                 "video"
               ],
-              "html": "<video data-testid=\"hero-video\" class=\"hero-video\" aria-hidden=\"true\" src=\"https://adzfohfdindo...\" poster=\"https://i.ibb.co/fs2...\" autoplay=\"\" playsinline=\"\" loop=\"\" preload=\"auto\" style=\"width: 100%; height:...\">",
+              "html": "<video data-testid=\"hero-video\" class=\"hero-video\" aria-hidden=\"true\" poster=\"https://i.ibb.co/fs2...\" autoplay=\"\" playsinline=\"\" loop=\"\" preload=\"auto\" src=\"https://adzfohfdindo...\" style=\"width: 100%; height:...\">",
               "failureSummary": "Fix all of the following:\n  <video> or <audio> outputs audio for more than allowed duration and does not have a controls mechanism",
               "impact": "moderate"
             }
@@ -879,6 +879,54 @@
           "nodes": [
             {
               "target": [
+                ".font-extrabold"
+              ],
+              "html": "<span class=\"font-extrabold text-...\" style=\"background:linear-gr...\">",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element",
+              "impact": "serious"
+            },
+            {
+              "target": [
+                ".History_heroCopy__FKcrn > .History_eyebrow__bZBQH"
+              ],
+              "html": "<span class=\"History_eyebrow__bZBQH\">Hành trình đáng dõi theo</span>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
+              "impact": "serious"
+            },
+            {
+              "target": [
+                "h1"
+              ],
+              "html": "<h1>Lịch Sử<!-- --> <em>OriaSpa</em></h1>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
+              "impact": "serious"
+            },
+            {
+              "target": [
+                "em"
+              ],
+              "html": "<em>OriaSpa</em>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
+              "impact": "serious"
+            },
+            {
+              "target": [
+                ".History_heroCopy__FKcrn > p"
+              ],
+              "html": "<p>Từ một không gian nhỏ ban đầu đến một điểm đến spa chỉn chu hơn, mỗi cột mốc đều giữ cùng một lời hứa: chăm sóc tốt hơn, đón tiếp ấm hơn và trải nghiệm bình yên hơn.</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
+              "impact": "serious"
+            },
+            {
+              "target": [
+                ".History_scrollCue__2sZyy"
+              ],
+              "html": "<a class=\"History_scrollCue__2sZyy\" href=\"#history-2015\"><span></span>Cuộn để theo dõi hành trình</a>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
+              "impact": "serious"
+            },
+            {
+              "target": [
                 ".History_intro__UiGqA > div:nth-child(1) > .History_eyebrow__bZBQH"
               ],
               "html": "<span class=\"History_eyebrow__bZBQH\">Dòng thời gian điện ảnh</span>",
@@ -898,6 +946,14 @@
                 ".History_intro__UiGqA > div:nth-child(1) > p"
               ],
               "html": "<p>Giao diện lùi nhẹ về sau; hình ảnh, nhịp kể và ký ức trở thành trọng tâm của trải nghiệm.</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient",
+              "impact": "serious"
+            },
+            {
+              "target": [
+                ".History_stickyYear__lUOyU > span"
+              ],
+              "html": "<span style=\"opacity: 1; transform: none;\">2015</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient",
               "impact": "serious"
             },
@@ -959,38 +1015,6 @@
             },
             {
               "target": [
-                ".text-2xl"
-              ],
-              "html": "<span class=\"text-2xl font-bold leading-none\">4.8</span>",
-              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient",
-              "impact": "serious"
-            },
-            {
-              "target": [
-                ".font-semibold"
-              ],
-              "html": "<span class=\"text-sm font-semibold leading-none\">/5</span>",
-              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient",
-              "impact": "serious"
-            },
-            {
-              "target": [
-                ".text-sm.leading-tight.font-bold"
-              ],
-              "html": "<span class=\"text-sm font-bold leading-tight\">Excellent</span>",
-              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient",
-              "impact": "serious"
-            },
-            {
-              "target": [
-                ".text-gray-700"
-              ],
-              "html": "<span class=\"text-xs text-gray-700 leading-tight\">",
-              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient",
-              "impact": "serious"
-            },
-            {
-              "target": [
                 ".text-gray-700 > .font-bold:nth-child(1)"
               ],
               "html": "<span style=\"color:#4285F4\" class=\"font-bold\">G</span>",
@@ -1044,12 +1068,8 @@
     },
     "state": {
       "viewportMeta": "width=device-width, initial-scale=1, viewport-fit=cover",
-      "logoCount": 3,
+      "logoCount": 2,
       "logos": [
-        {
-          "label": "Oria Spa Logo",
-          "svgHidden": "true"
-        },
         {
           "label": "Oria Spa Logo",
           "svgHidden": "true"
@@ -1846,7 +1866,7 @@
               "target": [
                 "video"
               ],
-              "html": "<video data-testid=\"hero-video\" class=\"hero-video\" aria-hidden=\"true\" src=\"https://adzfohfdindo...\" poster=\"https://i.ibb.co/fs2...\" autoplay=\"\" playsinline=\"\" loop=\"\" preload=\"auto\" style=\"width: 100%; height:...\">",
+              "html": "<video data-testid=\"hero-video\" class=\"hero-video\" aria-hidden=\"true\" poster=\"https://i.ibb.co/fs2...\" autoplay=\"\" playsinline=\"\" loop=\"\" preload=\"auto\" src=\"https://adzfohfdindo...\" style=\"width: 100%; height:...\">",
               "failureSummary": "Fix all of the following:\n  <video> or <audio> outputs audio for more than allowed duration and does not have a controls mechanism",
               "impact": "moderate"
             }
@@ -2583,7 +2603,7 @@
               "target": [
                 ".History_stickyYear__lUOyU > span"
               ],
-              "html": "<span style=\"opacity: 0; transform: translateY(5.71948e-07px);\">2015</span>",
+              "html": "<span style=\"opacity: 1; transform: none;\">2015</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient",
               "impact": "serious"
             },
@@ -2711,7 +2731,7 @@
               "target": [
                 "video"
               ],
-              "html": "<video data-testid=\"hero-video\" class=\"hero-video\" aria-hidden=\"true\" src=\"https://adzfohfdindo...\" poster=\"https://i.ibb.co/fs2...\" autoplay=\"\" playsinline=\"\" loop=\"\" preload=\"auto\" style=\"width: 100%; height:...\">",
+              "html": "<video data-testid=\"hero-video\" class=\"hero-video\" aria-hidden=\"true\" poster=\"https://i.ibb.co/fs2...\" autoplay=\"\" playsinline=\"\" loop=\"\" preload=\"auto\" src=\"https://adzfohfdindo...\" style=\"width: 100%; height:...\">",
               "failureSummary": "Fix all of the following:\n  <video> or <audio> outputs audio for more than allowed duration and does not have a controls mechanism",
               "impact": "moderate"
             }
@@ -3630,30 +3650,6 @@
             },
             {
               "target": [
-                ".text-2xl"
-              ],
-              "html": "<span class=\"text-2xl font-bold leading-none\">4.8</span>",
-              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient",
-              "impact": "serious"
-            },
-            {
-              "target": [
-                ".font-semibold"
-              ],
-              "html": "<span class=\"text-sm font-semibold leading-none\">/5</span>",
-              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient",
-              "impact": "serious"
-            },
-            {
-              "target": [
-                ".text-sm.leading-tight.font-bold"
-              ],
-              "html": "<span class=\"text-sm font-bold leading-tight\">Excellent</span>",
-              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient",
-              "impact": "serious"
-            },
-            {
-              "target": [
                 ".text-gray-700"
               ],
               "html": "<span class=\"text-xs text-gray-700 leading-tight\">",
@@ -3720,7 +3716,7 @@
               "target": [
                 "video"
               ],
-              "html": "<video data-testid=\"hero-video\" class=\"hero-video\" aria-hidden=\"true\" src=\"https://adzfohfdindo...\" poster=\"https://i.ibb.co/fs2...\" autoplay=\"\" playsinline=\"\" loop=\"\" preload=\"auto\" style=\"width: 100%; height:...\">",
+              "html": "<video data-testid=\"hero-video\" class=\"hero-video\" aria-hidden=\"true\" poster=\"https://i.ibb.co/fs2...\" autoplay=\"\" playsinline=\"\" loop=\"\" preload=\"auto\" src=\"https://adzfohfdindo...\" style=\"width: 100%; height:...\">",
               "failureSummary": "Fix all of the following:\n  <video> or <audio> outputs audio for more than allowed duration and does not have a controls mechanism",
               "impact": "moderate"
             }
@@ -4521,7 +4517,7 @@
               "target": [
                 ".History_stickyYear__lUOyU > span"
               ],
-              "html": "<span style=\"opacity: 0; transform: translateY(4.16e-05px);\">2015</span>",
+              "html": "<span style=\"opacity: 1; transform: none;\">2015</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient",
               "impact": "serious"
             },
@@ -4578,30 +4574,6 @@
                 "#history-2026 > .History_yearFloat__o_yzM[aria-hidden=\"true\"]"
               ],
               "html": "<div class=\"History_yearFloat__o_yzM\" aria-hidden=\"true\">2026</div>",
-              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient",
-              "impact": "serious"
-            },
-            {
-              "target": [
-                ".text-2xl"
-              ],
-              "html": "<span class=\"text-2xl font-bold leading-none\">4.8</span>",
-              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient",
-              "impact": "serious"
-            },
-            {
-              "target": [
-                ".font-semibold"
-              ],
-              "html": "<span class=\"text-sm font-semibold leading-none\">/5</span>",
-              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient",
-              "impact": "serious"
-            },
-            {
-              "target": [
-                ".text-sm.leading-tight.font-bold"
-              ],
-              "html": "<span class=\"text-sm font-bold leading-tight\">Excellent</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient",
               "impact": "serious"
             },
@@ -4673,7 +4645,7 @@
               "target": [
                 "video"
               ],
-              "html": "<video data-testid=\"hero-video\" class=\"hero-video\" aria-hidden=\"true\" src=\"https://adzfohfdindo...\" poster=\"https://i.ibb.co/fs2...\" autoplay=\"\" playsinline=\"\" loop=\"\" preload=\"auto\" style=\"width: 100%; height:...\">",
+              "html": "<video data-testid=\"hero-video\" class=\"hero-video\" aria-hidden=\"true\" poster=\"https://i.ibb.co/fs2...\" autoplay=\"\" playsinline=\"\" loop=\"\" preload=\"auto\" src=\"https://adzfohfdindo...\" style=\"width: 100%; height:...\">",
               "failureSummary": "Fix all of the following:\n  <video> or <audio> outputs audio for more than allowed duration and does not have a controls mechanism",
               "impact": "moderate"
             }
@@ -5634,7 +5606,7 @@
               "target": [
                 "video"
               ],
-              "html": "<video data-testid=\"hero-video\" class=\"hero-video\" aria-hidden=\"true\" src=\"https://adzfohfdindo...\" poster=\"https://i.ibb.co/fs2...\" autoplay=\"\" playsinline=\"\" loop=\"\" preload=\"auto\" style=\"width: 100%; height:...\">",
+              "html": "<video data-testid=\"hero-video\" class=\"hero-video\" aria-hidden=\"true\" poster=\"https://i.ibb.co/fs2...\" autoplay=\"\" playsinline=\"\" loop=\"\" preload=\"auto\" src=\"https://adzfohfdindo...\" style=\"width: 100%; height:...\">",
               "failureSummary": "Fix all of the following:\n  <video> or <audio> outputs audio for more than allowed duration and does not have a controls mechanism",
               "impact": "moderate"
             }
@@ -5851,7 +5823,7 @@
               "target": [
                 "div:nth-child(2) > span:nth-child(1)"
               ],
-              "html": "<span style=\"font-size:18px;font-weight:700;color:#ffffff;letter-spacing:0.2px\">Thứ Hai, 14/09/2026</span>",
+              "html": "<span style=\"font-size:18px;font-weight:700;color:#ffffff;letter-spacing:0.2px\">Thứ Ba, 15/09/2026</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -5883,7 +5855,7 @@
               "target": [
                 ".checkout-demo_selectedDate__SXlCm > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">14</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">15</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -5899,7 +5871,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(2) > .checkout-demo_dow__b9fch"
               ],
-              "html": "<span class=\"checkout-demo_dow__b9fch\">Th 3</span>",
+              "html": "<span class=\"checkout-demo_dow__b9fch\">Th 4</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -5907,7 +5879,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(2) > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">15</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">16</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -5923,7 +5895,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(3) > .checkout-demo_dow__b9fch"
               ],
-              "html": "<span class=\"checkout-demo_dow__b9fch\">Th 4</span>",
+              "html": "<span class=\"checkout-demo_dow__b9fch\">Th 5</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -5931,7 +5903,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(3) > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">16</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">17</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -5947,7 +5919,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(4) > .checkout-demo_dow__b9fch"
               ],
-              "html": "<span class=\"checkout-demo_dow__b9fch\">Th 5</span>",
+              "html": "<span class=\"checkout-demo_dow__b9fch\">Th 6</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -5955,7 +5927,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(4) > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">17</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">18</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -5971,7 +5943,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(5) > .checkout-demo_dow__b9fch"
               ],
-              "html": "<span class=\"checkout-demo_dow__b9fch\">Th 6</span>",
+              "html": "<span class=\"checkout-demo_dow__b9fch\">Th 7</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -5979,7 +5951,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(5) > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">18</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">19</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -5995,7 +5967,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(6) > .checkout-demo_dow__b9fch"
               ],
-              "html": "<span class=\"checkout-demo_dow__b9fch\">Th 7</span>",
+              "html": "<span class=\"checkout-demo_dow__b9fch\">CN</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -6003,7 +5975,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(6) > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">19</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">20</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -6019,7 +5991,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(7) > .checkout-demo_dow__b9fch"
               ],
-              "html": "<span class=\"checkout-demo_dow__b9fch\">CN</span>",
+              "html": "<span class=\"checkout-demo_dow__b9fch\">Th 2</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -6027,7 +5999,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(7) > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">20</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">21</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -6067,7 +6039,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(1)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">14:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">15:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -6075,7 +6047,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(2)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">14:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">16:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -6083,7 +6055,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(3)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">15:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">16:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -6091,7 +6063,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(4)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">15:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">17:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -6099,7 +6071,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(5)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">16:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">17:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -6107,7 +6079,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(6)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">16:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">18:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -6115,7 +6087,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(7)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">17:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">18:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -6123,7 +6095,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(8)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">17:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">19:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -6131,7 +6103,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(9)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">18:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">19:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -6139,7 +6111,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(10)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">18:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">20:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -6147,7 +6119,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(11)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">19:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">20:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -6155,7 +6127,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(12)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">19:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">21:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -6163,7 +6135,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(13)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">20:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">21:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -6171,7 +6143,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(14)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">20:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">22:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -6179,23 +6151,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(15)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">21:00</button>",
-              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
-              "impact": "serious"
-            },
-            {
-              "target": [
-                ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(16)"
-              ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">21:30</button>",
-              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
-              "impact": "serious"
-            },
-            {
-              "target": [
-                ".checkout-demo_timeExpandButton__XlCm8 > span"
-              ],
-              "html": "<span>Xem thêm</span>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">22:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -6286,7 +6242,7 @@
         }
       ],
       "copyright": {
-        "color": "oklab(0.940436 -0.00145316 0.0487576 / 0.6)",
+        "color": "oklab(0.94044 -0.00149685 0.0487405 / 0.6)",
         "opacity": "1",
         "background": "rgb(40, 27, 21)"
       },
@@ -6464,7 +6420,7 @@
               "target": [
                 "div:nth-child(2) > span:nth-child(1)"
               ],
-              "html": "<span style=\"font-size:18px;font-weight:700;color:#ffffff;letter-spacing:0.2px\">Monday, Sep 14, 2026</span>",
+              "html": "<span style=\"font-size:18px;font-weight:700;color:#ffffff;letter-spacing:0.2px\">Tuesday, Sep 15, 2026</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -6496,7 +6452,7 @@
               "target": [
                 ".checkout-demo_selectedDate__SXlCm > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">14</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">15</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -6512,7 +6468,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(2) > .checkout-demo_dow__b9fch"
               ],
-              "html": "<span class=\"checkout-demo_dow__b9fch\">Tue</span>",
+              "html": "<span class=\"checkout-demo_dow__b9fch\">Wed</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -6520,7 +6476,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(2) > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">15</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">16</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -6536,7 +6492,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(3) > .checkout-demo_dow__b9fch"
               ],
-              "html": "<span class=\"checkout-demo_dow__b9fch\">Wed</span>",
+              "html": "<span class=\"checkout-demo_dow__b9fch\">Thu</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -6544,7 +6500,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(3) > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">16</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">17</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -6560,7 +6516,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(4) > .checkout-demo_dow__b9fch"
               ],
-              "html": "<span class=\"checkout-demo_dow__b9fch\">Thu</span>",
+              "html": "<span class=\"checkout-demo_dow__b9fch\">Fri</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -6568,7 +6524,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(4) > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">17</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">18</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -6584,7 +6540,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(5) > .checkout-demo_dow__b9fch"
               ],
-              "html": "<span class=\"checkout-demo_dow__b9fch\">Fri</span>",
+              "html": "<span class=\"checkout-demo_dow__b9fch\">Sat</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -6592,7 +6548,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(5) > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">18</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">19</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -6608,7 +6564,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(6) > .checkout-demo_dow__b9fch"
               ],
-              "html": "<span class=\"checkout-demo_dow__b9fch\">Sat</span>",
+              "html": "<span class=\"checkout-demo_dow__b9fch\">Sun</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -6616,7 +6572,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(6) > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">19</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">20</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -6632,7 +6588,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(7) > .checkout-demo_dow__b9fch"
               ],
-              "html": "<span class=\"checkout-demo_dow__b9fch\">Sun</span>",
+              "html": "<span class=\"checkout-demo_dow__b9fch\">Mon</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -6640,7 +6596,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(7) > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">20</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">21</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -6680,7 +6636,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(1)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">14:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">15:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -6688,7 +6644,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(2)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">14:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">16:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -6696,7 +6652,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(3)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">15:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">16:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -6704,7 +6660,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(4)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">15:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">17:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -6712,7 +6668,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(5)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">16:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">17:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -6720,7 +6676,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(6)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">16:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">18:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -6728,7 +6684,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(7)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">17:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">18:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -6736,7 +6692,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(8)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">17:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">19:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -6744,7 +6700,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(9)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">18:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">19:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -6752,7 +6708,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(10)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">18:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">20:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -6760,7 +6716,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(11)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">19:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">20:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -6768,7 +6724,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(12)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">19:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">21:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -6776,7 +6732,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(13)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">20:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">21:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -6784,7 +6740,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(14)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">20:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">22:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -6792,23 +6748,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(15)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">21:00</button>",
-              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
-              "impact": "serious"
-            },
-            {
-              "target": [
-                ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(16)"
-              ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">21:30</button>",
-              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
-              "impact": "serious"
-            },
-            {
-              "target": [
-                ".checkout-demo_timeExpandButton__XlCm8 > span"
-              ],
-              "html": "<span>More</span>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">22:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -6899,7 +6839,7 @@
         }
       ],
       "copyright": {
-        "color": "oklab(0.940436 -0.00145316 0.0487576 / 0.6)",
+        "color": "oklab(0.94044 -0.00149685 0.0487405 / 0.6)",
         "opacity": "1",
         "background": "rgb(40, 27, 21)"
       },
@@ -7077,7 +7017,7 @@
               "target": [
                 "div:nth-child(2) > span:nth-child(1)"
               ],
-              "html": "<span style=\"font-size:18px;font-weight:700;color:#ffffff;letter-spacing:0.2px\">星期一, 2026年09月14日</span>",
+              "html": "<span style=\"font-size:18px;font-weight:700;color:#ffffff;letter-spacing:0.2px\">星期二, 2026年09月15日</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -7109,7 +7049,7 @@
               "target": [
                 ".checkout-demo_selectedDate__SXlCm > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">14</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">15</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -7125,7 +7065,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(2) > .checkout-demo_dow__b9fch"
               ],
-              "html": "<span class=\"checkout-demo_dow__b9fch\">周二</span>",
+              "html": "<span class=\"checkout-demo_dow__b9fch\">周三</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -7133,7 +7073,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(2) > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">15</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">16</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -7149,7 +7089,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(3) > .checkout-demo_dow__b9fch"
               ],
-              "html": "<span class=\"checkout-demo_dow__b9fch\">周三</span>",
+              "html": "<span class=\"checkout-demo_dow__b9fch\">周四</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -7157,7 +7097,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(3) > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">16</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">17</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -7173,7 +7113,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(4) > .checkout-demo_dow__b9fch"
               ],
-              "html": "<span class=\"checkout-demo_dow__b9fch\">周四</span>",
+              "html": "<span class=\"checkout-demo_dow__b9fch\">周五</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -7181,7 +7121,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(4) > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">17</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">18</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -7197,7 +7137,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(5) > .checkout-demo_dow__b9fch"
               ],
-              "html": "<span class=\"checkout-demo_dow__b9fch\">周五</span>",
+              "html": "<span class=\"checkout-demo_dow__b9fch\">周六</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -7205,7 +7145,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(5) > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">18</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">19</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -7221,7 +7161,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(6) > .checkout-demo_dow__b9fch"
               ],
-              "html": "<span class=\"checkout-demo_dow__b9fch\">周六</span>",
+              "html": "<span class=\"checkout-demo_dow__b9fch\">周日</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -7229,7 +7169,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(6) > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">19</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">20</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -7245,7 +7185,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(7) > .checkout-demo_dow__b9fch"
               ],
-              "html": "<span class=\"checkout-demo_dow__b9fch\">周日</span>",
+              "html": "<span class=\"checkout-demo_dow__b9fch\">周一</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -7253,7 +7193,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(7) > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">20</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">21</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -7293,7 +7233,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(1)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">14:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">15:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -7301,7 +7241,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(2)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">14:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">16:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -7309,7 +7249,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(3)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">15:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">16:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -7317,7 +7257,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(4)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">15:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">17:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -7325,7 +7265,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(5)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">16:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">17:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -7333,7 +7273,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(6)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">16:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">18:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -7341,7 +7281,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(7)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">17:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">18:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -7349,7 +7289,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(8)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">17:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">19:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -7357,7 +7297,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(9)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">18:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">19:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -7365,7 +7305,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(10)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">18:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">20:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -7373,7 +7313,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(11)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">19:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">20:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -7381,7 +7321,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(12)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">19:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">21:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -7389,7 +7329,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(13)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">20:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">21:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -7397,7 +7337,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(14)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">20:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">22:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -7405,23 +7345,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(15)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">21:00</button>",
-              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
-              "impact": "serious"
-            },
-            {
-              "target": [
-                ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(16)"
-              ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">21:30</button>",
-              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
-              "impact": "serious"
-            },
-            {
-              "target": [
-                ".checkout-demo_timeExpandButton__XlCm8 > span"
-              ],
-              "html": "<span>更多</span>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">22:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -7512,7 +7436,7 @@
         }
       ],
       "copyright": {
-        "color": "oklab(0.940436 -0.00145316 0.0487576 / 0.6)",
+        "color": "oklab(0.94044 -0.00149685 0.0487405 / 0.6)",
         "opacity": "1",
         "background": "rgb(40, 27, 21)"
       },
@@ -7690,7 +7614,7 @@
               "target": [
                 "div:nth-child(2) > span:nth-child(1)"
               ],
-              "html": "<span style=\"font-size:18px;font-weight:700;color:#ffffff;letter-spacing:0.2px\">月曜日, 2026年09月14日</span>",
+              "html": "<span style=\"font-size:18px;font-weight:700;color:#ffffff;letter-spacing:0.2px\">火曜日, 2026年09月15日</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -7722,7 +7646,7 @@
               "target": [
                 ".checkout-demo_selectedDate__SXlCm > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">14</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">15</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -7738,7 +7662,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(2) > .checkout-demo_dow__b9fch"
               ],
-              "html": "<span class=\"checkout-demo_dow__b9fch\">火</span>",
+              "html": "<span class=\"checkout-demo_dow__b9fch\">水</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -7746,7 +7670,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(2) > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">15</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">16</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -7762,7 +7686,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(3) > .checkout-demo_dow__b9fch"
               ],
-              "html": "<span class=\"checkout-demo_dow__b9fch\">水</span>",
+              "html": "<span class=\"checkout-demo_dow__b9fch\">木</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -7770,7 +7694,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(3) > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">16</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">17</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -7786,7 +7710,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(4) > .checkout-demo_dow__b9fch"
               ],
-              "html": "<span class=\"checkout-demo_dow__b9fch\">木</span>",
+              "html": "<span class=\"checkout-demo_dow__b9fch\">金</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -7794,7 +7718,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(4) > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">17</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">18</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -7810,7 +7734,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(5) > .checkout-demo_dow__b9fch"
               ],
-              "html": "<span class=\"checkout-demo_dow__b9fch\">金</span>",
+              "html": "<span class=\"checkout-demo_dow__b9fch\">土</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -7818,7 +7742,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(5) > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">18</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">19</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -7834,7 +7758,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(6) > .checkout-demo_dow__b9fch"
               ],
-              "html": "<span class=\"checkout-demo_dow__b9fch\">土</span>",
+              "html": "<span class=\"checkout-demo_dow__b9fch\">日</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -7842,7 +7766,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(6) > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">19</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">20</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -7858,7 +7782,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(7) > .checkout-demo_dow__b9fch"
               ],
-              "html": "<span class=\"checkout-demo_dow__b9fch\">日</span>",
+              "html": "<span class=\"checkout-demo_dow__b9fch\">月</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -7866,7 +7790,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(7) > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">20</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">21</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -7906,7 +7830,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(1)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">14:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">15:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -7914,7 +7838,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(2)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">14:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">16:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -7922,7 +7846,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(3)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">15:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">16:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -7930,7 +7854,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(4)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">15:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">17:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -7938,7 +7862,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(5)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">16:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">17:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -7946,7 +7870,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(6)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">16:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">18:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -7954,7 +7878,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(7)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">17:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">18:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -7962,7 +7886,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(8)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">17:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">19:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -7970,7 +7894,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(9)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">18:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">19:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -7978,7 +7902,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(10)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">18:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">20:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -7986,7 +7910,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(11)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">19:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">20:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -7994,7 +7918,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(12)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">19:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">21:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -8002,7 +7926,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(13)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">20:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">21:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -8010,7 +7934,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(14)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">20:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">22:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -8018,23 +7942,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(15)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">21:00</button>",
-              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
-              "impact": "serious"
-            },
-            {
-              "target": [
-                ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(16)"
-              ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">21:30</button>",
-              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
-              "impact": "serious"
-            },
-            {
-              "target": [
-                ".checkout-demo_timeExpandButton__XlCm8 > span"
-              ],
-              "html": "<span>もっと見る</span>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">22:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -8125,7 +8033,7 @@
         }
       ],
       "copyright": {
-        "color": "oklab(0.940436 -0.00145316 0.0487576 / 0.6)",
+        "color": "oklab(0.94044 -0.00149685 0.0487405 / 0.6)",
         "opacity": "1",
         "background": "rgb(40, 27, 21)"
       },
@@ -8303,7 +8211,7 @@
               "target": [
                 "div:nth-child(2) > span:nth-child(1)"
               ],
-              "html": "<span style=\"font-size:18px;font-weight:700;color:#ffffff;letter-spacing:0.2px\">월요일, 2026년 09월 14일</span>",
+              "html": "<span style=\"font-size:18px;font-weight:700;color:#ffffff;letter-spacing:0.2px\">화요일, 2026년 09월 15일</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -8335,7 +8243,7 @@
               "target": [
                 ".checkout-demo_selectedDate__SXlCm > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">14</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">15</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -8351,7 +8259,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(2) > .checkout-demo_dow__b9fch"
               ],
-              "html": "<span class=\"checkout-demo_dow__b9fch\">화</span>",
+              "html": "<span class=\"checkout-demo_dow__b9fch\">수</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -8359,7 +8267,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(2) > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">15</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">16</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -8375,7 +8283,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(3) > .checkout-demo_dow__b9fch"
               ],
-              "html": "<span class=\"checkout-demo_dow__b9fch\">수</span>",
+              "html": "<span class=\"checkout-demo_dow__b9fch\">목</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -8383,7 +8291,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(3) > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">16</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">17</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -8399,7 +8307,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(4) > .checkout-demo_dow__b9fch"
               ],
-              "html": "<span class=\"checkout-demo_dow__b9fch\">목</span>",
+              "html": "<span class=\"checkout-demo_dow__b9fch\">금</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -8407,7 +8315,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(4) > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">17</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">18</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -8423,7 +8331,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(5) > .checkout-demo_dow__b9fch"
               ],
-              "html": "<span class=\"checkout-demo_dow__b9fch\">금</span>",
+              "html": "<span class=\"checkout-demo_dow__b9fch\">토</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -8431,7 +8339,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(5) > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">18</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">19</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -8447,7 +8355,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(6) > .checkout-demo_dow__b9fch"
               ],
-              "html": "<span class=\"checkout-demo_dow__b9fch\">토</span>",
+              "html": "<span class=\"checkout-demo_dow__b9fch\">일</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -8455,7 +8363,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(6) > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">19</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">20</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -8471,7 +8379,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(7) > .checkout-demo_dow__b9fch"
               ],
-              "html": "<span class=\"checkout-demo_dow__b9fch\">일</span>",
+              "html": "<span class=\"checkout-demo_dow__b9fch\">월</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -8479,7 +8387,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(7) > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">20</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">21</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -8519,7 +8427,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(1)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">14:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">15:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -8527,7 +8435,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(2)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">14:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">16:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -8535,7 +8443,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(3)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">15:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">16:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -8543,7 +8451,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(4)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">15:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">17:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -8551,7 +8459,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(5)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">16:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">17:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -8559,7 +8467,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(6)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">16:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">18:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -8567,7 +8475,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(7)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">17:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">18:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -8575,7 +8483,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(8)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">17:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">19:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -8583,7 +8491,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(9)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">18:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">19:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -8591,7 +8499,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(10)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">18:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">20:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -8599,7 +8507,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(11)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">19:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">20:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -8607,7 +8515,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(12)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">19:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">21:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -8615,7 +8523,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(13)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">20:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">21:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -8623,7 +8531,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(14)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">20:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">22:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -8631,23 +8539,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(15)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">21:00</button>",
-              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
-              "impact": "serious"
-            },
-            {
-              "target": [
-                ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(16)"
-              ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">21:30</button>",
-              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
-              "impact": "serious"
-            },
-            {
-              "target": [
-                ".checkout-demo_timeExpandButton__XlCm8 > span"
-              ],
-              "html": "<span>더 보기</span>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">22:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -8738,7 +8630,7 @@
         }
       ],
       "copyright": {
-        "color": "oklab(0.940436 -0.00145316 0.0487576 / 0.6)",
+        "color": "oklab(0.94044 -0.00149685 0.0487405 / 0.6)",
         "opacity": "1",
         "background": "rgb(40, 27, 21)"
       },
@@ -9524,7 +9416,7 @@
               "target": [
                 "video"
               ],
-              "html": "<video data-testid=\"hero-video\" class=\"hero-video\" aria-hidden=\"true\" src=\"https://adzfohfdindo...\" poster=\"https://i.ibb.co/fs2...\" autoplay=\"\" playsinline=\"\" loop=\"\" preload=\"auto\" style=\"width: 100%; height:...\">",
+              "html": "<video data-testid=\"hero-video\" class=\"hero-video\" aria-hidden=\"true\" poster=\"https://i.ibb.co/fs2...\" autoplay=\"\" playsinline=\"\" loop=\"\" preload=\"auto\" src=\"https://adzfohfdindo...\" style=\"width: 100%; height:...\">",
               "failureSummary": "Fix all of the following:\n  <video> or <audio> outputs audio for more than allowed duration and does not have a controls mechanism",
               "impact": "moderate"
             }
@@ -9603,6 +9495,54 @@
           "nodes": [
             {
               "target": [
+                ".font-extrabold"
+              ],
+              "html": "<span class=\"font-extrabold text-...\" style=\"background:linear-gr...\">",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element",
+              "impact": "serious"
+            },
+            {
+              "target": [
+                ".History_heroCopy__FKcrn > .History_eyebrow__bZBQH"
+              ],
+              "html": "<span class=\"History_eyebrow__bZBQH\">Hành trình đáng dõi theo</span>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
+              "impact": "serious"
+            },
+            {
+              "target": [
+                "h1"
+              ],
+              "html": "<h1>Lịch Sử<!-- --> <em>OriaSpa</em></h1>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
+              "impact": "serious"
+            },
+            {
+              "target": [
+                "em"
+              ],
+              "html": "<em>OriaSpa</em>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
+              "impact": "serious"
+            },
+            {
+              "target": [
+                ".History_heroCopy__FKcrn > p"
+              ],
+              "html": "<p>Từ một không gian nhỏ ban đầu đến một điểm đến spa chỉn chu hơn, mỗi cột mốc đều giữ cùng một lời hứa: chăm sóc tốt hơn, đón tiếp ấm hơn và trải nghiệm bình yên hơn.</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
+              "impact": "serious"
+            },
+            {
+              "target": [
+                ".History_scrollCue__2sZyy"
+              ],
+              "html": "<a class=\"History_scrollCue__2sZyy\" href=\"#history-2015\"><span></span>Cuộn để theo dõi hành trình</a>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
+              "impact": "serious"
+            },
+            {
+              "target": [
                 ".History_intro__UiGqA > div:nth-child(1) > .History_eyebrow__bZBQH"
               ],
               "html": "<span class=\"History_eyebrow__bZBQH\">Dòng thời gian điện ảnh</span>",
@@ -9622,6 +9562,14 @@
                 ".History_intro__UiGqA > div:nth-child(1) > p"
               ],
               "html": "<p>Giao diện lùi nhẹ về sau; hình ảnh, nhịp kể và ký ức trở thành trọng tâm của trải nghiệm.</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient",
+              "impact": "serious"
+            },
+            {
+              "target": [
+                ".History_stickyYear__lUOyU > span"
+              ],
+              "html": "<span style=\"opacity: 1; transform: none;\">2015</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient",
               "impact": "serious"
             },
@@ -9683,38 +9631,6 @@
             },
             {
               "target": [
-                ".text-2xl"
-              ],
-              "html": "<span class=\"text-2xl font-bold leading-none\">4.8</span>",
-              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient",
-              "impact": "serious"
-            },
-            {
-              "target": [
-                ".font-semibold"
-              ],
-              "html": "<span class=\"text-sm font-semibold leading-none\">/5</span>",
-              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient",
-              "impact": "serious"
-            },
-            {
-              "target": [
-                ".text-sm.leading-tight.font-bold"
-              ],
-              "html": "<span class=\"text-sm font-bold leading-tight\">Excellent</span>",
-              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient",
-              "impact": "serious"
-            },
-            {
-              "target": [
-                ".text-gray-700"
-              ],
-              "html": "<span class=\"text-xs text-gray-700 leading-tight\">",
-              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient",
-              "impact": "serious"
-            },
-            {
-              "target": [
                 ".text-gray-700 > .font-bold:nth-child(1)"
               ],
               "html": "<span style=\"color:#4285F4\" class=\"font-bold\">G</span>",
@@ -9768,12 +9684,8 @@
     },
     "state": {
       "viewportMeta": "width=device-width, initial-scale=1, viewport-fit=cover",
-      "logoCount": 3,
+      "logoCount": 2,
       "logos": [
-        {
-          "label": "Oria Spa Logo",
-          "svgHidden": "true"
-        },
         {
           "label": "Oria Spa Logo",
           "svgHidden": "true"
@@ -10442,7 +10354,7 @@
               "target": [
                 ".History_stickyYear__lUOyU > span"
               ],
-              "html": "<span style=\"opacity: 0; transform: translateY(0.0387444px);\">2015</span>",
+              "html": "<span style=\"opacity: 1; transform: none;\">2015</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient",
               "impact": "serious"
             },
@@ -10570,7 +10482,7 @@
               "target": [
                 "video"
               ],
-              "html": "<video data-testid=\"hero-video\" class=\"hero-video\" aria-hidden=\"true\" src=\"https://adzfohfdindo...\" poster=\"https://i.ibb.co/fs2...\" autoplay=\"\" playsinline=\"\" loop=\"\" preload=\"auto\" style=\"width: 100%; height:...\">",
+              "html": "<video data-testid=\"hero-video\" class=\"hero-video\" aria-hidden=\"true\" poster=\"https://i.ibb.co/fs2...\" autoplay=\"\" playsinline=\"\" loop=\"\" preload=\"auto\" src=\"https://adzfohfdindo...\" style=\"width: 100%; height:...\">",
               "failureSummary": "Fix all of the following:\n  <video> or <audio> outputs audio for more than allowed duration and does not have a controls mechanism",
               "impact": "moderate"
             }
@@ -11307,7 +11219,7 @@
               "target": [
                 ".History_stickyYear__lUOyU > span"
               ],
-              "html": "<span style=\"opacity: 0; transform: translateY(0.118877px);\">2015</span>",
+              "html": "<span style=\"opacity: 1; transform: none;\">2015</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient",
               "impact": "serious"
             },
@@ -11364,14 +11276,6 @@
                 "#history-2026 > .History_yearFloat__o_yzM[aria-hidden=\"true\"]"
               ],
               "html": "<div class=\"History_yearFloat__o_yzM\" aria-hidden=\"true\">2026</div>",
-              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient",
-              "impact": "serious"
-            },
-            {
-              "target": [
-                ".text-\\[12px\\]"
-              ],
-              "html": "<p class=\"text-[12px] sm:text-[14px] leading-relaxed font-medium whitespace-normal\">Hello from Oria. Our team is available to answer you now ✨</p>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient",
               "impact": "serious"
             },
@@ -11443,7 +11347,7 @@
               "target": [
                 "video"
               ],
-              "html": "<video data-testid=\"hero-video\" class=\"hero-video\" aria-hidden=\"true\" src=\"https://adzfohfdindo...\" poster=\"https://i.ibb.co/fs2...\" autoplay=\"\" playsinline=\"\" loop=\"\" preload=\"auto\" style=\"width: 100%; height:...\">",
+              "html": "<video data-testid=\"hero-video\" class=\"hero-video\" aria-hidden=\"true\" poster=\"https://i.ibb.co/fs2...\" autoplay=\"\" playsinline=\"\" loop=\"\" preload=\"auto\" src=\"https://adzfohfdindo...\" style=\"width: 100%; height:...\">",
               "failureSummary": "Fix all of the following:\n  <video> or <audio> outputs audio for more than allowed duration and does not have a controls mechanism",
               "impact": "moderate"
             }
@@ -12300,7 +12204,7 @@
               "target": [
                 ".History_stickyYear__lUOyU > span"
               ],
-              "html": "<span style=\"opacity: 0; transform: translateY(0.0043766px);\">2015</span>",
+              "html": "<span style=\"opacity: 1; transform: none;\">2015</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient",
               "impact": "serious"
             },
@@ -12428,7 +12332,7 @@
               "target": [
                 "video"
               ],
-              "html": "<video data-testid=\"hero-video\" class=\"hero-video\" aria-hidden=\"true\" src=\"https://adzfohfdindo...\" poster=\"https://i.ibb.co/fs2...\" autoplay=\"\" playsinline=\"\" loop=\"\" preload=\"auto\" style=\"width: 100%; height:...\">",
+              "html": "<video data-testid=\"hero-video\" class=\"hero-video\" aria-hidden=\"true\" poster=\"https://i.ibb.co/fs2...\" autoplay=\"\" playsinline=\"\" loop=\"\" preload=\"auto\" src=\"https://adzfohfdindo...\" style=\"width: 100%; height:...\">",
               "failureSummary": "Fix all of the following:\n  <video> or <audio> outputs audio for more than allowed duration and does not have a controls mechanism",
               "impact": "moderate"
             }
@@ -13357,7 +13261,7 @@
               "target": [
                 "video"
               ],
-              "html": "<video data-testid=\"hero-video\" class=\"hero-video\" aria-hidden=\"true\" src=\"https://adzfohfdindo...\" poster=\"https://i.ibb.co/fs2...\" autoplay=\"\" playsinline=\"\" loop=\"\" preload=\"auto\" style=\"width: 100%; height:...\">",
+              "html": "<video data-testid=\"hero-video\" class=\"hero-video\" aria-hidden=\"true\" poster=\"https://i.ibb.co/fs2...\" autoplay=\"\" playsinline=\"\" loop=\"\" preload=\"auto\" src=\"https://adzfohfdindo...\" style=\"width: 100%; height:...\">",
               "failureSummary": "Fix all of the following:\n  <video> or <audio> outputs audio for more than allowed duration and does not have a controls mechanism",
               "impact": "moderate"
             }
@@ -14318,7 +14222,7 @@
               "target": [
                 "video"
               ],
-              "html": "<video data-testid=\"hero-video\" class=\"hero-video\" aria-hidden=\"true\" src=\"https://adzfohfdindo...\" poster=\"https://i.ibb.co/fs2...\" autoplay=\"\" playsinline=\"\" loop=\"\" preload=\"auto\" style=\"width: 100%; height:...\">",
+              "html": "<video data-testid=\"hero-video\" class=\"hero-video\" aria-hidden=\"true\" poster=\"https://i.ibb.co/fs2...\" autoplay=\"\" playsinline=\"\" loop=\"\" preload=\"auto\" src=\"https://adzfohfdindo...\" style=\"width: 100%; height:...\">",
               "failureSummary": "Fix all of the following:\n  <video> or <audio> outputs audio for more than allowed duration and does not have a controls mechanism",
               "impact": "moderate"
             }
@@ -14535,7 +14439,7 @@
               "target": [
                 "div:nth-child(2) > span:nth-child(1)"
               ],
-              "html": "<span style=\"font-size:18px;font-weight:700;color:#ffffff;letter-spacing:0.2px\">Thứ Hai, 14/09/2026</span>",
+              "html": "<span style=\"font-size:18px;font-weight:700;color:#ffffff;letter-spacing:0.2px\">Thứ Ba, 15/09/2026</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -14567,7 +14471,7 @@
               "target": [
                 ".checkout-demo_selectedDate__SXlCm > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">14</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">15</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -14583,7 +14487,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(2) > .checkout-demo_dow__b9fch"
               ],
-              "html": "<span class=\"checkout-demo_dow__b9fch\">Th 3</span>",
+              "html": "<span class=\"checkout-demo_dow__b9fch\">Th 4</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -14591,7 +14495,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(2) > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">15</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">16</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -14607,7 +14511,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(3) > .checkout-demo_dow__b9fch"
               ],
-              "html": "<span class=\"checkout-demo_dow__b9fch\">Th 4</span>",
+              "html": "<span class=\"checkout-demo_dow__b9fch\">Th 5</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -14615,7 +14519,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(3) > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">16</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">17</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -14631,7 +14535,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(4) > .checkout-demo_dow__b9fch"
               ],
-              "html": "<span class=\"checkout-demo_dow__b9fch\">Th 5</span>",
+              "html": "<span class=\"checkout-demo_dow__b9fch\">Th 6</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -14639,7 +14543,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(4) > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">17</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">18</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -14655,7 +14559,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(5) > .checkout-demo_dow__b9fch"
               ],
-              "html": "<span class=\"checkout-demo_dow__b9fch\">Th 6</span>",
+              "html": "<span class=\"checkout-demo_dow__b9fch\">Th 7</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -14663,7 +14567,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(5) > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">18</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">19</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -14679,7 +14583,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(6) > .checkout-demo_dow__b9fch"
               ],
-              "html": "<span class=\"checkout-demo_dow__b9fch\">Th 7</span>",
+              "html": "<span class=\"checkout-demo_dow__b9fch\">CN</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -14687,7 +14591,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(6) > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">19</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">20</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -14703,7 +14607,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(7) > .checkout-demo_dow__b9fch"
               ],
-              "html": "<span class=\"checkout-demo_dow__b9fch\">CN</span>",
+              "html": "<span class=\"checkout-demo_dow__b9fch\">Th 2</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -14711,7 +14615,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(7) > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">20</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">21</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -14751,7 +14655,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(1)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">14:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">15:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -14759,7 +14663,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(2)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">14:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">16:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -14767,7 +14671,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(3)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">15:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">16:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -14775,7 +14679,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(4)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">15:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">17:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -14783,7 +14687,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(5)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">16:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">17:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -14791,7 +14695,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(6)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">16:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">18:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -14799,7 +14703,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(7)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">17:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">18:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -14807,7 +14711,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(8)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">17:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">19:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -14815,7 +14719,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(9)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">18:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">19:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -14823,7 +14727,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(10)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">18:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">20:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -14831,7 +14735,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(11)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">19:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">20:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -14839,7 +14743,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(12)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">19:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">21:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -14847,7 +14751,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(13)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">20:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">21:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -14855,7 +14759,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(14)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">20:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">22:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -14863,23 +14767,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(15)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">21:00</button>",
-              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
-              "impact": "serious"
-            },
-            {
-              "target": [
-                ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(16)"
-              ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">21:30</button>",
-              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
-              "impact": "serious"
-            },
-            {
-              "target": [
-                ".checkout-demo_timeExpandButton__XlCm8 > span"
-              ],
-              "html": "<span>Xem thêm</span>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">22:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -14970,7 +14858,7 @@
         }
       ],
       "copyright": {
-        "color": "oklab(0.940436 -0.00145316 0.0487576 / 0.6)",
+        "color": "oklab(0.94044 -0.00149685 0.0487405 / 0.6)",
         "opacity": "1",
         "background": "rgb(40, 27, 21)"
       },
@@ -15148,7 +15036,7 @@
               "target": [
                 "div:nth-child(2) > span:nth-child(1)"
               ],
-              "html": "<span style=\"font-size:18px;font-weight:700;color:#ffffff;letter-spacing:0.2px\">Monday, Sep 14, 2026</span>",
+              "html": "<span style=\"font-size:18px;font-weight:700;color:#ffffff;letter-spacing:0.2px\">Tuesday, Sep 15, 2026</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -15180,7 +15068,7 @@
               "target": [
                 ".checkout-demo_selectedDate__SXlCm > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">14</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">15</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -15196,7 +15084,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(2) > .checkout-demo_dow__b9fch"
               ],
-              "html": "<span class=\"checkout-demo_dow__b9fch\">Tue</span>",
+              "html": "<span class=\"checkout-demo_dow__b9fch\">Wed</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -15204,7 +15092,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(2) > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">15</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">16</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -15220,7 +15108,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(3) > .checkout-demo_dow__b9fch"
               ],
-              "html": "<span class=\"checkout-demo_dow__b9fch\">Wed</span>",
+              "html": "<span class=\"checkout-demo_dow__b9fch\">Thu</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -15228,7 +15116,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(3) > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">16</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">17</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -15244,7 +15132,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(4) > .checkout-demo_dow__b9fch"
               ],
-              "html": "<span class=\"checkout-demo_dow__b9fch\">Thu</span>",
+              "html": "<span class=\"checkout-demo_dow__b9fch\">Fri</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -15252,7 +15140,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(4) > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">17</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">18</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -15268,7 +15156,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(5) > .checkout-demo_dow__b9fch"
               ],
-              "html": "<span class=\"checkout-demo_dow__b9fch\">Fri</span>",
+              "html": "<span class=\"checkout-demo_dow__b9fch\">Sat</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -15276,7 +15164,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(5) > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">18</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">19</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -15292,7 +15180,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(6) > .checkout-demo_dow__b9fch"
               ],
-              "html": "<span class=\"checkout-demo_dow__b9fch\">Sat</span>",
+              "html": "<span class=\"checkout-demo_dow__b9fch\">Sun</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -15300,7 +15188,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(6) > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">19</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">20</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -15316,7 +15204,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(7) > .checkout-demo_dow__b9fch"
               ],
-              "html": "<span class=\"checkout-demo_dow__b9fch\">Sun</span>",
+              "html": "<span class=\"checkout-demo_dow__b9fch\">Mon</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -15324,7 +15212,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(7) > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">20</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">21</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -15364,7 +15252,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(1)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">14:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">15:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -15372,7 +15260,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(2)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">14:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">16:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -15380,7 +15268,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(3)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">15:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">16:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -15388,7 +15276,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(4)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">15:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">17:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -15396,7 +15284,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(5)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">16:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">17:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -15404,7 +15292,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(6)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">16:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">18:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -15412,7 +15300,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(7)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">17:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">18:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -15420,7 +15308,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(8)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">17:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">19:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -15428,7 +15316,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(9)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">18:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">19:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -15436,7 +15324,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(10)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">18:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">20:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -15444,7 +15332,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(11)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">19:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">20:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -15452,7 +15340,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(12)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">19:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">21:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -15460,7 +15348,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(13)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">20:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">21:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -15468,7 +15356,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(14)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">20:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">22:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -15476,23 +15364,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(15)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">21:00</button>",
-              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
-              "impact": "serious"
-            },
-            {
-              "target": [
-                ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(16)"
-              ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">21:30</button>",
-              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
-              "impact": "serious"
-            },
-            {
-              "target": [
-                ".checkout-demo_timeExpandButton__XlCm8 > span"
-              ],
-              "html": "<span>More</span>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">22:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -15583,7 +15455,7 @@
         }
       ],
       "copyright": {
-        "color": "oklab(0.940436 -0.00145316 0.0487576 / 0.6)",
+        "color": "oklab(0.94044 -0.00149685 0.0487405 / 0.6)",
         "opacity": "1",
         "background": "rgb(40, 27, 21)"
       },
@@ -15761,7 +15633,7 @@
               "target": [
                 "div:nth-child(2) > span:nth-child(1)"
               ],
-              "html": "<span style=\"font-size:18px;font-weight:700;color:#ffffff;letter-spacing:0.2px\">星期一, 2026年09月14日</span>",
+              "html": "<span style=\"font-size:18px;font-weight:700;color:#ffffff;letter-spacing:0.2px\">星期二, 2026年09月15日</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -15793,7 +15665,7 @@
               "target": [
                 ".checkout-demo_selectedDate__SXlCm > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">14</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">15</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -15809,7 +15681,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(2) > .checkout-demo_dow__b9fch"
               ],
-              "html": "<span class=\"checkout-demo_dow__b9fch\">周二</span>",
+              "html": "<span class=\"checkout-demo_dow__b9fch\">周三</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -15817,7 +15689,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(2) > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">15</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">16</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -15833,7 +15705,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(3) > .checkout-demo_dow__b9fch"
               ],
-              "html": "<span class=\"checkout-demo_dow__b9fch\">周三</span>",
+              "html": "<span class=\"checkout-demo_dow__b9fch\">周四</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -15841,7 +15713,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(3) > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">16</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">17</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -15857,7 +15729,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(4) > .checkout-demo_dow__b9fch"
               ],
-              "html": "<span class=\"checkout-demo_dow__b9fch\">周四</span>",
+              "html": "<span class=\"checkout-demo_dow__b9fch\">周五</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -15865,7 +15737,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(4) > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">17</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">18</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -15881,7 +15753,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(5) > .checkout-demo_dow__b9fch"
               ],
-              "html": "<span class=\"checkout-demo_dow__b9fch\">周五</span>",
+              "html": "<span class=\"checkout-demo_dow__b9fch\">周六</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -15889,7 +15761,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(5) > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">18</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">19</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -15905,7 +15777,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(6) > .checkout-demo_dow__b9fch"
               ],
-              "html": "<span class=\"checkout-demo_dow__b9fch\">周六</span>",
+              "html": "<span class=\"checkout-demo_dow__b9fch\">周日</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -15913,7 +15785,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(6) > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">19</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">20</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -15929,7 +15801,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(7) > .checkout-demo_dow__b9fch"
               ],
-              "html": "<span class=\"checkout-demo_dow__b9fch\">周日</span>",
+              "html": "<span class=\"checkout-demo_dow__b9fch\">周一</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -15937,7 +15809,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(7) > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">20</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">21</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -15977,7 +15849,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(1)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">14:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">15:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -15985,7 +15857,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(2)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">14:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">16:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -15993,7 +15865,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(3)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">15:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">16:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -16001,7 +15873,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(4)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">15:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">17:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -16009,7 +15881,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(5)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">16:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">17:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -16017,7 +15889,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(6)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">16:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">18:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -16025,7 +15897,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(7)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">17:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">18:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -16033,7 +15905,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(8)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">17:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">19:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -16041,7 +15913,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(9)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">18:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">19:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -16049,7 +15921,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(10)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">18:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">20:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -16057,7 +15929,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(11)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">19:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">20:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -16065,7 +15937,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(12)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">19:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">21:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -16073,7 +15945,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(13)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">20:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">21:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -16081,7 +15953,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(14)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">20:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">22:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -16089,23 +15961,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(15)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">21:00</button>",
-              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
-              "impact": "serious"
-            },
-            {
-              "target": [
-                ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(16)"
-              ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">21:30</button>",
-              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
-              "impact": "serious"
-            },
-            {
-              "target": [
-                ".checkout-demo_timeExpandButton__XlCm8 > span"
-              ],
-              "html": "<span>更多</span>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">22:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -16196,7 +16052,7 @@
         }
       ],
       "copyright": {
-        "color": "oklab(0.940436 -0.00145316 0.0487576 / 0.6)",
+        "color": "oklab(0.94044 -0.00149685 0.0487405 / 0.6)",
         "opacity": "1",
         "background": "rgb(40, 27, 21)"
       },
@@ -16374,7 +16230,7 @@
               "target": [
                 "div:nth-child(2) > span:nth-child(1)"
               ],
-              "html": "<span style=\"font-size:18px;font-weight:700;color:#ffffff;letter-spacing:0.2px\">月曜日, 2026年09月14日</span>",
+              "html": "<span style=\"font-size:18px;font-weight:700;color:#ffffff;letter-spacing:0.2px\">火曜日, 2026年09月15日</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -16406,7 +16262,7 @@
               "target": [
                 ".checkout-demo_selectedDate__SXlCm > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">14</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">15</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -16422,7 +16278,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(2) > .checkout-demo_dow__b9fch"
               ],
-              "html": "<span class=\"checkout-demo_dow__b9fch\">火</span>",
+              "html": "<span class=\"checkout-demo_dow__b9fch\">水</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -16430,7 +16286,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(2) > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">15</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">16</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -16446,7 +16302,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(3) > .checkout-demo_dow__b9fch"
               ],
-              "html": "<span class=\"checkout-demo_dow__b9fch\">水</span>",
+              "html": "<span class=\"checkout-demo_dow__b9fch\">木</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -16454,7 +16310,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(3) > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">16</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">17</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -16470,7 +16326,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(4) > .checkout-demo_dow__b9fch"
               ],
-              "html": "<span class=\"checkout-demo_dow__b9fch\">木</span>",
+              "html": "<span class=\"checkout-demo_dow__b9fch\">金</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -16478,7 +16334,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(4) > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">17</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">18</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -16494,7 +16350,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(5) > .checkout-demo_dow__b9fch"
               ],
-              "html": "<span class=\"checkout-demo_dow__b9fch\">金</span>",
+              "html": "<span class=\"checkout-demo_dow__b9fch\">土</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -16502,7 +16358,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(5) > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">18</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">19</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -16518,7 +16374,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(6) > .checkout-demo_dow__b9fch"
               ],
-              "html": "<span class=\"checkout-demo_dow__b9fch\">土</span>",
+              "html": "<span class=\"checkout-demo_dow__b9fch\">日</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -16526,7 +16382,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(6) > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">19</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">20</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -16542,7 +16398,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(7) > .checkout-demo_dow__b9fch"
               ],
-              "html": "<span class=\"checkout-demo_dow__b9fch\">日</span>",
+              "html": "<span class=\"checkout-demo_dow__b9fch\">月</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -16550,7 +16406,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(7) > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">20</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">21</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -16590,7 +16446,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(1)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">14:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">15:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -16598,7 +16454,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(2)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">14:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">16:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -16606,7 +16462,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(3)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">15:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">16:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -16614,7 +16470,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(4)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">15:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">17:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -16622,7 +16478,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(5)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">16:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">17:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -16630,7 +16486,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(6)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">16:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">18:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -16638,7 +16494,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(7)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">17:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">18:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -16646,7 +16502,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(8)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">17:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">19:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -16654,7 +16510,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(9)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">18:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">19:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -16662,7 +16518,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(10)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">18:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">20:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -16670,7 +16526,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(11)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">19:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">20:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -16678,7 +16534,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(12)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">19:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">21:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -16686,7 +16542,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(13)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">20:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">21:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -16694,7 +16550,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(14)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">20:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">22:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -16702,23 +16558,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(15)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">21:00</button>",
-              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
-              "impact": "serious"
-            },
-            {
-              "target": [
-                ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(16)"
-              ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">21:30</button>",
-              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
-              "impact": "serious"
-            },
-            {
-              "target": [
-                ".checkout-demo_timeExpandButton__XlCm8 > span"
-              ],
-              "html": "<span>もっと見る</span>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">22:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -16809,7 +16649,7 @@
         }
       ],
       "copyright": {
-        "color": "oklab(0.940436 -0.00145316 0.0487576 / 0.6)",
+        "color": "oklab(0.94044 -0.00149685 0.0487405 / 0.6)",
         "opacity": "1",
         "background": "rgb(40, 27, 21)"
       },
@@ -16987,7 +16827,7 @@
               "target": [
                 "div:nth-child(2) > span:nth-child(1)"
               ],
-              "html": "<span style=\"font-size:18px;font-weight:700;color:#ffffff;letter-spacing:0.2px\">월요일, 2026년 09월 14일</span>",
+              "html": "<span style=\"font-size:18px;font-weight:700;color:#ffffff;letter-spacing:0.2px\">화요일, 2026년 09월 15일</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -17019,7 +16859,7 @@
               "target": [
                 ".checkout-demo_selectedDate__SXlCm > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">14</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">15</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -17035,7 +16875,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(2) > .checkout-demo_dow__b9fch"
               ],
-              "html": "<span class=\"checkout-demo_dow__b9fch\">화</span>",
+              "html": "<span class=\"checkout-demo_dow__b9fch\">수</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -17043,7 +16883,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(2) > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">15</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">16</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -17059,7 +16899,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(3) > .checkout-demo_dow__b9fch"
               ],
-              "html": "<span class=\"checkout-demo_dow__b9fch\">수</span>",
+              "html": "<span class=\"checkout-demo_dow__b9fch\">목</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -17067,7 +16907,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(3) > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">16</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">17</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -17083,7 +16923,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(4) > .checkout-demo_dow__b9fch"
               ],
-              "html": "<span class=\"checkout-demo_dow__b9fch\">목</span>",
+              "html": "<span class=\"checkout-demo_dow__b9fch\">금</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -17091,7 +16931,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(4) > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">17</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">18</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -17107,7 +16947,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(5) > .checkout-demo_dow__b9fch"
               ],
-              "html": "<span class=\"checkout-demo_dow__b9fch\">금</span>",
+              "html": "<span class=\"checkout-demo_dow__b9fch\">토</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -17115,7 +16955,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(5) > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">18</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">19</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -17131,7 +16971,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(6) > .checkout-demo_dow__b9fch"
               ],
-              "html": "<span class=\"checkout-demo_dow__b9fch\">토</span>",
+              "html": "<span class=\"checkout-demo_dow__b9fch\">일</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -17139,7 +16979,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(6) > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">19</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">20</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -17155,7 +16995,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(7) > .checkout-demo_dow__b9fch"
               ],
-              "html": "<span class=\"checkout-demo_dow__b9fch\">일</span>",
+              "html": "<span class=\"checkout-demo_dow__b9fch\">월</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -17163,7 +17003,7 @@
               "target": [
                 ".checkout-demo_dateChip__bYp8u[type=\"button\"]:nth-child(7) > .checkout-demo_day__48hbo"
               ],
-              "html": "<span class=\"checkout-demo_day__48hbo\">20</span>",
+              "html": "<span class=\"checkout-demo_day__48hbo\">21</span>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -17203,7 +17043,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(1)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">14:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">15:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -17211,7 +17051,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(2)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">14:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">16:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -17219,7 +17059,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(3)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">15:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">16:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -17227,7 +17067,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(4)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">15:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">17:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -17235,7 +17075,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(5)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">16:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">17:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -17243,7 +17083,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(6)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">16:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">18:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -17251,7 +17091,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(7)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">17:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">18:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -17259,7 +17099,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(8)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">17:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">19:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -17267,7 +17107,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(9)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">18:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">19:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -17275,7 +17115,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(10)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">18:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">20:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -17283,7 +17123,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(11)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">19:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">20:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -17291,7 +17131,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(12)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">19:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">21:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -17299,7 +17139,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(13)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">20:00</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">21:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -17307,7 +17147,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(14)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">20:30</button>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">22:00</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -17315,23 +17155,7 @@
               "target": [
                 ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(15)"
               ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">21:00</button>",
-              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
-              "impact": "serious"
-            },
-            {
-              "target": [
-                ".checkout-demo_timeSlot__1Lt4L[type=\"button\"]:nth-child(16)"
-              ],
-              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">21:30</button>",
-              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
-              "impact": "serious"
-            },
-            {
-              "target": [
-                ".checkout-demo_timeExpandButton__XlCm8 > span"
-              ],
-              "html": "<span>더 보기</span>",
+              "html": "<button type=\"button\" class=\"checkout-demo_timeSlot__1Lt4L \">22:30</button>",
               "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element",
               "impact": "serious"
             },
@@ -17422,7 +17246,7 @@
         }
       ],
       "copyright": {
-        "color": "oklab(0.940436 -0.00145316 0.0487576 / 0.6)",
+        "color": "oklab(0.94044 -0.00149685 0.0487405 / 0.6)",
         "opacity": "1",
         "background": "rgb(40, 27, 21)"
       },

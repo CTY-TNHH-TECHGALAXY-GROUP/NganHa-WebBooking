@@ -89,12 +89,14 @@ assert.match(source, /apply_partial/);
 assert.doesNotMatch(readFileSync(retiredMigration, 'utf8'), /SystemConfigs'\)\s*\.update/);
 
 const adminHistoryRoute = readFileSync(join(repository, 'src', 'app', 'api', 'admin', 'history', 'route.ts'), 'utf8');
+assert.match(adminHistoryRoute, /typeof body\.expectedRevision !== 'string'/);
 assert.match(adminHistoryRoute, /supabase\.rpc\('webbooking_compare_and_swap_system_config'/);
 assert.doesNotMatch(adminHistoryRoute, /from\('SystemConfigs'\)\s*\.update\(/);
 assert.match(adminHistoryRoute, /p_expected_exists:\s*Boolean\(current\)/);
 assert.match(adminHistoryRoute, /clearStaleHistoryResponsiveSources/);
 
 const systemSettingsRoute = readFileSync(join(repository, 'src', 'app', 'api', 'admin', 'system-settings', 'route.ts'), 'utf8');
+assert.match(systemSettingsRoute, /typeof expectedRevision !== 'string'/);
 assert.match(systemSettingsRoute, /supabase\.rpc\('webbooking_compare_and_swap_system_config'/);
 assert.match(systemSettingsRoute, /systemConfigRevision\(currentHistory\?\.value \?\? null\)/);
 assert.match(systemSettingsRoute, /brand_history hoặc about_story_content phải được lưu trong một yêu cầu riêng/);

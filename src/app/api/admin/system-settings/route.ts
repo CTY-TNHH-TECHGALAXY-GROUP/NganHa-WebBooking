@@ -220,8 +220,14 @@ export const POST = withCapabilities(async (request: NextRequest, access) => {
       if (currentHistoryError) {
         return NextResponse.json({ error: `Failed to read ${protectedContent.key}` }, { status: 500 });
       }
-      const expectedHistoryRevision = typeof expectedRevision === 'string' ? expectedRevision : null;
-      if (expectedHistoryRevision && systemConfigRevision(currentHistory?.value ?? null) !== expectedHistoryRevision) {
+      if (typeof expectedRevision !== 'string' || !expectedRevision.trim()) {
+        return NextResponse.json(
+          { error: `expectedRevision là bắt buộc đối với ${protectedContent.key} để chống ghi đè dữ liệu.`, code: 'VALIDATION_ERROR' },
+          { status: 400 },
+        );
+      }
+      const expectedHistoryRevision = expectedRevision.trim();
+      if (systemConfigRevision(currentHistory?.value ?? null) !== expectedHistoryRevision) {
         return NextResponse.json(
           { error: 'Nội dung đã được thay đổi ở cửa sổ khác. Bản nháp của bạn vẫn được giữ lại.', code: 'CONTENT_CONFLICT' },
           { status: 409 },
