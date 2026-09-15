@@ -1,0 +1,66 @@
+{
+  "role": "A/C",
+  "worktree": "/private/tmp/nganha-pagespeed-role-ac",
+  "branch": "codex/ps-reaccept-a-c-20260915",
+  "baseSha": "c964977ca2af3081248c902a626612c4b11722af",
+  "testedSha": "f266c8ed9d4a18db39c0d9dbf093d42288d9928a",
+  "decision": "LOCAL_ACCEPTANCE_PASS_STORAGE_AND_LIVE_TRANSFER_NOT_VERIFIED",
+  "artifacts": [
+    {
+      "path": "plans/pagespeed-remediation-20260913/remaining/agent-ac/our-story-browser-ac-report.json",
+      "sha256": "bb29ae79e9e7b1653a4b0c1166ec01e24dc66e32053cbcef0dd6ab235cedbacd",
+      "status": "PASS_LOCAL_BROWSER",
+      "profiles": ["mobile-cold-1", "mobile-cold-2", "desktop-cold", "mobile-intersection-observer-absent"]
+    },
+    {
+      "path": "plans/pagespeed-remediation-20260913/remaining/agent-ac/thumbnail-budget-report.json",
+      "sha256": "de8e2fd53924874d166d2a8cc3269a73ce5612d052f28d83f2f8777c2e17ecba",
+      "status": "LOCAL_CANDIDATES_PASS_STORAGE_NOT_VERIFIED",
+      "sourceCount": 23,
+      "candidateCount": 69,
+      "widths": [64, 128, 192],
+      "matrix": "390/768/1440 CSS viewport × DPR 1/2/3"
+    },
+    {
+      "path": "plans/pagespeed-remediation-20260913/remaining/agent-ac/screenshots/desktop-cold.png",
+      "sha256": "b7ba2f9de70e13874bc8593ec19cbbda2e5de826787cbbfd5bf8735ec546af14",
+      "status": "PASS_PROFILE_SCREENSHOT"
+    },
+    {
+      "path": "plans/pagespeed-remediation-20260913/remaining/agent-ac/screenshots/mobile-cold-1.png",
+      "sha256": "c91f39f51ff160114725834e847eff3d89fd9fd452a89720cd928fc952f5e3f5",
+      "status": "PASS_PROFILE_SCREENSHOT"
+    },
+    {
+      "path": "plans/pagespeed-remediation-20260913/remaining/agent-ac/screenshots/mobile-cold-2.png",
+      "sha256": "c09b187727734bdec7ba17d432fdd7c11ddf79ec40d67501f8c81a026bef0f42",
+      "status": "PASS_PROFILE_SCREENSHOT"
+    },
+    {
+      "path": "plans/pagespeed-remediation-20260913/remaining/agent-ac/screenshots/mobile-intersection-observer-absent.png",
+      "sha256": "c91f39f51ff160114725834e847eff3d89fd9fd452a89720cd928fc952f5e3f5",
+      "status": "PASS_PROFILE_SCREENSHOT"
+    },
+    {
+      "path": "plans/pagespeed-remediation-20260914/agent-c/hero-source-selection.test.mjs",
+      "sha256": "ab3f300b2ead1746ce81d24bc56e275c6e0204d63738b1a37f75cd49ce3a245c",
+      "status": "4_OF_4_PASS"
+    },
+    {
+      "path": "plans/pagespeed-remediation-20260914/agent-c/hero-fallback.browser.mjs",
+      "sha256": "f39799dacafb40553dd4892c814760c755545381cb0fbbdabd2503f69d3b24fb",
+      "status": "5_OF_5_PASS_LOOPBACK"
+    },
+    {
+      "path": "plans/pagespeed-remediation-20260914/agent-c/video-rendition-local-evidence.md",
+      "sha256": "b444a454bc4ed22c75876b52607e06a4b0cc94f0421d6e523c24862c7bcceae9",
+      "status": "LOCAL_ONLY_NOT_TRANSFER_PROOF"
+    }
+  ],
+  "residuals": [
+    "Storage upload/read-back and production manifest currentSrc are NOT_VERIFIED.",
+    "Matched 12-second CDP transfer, three runs per mobile/desktop profile, is NOT_VERIFIED.",
+    "Live CMS V1-to-V2 publication/read-back and production permissions are outside A/C authority.",
+    "No push, merge, deploy, or production DB/Storage write was performed."
+  ]
+}

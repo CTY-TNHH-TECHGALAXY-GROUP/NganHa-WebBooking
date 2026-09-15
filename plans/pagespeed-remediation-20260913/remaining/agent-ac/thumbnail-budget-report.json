@@ -1,0 +1,2721 @@
+{
+  "status": "LOCAL_CANDIDATES_PASS_STORAGE_NOT_VERIFIED",
+  "generatedAt": "2026-09-15T11:35:14.603Z",
+  "testedSha": "f266c8ed9d4a18db39c0d9dbf093d42288d9928a",
+  "sourceDirectory": "/private/tmp/nganha-pagespeed-role-ac/public/images/history",
+  "sourceCount": 23,
+  "widths": [
+    64,
+    128,
+    192
+  ],
+  "budgetBytes": 15360,
+  "thumbnailBoxCssPx": 96,
+  "viewportDprMatrix": [
+    {
+      "viewport": 390,
+      "devicePixelRatio": 1,
+      "boxCssPx": 96,
+      "requiredWidth": 96,
+      "candidates": [
+        {
+          "sourceName": "2015-ngan-ha-commitment-flowers.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2015-ngan-ha-storefront.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2015-ngan-ha-team.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2018-ngan-ha-facade-day.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2018-ngan-ha-facade-night.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2018-ngan-ha-salon-station-compact.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2020-ngan-ha-interior-entrance.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2020-ngan-ha-salon-signboard.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2020-ngan-ha-team-ao-dai.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2020-ngan-ha-team-blue.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2021-ngan-ha-ngo-duc-ke-gold-sign.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2021-ngan-ha-service-floor-guests.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2021-ngan-ha-treatment-beds.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2023-ngan-ha-branch-2-menu-boo.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2023-ngan-ha-branch-2-thi-sach-facade.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2024-ngan-ha-hcmtoplist-feature.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2024-ngan-ha-naver-recognition-blog.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2024-ngan-ha-naver-review-street.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2024-ngan-ha-ngo-duc-ke-new-signboard.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2024-ngan-ha-updated-interior-space.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2026-oria-spa-tech-galaxy-sign.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2026-oriafarm-fnb-display.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2026-oriafarm-storefront.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        }
+      ]
+    },
+    {
+      "viewport": 390,
+      "devicePixelRatio": 2,
+      "boxCssPx": 96,
+      "requiredWidth": 192,
+      "candidates": [
+        {
+          "sourceName": "2015-ngan-ha-commitment-flowers.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2015-ngan-ha-storefront.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2015-ngan-ha-team.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2018-ngan-ha-facade-day.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2018-ngan-ha-facade-night.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2018-ngan-ha-salon-station-compact.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2020-ngan-ha-interior-entrance.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2020-ngan-ha-salon-signboard.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2020-ngan-ha-team-ao-dai.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2020-ngan-ha-team-blue.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2021-ngan-ha-ngo-duc-ke-gold-sign.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2021-ngan-ha-service-floor-guests.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2021-ngan-ha-treatment-beds.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2023-ngan-ha-branch-2-menu-boo.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2023-ngan-ha-branch-2-thi-sach-facade.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2024-ngan-ha-hcmtoplist-feature.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2024-ngan-ha-naver-recognition-blog.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2024-ngan-ha-naver-review-street.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2024-ngan-ha-ngo-duc-ke-new-signboard.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2024-ngan-ha-updated-interior-space.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2026-oria-spa-tech-galaxy-sign.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2026-oriafarm-fnb-display.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2026-oriafarm-storefront.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        }
+      ]
+    },
+    {
+      "viewport": 390,
+      "devicePixelRatio": 3,
+      "boxCssPx": 96,
+      "requiredWidth": 288,
+      "candidates": [
+        {
+          "sourceName": "2015-ngan-ha-commitment-flowers.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        },
+        {
+          "sourceName": "2015-ngan-ha-storefront.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        },
+        {
+          "sourceName": "2015-ngan-ha-team.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        },
+        {
+          "sourceName": "2018-ngan-ha-facade-day.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        },
+        {
+          "sourceName": "2018-ngan-ha-facade-night.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        },
+        {
+          "sourceName": "2018-ngan-ha-salon-station-compact.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        },
+        {
+          "sourceName": "2020-ngan-ha-interior-entrance.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        },
+        {
+          "sourceName": "2020-ngan-ha-salon-signboard.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        },
+        {
+          "sourceName": "2020-ngan-ha-team-ao-dai.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        },
+        {
+          "sourceName": "2020-ngan-ha-team-blue.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        },
+        {
+          "sourceName": "2021-ngan-ha-ngo-duc-ke-gold-sign.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        },
+        {
+          "sourceName": "2021-ngan-ha-service-floor-guests.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        },
+        {
+          "sourceName": "2021-ngan-ha-treatment-beds.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        },
+        {
+          "sourceName": "2023-ngan-ha-branch-2-menu-boo.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        },
+        {
+          "sourceName": "2023-ngan-ha-branch-2-thi-sach-facade.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        },
+        {
+          "sourceName": "2024-ngan-ha-hcmtoplist-feature.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        },
+        {
+          "sourceName": "2024-ngan-ha-naver-recognition-blog.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        },
+        {
+          "sourceName": "2024-ngan-ha-naver-review-street.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        },
+        {
+          "sourceName": "2024-ngan-ha-ngo-duc-ke-new-signboard.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        },
+        {
+          "sourceName": "2024-ngan-ha-updated-interior-space.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        },
+        {
+          "sourceName": "2026-oria-spa-tech-galaxy-sign.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        },
+        {
+          "sourceName": "2026-oriafarm-fnb-display.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        },
+        {
+          "sourceName": "2026-oriafarm-storefront.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        }
+      ]
+    },
+    {
+      "viewport": 768,
+      "devicePixelRatio": 1,
+      "boxCssPx": 96,
+      "requiredWidth": 96,
+      "candidates": [
+        {
+          "sourceName": "2015-ngan-ha-commitment-flowers.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2015-ngan-ha-storefront.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2015-ngan-ha-team.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2018-ngan-ha-facade-day.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2018-ngan-ha-facade-night.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2018-ngan-ha-salon-station-compact.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2020-ngan-ha-interior-entrance.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2020-ngan-ha-salon-signboard.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2020-ngan-ha-team-ao-dai.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2020-ngan-ha-team-blue.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2021-ngan-ha-ngo-duc-ke-gold-sign.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2021-ngan-ha-service-floor-guests.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2021-ngan-ha-treatment-beds.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2023-ngan-ha-branch-2-menu-boo.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2023-ngan-ha-branch-2-thi-sach-facade.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2024-ngan-ha-hcmtoplist-feature.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2024-ngan-ha-naver-recognition-blog.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2024-ngan-ha-naver-review-street.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2024-ngan-ha-ngo-duc-ke-new-signboard.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2024-ngan-ha-updated-interior-space.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2026-oria-spa-tech-galaxy-sign.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2026-oriafarm-fnb-display.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2026-oriafarm-storefront.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        }
+      ]
+    },
+    {
+      "viewport": 768,
+      "devicePixelRatio": 2,
+      "boxCssPx": 96,
+      "requiredWidth": 192,
+      "candidates": [
+        {
+          "sourceName": "2015-ngan-ha-commitment-flowers.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2015-ngan-ha-storefront.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2015-ngan-ha-team.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2018-ngan-ha-facade-day.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2018-ngan-ha-facade-night.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2018-ngan-ha-salon-station-compact.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2020-ngan-ha-interior-entrance.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2020-ngan-ha-salon-signboard.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2020-ngan-ha-team-ao-dai.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2020-ngan-ha-team-blue.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2021-ngan-ha-ngo-duc-ke-gold-sign.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2021-ngan-ha-service-floor-guests.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2021-ngan-ha-treatment-beds.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2023-ngan-ha-branch-2-menu-boo.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2023-ngan-ha-branch-2-thi-sach-facade.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2024-ngan-ha-hcmtoplist-feature.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2024-ngan-ha-naver-recognition-blog.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2024-ngan-ha-naver-review-street.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2024-ngan-ha-ngo-duc-ke-new-signboard.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2024-ngan-ha-updated-interior-space.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2026-oria-spa-tech-galaxy-sign.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2026-oriafarm-fnb-display.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2026-oriafarm-storefront.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        }
+      ]
+    },
+    {
+      "viewport": 768,
+      "devicePixelRatio": 3,
+      "boxCssPx": 96,
+      "requiredWidth": 288,
+      "candidates": [
+        {
+          "sourceName": "2015-ngan-ha-commitment-flowers.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        },
+        {
+          "sourceName": "2015-ngan-ha-storefront.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        },
+        {
+          "sourceName": "2015-ngan-ha-team.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        },
+        {
+          "sourceName": "2018-ngan-ha-facade-day.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        },
+        {
+          "sourceName": "2018-ngan-ha-facade-night.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        },
+        {
+          "sourceName": "2018-ngan-ha-salon-station-compact.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        },
+        {
+          "sourceName": "2020-ngan-ha-interior-entrance.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        },
+        {
+          "sourceName": "2020-ngan-ha-salon-signboard.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        },
+        {
+          "sourceName": "2020-ngan-ha-team-ao-dai.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        },
+        {
+          "sourceName": "2020-ngan-ha-team-blue.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        },
+        {
+          "sourceName": "2021-ngan-ha-ngo-duc-ke-gold-sign.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        },
+        {
+          "sourceName": "2021-ngan-ha-service-floor-guests.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        },
+        {
+          "sourceName": "2021-ngan-ha-treatment-beds.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        },
+        {
+          "sourceName": "2023-ngan-ha-branch-2-menu-boo.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        },
+        {
+          "sourceName": "2023-ngan-ha-branch-2-thi-sach-facade.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        },
+        {
+          "sourceName": "2024-ngan-ha-hcmtoplist-feature.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        },
+        {
+          "sourceName": "2024-ngan-ha-naver-recognition-blog.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        },
+        {
+          "sourceName": "2024-ngan-ha-naver-review-street.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        },
+        {
+          "sourceName": "2024-ngan-ha-ngo-duc-ke-new-signboard.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        },
+        {
+          "sourceName": "2024-ngan-ha-updated-interior-space.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        },
+        {
+          "sourceName": "2026-oria-spa-tech-galaxy-sign.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        },
+        {
+          "sourceName": "2026-oriafarm-fnb-display.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        },
+        {
+          "sourceName": "2026-oriafarm-storefront.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        }
+      ]
+    },
+    {
+      "viewport": 1440,
+      "devicePixelRatio": 1,
+      "boxCssPx": 96,
+      "requiredWidth": 96,
+      "candidates": [
+        {
+          "sourceName": "2015-ngan-ha-commitment-flowers.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2015-ngan-ha-storefront.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2015-ngan-ha-team.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2018-ngan-ha-facade-day.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2018-ngan-ha-facade-night.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2018-ngan-ha-salon-station-compact.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2020-ngan-ha-interior-entrance.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2020-ngan-ha-salon-signboard.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2020-ngan-ha-team-ao-dai.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2020-ngan-ha-team-blue.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2021-ngan-ha-ngo-duc-ke-gold-sign.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2021-ngan-ha-service-floor-guests.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2021-ngan-ha-treatment-beds.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2023-ngan-ha-branch-2-menu-boo.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2023-ngan-ha-branch-2-thi-sach-facade.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2024-ngan-ha-hcmtoplist-feature.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2024-ngan-ha-naver-recognition-blog.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2024-ngan-ha-naver-review-street.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2024-ngan-ha-ngo-duc-ke-new-signboard.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2024-ngan-ha-updated-interior-space.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2026-oria-spa-tech-galaxy-sign.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2026-oriafarm-fnb-display.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2026-oriafarm-storefront.png",
+          "selected": {
+            "width": 128,
+            "intrinsicWidth": 128,
+            "undersized": false
+          }
+        }
+      ]
+    },
+    {
+      "viewport": 1440,
+      "devicePixelRatio": 2,
+      "boxCssPx": 96,
+      "requiredWidth": 192,
+      "candidates": [
+        {
+          "sourceName": "2015-ngan-ha-commitment-flowers.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2015-ngan-ha-storefront.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2015-ngan-ha-team.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2018-ngan-ha-facade-day.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2018-ngan-ha-facade-night.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2018-ngan-ha-salon-station-compact.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2020-ngan-ha-interior-entrance.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2020-ngan-ha-salon-signboard.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2020-ngan-ha-team-ao-dai.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2020-ngan-ha-team-blue.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2021-ngan-ha-ngo-duc-ke-gold-sign.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2021-ngan-ha-service-floor-guests.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2021-ngan-ha-treatment-beds.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2023-ngan-ha-branch-2-menu-boo.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2023-ngan-ha-branch-2-thi-sach-facade.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2024-ngan-ha-hcmtoplist-feature.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2024-ngan-ha-naver-recognition-blog.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2024-ngan-ha-naver-review-street.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2024-ngan-ha-ngo-duc-ke-new-signboard.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2024-ngan-ha-updated-interior-space.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2026-oria-spa-tech-galaxy-sign.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2026-oriafarm-fnb-display.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        },
+        {
+          "sourceName": "2026-oriafarm-storefront.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": false
+          }
+        }
+      ]
+    },
+    {
+      "viewport": 1440,
+      "devicePixelRatio": 3,
+      "boxCssPx": 96,
+      "requiredWidth": 288,
+      "candidates": [
+        {
+          "sourceName": "2015-ngan-ha-commitment-flowers.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        },
+        {
+          "sourceName": "2015-ngan-ha-storefront.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        },
+        {
+          "sourceName": "2015-ngan-ha-team.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        },
+        {
+          "sourceName": "2018-ngan-ha-facade-day.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        },
+        {
+          "sourceName": "2018-ngan-ha-facade-night.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        },
+        {
+          "sourceName": "2018-ngan-ha-salon-station-compact.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        },
+        {
+          "sourceName": "2020-ngan-ha-interior-entrance.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        },
+        {
+          "sourceName": "2020-ngan-ha-salon-signboard.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        },
+        {
+          "sourceName": "2020-ngan-ha-team-ao-dai.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        },
+        {
+          "sourceName": "2020-ngan-ha-team-blue.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        },
+        {
+          "sourceName": "2021-ngan-ha-ngo-duc-ke-gold-sign.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        },
+        {
+          "sourceName": "2021-ngan-ha-service-floor-guests.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        },
+        {
+          "sourceName": "2021-ngan-ha-treatment-beds.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        },
+        {
+          "sourceName": "2023-ngan-ha-branch-2-menu-boo.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        },
+        {
+          "sourceName": "2023-ngan-ha-branch-2-thi-sach-facade.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        },
+        {
+          "sourceName": "2024-ngan-ha-hcmtoplist-feature.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        },
+        {
+          "sourceName": "2024-ngan-ha-naver-recognition-blog.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        },
+        {
+          "sourceName": "2024-ngan-ha-naver-review-street.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        },
+        {
+          "sourceName": "2024-ngan-ha-ngo-duc-ke-new-signboard.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        },
+        {
+          "sourceName": "2024-ngan-ha-updated-interior-space.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        },
+        {
+          "sourceName": "2026-oria-spa-tech-galaxy-sign.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        },
+        {
+          "sourceName": "2026-oriafarm-fnb-display.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        },
+        {
+          "sourceName": "2026-oriafarm-storefront.png",
+          "selected": {
+            "width": 192,
+            "intrinsicWidth": 192,
+            "undersized": true
+          }
+        }
+      ]
+    }
+  ],
+  "candidates": [
+    {
+      "sourceName": "2015-ngan-ha-commitment-flowers.png",
+      "sourceHash": "01c58932e428bfe6c16eb3d1ae59ed1595daf71fb0f4a74b5b5bcd35c8bfded9",
+      "sourceWidth": 1086,
+      "sourceHeight": 1448,
+      "width": 64,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2015-ngan-ha-commitment-flowers-w64.webp",
+      "outputHash": "63f5ab041cc9923d98314bcacdda857861d89edffe4bf397dfe55b371964c7a9",
+      "bytes": 1770,
+      "intrinsicWidth": 64,
+      "intrinsicHeight": 85,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2015-ngan-ha-commitment-flowers.png",
+      "sourceHash": "01c58932e428bfe6c16eb3d1ae59ed1595daf71fb0f4a74b5b5bcd35c8bfded9",
+      "sourceWidth": 1086,
+      "sourceHeight": 1448,
+      "width": 128,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2015-ngan-ha-commitment-flowers-w128.webp",
+      "outputHash": "d45c9bab130e10f1127d8f6666dcea30b909d38f03e8183694151be00f0c0176",
+      "bytes": 5730,
+      "intrinsicWidth": 128,
+      "intrinsicHeight": 171,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2015-ngan-ha-commitment-flowers.png",
+      "sourceHash": "01c58932e428bfe6c16eb3d1ae59ed1595daf71fb0f4a74b5b5bcd35c8bfded9",
+      "sourceWidth": 1086,
+      "sourceHeight": 1448,
+      "width": 192,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2015-ngan-ha-commitment-flowers-w192.webp",
+      "outputHash": "69dba2bbe8ec39f3a50431d9a66a11a7c5904713117b2b8070b2786cc1bd9b5a",
+      "bytes": 11328,
+      "intrinsicWidth": 192,
+      "intrinsicHeight": 256,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2015-ngan-ha-storefront.png",
+      "sourceHash": "89d624a698e97f1c15d9b44ff60b1bce00b8c76546e4b0b2f07a21767d1bceb7",
+      "sourceWidth": 1448,
+      "sourceHeight": 1086,
+      "width": 64,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2015-ngan-ha-storefront-w64.webp",
+      "outputHash": "7db07e446d427d38fcc93a2e4826b1302c703675d579eb8b8e49c38aa79c6983",
+      "bytes": 1068,
+      "intrinsicWidth": 64,
+      "intrinsicHeight": 48,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2015-ngan-ha-storefront.png",
+      "sourceHash": "89d624a698e97f1c15d9b44ff60b1bce00b8c76546e4b0b2f07a21767d1bceb7",
+      "sourceWidth": 1448,
+      "sourceHeight": 1086,
+      "width": 128,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2015-ngan-ha-storefront-w128.webp",
+      "outputHash": "07c65b99c02a61d5155fc3165b6b3e014660a1e95511415ac353cb678fe07aa2",
+      "bytes": 3494,
+      "intrinsicWidth": 128,
+      "intrinsicHeight": 96,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2015-ngan-ha-storefront.png",
+      "sourceHash": "89d624a698e97f1c15d9b44ff60b1bce00b8c76546e4b0b2f07a21767d1bceb7",
+      "sourceWidth": 1448,
+      "sourceHeight": 1086,
+      "width": 192,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2015-ngan-ha-storefront-w192.webp",
+      "outputHash": "a9a5c9364dc09f03e9add908aead3dea083b499b0fc253aad44f7f7bdfae75d7",
+      "bytes": 6934,
+      "intrinsicWidth": 192,
+      "intrinsicHeight": 144,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2015-ngan-ha-team.png",
+      "sourceHash": "05192366cf232b5eb912311d3893b9f304c0c09336cd41b9e3bfb7dcd00413d1",
+      "sourceWidth": 1254,
+      "sourceHeight": 1254,
+      "width": 64,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2015-ngan-ha-team-w64.webp",
+      "outputHash": "39f76919bb30a446442d6a190598f3b08ea62e66165f6445a964b77de0416473",
+      "bytes": 1420,
+      "intrinsicWidth": 64,
+      "intrinsicHeight": 64,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2015-ngan-ha-team.png",
+      "sourceHash": "05192366cf232b5eb912311d3893b9f304c0c09336cd41b9e3bfb7dcd00413d1",
+      "sourceWidth": 1254,
+      "sourceHeight": 1254,
+      "width": 128,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2015-ngan-ha-team-w128.webp",
+      "outputHash": "bfde45d07c79cb2b2067d48b06cecc5a89c215a1377d5330496a93e51a41017e",
+      "bytes": 4016,
+      "intrinsicWidth": 128,
+      "intrinsicHeight": 128,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2015-ngan-ha-team.png",
+      "sourceHash": "05192366cf232b5eb912311d3893b9f304c0c09336cd41b9e3bfb7dcd00413d1",
+      "sourceWidth": 1254,
+      "sourceHeight": 1254,
+      "width": 192,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2015-ngan-ha-team-w192.webp",
+      "outputHash": "a8ecb2c4de7bfdee83421691cf1627828e97ed518688c3aecadb0554b4743ed0",
+      "bytes": 7144,
+      "intrinsicWidth": 192,
+      "intrinsicHeight": 192,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2018-ngan-ha-facade-day.png",
+      "sourceHash": "0434a1070dd32151c13216cbec4c7c28d22047039be3abb39ab497dedf00ef65",
+      "sourceWidth": 1122,
+      "sourceHeight": 1402,
+      "width": 64,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2018-ngan-ha-facade-day-w64.webp",
+      "outputHash": "97f6d41ac7cf5a52d547fc102634c07b780a141be1055295c9f0f159b3ac5f77",
+      "bytes": 2020,
+      "intrinsicWidth": 64,
+      "intrinsicHeight": 80,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2018-ngan-ha-facade-day.png",
+      "sourceHash": "0434a1070dd32151c13216cbec4c7c28d22047039be3abb39ab497dedf00ef65",
+      "sourceWidth": 1122,
+      "sourceHeight": 1402,
+      "width": 128,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2018-ngan-ha-facade-day-w128.webp",
+      "outputHash": "e111c25a3f1b13c8c93fbfba17b40006f49f1450a53733dfe3bc9caa356d6e8c",
+      "bytes": 6668,
+      "intrinsicWidth": 128,
+      "intrinsicHeight": 160,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2018-ngan-ha-facade-day.png",
+      "sourceHash": "0434a1070dd32151c13216cbec4c7c28d22047039be3abb39ab497dedf00ef65",
+      "sourceWidth": 1122,
+      "sourceHeight": 1402,
+      "width": 192,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2018-ngan-ha-facade-day-w192.webp",
+      "outputHash": "5f4d4417aa1b5e693c0fb9bbd76f2fdfec117dc820e70251c253d8aa05e38414",
+      "bytes": 13920,
+      "intrinsicWidth": 192,
+      "intrinsicHeight": 240,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2018-ngan-ha-facade-night.png",
+      "sourceHash": "7288381dccbb318a8cb6d618b168724a55ffd17c779ff34ee38d45b981701562",
+      "sourceWidth": 1122,
+      "sourceHeight": 1402,
+      "width": 64,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2018-ngan-ha-facade-night-w64.webp",
+      "outputHash": "8925ac47f4eea6bebb8a0a5d6292a43b5a6100e4891b5f814cafdc3e6979e31e",
+      "bytes": 1704,
+      "intrinsicWidth": 64,
+      "intrinsicHeight": 80,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2018-ngan-ha-facade-night.png",
+      "sourceHash": "7288381dccbb318a8cb6d618b168724a55ffd17c779ff34ee38d45b981701562",
+      "sourceWidth": 1122,
+      "sourceHeight": 1402,
+      "width": 128,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2018-ngan-ha-facade-night-w128.webp",
+      "outputHash": "e345a4f7860373093ada2798ec599bd8175977b2beba6dba4281066744f3136f",
+      "bytes": 5140,
+      "intrinsicWidth": 128,
+      "intrinsicHeight": 160,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2018-ngan-ha-facade-night.png",
+      "sourceHash": "7288381dccbb318a8cb6d618b168724a55ffd17c779ff34ee38d45b981701562",
+      "sourceWidth": 1122,
+      "sourceHeight": 1402,
+      "width": 192,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2018-ngan-ha-facade-night-w192.webp",
+      "outputHash": "b8bd6698e967996c220079b85c36b1e2e2a434f2c8b6b42a5f8902b0e5659561",
+      "bytes": 10016,
+      "intrinsicWidth": 192,
+      "intrinsicHeight": 240,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2018-ngan-ha-salon-station-compact.png",
+      "sourceHash": "67ac516ae72ea2a0c6a42b81e674606408db1e7dc3e571a2d8e7d86170572e55",
+      "sourceWidth": 1122,
+      "sourceHeight": 1402,
+      "width": 64,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2018-ngan-ha-salon-station-compact-w64.webp",
+      "outputHash": "6ed09f9bf9667a22a116151ffeb38835cbe6e161ef74e890696c89bb597dfde7",
+      "bytes": 1602,
+      "intrinsicWidth": 64,
+      "intrinsicHeight": 80,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2018-ngan-ha-salon-station-compact.png",
+      "sourceHash": "67ac516ae72ea2a0c6a42b81e674606408db1e7dc3e571a2d8e7d86170572e55",
+      "sourceWidth": 1122,
+      "sourceHeight": 1402,
+      "width": 128,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2018-ngan-ha-salon-station-compact-w128.webp",
+      "outputHash": "65742c07584d03ed9143b035ca120129b40d29895e3758f8fb358cde3bd2dd73",
+      "bytes": 4308,
+      "intrinsicWidth": 128,
+      "intrinsicHeight": 160,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2018-ngan-ha-salon-station-compact.png",
+      "sourceHash": "67ac516ae72ea2a0c6a42b81e674606408db1e7dc3e571a2d8e7d86170572e55",
+      "sourceWidth": 1122,
+      "sourceHeight": 1402,
+      "width": 192,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2018-ngan-ha-salon-station-compact-w192.webp",
+      "outputHash": "4355e4f984c8aa6d527e22b41800045f2ddf74e131148a7a98343ef998a4be48",
+      "bytes": 7808,
+      "intrinsicWidth": 192,
+      "intrinsicHeight": 240,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2020-ngan-ha-interior-entrance.png",
+      "sourceHash": "f009133bfbe8e553cafc143ad0cdab5ee494ebd3817eabe3d2765a396ae911f6",
+      "sourceWidth": 1448,
+      "sourceHeight": 1086,
+      "width": 64,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2020-ngan-ha-interior-entrance-w64.webp",
+      "outputHash": "855f72ea359b11189d46c4870a7019c0e1997fce2e19457e5be695c8bf597449",
+      "bytes": 970,
+      "intrinsicWidth": 64,
+      "intrinsicHeight": 48,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2020-ngan-ha-interior-entrance.png",
+      "sourceHash": "f009133bfbe8e553cafc143ad0cdab5ee494ebd3817eabe3d2765a396ae911f6",
+      "sourceWidth": 1448,
+      "sourceHeight": 1086,
+      "width": 128,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2020-ngan-ha-interior-entrance-w128.webp",
+      "outputHash": "b60e9b34211ec1d5d9070a1301f142e140fb6b873595246ba0701a16361070b1",
+      "bytes": 2634,
+      "intrinsicWidth": 128,
+      "intrinsicHeight": 96,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2020-ngan-ha-interior-entrance.png",
+      "sourceHash": "f009133bfbe8e553cafc143ad0cdab5ee494ebd3817eabe3d2765a396ae911f6",
+      "sourceWidth": 1448,
+      "sourceHeight": 1086,
+      "width": 192,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2020-ngan-ha-interior-entrance-w192.webp",
+      "outputHash": "ecaa8e5652cd8c320a95dd3def50700e84d6a5fa7e421535e044f7877e90c8d1",
+      "bytes": 4772,
+      "intrinsicWidth": 192,
+      "intrinsicHeight": 144,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2020-ngan-ha-salon-signboard.png",
+      "sourceHash": "d26721c3904f5d5c50c0cc44d2d4b7de6165e06fd50e900942a55f795982d166",
+      "sourceWidth": 1024,
+      "sourceHeight": 1536,
+      "width": 64,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2020-ngan-ha-salon-signboard-w64.webp",
+      "outputHash": "3d675ff17af4e3f2037bc9ab734a66f616d9dae071ceeb007d1262f89fcfc2ef",
+      "bytes": 1852,
+      "intrinsicWidth": 64,
+      "intrinsicHeight": 96,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2020-ngan-ha-salon-signboard.png",
+      "sourceHash": "d26721c3904f5d5c50c0cc44d2d4b7de6165e06fd50e900942a55f795982d166",
+      "sourceWidth": 1024,
+      "sourceHeight": 1536,
+      "width": 128,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2020-ngan-ha-salon-signboard-w128.webp",
+      "outputHash": "a74295197ceb74b339e768f0712ddad4b8319c0612f1dd1b190e080117c32990",
+      "bytes": 5986,
+      "intrinsicWidth": 128,
+      "intrinsicHeight": 192,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2020-ngan-ha-salon-signboard.png",
+      "sourceHash": "d26721c3904f5d5c50c0cc44d2d4b7de6165e06fd50e900942a55f795982d166",
+      "sourceWidth": 1024,
+      "sourceHeight": 1536,
+      "width": 192,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2020-ngan-ha-salon-signboard-w192.webp",
+      "outputHash": "ce2b7420d41e278726541433df124a80f7ec0ec267e67066f8e632409055d6ae",
+      "bytes": 11842,
+      "intrinsicWidth": 192,
+      "intrinsicHeight": 288,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2020-ngan-ha-team-ao-dai.png",
+      "sourceHash": "e62bf3af0b17f831468f0da619014428108f8a78e4200445abdd2994632def85",
+      "sourceWidth": 1448,
+      "sourceHeight": 1086,
+      "width": 64,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2020-ngan-ha-team-ao-dai-w64.webp",
+      "outputHash": "5f3df71d821d3d6215bc1b08535d1b22d5ab66f7487c63aaa07c60b8435a66e0",
+      "bytes": 1234,
+      "intrinsicWidth": 64,
+      "intrinsicHeight": 48,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2020-ngan-ha-team-ao-dai.png",
+      "sourceHash": "e62bf3af0b17f831468f0da619014428108f8a78e4200445abdd2994632def85",
+      "sourceWidth": 1448,
+      "sourceHeight": 1086,
+      "width": 128,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2020-ngan-ha-team-ao-dai-w128.webp",
+      "outputHash": "2b3b54f29e7b73c785848a57526092bc5bd28c88eef2c62fda53bb4f5c005ead",
+      "bytes": 3486,
+      "intrinsicWidth": 128,
+      "intrinsicHeight": 96,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2020-ngan-ha-team-ao-dai.png",
+      "sourceHash": "e62bf3af0b17f831468f0da619014428108f8a78e4200445abdd2994632def85",
+      "sourceWidth": 1448,
+      "sourceHeight": 1086,
+      "width": 192,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2020-ngan-ha-team-ao-dai-w192.webp",
+      "outputHash": "48972ee2424b4d76957a418829220ffe3e5c0c6eaebfcb7704c0ac03782f2266",
+      "bytes": 6618,
+      "intrinsicWidth": 192,
+      "intrinsicHeight": 144,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2020-ngan-ha-team-blue.png",
+      "sourceHash": "6e40dfa8dfb26a0b5988a99eac65c1124461d92de99d0875385f6bbd4dd00ab5",
+      "sourceWidth": 1448,
+      "sourceHeight": 1086,
+      "width": 64,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2020-ngan-ha-team-blue-w64.webp",
+      "outputHash": "768a63005a8e8d377b03c63c994a0a97b6967600b1017641c68739b2b5287aac",
+      "bytes": 1198,
+      "intrinsicWidth": 64,
+      "intrinsicHeight": 48,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2020-ngan-ha-team-blue.png",
+      "sourceHash": "6e40dfa8dfb26a0b5988a99eac65c1124461d92de99d0875385f6bbd4dd00ab5",
+      "sourceWidth": 1448,
+      "sourceHeight": 1086,
+      "width": 128,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2020-ngan-ha-team-blue-w128.webp",
+      "outputHash": "db7aa4b2264a2aa79c8fbeb988caffaeffdd5f7bdc4e772de256781f99192018",
+      "bytes": 3240,
+      "intrinsicWidth": 128,
+      "intrinsicHeight": 96,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2020-ngan-ha-team-blue.png",
+      "sourceHash": "6e40dfa8dfb26a0b5988a99eac65c1124461d92de99d0875385f6bbd4dd00ab5",
+      "sourceWidth": 1448,
+      "sourceHeight": 1086,
+      "width": 192,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2020-ngan-ha-team-blue-w192.webp",
+      "outputHash": "71bc82f260b8769bb2ab10b609cf86a6297191eeeeb1df3c5b6c01f2b84a10d9",
+      "bytes": 5778,
+      "intrinsicWidth": 192,
+      "intrinsicHeight": 144,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2021-ngan-ha-ngo-duc-ke-gold-sign.png",
+      "sourceHash": "abc49adadb9c5045721b805c45e6b7e1341a591d3ac0ec3360ac7bb5e7d404bb",
+      "sourceWidth": 1448,
+      "sourceHeight": 1086,
+      "width": 64,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2021-ngan-ha-ngo-duc-ke-gold-sign-w64.webp",
+      "outputHash": "36e5753f1e94c3c786f3b3b0578b600005067e9d4906aad31742cddbefa330c3",
+      "bytes": 1050,
+      "intrinsicWidth": 64,
+      "intrinsicHeight": 48,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2021-ngan-ha-ngo-duc-ke-gold-sign.png",
+      "sourceHash": "abc49adadb9c5045721b805c45e6b7e1341a591d3ac0ec3360ac7bb5e7d404bb",
+      "sourceWidth": 1448,
+      "sourceHeight": 1086,
+      "width": 128,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2021-ngan-ha-ngo-duc-ke-gold-sign-w128.webp",
+      "outputHash": "48eb5b748f8b6f1828f40621ac53cea361e066088064abd3d2e84e0ec9e44c5b",
+      "bytes": 3058,
+      "intrinsicWidth": 128,
+      "intrinsicHeight": 96,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2021-ngan-ha-ngo-duc-ke-gold-sign.png",
+      "sourceHash": "abc49adadb9c5045721b805c45e6b7e1341a591d3ac0ec3360ac7bb5e7d404bb",
+      "sourceWidth": 1448,
+      "sourceHeight": 1086,
+      "width": 192,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2021-ngan-ha-ngo-duc-ke-gold-sign-w192.webp",
+      "outputHash": "4e9a0b22409113eede6a80a10be869bb799cd619f3a9024ffdf02bc4765970dc",
+      "bytes": 5974,
+      "intrinsicWidth": 192,
+      "intrinsicHeight": 144,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2021-ngan-ha-service-floor-guests.png",
+      "sourceHash": "49bb7423530cbe8fb137f852a92c18ce69d417ca9f47b60f1b900fb09b039ac9",
+      "sourceWidth": 1448,
+      "sourceHeight": 1086,
+      "width": 64,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2021-ngan-ha-service-floor-guests-w64.webp",
+      "outputHash": "7151d30ff4d937ebb2254dcaa8acd1b6360792a4957090aeac83b7f7f87e1dcc",
+      "bytes": 1074,
+      "intrinsicWidth": 64,
+      "intrinsicHeight": 48,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2021-ngan-ha-service-floor-guests.png",
+      "sourceHash": "49bb7423530cbe8fb137f852a92c18ce69d417ca9f47b60f1b900fb09b039ac9",
+      "sourceWidth": 1448,
+      "sourceHeight": 1086,
+      "width": 128,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2021-ngan-ha-service-floor-guests-w128.webp",
+      "outputHash": "155b1e392bfc07cc0da0579aacc25d164a225932c97ce23ffb10d8d8e70f6c24",
+      "bytes": 3008,
+      "intrinsicWidth": 128,
+      "intrinsicHeight": 96,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2021-ngan-ha-service-floor-guests.png",
+      "sourceHash": "49bb7423530cbe8fb137f852a92c18ce69d417ca9f47b60f1b900fb09b039ac9",
+      "sourceWidth": 1448,
+      "sourceHeight": 1086,
+      "width": 192,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2021-ngan-ha-service-floor-guests-w192.webp",
+      "outputHash": "a504305fc0add6c8ed3b5078b4423b19d65cb94aee3291372ae0fa9e92d10374",
+      "bytes": 5732,
+      "intrinsicWidth": 192,
+      "intrinsicHeight": 144,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2021-ngan-ha-treatment-beds.png",
+      "sourceHash": "57cbd60b57eb68a32d224f222a197c8a08783b565d69856f597f29689b409612",
+      "sourceWidth": 1254,
+      "sourceHeight": 1254,
+      "width": 64,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2021-ngan-ha-treatment-beds-w64.webp",
+      "outputHash": "dcec25de8d8aaa703ddc6f65c5898c703d7073856e917d38b6b4722cad62b205",
+      "bytes": 1130,
+      "intrinsicWidth": 64,
+      "intrinsicHeight": 64,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2021-ngan-ha-treatment-beds.png",
+      "sourceHash": "57cbd60b57eb68a32d224f222a197c8a08783b565d69856f597f29689b409612",
+      "sourceWidth": 1254,
+      "sourceHeight": 1254,
+      "width": 128,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2021-ngan-ha-treatment-beds-w128.webp",
+      "outputHash": "f7c7621f635ec36b8171616946b72814f8b1c314023ae253658143ceb1e000c4",
+      "bytes": 3022,
+      "intrinsicWidth": 128,
+      "intrinsicHeight": 128,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2021-ngan-ha-treatment-beds.png",
+      "sourceHash": "57cbd60b57eb68a32d224f222a197c8a08783b565d69856f597f29689b409612",
+      "sourceWidth": 1254,
+      "sourceHeight": 1254,
+      "width": 192,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2021-ngan-ha-treatment-beds-w192.webp",
+      "outputHash": "5146be75a97ab0fa2b3b590c20d819ea3a65b7a021593e50ebc8213fbc291b6a",
+      "bytes": 5810,
+      "intrinsicWidth": 192,
+      "intrinsicHeight": 192,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2023-ngan-ha-branch-2-menu-boo.png",
+      "sourceHash": "15e7c73dbb48211e248445ff3e47aaa728d784f48a15d39662af6869ae8229ce",
+      "sourceWidth": 1448,
+      "sourceHeight": 1086,
+      "width": 64,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2023-ngan-ha-branch-2-menu-boo-w64.webp",
+      "outputHash": "b925aa8c71ba01e205012032a3546f6a005fe0bcb5ab0e07b04cef7da0aeca15",
+      "bytes": 788,
+      "intrinsicWidth": 64,
+      "intrinsicHeight": 48,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2023-ngan-ha-branch-2-menu-boo.png",
+      "sourceHash": "15e7c73dbb48211e248445ff3e47aaa728d784f48a15d39662af6869ae8229ce",
+      "sourceWidth": 1448,
+      "sourceHeight": 1086,
+      "width": 128,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2023-ngan-ha-branch-2-menu-boo-w128.webp",
+      "outputHash": "434080d7b0c4ee945032c50fe44283327359dc43e9a61307cd8e0dfff3bb6b40",
+      "bytes": 2602,
+      "intrinsicWidth": 128,
+      "intrinsicHeight": 96,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2023-ngan-ha-branch-2-menu-boo.png",
+      "sourceHash": "15e7c73dbb48211e248445ff3e47aaa728d784f48a15d39662af6869ae8229ce",
+      "sourceWidth": 1448,
+      "sourceHeight": 1086,
+      "width": 192,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2023-ngan-ha-branch-2-menu-boo-w192.webp",
+      "outputHash": "97a1ad276f0e326e28a97fca290aefd6c129a839eaa8a2fa3d4d4dde2dcf353a",
+      "bytes": 5348,
+      "intrinsicWidth": 192,
+      "intrinsicHeight": 144,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2023-ngan-ha-branch-2-thi-sach-facade.png",
+      "sourceHash": "dd7302b4a88ec7719d514e79318b5dd489035b1b0dbd528c0e075ac60d1d17e9",
+      "sourceWidth": 1448,
+      "sourceHeight": 1086,
+      "width": 64,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2023-ngan-ha-branch-2-thi-sach-facade-w64.webp",
+      "outputHash": "813a5b993210c33441c044223bfbc56f86c819c09a2dd465f3a094f4846db192",
+      "bytes": 1018,
+      "intrinsicWidth": 64,
+      "intrinsicHeight": 48,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2023-ngan-ha-branch-2-thi-sach-facade.png",
+      "sourceHash": "dd7302b4a88ec7719d514e79318b5dd489035b1b0dbd528c0e075ac60d1d17e9",
+      "sourceWidth": 1448,
+      "sourceHeight": 1086,
+      "width": 128,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2023-ngan-ha-branch-2-thi-sach-facade-w128.webp",
+      "outputHash": "f8d98f9ddb316c2308cb89936ab95b022147556fc07024b346a5e937da4d1535",
+      "bytes": 3164,
+      "intrinsicWidth": 128,
+      "intrinsicHeight": 96,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2023-ngan-ha-branch-2-thi-sach-facade.png",
+      "sourceHash": "dd7302b4a88ec7719d514e79318b5dd489035b1b0dbd528c0e075ac60d1d17e9",
+      "sourceWidth": 1448,
+      "sourceHeight": 1086,
+      "width": 192,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2023-ngan-ha-branch-2-thi-sach-facade-w192.webp",
+      "outputHash": "b864b8193a4e144eb6879cc11e6e072b306fd14d4c61d745a1e454c1d000a5b7",
+      "bytes": 6222,
+      "intrinsicWidth": 192,
+      "intrinsicHeight": 144,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2024-ngan-ha-hcmtoplist-feature.png",
+      "sourceHash": "f0ae69629e6cf0867018dbaaea0d8246e76ec9cb9fe6267fa72e71cbaabc4312",
+      "sourceWidth": 1672,
+      "sourceHeight": 941,
+      "width": 64,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2024-ngan-ha-hcmtoplist-feature-w64.webp",
+      "outputHash": "4b6a3f15b4dd27c89e3c660fdb28b3977dfdbd5a10299a436a69f23d6df2ae92",
+      "bytes": 662,
+      "intrinsicWidth": 64,
+      "intrinsicHeight": 36,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2024-ngan-ha-hcmtoplist-feature.png",
+      "sourceHash": "f0ae69629e6cf0867018dbaaea0d8246e76ec9cb9fe6267fa72e71cbaabc4312",
+      "sourceWidth": 1672,
+      "sourceHeight": 941,
+      "width": 128,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2024-ngan-ha-hcmtoplist-feature-w128.webp",
+      "outputHash": "332523eccde0187955dbd198c5130cc7c12725411882dac0df40463ce22d89ae",
+      "bytes": 2200,
+      "intrinsicWidth": 128,
+      "intrinsicHeight": 72,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2024-ngan-ha-hcmtoplist-feature.png",
+      "sourceHash": "f0ae69629e6cf0867018dbaaea0d8246e76ec9cb9fe6267fa72e71cbaabc4312",
+      "sourceWidth": 1672,
+      "sourceHeight": 941,
+      "width": 192,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2024-ngan-ha-hcmtoplist-feature-w192.webp",
+      "outputHash": "7fc0a7c9379ab76443fc57fbd14ceec1ee09dea454642875c29ff7bdff9aa72e",
+      "bytes": 4224,
+      "intrinsicWidth": 192,
+      "intrinsicHeight": 108,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2024-ngan-ha-naver-recognition-blog.png",
+      "sourceHash": "9cc2faa13ebc1ff421cfc5126668d7ba4a1af2227186d1ac670c2bd538ee0d56",
+      "sourceWidth": 1448,
+      "sourceHeight": 1086,
+      "width": 64,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2024-ngan-ha-naver-recognition-blog-w64.webp",
+      "outputHash": "6055d139b15c70fff535af715c4823ef1871a22adfc6a3455ce5d016168ddba8",
+      "bytes": 588,
+      "intrinsicWidth": 64,
+      "intrinsicHeight": 48,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2024-ngan-ha-naver-recognition-blog.png",
+      "sourceHash": "9cc2faa13ebc1ff421cfc5126668d7ba4a1af2227186d1ac670c2bd538ee0d56",
+      "sourceWidth": 1448,
+      "sourceHeight": 1086,
+      "width": 128,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2024-ngan-ha-naver-recognition-blog-w128.webp",
+      "outputHash": "e24f2b54c86bc934da72f512d0e1b646e76dc7774c429e03d393ca51b6c779bb",
+      "bytes": 1696,
+      "intrinsicWidth": 128,
+      "intrinsicHeight": 96,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2024-ngan-ha-naver-recognition-blog.png",
+      "sourceHash": "9cc2faa13ebc1ff421cfc5126668d7ba4a1af2227186d1ac670c2bd538ee0d56",
+      "sourceWidth": 1448,
+      "sourceHeight": 1086,
+      "width": 192,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2024-ngan-ha-naver-recognition-blog-w192.webp",
+      "outputHash": "43e8f572edf22ffa1a02277ce421802f9a3aa01374e61b390b7156b23611c756",
+      "bytes": 3402,
+      "intrinsicWidth": 192,
+      "intrinsicHeight": 144,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2024-ngan-ha-naver-review-street.png",
+      "sourceHash": "d521523e1284b93fc0b739bd6409333d5e77261c09fc5cfb599f957a03ee8ec8",
+      "sourceWidth": 1355,
+      "sourceHeight": 1161,
+      "width": 64,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2024-ngan-ha-naver-review-street-w64.webp",
+      "outputHash": "68435ed9d86e22d8df308408faaed61b8abb91fccf4e954c3ab1c9842a00b6a0",
+      "bytes": 720,
+      "intrinsicWidth": 64,
+      "intrinsicHeight": 55,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2024-ngan-ha-naver-review-street.png",
+      "sourceHash": "d521523e1284b93fc0b739bd6409333d5e77261c09fc5cfb599f957a03ee8ec8",
+      "sourceWidth": 1355,
+      "sourceHeight": 1161,
+      "width": 128,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2024-ngan-ha-naver-review-street-w128.webp",
+      "outputHash": "686de4fe2cae6314deefb8f4cc7af5eaded67ec05f3ba5b8ef2018ece6ef2378",
+      "bytes": 2536,
+      "intrinsicWidth": 128,
+      "intrinsicHeight": 110,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2024-ngan-ha-naver-review-street.png",
+      "sourceHash": "d521523e1284b93fc0b739bd6409333d5e77261c09fc5cfb599f957a03ee8ec8",
+      "sourceWidth": 1355,
+      "sourceHeight": 1161,
+      "width": 192,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2024-ngan-ha-naver-review-street-w192.webp",
+      "outputHash": "6712b4bcb78703d93c76c65537d7fe03dad6b8cc408d5b7ed4a0c8af12fdf32b",
+      "bytes": 5154,
+      "intrinsicWidth": 192,
+      "intrinsicHeight": 165,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2024-ngan-ha-ngo-duc-ke-new-signboard.png",
+      "sourceHash": "d814eeb80e4d08fc78914025199c9dbe8e07ea391176e92c46ae18eb2affcd6a",
+      "sourceWidth": 1672,
+      "sourceHeight": 941,
+      "width": 64,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2024-ngan-ha-ngo-duc-ke-new-signboard-w64.webp",
+      "outputHash": "28ba077a23db9a7843c3995fd518d0c84f2620efa3aa20035a5fe27b644a2101",
+      "bytes": 998,
+      "intrinsicWidth": 64,
+      "intrinsicHeight": 36,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2024-ngan-ha-ngo-duc-ke-new-signboard.png",
+      "sourceHash": "d814eeb80e4d08fc78914025199c9dbe8e07ea391176e92c46ae18eb2affcd6a",
+      "sourceWidth": 1672,
+      "sourceHeight": 941,
+      "width": 128,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2024-ngan-ha-ngo-duc-ke-new-signboard-w128.webp",
+      "outputHash": "d55ba195e3ddb7e3d0029b22092e087a5caa5a9aaef6dfd1427616e0cb088906",
+      "bytes": 3296,
+      "intrinsicWidth": 128,
+      "intrinsicHeight": 72,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2024-ngan-ha-ngo-duc-ke-new-signboard.png",
+      "sourceHash": "d814eeb80e4d08fc78914025199c9dbe8e07ea391176e92c46ae18eb2affcd6a",
+      "sourceWidth": 1672,
+      "sourceHeight": 941,
+      "width": 192,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2024-ngan-ha-ngo-duc-ke-new-signboard-w192.webp",
+      "outputHash": "ae6778b96a394a04dfbe0b2ef2b8654774c07b7941f33e2af624cb0764a6f57c",
+      "bytes": 6606,
+      "intrinsicWidth": 192,
+      "intrinsicHeight": 108,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2024-ngan-ha-updated-interior-space.png",
+      "sourceHash": "19b849dd98885ab45dfb86d1552cff78ec7e2e4c6a587678898fd48c488a835a",
+      "sourceWidth": 1254,
+      "sourceHeight": 1254,
+      "width": 64,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2024-ngan-ha-updated-interior-space-w64.webp",
+      "outputHash": "872c97f6e5f3bf76d36865da4c802b128053050106e580fb97e3ab19f1d26a98",
+      "bytes": 1448,
+      "intrinsicWidth": 64,
+      "intrinsicHeight": 64,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2024-ngan-ha-updated-interior-space.png",
+      "sourceHash": "19b849dd98885ab45dfb86d1552cff78ec7e2e4c6a587678898fd48c488a835a",
+      "sourceWidth": 1254,
+      "sourceHeight": 1254,
+      "width": 128,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2024-ngan-ha-updated-interior-space-w128.webp",
+      "outputHash": "43020817c68d8d0549f300e565b7dd5f1f8df8ad919b714eb6e030f066a38770",
+      "bytes": 4250,
+      "intrinsicWidth": 128,
+      "intrinsicHeight": 128,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2024-ngan-ha-updated-interior-space.png",
+      "sourceHash": "19b849dd98885ab45dfb86d1552cff78ec7e2e4c6a587678898fd48c488a835a",
+      "sourceWidth": 1254,
+      "sourceHeight": 1254,
+      "width": 192,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2024-ngan-ha-updated-interior-space-w192.webp",
+      "outputHash": "b4fc3ed1dbc672c52e035fdf7f81d64255f6ffbd431899d18f441b1f7f7f9ecb",
+      "bytes": 7986,
+      "intrinsicWidth": 192,
+      "intrinsicHeight": 192,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2026-oria-spa-tech-galaxy-sign.png",
+      "sourceHash": "7f01c467a6b3af5fcaa90865d55193f07e71bbc9473a8864dcef247655955905",
+      "sourceWidth": 1266,
+      "sourceHeight": 1242,
+      "width": 64,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2026-oria-spa-tech-galaxy-sign-w64.webp",
+      "outputHash": "17838322edf9c837b748f7b94cf3c26eebf1f6e2b0790bf9bda2d76d4f99eb47",
+      "bytes": 1808,
+      "intrinsicWidth": 64,
+      "intrinsicHeight": 63,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2026-oria-spa-tech-galaxy-sign.png",
+      "sourceHash": "7f01c467a6b3af5fcaa90865d55193f07e71bbc9473a8864dcef247655955905",
+      "sourceWidth": 1266,
+      "sourceHeight": 1242,
+      "width": 128,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2026-oria-spa-tech-galaxy-sign-w128.webp",
+      "outputHash": "2c381b191ca702c59f4c4e837b9da4c6e122b39873c6ac8c9dd937666e2fe090",
+      "bytes": 5870,
+      "intrinsicWidth": 128,
+      "intrinsicHeight": 126,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2026-oria-spa-tech-galaxy-sign.png",
+      "sourceHash": "7f01c467a6b3af5fcaa90865d55193f07e71bbc9473a8864dcef247655955905",
+      "sourceWidth": 1266,
+      "sourceHeight": 1242,
+      "width": 192,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2026-oria-spa-tech-galaxy-sign-w192.webp",
+      "outputHash": "5714798bd7455827318d7ae3f3fd906152657dc670e0ab6cb000de43546bac91",
+      "bytes": 11506,
+      "intrinsicWidth": 192,
+      "intrinsicHeight": 188,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2026-oriafarm-fnb-display.png",
+      "sourceHash": "c3cea6805dfa0346ce8d2fe828762967f8f2405d67498b6dcae19457b1268136",
+      "sourceWidth": 1086,
+      "sourceHeight": 1448,
+      "width": 64,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2026-oriafarm-fnb-display-w64.webp",
+      "outputHash": "c387fc956a1fcca6d895d29534f8dc52695522730d4fb93e0de64c3e5a983c92",
+      "bytes": 2216,
+      "intrinsicWidth": 64,
+      "intrinsicHeight": 85,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2026-oriafarm-fnb-display.png",
+      "sourceHash": "c3cea6805dfa0346ce8d2fe828762967f8f2405d67498b6dcae19457b1268136",
+      "sourceWidth": 1086,
+      "sourceHeight": 1448,
+      "width": 128,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2026-oriafarm-fnb-display-w128.webp",
+      "outputHash": "6acece37fe03282ad0468e946c36c2205d59331d947c59c6b8d74dc27f7b0140",
+      "bytes": 7098,
+      "intrinsicWidth": 128,
+      "intrinsicHeight": 171,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2026-oriafarm-fnb-display.png",
+      "sourceHash": "c3cea6805dfa0346ce8d2fe828762967f8f2405d67498b6dcae19457b1268136",
+      "sourceWidth": 1086,
+      "sourceHeight": 1448,
+      "width": 192,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2026-oriafarm-fnb-display-w192.webp",
+      "outputHash": "6b2643ffee6c46d880295cd5b34525e80beb9d1225ad8546fd3a9e07753a5d13",
+      "bytes": 14812,
+      "intrinsicWidth": 192,
+      "intrinsicHeight": 256,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2026-oriafarm-storefront.png",
+      "sourceHash": "83ce986624deb5a9ecb0e9093cbbea5a640ca050b9c4ae3a3889f7063a12e57d",
+      "sourceWidth": 941,
+      "sourceHeight": 1672,
+      "width": 64,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2026-oriafarm-storefront-w64.webp",
+      "outputHash": "4bae9dd1165ed31398d5c0b9d82d049a4c7ba4810da42fc4eb79997d2120d679",
+      "bytes": 2170,
+      "intrinsicWidth": 64,
+      "intrinsicHeight": 114,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2026-oriafarm-storefront.png",
+      "sourceHash": "83ce986624deb5a9ecb0e9093cbbea5a640ca050b9c4ae3a3889f7063a12e57d",
+      "sourceWidth": 941,
+      "sourceHeight": 1672,
+      "width": 128,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2026-oriafarm-storefront-w128.webp",
+      "outputHash": "36062837ef3f006964f51f8ad2a7f7adf4a46b9f6ddbea2385928fba468be133",
+      "bytes": 6616,
+      "intrinsicWidth": 128,
+      "intrinsicHeight": 227,
+      "withinBudget": true,
+      "noUpscale": true
+    },
+    {
+      "sourceName": "2026-oriafarm-storefront.png",
+      "sourceHash": "83ce986624deb5a9ecb0e9093cbbea5a640ca050b9c4ae3a3889f7063a12e57d",
+      "sourceWidth": 941,
+      "sourceHeight": 1672,
+      "width": 192,
+      "outputPath": "/private/tmp/nganha-ac-thumbnail-output/2026-oriafarm-storefront-w192.webp",
+      "outputHash": "4ecebe8847292f0e73d21d634ea202a45c2f68e8f52a17444826f845937c2615",
+      "bytes": 13092,
+      "intrinsicWidth": 192,
+      "intrinsicHeight": 341,
+      "withinBudget": true,
+      "noUpscale": true
+    }
+  ],
+  "localFailures": [],
+  "storageReadback": {
+    "status": "NOT_VERIFIED",
+    "reason": "These outputs are disposable local QA candidates; no storage upload or CMS writer mutation was authorized for A/C."
+  },
+  "productionAppCurrentSrc": {
+    "status": "NOT_VERIFIED",
+    "reason": "The current persisted manifest exposes w320/w640/w960 in historical evidence, not a verified 64/128/192 app read-back."
+  }
+}
