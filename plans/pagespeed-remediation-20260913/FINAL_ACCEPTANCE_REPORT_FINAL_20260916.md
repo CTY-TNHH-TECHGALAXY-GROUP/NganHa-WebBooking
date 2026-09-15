@@ -9,7 +9,7 @@ The final local candidate is clean and the implementation/browser regressions th
 ## Candidate
 
 - Integrator branch: `codex/ps-integration-20260913`
-- Current tip: `9dfdde2` (local Hero rendition manifest added after the tested source candidate)
+- Current tip: `61afa8e` (release proposal synchronized after the local Hero rendition manifest)
 - App source fixes: `7958cf4` (AI chat reachable, Escape/focus trap) and `6ea8f21` (Header overlay Escape)
 - Final QA replay source candidate: `435b364b1617b26bf33d0abbd2cd846a84d2f029`
 - Worktree: clean; `git diff --check` PASS
