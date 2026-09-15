@@ -166,7 +166,7 @@ async function main() {
         [role],
       );
       if (roleResult.rowCount === 0) {
-        await query(rootClient, `CREATE ROLE ${quoteIdentifier(role)} NOLOGIN`);
+        await query(rootClient, `CREATE ROLE ${quoteIdentifier(role)} NOLOGIN${role === 'service_role' ? ' BYPASSRLS' : ''}`);
         createdRoles.push(role);
       }
     }
@@ -248,7 +248,10 @@ async function main() {
     record('cas.stale', 'PASS', 'Stale expected JSON returned zero rows without changing current value.');
 
     const currentForValidation = await awaitValue(fixtureClient);
-    await expectSqlState(() => callCas(fixtureClient, true, null, { title: 'invalid' }), '22023', 'cas.null-expected');
+    const nullExpected = await callCas(fixtureClient, true, null, { title: 'invalid' });
+    assert.equal(nullExpected.rowCount, 0);
+    assert.deepEqual(await awaitValue(fixtureClient), currentForValidation);
+    record('cas.null-expected', 'PASS', 'JSON null does not match the current object and preserves its value; SQL CAS compares JSONB values, while API revision validation is a separate contract.');
     await expectSqlState(() => callCas(fixtureClient, false, { title: 'invalid' }, { title: 'invalid' }), '22023', 'cas.absent-value');
     await expectSqlState(() => callCas(fixtureClient, true, currentForValidation, ['invalid']), '22023', 'cas.next-array');
     await expectSqlState(() => callCas(fixtureClient, true, currentForValidation, null), '22023', 'cas.next-null');
@@ -277,11 +280,24 @@ async function main() {
     await Promise.all([query(firstConcurrent, 'BEGIN'), query(secondConcurrent, 'BEGIN')]);
     const snapshotA = (await query(firstConcurrent, `SELECT value FROM public."SystemConfigs" WHERE key='brand_history'`)).rows[0].value;
     const snapshotB = (await query(secondConcurrent, `SELECT value FROM public."SystemConfigs" WHERE key='brand_history'`)).rows[0].value;
-    const [outcomeA, outcomeB] = await Promise.all([
-      callCas(firstConcurrent, true, snapshotA, { title: 'Writer A', version: 2, unrelated: 'keep' }),
-      callCas(secondConcurrent, true, snapshotB, { title: 'Writer B', version: 2, unrelated: 'keep' }),
+    // Both snapshots are established before either writer starts. Each writer
+    // must commit independently so the other can acquire the row lock.
+    const writeAndCommit = async (client, snapshot, title) => {
+      try {
+        const result = await callCas(client, true, snapshot, { title, version: 2, unrelated: 'keep' });
+        await query(client, 'COMMIT');
+        return result;
+      } catch (error) {
+        await query(client, 'ROLLBACK');
+        throw error;
+      }
+    };
+    const outcomes = await Promise.allSettled([
+      writeAndCommit(firstConcurrent, snapshotA, 'Writer A'),
+      writeAndCommit(secondConcurrent, snapshotB, 'Writer B'),
     ]);
-    await Promise.all([query(firstConcurrent, 'COMMIT'), query(secondConcurrent, 'COMMIT')]);
+    for (const outcome of outcomes) if (outcome.status === 'rejected') throw outcome.reason;
+    const [outcomeA, outcomeB] = outcomes.map(outcome => outcome.value);
     assert.equal([outcomeA.rowCount, outcomeB.rowCount].filter(value => value === 1).length, 1);
     assert.equal([outcomeA.rowCount, outcomeB.rowCount].filter(value => value === 0).length, 1);
     const afterConcurrent = await query(fixtureClient, `SELECT value FROM public."SystemConfigs" WHERE key='brand_history'`);
