@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "role": "B",
+  "status": "FAIL",
+  "startedAt": "2026-09-15T19:31:16.854Z",
+  "finishedAt": "2026-09-15T19:31:17.389Z",
+  "testedSha": "dd64a5830e73849647e72a02d6882d2be0b3c626",
+  "database": "disposable-local-postgresql",
+  "results": [
+    {
+      "id": "migration.apply",
+      "status": "PASS",
+      "detail": "Reviewed CAS migration applied to disposable PostgreSQL database."
+    },
+    {
+      "id": "acl.function",
+      "status": "PASS",
+      "detail": "service_role can execute; anon/authenticated cannot execute."
+    },
+    {
+      "id": "acl.table-rls",
+      "status": "PASS",
+      "detail": "SystemConfigs has RLS; service_role has required table privileges; anon/authenticated do not."
+    },
+    {
+      "id": "schema.unique-key",
+      "status": "PASS",
+      "detail": "A valid non-partial single-column unique index protects SystemConfigs.key."
+    },
+    {
+      "id": "runner",
+      "status": "FAIL",
+      "detail": "Cannot read properties of undefined (reading 'value')",
+      "code": null
+    }
+  ],
+  "residual": [
+    "Inspect the failing fixture result before any integration; no production write was attempted."
+  ]
+}

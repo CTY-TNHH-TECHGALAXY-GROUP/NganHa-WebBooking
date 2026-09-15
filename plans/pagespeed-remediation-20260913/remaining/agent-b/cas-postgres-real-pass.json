@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 1,
+  "role": "B",
+  "status": "FAIL",
+  "startedAt": "2026-09-15T19:35:14.062Z",
+  "finishedAt": "2026-09-15T19:35:14.243Z",
+  "testedSha": "39fb38c3acd7f52eb7bd97df76cf44f750c3f1e5",
+  "database": "disposable-local-postgresql",
+  "results": [
+    {
+      "id": "migration.apply",
+      "status": "PASS",
+      "detail": "Reviewed CAS migration applied to disposable PostgreSQL database."
+    },
+    {
+      "id": "acl.function",
+      "status": "PASS",
+      "detail": "service_role can execute; anon/authenticated cannot execute."
+    },
+    {
+      "id": "acl.table-rls",
+      "status": "PASS",
+      "detail": "SystemConfigs has RLS; service_role has required table privileges; anon/authenticated do not."
+    },
+    {
+      "id": "schema.unique-key",
+      "status": "PASS",
+      "detail": "A valid non-partial single-column unique index protects SystemConfigs.key."
+    },
+    {
+      "id": "cas.jsonb-equality",
+      "status": "PASS",
+      "detail": "JSONB expected value with reordered object keys matched atomically."
+    },
+    {
+      "id": "cas.stale",
+      "status": "PASS",
+      "detail": "Stale expected JSON returned zero rows without changing current value."
+    },
+    {
+      "id": "cas.null-expected",
+      "status": "PASS",
+      "detail": "JSON null does not match the current object and preserves its value; SQL CAS compares JSONB values, while API revision validation is a separate contract."
+    },
+    {
+      "id": "cas.absent-value",
+      "status": "PASS",
+      "detail": "Rejected with SQLSTATE 22023"
+    },
+    {
+      "id": "cas.next-array",
+      "status": "PASS",
+      "detail": "Rejected with SQLSTATE 22023"
+    },
+    {
+      "id": "cas.next-null",
+      "status": "PASS",
+      "detail": "Rejected with SQLSTATE 22023"
+    },
+    {
+      "id": "cas.unsupported-key",
+      "status": "PASS",
+      "detail": "Rejected with SQLSTATE 22023"
+    },
+    {
+      "id": "acl.rpc-deny",
+      "status": "PASS",
+      "detail": "anon/authenticated receive permission denied for the writer RPC."
+    },
+    {
+      "id": "cas.concurrent-transactions",
+      "status": "PASS",
+      "detail": "Two independent PostgreSQL transactions from one snapshot produced exactly one success and one conflict.",
+      "outcomes": [
+        0,
+        1
+      ]
+    },
+    {
+      "id": "cas.rollback-readback",
+      "status": "PASS",
+      "detail": "Rollback restored the exact fixture value; second rollback was a zero-row no-op."
+    },
+    {
+      "id": "cas.rollback-conflict",
+      "status": "PASS",
+      "detail": "Rollback conflict preserved an intervening unrelated edit."
+    },
+    {
+      "id": "runner",
+      "status": "FAIL",
+      "detail": "column reference \"key\" is ambiguous",
+      "code": "42702"
+    }
+  ],
+  "residual": [
+    "Inspect the failing fixture result before any integration; no production write was attempted."
+  ]
+}
