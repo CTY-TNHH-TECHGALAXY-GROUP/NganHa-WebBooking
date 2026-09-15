@@ -6,7 +6,7 @@
   "artifacts": [
     {
       "path": "scripts/trace-runtime-loopback.mjs",
-      "sha256": "fdb604527e8d3488d4fc78f87a56641a7c9ef8de7e34405c6be2bec2077aec25",
+      "sha256": "54fc585cd243a0a983a1f5fecb9a7257af3729dda8a935c5929308404768a62a",
       "meaning": "Reproducible loopback-only CDP/Playwright navigation, interaction, per-phase request attribution, and honest status harness"
     },
     {
