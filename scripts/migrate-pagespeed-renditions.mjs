@@ -172,11 +172,9 @@ function initializeRunArtifacts() {
 
 function writeRunManifest(value) {
   if (!runArtifactsInitialized) throw new Error('run artifacts are not initialized');
-  if (fs.existsSync(manifestPath)) {
-    fs.writeFileSync(manifestPath, `${JSON.stringify(value, null, 2)}\n`, { mode: 0o600 });
-  } else {
-    fs.writeFileSync(manifestPath, `${JSON.stringify(value, null, 2)}\n`, { flag: 'wx', mode: 0o600 });
-  }
+  const temporary = `${manifestPath}.${crypto.randomUUID()}.tmp`;
+  fs.writeFileSync(temporary, `${JSON.stringify(value, null, 2)}\n`, { flag: 'wx', mode: 0o600, flush: true });
+  fs.renameSync(temporary, manifestPath);
 }
 
 function appendJournal(event) {
@@ -221,6 +219,7 @@ async function buildRenditions(source, widths, group) {
   const entries = [];
   for (const requestedWidth of widths) {
     const width = Math.min(requestedWidth, metadata.width);
+    if (entries.some(entry => entry.width === width)) continue;
     const output = await sharp(source.buffer).resize({ width, withoutEnlargement: true }).webp({ quality: 82, effort: 6 }).toBuffer();
     const outputMeta = await sharp(output).metadata();
     const outputRaw = await sharp(output).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
@@ -306,9 +305,9 @@ function readReleaseManifest() {
 }
 
 async function main() {
-  if (!['dry-run', 'apply', 'rollback', 'inventory'].includes(mode)) throw new Error(`unsupported mode: ${mode}`);
+  if (!['dry-run', 'apply', 'resume', 'rollback', 'inventory'].includes(mode)) throw new Error(`unsupported mode: ${mode}`);
   if (!['all', 'brand_history', 'about_story_content'].includes(configFilter)) throw new Error(`unsupported config filter: ${configFilter}`);
-  if ((mode === 'apply' || mode === 'rollback') && configFilter === 'all') {
+  if ((mode === 'apply' || mode === 'resume' || mode === 'rollback') && configFilter === 'all') {
     throw new Error(`${mode} requires --config=brand_history or --config=about_story_content; one document per release avoids cross-row partial commits`);
   }
   if (mode === 'apply') assertDurablePrivateBackupDir();
@@ -338,7 +337,17 @@ async function main() {
       if (!items.length) continue;
       const next = clone(row.value);
       const changedPointers = [];
+      for (const item of items) for (const patch of item.rollbackMapPatches || []) {
+        if (getAt(next, patch.sourcePointer) !== item.sourceUrl) throw new Error(`ROLLBACK_CONFLICT: source moved at ${patch.sourcePointer}`);
+        const current = getAt(next, patch.pointer);
+        if (equalValues(current, patch.hadPrevious ? patch.previousValue : undefined)) continue;
+        if (!equalValues(current, patch.targetValue)) throw new Error(`ROLLBACK_CONFLICT at ${patch.pointer}`);
+        if (patch.hadPrevious) setAt(next, patch.pointer, patch.previousValue);
+        else deleteAt(next, patch.pointer);
+        changedPointers.push(patch.pointer);
+      }
       for (const item of items) for (const rollbackPatch of item.rollbackPointers || []) {
+        if (item.rollbackMapPatches) continue;
         const current = getAt(next, `${rollbackPatch.pointer}/${rollbackPatch.width}`);
         if (current !== rollbackPatch.targetUrl) throw new Error(`ROLLBACK_CONFLICT at ${rollbackPatch.pointer}/${rollbackPatch.width}`);
         if (rollbackPatch.hadPrevious) setAt(next, `${rollbackPatch.pointer}/${rollbackPatch.width}`, rollbackPatch.previousValue);
@@ -347,6 +356,7 @@ async function main() {
       }
       for (const item of items) for (const identityPatch of item.rollbackIdentityPatches || []) {
         const current = getAt(next, identityPatch.pointer);
+        if (equalValues(current, identityPatch.hadPrevious ? identityPatch.previousValue : undefined)) continue;
         if (current !== identityPatch.targetValue) throw new Error(`ROLLBACK_CONFLICT at ${identityPatch.pointer}`);
         if (identityPatch.hadPrevious) setAt(next, identityPatch.pointer, identityPatch.previousValue);
         else deleteAt(next, identityPatch.pointer);
@@ -373,14 +383,28 @@ async function main() {
   }
 
   if (mode === 'apply' && !backupDir) throw new Error('apply requires --backup-dir=<durable-private-directory>');
-  const rows = await readRows(supabase);
+  let resumeRelease = null;
+  let rows;
+  if (mode === 'resume') {
+    if (!releaseManifestPath) throw new Error('resume requires --release-manifest');
+    resumeRelease = JSON.parse(fs.readFileSync(releaseManifestPath, 'utf8'));
+    if (!['built','apply_failed','apply_partial','applied_verified'].includes(resumeRelease.status)
+      || resumeRelease.serviceOrigin !== new URL(env.NEXT_PUBLIC_SUPABASE_URL).origin
+      || resumeRelease.backupReferences?.length !== 1
+      || resumeRelease.backupReferences[0].key !== configFilter) throw new Error('Invalid or different-target recovery manifest');
+    rows = resumeRelease.backupReferences.map(backup => {
+      const row = JSON.parse(fs.readFileSync(backup.path, 'utf8'));
+      if (row.key !== backup.key || sha256(JSON.stringify(row.value)) !== backup.valueSha256) throw new Error('Recovery backup hash mismatch');
+      return row;
+    });
+  } else rows = await readRows(supabase);
   if (rows.length !== (configFilter === 'all' ? 2 : 1)) throw new Error(`missing requested config: ${configFilter}`);
   for (const row of rows) {
     if (!row.value || typeof row.value !== 'object' || Array.isArray(row.value)) {
       throw new Error(`${row.key} must be a JSON object before building or applying renditions`);
     }
   }
-  const backups = rows.map(row => ({
+  const backups = resumeRelease?.backupReferences || rows.map(row => ({
     key: row.key,
     ...(mode === 'apply' ? { path: privateBackupPath(runId, row) } : {}),
     revision: revisionOf(row.value),
@@ -409,6 +433,7 @@ async function main() {
   const renditionEntries = [];
   for (const source of sources) {
     const data = await readBytes(source.sourceUrl);
+    if (resumeRelease && !resumeRelease.renditionEntries.some(item => item.sourceUrl === source.sourceUrl && item.sourceSha256 === sha256(data.buffer))) throw new Error('Recovery source hash changed');
     const group = source.sourcePath.includes('/history/') || source.configKey === 'brand_history' ? 'history' : (source.sourcePath.split('/').at(-2) || 'marketing');
     const name = source.sourcePath.split('/').at(-1);
     const built = await buildRenditions({ ...data, url: source.sourceUrl, name }, historyWidths, group);
@@ -419,10 +444,17 @@ async function main() {
     const row = rows.find(candidate => candidate.key === item.configKey);
     item.rollbackPointers = [];
     item.rollbackIdentityPatches = [];
+    item.rollbackMapPatches = [];
     for (const reference of item.references) {
       const pointer = siblingPointer(reference.pointer, reference.mediaKey);
       const identityPointer = siblingIdentityPointer(reference.pointer, reference.mediaKey);
       const sourceValue = getAt(row.value, reference.pointer);
+      const previousMap = getAt(row.value, pointer);
+      const previousIdentity = getAt(row.value, identityPointer);
+      // Only extend derivatives proven to belong to this exact source.
+      const targetMap = previousIdentity === sourceValue && previousMap && typeof previousMap === 'object' && !Array.isArray(previousMap) ? { ...previousMap } : {};
+      for (const entry of item.renditions) targetMap[String(entry.width)] = entry.targetUrl;
+      item.rollbackMapPatches.push({ pointer, sourcePointer: reference.pointer, targetValue: targetMap, hadPrevious: previousMap !== undefined, previousValue: previousMap ?? null });
       item.rollbackIdentityPatches.push({
         pointer: identityPointer,
         targetValue: sourceValue,
@@ -441,6 +473,7 @@ async function main() {
     runId,
     mode,
     bucket,
+    serviceOrigin: new URL(env.NEXT_PUBLIC_SUPABASE_URL).origin,
     prefix: 'history',
     contentType: 'image/webp',
     sourceCount: sources.length,
@@ -481,8 +514,7 @@ async function main() {
     for (const item of items) {
       for (const reference of item.references) {
         const pointer = siblingPointer(reference.pointer, reference.mediaKey);
-        const previous = getAt(next, pointer);
-        const updated = { ...(previous && typeof previous === 'object' ? previous : {}) };
+        const updated = clone(item.rollbackMapPatches.find(patch => patch.pointer === pointer).targetValue);
         for (const rendition of item.renditions) {
           updated[String(rendition.width)] = rendition.targetUrl;
           changedPointers.push(`${pointer}/${rendition.width}`);
@@ -495,6 +527,15 @@ async function main() {
       }
     }
     if (equalValues(next, row.value)) continue;
+    if (mode === 'resume') {
+      const current = (await readRows(supabase)).find(candidate => candidate.key === row.key);
+      if (current && equalValues(current.value, next)) {
+        base.configResults.push({ configKey: row.key, status: 'applied_verified', afterRevision: revisionOf(current.value), recovered: true });
+        writeRunManifest(base);
+        continue;
+      }
+      if (!current || !equalValues(current.value, row.value)) throw new Error(`CONFIG_CONFLICT: recovery preserves intervening edit for ${row.key}`);
+    }
     appendJournal({ runId, phase: 'config_write_intent', configKey: row.key, sourceRevision: revisionOf(row.value), changedPointers });
     const updated = await compareAndSwapConfig(supabase, {
       key: row.key,
@@ -518,13 +559,13 @@ async function main() {
 
 main().catch(error => {
   if (runArtifactsInitialized) {
-    if (activeManifest && mode === 'apply') {
+    if (activeManifest && (mode === 'apply' || mode === 'resume')) {
       activeManifest.status = activeManifest.configResults?.length ? 'apply_partial' : 'apply_failed';
       activeManifest.applied = false;
       activeManifest.failure = {
         message: error instanceof Error ? error.message : String(error),
         at: new Date().toISOString(),
-        recovery: 'Do not reuse this run. Preserve its journal and use a new run only after an operator reviews any uploaded objects and config writes. A partially applied manifest is intentionally not rollback-eligible.',
+        recovery: 'Preserve this run. Use --mode=resume with its immutable manifest and a new run directory. Recovery verifies backup/source hashes and current DB state; conflicts require review.',
       };
       try { writeRunManifest(activeManifest); } catch { /* preserve the original failure when evidence cannot be written */ }
     }

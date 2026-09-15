@@ -320,7 +320,9 @@ const Hero = ({ initialHeroConfig, initialVideos }: HeroProps) => {
     return () => document.removeEventListener('visibilitychange', syncDocumentVisibility);
   }, []);
 
-  const activeVideo = selectionReady && homepageVideos
+  // The poster can be rendered from the server config before hydration.
+  // Video source attachment still waits for the client selection below.
+  const activeVideo = homepageVideos
     ? homepageVideos[activeVideoIndex] || homepageVideos[0]
     : null;
   const activeVideoKey = activeVideo
@@ -329,7 +331,7 @@ const Hero = ({ initialHeroConfig, initialVideos }: HeroProps) => {
   const [sourceSelection, setSourceSelection] = useState<{ key: string; source: string | null } | null>(null);
 
   useEffect(() => {
-    if (!activeVideo || !activeVideoKey) {
+    if (!selectionReady || !activeVideo || !activeVideoKey) {
       setSourceSelection(null);
       return;
     }
@@ -341,7 +343,7 @@ const Hero = ({ initialHeroConfig, initialVideos }: HeroProps) => {
       key: activeVideoKey,
       source: selectHeroVideoSource(activeVideo, window.innerWidth),
     });
-  }, [activeVideo, activeVideoKey, videoRetryCount]);
+  }, [selectionReady, activeVideo, activeVideoKey, videoRetryCount]);
 
   const selectedVideoSource = sourceSelection?.key === activeVideoKey
     ? sourceSelection.source
@@ -623,7 +625,7 @@ const Hero = ({ initialHeroConfig, initialVideos }: HeroProps) => {
 
       {/* The configured source is the only video mounted on the homepage. */}
       <div className="hero-bg" aria-hidden={!heroVisible}>
-        {activeVideo && selectionReady && posterSource ? (
+        {activeVideo && posterSource ? (
           <img
             data-testid="hero-poster"
             className="hero-image"
