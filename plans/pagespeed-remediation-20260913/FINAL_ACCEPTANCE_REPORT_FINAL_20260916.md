@@ -43,6 +43,13 @@ Media handoff and local replay: `remaining/agent-media-runtime/evidence-index.js
 
 The historical `FINAL_ACCEPTANCE_REPORT.md` remains unchanged and must not be interpreted as approval.
 
+## Environment validation performed on 2026-09-16
+
+- The configured `DATABASE_URL` and `DIRECT_URL` resolve to a remote Supabase pooler (`aws-1-ap-southeast-1.pooler.supabase.com`, ports 6543/5432). A read-only `SELECT` probe returned PostgreSQL `28P01` for both URLs. The acceptance runner correctly refuses this non-loopback target; no migration or write was attempted.
+- The public Storage bucket `media-uploads` is readable. Listing the `homepage` prefix returned only `0807(1).mp4` (26,974,458 bytes) and `hero_video.mp4` (21,984,571 bytes). No mobile/desktop Hero rendition or candidate transfer manifest is present there.
+- Read-only `git ls-remote` shows `origin/vercel` and `origin/master` still at `e5c9d28`; the local candidate has not been pushed.
+- `vercel` CLI is not installed and no Vercel browser connector/session is available to this task, so project/alias/deployment metadata cannot be verified.
+
 ## Required user dependencies
 
 1. Provide or authorize a disposable PostgreSQL service/URL that supports real migration, ACL, two-connection concurrency, read-back, recovery and rollback testing.
