@@ -43,4 +43,4 @@ No TBT/INP, transfer savings, production deployment, or live-CWV claim is made. 
 
 ## Rollback
 
-Revert commit `8f55281` as a scoped harness-only revert if required. No application, DB, Storage, or production state was changed by this role.
+Revert commit `2dc60d44fb63d54ad9e9a4beca0ddda11b0ea64c` as a scoped harness-only revert if required. No application, DB, Storage, or production state was changed by this role.
