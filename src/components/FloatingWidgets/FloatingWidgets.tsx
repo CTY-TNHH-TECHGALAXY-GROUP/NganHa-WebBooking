@@ -3,6 +3,7 @@
 
 import { Z } from '@/lib/zIndex';
 import { useEffect, useRef, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import { Phone, Bot, MessageCircle, ScanLine, X, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SOCIAL_LINKS } from '@/lib/constants';
@@ -73,7 +74,11 @@ const ZaloIcon = ({ size = 18, className = "" }: { size?: number; className?: st
 
 const FloatingWidgets = () => {
   const { currentLang } = useTranslation();
-  const lang = currentLang || 'vi';
+  const pathname = usePathname();
+  const routeLang = pathname.split('/')[1];
+  // Localized routes already specify the language during server rendering.
+  // Avoid repainting the greeting from Vietnamese after hydration on /en, etc.
+  const lang = ['vi', 'en', 'cn', 'jp', 'kr'].includes(routeLang) ? routeLang : currentLang || 'vi';
   const labels = LABELS[lang] || LABELS.vi;
   const wechatQrCopy = WECHAT_QR_COPY[lang] || WECHAT_QR_COPY.vi;
   const { systemSettings, getLocalizedText } = useSystemSettings();

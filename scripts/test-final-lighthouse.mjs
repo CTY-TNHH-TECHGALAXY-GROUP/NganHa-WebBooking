@@ -9,8 +9,8 @@ const sha=execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim();
 const profile='/private/tmp/pagespeed-lighthouse-browser';
 const browser=await chromium.launchPersistentContext(profile,{headless:true,args:['--remote-debugging-port=9224']});
 const results=[];
-try {for(const name of ['mobile','desktop']) for(let i=1;i<=3;i++) {
- const result=await lighthouse('http://127.0.0.1:3460/en',{port:9224,output:'json',logLevel:'error',onlyCategories:['performance']},name==='desktop'?desktopConfig:undefined);
+try {for(const name of (process.env.LH_PROFILES || 'mobile,desktop').split(',')) for(let i=1;i<=Number(process.env.LH_RUNS || 3);i++) {
+ const result=await lighthouse('http://127.0.0.1:3460/en',{port:9224,output:'json',logLevel:'error',onlyCategories:['performance'],screenEmulation:{mobile:name==='mobile',width:name==='mobile'?390:1440,height:name==='mobile'?844:900,deviceScaleFactor:name==='mobile'?2:1,disabled:false}},name==='desktop'?desktopConfig:undefined);
  fs.writeFileSync(`${dir}/${name}-${i}.json`,JSON.stringify(result.lhr,null,2));
  const a=result.lhr.audits;
  results.push({name,run:i,TBT:a['total-blocking-time'].numericValue,LCP:a['largest-contentful-paint'].numericValue,CLS:a['cumulative-layout-shift'].numericValue,score:result.lhr.categories.performance.score,error:result.lhr.runtimeError||null});
