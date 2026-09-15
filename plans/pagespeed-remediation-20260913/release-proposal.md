@@ -4,9 +4,9 @@ Status: **HOLD FOR USER APPROVAL AND EXTERNAL GATES**
 
 Candidate branch: `codex/ps-integration-20260913`
 
-Candidate tip: `f024a3a`
+Candidate tip: `f37a83e`
 
-App source changes are contained in the reviewed PageSpeed candidate history through `6ea8f21`; later commits are evidence/test documentation only. Local TypeScript, build, route replay, menu/contact/AI chat keyboard flow and cart smoke pass. No production mutation has been made.
+App source changes are contained in the reviewed PageSpeed candidate history through `6ea8f21`; later commits are evidence/test documentation only. Local TypeScript, build, route replay, menu/contact/AI chat keyboard flow, cart smoke and local Hero rendition decode pass. No production mutation has been made.
 
 ## Preconditions before rollout
 
