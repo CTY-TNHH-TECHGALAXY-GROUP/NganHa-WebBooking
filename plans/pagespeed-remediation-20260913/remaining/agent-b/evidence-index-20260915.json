@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "role": "B",
+  "status": "NOT_VERIFIED",
+  "baseSha": "c964977ca2af3081248c902a626612c4b11722af",
+  "testedSha": "c964977ca2af3081248c902a626612c4b11722af",
+  "headSha": "see final commit reported by git rev-parse HEAD",
+  "branch": "codex/ps-reaccept-b-20260915",
+  "worktree": "/private/tmp/nganha-pagespeed-role-b",
+  "createdAt": "2026-09-15T10:50:00+07:00",
+  "artifacts": [
+    {
+      "path": "scripts/test-cas-postgres.mjs",
+      "kind": "rerunnable-real-postgresql-runner",
+      "sha256": "f63596333a5bece7d53c72f8e10acc31e656960a2396ec55e37ddf49cb15d9a7"
+    },
+    {
+      "path": "supabase/migrations/20260914_system_configs_jsonb_cas.sql",
+      "kind": "scoped-cas-migration-preflight",
+      "sha256": "4384c30347d96351ba2fa954acbaba7db83480bf7a9a6736e726c45ee2ccd786"
+    },
+    {
+      "path": "scripts/test-cas-concurrency-contract.mjs",
+      "kind": "source-contract-only-test-no-simulation",
+      "sha256": "a5a6e718af6883ccf95f5532e2fddc4e0ddd66a5942a35c131ae62aad4ebdf3c"
+    },
+    {
+      "path": "plans/pagespeed-remediation-20260913/remaining/agent-b/cas-postgres-report.json",
+      "kind": "raw-runner-report",
+      "sha256": "5ae7a6dcc1bb780a8e39ff2910be50c587cfb1bc2d6ddd13b84ea19cf1ef3160",
+      "status": "NOT_VERIFIED",
+      "testedSha": "c964977ca2af3081248c902a626612c4b11722af"
+    }
+  ],
+  "commands": [
+    { "command": "node --check scripts/test-cas-postgres.mjs", "exitCode": 0 },
+    { "command": "node --check scripts/migrate-pagespeed-renditions.mjs", "exitCode": 0 },
+    { "command": "node scripts/test-cas-concurrency-contract.mjs", "exitCode": 0 },
+    { "command": "node scripts/test-cas-postgres.mjs --tested-sha=c964977ca2af3081248c902a626612c4b11722af --evidence=plans/pagespeed-remediation-20260913/remaining/agent-b/cas-postgres-report.json", "exitCode": 2, "status": "NOT_VERIFIED" },
+    { "command": "git diff --check", "exitCode": 0 }
+  ],
+  "residual": [
+    "No PostgreSQL server or installed pg client was available; real DB gate is open.",
+    "Migration storage adapter failure injection, crash/restart/resume, rerun and durable backup restore remain open.",
+    "No production read or write was performed."
+  ]
+}

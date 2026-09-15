@@ -19,6 +19,7 @@ BEGIN
     SELECT 1 FROM pg_attribute
     WHERE attrelid = system_configs_relation
       AND attname = 'key'
+      AND atttypid = 'text'::regtype
       AND NOT attisdropped
   ) OR NOT EXISTS (
     SELECT 1 FROM pg_attribute
@@ -39,18 +40,44 @@ BEGIN
   IF NOT EXISTS (
     SELECT 1
     FROM pg_index AS index_definition
-    JOIN pg_attribute AS attribute
-      ON attribute.attrelid = system_configs_relation
-      AND attribute.attnum = ANY(index_definition.indkey)
     WHERE index_definition.indrelid = system_configs_relation
       AND index_definition.indisunique
-      AND attribute.attname = 'key'
+      AND index_definition.indisvalid
+      AND index_definition.indisready
+      AND index_definition.indpred IS NULL
+      AND index_definition.indexprs IS NULL
+      AND index_definition.indnkeyatts = 1
+      AND index_definition.indnatts = 1
+      AND index_definition.indkey[0] = (
+        SELECT attribute.attnum
+        FROM pg_attribute AS attribute
+        WHERE attribute.attrelid = system_configs_relation
+          AND attribute.attname = 'key'
+          AND NOT attribute.attisdropped
+      )
   ) THEN
-    RAISE EXCEPTION 'Preflight required: SystemConfigs.key needs a unique constraint or index';
+    RAISE EXCEPTION 'Preflight required: SystemConfigs.key needs a valid non-partial single-column unique constraint or index';
   END IF;
 
   IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'service_role') THEN
     RAISE EXCEPTION 'Preflight required: expected service_role is missing';
+  END IF;
+
+  IF NOT has_table_privilege('service_role', system_configs_relation, 'SELECT')
+     OR NOT has_table_privilege('service_role', system_configs_relation, 'INSERT')
+     OR NOT has_table_privilege('service_role', system_configs_relation, 'UPDATE') THEN
+    RAISE EXCEPTION 'Preflight required: service_role needs SELECT, INSERT and UPDATE on SystemConfigs';
+  END IF;
+
+  IF EXISTS (
+    SELECT 1
+    FROM pg_class AS relation
+    JOIN pg_roles AS role_definition ON role_definition.rolname = 'service_role'
+    WHERE relation.oid = system_configs_relation
+      AND relation.relforcerowsecurity
+      AND NOT role_definition.rolbypassrls
+  ) THEN
+    RAISE EXCEPTION 'Preflight required: service_role must bypass forced row-level security for the invoker RPC';
   END IF;
 END;
 $$;
