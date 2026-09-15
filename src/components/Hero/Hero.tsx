@@ -711,6 +711,7 @@ const Hero = ({ initialHeroConfig, initialVideos }: HeroProps) => {
             position: 'absolute',
             inset: 0,
             zIndex: 20,
+            pointerEvents: 'none',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
