@@ -4,6 +4,7 @@
 import { Z } from '@/lib/zIndex';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageCircle, X, Send, Mic, MicOff, Bot, User, ArrowRight, Sparkles } from 'lucide-react';
+import { useEffect, useRef } from 'react';
 import { useAIChatBot } from './AIChatBot.logic';
 import {
   popupVariants,
@@ -45,6 +46,38 @@ const AIChatBot = ({ locale = 'vi', hideTrigger = false, phone }: AIChatBotProps
   } = useAIChatBot(locale);
 
   const isListening = voiceStatus === 'listening';
+  const chatTriggerRef = useRef<HTMLButtonElement>(null);
+  const chatCloseRef = useRef<HTMLButtonElement>(null);
+  const wasOpen = useRef(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      const frame = window.requestAnimationFrame(() => chatCloseRef.current?.focus());
+      wasOpen.current = true;
+      return () => window.cancelAnimationFrame(frame);
+    }
+
+    if (wasOpen.current) {
+      const frame = window.requestAnimationFrame(() => {
+        if (!hideTrigger) chatTriggerRef.current?.focus();
+      });
+      wasOpen.current = false;
+      return () => window.cancelAnimationFrame(frame);
+    }
+  }, [hideTrigger, isOpen]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleChatKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return;
+      event.preventDefault();
+      closeChat();
+    };
+
+    document.addEventListener('keydown', handleChatKeyDown);
+    return () => document.removeEventListener('keydown', handleChatKeyDown);
+  }, [closeChat, isOpen]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -63,6 +96,7 @@ const AIChatBot = ({ locale = 'vi', hideTrigger = false, phone }: AIChatBotProps
     <>
       {/* ═══ TRIGGER BUTTON ═══ */}
       <motion.button
+        ref={chatTriggerRef}
         className={`ai-chat-trigger floating-btn ${isOpen ? 'ai-chat-trigger--active opacity-0 pointer-events-none lg:opacity-100 lg:pointer-events-auto' : ''}`}
         onClick={toggleChat}
         variants={triggerPulseVariants}
@@ -119,6 +153,9 @@ const AIChatBot = ({ locale = 'vi', hideTrigger = false, phone }: AIChatBotProps
               animate="visible"
               exit="exit"
               id="ai-chat-popup"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="ai-chat-popup-title"
             >
               {/* ─── Header ─── */}
               <div className="ai-chat-header">
@@ -127,7 +164,7 @@ const AIChatBot = ({ locale = 'vi', hideTrigger = false, phone }: AIChatBotProps
                     <Sparkles size={18} className="text-white" />
                   </div>
                   <div>
-                    <h3 className="ai-chat-header-title">{t.title}</h3>
+                    <h3 id="ai-chat-popup-title" className="ai-chat-header-title">{t.title}</h3>
                     <div className="ai-chat-header-subtitle flex items-center gap-2 mt-1">
                       <span>{t.subtitle}</span>
                       {phone && (
@@ -140,6 +177,7 @@ const AIChatBot = ({ locale = 'vi', hideTrigger = false, phone }: AIChatBotProps
                 </div>
                 <button
                   className="ai-chat-close-btn"
+                  ref={chatCloseRef}
                   onClick={closeChat}
                   aria-label="Close chat"
                 >

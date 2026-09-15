@@ -16,6 +16,9 @@ export const LANGUAGES = [
 export const useHeaderLogic = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const mobileMenuTriggerRef = useRef<HTMLButtonElement>(null);
+  const mobileMenuCloseRef = useRef<HTMLButtonElement>(null);
+  const wasMobileMenuOpen = useRef(false);
   const { currentLang: currentLangCode, setCurrentLang: setGlobalLang, t } = useTranslation();
   
   // Find full language object from LANGUAGES array based on currentLangCode
@@ -53,6 +56,33 @@ export const useHeaderLogic = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      const frame = window.requestAnimationFrame(() => mobileMenuCloseRef.current?.focus());
+      wasMobileMenuOpen.current = true;
+      return () => window.cancelAnimationFrame(frame);
+    }
+
+    if (wasMobileMenuOpen.current) {
+      const frame = window.requestAnimationFrame(() => mobileMenuTriggerRef.current?.focus());
+      wasMobileMenuOpen.current = false;
+      return () => window.cancelAnimationFrame(frame);
+    }
+  }, [isMobileMenuOpen]);
+
+  useEffect(() => {
+    if (!isMobileMenuOpen) return;
+
+    const handleMenuKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return;
+      event.preventDefault();
+      setIsMobileMenuOpen(false);
+    };
+
+    document.addEventListener('keydown', handleMenuKeyDown);
+    return () => document.removeEventListener('keydown', handleMenuKeyDown);
+  }, [isMobileMenuOpen]);
+
   const toggleMobileMenu = () => setIsMobileMenuOpen((prev) => !prev);
   const toggleLangDropdown = () => setIsLangDropdownOpen((prev) => !prev);
   const closeLangDropdown = () => setIsLangDropdownOpen(false);
@@ -66,6 +96,8 @@ export const useHeaderLogic = () => {
     isMobileMenuOpen, 
     isScrolled, 
     toggleMobileMenu,
+    mobileMenuTriggerRef,
+    mobileMenuCloseRef,
     currentLang,
     isLangDropdownOpen,
     toggleLangDropdown,

@@ -214,6 +214,8 @@ const Header = () => {
     isMobileMenuOpen, 
     isScrolled, 
     toggleMobileMenu,
+    mobileMenuTriggerRef,
+    mobileMenuCloseRef,
     currentLang,
     isLangDropdownOpen,
     toggleLangDropdown,
@@ -507,8 +509,11 @@ const Header = () => {
             <div className="header-top-left relative z-10">
               <button
                 className="header-mobile-toggle !flex text-[#f7ebc7]"
+                ref={mobileMenuTriggerRef}
                 onClick={toggleMobileMenu}
                 aria-label="Toggle menu"
+                aria-expanded={isMobileMenuOpen}
+                aria-controls="site-mobile-navigation"
               >
                 {isMobileMenuOpen ? <X size={28} className="text-[#f7ebc7]" /> : <Menu size={28} className="text-[#f7ebc7]" />}
               </button>
@@ -645,6 +650,7 @@ const Header = () => {
         <AnimatePresence>
           {isMobileMenuOpen && (
             <motion.nav
+              id="site-mobile-navigation"
               className="nav-fullscreen-overlay"
               style={{ zIndex: 99 }}
               initial={{ opacity: 0 }}
@@ -656,6 +662,7 @@ const Header = () => {
               <div className="nav-fullscreen-header sticky top-0 z-50 flex items-center justify-between w-full px-5 py-3.5 sm:px-8 sm:py-4 md:px-12 md:py-6 bg-[#281B15]/95 backdrop-blur-md border-b border-[rgba(247,235,199,0.1)]">
                 <button 
                   className="nav-fullscreen-close text-[#f7ebc7] hover:text-[#D4AF37] active:scale-95 transition-all p-1.5 -ml-1.5 focus:outline-none flex items-center justify-center rounded-lg hover:bg-white/5" 
+                  ref={mobileMenuCloseRef}
                   onClick={toggleMobileMenu}
                   aria-label="Close menu"
                 >

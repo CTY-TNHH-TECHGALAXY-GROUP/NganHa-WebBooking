@@ -2,7 +2,7 @@
 'use client';
 
 import { Z } from '@/lib/zIndex';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Phone, Bot, MessageCircle, ScanLine, X, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SOCIAL_LINKS } from '@/lib/constants';
@@ -83,6 +83,8 @@ const FloatingWidgets = () => {
   const [isWechatQrOpen, setIsWechatQrOpen] = useState(false);
   const [isFooterVisible, setIsFooterVisible] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const menuTriggerRef = useRef<HTMLButtonElement>(null);
+  const wasMenuOpen = useRef(false);
 
   const phone = systemSettings?.phone || '+84964090277';
   const cleanPhone = phone.replace(/\D/g, '');
@@ -141,6 +143,32 @@ const FloatingWidgets = () => {
   useEffect(() => {
     setIsGreetingDismissed(window.sessionStorage.getItem('oria-greeting-dismissed') === 'true');
   }, []);
+
+  useEffect(() => {
+    if (isMenuOpen) {
+      wasMenuOpen.current = true;
+      return;
+    }
+
+    if (wasMenuOpen.current) {
+      const frame = window.requestAnimationFrame(() => menuTriggerRef.current?.focus());
+      wasMenuOpen.current = false;
+      return () => window.cancelAnimationFrame(frame);
+    }
+  }, [isMenuOpen]);
+
+  useEffect(() => {
+    if (!isMenuOpen) return;
+
+    const handleMenuKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return;
+      event.preventDefault();
+      setIsMenuOpen(false);
+    };
+
+    document.addEventListener('keydown', handleMenuKeyDown);
+    return () => document.removeEventListener('keydown', handleMenuKeyDown);
+  }, [isMenuOpen]);
 
   const dismissGreeting = () => {
     window.sessionStorage.setItem('oria-greeting-dismissed', 'true');
@@ -300,6 +328,7 @@ const FloatingWidgets = () => {
         <AnimatePresence>
           {isMenuOpen && (
             <motion.div 
+              id="floating-contact-menu"
               initial={{ opacity: 0, y: 20, scale: 0.95, transformOrigin: 'bottom right' }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 20, scale: 0.95 }}
@@ -408,10 +437,14 @@ const FloatingWidgets = () => {
 
         {/* Main Trigger Button */}
         <button
+          ref={menuTriggerRef}
+          type="button"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           className={`rounded-full flex items-center justify-center shadow-2xl hover:scale-105 transition-transform mt-2 overflow-hidden border-[3px] border-white pointer-events-auto ${isMenuOpen ? 'bg-black text-white' : 'bg-white'}`}
           style={{ width: WIDGET_SIZE + 10, height: WIDGET_SIZE + 10 }}
           aria-label="Contact Us"
+          aria-expanded={isMenuOpen}
+          aria-controls="floating-contact-menu"
         >
           <AnimatePresence mode="wait">
             {isMenuOpen ? (
