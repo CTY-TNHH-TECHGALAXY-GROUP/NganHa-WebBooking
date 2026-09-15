@@ -1,0 +1,48 @@
+{
+  "role": "Q",
+  "generatedAt": "2026-09-15T11:11:32+07:00",
+  "baseSha": "c964977ca2af3081248c902a626612c4b11722af",
+  "testedSha": "c964977ca2af3081248c902a626612c4b11722af",
+  "branch": "codex/ps-reaccept-q-20260915",
+  "worktree": "/private/tmp/nganha-pagespeed-role-q",
+  "server": {
+    "baseUrl": "http://127.0.0.1:3022",
+    "kind": "local Next.js development server",
+    "productionBuild": "NOT_VERIFIED: next build cannot fetch fonts.googleapis.com in this environment"
+  },
+  "runs": [
+    {
+      "profile": { "label": "c964977-mobile", "viewport": { "width": 390, "height": 844 }, "dpr": 2, "mobile": true, "touch": true, "cpuThrottleRate": 4 },
+      "report": { "path": "runtime-trace-c964977-mobile-3runs.json", "sha256": "07cb0e8461cf3fdef2a283a89440be8de303c0817f7b144feb9f8f64e1c6b71d" },
+      "traceGzipSha256": [
+        "cee2817974fd063a531fefe8eb3c2c1a03beb9affbb30e1ef5b743bafef660e1",
+        "93333018e93b2f157e497828b6941b55d8f86e90db261dfcc4788c7a65cbc2a1",
+        "769e5b2465b3246acd5a99592673d764839d97081116772a8ce02efdd6249403"
+      ],
+      "result": "NOT_VERIFIED: menu focus return and three Our Story image decodes fail; film-strip/chat/back assertions pass"
+    },
+    {
+      "profile": { "label": "c964977-desktop", "viewport": { "width": 1440, "height": 900 }, "dpr": 1, "mobile": false, "touch": false, "cpuThrottleRate": 4 },
+      "report": { "path": "runtime-trace-c964977-desktop-3runs.json", "sha256": "393135e044c32154657278d8cacbe5cbc281b83a993ed3b5c5cd1f986cd574bc" },
+      "traceGzipSha256": [
+        "7692c5f2f5f52a7badb1cfa1a4242bc5314bd30040f9e5f7691a46ccddf0069c",
+        "30e25c4f4993ded34160a1a413c35ecd482bbad6b82357b7dcc1ce28579ef2a0",
+        "e821ea97f20290a4ef49010ea1025904b83adee012149a9137bd98daab7bf2cf"
+      ],
+      "result": "NOT_VERIFIED: menu focus return fails; film-strip is NOT_APPLICABLE because there is no desktop horizontal overflow; chat/back assertions pass"
+    }
+  ],
+  "commands": [
+    { "command": "node --check scripts/trace-runtime-loopback.mjs && node --check scripts/test-trace-runtime-loopback-contract.mjs", "exitCode": 0 },
+    { "command": "node scripts/test-trace-runtime-loopback-contract.mjs", "exitCode": 0, "result": "PASS (HTTP 404 self-check and >100-request ledger fixture)" },
+    { "command": "node scripts/trace-runtime-loopback.mjs ... --runs=3 --mode=timing --width=390 --height=844 --dpr=2", "exitCode": 0, "result": "report NOT_VERIFIED; three matched runs retained" },
+    { "command": "node scripts/trace-runtime-loopback.mjs ... --runs=3 --mode=timing --width=1440 --height=900 --dpr=1", "exitCode": 0, "result": "report NOT_VERIFIED; three matched runs retained" }
+  ],
+  "gateDisposition": {
+    "harnessIdentityAndPhaseBoundaries": "PASS",
+    "requestLedgerNotTruncated": "PASS",
+    "httpSelectorImageSelfChecks": "PASS (failures remain explicit in application replay)",
+    "runtimeTargetTbt": "NOT_VERIFIED: no production build/Lighthouse matched baseline; no TBT/INP claim",
+    "overall": "NOT_VERIFIED"
+  }
+}

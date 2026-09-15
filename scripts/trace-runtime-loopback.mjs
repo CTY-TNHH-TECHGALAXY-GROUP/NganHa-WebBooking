@@ -25,6 +25,22 @@ const outputDir = path.resolve(positional[0] || 'plans/pagespeed-remediation-202
 const baseUrl = positional[1] || 'http://127.0.0.1:3002';
 const runCount = Math.max(1, Number.parseInt(option('runs') || '3', 10) || 3);
 const mode = option('mode') || 'diagnostic';
+const numberOption = (name, fallback, minimum) => {
+  const value = Number(option(name));
+  return Number.isFinite(value) && value >= minimum ? value : fallback;
+};
+const booleanOption = (name, fallback) => {
+  const value = option(name);
+  if (value === undefined) return fallback;
+  return value === 'true' || value === '1';
+};
+const label = option('label') || 'candidate';
+const profileWidth = numberOption('width', 390, 240);
+const profileHeight = numberOption('height', 844, 240);
+const profileDpr = numberOption('dpr', 2, 0.5);
+const profileCpu = numberOption('cpu', 4, 1);
+const profileTouch = booleanOption('touch', profileWidth <= 760);
+const profileMobile = booleanOption('mobile', profileWidth <= 760);
 const runId = `agent-q-${new Date().toISOString().replace(/[-:.TZ]/g, '').slice(0, 14)}-${crypto.randomUUID()}`;
 const reportPath = path.join(outputDir, `runtime-trace-${runId}.json`);
 fs.mkdirSync(outputDir, { recursive: true });
@@ -42,16 +58,20 @@ const SELECTORS = Object.freeze({
   menuClose: 'button[aria-label="Close menu"]',
   chat: 'button[aria-label="Contact Us"]',
   chatPanel: '.floating-widgets [aria-label="Call hotline"]',
-  filmStrip: '#our-story [class*="film" i], #our-story [class*="strip" i]',
+  // `.filmStrip` is the visual frame and intentionally has overflow:hidden.
+  // `.journeyScroller` is the source-owned horizontal scroll container.
+  filmStrip: '#our-story [class*="journeyScroller"]',
 });
 const PROFILE = Object.freeze({
   browser: 'Chromium headless',
-  viewport: { width: 390, height: 844 },
-  dpr: 2,
-  touch: true,
-  cpuThrottleRate: 4,
-  cache: 'new browser context for every cold run; warm/back route replay inside each run',
-  smoothScroll: 'disabled by a test-only style for every run; recorded below',
+  viewport: { width: profileWidth, height: profileHeight },
+  dpr: profileDpr,
+  mobile: profileMobile,
+  touch: profileTouch,
+  cpuThrottleRate: profileCpu,
+  cache: 'cold context; cache enabled for explicit checkout/back warm replay',
+  smoothScroll: 'disabled for document and scroll containers by a test-only style; recorded below',
+  label,
 });
 
 function writeReport(report) {
@@ -88,7 +108,7 @@ function requestSummary(requests) {
       imageCount: 0, mediaCount: 0, scriptCount: 0,
     };
     entry.requestCount += 1;
-    if (request.encodedDataLength === null) entry.unknownTransferCount += 1;
+    if (!Number.isFinite(request.encodedDataLength)) entry.unknownTransferCount += 1;
     else entry.transferBytes += request.encodedDataLength;
     if (request.fromCache) entry.cachedCount += 1;
     if (request.failed) entry.failedCount += 1;
@@ -116,9 +136,13 @@ function runtimeDelta(before, after) {
   const since = before.capturedAt;
   const newer = entries => (entries || []).filter(entry => entry.t >= since);
   const longTasks = newer(after.longTasks);
+  const phaseStarts = (after.phases || []).filter(entry => entry.phase === after.phase && entry.t >= since);
   return {
     navigationId: after.navigationId,
     timeOrigin: after.timeOrigin,
+    phase: after.phase,
+    phaseStart: phaseStarts[0]?.t ?? since,
+    phaseEnd: after.capturedAt,
     start: since,
     end: after.capturedAt,
     geometryReads: newer(after.geometryReads),
@@ -150,7 +174,13 @@ const report = {
   testedSha,
   mode,
   profile: PROFILE,
-  configSnapshot: { selectors: SELECTORS, runCount, testOnlySmoothScrollPolicy: PROFILE.smoothScroll },
+  configSnapshot: {
+    harnessVersion: '2026-09-15.q2',
+    selectors: SELECTORS,
+    runCount,
+    testOnlySmoothScrollPolicy: PROFILE.smoothScroll,
+    cachePolicy: PROFILE.cache,
+  },
   notes: [
     'Totals are computed from the complete per-request dataset before the display list is capped.',
     'encodedDataLength is transfer data for that request. HTTP 206 ranges are not expanded to file size.',
@@ -162,9 +192,10 @@ const report = {
 };
 
 async function addRuntimeInitScript(page) {
-  await page.addInitScript(({ diagnostic }) => {
+  await page.addInitScript(({ diagnostic, navigationSeed }) => {
+    const documentNavigationId = `${navigationSeed}:${crypto.randomUUID()}`;
     const state = {
-      navigationId: 0, timeOrigin: null, phase: 'boot', phases: [],
+      navigationId: documentNavigationId, timeOrigin: performance.timeOrigin, phase: 'boot', phases: [],
       geometryReads: [], computedStyleReads: [], longTasks: [], layoutShifts: [],
       suppressInstrumentation: false,
     };
@@ -187,14 +218,13 @@ async function addRuntimeInitScript(page) {
       };
     }
     window.__agentQResetNavigation = (phase = 'navigation-ready') => {
-      state.navigationId += 1;
-      state.timeOrigin = performance.timeOrigin;
+      // Keep the per-document identity and event buffers. Clearing buffered
+      // entries here used to discard initial-load work and made later phases
+      // look cheaper than they were.
+      state.navigationId = documentNavigationId;
+      state.timeOrigin ||= performance.timeOrigin;
       state.phase = phase;
-      state.phases = [{ t: now(), phase }];
-      state.geometryReads = [];
-      state.computedStyleReads = [];
-      state.longTasks = [];
-      state.layoutShifts = [];
+      state.phases.push({ t: now(), phase });
       return { navigationId: state.navigationId, timeOrigin: state.timeOrigin, t: now() };
     };
     window.__agentQSetPhase = phase => {
@@ -224,19 +254,59 @@ async function addRuntimeInitScript(page) {
         })).observe({ type: 'layout-shift', buffered: true });
       } catch {}
     }
-  }, { diagnostic: mode === 'diagnostic' });
+  }, { diagnostic: mode === 'diagnostic', navigationSeed: runId });
 }
 
-async function waitForStableScroll(page, samples = 4) {
-  return page.evaluate(async sampleCount => {
+async function waitForStableScroll(page, samples = 4, axis = 'y') {
+  return page.evaluate(async ({ sampleCount, axis: scrollAxis }) => {
     const positions = [];
-    for (let index = 0; index < sampleCount; index += 1) {
-      await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-      positions.push({ x: scrollX, y: scrollY });
+    let stableSamples = 0;
+    for (let index = 0; index < 60; index += 1) {
+      await new Promise(resolve => setTimeout(resolve, 50));
+      const position = { x: scrollX, y: scrollY };
+      if (scrollAxis === 'x') position.x = document.scrollingElement?.scrollLeft || 0;
+      positions.push(position);
+      const recent = positions.slice(-sampleCount);
+      const stable = recent.length === sampleCount
+        && recent.every(item => Math.abs(item.x - recent[0].x) <= 0.5 && Math.abs(item.y - recent[0].y) <= 0.5);
+      stableSamples = stable ? stableSamples + 1 : 0;
+      if (stableSamples >= 2) return { stable: true, positions: recent, final: recent.at(-1) };
     }
-    const stable = positions.every(position => position.x === positions[0].x && position.y === positions[0].y);
-    return { stable, positions, final: positions.at(-1) };
-  }, samples);
+    const recent = positions.slice(-sampleCount);
+    return { stable: false, positions: recent, final: recent.at(-1) };
+  }, { sampleCount: samples, axis });
+}
+
+async function waitForVisualVisibility(page, selector, expected, timeout = 3000) {
+  await page.waitForFunction(({ targetSelector, shouldBeVisible }) => {
+    const element = document.querySelector(targetSelector);
+    if (!element) return !shouldBeVisible;
+    let current = element;
+    while (current && current !== document.body) {
+      const style = getComputedStyle(current);
+      const rect = current.getBoundingClientRect();
+      const visible = style.display !== 'none'
+        && style.visibility !== 'hidden'
+        && Number.parseFloat(style.opacity || '1') > 0.01
+        && rect.width > 0 && rect.height > 0;
+      if (!visible) return !shouldBeVisible;
+      current = current.parentElement;
+    }
+    return shouldBeVisible;
+  }, { targetSelector: selector, shouldBeVisible: expected }, { timeout });
+}
+
+async function waitForDecodedPicture(page, selector, index, timeout = 15000) {
+  await page.waitForFunction(({ rootSelector, pictureIndex }) => {
+    const root = document.querySelectorAll(rootSelector)[pictureIndex];
+    if (!root) return false;
+    const image = root.querySelector('img');
+    if (!image) return false;
+    const rect = image.getBoundingClientRect();
+    const visible = rect.width > 0 && rect.height > 0 && rect.bottom > 0 && rect.top < innerHeight && rect.right > 0 && rect.left < innerWidth;
+    return visible && image.currentSrc && !image.currentSrc.startsWith('data:')
+      && (image.dataset.mediaState === 'loaded' || image.dataset.mediaState === 'error');
+  }, { rootSelector: selector, pictureIndex: index }, { timeout });
 }
 
 async function targetBox(page, selector, index = 0) {
@@ -252,7 +322,7 @@ async function scrollToTarget(page, selector, index = 0) {
   const target = page.locator(selector).nth(index);
   if (!await target.count()) throw new Error(`required selector missing: ${selector}`);
   await target.evaluate(element => element.scrollIntoView({ block: 'center', inline: 'nearest', behavior: 'auto' }));
-  const stability = await waitForStableScroll(page);
+  const stability = await waitForStableScroll(page, 4, 'y');
   const box = await targetBox(page, selector, index);
   if (!stability.stable) throw new Error(`scroll did not stabilize for ${selector}[${index}]`);
   if (!box.intersects || box.width <= 0 || box.height <= 0) throw new Error(`target is not in viewport for ${selector}[${index}]`);
@@ -270,21 +340,39 @@ async function decodedVisibleImages(page, rootSelector, index = 0) {
       if (image.currentSrc && !image.currentSrc.startsWith('data:')) {
         try { await image.decode(); } catch (error) { decodeError = String(error); }
       }
-      return { currentSrc: image.currentSrc, naturalWidth: image.naturalWidth, naturalHeight: image.naturalHeight, decodeError };
+      const rect = image.getBoundingClientRect();
+      return {
+        currentSrc: image.currentSrc,
+        naturalWidth: image.naturalWidth,
+        naturalHeight: image.naturalHeight,
+        decodeError,
+        state: image.dataset.mediaState || null,
+        ariaBusy: image.getAttribute('aria-busy'),
+        box: { x: rect.x, y: rect.y, width: rect.width, height: rect.height },
+      };
     }));
   });
 }
 
-function assertDecoded(step, images, label) {
+function assertDecoded(step, images, label, { requireMediaState = false } = {}) {
   const realImages = images.filter(image => image.currentSrc && !image.currentSrc.startsWith('data:'));
   step.decodedImages = images;
   if (!realImages.length) throw new Error(`${label}: no visible image URL was attached`);
-  const broken = realImages.filter(image => !image.naturalWidth || image.decodeError);
+  const broken = realImages.filter(image => !image.naturalWidth || image.decodeError
+    || (requireMediaState && (image.state !== 'loaded' || image.ariaBusy !== 'false')));
   if (broken.length) throw new Error(`${label}: ${broken.length} visible image(s) failed naturalWidth/decode assertion`);
 }
 
 async function runMeasurement(runIndex) {
-  const run = { index: runIndex + 1, state: 'cold', startedAt: new Date().toISOString(), steps: [], errors: [], tracePath: path.join(outputDir, `runtime-trace-${runId}-run${runIndex + 1}.trace.json`) };
+  const run = {
+    index: runIndex + 1,
+    state: 'cold_then_warm',
+    startedAt: new Date().toISOString(),
+    steps: [],
+    errors: [],
+    cacheTransitions: [],
+    tracePath: path.join(outputDir, `runtime-trace-${runId}-run${runIndex + 1}.trace.json`),
+  };
   let browser;
   let context;
   let page;
@@ -299,26 +387,81 @@ async function runMeasurement(runIndex) {
     await addRuntimeInitScript(page);
     cdp = await context.newCDPSession(page);
     cdp.on('Network.requestWillBeSent', ({ requestId, request, type, initiator, timestamp, redirectResponse }) => {
-      if (redirectResponse) requests.set(`${requestId}:redirect:${timestamp}`, { requestId, url: redirectResponse.url, type, initiator: initiator?.type || null, start: timestamp, end: timestamp, status: redirectResponse.status, mime: redirectResponse.mimeType || null, fromCache: false, failed: false, failure: null, encodedDataLength: null, phase: currentPhase, redirect: true });
-      requests.set(requestId, { requestId, url: request.url, method: request.method, range: request.headers.Range || request.headers.range || null, type, initiator: initiator?.type || null, start: timestamp, end: null, status: null, mime: null, fromCache: false, failed: false, failure: null, encodedDataLength: null, phase: currentPhase, redirect: false });
+      if (redirectResponse) {
+        requests.set(`${requestId}:redirect:${timestamp}`, {
+          requestId,
+          url: redirectResponse.url,
+          type,
+          initiator: initiator?.type || null,
+          initiatorDetails: initiator || null,
+          start: timestamp,
+          end: timestamp,
+          status: redirectResponse.status,
+          mime: redirectResponse.mimeType || null,
+          responseHeaders: redirectResponse.headers || null,
+          fromCache: false,
+          failed: false,
+          failure: null,
+          encodedDataLength: null,
+          phase: currentPhase,
+          redirect: true,
+          complete: true,
+        });
+      }
+      const headers = request.headers || {};
+      requests.set(requestId, {
+        requestId,
+        url: request.url,
+        method: request.method,
+        range: headers.Range || headers.range || null,
+        type,
+        initiator: initiator?.type || null,
+        initiatorDetails: initiator || null,
+        start: timestamp,
+        end: null,
+        status: null,
+        mime: null,
+        responseHeaders: null,
+        cacheControl: null,
+        contentLength: null,
+        fromCache: false,
+        failed: false,
+        failure: null,
+        canceled: false,
+        encodedDataLength: null,
+        phase: currentPhase,
+        redirect: false,
+        complete: false,
+      });
     });
     cdp.on('Network.responseReceived', ({ requestId, response, type, timestamp }) => {
       const request = requests.get(requestId);
       if (!request) return;
-      Object.assign(request, { url: response.url, type, status: response.status, mime: response.mimeType, cacheControl: response.headers['cache-control'] || null, contentLength: response.headers['content-length'] || null, fromCache: Boolean(response.fromDiskCache || response.fromPrefetchCache || response.fromServiceWorker), responseTimestamp: timestamp });
+      Object.assign(request, {
+        url: response.url,
+        type,
+        status: response.status,
+        mime: response.mimeType,
+        responseHeaders: response.headers || null,
+        cacheControl: response.headers?.['cache-control'] || response.headers?.['Cache-Control'] || null,
+        contentLength: response.headers?.['content-length'] || response.headers?.['Content-Length'] || null,
+        fromCache: Boolean(response.fromDiskCache || response.fromPrefetchCache || response.fromServiceWorker),
+        responseTimestamp: timestamp,
+      });
     });
     cdp.on('Network.loadingFinished', ({ requestId, encodedDataLength, timestamp }) => {
       const request = requests.get(requestId);
-      if (request) Object.assign(request, { encodedDataLength, end: timestamp });
+      if (request) Object.assign(request, { encodedDataLength, end: timestamp, complete: true, completion: 'finished' });
     });
     cdp.on('Network.loadingFailed', ({ requestId, errorText, canceled, timestamp }) => {
       const request = requests.get(requestId);
-      if (request) Object.assign(request, { failed: true, failure: errorText, canceled: Boolean(canceled), end: timestamp });
+      if (request) Object.assign(request, { failed: true, failure: errorText, canceled: Boolean(canceled), end: timestamp, complete: true, completion: 'failed' });
     });
     page.on('console', message => { if (message.type() === 'error') run.errors.push(`console: ${message.text()}`); });
     page.on('pageerror', error => run.errors.push(`pageerror: ${error.message}`));
     await cdp.send('Network.enable');
     await cdp.send('Network.setCacheDisabled', { cacheDisabled: true });
+    run.cacheTransitions.push({ at: new Date().toISOString(), disabled: true, reason: 'cold-start' });
     await cdp.send('Emulation.setCPUThrottlingRate', { rate: PROFILE.cpuThrottleRate });
     const traceComplete = new Promise(resolve => {
       cdp.on('Tracing.dataCollected', payload => traceEvents.push(...payload.value));
@@ -331,6 +474,10 @@ async function runMeasurement(runIndex) {
       await page.evaluate(value => window.__agentQSetPhase?.(value), phase);
     }
     async function captureRuntime() { return page.evaluate(() => window.__agentQCaptureRuntime?.() || null); }
+    async function setCacheDisabled(disabled, reason) {
+      await cdp.send('Network.setCacheDisabled', { cacheDisabled: disabled });
+      run.cacheTransitions.push({ at: new Date().toISOString(), disabled, reason });
+    }
     async function captureStep(name, action) {
       const step = { name, startedAt: new Date().toISOString(), status: 'RUNNING' };
       run.steps.push(step);
@@ -339,7 +486,13 @@ async function runMeasurement(runIndex) {
         const before = await captureRuntime();
         await action(step);
         const after = await captureRuntime();
-        step.runtime = { navigationId: after?.navigationId || null, timeOrigin: after?.timeOrigin || null, delta: runtimeDelta(before, after) };
+        step.runtime = {
+          navigationId: after?.navigationId || null,
+          timeOrigin: after?.timeOrigin || null,
+          phase: after?.phase || null,
+          phaseStart: after?.phases?.filter(entry => entry.phase === after.phase).at(-1)?.t || null,
+          delta: runtimeDelta(before, after),
+        };
         step.endedAt = new Date().toISOString();
         if (step.status === 'RUNNING') step.status = 'PASS';
       } catch (error) {
@@ -360,7 +513,7 @@ async function runMeasurement(runIndex) {
       step.navigation = await page.evaluate(() => {
         const style = document.createElement('style');
         style.dataset.agentQSmoothScroll = 'disabled';
-        style.textContent = 'html { scroll-behavior: auto !important; }';
+        style.textContent = 'html, html * { scroll-behavior: auto !important; }';
         document.head.append(style);
         return window.__agentQResetNavigation?.('navigation-ready') || null;
       });
@@ -379,8 +532,13 @@ async function runMeasurement(runIndex) {
     for (let index = 0; index < ourStorySlots; index += 1) {
       await captureStep(`our-story-slot-${index + 1}`, async step => {
         step.target = await scrollToTarget(page, `${SELECTORS.ourStory} picture`, index);
-        await page.waitForTimeout(250);
-        assertDecoded(step, await decodedVisibleImages(page, `${SELECTORS.ourStory} picture`, index), `Our Story slot ${index + 1}`);
+        await waitForDecodedPicture(page, `${SELECTORS.ourStory} picture`, index);
+        assertDecoded(
+          step,
+          await decodedVisibleImages(page, `${SELECTORS.ourStory} picture`, index),
+          `Our Story slot ${index + 1}`,
+          { requireMediaState: true },
+        );
       });
     }
     const chapterCount = await page.locator(SELECTORS.historyChapters).count();
@@ -401,23 +559,54 @@ async function runMeasurement(runIndex) {
       if (!await strip.count()) throw new Error('Our Story film strip selector found no target');
       step.target = await scrollToTarget(page, SELECTORS.filmStrip);
       const horizontal = await strip.evaluate(element => {
-        element.scrollLeft = Math.min(120, Math.max(0, element.scrollWidth - element.clientWidth));
-        return { scrollLeft: element.scrollLeft, scrollWidth: element.scrollWidth, clientWidth: element.clientWidth };
+        const maxScrollLeft = Math.max(0, element.scrollWidth - element.clientWidth);
+        element.scrollTo({ left: maxScrollLeft, behavior: 'auto' });
+        return { requestedScrollLeft: maxScrollLeft, scrollLeft: element.scrollLeft, scrollWidth: element.scrollWidth, clientWidth: element.clientWidth };
       });
-      step.horizontal = horizontal;
-      if (horizontal.scrollWidth <= horizontal.clientWidth || horizontal.scrollLeft <= 0) throw new Error('film strip is not horizontally scrollable at this viewport');
+      const stableHorizontal = await page.evaluate(async selector => {
+        const element = document.querySelector(selector);
+        if (!(element instanceof HTMLElement)) return { stable: false, positions: [] };
+        const positions = [];
+        for (let index = 0; index < 30; index += 1) {
+          await new Promise(resolve => setTimeout(resolve, 50));
+          positions.push(element.scrollLeft);
+          const recent = positions.slice(-4);
+          if (recent.length === 4 && recent.every(value => Math.abs(value - recent[0]) <= 0.5)) {
+            return { stable: true, positions: recent, final: recent.at(-1) };
+          }
+        }
+        return { stable: false, positions: positions.slice(-4), final: positions.at(-1) };
+      }, SELECTORS.filmStrip);
+      step.horizontalStability = stableHorizontal;
+      const settledHorizontal = await strip.evaluate(element => ({
+        scrollLeft: element.scrollLeft,
+        scrollWidth: element.scrollWidth,
+        clientWidth: element.clientWidth,
+      }));
+      step.horizontal = { ...horizontal, ...settledHorizontal };
+      if (settledHorizontal.scrollWidth <= settledHorizontal.clientWidth) {
+        step.horizontal.notApplicable = true;
+        step.horizontal.reason = 'film strip has no horizontal overflow at this viewport';
+      } else if (settledHorizontal.scrollLeft <= 0 || !stableHorizontal.stable) {
+        throw new Error('film strip is horizontally scrollable but did not reach a stable non-zero scroll position');
+      }
     });
     await captureStep('menu-open-close-focus', async step => {
       const trigger = page.locator(SELECTORS.menu).first();
       if (!await trigger.count()) throw new Error('menu trigger selector found no target');
       await trigger.click();
       const overlay = page.locator(SELECTORS.menuOverlay).first();
-      if (!await overlay.isVisible({ timeout: 1500 })) throw new Error('menu did not open');
+      await waitForVisualVisibility(page, SELECTORS.menuOverlay, true, 3000);
       const close = page.locator(SELECTORS.menuClose).first();
       if (!await close.count()) throw new Error('menu close control missing after open');
       await close.click();
-      if (await overlay.isVisible({ timeout: 300 }).catch(() => false)) throw new Error('menu did not close');
-      step.focusReturned = await page.evaluate(selector => document.activeElement?.matches(selector) || false, SELECTORS.menu);
+      await waitForVisualVisibility(page, SELECTORS.menuOverlay, false, 3000);
+      step.focusState = await page.evaluate(selector => ({
+        returned: document.activeElement?.matches(selector) || false,
+        activeTag: document.activeElement?.tagName || null,
+        activeLabel: document.activeElement?.getAttribute('aria-label') || null,
+      }), SELECTORS.menu);
+      step.focusReturned = step.focusState.returned;
       if (!step.focusReturned) throw new Error('menu focus did not return to the trigger');
     });
     await captureStep('chat-open', async step => {
@@ -425,19 +614,23 @@ async function runMeasurement(runIndex) {
       if (!await trigger.count()) throw new Error('known chat trigger selector found no target');
       await trigger.click();
       const panel = page.locator(SELECTORS.chatPanel).first();
-      if (!await panel.isVisible({ timeout: 1500 })) throw new Error('chat contact panel did not open');
+      await waitForVisualVisibility(page, SELECTORS.chatPanel, true, 3000);
       step.panelVisible = true;
       await trigger.click();
-      if (await panel.isVisible({ timeout: 300 }).catch(() => false)) throw new Error('chat contact panel did not close');
+      await waitForVisualVisibility(page, SELECTORS.chatPanel, false, 3000);
     });
+    await setCacheDisabled(false, 'warm-replay-before-checkout');
     await captureStep('checkout-navigation-read-only', step => navigate(step, SELECTORS.checkout, 'checkout-navigation'));
     await captureStep('homepage-back-warm', async step => {
       currentPhase = 'homepage-back-warm';
       await page.goBack({ waitUntil: 'domcontentloaded', timeout: 20000 });
+      await page.waitForTimeout(1000);
+      await page.evaluate(() => document.fonts?.ready);
       await page.waitForTimeout(500);
       step.finalURL = page.url();
       if (new URL(page.url()).pathname !== SELECTORS.home) throw new Error(`back navigation did not return home: ${page.url()}`);
       step.navigation = await page.evaluate(() => window.__agentQResetNavigation?.('homepage-back-warm') || null);
+      if (!step.navigation?.navigationId || !step.navigation?.timeOrigin) throw new Error('back navigation did not produce a document runtime identity');
       step.target = await scrollToTarget(page, SELECTORS.history);
     });
     await cdp.send('Tracing.end');
@@ -453,8 +646,33 @@ async function runMeasurement(runIndex) {
     };
     run.requests = [...requests.values()].sort((a, b) => (a.start || 0) - (b.start || 0));
     run.requestTotals = requestSummary(run.requests);
-    run.requestDisplay = [...run.requests].sort((a, b) => (b.encodedDataLength || 0) - (a.encodedDataLength || 0)).slice(0, 100);
+    run.requestDisplay = [...run.requests]
+      .sort((a, b) => (Number.isFinite(b.encodedDataLength) ? b.encodedDataLength : -1) - (Number.isFinite(a.encodedDataLength) ? a.encodedDataLength : -1))
+      .slice(0, 100);
+    const displayTruncated = run.requests.length > run.requestDisplay.length;
+    const documentNavigations = run.steps.map(step => step.navigation).filter(Boolean);
+    const navigationIds = documentNavigations.map(navigation => navigation.navigationId).filter(Boolean);
+    const allNavigationIdsUnique = navigationIds.length > 0
+      && new Set(navigationIds).size === navigationIds.length
+      && documentNavigations.every(navigation => Number.isFinite(navigation.timeOrigin));
+    run.requestLedger = {
+      complete: true,
+      requestCount: run.requests.length,
+      displayLimit: 100,
+      displayTruncated,
+      unfinishedCount: run.requests.filter(request => !request.complete).length,
+      unknownTransferCount: run.requestTotals.all.unknownTransferCount,
+      note: 'The full ledger is retained in run.requests. requestDisplay is presentation-only and may be capped at 100.',
+    };
+    run.selfChecks = {
+      http2xxAndExpectedFinalURL: run.steps.filter(step => step.name === 'homepage-navigation' || step.name === 'checkout-navigation-read-only').every(step => step.status === 'PASS'),
+      requiredSelectorsAndAssertions: run.steps.filter(step => ['our-story-baseline', 'our-story-film-strip-horizontal', 'menu-open-close-focus', 'chat-open', 'homepage-back-warm'].includes(step.name)).every(step => step.status === 'PASS'),
+      fullRequestLedgerRetained: run.requestLedger.complete && run.requestTotals.all.requestCount === run.requestLedger.requestCount && (!displayTruncated || run.requestDisplay.length === 100),
+      navigationIdentityUniquePerStep: allNavigationIdsUnique,
+      noTransferSubstitution: run.requests.every(request => request.encodedDataLength === null || Number.isFinite(request.encodedDataLength)),
+    };
     run.status = statusFromSteps(run.steps);
+    if (Object.values(run.selfChecks).some(check => check === false)) run.status = 'NOT_VERIFIED';
   } catch (error) {
     run.status = 'BLOCKED';
     run.reason = error instanceof Error ? error.message : String(error);
