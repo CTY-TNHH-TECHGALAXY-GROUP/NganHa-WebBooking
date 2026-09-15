@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "role": "QA",
+  "generatedAt": "2026-09-15T00:00:00+07:00",
+  "baseSha": "3d5ed66",
+  "testedCandidateSha": "d129b6f0c184d937db8cc9f88342ca3c5e9ca20e",
+  "branch": "codex/ps-integration-20260913",
+  "worktree": "/private/tmp/nganha-pagespeed-integrator",
+  "scope": "QA-only local route, sitemap, cache/MIME and browser replay; no application/data/deployment mutation",
+  "artifacts": [
+    {
+      "path": "plans/pagespeed-remediation-20260913/remaining/agent-qa-final/qa-closeout-20260915.json",
+      "kind": "raw-route-cache-browser-QA-report",
+      "testedSha": "d129b6f0c184d937db8cc9f88342ca3c5e9ca20e",
+      "exitCode": 0,
+      "sha256": "42c4e746462cadfdc33e6c7338b44fba73bdf5a4790728e850f6a7d136c6a271"
+    },
+    {
+      "path": "plans/pagespeed-remediation-20260913/remaining/agent-qa-final/route-matrix-20260915.csv",
+      "kind": "route-inventory-sitemap-cache-mime-canonical-ledger",
+      "routeCount": 65,
+      "sitemapCount": 47,
+      "sha256": "b26bb4d6e50875a4cde1c406e6e235daeb762f3d9ce34c6a03981ec665d007d7"
+    },
+    {
+      "path": "scripts/test-pagespeed-qa-closeout.mjs",
+      "kind": "rerunnable-read-only-QA-harness",
+      "sha256": "b619183bee48e296ca0592a48656607c55150ca9eb018b140bf1dab7021f2eb9"
+    },
+    {
+      "path": "plans/pagespeed-remediation-20260913/remaining/agent-qa-final/handoff.md",
+      "kind": "QA-handoff-gate-table-and-residuals",
+      "sha256": "45f348c6dac104bc41d2c51e1fcea2803225446eb478d73a3ad4596a6bad7b8d"
+    }
+  ],
+  "commands": [
+    {
+      "command": "QA_BASE_URL=http://127.0.0.1:3422 QA_OUTPUT_DIR=plans/pagespeed-remediation-20260913/remaining/agent-qa-final node scripts/test-pagespeed-qa-closeout.mjs",
+      "exitCode": 0,
+      "status": "RAW_REPORT_RETAINS_BROWSER_BLOCKED_FAIL"
+    },
+    {
+      "command": "MENU_FOCUS_BASE_URL=http://127.0.0.1:3422 MENU_FOCUS_TESTED_SHA=d129b6f0c184d937db8cc9f88342ca3c5e9ca20e node scripts/test-final-menu-focus.mjs",
+      "exitCode": 0,
+      "status": "PASS_LOCAL_EXACT_CANDIDATE"
+    }
+  ],
+  "overall": "PARTIAL_BLOCKED",
+  "productionWrites": false
+}
