@@ -807,17 +807,46 @@ export const History = ({ aboveFold = false }: HistoryProps) => {
   useEffect(() => {
     const nodes = Array.from(document.querySelectorAll<HTMLElement>('[data-history-chapter]'));
     let frame = 0;
+    let geometryDirty = true;
+    let chapterGeometry: Array<{ top: number; height: number }> = [];
+    let timelineGeometry: { top: number; bottom: number } | null = null;
+    let disposed = false;
+
+    const invalidateGeometry = () => {
+      geometryDirty = true;
+      if (!frame) frame = window.requestAnimationFrame(updateActiveChapter);
+    };
+
+    const measureGeometry = () => {
+      // Read the complete layout snapshot before any state writes. Scroll then
+      // only consumes document-space coordinates, avoiding a layout read on
+      // every rAF while preserving the existing active-chapter anchor.
+      const scrollY = window.scrollY;
+      chapterGeometry = nodes.map(node => {
+        const rect = node.getBoundingClientRect();
+        return { top: rect.top + scrollY, height: rect.height };
+      });
+      const timelineRect = timelineRef.current?.getBoundingClientRect();
+      timelineGeometry = timelineRect
+        ? { top: timelineRect.top + scrollY, bottom: timelineRect.bottom + scrollY }
+        : null;
+      geometryDirty = false;
+    };
 
     const updateActiveChapter = () => {
       frame = 0;
+      if (disposed) return;
+      if (geometryDirty || chapterGeometry.length !== nodes.length) measureGeometry();
+
+      const scrollY = window.scrollY;
       const viewportAnchor = window.innerHeight * 0.52;
+      const documentAnchor = scrollY + viewportAnchor;
       let nearestIndex = 0;
       let nearestDistance = Number.POSITIVE_INFINITY;
 
-      nodes.forEach((node, index) => {
-        const rect = node.getBoundingClientRect();
-        const chapterCenter = rect.top + rect.height * 0.48;
-        const distance = Math.abs(chapterCenter - viewportAnchor);
+      chapterGeometry.forEach((geometry, index) => {
+        const chapterCenter = geometry.top + geometry.height * 0.48;
+        const distance = Math.abs(chapterCenter - documentAnchor);
 
         if (distance < nearestDistance) {
           nearestDistance = distance;
@@ -828,9 +857,9 @@ export const History = ({ aboveFold = false }: HistoryProps) => {
       setActiveChapter(prev => (prev === nearestIndex ? prev : nearestIndex));
 
       if (timelineRef.current) {
-        const tRect = timelineRef.current.getBoundingClientRect();
+        const tRect = timelineGeometry;
         // Visible when the timeline enters the viewport, leaving a bit of margin
-        setIsNavVisible(tRect.top < window.innerHeight * 0.8 && tRect.bottom > window.innerHeight * 0.2);
+        setIsNavVisible(Boolean(tRect && tRect.top - scrollY < window.innerHeight * 0.8 && tRect.bottom - scrollY > window.innerHeight * 0.2));
       }
     };
 
@@ -841,12 +870,28 @@ export const History = ({ aboveFold = false }: HistoryProps) => {
 
     updateActiveChapter();
     window.addEventListener('scroll', requestUpdate, { passive: true });
-    window.addEventListener('resize', requestUpdate);
+    window.addEventListener('resize', invalidateGeometry);
+
+    const resizeObserver = typeof ResizeObserver === 'function'
+      ? new ResizeObserver(invalidateGeometry)
+      : null;
+    nodes.forEach(node => resizeObserver?.observe(node));
+    if (timelineRef.current) resizeObserver?.observe(timelineRef.current);
+
+    if (document.fonts?.ready) {
+      document.fonts.ready.then(() => {
+        if (!disposed) {
+          invalidateGeometry();
+        }
+      });
+    }
 
     return () => {
+      disposed = true;
       if (frame) window.cancelAnimationFrame(frame);
       window.removeEventListener('scroll', requestUpdate);
-      window.removeEventListener('resize', requestUpdate);
+      window.removeEventListener('resize', invalidateGeometry);
+      resizeObserver?.disconnect();
     };
   }, [chapters]);
 

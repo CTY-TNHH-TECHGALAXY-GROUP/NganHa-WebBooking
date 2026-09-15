@@ -1,0 +1,117 @@
+{
+  "role": "E",
+  "generatedAt": "2026-09-15T11:45:00+07:00",
+  "baseSha": "0b44ad0505aba9946c9e3531770ff5c16339fe24",
+  "testedShaBeforeCommit": "0b44ad0505aba9946c9e3531770ff5c16339fe24",
+  "commitSha": "reported in the agent handoff after commit; evidence is intentionally non-self-referential",
+  "branch": "codex/ps-reaccept-e-20260915",
+  "worktree": "/private/tmp/nganha-pagespeed-role-e",
+  "runtime": {
+    "server": "http://127.0.0.1:3023",
+    "serverKind": "local Next.js development server",
+    "nextVersion": "15.5.14",
+    "productionBuild": "NOT_VERIFIED: fonts.googleapis.com DNS/fetch blocked in environment",
+    "browser": "Chromium headless",
+    "cpuThrottleRate": 4,
+    "notes": [
+      "Diagnostic geometry/computed-style instrumentation is not a timing benchmark.",
+      "Timing reports include the complete scripted session, including checkout; they are not homepage TBT totals.",
+      "No INP, CrUX, production deployment, or live-CWV claim is made."
+    ]
+  },
+  "sourceState": {
+    "beforeHistorySourceSha256": "998eb31e5897092a165b2b5534a7ae7c50e7e0636306a0af75075dec232e0871",
+    "afterHistorySourceSha256": "a5616a805a15db4ff2faa9b4c3a3c97324f6e31d1dd0f46ac94e475a1e983ec8",
+    "beforeHistoryOwnedGeometryReads": 184,
+    "afterHistoryOwnedGeometryReads": 0,
+    "afterTotalHarnessGeometryReads": 348,
+    "attribution": "History.useEffect.updateActiveChapter; Q trace stack pointed at pre-change History.tsx lines 915-917"
+  },
+  "profiles": [
+    {
+      "label": "role-e-0b44ad0-after-mobile",
+      "viewport": { "width": 390, "height": 844 },
+      "dpr": 2,
+      "mobile": true,
+      "touch": true,
+      "cpuThrottleRate": 4,
+      "mode": "timing",
+      "report": "after-mobile/runtime-trace-after-mobile-3runs.json",
+      "reportSha256": "b573498d67e1753a9b6dbf97514fbca48c0d834f2ddd4f64639312327d7cac94",
+      "traceGzipSha256": [
+        "9667c82df30762b10d23ebfa24df31c272c0ae44633b30cc3858175b15d1b91a",
+        "d78d8993cfe5344becea2fd7a12a9513084cf7c0c7829c9387e94cee66966c9d",
+        "31afc498fbe9557406faa0538a92dae7ab57dd4567c95d7c9156acb6388a88a7"
+      ],
+      "result": "NOT_VERIFIED: slots 3/4/7 decode and menu focus residual"
+    },
+    {
+      "label": "role-e-0b44ad0-after-desktop",
+      "viewport": { "width": 1440, "height": 900 },
+      "dpr": 1,
+      "mobile": false,
+      "touch": false,
+      "cpuThrottleRate": 4,
+      "mode": "timing",
+      "report": "after-desktop/runtime-trace-after-desktop-3runs.json",
+      "reportSha256": "0e4b65316dd32d3e8cab5733a0ddf1adcab5a3a157093ed5e94f3309def2266e",
+      "traceGzipSha256": [
+        "d4e9d10fe1e65dd7eb9da13363386eca74a1d1ce37b79907b4ef87448618cdf3",
+        "b7344e1ce82a157db4434b2d1980a1919f9a17002ae3bd9caf30ec62bf72edf7",
+        "96f5679fdd85c6f0cbe54d4dd11b0b58c794d6d6428ad6892e1b6604faf16c31"
+      ],
+      "result": "NOT_VERIFIED: menu focus and media residuals; no proven TBT improvement"
+    },
+    {
+      "label": "role-e-0b44ad0-after-diagnostic",
+      "viewport": { "width": 390, "height": 844 },
+      "dpr": 2,
+      "mobile": true,
+      "touch": true,
+      "cpuThrottleRate": 4,
+      "mode": "diagnostic",
+      "report": "after-diagnostic/runtime-trace-after-diagnostic.json",
+      "reportSha256": "1aa5a1e7f8f4477a9322f858011064581a9927aa0ed33ca96fff142ba70bf983",
+      "traceGzipSha256": [
+        "d2eed0202bea32daa6eb2929b4362d09d49c67343b2a358585545fb0b02b40d9"
+      ],
+      "result": "NOT_VERIFIED overall; History-owned geometry reads absent from runtime phases"
+    },
+    {
+      "label": "role-e-0b44ad0-before-diagnostic",
+      "viewport": { "width": 390, "height": 844 },
+      "dpr": 2,
+      "mobile": true,
+      "touch": true,
+      "cpuThrottleRate": 4,
+      "mode": "diagnostic",
+      "report": "before/runtime-trace-before-diagnostic.json",
+      "reportSha256": "6266daaee33e388f12dbf5d64c37f19e51693eae80d8c38f601b601cf63011a1",
+      "traceGzipSha256": [
+        "0bc1c1876715b9e7507fc26951bff2fb9ee742e1c416e99e034a69c04dfbac08"
+      ],
+      "result": "NOT_VERIFIED overall; 184 History-owned geometry reads attributed"
+    }
+  ],
+  "commands": [
+    { "command": "npx tsc --noEmit", "exitCode": 0 },
+    { "command": "node --check scripts/trace-runtime-loopback.mjs", "exitCode": 0 },
+    { "command": "node scripts/test-trace-runtime-loopback-contract.mjs", "exitCode": 0 },
+    { "command": "git diff --check", "exitCode": 0 }
+  ],
+  "gateDisposition": {
+    "historyGeometryAttribution": "PASS",
+    "historyCycleReplay": "PASS",
+    "productionTbtTarget": "NOT_VERIFIED",
+    "fullRuntimeAcceptance": "NOT_VERIFIED",
+    "deployment": "NOT_VERIFIED: no push/deploy performed"
+  },
+  "artifacts": {
+    "before/runtime-trace-before-diagnostic.json": "6266daaee33e388f12dbf5d64c37f19e51693eae80d8c38f601b601cf63011a1",
+    "before/runtime-trace-before-diagnostic.trace.json.gz": "0bc1c1876715b9e7507fc26951bff2fb9ee742e1c416e99e034a69c04dfbac08",
+    "after-diagnostic/runtime-trace-after-diagnostic.json": "1aa5a1e7f8f4477a9322f858011064581a9927aa0ed33ca96fff142ba70bf983",
+    "after-diagnostic/runtime-trace-after-diagnostic.trace.json.gz": "d2eed0202bea32daa6eb2929b4362d09d49c67343b2a358585545fb0b02b40d9",
+    "after-mobile/runtime-trace-after-mobile-3runs.json": "b573498d67e1753a9b6dbf97514fbca48c0d834f2ddd4f64639312327d7cac94",
+    "after-desktop/runtime-trace-after-desktop-3runs.json": "0e4b65316dd32d3e8cab5733a0ddf1adcab5a3a157093ed5e94f3309def2266e"
+  }
+}
