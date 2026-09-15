@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "role": "B",
+  "status": "NOT_VERIFIED",
+  "sourceSha": "3d5ed66f2e79d809721539f5f1c191688b3959b5",
+  "branch": "detached-3d5ed66",
+  "worktree": "/private/tmp/nganha-pagespeed-final-b",
+  "artifacts": [
+    {
+      "path": "scripts/test-cas-postgres.mjs",
+      "kind": "rerunnable-real-postgresql-runner",
+      "sha256": "f63596333a5bece7d53c72f8e10acc31e656960a2396ec55e37ddf49cb15d9a7"
+    },
+    {
+      "path": "supabase/migrations/20260914_system_configs_jsonb_cas.sql",
+      "kind": "scoped-cas-migration-preflight",
+      "sha256": "4384c30347d96351ba2fa954acbaba7db83480bf7a9a6736e726c45ee2ccd786"
+    },
+    {
+      "path": "scripts/test-cas-concurrency-contract.mjs",
+      "kind": "source-contract-only-no-simulation",
+      "sha256": "a5a6e718af6883ccf95f5532e2fddc4e0ddd66a5942a35c131ae62aad4ebdf3c"
+    },
+    {
+      "path": "plans/pagespeed-remediation-20260913/remaining/agent-b/environment-inventory-final-20260915.json",
+      "kind": "runtime-inventory",
+      "sha256": "bbf08217197ba4ced0997ca30694c694d991bca2bf8da5a225b01a70347fa50f"
+    },
+    {
+      "path": "plans/pagespeed-remediation-20260913/remaining/agent-b/cas-postgres-report-final-20260915.json",
+      "kind": "real-runner-no-url-report",
+      "status": "NOT_VERIFIED",
+      "testedSha": "3d5ed66f2e79d809721539f5f1c191688b3959b5",
+      "sha256": "28c02620f6de52f838ed3f99ec9a5112131ab91bd72a2748541cb7999f49ab2e"
+    },
+    {
+      "path": "plans/pagespeed-remediation-20260913/remaining/agent-b/cas-postgres-loopback-final-20260915.json",
+      "kind": "real-runner-loopback-no-client-report",
+      "status": "NOT_VERIFIED",
+      "testedSha": "3d5ed66f2e79d809721539f5f1c191688b3959b5",
+      "sha256": "b1c6438fea4d124608a20e37288cf69d34b156835c12fdf6e9ca0b4dff9bf930"
+    },
+    {
+      "path": "plans/pagespeed-remediation-20260913/remaining/agent-b/cas-postgres-loopback-client-final-20260915.json",
+      "kind": "real-runner-loopback-server-unavailable-report",
+      "status": "FAIL",
+      "testedSha": "3d5ed66f2e79d809721539f5f1c191688b3959b5",
+      "sha256": "4a37fe1856b4b3123108b0bf7de61db8a1a92c38026a5ef8e6cb13d93697b95a"
+    }
+  ],
+  "commands": [
+    { "command": "node --check scripts/test-cas-postgres.mjs", "exitCode": 0, "status": "PASS" },
+    { "command": "node scripts/test-cas-concurrency-contract.mjs", "exitCode": 0, "status": "PASS_SOURCE_CONTRACT_ONLY" },
+    { "command": "node scripts/test-cas-postgres.mjs --tested-sha=3d5ed66... --evidence=.../cas-postgres-report-final-20260915.json", "exitCode": 2, "status": "NOT_VERIFIED_NO_URL" },
+    { "command": "node scripts/test-cas-postgres.mjs --database-url=postgresql://127.0.0.1:5432/postgres --tested-sha=3d5ed66... --evidence=.../cas-postgres-loopback-final-20260915.json", "exitCode": 2, "status": "NOT_VERIFIED_NO_PG_CLIENT_IN_CLEAN_WORKTREE" },
+    { "command": "node scripts/test-cas-postgres.mjs --database-url=postgresql://127.0.0.1:5432/postgres --tested-sha=3d5ed66... --evidence=.../cas-postgres-loopback-client-final-20260915.json", "exitCode": 1, "status": "FAIL_SERVER_UNAVAILABLE_ECONNREFUSED" },
+    { "command": "git diff --check", "exitCode": 0, "status": "PASS" }
+  ],
+  "residual": [
+    "Real PostgreSQL migration/ACL/RLS/concurrent transaction/read-back gate remains NOT_VERIFIED because no local server or container runtime is installed.",
+    "Migration crash/restart/resume, rerun, durable backup restore, storage failure injection and rollback remain NOT_VERIFIED.",
+    "No production database, Storage bucket, push, merge or deploy was contacted."
+  ]
+}

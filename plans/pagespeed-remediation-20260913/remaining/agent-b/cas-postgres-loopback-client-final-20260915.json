@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "role": "B",
+  "status": "FAIL",
+  "startedAt": "2026-09-15T13:42:29.225Z",
+  "finishedAt": "2026-09-15T13:42:29.254Z",
+  "testedSha": "3d5ed66f2e79d809721539f5f1c191688b3959b5",
+  "database": "disposable-local-postgresql",
+  "results": [
+    {
+      "id": "runner",
+      "status": "FAIL",
+      "detail": "connect ECONNREFUSED 127.0.0.1:5432",
+      "code": "ECONNREFUSED"
+    }
+  ],
+  "residual": [
+    "Inspect the failing fixture result before any integration; no production write was attempted."
+  ]
+}

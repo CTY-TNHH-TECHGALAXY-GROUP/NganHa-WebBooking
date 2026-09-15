@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "role": "B",
+  "status": "NOT_VERIFIED",
+  "startedAt": "2026-09-15T13:40:50.776Z",
+  "finishedAt": "2026-09-15T13:40:50.777Z",
+  "testedSha": "3d5ed66f2e79d809721539f5f1c191688b3959b5",
+  "database": "not-connected",
+  "results": [
+    {
+      "id": "postgresql",
+      "status": "NOT_VERIFIED",
+      "detail": "Set PAGESPEED_TEST_DATABASE_URL or --database-url=<loopback PostgreSQL URL> to run the real DB gate."
+    }
+  ],
+  "residual": [
+    "No disposable PostgreSQL server/client was available in this environment.",
+    "ACL, RLS, independent transaction concurrency, crash/restart, and database read-back remain unverified."
+  ]
+}

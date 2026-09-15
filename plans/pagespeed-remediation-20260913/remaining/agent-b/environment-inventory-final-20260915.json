@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "role": "B",
+  "testedSha": "3d5ed66f2e79d809721539f5f1c191688b3959b5",
+  "capturedAt": "2026-09-15T13:43:00+07:00",
+  "platform": "darwin arm64",
+  "node": "v24.18.0",
+  "postgresqlServer": "UNAVAILABLE: postgres, pg_ctl, initdb and psql were not found",
+  "containerRuntime": "UNAVAILABLE: docker and podman were not found",
+  "pgClient": "AVAILABLE via existing dependency tree for the loopback probe",
+  "loopbackProbe": {
+    "target": "127.0.0.1:5432",
+    "result": "FAIL",
+    "error": "ECONNREFUSED",
+    "productionContacted": false
+  },
+  "safety": [
+    "No remote or production PostgreSQL URL was used.",
+    "No production database, Storage bucket, push, merge or deploy was contacted."
+  ]
+}
