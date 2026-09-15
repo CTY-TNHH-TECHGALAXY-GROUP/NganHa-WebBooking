@@ -162,6 +162,7 @@ const FloatingWidgets = () => {
 
     const handleMenuKeyDown = (event: KeyboardEvent) => {
       if (event.key !== 'Escape') return;
+      if (document.getElementById('ai-chat-popup')) return;
       event.preventDefault();
       setIsMenuOpen(false);
     };
@@ -182,16 +183,9 @@ const FloatingWidgets = () => {
     }, 4000);
   };
 
-  const handleAiChatClick = () => {
-    const aiComingSoonText: Record<string, string> = {
-      vi: '✨ Tính năng Chat với AI đang được nâng cấp và sẽ sớm ra mắt! Quý khách vui lòng liên hệ qua Hotline, WhatsApp hoặc Zalo.',
-      en: '✨ AI Assistant is currently under development and coming soon! Please reach us via Hotline, WhatsApp or Zalo.',
-      cn: '✨ AI 客服功能正在升级中，敬请期待！如有急事请通过热线、WhatsApp 或微信联系。',
-      jp: '✨ AI チャット機能は近日公開予定です！お急ぎの際は電話、WhatsApp、または WeChat にてご連絡ください。',
-      kr: '✨ AI 챗봇 기능은 곧 출시될 예정입니다! 문의 사항은 핫라인, WhatsApp 또는 카카오톡으로 연락해 주세요.',
-    };
-    showToast(aiComingSoonText[lang] || aiComingSoonText.vi);
-  };
+  const aiChatTriggerRef = useRef<HTMLButtonElement>(null);
+  const [aiChatOpenRequest, setAiChatOpenRequest] = useState(0);
+  const handleAiChatClick = () => setAiChatOpenRequest((request) => request + 1);
 
   const handleWechatClick = () => {
     if (wechatQr) {
@@ -295,7 +289,12 @@ const FloatingWidgets = () => {
       >
         {/* Hidden original ChatBot trigger */}
         <div className="pointer-events-auto">
-          <AIChatBot hideTrigger={true} phone={systemSettings?.phone} />
+          <AIChatBot
+            hideTrigger={true}
+            phone={systemSettings?.phone}
+            openRequest={aiChatOpenRequest}
+            returnFocusRef={aiChatTriggerRef}
+          />
         </div>
 
         {/* Floating Greeting Bubble (Visible when menu is closed) */}
@@ -415,6 +414,7 @@ const FloatingWidgets = () => {
                 
                 {/* 6. Chat với AI - COMING SOON */}
                 <button
+                  ref={aiChatTriggerRef}
                   onClick={() => {
                     handleAiChatClick();
                     trackAnalytics('contact_click', { identifier: 'ai_chat' });

@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "role": "menu-chat-accessibility",
+  "status": "PASS_LOCAL_PRODUCTION_BUILD",
+  "testedSha": "d129b6f0c184d937db8cc9f88342ca3c5e9ca20e",
+  "branch": "codex/ps-integration-20260913",
+  "server": "http://127.0.0.1:3422",
+  "artifacts": [
+    {
+      "path": "plans/pagespeed-remediation-20260913/remaining/agent-final-menu/final-candidate/menu-focus-report-d129b6f.json",
+      "kind": "raw-browser-acceptance"
+    },
+    {
+      "path": "scripts/test-final-menu-focus.mjs",
+      "kind": "rerunnable-browser-test"
+    },
+    {
+      "path": "plans/pagespeed-remediation-20260913/remaining/agent-final-menu/final-candidate/handoff-d129b6f.md",
+      "kind": "handoff"
+    }
+  ],
+  "commands": [
+    { "command": "MENU_FOCUS_BASE_URL=http://127.0.0.1:3422 MENU_FOCUS_TESTED_SHA=d129b6f0c184d937db8cc9f88342ca3c5e9ca20e node scripts/test-final-menu-focus.mjs", "exitCode": 0 }
+  ],
+  "residuals": [
+    "Physical-device pinch/zoom and full manual WCAG/font review remain open.",
+    "Production deployment SHA/alias mapping remains open."
+  ]
+}

@@ -30,6 +30,7 @@ try {
       const response = await page.goto(`${baseUrl}/`, { waitUntil: 'domcontentloaded', timeout: 30000 });
       run.homepage = response?.status() || null;
       assert.equal(run.homepage, 200);
+      await page.waitForTimeout(750);
       run.environment = await page.evaluate(() => ({
         innerWidth: window.innerWidth,
         innerHeight: window.innerHeight,
@@ -39,9 +40,9 @@ try {
       assert.equal(run.environment.innerHeight, profile.viewport.height);
       assert.equal(run.environment.devicePixelRatio, profile.deviceScaleFactor);
 
-      const menuTrigger = page.getByRole('button', { name: 'Toggle menu' }).first();
+      const menuTrigger = page.locator('button[aria-label="Toggle menu"]:visible').first();
       const menuOverlay = page.locator('nav.nav-fullscreen-overlay').first();
-      const menuClose = page.getByRole('button', { name: 'Close menu' }).first();
+      const menuClose = page.locator('button[aria-label="Close menu"]:visible').first();
       await menuTrigger.click();
       await waitForVisible(menuOverlay, true);
       await menuClose.waitFor({ state: 'visible', timeout: 3000 });
@@ -53,7 +54,7 @@ try {
       run.headerMenu.escapeFocus = await page.evaluate(() => document.activeElement?.getAttribute('aria-label'));
       assert.equal(run.headerMenu.escapeFocus, 'Toggle menu');
 
-      const contactTrigger = page.getByRole('button', { name: 'Contact Us' }).first();
+      const contactTrigger = page.locator('button[aria-label="Contact Us"]:visible').first();
       const contactMenu = page.locator('#floating-contact-menu').first();
       await contactTrigger.click();
       await waitForVisible(contactMenu, true);
@@ -62,6 +63,25 @@ try {
       run.contactMenu.escapeClosed = true;
       run.contactMenu.escapeFocus = await page.evaluate(() => document.activeElement?.getAttribute('aria-label'));
       assert.equal(run.contactMenu.escapeFocus, 'Contact Us');
+
+      await contactTrigger.click();
+      await waitForVisible(contactMenu, true);
+      const chatTrigger = page.locator('button[aria-label="Open chat"]:visible').first();
+      const chatDialog = page.locator('#ai-chat-popup').first();
+      await chatTrigger.click();
+      await waitForVisible(chatDialog, true);
+      await page.waitForTimeout(350);
+      run.chat = {
+        openFocus: await page.evaluate(() => document.activeElement?.getAttribute('aria-label')),
+      };
+      assert.equal(run.chat.openFocus, 'Close chat');
+      await page.keyboard.press('Tab');
+      assert.equal(await page.evaluate(() => document.activeElement?.closest('#ai-chat-popup')?.id), 'ai-chat-popup');
+      await page.keyboard.press('Escape');
+      await waitForVisible(chatDialog, false);
+      run.chat.escapeClosed = true;
+      run.chat.escapeFocus = await page.evaluate(() => document.activeElement?.getAttribute('aria-label'));
+      assert.equal(run.chat.escapeFocus, 'Open chat');
       run.status = 'PASS';
     } catch (error) {
       run.status = 'FAIL';

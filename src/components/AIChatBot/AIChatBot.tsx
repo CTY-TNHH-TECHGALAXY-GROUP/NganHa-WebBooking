@@ -4,7 +4,7 @@
 import { Z } from '@/lib/zIndex';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageCircle, X, Send, Mic, MicOff, Bot, User, ArrowRight, Sparkles } from 'lucide-react';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, type RefObject } from 'react';
 import { useAIChatBot } from './AIChatBot.logic';
 import {
   popupVariants,
@@ -24,9 +24,11 @@ interface AIChatBotProps {
   locale?: Locale;
   hideTrigger?: boolean;
   phone?: string;
+  openRequest?: number;
+  returnFocusRef?: RefObject<HTMLElement | null>;
 }
 
-const AIChatBot = ({ locale = 'vi', hideTrigger = false, phone }: AIChatBotProps) => {
+const AIChatBot = ({ locale = 'vi', hideTrigger = false, phone, openRequest = 0, returnFocusRef }: AIChatBotProps) => {
   const {
     messages,
     inputText,
@@ -48,7 +50,15 @@ const AIChatBot = ({ locale = 'vi', hideTrigger = false, phone }: AIChatBotProps
   const isListening = voiceStatus === 'listening';
   const chatTriggerRef = useRef<HTMLButtonElement>(null);
   const chatCloseRef = useRef<HTMLButtonElement>(null);
+  const chatDialogRef = useRef<HTMLDivElement>(null);
   const wasOpen = useRef(false);
+  const handledOpenRequest = useRef(openRequest);
+
+  useEffect(() => {
+    if (openRequest === handledOpenRequest.current) return;
+    handledOpenRequest.current = openRequest;
+    if (!isOpen) toggleChat();
+  }, [isOpen, openRequest, toggleChat]);
 
   useEffect(() => {
     if (isOpen) {
@@ -59,20 +69,42 @@ const AIChatBot = ({ locale = 'vi', hideTrigger = false, phone }: AIChatBotProps
 
     if (wasOpen.current) {
       const frame = window.requestAnimationFrame(() => {
-        if (!hideTrigger) chatTriggerRef.current?.focus();
+        const target = returnFocusRef?.current || (!hideTrigger ? chatTriggerRef.current : null);
+        target?.focus();
       });
       wasOpen.current = false;
       return () => window.cancelAnimationFrame(frame);
     }
-  }, [hideTrigger, isOpen]);
+  }, [hideTrigger, isOpen, returnFocusRef]);
 
   useEffect(() => {
     if (!isOpen) return;
 
     const handleChatKeyDown = (event: KeyboardEvent) => {
-      if (event.key !== 'Escape') return;
-      event.preventDefault();
-      closeChat();
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        closeChat();
+        return;
+      }
+      if (event.key !== 'Tab') return;
+      const dialog = chatDialogRef.current;
+      if (!dialog) return;
+      const focusable = Array.from(dialog.querySelectorAll<HTMLElement>(
+        'button:not([disabled]), input:not([disabled]), textarea:not([disabled]), select:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])',
+      )).filter((element) => element.getClientRects().length > 0);
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (!dialog.contains(document.activeElement)) {
+        event.preventDefault();
+        first.focus();
+      } else if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
     };
 
     document.addEventListener('keydown', handleChatKeyDown);
@@ -156,6 +188,7 @@ const AIChatBot = ({ locale = 'vi', hideTrigger = false, phone }: AIChatBotProps
               role="dialog"
               aria-modal="true"
               aria-labelledby="ai-chat-popup-title"
+              ref={chatDialogRef}
             >
               {/* ─── Header ─── */}
               <div className="ai-chat-header">
