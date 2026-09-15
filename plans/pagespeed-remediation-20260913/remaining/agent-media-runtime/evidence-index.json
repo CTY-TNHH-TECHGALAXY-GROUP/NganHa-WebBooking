@@ -20,9 +20,15 @@
       "sha256": "73b0ebba0a5838606c67f7483d905279ddb9d487dacc61d038baeda6864f38f4"
     },
     {
+      "path": "plans/pagespeed-remediation-20260913/remaining/agent-media-runtime/final-candidate/our-story-browser-f5f6243-report.json",
+      "status": "PASS_LOCAL_BROWSER",
+      "testedSha": "f5f62436a90b764222cea73066473f81bdb9f179",
+      "sha256": "e2856c83b6c8256f578590a77e0c4f1724636c645368c2911f7cc600ebcd63c1"
+    },
+    {
       "path": "plans/pagespeed-remediation-20260913/remaining/agent-media-runtime/handoff.md",
       "status": "HANDOFF",
-      "sha256": "a6ec6a8a6f825b9fbf099399790c4646f6ddad73d848582cfa1a81e4ad725648"
+      "sha256": "0d0ce7992d54718368bfe23dec85f0ad251859cc8efe768442366f7a33981af7"
     }
   ],
   "residuals": [

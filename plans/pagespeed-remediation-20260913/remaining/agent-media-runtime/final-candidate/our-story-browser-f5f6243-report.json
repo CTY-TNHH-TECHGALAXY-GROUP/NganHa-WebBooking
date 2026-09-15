@@ -1,0 +1,4559 @@
+{
+  "status": "PASS_LOCAL_BROWSER",
+  "generatedAt": "2026-09-15T14:58:32.787Z",
+  "testedSha": "f5f62436a90b764222cea73066473f81bdb9f179",
+  "baseUrl": "http://127.0.0.1:3411",
+  "runs": [
+    {
+      "name": "mobile-cold-1",
+      "status": "PASS",
+      "profile": {
+        "name": "mobile-cold-1",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "deviceScaleFactor": 2
+      },
+      "before": {
+        "viewport": {
+          "width": 390,
+          "height": 844,
+          "devicePixelRatio": 2
+        },
+        "images": [
+          {
+            "index": 0,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 50,
+              "y": 2227.15625,
+              "width": 324,
+              "height": 405
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 1,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 26,
+              "y": 2475.6875,
+              "width": 180.46875,
+              "height": 180.46875
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 2,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 47,
+              "y": 3989.375,
+              "width": 176.75,
+              "height": 132.5625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 3,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 248.75,
+              "y": 3989.375,
+              "width": 176.75,
+              "height": 132.5625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 4,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 450.5,
+              "y": 3989.375,
+              "width": 176.75,
+              "height": 132.5625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 5,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 652.25,
+              "y": 3989.375,
+              "width": 176.75,
+              "height": 132.5625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 6,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 4521.8125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 7,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 5736.703125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 8,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 6367.453125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 9,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 6947.828125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 10,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 7628.953125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 11,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 8410.828125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 12,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 9473.734375,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 13,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 10627.015625,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 14,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 11689.921875,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          }
+        ],
+        "scrollY": 0
+      },
+      "afterStoryScroll": {
+        "viewport": {
+          "width": 390,
+          "height": 844,
+          "devicePixelRatio": 2
+        },
+        "images": [
+          {
+            "index": 0,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin-731e742255a33a3d-w960.webp",
+            "sourceSrcSet": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin-9f70464c78915063-w320.webp 320w, https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin-675844b36d20d56a-w640.webp 640w, https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin-731e742255a33a3d-w960.webp 960w",
+            "state": "loading",
+            "ariaBusy": "true",
+            "naturalWidth": 358,
+            "complete": false,
+            "box": {
+              "x": 50,
+              "y": 6.15625,
+              "width": 324,
+              "height": 405
+            },
+            "visible": true,
+            "withinRootMargin": true
+          },
+          {
+            "index": 1,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner-e2de6dff03a7b87b-w640.webp",
+            "sourceSrcSet": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner-b77c444fb9d0630a-w320.webp 320w, https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner-e2de6dff03a7b87b-w640.webp 640w, https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner-d1272da4fe23d7ab-w960.webp 960w",
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 218,
+            "complete": true,
+            "box": {
+              "x": 26,
+              "y": 254.6875,
+              "width": 180.46875,
+              "height": 180.46875
+            },
+            "visible": true,
+            "withinRootMargin": true
+          },
+          {
+            "index": 2,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 47,
+              "y": 1768.375,
+              "width": 176.75,
+              "height": 132.5625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 3,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 248.75,
+              "y": 1768.375,
+              "width": 176.75,
+              "height": 132.5625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 4,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 450.5,
+              "y": 1768.375,
+              "width": 176.75,
+              "height": 132.5625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 5,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 652.25,
+              "y": 1768.375,
+              "width": 176.75,
+              "height": 132.5625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 6,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 2300.8125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 7,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 3515.703125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 8,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 4146.453125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 9,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 4726.828125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 10,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 5407.953125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 11,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 6189.828125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 12,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 7252.734375,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 13,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 8406.015625,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 14,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 9468.921875,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          }
+        ],
+        "scrollY": 2221
+      },
+      "filmBefore": {
+        "viewport": {
+          "width": 390,
+          "height": 844,
+          "devicePixelRatio": 2
+        },
+        "images": [
+          {
+            "index": 0,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin-731e742255a33a3d-w960.webp",
+            "sourceSrcSet": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin-9f70464c78915063-w320.webp 320w, https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin-675844b36d20d56a-w640.webp 640w, https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin-731e742255a33a3d-w960.webp 960w",
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 358,
+            "complete": true,
+            "box": {
+              "x": 50,
+              "y": -1473.84375,
+              "width": 324,
+              "height": 405
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 1,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner-e2de6dff03a7b87b-w640.webp",
+            "sourceSrcSet": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner-b77c444fb9d0630a-w320.webp 320w, https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner-e2de6dff03a7b87b-w640.webp 640w, https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner-d1272da4fe23d7ab-w960.webp 960w",
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 218,
+            "complete": true,
+            "box": {
+              "x": 26,
+              "y": -1225.3125,
+              "width": 180.46875,
+              "height": 180.46875
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 2,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_city_bus.webp",
+            "currentSrc": "",
+            "sourceSrcSet": null,
+            "state": "loading",
+            "ariaBusy": "true",
+            "naturalWidth": 0,
+            "complete": false,
+            "box": {
+              "x": 47,
+              "y": 288.375,
+              "width": 176.75,
+              "height": 132.5625
+            },
+            "visible": true,
+            "withinRootMargin": true
+          },
+          {
+            "index": 3,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/saigon_river_cruise_hd.webp",
+            "currentSrc": "",
+            "sourceSrcSet": null,
+            "state": "loading",
+            "ariaBusy": "true",
+            "naturalWidth": 0,
+            "complete": false,
+            "box": {
+              "x": 248.75,
+              "y": 288.375,
+              "width": 176.75,
+              "height": 132.5625
+            },
+            "visible": true,
+            "withinRootMargin": true
+          },
+          {
+            "index": 4,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 450.5,
+              "y": 288.375,
+              "width": 176.75,
+              "height": 132.5625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 5,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 652.25,
+              "y": 288.375,
+              "width": 176.75,
+              "height": 132.5625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 6,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/saigon_night_bridge.webp",
+            "currentSrc": "",
+            "sourceSrcSet": null,
+            "state": "loading",
+            "ariaBusy": "true",
+            "naturalWidth": 0,
+            "complete": false,
+            "box": {
+              "x": 16,
+              "y": 820.8125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": true,
+            "withinRootMargin": true
+          },
+          {
+            "index": 7,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 2035.703125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 8,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 2666.453125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 9,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 3246.828125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 10,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 3927.953125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 11,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 4709.828125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 12,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 5772.734375,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 13,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 6926.015625,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 14,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 7988.921875,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          }
+        ],
+        "scrollY": 3701
+      },
+      "filmAfter": {
+        "viewport": {
+          "width": 390,
+          "height": 844,
+          "devicePixelRatio": 2
+        },
+        "images": [
+          {
+            "index": 0,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin-731e742255a33a3d-w960.webp",
+            "sourceSrcSet": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin-9f70464c78915063-w320.webp 320w, https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin-675844b36d20d56a-w640.webp 640w, https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin-731e742255a33a3d-w960.webp 960w",
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 358,
+            "complete": true,
+            "box": {
+              "x": 50,
+              "y": -1478.84375,
+              "width": 324,
+              "height": 405
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 1,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner-e2de6dff03a7b87b-w640.webp",
+            "sourceSrcSet": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner-b77c444fb9d0630a-w320.webp 320w, https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner-e2de6dff03a7b87b-w640.webp 640w, https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner-d1272da4fe23d7ab-w960.webp 960w",
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 218,
+            "complete": true,
+            "box": {
+              "x": 26,
+              "y": -1230.3125,
+              "width": 180.46875,
+              "height": 180.46875
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 2,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_city_bus.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_city_bus.webp",
+            "sourceSrcSet": null,
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 1122,
+            "complete": true,
+            "box": {
+              "x": -455,
+              "y": 283.375,
+              "width": 176.75,
+              "height": 132.5625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 3,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/saigon_river_cruise_hd.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/saigon_river_cruise_hd.webp",
+            "sourceSrcSet": null,
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 1089,
+            "complete": true,
+            "box": {
+              "x": -253.25,
+              "y": 283.375,
+              "width": 176.75,
+              "height": 132.5625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 4,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/foot_spa.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/foot_spa.webp",
+            "sourceSrcSet": null,
+            "state": "loading",
+            "ariaBusy": "true",
+            "naturalWidth": 1254,
+            "complete": false,
+            "box": {
+              "x": -51.5,
+              "y": 283.375,
+              "width": 176.75,
+              "height": 132.5625
+            },
+            "visible": true,
+            "withinRootMargin": true
+          },
+          {
+            "index": 5,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/saigon_waterbus.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/saigon_waterbus.webp",
+            "sourceSrcSet": null,
+            "state": "loading",
+            "ariaBusy": "true",
+            "naturalWidth": 1536,
+            "complete": false,
+            "box": {
+              "x": 150.25,
+              "y": 283.375,
+              "width": 176.75,
+              "height": 132.5625
+            },
+            "visible": true,
+            "withinRootMargin": true
+          },
+          {
+            "index": 6,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/saigon_night_bridge.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/saigon_night_bridge.webp",
+            "sourceSrcSet": null,
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 1200,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 815.8125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": true,
+            "withinRootMargin": true
+          },
+          {
+            "index": 7,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 2030.703125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 8,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 2661.453125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 9,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 3241.828125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 10,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 3922.953125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 11,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 4704.828125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 12,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 5767.734375,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 13,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 6921.015625,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 14,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 7983.921875,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          }
+        ],
+        "scrollY": 3706
+      },
+      "imageRequests": [
+        "http://127.0.0.1:3411/images/optimized/chatbot-icon.7dcf5f07b8fe7e60.128.webp",
+        "http://127.0.0.1:3411/images/logo.png?v=3",
+        "http://127.0.0.1:3411/images/logo_fixed_slogan.png"
+      ]
+    },
+    {
+      "name": "mobile-cold-2",
+      "status": "PASS",
+      "profile": {
+        "name": "mobile-cold-2",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "deviceScaleFactor": 2
+      },
+      "before": {
+        "viewport": {
+          "width": 390,
+          "height": 844,
+          "devicePixelRatio": 2
+        },
+        "images": [
+          {
+            "index": 0,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 50,
+              "y": 2227.15625,
+              "width": 324,
+              "height": 405
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 1,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 26,
+              "y": 2475.6875,
+              "width": 180.46875,
+              "height": 180.46875
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 2,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 47,
+              "y": 3989.375,
+              "width": 176.75,
+              "height": 132.5625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 3,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 248.75,
+              "y": 3989.375,
+              "width": 176.75,
+              "height": 132.5625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 4,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 450.5,
+              "y": 3989.375,
+              "width": 176.75,
+              "height": 132.5625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 5,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 652.25,
+              "y": 3989.375,
+              "width": 176.75,
+              "height": 132.5625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 6,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 4521.8125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 7,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 5736.703125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 8,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 6367.453125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 9,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 6947.828125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 10,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 7628.953125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 11,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 8410.828125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 12,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 9473.734375,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 13,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 10627.015625,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 14,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 11689.921875,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          }
+        ],
+        "scrollY": 0
+      },
+      "afterStoryScroll": {
+        "viewport": {
+          "width": 390,
+          "height": 844,
+          "devicePixelRatio": 2
+        },
+        "images": [
+          {
+            "index": 0,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin-731e742255a33a3d-w960.webp",
+            "sourceSrcSet": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin-9f70464c78915063-w320.webp 320w, https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin-675844b36d20d56a-w640.webp 640w, https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin-731e742255a33a3d-w960.webp 960w",
+            "state": "loading",
+            "ariaBusy": "true",
+            "naturalWidth": 358,
+            "complete": false,
+            "box": {
+              "x": 50,
+              "y": 204.15625,
+              "width": 324,
+              "height": 405
+            },
+            "visible": true,
+            "withinRootMargin": true
+          },
+          {
+            "index": 1,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner-e2de6dff03a7b87b-w640.webp",
+            "sourceSrcSet": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner-b77c444fb9d0630a-w320.webp 320w, https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner-e2de6dff03a7b87b-w640.webp 640w, https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner-d1272da4fe23d7ab-w960.webp 960w",
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 218,
+            "complete": true,
+            "box": {
+              "x": 26,
+              "y": 452.6875,
+              "width": 180.46875,
+              "height": 180.46875
+            },
+            "visible": true,
+            "withinRootMargin": true
+          },
+          {
+            "index": 2,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 47,
+              "y": 1966.375,
+              "width": 176.75,
+              "height": 132.5625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 3,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 248.75,
+              "y": 1966.375,
+              "width": 176.75,
+              "height": 132.5625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 4,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 450.5,
+              "y": 1966.375,
+              "width": 176.75,
+              "height": 132.5625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 5,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 652.25,
+              "y": 1966.375,
+              "width": 176.75,
+              "height": 132.5625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 6,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 2498.8125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 7,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 3713.703125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 8,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 4344.453125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 9,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 4924.828125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 10,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 5605.953125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 11,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 6387.828125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 12,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 7450.734375,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 13,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 8604.015625,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 14,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 9666.921875,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          }
+        ],
+        "scrollY": 2023
+      },
+      "filmBefore": {
+        "viewport": {
+          "width": 390,
+          "height": 844,
+          "devicePixelRatio": 2
+        },
+        "images": [
+          {
+            "index": 0,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin-731e742255a33a3d-w960.webp",
+            "sourceSrcSet": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin-9f70464c78915063-w320.webp 320w, https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin-675844b36d20d56a-w640.webp 640w, https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin-731e742255a33a3d-w960.webp 960w",
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 358,
+            "complete": true,
+            "box": {
+              "x": 50,
+              "y": -1466.84375,
+              "width": 324,
+              "height": 405
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 1,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner-e2de6dff03a7b87b-w640.webp",
+            "sourceSrcSet": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner-b77c444fb9d0630a-w320.webp 320w, https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner-e2de6dff03a7b87b-w640.webp 640w, https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner-d1272da4fe23d7ab-w960.webp 960w",
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 218,
+            "complete": true,
+            "box": {
+              "x": 26,
+              "y": -1218.3125,
+              "width": 180.46875,
+              "height": 180.46875
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 2,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_city_bus.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_city_bus.webp",
+            "sourceSrcSet": null,
+            "state": "loading",
+            "ariaBusy": "true",
+            "naturalWidth": 1122,
+            "complete": false,
+            "box": {
+              "x": 47,
+              "y": 295.375,
+              "width": 176.75,
+              "height": 132.5625
+            },
+            "visible": true,
+            "withinRootMargin": true
+          },
+          {
+            "index": 3,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/saigon_river_cruise_hd.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/saigon_river_cruise_hd.webp",
+            "sourceSrcSet": null,
+            "state": "loading",
+            "ariaBusy": "true",
+            "naturalWidth": 1089,
+            "complete": false,
+            "box": {
+              "x": 248.75,
+              "y": 295.375,
+              "width": 176.75,
+              "height": 132.5625
+            },
+            "visible": true,
+            "withinRootMargin": true
+          },
+          {
+            "index": 4,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 450.5,
+              "y": 295.375,
+              "width": 176.75,
+              "height": 132.5625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 5,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 652.25,
+              "y": 295.375,
+              "width": 176.75,
+              "height": 132.5625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 6,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/saigon_night_bridge.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/saigon_night_bridge.webp",
+            "sourceSrcSet": null,
+            "state": "loading",
+            "ariaBusy": "true",
+            "naturalWidth": 1200,
+            "complete": false,
+            "box": {
+              "x": 16,
+              "y": 827.8125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": true,
+            "withinRootMargin": true
+          },
+          {
+            "index": 7,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 2042.703125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 8,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 2673.453125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 9,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 3253.828125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 10,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 3934.953125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 11,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 4716.828125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 12,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 5779.734375,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 13,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 6933.015625,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 14,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 7995.921875,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          }
+        ],
+        "scrollY": 3694
+      },
+      "filmAfter": {
+        "viewport": {
+          "width": 390,
+          "height": 844,
+          "devicePixelRatio": 2
+        },
+        "images": [
+          {
+            "index": 0,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin-731e742255a33a3d-w960.webp",
+            "sourceSrcSet": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin-9f70464c78915063-w320.webp 320w, https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin-675844b36d20d56a-w640.webp 640w, https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin-731e742255a33a3d-w960.webp 960w",
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 358,
+            "complete": true,
+            "box": {
+              "x": 50,
+              "y": -1478.84375,
+              "width": 324,
+              "height": 405
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 1,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner-e2de6dff03a7b87b-w640.webp",
+            "sourceSrcSet": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner-b77c444fb9d0630a-w320.webp 320w, https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner-e2de6dff03a7b87b-w640.webp 640w, https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner-d1272da4fe23d7ab-w960.webp 960w",
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 218,
+            "complete": true,
+            "box": {
+              "x": 26,
+              "y": -1230.3125,
+              "width": 180.46875,
+              "height": 180.46875
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 2,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_city_bus.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_city_bus.webp",
+            "sourceSrcSet": null,
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 1122,
+            "complete": true,
+            "box": {
+              "x": -455,
+              "y": 283.375,
+              "width": 176.75,
+              "height": 132.5625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 3,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/saigon_river_cruise_hd.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/saigon_river_cruise_hd.webp",
+            "sourceSrcSet": null,
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 1089,
+            "complete": true,
+            "box": {
+              "x": -253.25,
+              "y": 283.375,
+              "width": 176.75,
+              "height": 132.5625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 4,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/foot_spa.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/foot_spa.webp",
+            "sourceSrcSet": null,
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 1254,
+            "complete": true,
+            "box": {
+              "x": -51.5,
+              "y": 283.375,
+              "width": 176.75,
+              "height": 132.5625
+            },
+            "visible": true,
+            "withinRootMargin": true
+          },
+          {
+            "index": 5,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/saigon_waterbus.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/saigon_waterbus.webp",
+            "sourceSrcSet": null,
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 1536,
+            "complete": true,
+            "box": {
+              "x": 150.25,
+              "y": 283.375,
+              "width": 176.75,
+              "height": 132.5625
+            },
+            "visible": true,
+            "withinRootMargin": true
+          },
+          {
+            "index": 6,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/saigon_night_bridge.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/saigon_night_bridge.webp",
+            "sourceSrcSet": null,
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 1200,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 815.8125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": true,
+            "withinRootMargin": true
+          },
+          {
+            "index": 7,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 2030.703125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 8,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 2661.453125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 9,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 3241.828125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 10,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 3922.953125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 11,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 4704.828125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 12,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 5767.734375,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 13,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 6921.015625,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 14,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 7983.921875,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          }
+        ],
+        "scrollY": 3706
+      },
+      "imageRequests": [
+        "http://127.0.0.1:3411/images/logo.png?v=3",
+        "http://127.0.0.1:3411/images/optimized/chatbot-icon.7dcf5f07b8fe7e60.128.webp",
+        "http://127.0.0.1:3411/images/logo_fixed_slogan.png"
+      ]
+    },
+    {
+      "name": "desktop-cold",
+      "status": "PASS",
+      "profile": {
+        "name": "desktop-cold",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "deviceScaleFactor": 1
+      },
+      "before": {
+        "viewport": {
+          "width": 1440,
+          "height": 900,
+          "devicePixelRatio": 1
+        },
+        "images": [
+          {
+            "index": 0,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 711.234375,
+              "y": 1290.84375,
+              "width": 628.75,
+              "height": 785.9375
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 1,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 663.234375,
+              "y": 1777.359375,
+              "width": 268.421875,
+              "height": 268.421875
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 2,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 131,
+              "y": 2968.1875,
+              "width": 275.75,
+              "height": 206.8125
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 3,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 431.75,
+              "y": 2968.1875,
+              "width": 275.75,
+              "height": 206.8125
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 4,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 732.5,
+              "y": 2968.1875,
+              "width": 275.75,
+              "height": 206.8125
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 5,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 1033.25,
+              "y": 2968.1875,
+              "width": 275.75,
+              "height": 206.8125
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 6,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 100,
+              "y": 3540.984375,
+              "width": 552.890625,
+              "height": 368.59375
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 7,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 100,
+              "y": 4407.125,
+              "width": 514.796875,
+              "height": 386.09375
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 8,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 710.796875,
+              "y": 4898.21875,
+              "width": 629.203125,
+              "height": 471.890625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 9,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 100,
+              "y": 5475.109375,
+              "width": 514.796875,
+              "height": 386.09375
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 10,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 710.796875,
+              "y": 5966.203125,
+              "width": 629.203125,
+              "height": 471.890625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 11,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 100,
+              "y": 6652.515625,
+              "width": 514.796875,
+              "height": 386.09375
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 12,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 710.796875,
+              "y": 7352.9375,
+              "width": 629.203125,
+              "height": 471.890625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 13,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 100,
+              "y": 8139.171875,
+              "width": 514.796875,
+              "height": 386.09375
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 14,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 710.796875,
+              "y": 8807.671875,
+              "width": 629.203125,
+              "height": 471.890625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          }
+        ],
+        "scrollY": 0
+      },
+      "afterStoryScroll": {
+        "viewport": {
+          "width": 1440,
+          "height": 900,
+          "devicePixelRatio": 1
+        },
+        "images": [
+          {
+            "index": 0,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin-731e742255a33a3d-w960.webp",
+            "sourceSrcSet": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin-9f70464c78915063-w320.webp 320w, https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin-675844b36d20d56a-w640.webp 640w, https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin-731e742255a33a3d-w960.webp 960w",
+            "state": "loading",
+            "ariaBusy": "true",
+            "naturalWidth": 748,
+            "complete": false,
+            "box": {
+              "x": 711.234375,
+              "y": 63.84375,
+              "width": 628.75,
+              "height": 785.9375
+            },
+            "visible": true,
+            "withinRootMargin": true
+          },
+          {
+            "index": 1,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner-e2de6dff03a7b87b-w640.webp",
+            "sourceSrcSet": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner-b77c444fb9d0630a-w320.webp 320w, https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner-e2de6dff03a7b87b-w640.webp 640w, https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner-d1272da4fe23d7ab-w960.webp 960w",
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 345,
+            "complete": true,
+            "box": {
+              "x": 663.234375,
+              "y": 550.359375,
+              "width": 268.421875,
+              "height": 268.421875
+            },
+            "visible": true,
+            "withinRootMargin": true
+          },
+          {
+            "index": 2,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 131,
+              "y": 1741.1875,
+              "width": 275.75,
+              "height": 206.8125
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 3,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 431.75,
+              "y": 1741.1875,
+              "width": 275.75,
+              "height": 206.8125
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 4,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 732.5,
+              "y": 1741.1875,
+              "width": 275.75,
+              "height": 206.8125
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 5,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 1033.25,
+              "y": 1741.1875,
+              "width": 275.75,
+              "height": 206.8125
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 6,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 100,
+              "y": 2313.984375,
+              "width": 552.890625,
+              "height": 368.59375
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 7,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 100,
+              "y": 3180.125,
+              "width": 514.796875,
+              "height": 386.09375
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 8,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 710.796875,
+              "y": 3671.21875,
+              "width": 629.203125,
+              "height": 471.890625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 9,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 100,
+              "y": 4248.109375,
+              "width": 514.796875,
+              "height": 386.09375
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 10,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 710.796875,
+              "y": 4739.203125,
+              "width": 629.203125,
+              "height": 471.890625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 11,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 100,
+              "y": 5425.515625,
+              "width": 514.796875,
+              "height": 386.09375
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 12,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 710.796875,
+              "y": 6125.9375,
+              "width": 629.203125,
+              "height": 471.890625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 13,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 100,
+              "y": 6912.171875,
+              "width": 514.796875,
+              "height": 386.09375
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 14,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 710.796875,
+              "y": 7580.671875,
+              "width": 629.203125,
+              "height": 471.890625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          }
+        ],
+        "scrollY": 1227
+      },
+      "filmBefore": {
+        "viewport": {
+          "width": 1440,
+          "height": 900,
+          "devicePixelRatio": 1
+        },
+        "images": [
+          {
+            "index": 0,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin-731e742255a33a3d-w960.webp",
+            "sourceSrcSet": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin-9f70464c78915063-w320.webp 320w, https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin-675844b36d20d56a-w640.webp 640w, https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin-731e742255a33a3d-w960.webp 960w",
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 748,
+            "complete": true,
+            "box": {
+              "x": 711.234375,
+              "y": -1410.15625,
+              "width": 628.75,
+              "height": 785.9375
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 1,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner-e2de6dff03a7b87b-w640.webp",
+            "sourceSrcSet": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner-b77c444fb9d0630a-w320.webp 320w, https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner-e2de6dff03a7b87b-w640.webp 640w, https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner-d1272da4fe23d7ab-w960.webp 960w",
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 345,
+            "complete": true,
+            "box": {
+              "x": 663.234375,
+              "y": -923.640625,
+              "width": 268.421875,
+              "height": 268.421875
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 2,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_city_bus.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_city_bus.webp",
+            "sourceSrcSet": null,
+            "state": "loading",
+            "ariaBusy": "true",
+            "naturalWidth": 1122,
+            "complete": false,
+            "box": {
+              "x": 131,
+              "y": 267.1875,
+              "width": 275.75,
+              "height": 206.8125
+            },
+            "visible": true,
+            "withinRootMargin": true
+          },
+          {
+            "index": 3,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/saigon_river_cruise_hd.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/saigon_river_cruise_hd.webp",
+            "sourceSrcSet": null,
+            "state": "loading",
+            "ariaBusy": "true",
+            "naturalWidth": 1089,
+            "complete": false,
+            "box": {
+              "x": 431.75,
+              "y": 267.1875,
+              "width": 275.75,
+              "height": 206.8125
+            },
+            "visible": true,
+            "withinRootMargin": true
+          },
+          {
+            "index": 4,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/foot_spa.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/foot_spa.webp",
+            "sourceSrcSet": null,
+            "state": "loading",
+            "ariaBusy": "true",
+            "naturalWidth": 1254,
+            "complete": false,
+            "box": {
+              "x": 732.5,
+              "y": 267.1875,
+              "width": 275.75,
+              "height": 206.8125
+            },
+            "visible": true,
+            "withinRootMargin": true
+          },
+          {
+            "index": 5,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/saigon_waterbus.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/saigon_waterbus.webp",
+            "sourceSrcSet": null,
+            "state": "loading",
+            "ariaBusy": "true",
+            "naturalWidth": 1536,
+            "complete": false,
+            "box": {
+              "x": 1033.25,
+              "y": 267.1875,
+              "width": 275.75,
+              "height": 206.8125
+            },
+            "visible": true,
+            "withinRootMargin": true
+          },
+          {
+            "index": 6,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/saigon_night_bridge.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/saigon_night_bridge.webp",
+            "sourceSrcSet": null,
+            "state": "loading",
+            "ariaBusy": "true",
+            "naturalWidth": 1200,
+            "complete": false,
+            "box": {
+              "x": 100,
+              "y": 839.984375,
+              "width": 552.890625,
+              "height": 368.59375
+            },
+            "visible": true,
+            "withinRootMargin": true
+          },
+          {
+            "index": 7,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 100,
+              "y": 1706.125,
+              "width": 514.796875,
+              "height": 386.09375
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 8,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 710.796875,
+              "y": 2197.21875,
+              "width": 629.203125,
+              "height": 471.890625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 9,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 100,
+              "y": 2774.109375,
+              "width": 514.796875,
+              "height": 386.09375
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 10,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 710.796875,
+              "y": 3265.203125,
+              "width": 629.203125,
+              "height": 471.890625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 11,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 100,
+              "y": 3951.515625,
+              "width": 514.796875,
+              "height": 386.09375
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 12,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 710.796875,
+              "y": 4651.9375,
+              "width": 629.203125,
+              "height": 471.890625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 13,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 100,
+              "y": 5438.171875,
+              "width": 514.796875,
+              "height": 386.09375
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 14,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 710.796875,
+              "y": 6106.671875,
+              "width": 629.203125,
+              "height": 471.890625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          }
+        ],
+        "scrollY": 2701
+      },
+      "filmAfter": {
+        "viewport": {
+          "width": 1440,
+          "height": 900,
+          "devicePixelRatio": 1
+        },
+        "images": [
+          {
+            "index": 0,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin-731e742255a33a3d-w960.webp",
+            "sourceSrcSet": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin-9f70464c78915063-w320.webp 320w, https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin-675844b36d20d56a-w640.webp 640w, https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin-731e742255a33a3d-w960.webp 960w",
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 748,
+            "complete": true,
+            "box": {
+              "x": 711.234375,
+              "y": -1420.15625,
+              "width": 628.75,
+              "height": 785.9375
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 1,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner-e2de6dff03a7b87b-w640.webp",
+            "sourceSrcSet": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner-b77c444fb9d0630a-w320.webp 320w, https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner-e2de6dff03a7b87b-w640.webp 640w, https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner-d1272da4fe23d7ab-w960.webp 960w",
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 345,
+            "complete": true,
+            "box": {
+              "x": 663.234375,
+              "y": -933.640625,
+              "width": 268.421875,
+              "height": 268.421875
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 2,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_city_bus.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_city_bus.webp",
+            "sourceSrcSet": null,
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 1122,
+            "complete": true,
+            "box": {
+              "x": 131,
+              "y": 257.1875,
+              "width": 275.75,
+              "height": 206.8125
+            },
+            "visible": true,
+            "withinRootMargin": true
+          },
+          {
+            "index": 3,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/saigon_river_cruise_hd.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/saigon_river_cruise_hd.webp",
+            "sourceSrcSet": null,
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 1089,
+            "complete": true,
+            "box": {
+              "x": 431.75,
+              "y": 257.1875,
+              "width": 275.75,
+              "height": 206.8125
+            },
+            "visible": true,
+            "withinRootMargin": true
+          },
+          {
+            "index": 4,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/foot_spa.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/foot_spa.webp",
+            "sourceSrcSet": null,
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 1254,
+            "complete": true,
+            "box": {
+              "x": 732.5,
+              "y": 257.1875,
+              "width": 275.75,
+              "height": 206.8125
+            },
+            "visible": true,
+            "withinRootMargin": true
+          },
+          {
+            "index": 5,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/saigon_waterbus.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/saigon_waterbus.webp",
+            "sourceSrcSet": null,
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 1536,
+            "complete": true,
+            "box": {
+              "x": 1033.25,
+              "y": 257.1875,
+              "width": 275.75,
+              "height": 206.8125
+            },
+            "visible": true,
+            "withinRootMargin": true
+          },
+          {
+            "index": 6,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/saigon_night_bridge.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/saigon_night_bridge.webp",
+            "sourceSrcSet": null,
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 1200,
+            "complete": true,
+            "box": {
+              "x": 100,
+              "y": 829.984375,
+              "width": 552.890625,
+              "height": 368.59375
+            },
+            "visible": true,
+            "withinRootMargin": true
+          },
+          {
+            "index": 7,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 100,
+              "y": 1696.125,
+              "width": 514.796875,
+              "height": 386.09375
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 8,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 710.796875,
+              "y": 2187.21875,
+              "width": 629.203125,
+              "height": 471.890625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 9,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 100,
+              "y": 2764.109375,
+              "width": 514.796875,
+              "height": 386.09375
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 10,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 710.796875,
+              "y": 3255.203125,
+              "width": 629.203125,
+              "height": 471.890625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 11,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 100,
+              "y": 3941.515625,
+              "width": 514.796875,
+              "height": 386.09375
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 12,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 710.796875,
+              "y": 4641.9375,
+              "width": 629.203125,
+              "height": 471.890625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 13,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 100,
+              "y": 5428.171875,
+              "width": 514.796875,
+              "height": 386.09375
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 14,
+            "src": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "currentSrc": "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=",
+            "sourceSrcSet": null,
+            "state": "deferred",
+            "ariaBusy": "true",
+            "naturalWidth": 1,
+            "complete": true,
+            "box": {
+              "x": 710.796875,
+              "y": 6096.671875,
+              "width": 629.203125,
+              "height": 471.890625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          }
+        ],
+        "scrollY": 2711
+      },
+      "imageRequests": [
+        "http://127.0.0.1:3411/images/logo.png?v=3",
+        "http://127.0.0.1:3411/images/optimized/chatbot-icon.2cc19db7ff379fbe.64.webp",
+        "http://127.0.0.1:3411/images/logo_fixed_slogan.png"
+      ]
+    },
+    {
+      "name": "mobile-intersection-observer-absent",
+      "status": "PASS",
+      "profile": {
+        "name": "mobile-intersection-observer-absent",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "deviceScaleFactor": 2,
+        "disableIntersectionObserver": true
+      },
+      "before": {
+        "viewport": {
+          "width": 390,
+          "height": 844,
+          "devicePixelRatio": 2
+        },
+        "images": [
+          {
+            "index": 0,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin-731e742255a33a3d-w960.webp",
+            "sourceSrcSet": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin-9f70464c78915063-w320.webp 320w, https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin-675844b36d20d56a-w640.webp 640w, https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin-731e742255a33a3d-w960.webp 960w",
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 358,
+            "complete": true,
+            "box": {
+              "x": 50,
+              "y": 2227.15625,
+              "width": 324,
+              "height": 405
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 1,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner-e2de6dff03a7b87b-w640.webp",
+            "sourceSrcSet": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner-b77c444fb9d0630a-w320.webp 320w, https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner-e2de6dff03a7b87b-w640.webp 640w, https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner-d1272da4fe23d7ab-w960.webp 960w",
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 218,
+            "complete": true,
+            "box": {
+              "x": 26,
+              "y": 2475.6875,
+              "width": 180.46875,
+              "height": 180.46875
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 2,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_city_bus.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_city_bus.webp",
+            "sourceSrcSet": null,
+            "state": "loading",
+            "ariaBusy": "true",
+            "naturalWidth": 1122,
+            "complete": false,
+            "box": {
+              "x": 47,
+              "y": 3989.375,
+              "width": 176.75,
+              "height": 132.5625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 3,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/saigon_river_cruise_hd.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/saigon_river_cruise_hd.webp",
+            "sourceSrcSet": null,
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 1089,
+            "complete": true,
+            "box": {
+              "x": 248.75,
+              "y": 3989.375,
+              "width": 176.75,
+              "height": 132.5625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 4,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/foot_spa.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/foot_spa.webp",
+            "sourceSrcSet": null,
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 1254,
+            "complete": true,
+            "box": {
+              "x": 450.5,
+              "y": 3989.375,
+              "width": 176.75,
+              "height": 132.5625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 5,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/saigon_waterbus.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/saigon_waterbus.webp",
+            "sourceSrcSet": null,
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 1536,
+            "complete": true,
+            "box": {
+              "x": 652.25,
+              "y": 3989.375,
+              "width": 176.75,
+              "height": 132.5625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 6,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/saigon_night_bridge.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/saigon_night_bridge.webp",
+            "sourceSrcSet": null,
+            "state": "loading",
+            "ariaBusy": "true",
+            "naturalWidth": 1200,
+            "complete": false,
+            "box": {
+              "x": 16,
+              "y": 4521.8125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 7,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/crowded_lobby.webp",
+            "currentSrc": "",
+            "sourceSrcSet": null,
+            "state": "loading",
+            "ariaBusy": "true",
+            "naturalWidth": 0,
+            "complete": false,
+            "box": {
+              "x": 16,
+              "y": 5736.703125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 8,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/couples_spa_massage.webp",
+            "currentSrc": "",
+            "sourceSrcSet": null,
+            "state": "loading",
+            "ariaBusy": "true",
+            "naturalWidth": 0,
+            "complete": false,
+            "box": {
+              "x": 16,
+              "y": 6367.453125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 9,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/herbal_spa_hd.webp",
+            "currentSrc": "",
+            "sourceSrcSet": null,
+            "state": "loading",
+            "ariaBusy": "true",
+            "naturalWidth": 0,
+            "complete": false,
+            "box": {
+              "x": 16,
+              "y": 6947.828125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 10,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/coconut_oil.webp",
+            "currentSrc": "",
+            "sourceSrcSet": null,
+            "state": "loading",
+            "ariaBusy": "true",
+            "naturalWidth": 0,
+            "complete": false,
+            "box": {
+              "x": 16,
+              "y": 7628.953125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 11,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_family.webp",
+            "currentSrc": "",
+            "sourceSrcSet": null,
+            "state": "loading",
+            "ariaBusy": "true",
+            "naturalWidth": 0,
+            "complete": false,
+            "box": {
+              "x": 16,
+              "y": 8410.828125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 12,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/homespa/flower_spa_hd_clear.webp",
+            "currentSrc": "",
+            "sourceSrcSet": null,
+            "state": "loading",
+            "ariaBusy": "true",
+            "naturalWidth": 0,
+            "complete": false,
+            "box": {
+              "x": 16,
+              "y": 9473.734375,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 13,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/homespa/oil_massage_hd_clear.webp",
+            "currentSrc": "",
+            "sourceSrcSet": null,
+            "state": "loading",
+            "ariaBusy": "true",
+            "naturalWidth": 0,
+            "complete": false,
+            "box": {
+              "x": 16,
+              "y": 10627.015625,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 14,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/homespa/cozy_warm_lamp_corner_hd.webp",
+            "currentSrc": "",
+            "sourceSrcSet": null,
+            "state": "loading",
+            "ariaBusy": "true",
+            "naturalWidth": 0,
+            "complete": false,
+            "box": {
+              "x": 16,
+              "y": 11689.921875,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          }
+        ],
+        "scrollY": 0
+      },
+      "afterStoryScroll": {
+        "viewport": {
+          "width": 390,
+          "height": 844,
+          "devicePixelRatio": 2
+        },
+        "images": [
+          {
+            "index": 0,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin-731e742255a33a3d-w960.webp",
+            "sourceSrcSet": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin-9f70464c78915063-w320.webp 320w, https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin-675844b36d20d56a-w640.webp 640w, https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin-731e742255a33a3d-w960.webp 960w",
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 358,
+            "complete": true,
+            "box": {
+              "x": 50,
+              "y": 749.15625,
+              "width": 324,
+              "height": 405
+            },
+            "visible": true,
+            "withinRootMargin": true
+          },
+          {
+            "index": 1,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner-e2de6dff03a7b87b-w640.webp",
+            "sourceSrcSet": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner-b77c444fb9d0630a-w320.webp 320w, https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner-e2de6dff03a7b87b-w640.webp 640w, https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner-d1272da4fe23d7ab-w960.webp 960w",
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 218,
+            "complete": true,
+            "box": {
+              "x": 26,
+              "y": 997.6875,
+              "width": 180.46875,
+              "height": 180.46875
+            },
+            "visible": false,
+            "withinRootMargin": true
+          },
+          {
+            "index": 2,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_city_bus.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_city_bus.webp",
+            "sourceSrcSet": null,
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 1122,
+            "complete": true,
+            "box": {
+              "x": 47,
+              "y": 2511.375,
+              "width": 176.75,
+              "height": 132.5625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 3,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/saigon_river_cruise_hd.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/saigon_river_cruise_hd.webp",
+            "sourceSrcSet": null,
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 1089,
+            "complete": true,
+            "box": {
+              "x": 248.75,
+              "y": 2511.375,
+              "width": 176.75,
+              "height": 132.5625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 4,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/foot_spa.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/foot_spa.webp",
+            "sourceSrcSet": null,
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 1254,
+            "complete": true,
+            "box": {
+              "x": 450.5,
+              "y": 2511.375,
+              "width": 176.75,
+              "height": 132.5625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 5,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/saigon_waterbus.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/saigon_waterbus.webp",
+            "sourceSrcSet": null,
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 1536,
+            "complete": true,
+            "box": {
+              "x": 652.25,
+              "y": 2511.375,
+              "width": 176.75,
+              "height": 132.5625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 6,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/saigon_night_bridge.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/saigon_night_bridge.webp",
+            "sourceSrcSet": null,
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 1200,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 3043.8125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 7,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/crowded_lobby.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/crowded_lobby.webp",
+            "sourceSrcSet": null,
+            "state": "loading",
+            "ariaBusy": "true",
+            "naturalWidth": 1086,
+            "complete": false,
+            "box": {
+              "x": 16,
+              "y": 4258.703125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 8,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/couples_spa_massage.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/couples_spa_massage.webp",
+            "sourceSrcSet": null,
+            "state": "loading",
+            "ariaBusy": "true",
+            "naturalWidth": 1254,
+            "complete": false,
+            "box": {
+              "x": 16,
+              "y": 4889.453125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 9,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/herbal_spa_hd.webp",
+            "currentSrc": "",
+            "sourceSrcSet": null,
+            "state": "loading",
+            "ariaBusy": "true",
+            "naturalWidth": 0,
+            "complete": false,
+            "box": {
+              "x": 16,
+              "y": 5469.828125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 10,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/coconut_oil.webp",
+            "currentSrc": "",
+            "sourceSrcSet": null,
+            "state": "loading",
+            "ariaBusy": "true",
+            "naturalWidth": 0,
+            "complete": false,
+            "box": {
+              "x": 16,
+              "y": 6150.953125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 11,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_family.webp",
+            "currentSrc": "",
+            "sourceSrcSet": null,
+            "state": "loading",
+            "ariaBusy": "true",
+            "naturalWidth": 0,
+            "complete": false,
+            "box": {
+              "x": 16,
+              "y": 6932.828125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 12,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/homespa/flower_spa_hd_clear.webp",
+            "currentSrc": "",
+            "sourceSrcSet": null,
+            "state": "loading",
+            "ariaBusy": "true",
+            "naturalWidth": 0,
+            "complete": false,
+            "box": {
+              "x": 16,
+              "y": 7995.734375,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 13,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/homespa/oil_massage_hd_clear.webp",
+            "currentSrc": "",
+            "sourceSrcSet": null,
+            "state": "loading",
+            "ariaBusy": "true",
+            "naturalWidth": 0,
+            "complete": false,
+            "box": {
+              "x": 16,
+              "y": 9149.015625,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 14,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/homespa/cozy_warm_lamp_corner_hd.webp",
+            "currentSrc": "",
+            "sourceSrcSet": null,
+            "state": "loading",
+            "ariaBusy": "true",
+            "naturalWidth": 0,
+            "complete": false,
+            "box": {
+              "x": 16,
+              "y": 10211.921875,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          }
+        ],
+        "scrollY": 1478
+      },
+      "filmBefore": {
+        "viewport": {
+          "width": 390,
+          "height": 844,
+          "devicePixelRatio": 2
+        },
+        "images": [
+          {
+            "index": 0,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin-731e742255a33a3d-w960.webp",
+            "sourceSrcSet": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin-9f70464c78915063-w320.webp 320w, https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin-675844b36d20d56a-w640.webp 640w, https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin-731e742255a33a3d-w960.webp 960w",
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 358,
+            "complete": true,
+            "box": {
+              "x": 50,
+              "y": -1474.84375,
+              "width": 324,
+              "height": 405
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 1,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner-e2de6dff03a7b87b-w640.webp",
+            "sourceSrcSet": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner-b77c444fb9d0630a-w320.webp 320w, https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner-e2de6dff03a7b87b-w640.webp 640w, https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner-d1272da4fe23d7ab-w960.webp 960w",
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 218,
+            "complete": true,
+            "box": {
+              "x": 26,
+              "y": -1226.3125,
+              "width": 180.46875,
+              "height": 180.46875
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 2,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_city_bus.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_city_bus.webp",
+            "sourceSrcSet": null,
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 1122,
+            "complete": true,
+            "box": {
+              "x": 47,
+              "y": 287.375,
+              "width": 176.75,
+              "height": 132.5625
+            },
+            "visible": true,
+            "withinRootMargin": true
+          },
+          {
+            "index": 3,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/saigon_river_cruise_hd.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/saigon_river_cruise_hd.webp",
+            "sourceSrcSet": null,
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 1089,
+            "complete": true,
+            "box": {
+              "x": 248.75,
+              "y": 287.375,
+              "width": 176.75,
+              "height": 132.5625
+            },
+            "visible": true,
+            "withinRootMargin": true
+          },
+          {
+            "index": 4,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/foot_spa.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/foot_spa.webp",
+            "sourceSrcSet": null,
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 1254,
+            "complete": true,
+            "box": {
+              "x": 450.5,
+              "y": 287.375,
+              "width": 176.75,
+              "height": 132.5625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 5,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/saigon_waterbus.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/saigon_waterbus.webp",
+            "sourceSrcSet": null,
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 1536,
+            "complete": true,
+            "box": {
+              "x": 652.25,
+              "y": 287.375,
+              "width": 176.75,
+              "height": 132.5625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 6,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/saigon_night_bridge.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/saigon_night_bridge.webp",
+            "sourceSrcSet": null,
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 1200,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 819.8125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": true,
+            "withinRootMargin": true
+          },
+          {
+            "index": 7,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/crowded_lobby.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/crowded_lobby.webp",
+            "sourceSrcSet": null,
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 1086,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 2034.703125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 8,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/couples_spa_massage.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/couples_spa_massage.webp",
+            "sourceSrcSet": null,
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 1254,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 2665.453125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 9,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/herbal_spa_hd.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/herbal_spa_hd.webp",
+            "sourceSrcSet": null,
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 1024,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 3245.828125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 10,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/coconut_oil.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/coconut_oil.webp",
+            "sourceSrcSet": null,
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 1024,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 3926.953125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 11,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_family.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_family.webp",
+            "sourceSrcSet": null,
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 1672,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 4708.828125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 12,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/homespa/flower_spa_hd_clear.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/homespa/flower_spa_hd_clear.webp",
+            "sourceSrcSet": null,
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 1688,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 5771.734375,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 13,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/homespa/oil_massage_hd_clear.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/homespa/oil_massage_hd_clear.webp",
+            "sourceSrcSet": null,
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 2400,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 6925.015625,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 14,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/homespa/cozy_warm_lamp_corner_hd.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/homespa/cozy_warm_lamp_corner_hd.webp",
+            "sourceSrcSet": null,
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 2000,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 7987.921875,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          }
+        ],
+        "scrollY": 3702
+      },
+      "filmAfter": {
+        "viewport": {
+          "width": 390,
+          "height": 844,
+          "devicePixelRatio": 2
+        },
+        "images": [
+          {
+            "index": 0,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin-731e742255a33a3d-w960.webp",
+            "sourceSrcSet": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin-9f70464c78915063-w320.webp 320w, https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin-675844b36d20d56a-w640.webp 640w, https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_location_pin-731e742255a33a3d-w960.webp 960w",
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 358,
+            "complete": true,
+            "box": {
+              "x": 50,
+              "y": -1478.84375,
+              "width": 324,
+              "height": 405
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 1,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner-e2de6dff03a7b87b-w640.webp",
+            "sourceSrcSet": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner-b77c444fb9d0630a-w320.webp 320w, https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner-e2de6dff03a7b87b-w640.webp 640w, https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/dong_khoi_corner-d1272da4fe23d7ab-w960.webp 960w",
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 218,
+            "complete": true,
+            "box": {
+              "x": 26,
+              "y": -1230.3125,
+              "width": 180.46875,
+              "height": 180.46875
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 2,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_city_bus.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_city_bus.webp",
+            "sourceSrcSet": null,
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 1122,
+            "complete": true,
+            "box": {
+              "x": -455,
+              "y": 283.375,
+              "width": 176.75,
+              "height": 132.5625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 3,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/saigon_river_cruise_hd.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/saigon_river_cruise_hd.webp",
+            "sourceSrcSet": null,
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 1089,
+            "complete": true,
+            "box": {
+              "x": -253.25,
+              "y": 283.375,
+              "width": 176.75,
+              "height": 132.5625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 4,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/foot_spa.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/foot_spa.webp",
+            "sourceSrcSet": null,
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 1254,
+            "complete": true,
+            "box": {
+              "x": -51.5,
+              "y": 283.375,
+              "width": 176.75,
+              "height": 132.5625
+            },
+            "visible": true,
+            "withinRootMargin": true
+          },
+          {
+            "index": 5,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/saigon_waterbus.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/saigon_waterbus.webp",
+            "sourceSrcSet": null,
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 1536,
+            "complete": true,
+            "box": {
+              "x": 150.25,
+              "y": 283.375,
+              "width": 176.75,
+              "height": 132.5625
+            },
+            "visible": true,
+            "withinRootMargin": true
+          },
+          {
+            "index": 6,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/saigon_night_bridge.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/saigon_night_bridge.webp",
+            "sourceSrcSet": null,
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 1200,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 815.8125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": true,
+            "withinRootMargin": true
+          },
+          {
+            "index": 7,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/crowded_lobby.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/crowded_lobby.webp",
+            "sourceSrcSet": null,
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 1086,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 2030.703125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 8,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/couples_spa_massage.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/couples_spa_massage.webp",
+            "sourceSrcSet": null,
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 1254,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 2661.453125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 9,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/herbal_spa_hd.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/herbal_spa_hd.webp",
+            "sourceSrcSet": null,
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 1024,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 3241.828125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 10,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/coconut_oil.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/coconut_oil.webp",
+            "sourceSrcSet": null,
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 1024,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 3922.953125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 11,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_family.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/marketing/oria_spa_family.webp",
+            "sourceSrcSet": null,
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 1672,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 4704.828125,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 12,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/homespa/flower_spa_hd_clear.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/homespa/flower_spa_hd_clear.webp",
+            "sourceSrcSet": null,
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 1688,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 5767.734375,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 13,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/homespa/oil_massage_hd_clear.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/homespa/oil_massage_hd_clear.webp",
+            "sourceSrcSet": null,
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 2400,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 6921.015625,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          },
+          {
+            "index": 14,
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/homespa/cozy_warm_lamp_corner_hd.webp",
+            "currentSrc": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/homespa/cozy_warm_lamp_corner_hd.webp",
+            "sourceSrcSet": null,
+            "state": "loaded",
+            "ariaBusy": "false",
+            "naturalWidth": 2000,
+            "complete": true,
+            "box": {
+              "x": 16,
+              "y": 7983.921875,
+              "width": 358,
+              "height": 238.65625
+            },
+            "visible": false,
+            "withinRootMargin": false
+          }
+        ],
+        "scrollY": 3706
+      },
+      "imageRequests": [
+        "http://127.0.0.1:3411/images/logo.png?v=3",
+        "http://127.0.0.1:3411/images/optimized/chatbot-icon.7dcf5f07b8fe7e60.128.webp",
+        "http://127.0.0.1:3411/images/logo_fixed_slogan.png"
+      ]
+    }
+  ],
+  "storageReadback": "NOT_VERIFIED",
+  "liveTransfer": "NOT_VERIFIED"
+}

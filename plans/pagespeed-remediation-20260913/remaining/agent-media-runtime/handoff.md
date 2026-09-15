@@ -12,6 +12,7 @@ Date: 2026-09-15 (Asia/Ho_Chi_Minh)
 ## Results
 
 - Our Story browser replay: `PASS_LOCAL_BROWSER` for mobile cold ×2, desktop cold, and IntersectionObserver-absent. Storage read-back and live currentSrc remain `NOT_VERIFIED`.
+- Final-candidate replay after the menu/Hero fixes: `PASS_LOCAL_BROWSER` on candidate `f5f62436a90b764222cea73066473f81bdb9f179`, using the same four profiles. Raw report and screenshots are under `final-candidate/`.
 - Hero active CDP replay: actual encodedDataLength was captured for three runs per mobile and desktop profile over a 12-second window. The active local config selected the original Supabase MP4; no matched baseline/candidate rendition pair was available, so the ≥70% transfer reduction gate is `NOT_VERIFIED`. Several runs transferred approximately 25–27 MB, which must not be reported as a reduction.
 - Profiles: mobile 390×844 DPR2 and desktop 1440×900 DPR1.
 
