@@ -1,0 +1,418 @@
+{
+  "status": "PASS_LOCAL_ACTIVE_HERO_DECODE",
+  "generatedAt": "2026-09-15T13:52:27.747Z",
+  "testedSha": "3d5ed66f2e79d809721539f5f1c191688b3959b5",
+  "baseUrl": "http://127.0.0.1:3388",
+  "windowSeconds": 12,
+  "profiles": [
+    {
+      "name": "mobile",
+      "width": 390,
+      "height": 844,
+      "dpr": 2
+    },
+    {
+      "name": "desktop",
+      "width": 1440,
+      "height": 900,
+      "dpr": 1
+    }
+  ],
+  "results": [
+    {
+      "profile": {
+        "name": "mobile",
+        "width": 390,
+        "height": 844,
+        "dpr": 2
+      },
+      "run": 1,
+      "status": 200,
+      "state": {
+        "videos": [
+          {
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/homepage/0807(1).mp4",
+            "readyState": 4,
+            "currentTime": 10.750651,
+            "duration": 25.1,
+            "width": 1920,
+            "height": 1080,
+            "paused": false
+          }
+        ],
+        "poster": "https://i.ibb.co/fs2MBD4/hero-spa-bg.jpg",
+        "loader": null
+      },
+      "media": [
+        {
+          "requestId": "88938.275",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/homepage/0807(1).mp4",
+          "events": 2,
+          "bytes": 68177,
+          "start": 745906.437102,
+          "status": 206,
+          "mimeType": "video/mp4",
+          "fromDiskCache": false,
+          "fromPrefetchCache": false,
+          "encodedHeaders": 608
+        },
+        {
+          "requestId": "88938.276",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/homepage/0807(1).mp4",
+          "events": 5,
+          "bytes": 39216,
+          "start": 745907.100176,
+          "status": 206,
+          "mimeType": "video/mp4",
+          "fromDiskCache": false,
+          "fromPrefetchCache": false,
+          "encodedHeaders": 349,
+          "finished": true,
+          "encodedFinished": 39565
+        },
+        {
+          "requestId": "88938.277",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/homepage/0807(1).mp4",
+          "events": 1171,
+          "bytes": 25169328,
+          "start": 745907.213704,
+          "status": 206,
+          "mimeType": "video/mp4",
+          "fromDiskCache": false,
+          "fromPrefetchCache": false,
+          "encodedHeaders": 642
+        }
+      ]
+    },
+    {
+      "profile": {
+        "name": "mobile",
+        "width": 390,
+        "height": 844,
+        "dpr": 2
+      },
+      "run": 2,
+      "status": 200,
+      "state": {
+        "videos": [
+          {
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/homepage/0807(1).mp4",
+            "readyState": 4,
+            "currentTime": 11.145374,
+            "duration": 25.1,
+            "width": 1920,
+            "height": 1080,
+            "paused": false
+          }
+        ],
+        "poster": "https://i.ibb.co/fs2MBD4/hero-spa-bg.jpg",
+        "loader": null
+      },
+      "media": [
+        {
+          "requestId": "88968.274",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/homepage/0807(1).mp4",
+          "events": 1,
+          "bytes": 0,
+          "start": 745919.193082,
+          "status": 206,
+          "mimeType": "video/mp4",
+          "fromDiskCache": false,
+          "fromPrefetchCache": false,
+          "encodedHeaders": 606
+        },
+        {
+          "requestId": "88968.275",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/homepage/0807(1).mp4",
+          "events": 3,
+          "bytes": 39169,
+          "start": 745919.488192,
+          "status": 206,
+          "mimeType": "video/mp4",
+          "fromDiskCache": false,
+          "fromPrefetchCache": false,
+          "encodedHeaders": 683,
+          "finished": true,
+          "encodedFinished": 39852
+        },
+        {
+          "requestId": "88968.276",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/homepage/0807(1).mp4",
+          "events": 832,
+          "bytes": 26885194,
+          "start": 745919.691789,
+          "status": 206,
+          "mimeType": "video/mp4",
+          "fromDiskCache": false,
+          "fromPrefetchCache": false,
+          "encodedHeaders": 604,
+          "finished": true,
+          "encodedFinished": 26885798
+        }
+      ]
+    },
+    {
+      "profile": {
+        "name": "mobile",
+        "width": 390,
+        "height": 844,
+        "dpr": 2
+      },
+      "run": 3,
+      "status": 200,
+      "state": {
+        "videos": [
+          {
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/homepage/0807(1).mp4",
+            "readyState": 4,
+            "currentTime": 11.342666,
+            "duration": 25.1,
+            "width": 1920,
+            "height": 1080,
+            "paused": false
+          }
+        ],
+        "poster": "https://i.ibb.co/fs2MBD4/hero-spa-bg.jpg",
+        "loader": null
+      },
+      "media": [
+        {
+          "requestId": "88998.274",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/homepage/0807(1).mp4",
+          "events": 1,
+          "bytes": 0,
+          "start": 745932.029575,
+          "status": 206,
+          "mimeType": "video/mp4",
+          "fromDiskCache": false,
+          "fromPrefetchCache": false,
+          "encodedHeaders": 611
+        },
+        {
+          "requestId": "88998.275",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/homepage/0807(1).mp4",
+          "events": 4,
+          "bytes": 39216,
+          "start": 745932.239066,
+          "status": 206,
+          "mimeType": "video/mp4",
+          "fromDiskCache": false,
+          "fromPrefetchCache": false,
+          "encodedHeaders": 342,
+          "finished": true,
+          "encodedFinished": 39558
+        },
+        {
+          "requestId": "88998.276",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/homepage/0807(1).mp4",
+          "events": 1058,
+          "bytes": 26883296,
+          "start": 745932.349901,
+          "status": 206,
+          "mimeType": "video/mp4",
+          "fromDiskCache": false,
+          "fromPrefetchCache": false,
+          "encodedHeaders": 643,
+          "finished": true,
+          "encodedFinished": 26883939
+        }
+      ]
+    },
+    {
+      "profile": {
+        "name": "desktop",
+        "width": 1440,
+        "height": 900,
+        "dpr": 1
+      },
+      "run": 1,
+      "status": 200,
+      "state": {
+        "videos": [
+          {
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/homepage/0807(1).mp4",
+            "readyState": 4,
+            "currentTime": 11.282565,
+            "duration": 25.1,
+            "width": 1920,
+            "height": 1080,
+            "paused": false
+          }
+        ],
+        "poster": "https://i.ibb.co/fs2MBD4/hero-spa-bg.jpg",
+        "loader": null
+      },
+      "media": [
+        {
+          "requestId": "89019.274",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/homepage/0807(1).mp4",
+          "events": 1,
+          "bytes": 0,
+          "start": 745944.794992,
+          "status": 206,
+          "mimeType": "video/mp4",
+          "fromDiskCache": false,
+          "fromPrefetchCache": false,
+          "encodedHeaders": 609
+        },
+        {
+          "requestId": "89019.275",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/homepage/0807(1).mp4",
+          "events": 3,
+          "bytes": 39216,
+          "start": 745944.991634,
+          "status": 206,
+          "mimeType": "video/mp4",
+          "fromDiskCache": false,
+          "fromPrefetchCache": false,
+          "encodedHeaders": 345,
+          "finished": true,
+          "encodedFinished": 39561
+        },
+        {
+          "requestId": "89019.276",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/homepage/0807(1).mp4",
+          "events": 1062,
+          "bytes": 26165765,
+          "start": 745945.087429,
+          "status": 206,
+          "mimeType": "video/mp4",
+          "fromDiskCache": false,
+          "fromPrefetchCache": false,
+          "encodedHeaders": 640
+        }
+      ]
+    },
+    {
+      "profile": {
+        "name": "desktop",
+        "width": 1440,
+        "height": 900,
+        "dpr": 1
+      },
+      "run": 2,
+      "status": 200,
+      "state": {
+        "videos": [
+          {
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/homepage/0807(1).mp4",
+            "readyState": 4,
+            "currentTime": 11.333299,
+            "duration": 25.1,
+            "width": 1920,
+            "height": 1080,
+            "paused": false
+          }
+        ],
+        "poster": "https://i.ibb.co/fs2MBD4/hero-spa-bg.jpg",
+        "loader": null
+      },
+      "media": [
+        {
+          "requestId": "89046.274",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/homepage/0807(1).mp4",
+          "events": 1,
+          "bytes": 0,
+          "start": 745957.882024,
+          "status": 206,
+          "mimeType": "video/mp4",
+          "fromDiskCache": false,
+          "fromPrefetchCache": false,
+          "encodedHeaders": 610
+        },
+        {
+          "requestId": "89046.275",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/homepage/0807(1).mp4",
+          "events": 7,
+          "bytes": 39216,
+          "start": 745958.093094,
+          "status": 206,
+          "mimeType": "video/mp4",
+          "fromDiskCache": false,
+          "fromPrefetchCache": false,
+          "encodedHeaders": 351,
+          "finished": true,
+          "encodedFinished": 39567
+        },
+        {
+          "requestId": "89046.276",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/homepage/0807(1).mp4",
+          "events": 1100,
+          "bytes": 26251397,
+          "start": 745958.196213,
+          "status": 206,
+          "mimeType": "video/mp4",
+          "fromDiskCache": false,
+          "fromPrefetchCache": false,
+          "encodedHeaders": 643
+        }
+      ]
+    },
+    {
+      "profile": {
+        "name": "desktop",
+        "width": 1440,
+        "height": 900,
+        "dpr": 1
+      },
+      "run": 3,
+      "status": 200,
+      "state": {
+        "videos": [
+          {
+            "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/homepage/0807(1).mp4",
+            "readyState": 3,
+            "currentTime": 6.318658,
+            "duration": 25.1,
+            "width": 1920,
+            "height": 1080,
+            "paused": false
+          }
+        ],
+        "poster": "https://i.ibb.co/fs2MBD4/hero-spa-bg.jpg",
+        "loader": null
+      },
+      "media": [
+        {
+          "requestId": "89075.274",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/homepage/0807(1).mp4",
+          "events": 1,
+          "bytes": 0,
+          "start": 745970.702757,
+          "status": 206,
+          "mimeType": "video/mp4",
+          "fromDiskCache": false,
+          "fromPrefetchCache": false,
+          "encodedHeaders": 607
+        },
+        {
+          "requestId": "89075.275",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/homepage/0807(1).mp4",
+          "events": 4,
+          "bytes": 39216,
+          "start": 745970.888337,
+          "status": 206,
+          "mimeType": "video/mp4",
+          "fromDiskCache": false,
+          "fromPrefetchCache": false,
+          "encodedHeaders": 342,
+          "finished": true,
+          "encodedFinished": 39558
+        },
+        {
+          "requestId": "89075.276",
+          "url": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/homepage/0807(1).mp4",
+          "events": 755,
+          "bytes": 4517515,
+          "start": 745970.99882,
+          "status": 206,
+          "mimeType": "video/mp4",
+          "fromDiskCache": false,
+          "fromPrefetchCache": false,
+          "encodedHeaders": 644
+        }
+      ]
+    }
+  ],
+  "interpretation": "Actual CDP encodedDataLength collected for active local production app config; no baseline rendition was active, so reduction target remains NOT_VERIFIED."
+}

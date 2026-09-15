@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "role": "A/C-Q media runtime",
+  "status": "PARTIAL_LOCAL_ONLY",
+  "testedSha": "3d5ed66f2e79d809721539f5f1c191688b3959b5",
+  "server": "http://127.0.0.1:3388",
+  "profiles": [
+    { "name": "mobile", "viewport": { "width": 390, "height": 844 }, "dpr": 2 },
+    { "name": "desktop", "viewport": { "width": 1440, "height": 900 }, "dpr": 1 }
+  ],
+  "artifacts": [
+    {
+      "path": "plans/pagespeed-remediation-20260913/remaining/agent-media-runtime/our-story-browser-3d5ed66-report.json",
+      "status": "PASS_LOCAL_BROWSER",
+      "sha256": "17f32b6e4a7035405d3bc78dd52dec66666f1ee9bb26d59673773ee8bfcfe727"
+    },
+    {
+      "path": "plans/pagespeed-remediation-20260913/remaining/agent-media-runtime/hero-active-cdp-3d5ed66-report.json",
+      "status": "PASS_LOCAL_ACTIVE_HERO_DECODE_TRANSFER_GATE_NOT_VERIFIED",
+      "sha256": "73b0ebba0a5838606c67f7483d905279ddb9d487dacc61d038baeda6864f38f4"
+    },
+    {
+      "path": "plans/pagespeed-remediation-20260913/remaining/agent-media-runtime/handoff.md",
+      "status": "HANDOFF",
+      "sha256": "a6ec6a8a6f825b9fbf099399790c4646f6ddad73d848582cfa1a81e4ad725648"
+    }
+  ],
+  "residuals": [
+    "Storage read-back/published thumbnail manifest NOT_VERIFIED.",
+    "Matched 12-second baseline/candidate transfer reduction NOT_VERIFIED.",
+    "No production upload or deployment was performed."
+  ]
+}
