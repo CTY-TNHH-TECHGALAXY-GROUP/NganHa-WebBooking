@@ -3,7 +3,7 @@ import {execFileSync} from 'node:child_process';
 import {chromium} from 'playwright';
 const {default:lighthouse}=await import('/private/tmp/pagespeed-postgres.TExjLR/node_modules/lighthouse/core/index.js');
 const {default:desktopConfig}=await import('/private/tmp/pagespeed-postgres.TExjLR/node_modules/lighthouse/core/config/desktop-config.js');
-const dir='plans/pagespeed-remediation-20260913/remaining/agent-q/lighthouse-final-20260916';
+const dir=process.env.LH_EVIDENCE_DIR || 'plans/pagespeed-remediation-20260913/remaining/agent-q/lighthouse-final-20260916';
 fs.mkdirSync(dir,{recursive:true});
 const sha=execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim();
 const profile='/private/tmp/pagespeed-lighthouse-browser';

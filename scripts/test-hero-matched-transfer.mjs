@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 import { chromium } from 'playwright';
 const base = 'http://127.0.0.1:3460';
-const dir = 'plans/pagespeed-remediation-20260913/remaining/agent-media-runtime/matched-20260916';
+const dir = process.env.HERO_EVIDENCE_DIR || 'plans/pagespeed-remediation-20260913/remaining/agent-media-runtime/matched-20260916';
 fs.mkdirSync(dir, { recursive: true });
 const config = JSON.parse(fs.readFileSync('plans/pagespeed-remediation-20260913/remaining/agent-media-runtime/marketing-config-20260916/candidate.json'))[0];
 const html = await (await fetch(base + '/en')).text();
