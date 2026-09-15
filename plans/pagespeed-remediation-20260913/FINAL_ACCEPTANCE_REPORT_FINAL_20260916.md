@@ -9,7 +9,7 @@ The final local candidate is clean and the implementation/browser regressions th
 ## Candidate
 
 - Integrator branch: `codex/ps-integration-20260913`
-- Current tip: `f024a3a` (evidence-only tip after the tested source candidate)
+- Current tip: `9dfdde2` (local Hero rendition manifest added after the tested source candidate)
 - App source fixes: `7958cf4` (AI chat reachable, Escape/focus trap) and `6ea8f21` (Header overlay Escape)
 - Final QA replay source candidate: `435b364b1617b26bf33d0abbd2cd846a84d2f029`
 - Worktree: clean; `git diff --check` PASS
@@ -26,7 +26,7 @@ The final local candidate is clean and the implementation/browser regressions th
 | Route/sitemap/cache replay | PASS_LOCAL | 65 routes, 47 sitemap entries, 63 HTTP 200 + 2 expected negative-control 404s; both browser profiles PASS_REPLAY |
 | Our Story media contract/browser | PASS_LOCAL | Contract and local browser decode evidence; Storage readback/published manifest not verified |
 | Real PostgreSQL CAS/ACL/concurrency/rollback | NOT_VERIFIED | No disposable PostgreSQL runtime available; loopback probe refused; source contract only |
-| Hero 12-second matched transfer reduction | NOT_VERIFIED | No matched baseline/candidate active transfer and no staging asset readback; filesize is not used as transfer evidence |
+| Hero 12-second matched transfer reduction | NOT_VERIFIED | Renditions are rendered and browser-decode verified locally, but there is no matched baseline/candidate active transfer and no staging asset readback; filesize is not used as transfer evidence |
 | Runtime TBT/attribution and PSI/Lighthouse | NOT_VERIFIED | Existing diagnostic traces do not prove acceptance thresholds on this candidate |
 | Manual WCAG/font/physical device | NOT_VERIFIED | Physical iOS/Android, zoom/reflow, contrast adjudication and font delivery/license review remain |
 | Production deployment SHA/alias/read-back | NOT_VERIFIED | Vercel project/alias mapping and deployed metadata not available; no deployment attempted |
@@ -40,6 +40,8 @@ Focused menu/chat artifacts: `remaining/agent-final-menu/final-candidate/evidenc
 Role-B fail-closed database handoff: `remaining/agent-b/evidence-index-final-20260915.json`.
 
 Media handoff and local replay: `remaining/agent-media-runtime/evidence-index.json`.
+
+Local Hero rendition manifest: `remaining/agent-media-runtime/rendered-hero-renditions-20260916.json` (mobile 640×360/12 s, desktop 1280×720/12 s; browser decode PASS_LOCAL; not uploaded).
 
 The historical `FINAL_ACCEPTANCE_REPORT.md` remains unchanged and must not be interpreted as approval.
 
