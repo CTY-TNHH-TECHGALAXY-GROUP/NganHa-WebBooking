@@ -1,0 +1,1399 @@
+{
+  "schemaVersion": 1,
+  "role": "QA",
+  "generatedAt": "2026-09-15T16:53:18.925Z",
+  "testedSha": "435b364b1617b26bf33d0abbd2cd846a84d2f029",
+  "baseUrl": "http://127.0.0.1:3425",
+  "gitStatus": "?? plans/pagespeed-remediation-20260913/remaining/agent-qa-final-2/\n?? plans/pagespeed-remediation-20260913/remaining/agent-qa-final-3/\n?? plans/pagespeed-remediation-20260913/remaining/agent-qa-final-4/\n?? plans/pagespeed-remediation-20260913/remaining/agent-qa-final-5/",
+  "buildId": "Ida9NDVnpMb7DHpqeXfHf",
+  "appRouter": {
+    "routes": [
+      {
+        "pathname": "/:lang/local-tour/:packageSlug",
+        "source": "App Router",
+        "classification": "public"
+      },
+      {
+        "pathname": "/:lang/local-tour",
+        "source": "App Router",
+        "classification": "public"
+      },
+      {
+        "pathname": "/:lang/lost-and-found",
+        "source": "App Router",
+        "classification": "public"
+      },
+      {
+        "pathname": "/:lang/new-user/:menuType/checkout",
+        "source": "App Router",
+        "classification": "public"
+      },
+      {
+        "pathname": "/:lang/new-user/:menuType/menu",
+        "source": "App Router",
+        "classification": "public"
+      },
+      {
+        "pathname": "/:lang/new-user/select-menu",
+        "source": "App Router",
+        "classification": "public"
+      },
+      {
+        "pathname": "/:lang/oriafarm-retreat",
+        "source": "App Router",
+        "classification": "public"
+      },
+      {
+        "pathname": "/:lang/oriafarm-store",
+        "source": "App Router",
+        "classification": "public"
+      },
+      {
+        "pathname": "/:lang/oriahome",
+        "source": "App Router",
+        "classification": "public"
+      },
+      {
+        "pathname": "/:lang",
+        "source": "App Router",
+        "classification": "public"
+      },
+      {
+        "pathname": "/:lang/pure-relaxation",
+        "source": "App Router",
+        "classification": "public"
+      },
+      {
+        "pathname": "/academy/admissions",
+        "source": "App Router",
+        "classification": "public"
+      },
+      {
+        "pathname": "/academy/certification",
+        "source": "App Router",
+        "classification": "public"
+      },
+      {
+        "pathname": "/academy",
+        "source": "App Router",
+        "classification": "public"
+      },
+      {
+        "pathname": "/academy/training",
+        "source": "App Router",
+        "classification": "public"
+      },
+      {
+        "pathname": "/academy/understand-yourself",
+        "source": "App Router",
+        "classification": "public"
+      },
+      {
+        "pathname": "/admin/analytics",
+        "source": "App Router",
+        "classification": "admin"
+      },
+      {
+        "pathname": "/admin/bookings",
+        "source": "App Router",
+        "classification": "admin"
+      },
+      {
+        "pathname": "/admin/content/blogs",
+        "source": "App Router",
+        "classification": "admin"
+      },
+      {
+        "pathname": "/admin/content/footer",
+        "source": "App Router",
+        "classification": "admin"
+      },
+      {
+        "pathname": "/admin/content/homepage",
+        "source": "App Router",
+        "classification": "admin"
+      },
+      {
+        "pathname": "/admin/content",
+        "source": "App Router",
+        "classification": "admin"
+      },
+      {
+        "pathname": "/admin/customers",
+        "source": "App Router",
+        "classification": "admin"
+      },
+      {
+        "pathname": "/admin/editor-permissions",
+        "source": "App Router",
+        "classification": "admin"
+      },
+      {
+        "pathname": "/admin/flipbook-pages",
+        "source": "App Router",
+        "classification": "admin"
+      },
+      {
+        "pathname": "/admin/hero-videos",
+        "source": "App Router",
+        "classification": "admin"
+      },
+      {
+        "pathname": "/admin/history",
+        "source": "App Router",
+        "classification": "admin"
+      },
+      {
+        "pathname": "/admin/homepage-styling",
+        "source": "App Router",
+        "classification": "admin"
+      },
+      {
+        "pathname": "/admin/local-tour",
+        "source": "App Router",
+        "classification": "admin"
+      },
+      {
+        "pathname": "/admin/login",
+        "source": "App Router",
+        "classification": "admin"
+      },
+      {
+        "pathname": "/admin/lost-and-found",
+        "source": "App Router",
+        "classification": "admin"
+      },
+      {
+        "pathname": "/admin/media-library",
+        "source": "App Router",
+        "classification": "admin"
+      },
+      {
+        "pathname": "/admin/oriafarm-retreat",
+        "source": "App Router",
+        "classification": "admin"
+      },
+      {
+        "pathname": "/admin/oriafarm-store",
+        "source": "App Router",
+        "classification": "admin"
+      },
+      {
+        "pathname": "/admin/oriahome",
+        "source": "App Router",
+        "classification": "admin"
+      },
+      {
+        "pathname": "/admin/our-story",
+        "source": "App Router",
+        "classification": "admin"
+      },
+      {
+        "pathname": "/admin",
+        "source": "App Router",
+        "classification": "admin"
+      },
+      {
+        "pathname": "/admin/posts",
+        "source": "App Router",
+        "classification": "admin"
+      },
+      {
+        "pathname": "/admin/seo",
+        "source": "App Router",
+        "classification": "admin"
+      },
+      {
+        "pathname": "/admin/services",
+        "source": "App Router",
+        "classification": "admin"
+      },
+      {
+        "pathname": "/admin/services/pure",
+        "source": "App Router",
+        "classification": "admin"
+      },
+      {
+        "pathname": "/admin/services/space",
+        "source": "App Router",
+        "classification": "admin"
+      },
+      {
+        "pathname": "/admin/services/therapy",
+        "source": "App Router",
+        "classification": "admin"
+      },
+      {
+        "pathname": "/admin/system-settings",
+        "source": "App Router",
+        "classification": "admin"
+      },
+      {
+        "pathname": "/blogs",
+        "source": "App Router",
+        "classification": "public"
+      },
+      {
+        "pathname": "/booking",
+        "source": "App Router",
+        "classification": "public"
+      },
+      {
+        "pathname": "/design-your-journey",
+        "source": "App Router",
+        "classification": "public"
+      },
+      {
+        "pathname": "/history",
+        "source": "App Router",
+        "classification": "public"
+      },
+      {
+        "pathname": "/local-tour/:packageSlug",
+        "source": "App Router",
+        "classification": "public"
+      },
+      {
+        "pathname": "/local-tour",
+        "source": "App Router",
+        "classification": "public"
+      },
+      {
+        "pathname": "/lost-and-found",
+        "source": "App Router",
+        "classification": "public"
+      },
+      {
+        "pathname": "/oriafarm-retreat",
+        "source": "App Router",
+        "classification": "public"
+      },
+      {
+        "pathname": "/oriafarm-store",
+        "source": "App Router",
+        "classification": "public"
+      },
+      {
+        "pathname": "/oriahome",
+        "source": "App Router",
+        "classification": "public"
+      },
+      {
+        "pathname": "/",
+        "source": "App Router",
+        "classification": "public"
+      },
+      {
+        "pathname": "/privileges",
+        "source": "App Router",
+        "classification": "public"
+      },
+      {
+        "pathname": "/pure-relaxation",
+        "source": "App Router",
+        "classification": "public"
+      },
+      {
+        "pathname": "/showcase",
+        "source": "App Router",
+        "classification": "public"
+      },
+      {
+        "pathname": "/spa-celestial-menu",
+        "source": "App Router",
+        "classification": "public"
+      },
+      {
+        "pathname": "/space",
+        "source": "App Router",
+        "classification": "public"
+      },
+      {
+        "pathname": "/therapy",
+        "source": "App Router",
+        "classification": "public"
+      }
+    ],
+    "count": 61
+  },
+  "seoRoutes": [
+    {
+      "routeKey": "home",
+      "pathname": "/",
+      "source": "seo-routes.ts",
+      "classification": "public"
+    },
+    {
+      "routeKey": "blogs",
+      "pathname": "/blogs",
+      "source": "seo-routes.ts",
+      "classification": "public"
+    },
+    {
+      "routeKey": "history",
+      "pathname": "/history",
+      "source": "seo-routes.ts",
+      "classification": "public"
+    },
+    {
+      "routeKey": "space",
+      "pathname": "/space",
+      "source": "seo-routes.ts",
+      "classification": "public"
+    },
+    {
+      "routeKey": "pure-relaxation",
+      "pathname": "/pure-relaxation",
+      "source": "seo-routes.ts",
+      "classification": "public"
+    },
+    {
+      "routeKey": "design-your-journey",
+      "pathname": "/design-your-journey",
+      "source": "seo-routes.ts",
+      "classification": "public"
+    },
+    {
+      "routeKey": "showcase",
+      "pathname": "/showcase",
+      "source": "seo-routes.ts",
+      "classification": "public"
+    },
+    {
+      "routeKey": "oriahome",
+      "pathname": "/oriahome",
+      "source": "seo-routes.ts",
+      "classification": "public"
+    },
+    {
+      "routeKey": "oriafarm-retreat",
+      "pathname": "/oriafarm-retreat",
+      "source": "seo-routes.ts",
+      "classification": "public"
+    },
+    {
+      "routeKey": "home",
+      "pathname": "/",
+      "source": "seo-routes.ts",
+      "classification": "public"
+    },
+    {
+      "routeKey": "oriahome",
+      "pathname": "/oriahome",
+      "source": "seo-routes.ts",
+      "classification": "public"
+    },
+    {
+      "routeKey": "oriafarm-retreat",
+      "pathname": "/oriafarm-retreat",
+      "source": "seo-routes.ts",
+      "classification": "public"
+    },
+    {
+      "routeKey": "pure-relaxation",
+      "pathname": "/pure-relaxation",
+      "source": "seo-routes.ts",
+      "classification": "public"
+    }
+  ],
+  "sitemap": {
+    "initialStatus": 200,
+    "count": 47,
+    "paths": [
+      "/",
+      "/blogs",
+      "/history",
+      "/space",
+      "/pure-relaxation",
+      "/design-your-journey",
+      "/showcase",
+      "/oriahome",
+      "/oriafarm-retreat",
+      "/vi",
+      "/en",
+      "/cn",
+      "/jp",
+      "/kr",
+      "/vi/oriahome",
+      "/en/oriahome",
+      "/cn/oriahome",
+      "/jp/oriahome",
+      "/kr/oriahome",
+      "/vi/oriafarm-retreat",
+      "/en/oriafarm-retreat",
+      "/cn/oriafarm-retreat",
+      "/jp/oriafarm-retreat",
+      "/kr/oriafarm-retreat",
+      "/vi/pure-relaxation",
+      "/en/pure-relaxation",
+      "/cn/pure-relaxation",
+      "/jp/pure-relaxation",
+      "/kr/pure-relaxation",
+      "/local-tour/saigon-xua",
+      "/vi/local-tour/saigon-xua",
+      "/en/local-tour/saigon-xua",
+      "/cn/local-tour/saigon-xua",
+      "/jp/local-tour/saigon-xua",
+      "/kr/local-tour/saigon-xua",
+      "/local-tour/saigon-tron-ven",
+      "/vi/local-tour/saigon-tron-ven",
+      "/en/local-tour/saigon-tron-ven",
+      "/cn/local-tour/saigon-tron-ven",
+      "/jp/local-tour/saigon-tron-ven",
+      "/kr/local-tour/saigon-tron-ven",
+      "/local-tour/saigon-ve-dem",
+      "/vi/local-tour/saigon-ve-dem",
+      "/en/local-tour/saigon-ve-dem",
+      "/cn/local-tour/saigon-ve-dem",
+      "/jp/local-tour/saigon-ve-dem",
+      "/kr/local-tour/saigon-ve-dem"
+    ]
+  },
+  "routes": [
+    {
+      "route": "/",
+      "classification": "public",
+      "initialStatus": 200,
+      "initialLocation": null,
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3425/",
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "canonical": "https://oria-spa.vercel.app",
+      "durationMs": 1481
+    },
+    {
+      "route": "/blogs",
+      "classification": "public",
+      "initialStatus": 200,
+      "initialLocation": null,
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3425/blogs",
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "s-maxage=31536000",
+      "canonical": "https://oria-spa.vercel.app/blogs",
+      "durationMs": 31
+    },
+    {
+      "route": "/history",
+      "classification": "public",
+      "initialStatus": 200,
+      "initialLocation": null,
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3425/history",
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "s-maxage=31536000",
+      "canonical": "https://oria-spa.vercel.app/history",
+      "durationMs": 25
+    },
+    {
+      "route": "/space",
+      "classification": "public",
+      "initialStatus": 200,
+      "initialLocation": null,
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3425/space",
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "canonical": "https://oria-spa.vercel.app/space",
+      "durationMs": 782
+    },
+    {
+      "route": "/pure-relaxation",
+      "classification": "public",
+      "initialStatus": 200,
+      "initialLocation": null,
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3425/pure-relaxation",
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "s-maxage=31536000",
+      "canonical": "https://oria-spa.vercel.app/pure-relaxation",
+      "durationMs": 28
+    },
+    {
+      "route": "/design-your-journey",
+      "classification": "public",
+      "initialStatus": 200,
+      "initialLocation": null,
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3425/design-your-journey",
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "s-maxage=31536000",
+      "canonical": "https://oria-spa.vercel.app/design-your-journey",
+      "durationMs": 25
+    },
+    {
+      "route": "/showcase",
+      "classification": "public",
+      "initialStatus": 200,
+      "initialLocation": null,
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3425/showcase",
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "s-maxage=31536000",
+      "canonical": "https://oria-spa.vercel.app/showcase",
+      "durationMs": 25
+    },
+    {
+      "route": "/oriahome",
+      "classification": "public",
+      "initialStatus": 200,
+      "initialLocation": null,
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3425/oriahome",
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "s-maxage=31536000",
+      "canonical": "https://oria-spa.vercel.app/oriahome",
+      "durationMs": 24
+    },
+    {
+      "route": "/oriafarm-retreat",
+      "classification": "public",
+      "initialStatus": 200,
+      "initialLocation": null,
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3425/oriafarm-retreat",
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "s-maxage=31536000",
+      "canonical": "https://oria-spa.vercel.app/oriafarm-retreat",
+      "durationMs": 21
+    },
+    {
+      "route": "/oriafarm-store",
+      "classification": "public",
+      "initialStatus": 200,
+      "initialLocation": null,
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3425/oriafarm-store",
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "s-maxage=31536000",
+      "canonical": "https://oria-spa.vercel.app/oriafarm-store",
+      "durationMs": 22
+    },
+    {
+      "route": "/therapy",
+      "classification": "public",
+      "initialStatus": 200,
+      "initialLocation": null,
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3425/therapy",
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "s-maxage=31536000",
+      "canonical": "https://oria-spa.vercel.app/therapy",
+      "durationMs": 19
+    },
+    {
+      "route": "/privileges",
+      "classification": "public",
+      "initialStatus": 200,
+      "initialLocation": null,
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3425/privileges",
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "s-maxage=31536000",
+      "canonical": "https://oria-spa.vercel.app/privileges",
+      "durationMs": 20
+    },
+    {
+      "route": "/booking",
+      "classification": "public",
+      "initialStatus": 200,
+      "initialLocation": null,
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3425/booking",
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "s-maxage=31536000",
+      "canonical": "https://oria-spa.vercel.app/booking",
+      "durationMs": 20
+    },
+    {
+      "route": "/local-tour",
+      "classification": "public",
+      "initialStatus": 307,
+      "initialLocation": "/local-tour/saigon-xua",
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3425/local-tour/saigon-xua",
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "canonical": "https://oria-spa.vercel.app/local-tour/saigon-xua",
+      "durationMs": 379
+    },
+    {
+      "route": "/lost-and-found",
+      "classification": "public",
+      "initialStatus": 200,
+      "initialLocation": null,
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3425/lost-and-found",
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "canonical": "https://oria-spa.vercel.app/lost-and-found",
+      "durationMs": 711
+    },
+    {
+      "route": "/spa-celestial-menu",
+      "classification": "public",
+      "initialStatus": 307,
+      "initialLocation": "/pure-relaxation",
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3425/pure-relaxation",
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "s-maxage=31536000",
+      "canonical": "https://oria-spa.vercel.app/pure-relaxation",
+      "durationMs": 24
+    },
+    {
+      "route": "/en/new-user/select-menu",
+      "classification": "public",
+      "initialStatus": 307,
+      "initialLocation": "/en/pure-relaxation",
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3425/en/pure-relaxation",
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "canonical": "https://oria-spa.vercel.app/en/pure-relaxation",
+      "durationMs": 513
+    },
+    {
+      "route": "/en/new-user/standard/checkout",
+      "classification": "public",
+      "initialStatus": 200,
+      "initialLocation": null,
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3425/en/new-user/standard/checkout",
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "canonical": "https://oria-spa.vercel.app",
+      "durationMs": 727
+    },
+    {
+      "route": "/admin/login",
+      "classification": "admin",
+      "initialStatus": 200,
+      "initialLocation": null,
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3425/admin/login",
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "s-maxage=31536000",
+      "canonical": "https://oria-spa.vercel.app",
+      "durationMs": 22
+    },
+    {
+      "route": "/public/flipmenu/index.html",
+      "classification": "demo",
+      "initialStatus": 404,
+      "initialLocation": null,
+      "status": 404,
+      "finalUrl": "http://127.0.0.1:3425/public/flipmenu/index.html",
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "canonical": "https://oria-spa.vercel.app",
+      "durationMs": 20
+    },
+    {
+      "route": "/api/services",
+      "classification": "api",
+      "initialStatus": 200,
+      "initialLocation": null,
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3425/api/services",
+      "contentType": "application/json",
+      "cacheControl": null,
+      "canonical": null,
+      "durationMs": 270
+    },
+    {
+      "route": "/robots.txt",
+      "classification": "public",
+      "initialStatus": 200,
+      "initialLocation": null,
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3425/robots.txt",
+      "contentType": "text/plain",
+      "cacheControl": "public, max-age=0, must-revalidate",
+      "canonical": null,
+      "durationMs": 8
+    },
+    {
+      "route": "/nonexistent",
+      "classification": "public",
+      "initialStatus": 404,
+      "initialLocation": null,
+      "status": 404,
+      "finalUrl": "http://127.0.0.1:3425/nonexistent",
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "canonical": "https://oria-spa.vercel.app",
+      "durationMs": 797
+    },
+    {
+      "route": "/vi",
+      "classification": "public",
+      "initialStatus": 200,
+      "initialLocation": null,
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3425/vi",
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "canonical": "https://oria-spa.vercel.app/vi",
+      "durationMs": 898
+    },
+    {
+      "route": "/en",
+      "classification": "public",
+      "initialStatus": 200,
+      "initialLocation": null,
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3425/en",
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "canonical": "https://oria-spa.vercel.app/en",
+      "durationMs": 886
+    },
+    {
+      "route": "/cn",
+      "classification": "public",
+      "initialStatus": 200,
+      "initialLocation": null,
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3425/cn",
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "canonical": "https://oria-spa.vercel.app/cn",
+      "durationMs": 918
+    },
+    {
+      "route": "/jp",
+      "classification": "public",
+      "initialStatus": 200,
+      "initialLocation": null,
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3425/jp",
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "canonical": "https://oria-spa.vercel.app/jp",
+      "durationMs": 745
+    },
+    {
+      "route": "/kr",
+      "classification": "public",
+      "initialStatus": 200,
+      "initialLocation": null,
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3425/kr",
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "canonical": "https://oria-spa.vercel.app/kr",
+      "durationMs": 864
+    },
+    {
+      "route": "/vi/oriahome",
+      "classification": "public",
+      "initialStatus": 200,
+      "initialLocation": null,
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3425/vi/oriahome",
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "canonical": "https://oria-spa.vercel.app/vi/oriahome",
+      "durationMs": 736
+    },
+    {
+      "route": "/vi/oriafarm-retreat",
+      "classification": "public",
+      "initialStatus": 200,
+      "initialLocation": null,
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3425/vi/oriafarm-retreat",
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "canonical": "https://oria-spa.vercel.app/vi/oriafarm-retreat",
+      "durationMs": 869
+    },
+    {
+      "route": "/vi/pure-relaxation",
+      "classification": "public",
+      "initialStatus": 200,
+      "initialLocation": null,
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3425/vi/pure-relaxation",
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "canonical": "https://oria-spa.vercel.app/vi/pure-relaxation",
+      "durationMs": 726
+    },
+    {
+      "route": "/vi/new-user/standard/checkout",
+      "classification": "public",
+      "initialStatus": 200,
+      "initialLocation": null,
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3425/vi/new-user/standard/checkout",
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "canonical": "https://oria-spa.vercel.app",
+      "durationMs": 893
+    },
+    {
+      "route": "/en/oriahome",
+      "classification": "public",
+      "initialStatus": 200,
+      "initialLocation": null,
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3425/en/oriahome",
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "canonical": "https://oria-spa.vercel.app/en/oriahome",
+      "durationMs": 780
+    },
+    {
+      "route": "/en/oriafarm-retreat",
+      "classification": "public",
+      "initialStatus": 200,
+      "initialLocation": null,
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3425/en/oriafarm-retreat",
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "canonical": "https://oria-spa.vercel.app/en/oriafarm-retreat",
+      "durationMs": 967
+    },
+    {
+      "route": "/en/pure-relaxation",
+      "classification": "public",
+      "initialStatus": 200,
+      "initialLocation": null,
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3425/en/pure-relaxation",
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "canonical": "https://oria-spa.vercel.app/en/pure-relaxation",
+      "durationMs": 735
+    },
+    {
+      "route": "/cn/oriahome",
+      "classification": "public",
+      "initialStatus": 200,
+      "initialLocation": null,
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3425/cn/oriahome",
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "canonical": "https://oria-spa.vercel.app/cn/oriahome",
+      "durationMs": 863
+    },
+    {
+      "route": "/cn/oriafarm-retreat",
+      "classification": "public",
+      "initialStatus": 200,
+      "initialLocation": null,
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3425/cn/oriafarm-retreat",
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "canonical": "https://oria-spa.vercel.app/cn/oriafarm-retreat",
+      "durationMs": 707
+    },
+    {
+      "route": "/cn/pure-relaxation",
+      "classification": "public",
+      "initialStatus": 200,
+      "initialLocation": null,
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3425/cn/pure-relaxation",
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "canonical": "https://oria-spa.vercel.app/cn/pure-relaxation",
+      "durationMs": 888
+    },
+    {
+      "route": "/cn/new-user/standard/checkout",
+      "classification": "public",
+      "initialStatus": 200,
+      "initialLocation": null,
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3425/cn/new-user/standard/checkout",
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "canonical": "https://oria-spa.vercel.app",
+      "durationMs": 926
+    },
+    {
+      "route": "/jp/oriahome",
+      "classification": "public",
+      "initialStatus": 200,
+      "initialLocation": null,
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3425/jp/oriahome",
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "canonical": "https://oria-spa.vercel.app/jp/oriahome",
+      "durationMs": 906
+    },
+    {
+      "route": "/jp/oriafarm-retreat",
+      "classification": "public",
+      "initialStatus": 200,
+      "initialLocation": null,
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3425/jp/oriafarm-retreat",
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "canonical": "https://oria-spa.vercel.app/jp/oriafarm-retreat",
+      "durationMs": 914
+    },
+    {
+      "route": "/jp/pure-relaxation",
+      "classification": "public",
+      "initialStatus": 200,
+      "initialLocation": null,
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3425/jp/pure-relaxation",
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "canonical": "https://oria-spa.vercel.app/jp/pure-relaxation",
+      "durationMs": 918
+    },
+    {
+      "route": "/jp/new-user/standard/checkout",
+      "classification": "public",
+      "initialStatus": 200,
+      "initialLocation": null,
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3425/jp/new-user/standard/checkout",
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "canonical": "https://oria-spa.vercel.app",
+      "durationMs": 927
+    },
+    {
+      "route": "/kr/oriahome",
+      "classification": "public",
+      "initialStatus": 200,
+      "initialLocation": null,
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3425/kr/oriahome",
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "canonical": "https://oria-spa.vercel.app/kr/oriahome",
+      "durationMs": 920
+    },
+    {
+      "route": "/kr/oriafarm-retreat",
+      "classification": "public",
+      "initialStatus": 200,
+      "initialLocation": null,
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3425/kr/oriafarm-retreat",
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "canonical": "https://oria-spa.vercel.app/kr/oriafarm-retreat",
+      "durationMs": 921
+    },
+    {
+      "route": "/kr/pure-relaxation",
+      "classification": "public",
+      "initialStatus": 200,
+      "initialLocation": null,
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3425/kr/pure-relaxation",
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "canonical": "https://oria-spa.vercel.app/kr/pure-relaxation",
+      "durationMs": 925
+    },
+    {
+      "route": "/kr/new-user/standard/checkout",
+      "classification": "public",
+      "initialStatus": 200,
+      "initialLocation": null,
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3425/kr/new-user/standard/checkout",
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "canonical": "https://oria-spa.vercel.app",
+      "durationMs": 1030
+    },
+    {
+      "route": "/local-tour/saigon-xua",
+      "classification": "public",
+      "initialStatus": 200,
+      "initialLocation": null,
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3425/local-tour/saigon-xua",
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "canonical": "https://oria-spa.vercel.app/local-tour/saigon-xua",
+      "durationMs": 1243
+    },
+    {
+      "route": "/vi/local-tour/saigon-xua",
+      "classification": "public",
+      "initialStatus": 200,
+      "initialLocation": null,
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3425/vi/local-tour/saigon-xua",
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "canonical": "https://oria-spa.vercel.app/vi/local-tour/saigon-xua",
+      "durationMs": 926
+    },
+    {
+      "route": "/en/local-tour/saigon-xua",
+      "classification": "public",
+      "initialStatus": 200,
+      "initialLocation": null,
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3425/en/local-tour/saigon-xua",
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "canonical": "https://oria-spa.vercel.app/en/local-tour/saigon-xua",
+      "durationMs": 778
+    },
+    {
+      "route": "/cn/local-tour/saigon-xua",
+      "classification": "public",
+      "initialStatus": 200,
+      "initialLocation": null,
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3425/cn/local-tour/saigon-xua",
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "canonical": "https://oria-spa.vercel.app/cn/local-tour/saigon-xua",
+      "durationMs": 799
+    },
+    {
+      "route": "/jp/local-tour/saigon-xua",
+      "classification": "public",
+      "initialStatus": 200,
+      "initialLocation": null,
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3425/jp/local-tour/saigon-xua",
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "canonical": "https://oria-spa.vercel.app/jp/local-tour/saigon-xua",
+      "durationMs": 780
+    },
+    {
+      "route": "/kr/local-tour/saigon-xua",
+      "classification": "public",
+      "initialStatus": 200,
+      "initialLocation": null,
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3425/kr/local-tour/saigon-xua",
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "canonical": "https://oria-spa.vercel.app/kr/local-tour/saigon-xua",
+      "durationMs": 782
+    },
+    {
+      "route": "/local-tour/saigon-tron-ven",
+      "classification": "public",
+      "initialStatus": 200,
+      "initialLocation": null,
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3425/local-tour/saigon-tron-ven",
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "canonical": "https://oria-spa.vercel.app/local-tour/saigon-tron-ven",
+      "durationMs": 918
+    },
+    {
+      "route": "/vi/local-tour/saigon-tron-ven",
+      "classification": "public",
+      "initialStatus": 200,
+      "initialLocation": null,
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3425/vi/local-tour/saigon-tron-ven",
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "canonical": "https://oria-spa.vercel.app/vi/local-tour/saigon-tron-ven",
+      "durationMs": 916
+    },
+    {
+      "route": "/en/local-tour/saigon-tron-ven",
+      "classification": "public",
+      "initialStatus": 200,
+      "initialLocation": null,
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3425/en/local-tour/saigon-tron-ven",
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "canonical": "https://oria-spa.vercel.app/en/local-tour/saigon-tron-ven",
+      "durationMs": 919
+    },
+    {
+      "route": "/cn/local-tour/saigon-tron-ven",
+      "classification": "public",
+      "initialStatus": 200,
+      "initialLocation": null,
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3425/cn/local-tour/saigon-tron-ven",
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "canonical": "https://oria-spa.vercel.app/cn/local-tour/saigon-tron-ven",
+      "durationMs": 766
+    },
+    {
+      "route": "/jp/local-tour/saigon-tron-ven",
+      "classification": "public",
+      "initialStatus": 200,
+      "initialLocation": null,
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3425/jp/local-tour/saigon-tron-ven",
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "canonical": "https://oria-spa.vercel.app/jp/local-tour/saigon-tron-ven",
+      "durationMs": 887
+    },
+    {
+      "route": "/kr/local-tour/saigon-tron-ven",
+      "classification": "public",
+      "initialStatus": 200,
+      "initialLocation": null,
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3425/kr/local-tour/saigon-tron-ven",
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "canonical": "https://oria-spa.vercel.app/kr/local-tour/saigon-tron-ven",
+      "durationMs": 929
+    },
+    {
+      "route": "/local-tour/saigon-ve-dem",
+      "classification": "public",
+      "initialStatus": 200,
+      "initialLocation": null,
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3425/local-tour/saigon-ve-dem",
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "canonical": "https://oria-spa.vercel.app/local-tour/saigon-ve-dem",
+      "durationMs": 793
+    },
+    {
+      "route": "/vi/local-tour/saigon-ve-dem",
+      "classification": "public",
+      "initialStatus": 200,
+      "initialLocation": null,
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3425/vi/local-tour/saigon-ve-dem",
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "canonical": "https://oria-spa.vercel.app/vi/local-tour/saigon-ve-dem",
+      "durationMs": 789
+    },
+    {
+      "route": "/en/local-tour/saigon-ve-dem",
+      "classification": "public",
+      "initialStatus": 200,
+      "initialLocation": null,
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3425/en/local-tour/saigon-ve-dem",
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "canonical": "https://oria-spa.vercel.app/en/local-tour/saigon-ve-dem",
+      "durationMs": 920
+    },
+    {
+      "route": "/cn/local-tour/saigon-ve-dem",
+      "classification": "public",
+      "initialStatus": 200,
+      "initialLocation": null,
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3425/cn/local-tour/saigon-ve-dem",
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "canonical": "https://oria-spa.vercel.app/cn/local-tour/saigon-ve-dem",
+      "durationMs": 803
+    },
+    {
+      "route": "/jp/local-tour/saigon-ve-dem",
+      "classification": "public",
+      "initialStatus": 200,
+      "initialLocation": null,
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3425/jp/local-tour/saigon-ve-dem",
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "canonical": "https://oria-spa.vercel.app/jp/local-tour/saigon-ve-dem",
+      "durationMs": 936
+    },
+    {
+      "route": "/kr/local-tour/saigon-ve-dem",
+      "classification": "public",
+      "initialStatus": 200,
+      "initialLocation": null,
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:3425/kr/local-tour/saigon-ve-dem",
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "canonical": "https://oria-spa.vercel.app/kr/local-tour/saigon-ve-dem",
+      "durationMs": 987
+    }
+  ],
+  "assets": [
+    {
+      "path": "/images/optimized/chatbot-icon.2cc19db7ff379fbe.64.webp",
+      "sourceBytes": 1768,
+      "servedBytes": 1768,
+      "sha256": "2cc19db7ff379fbe234fc2418c9e405598444cbdc6abe13f9bbb5509a8de372d",
+      "status": 200,
+      "contentType": "image/webp",
+      "cacheControl": "public, max-age=31536000, immutable"
+    },
+    {
+      "path": "/images/optimized/chatbot-icon.479e9e0addd02daa.192.webp",
+      "sourceBytes": 7884,
+      "servedBytes": 7884,
+      "sha256": "479e9e0addd02daafb86256f0e1038192266166730ba800a3b1788b5dec75261",
+      "status": 200,
+      "contentType": "image/webp",
+      "cacheControl": "public, max-age=31536000, immutable"
+    },
+    {
+      "path": "/images/optimized/chatbot-icon.7dcf5f07b8fe7e60.128.webp",
+      "sourceBytes": 4392,
+      "servedBytes": 4392,
+      "sha256": "7dcf5f07b8fe7e60a5d324b87f83950db3a1e51bb3a168c36d06ce81ccb5b822",
+      "status": 200,
+      "contentType": "image/webp",
+      "cacheControl": "public, max-age=31536000, immutable"
+    }
+  ],
+  "browserRuns": [
+    {
+      "profile": {
+        "name": "mobile-390-dpr2",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "deviceScaleFactor": 2
+      },
+      "errors": [],
+      "homepage": {
+        "status": 200,
+        "pass": true
+      },
+      "menu": {
+        "opened": true,
+        "escapeClosed": true,
+        "explicitClosed": true,
+        "status": "PASS"
+      },
+      "cart": {
+        "opened": true,
+        "emptyLabelPresent": false,
+        "status": "PASS"
+      },
+      "chat": {
+        "opened": true,
+        "escapeClosed": true,
+        "status": "PASS"
+      },
+      "video": [
+        {
+          "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/homepage/0807(1).mp4",
+          "poster": "https://i.ibb.co/fs2MBD4/hero-spa-bg.jpg",
+          "autoplay": true,
+          "muted": true,
+          "playsInline": true,
+          "readyState": 0
+        }
+      ],
+      "status": "PASS_REPLAY"
+    },
+    {
+      "profile": {
+        "name": "desktop-1440-dpr1",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "deviceScaleFactor": 1
+      },
+      "errors": [],
+      "homepage": {
+        "status": 200,
+        "pass": true
+      },
+      "menu": {
+        "opened": true,
+        "escapeClosed": true,
+        "explicitClosed": true,
+        "status": "PASS"
+      },
+      "cart": {
+        "opened": true,
+        "emptyLabelPresent": false,
+        "status": "PASS"
+      },
+      "chat": {
+        "opened": true,
+        "escapeClosed": true,
+        "status": "PASS"
+      },
+      "video": [
+        {
+          "src": "https://adzfohfdindovfcpaizb.supabase.co/storage/v1/object/public/media-uploads/homepage/0807(1).mp4",
+          "poster": "https://i.ibb.co/fs2MBD4/hero-spa-bg.jpg",
+          "autoplay": true,
+          "muted": true,
+          "playsInline": true,
+          "readyState": 1
+        }
+      ],
+      "status": "PASS_REPLAY"
+    }
+  ],
+  "gateTable": {
+    "candidate-provenance": {
+      "status": "FAIL",
+      "detail": "Candidate SHA recorded by git; worker evidence SHA mismatches remain residuals."
+    },
+    "typecheck-lint-build": {
+      "status": "PASS",
+      "detail": "Recorded separately in handoff; build uses a production build from this exact worktree."
+    },
+    "route-inventory": {
+      "status": "PASS",
+      "detail": "Router + SEO source + local sitemap inventory captured; public/admin/api/demo are classified."
+    },
+    "canonical-cache-mime": {
+      "status": "PARTIAL",
+      "detail": "Local candidate only; hashed WebP cache/MIME checked. Official deployment mapping and live alias remain NOT_VERIFIED."
+    },
+    "menu-cart-locale-checkout": {
+      "status": "PASS",
+      "detail": "Read-only smoke; Escape behavior retained as raw result."
+    },
+    "media-browser": {
+      "status": "PASS_LOCAL",
+      "detail": "Independent local candidate browser replay; no production transfer claim."
+    },
+    "sql-cas-live": {
+      "status": "NOT_VERIFIED",
+      "detail": "No disposable PostgreSQL URL/server was available; candidate report explicitly records runner exit 2."
+    },
+    "runtime-tbt-production": {
+      "status": "NOT_VERIFIED",
+      "detail": "No matched production baseline/Lighthouse TBT evidence on this exact candidate."
+    },
+    "a11y-manual-device": {
+      "status": "NOT_VERIFIED",
+      "detail": "Existing D/F raw evidence tested c964977 and records Escape/focus, contrast, zoom, pinch, font residuals; not promoted to candidate PASS."
+    },
+    "deployment-sha-mapping": {
+      "status": "NOT_VERIFIED",
+      "detail": "HTTP 200 cannot identify deployment SHA/project; no live mapping read-only proof."
+    }
+  },
+  "residuals": [
+    "Required worker evidence is not all candidate-matched: B/D/F/Q artifacts largely cite c964977; A/C cites f266c8e; only QA local replay is 3a98d89.",
+    "Real PostgreSQL CAS/ACL/concurrency/read-back and migration crash/resume/rollback remain NOT_VERIFIED.",
+    "Matched 12-second Hero media transfer reduction remains NOT_VERIFIED; local file sizes are not transfer evidence.",
+    "Runtime target TBT/attribution and production Lighthouse/PSI are NOT_VERIFIED.",
+    "Manual a11y residuals from D/F remain: menu Escape/focus return FAIL, chat keyboard/contrast/zoom/pinch/license NOT_VERIFIED, Playfair 700 unresolved.",
+    "Official Vercel project/deployment/SHA/alias mapping remains NOT_VERIFIED; no deploy or push performed by QA."
+  ]
+}

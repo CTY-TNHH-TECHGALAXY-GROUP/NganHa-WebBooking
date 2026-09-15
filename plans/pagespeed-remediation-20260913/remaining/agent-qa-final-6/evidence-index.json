@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "role": "QA",
+  "status": "PASS_LOCAL_REPLAY_REQUIRED_GATES_OPEN",
+  "testedCandidateSha": "435b364b1617b26bf33d0abbd2cd846a84d2f029",
+  "branch": "codex/ps-integration-20260913",
+  "server": "http://127.0.0.1:3425",
+  "routeCount": 65,
+  "sitemapCount": 47,
+  "artifacts": [
+    {
+      "path": "plans/pagespeed-remediation-20260913/remaining/agent-qa-final-6/qa-closeout-20260915.json",
+      "kind": "raw-route-cache-browser-QA-report",
+      "sha256": "1ee1859a4ff6a044647f65842fc50bf6cc60f84287965bd13dac302cb8974c56"
+    },
+    {
+      "path": "plans/pagespeed-remediation-20260913/remaining/agent-qa-final-6/route-matrix-20260915.csv",
+      "kind": "route-inventory-sitemap-cache-mime-ledger",
+      "sha256": "f5d9d6ffaef2031220115146cca794eee6fae6645d5a180e00b1d06a7cfdda78"
+    },
+    {
+      "path": "scripts/test-pagespeed-qa-closeout.mjs",
+      "kind": "rerunnable-QA-harness",
+      "sha256": "37cd84f43a61684f162aef2aefd4cfc158bc57899fe984a1d64bf168f05207a8"
+    },
+    {
+      "path": "plans/pagespeed-remediation-20260913/remaining/agent-qa-final-6/handoff.md",
+      "kind": "handoff"
+    }
+  ],
+  "commands": [
+    {
+      "command": "QA_BASE_URL=http://127.0.0.1:3425 QA_OUTPUT_DIR=plans/pagespeed-remediation-20260913/remaining/agent-qa-final-6 node scripts/test-pagespeed-qa-closeout.mjs",
+      "exitCode": 0,
+      "status": "PASS_LOCAL_REPLAY"
+    }
+  ],
+  "productionWrites": false,
+  "residuals": [
+    "Real PostgreSQL CAS/ACL/concurrency/rollback is NOT_VERIFIED.",
+    "Matched Hero transfer and Storage readback are NOT_VERIFIED.",
+    "Runtime TBT/attribution and production PSI/Lighthouse are NOT_VERIFIED.",
+    "Manual accessibility, physical device and font review are NOT_VERIFIED.",
+    "Production deployment SHA/alias/read-back is NOT_VERIFIED."
+  ]
+}
