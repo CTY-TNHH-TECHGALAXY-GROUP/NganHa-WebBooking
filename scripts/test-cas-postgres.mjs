@@ -73,7 +73,7 @@ async function callCas(client, expectedExists, expectedValue, nextValue, key = '
     client,
     `SELECT key, value, updated_at
        FROM public.webbooking_compare_and_swap_system_config($1, $2, $3::jsonb, $4::jsonb)`,
-    [key, expectedExists, expectedValue === undefined ? null : JSON.stringify(expectedValue), JSON.stringify(nextValue)],
+    [key, expectedExists, expectedValue === undefined || (!expectedExists && expectedValue === null) ? null : JSON.stringify(expectedValue), JSON.stringify(nextValue)],
   );
 }
 
