@@ -723,11 +723,11 @@ function buildNotes(booking: NormalizedBooking, pricing: CanonicalPricing): { no
       tags: item.catalog.tags,
     });
     if (item.options.addons?.privateRoom) output.push('Phòng riêng');
-    if (operationOptions.therapist) output.push(`Therapist: ${operationOptions.therapist}`);
-    if (Array.isArray(operationOptions.focus) && operationOptions.focus.length) output.push(`Focus: ${operationOptions.focus.join(', ')}`);
-    if (Array.isArray(operationOptions.avoid) && operationOptions.avoid.length) output.push(`Avoid: ${operationOptions.avoid.join(', ')}`);
-    if (operationOptions.strength) output.push(`Pressure: ${operationOptions.strength}`);
-    if (Array.isArray(operationOptions.tags) && operationOptions.tags.length) output.push(`Note: ${operationOptions.tags.join(', ')}`);
+    if (operationOptions.therapist) output.push(`Kỹ thuật viên: ${operationOptions.therapist}`);
+    if (Array.isArray(operationOptions.focus) && operationOptions.focus.length) output.push(`Tập trung: ${operationOptions.focus.join(', ')}`);
+    if (Array.isArray(operationOptions.avoid) && operationOptions.avoid.length) output.push(`Né: ${operationOptions.avoid.join(', ')}`);
+    if (operationOptions.strength) output.push(`Lực: ${operationOptions.strength}`);
+    if (Array.isArray(operationOptions.tags) && operationOptions.tags.length) output.push(`Ghi chú: ${operationOptions.tags.join(', ')}`);
     if (typeof operationOptions.note === 'string' && operationOptions.note) output.push(operationOptions.note);
     return output.length ? [`[${serviceName(item.catalog, booking.lang)}]`, ...output] : [];
   });

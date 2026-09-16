@@ -59,6 +59,11 @@ assert.match(route, /focusAreaNote: preferenceNotes\.focusAreaNote/);
 assert.match(route, /tags\.join\(', '\)/);
 assert.match(route, /focusConfig, tags/);
 assert.match(route, /serviceName\(item\.catalog, booking\.lang\)/, 'service title must remain customer-language aware');
+assert.match(route, /Kỹ thuật viên: \$\{operationOptions\.therapist\}/, 'admin therapist label must be Vietnamese');
+assert.match(route, /Lực: \$\{operationOptions\.strength\}/, 'admin pressure label must be Vietnamese');
+assert.match(route, /Tập trung: \$\{operationOptions\.focus\.join\(', '\)\}/, 'admin focus label must be Vietnamese');
+assert.match(route, /Né: \$\{operationOptions\.avoid\.join\(', '\)\}/, 'admin avoid label must be Vietnamese');
+assert.match(route, /Ghi chú: \$\{operationOptions\.tags\.join\(', '\)\}/, 'admin note label must be Vietnamese');
 assert.doesNotMatch(route, /Therapist: random|Pressure: medium|Focus: \$\{item\.options\.bodyParts/);
 
 assert.match(route, /source: 'WebBooking'/);
