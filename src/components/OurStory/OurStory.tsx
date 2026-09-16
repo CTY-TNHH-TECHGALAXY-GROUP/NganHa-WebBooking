@@ -24,7 +24,9 @@ const getResponsiveSrcSet = (sources?: ResponsiveSources) => Object.entries(sour
   .map(([width, url]) => `${url} ${width}w`)
   .join(', ');
 
-const TRANSPARENT_IMAGE = 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
+// A complete RGBA PNG also decodes in Apple's image decoder; the former
+// minimal GIF could expose Safari's broken-image icon before the real load.
+const TRANSPARENT_IMAGE = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACXBIWXMAAAPoAAAD6AG1e1JrAAAADUlEQVR4nGNgYGBgAAAABQABpfZFQAAAAABJRU5ErkJggg==';
 
 type DeferredStoryImageProps = {
   src: string;

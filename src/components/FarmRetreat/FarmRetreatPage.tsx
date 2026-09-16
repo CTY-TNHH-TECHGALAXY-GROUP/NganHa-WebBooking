@@ -20,6 +20,21 @@ function isVideoUrl(url?: string): boolean {
   return /\.(mp4|mov|webm|ogg)(\?.*)?$/i.test(url) || url.includes('/video/');
 }
 
+// Keep the watermark off the empty media slot while its image is loading.
+function RetreatStoryImage(props: React.ImgHTMLAttributes<HTMLImageElement>) {
+  const [loadedSource, setLoadedSource] = useState<React.ImgHTMLAttributes<HTMLImageElement>['src']>();
+  return <img {...props} data-retreat-loaded={loadedSource === props.src ? 'true' : 'false'}
+    ref={image => {
+      if (image?.complete && image.naturalWidth > 0) setLoadedSource(props.src);
+    }}
+    onLoad={event => {
+      if (event.currentTarget.naturalWidth > 0) setLoadedSource(props.src);
+      props.onLoad?.(event);
+    }}
+    onError={event => { setLoadedSource(undefined); props.onError?.(event); }}
+  />;
+}
+
 const EXTRA_MEDIA_COPY: Record<string, { pre: string; title: string }> = {
   vi: { pre: 'BỘ SƯU TẬP HÌNH ẢNH & KHOẢNH KHẮC', title: 'Khoảnh Khắc Oria Farm Retreat' },
   en: { pre: 'PHOTO & MOMENTS ESSAY', title: 'Oria Farm Retreat Moments' },
@@ -212,7 +227,7 @@ export default function FarmRetreatPage({
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.7 }}
           >
-            <img
+            <RetreatStoryImage
               src={config.storyPhotos?.[0]}
               alt="Oria Farm Retreat Bungalow"
               loading="lazy"
@@ -254,7 +269,7 @@ export default function FarmRetreatPage({
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.7 }}
           >
-            <img
+            <RetreatStoryImage
               src={config.storyPhotos?.[1]}
               alt="Oria Farm Retreat Living Space"
               loading="lazy"
@@ -315,7 +330,7 @@ export default function FarmRetreatPage({
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.7 }}
           >
-            <img
+            <RetreatStoryImage
               src={config.storyPhotos?.[2]}
               alt="Oria Farm Retreat Body Therapy"
               loading="lazy"
@@ -357,7 +372,7 @@ export default function FarmRetreatPage({
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.7 }}
           >
-            <img
+            <RetreatStoryImage
               src={config.storyPhotos?.[3]}
               alt="Oria Farm Retreat Dining"
               loading="lazy"
@@ -416,7 +431,7 @@ export default function FarmRetreatPage({
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.7 }}
           >
-            <img
+            <RetreatStoryImage
               src={config.storyPhotos?.[4]}
               alt="Oria Farm Retreat Sunset"
               loading="lazy"
@@ -461,7 +476,7 @@ export default function FarmRetreatPage({
                       playsInline
                     />
                   ) : (
-                    <img
+                    <RetreatStoryImage
                       src={item.url}
                       alt={`Oria Farm Retreat ${item.originalIdx + 1}`}
                       loading="lazy"

@@ -515,7 +515,7 @@ const DEFAULT_HISTORY_IMAGE_PATHS = new Set(
 );
 
 // Keeps the stage and thumbnail dimensions stable without starting an image request.
-const HISTORY_MEDIA_PLACEHOLDER = 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
+const HISTORY_MEDIA_PLACEHOLDER = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACXBIWXMAAAPoAAAD6AG1e1JrAAAADUlEQVR4nGNgYGBgAAAABQABpfZFQAAAAABJRU5ErkJggg==';
 
 const getResponsiveSrcSet = (image: string, sources?: Record<string, string>, responsiveSourceImage?: string) => {
   const accepted = responsiveSourcesForImage(image, sources, responsiveSourceImage);

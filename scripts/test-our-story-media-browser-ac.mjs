@@ -16,7 +16,7 @@ const outputPath = path.resolve(
 const screenshotDirectory = path.resolve(
   process.env.OUR_STORY_AC_SCREENSHOTS || 'plans/pagespeed-remediation-20260913/remaining/agent-ac/screenshots',
 );
-const placeholder = 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
+const placeholder = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACXBIWXMAAAPoAAAD6AG1e1JrAAAADUlEQVR4nGNgYGBgAAAABQABpfZFQAAAAABJRU5ErkJggg==';
 const profiles = [
   { name: 'mobile-cold-1', viewport: { width: 390, height: 844 }, deviceScaleFactor: 2 },
   { name: 'mobile-cold-2', viewport: { width: 390, height: 844 }, deviceScaleFactor: 2 },

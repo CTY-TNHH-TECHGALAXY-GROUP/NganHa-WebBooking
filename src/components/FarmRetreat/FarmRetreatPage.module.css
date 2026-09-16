@@ -186,7 +186,13 @@
 }
 
 /* 3. STORY PHOTO FRAMES (INTERLEAVED) */
+.storyPhotoFrame:has(img[data-retreat-loaded='false']) > :global(.media-watermark),
+.extraMediaCard:has(img[data-retreat-loaded='false']) > :global(.media-watermark) {
+  visibility: hidden;
+}
+
 .storyPhotoFrame {
+  isolation: isolate;
   position: relative;
   margin: 24px 0 16px;
   border-radius: 20px;
@@ -428,6 +434,7 @@
 }
 
 .extraMediaCard {
+  isolation: isolate;
   position: relative;
   border-radius: 16px;
   overflow: hidden;

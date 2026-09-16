@@ -12,7 +12,7 @@ if (!['127.0.0.1', 'localhost'].includes(parsedBase.hostname)) {
 const outputPath = path.resolve(
   process.env.OUR_STORY_MEDIA_REPORT || 'plans/pagespeed-remediation-20260913/remaining/agent-a/our-story-browser-report.json',
 );
-const transparentImage = 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
+const transparentImage = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACXBIWXMAAAPoAAAD6AG1e1JrAAAADUlEQVR4nGNgYGBgAAAABQABpfZFQAAAAABJRU5ErkJggg==';
 
 const snapshot = page => page.evaluate(() => {
   const viewport = { width: window.innerWidth, height: window.innerHeight };

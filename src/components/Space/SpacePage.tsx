@@ -49,6 +49,38 @@ const facilityMediaKeys = [
   'capacity.shampooBed',
 ] as const;
 
+// Stable component identity: parent scroll/tab updates must not remount media.
+const MediaRenderer = ({ mediaObj, className, alt, onEnded, eager = false }: { mediaObj: {src: string, type: string, objectPosition?: string}, className?: string, alt?: string, onEnded?: () => void, eager?: boolean }) => {
+  const mediaNodeRef = useRef<HTMLImageElement | null>(null);
+  const [mediaVisible, setMediaVisible] = useState(false);
+
+  useEffect(() => {
+    if (mediaObj.type === 'video' || !onEnded) return;
+    setMediaVisible(false);
+    const node = mediaNodeRef.current;
+    if (!node || !('IntersectionObserver' in window)) {
+      setMediaVisible(true);
+      return;
+    }
+    const observer = new IntersectionObserver(([entry]) => {
+      setMediaVisible(Boolean(entry?.isIntersecting));
+    }, { threshold: 0.01 });
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [mediaObj.src, mediaObj.type, onEnded]);
+
+  useEffect(() => {
+    if (mediaObj.type === 'video' || !onEnded || !mediaVisible) return;
+    const timer = setTimeout(onEnded, 6000);
+    return () => clearTimeout(timer);
+  }, [mediaObj.src, mediaObj.type, mediaVisible, onEnded]);
+
+  if (mediaObj.type === 'video') {
+    return <ViewportVideo key={mediaObj.src} src={mediaObj.src} className={className} muted loop={!onEnded} playsInline onEnded={onEnded} eager={eager} style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: mediaObj.objectPosition || 'center', display: 'block' }} />;
+  }
+  return <img ref={mediaNodeRef} key={mediaObj.src} src={mediaObj.src} alt={alt || ""} className={className} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: mediaObj.objectPosition || 'center', display: 'block' }} />;
+};
+
 export default function SpacePage({ initialMedia }: { initialMedia?: any } = {}) {
   const { currentLang } = useTranslation();
   const { systemSettings } = useSystemSettings();
@@ -170,52 +202,6 @@ export default function SpacePage({ initialMedia }: { initialMedia?: any } = {})
       ]
     };
   }, [contentMedia, space.gallery]);
-
-// Move MediaRenderer outside to prevent remounts on every SpacePage render
-const MediaRenderer = ({ mediaObj, className, alt, onEnded, eager = false }: { mediaObj: {src: string, type: string, objectPosition?: string}, className?: string, alt?: string, onEnded?: () => void, eager?: boolean }) => {
-  const mediaNodeRef = useRef<HTMLImageElement | null>(null);
-  const [mediaVisible, setMediaVisible] = useState(false);
-
-  useEffect(() => {
-    if (mediaObj.type === 'video' || !onEnded) return;
-
-    setMediaVisible(false);
-    const node = mediaNodeRef.current;
-    if (!node || !('IntersectionObserver' in window)) {
-      setMediaVisible(true);
-      return;
-    }
-
-    const observer = new IntersectionObserver(([entry]) => {
-      setMediaVisible(Boolean(entry?.isIntersecting));
-    }, { threshold: 0.01 });
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, [mediaObj.src, mediaObj.type, onEnded]);
-
-  useEffect(() => {
-    if (mediaObj.type === 'video' || !onEnded || !mediaVisible) return;
-    const timer = setTimeout(onEnded, 6000);
-    return () => clearTimeout(timer);
-  }, [mediaObj.src, mediaObj.type, mediaVisible, onEnded]);
-
-  if (mediaObj.type === 'video') {
-    return (
-      <ViewportVideo
-        key={mediaObj.src}
-        src={mediaObj.src}
-        className={className} 
-        muted 
-        loop={!onEnded}
-        playsInline 
-        onEnded={onEnded}
-        eager={eager}
-        style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: mediaObj.objectPosition || 'center', display: 'block' }}
-      />
-    );
-  }
-  return <img ref={mediaNodeRef} key={mediaObj.src} src={mediaObj.src} alt={alt || ""} className={className} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: mediaObj.objectPosition || 'center', display: 'block' }} />;
-};
 
   useEffect(() => {
     const revealObs = new IntersectionObserver((entries) => {
