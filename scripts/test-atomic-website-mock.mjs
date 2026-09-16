@@ -19,7 +19,7 @@ class AtomicStore {
       return { ...existing, replay: true };
     }
     const id = `booking-${this.next++}`;
-    const row = { ...parent, id, billCode: `WB-09092026-${String(this.next - 1).padStart(3, '0')}`, status: 'NEW', source: 'WEB_BOOKING' };
+    const row = { ...parent, id, billCode: `WB-09092026-${String(this.next - 1).padStart(3, '0')}`, status: 'NEW', source: 'WebBooking' };
     this.bookings.set(key, row); // private transaction visibility until the child phase commits
     if (delayMs) await new Promise((resolve) => setTimeout(resolve, delayMs));
     if (failChild) { this.bookings.delete(key); throw new Error('child insert failed; transaction rolled back'); }

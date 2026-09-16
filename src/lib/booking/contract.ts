@@ -72,6 +72,7 @@ export type CatalogService = {
   showFocus?: boolean | null;
   showCustomForYou?: boolean | null;
   focusConfig?: unknown;
+  tags?: unknown;
 };
 
 export type CanonicalService = NormalizedService & {

@@ -3,7 +3,13 @@ import { readFileSync } from 'node:fs';
 import pg from 'pg';
 
 // Explicit loopback-only disposable cluster; never load application env files.
-const config = { host: '127.0.0.1', port: 55439, user: 'postgres', database: 'postgres' };
+const config = {
+  host: '127.0.0.1',
+  port: Number(process.env.PAGESPEED_TEST_PGPORT || 55439),
+  user: 'postgres',
+  password: process.env.PAGESPEED_TEST_PG_PASSWORD || 'pagespeed-local-only',
+  database: 'postgres',
+};
 const setup = new pg.Client(config);
 await setup.connect();
 const database = `qa_atomic_${Date.now()}`;
@@ -18,7 +24,7 @@ async function test(name, fn) {
   catch (error) { results.push({ name, status: 'FAIL', error: error.message }); }
 }
 const booking = (key, id = `WB-10092026-${/^[0-9]+$/.test(key) ? key : '900'}`) => ({
-  id, billCode: id, idLegacy: `idemp:${key}`, source: 'WEB_BOOKING', status: 'NEW',
+  id, billCode: id, idLegacy: `idemp:${key}`, source: 'WebBooking', status: 'NEW',
   bookingDate: '2026-09-10T22:30:00', timeBooking: '22:30',
   customerName: 'QA fixture', customerPhone: '+84389898593', customerEmail: 'qa@example.invalid',
   customerId: 'fixture-customer', customerLang: 'vi', guestCount: 1, branchName: 'fixture',
@@ -48,13 +54,32 @@ try {
       quantity integer NOT NULL, price numeric NOT NULL, status text DEFAULT 'WAITING', options jsonb, tip numeric);`);
   const before = (await db.query(`SELECT table_name,column_name,data_type,column_default FROM information_schema.columns WHERE table_schema='public' ORDER BY 1,2`)).rows;
   await db.query(readFileSync(new URL('../supabase/GO_LIVE_COUNTER_ONLY_READY_TO_PASTE.sql', import.meta.url), 'utf8'));
-  await db.query(readFileSync(new URL('../supabase/GO_LIVE_WEBSITE_ATOMIC_WRITER_READY_TO_PASTE.sql', import.meta.url), 'utf8'));
+  const writerSql = readFileSync(new URL('../supabase/GO_LIVE_WEBSITE_ATOMIC_WRITER_READY_TO_PASTE.sql', import.meta.url), 'utf8');
+  await db.query(writerSql);
+  // Exercise the real source-case migration against an old writer body in the
+  // disposable database. No production database or application env is loaded.
+  const legacyWriterSql = writerSql.replaceAll("'WebBooking'", "'WEB_BOOKING'");
+  await db.query(legacyWriterSql);
+  await db.query(readFileSync(new URL('../supabase/migrations/20260916_webbooking_source_case.sql', import.meta.url), 'utf8'));
   await db.query("SET TIME ZONE 'UTC'");
   await test('new booking preserves time, IDs, customer and required timestamps', async () => {
     const b = booking('001'); await call(b);
     const r = (await db.query(`SELECT "bookingDate"::text AS appointment,"customerId","createdAt" FROM "Bookings" WHERE id=$1`,[b.id])).rows[0];
     assert.equal(r.appointment, '2026-09-10 22:30:00'); assert.equal(r.customerId,'fixture-customer');
     assert.equal((await db.query('SELECT id FROM "BookingItems" WHERE "bookingId"=$1',[b.id])).rows[0].id, items(b)[0].id);
+  });
+  await test('source migration stores the exact WebBooking value', async () => {
+    const source = (await db.query('SELECT source FROM "Bookings" WHERE id=$1', ['WB-10092026-001'])).rows[0].source;
+    assert.equal(source, 'WebBooking');
+  });
+  await test('expanded quantity rows preserve one-row-per-unit and total', async () => {
+    const b = { ...booking('quantity-split', 'WB-10092026-008'), totalAmount: 200000 };
+    const first = items(b)[0];
+    const expanded = [first, { ...first, id: `${b.id}-second` }];
+    await call(b, expanded);
+    const persisted = (await db.query('SELECT quantity, price FROM "BookingItems" WHERE "bookingId"=$1 ORDER BY id', [b.id])).rows;
+    assert.deepEqual(persisted, [{ quantity: 1, price: '100000' }, { quantity: 1, price: '100000' }]);
+    assert.equal(persisted.reduce((total, row) => total + Number(row.quantity) * Number(row.price), 0), b.totalAmount);
   });
   await test('writer rejects malformed or date-mismatched allocator IDs', async () => {
     await assert.rejects(call(booking('bad-format', 'WB-QA-001')));
@@ -143,5 +168,5 @@ try {
     await test(file+' executes',async()=>{try {await db.query(readFileSync(new URL('../supabase/verification/'+file,import.meta.url),'utf8'));} finally {await db.query('ROLLBACK');}});
   }
 } finally { await db.end(); }
-console.log(JSON.stringify({environment:'disposable PostgreSQL loopback:55439; fixture schema, not production metadata',results},null,2));
+console.log(JSON.stringify({environment:`disposable PostgreSQL loopback:${config.port}; fixture schema, not production metadata`,results},null,2));
 if(results.some(r=>r.status==='FAIL')) process.exitCode=1;

@@ -54,6 +54,6 @@ ORDER BY c.relname, t.tgname;
 
 SELECT
   'trigger_gate' AS check_name,
-  'REVIEW FUNCTION DEFINITIONS: confirm INSERT triggers preserve website id/billCode, WEB_BOOKING, NEW/WAITING, customerId, prices and commit-time operations delivery.' AS finding;
+  'REVIEW FUNCTION DEFINITIONS: confirm INSERT triggers preserve website id/billCode, WebBooking, NEW/WAITING, customerId, prices and commit-time operations delivery.' AS finding;
 
 COMMIT;
