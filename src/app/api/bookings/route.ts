@@ -29,6 +29,14 @@ import {
   type CanonicalPricing,
   type NormalizedBooking,
 } from '@/lib/booking/contract';
+import {
+  canonicalizeDispatchOptions,
+  canonicalizeStoredDispatchOptions,
+  expandedDispatchItemCount,
+  expandDispatchItems,
+  MAX_DISPATCH_ITEMS,
+  type DispatchBookingLine,
+} from '@/lib/booking/dispatchItems';
 
 export const dynamic = 'force-dynamic';
 
@@ -379,17 +387,44 @@ function dateOnly(value: unknown): string {
 }
 
 function servicesFromItems(items: any[]): unknown[] {
-  return items.filter(item => !item.options?.isAddon).map(item => {
-    const saved = item.options?._booking;
-    const addon = saved ? items.find(candidate => candidate.options?.isAddon && candidate.options?.parentLine === saved.line) : undefined;
-    return {
-      id: item.serviceId, name: saved?.name || item.options?.displayName || item.serviceId,
-      duration: saved?.duration || 0, quantity: Number(item.quantity),
-      priceVND: Number(item.price) + Number(addon?.price || 0),
-      priceUSD: saved ? Number(saved.priceUSD) + Number(addon?.options?._booking?.priceUSD || 0) : undefined,
-      options: saved?.options || item.options || {},
-    };
-  });
+  // Persisted BookingItems are the operations snapshot and may contain one
+  // row per unit (new WebBooking writes) or a legacy row with quantity > 1.
+  // Reconstruct logical customer lines for idempotent responses by grouping
+  // identical service/options/price rows and summing their quantities.
+  const grouped = new Map<string, {
+    id: string;
+    name: string;
+    duration: number;
+    quantity: number;
+    priceVND: number;
+    options: Record<string, unknown>;
+  }>();
+  for (const item of items) {
+    if (item?.options?.isAddon) continue;
+    const options = item?.options && typeof item.options === 'object' ? item.options : {};
+    const saved = options._booking;
+    const quantity = Number(item?.quantity || 0);
+    if (!Number.isInteger(quantity) || quantity < 1) continue;
+    const key = stableStringify({
+      serviceId: String(item?.serviceId || ''),
+      price: Number(item?.price || 0),
+      options: saved?.options || options,
+    });
+    const existing = grouped.get(key);
+    if (existing) {
+      existing.quantity += quantity;
+      continue;
+    }
+    grouped.set(key, {
+      id: String(item?.serviceId || ''),
+      name: saved?.name || options.displayName || item?.serviceId || '',
+      duration: Number(saved?.duration || 0),
+      quantity,
+      priceVND: Number(item?.price || 0),
+      options: (saved?.options || options) as Record<string, unknown>,
+    });
+  }
+  return Array.from(grouped.values());
 }
 
 function guestCountFromStoredBooking(row: any): number {
@@ -564,54 +599,63 @@ function replayIdentityMatches(snapshot: BookingSnapshot, booking: NormalizedBoo
 function replayLineKeysFromRequest(booking: NormalizedBooking): string[] {
   return booking.selectedServices.flatMap((item) => {
     const options = item.options;
-    const strength = options.strength === 'light' ? 'LIGHT' : options.strength === 'strong' ? 'HARD' : options.strength ? 'NORMAL' : undefined;
-    const noteParts = [
-      options.notes?.tag0 ? 'Phụ nữ có thai' : '',
-      options.notes?.tag1 ? 'Có dị ứng' : '',
-      options.notes?.content || '',
-    ].filter(Boolean);
+    const operationOptions = canonicalizeDispatchOptions({
+      strength: options.strength,
+      therapist: options.therapist,
+      focus: options.bodyParts?.focus,
+      avoid: options.bodyParts?.avoid,
+      notes: options.notes,
+    });
     const baseOptions = {
-      ...(strength ? { strength } : {}),
-      ...(options.bodyParts?.focus.length ? { focus: options.bodyParts.focus } : {}),
-      ...(options.bodyParts?.avoid.length ? { avoid: options.bodyParts.avoid } : {}),
-      ...(options.therapist && String(options.therapist).toLowerCase() !== 'random' && String(options.therapist).toLowerCase() !== 'ngẫu nhiên' ? { therapist: options.therapist === 'male' ? 'Nam' : options.therapist === 'female' ? 'Nữ' : 'Ngẫu nhiên' } : {}),
-      ...(noteParts.length ? { note: noteParts.join(' - ') } : {}),
+      ...(operationOptions.strength ? { strength: operationOptions.strength } : {}),
+      ...(Array.isArray(operationOptions.focus) && operationOptions.focus.length ? { focus: operationOptions.focus } : {}),
+      ...(Array.isArray(operationOptions.avoid) && operationOptions.avoid.length ? { avoid: operationOptions.avoid } : {}),
+      ...(operationOptions.therapist && operationOptions.therapist !== 'Ngẫu nhiên' ? { therapist: operationOptions.therapist } : {}),
+      ...(operationOptions.tags ? { tags: operationOptions.tags } : {}),
+      ...(operationOptions.note ? { note: operationOptions.note } : {}),
     };
-    const base = { serviceId: item.id, quantity: item.quantity, options: Object.keys(baseOptions).length ? baseOptions : null };
-    return [
-      stableStringify(base),
-      ...(options.addons?.privateRoom ? [stableStringify({ serviceId: PRIVATE_ROOM_SERVICE_ID, quantity: item.quantity, options: { parentServiceId: item.id, isAddon: true } })] : []),
-    ];
+    const base = { serviceId: item.id, quantity: 1, options: Object.keys(baseOptions).length ? baseOptions : null };
+    const baseKey = stableStringify(base);
+    const rows = Array.from({ length: item.quantity }, () => baseKey);
+    if (options.addons?.privateRoom) {
+      const addonKey = stableStringify({ serviceId: PRIVATE_ROOM_SERVICE_ID, quantity: 1, options: { parentServiceId: item.id, isAddon: true } });
+      rows.push(...Array.from({ length: item.quantity }, () => addonKey));
+    }
+    return rows;
   }).sort();
 }
 
 function replayLineKeysFromSnapshot(snapshot: BookingSnapshot): string[] {
-  return (snapshot.items || []).map((item: any) => {
+  return (snapshot.items || []).flatMap((item: any) => {
     const options = item?.options && typeof item.options === 'object' ? item.options : {};
+    const quantity = Number(item?.quantity || 0);
+    if (!Number.isInteger(quantity) || quantity < 1) return [];
     if (options.isAddon === true) {
-      return stableStringify({ serviceId: String(item?.serviceId || ''), quantity: Number(item?.quantity || 0), options: {
+      const key = stableStringify({ serviceId: String(item?.serviceId || ''), quantity: 1, options: {
         parentServiceId: options.parentServiceId || null,
         isAddon: true,
       } });
+      return Array.from({ length: quantity }, () => key);
     }
+    const operationOptions = canonicalizeStoredDispatchOptions(options);
     const hasCanonicalOptions = Boolean(
-      options.strength ||
-      (Array.isArray(options.focus) && options.focus.length) ||
-      (Array.isArray(options.avoid) && options.avoid.length) ||
-      (options.therapist && String(options.therapist).toLowerCase() !== 'ngẫu nhiên') ||
-      options.note,
+      operationOptions.strength || operationOptions.focus || operationOptions.avoid ||
+      (operationOptions.therapist && operationOptions.therapist !== 'Ngẫu nhiên') ||
+      operationOptions.tags || operationOptions.note,
     );
-    return stableStringify({
+    const key = stableStringify({
       serviceId: String(item?.serviceId || ''),
-      quantity: Number(item?.quantity || 0),
+      quantity: 1,
       options: hasCanonicalOptions ? {
-        ...(options.strength ? { strength: options.strength } : {}),
-        ...(Array.isArray(options.focus) && options.focus.length ? { focus: options.focus } : {}),
-        ...(Array.isArray(options.avoid) && options.avoid.length ? { avoid: options.avoid } : {}),
-        ...(options.therapist && String(options.therapist).toLowerCase() !== 'ngẫu nhiên' ? { therapist: options.therapist } : {}),
-        ...(options.note ? { note: options.note } : {}),
+        ...(operationOptions.strength ? { strength: operationOptions.strength } : {}),
+        ...(Array.isArray(operationOptions.focus) && operationOptions.focus.length ? { focus: operationOptions.focus } : {}),
+        ...(Array.isArray(operationOptions.avoid) && operationOptions.avoid.length ? { avoid: operationOptions.avoid } : {}),
+        ...(operationOptions.therapist && operationOptions.therapist !== 'Ngẫu nhiên' ? { therapist: operationOptions.therapist } : {}),
+        ...(operationOptions.tags ? { tags: operationOptions.tags } : {}),
+        ...(operationOptions.note ? { note: operationOptions.note } : {}),
       } : null,
     });
+    return Array.from({ length: quantity }, () => key);
   }).sort();
 }
 
@@ -670,23 +714,21 @@ function buildNotes(booking: NormalizedBooking, pricing: CanonicalPricing): { no
   const preferences = pricing.items.flatMap((item) => {
     if (item.id === PRIVATE_ROOM_SERVICE_ID) return [];
     const output: string[] = [];
-    if (item.options.addons?.privateRoom) output.push('Private Room');
-    if (item.options.therapist) {
-      const rawTherapist = String(item.options.therapist).toLowerCase().trim();
-      if (rawTherapist === 'female' || rawTherapist === 'nữ') {
-        output.push('Therapist: female');
-      } else if (rawTherapist === 'male' || rawTherapist === 'nam') {
-        output.push('Therapist: male');
-      } else if (rawTherapist === 'random' || rawTherapist === 'any' || rawTherapist === 'ngẫu nhiên') {
-        output.push('Therapist: random');
-      }
-    }
-    if (item.options.bodyParts?.focus?.length) output.push(`Focus: ${item.options.bodyParts.focus.join(', ')}`);
-    if (item.options.bodyParts?.avoid?.length) output.push(`Avoid: ${item.options.bodyParts.avoid.join(', ')}`);
-    if (item.options.strength) output.push(`Pressure: ${item.options.strength}`);
-    if (item.options.notes?.tag0) output.push('Pregnancy note');
-    if (item.options.notes?.tag1) output.push('Allergy or sensitive skin note');
-    if (item.options.notes?.content) output.push(item.options.notes.content);
+    const operationOptions = canonicalizeDispatchOptions({
+      strength: item.options.strength,
+      therapist: item.options.therapist,
+      focus: item.options.bodyParts?.focus,
+      avoid: item.options.bodyParts?.avoid,
+      notes: item.options.notes,
+      tags: item.catalog.tags,
+    });
+    if (item.options.addons?.privateRoom) output.push('Phòng riêng');
+    if (operationOptions.therapist) output.push(`Therapist: ${operationOptions.therapist}`);
+    if (Array.isArray(operationOptions.focus) && operationOptions.focus.length) output.push(`Focus: ${operationOptions.focus.join(', ')}`);
+    if (Array.isArray(operationOptions.avoid) && operationOptions.avoid.length) output.push(`Avoid: ${operationOptions.avoid.join(', ')}`);
+    if (operationOptions.strength) output.push(`Pressure: ${operationOptions.strength}`);
+    if (Array.isArray(operationOptions.tags) && operationOptions.tags.length) output.push(`Note: ${operationOptions.tags.join(', ')}`);
+    if (typeof operationOptions.note === 'string' && operationOptions.note) output.push(operationOptions.note);
     return output.length ? [`[${serviceName(item.catalog, booking.lang)}]`, ...output] : [];
   });
   return { notes: notes.length ? notes.join(' | ') : null, focusAreaNote: preferences.length ? preferences.join('\n') : null };
@@ -695,7 +737,7 @@ function buildNotes(booking: NormalizedBooking, pricing: CanonicalPricing): { no
 function buildBookingPayload(booking: NormalizedBooking, pricing: CanonicalPricing, bookingId: string, customerId: string | null, idempotencyKey: string): Record<string, unknown> {
   const preferenceNotes = buildNotes(booking, pricing);
   return {
-    id: bookingId, billCode: bookingId, source: 'WEB_BOOKING', branchName: booking.branchName,
+    id: bookingId, billCode: bookingId, source: 'WebBooking', branchName: booking.branchName,
     // The checkout guest selector is note-only. The atomic writer defaults the
     // legacy Bookings.guestCount column to 1 when this field is omitted.
     // The writer maps bookingDate to a timestamp without time zone. Send the
@@ -711,40 +753,32 @@ function buildBookingPayload(booking: NormalizedBooking, pricing: CanonicalPrici
   };
 }
 
-function buildBookingItems(booking: NormalizedBooking, pricing: CanonicalPricing, bookingId: string): Record<string, unknown>[] {
-  return pricing.items.flatMap((item, index) => {
+function bookingItemOptions(item: CanonicalPricing['items'][number]): Record<string, unknown> {
     const options = item.options;
-    const strength = options.strength === 'light' ? 'LIGHT' : options.strength === 'strong' ? 'HARD' : options.strength ? 'NORMAL' : undefined;
-    const noteParts = [
-      options.notes?.tag0 ? 'Phụ nữ có thai' : '',
-      options.notes?.tag1 ? 'Có dị ứng' : '',
-      options.notes?.content || '',
-    ].filter(Boolean);
-    const bookingItemOptions: Record<string, unknown> = {
-      ...(strength ? { strength } : {}),
-      ...(options.bodyParts?.focus.length ? { focus: options.bodyParts.focus } : {}),
-      ...(options.bodyParts?.avoid.length ? { avoid: options.bodyParts.avoid } : {}),
-      ...(options.therapist ? {
-        therapist: options.therapist === 'male' ? 'Nam' : options.therapist === 'female' ? 'Nữ' : 'Ngẫu nhiên',
-      } : {}),
-      ...(noteParts.length ? { note: noteParts.join(' - ') } : {}),
-    };
-    const rows: Record<string, unknown>[] = [{
-      id: `${bookingId}-${item.id}-${index}`,
-      bookingId, serviceId: item.id, quantity: item.quantity, price: item.basePriceVND,
-      status: 'WAITING',
-      options: bookingItemOptions,
-      tip: 0,
-    }];
-    if (item.hasPrivateRoom) rows.push({
-      id: `${bookingId}-${PRIVATE_ROOM_SERVICE_ID}-${index}`,
-      bookingId, serviceId: PRIVATE_ROOM_SERVICE_ID, quantity: item.quantity, price: item.addonPriceVND,
-      status: 'WAITING',
-      options: { displayName: 'Phòng riêng', parentServiceId: item.id, isAddon: true },
-      tip: 0,
+    return canonicalizeDispatchOptions({
+      strength: options.strength,
+      therapist: options.therapist,
+      focus: options.bodyParts?.focus,
+      avoid: options.bodyParts?.avoid,
+      notes: options.notes,
+      tags: item.catalog.tags,
     });
-    return rows;
-  });
+}
+
+function dispatchLinesFromPricing(pricing: CanonicalPricing): DispatchBookingLine[] {
+  return pricing.items.map((item, lineIndex) => ({
+    serviceId: item.id,
+    lineIndex,
+    quantity: item.quantity,
+    priceVND: item.basePriceVND,
+    addonPriceVND: item.addonPriceVND,
+    hasPrivateRoom: item.hasPrivateRoom,
+    options: bookingItemOptions(item),
+  }));
+}
+
+function buildBookingItems(pricing: CanonicalPricing, bookingId: string): Record<string, unknown>[] {
+  return expandDispatchItems(dispatchLinesFromPricing(pricing), bookingId);
 }
 
 async function resolveCustomerId(supabase: any, booking: NormalizedBooking): Promise<string | null> {
@@ -832,7 +866,7 @@ export async function POST(request: Request) {
   if (isBookingTimeInPast(booking.date, booking.time)) return jsonError('VALIDATION_ERROR', 'Please choose a future booking time.', 400, [{ field: 'time', code: 'BOOKING_TIME_IN_PAST', message: 'Booking time must be in the future.' }]);
 
   const ids = Array.from(new Set([...booking.selectedServices.map((item) => item.id), PRIVATE_ROOM_SERVICE_ID]));
-  const { data: catalogRows, error: catalogError } = await supabase.from('Services').select('id, nameVN, nameEN, nameCN, nameJP, nameKR, priceVND, priceUSD, duration, isActive, showCustomForYou, showPreferences, showNotes, showGender, showStrength, showFocus, focusConfig').in('id', ids);
+  const { data: catalogRows, error: catalogError } = await supabase.from('Services').select('id, nameVN, nameEN, nameCN, nameJP, nameKR, priceVND, priceUSD, duration, isActive, showCustomForYou, showPreferences, showNotes, showGender, showStrength, showFocus, focusConfig, tags').in('id', ids);
   if (catalogError) {
     console.error('[API Bookings] Catalog read failed:', catalogError.code || 'unknown');
     return jsonError('BOOKING_TEMPORARILY_UNAVAILABLE', 'Booking is temporarily unavailable. Please try again later.', 503);
@@ -864,6 +898,21 @@ export async function POST(request: Request) {
   const quoteCheck = verifyQuote(booking.quote, [booking.intentFingerprint, cartIntentFingerprint(canonicalBooking.selectedServices)], catalogDigest(catalog));
   if (!quoteCheck.ok) return jsonError('PRICE_CHANGED', 'The service catalog changed. Please review your booking again.', 409, [{ field: 'quote', code: quoteCheck.reason, message: 'The quote is no longer current.' }]);
 
+  // The atomic writer accepts at most 100 physical rows. A logical cart line
+  // with quantity N (and its optional private-room row) expands before the
+  // booking number/customer side effects, so an oversized cart is rejected
+  // deterministically instead of failing halfway through checkout.
+  const dispatchLines = dispatchLinesFromPricing(pricing);
+  const physicalItemCount = expandedDispatchItemCount(dispatchLines);
+  if (physicalItemCount > MAX_DISPATCH_ITEMS) {
+    return jsonError(
+      'CART_REQUIRES_REVIEW',
+      'Please reduce the selected service quantity before confirming.',
+      409,
+      [{ field: 'selectedServices', code: 'TOO_MANY_BOOKING_ITEMS', message: `The booking contains ${physicalItemCount} service instances; the maximum is ${MAX_DISPATCH_ITEMS}.` }],
+    );
+  }
+
   // The allocator supplies only the identifier. The website writer owns the
   // atomic parent/items commit; there is deliberately no insert fallback.
   // Allocate first so a missing counter cannot leave a customer-only side effect.
@@ -890,7 +939,7 @@ export async function POST(request: Request) {
       customerResolved = true;
     }
     bookingPayload = buildBookingPayload(canonicalBooking, pricing, committedId, customerId, finalKey);
-    items = buildBookingItems(canonicalBooking, pricing, committedId);
+    items = buildBookingItems(pricing, committedId);
     try {
       const result = await commitBookingAtomically(supabase, bookingPayload, items);
       if (result.state === 'incomplete') return responseForIncompleteBooking(result.bookingId);

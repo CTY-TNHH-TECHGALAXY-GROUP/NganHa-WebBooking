@@ -555,7 +555,7 @@ BEGIN
     ) VALUES (
         v_assigned_id,
         v_assigned_id,
-        'WEB_BOOKING',
+        'WebBooking',
         GREATEST(1, COALESCE((p_booking_data->>'guestCount')::INT, 1)),
         COALESCE(p_booking_data->>'branchName', 'ORIA SPA'),
         v_target_ts,

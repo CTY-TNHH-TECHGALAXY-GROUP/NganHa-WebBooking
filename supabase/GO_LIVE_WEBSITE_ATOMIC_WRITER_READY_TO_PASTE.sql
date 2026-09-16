@@ -57,7 +57,7 @@ BEGIN
      OR v_id !~ '^WB-[0-9]{8}-[0-9]+$'
      OR substring(v_id FROM 4 FOR 8) IS DISTINCT FROM
        to_char(((p_booking->>'bookingDate')::TIMESTAMP)::DATE, 'DDMMYYYY')
-     OR (p_booking ? 'source' AND p_booking->>'source' IS DISTINCT FROM 'WEB_BOOKING')
+     OR (p_booking ? 'source' AND p_booking->>'source' IS DISTINCT FROM 'WebBooking')
      OR (p_booking ? 'status' AND p_booking->>'status' IS DISTINCT FROM 'NEW')
      OR v_key IS NULL OR v_key !~ '^idemp:.+$' THEN
     RAISE EXCEPTION USING ERRCODE = '22023', MESSAGE = 'BOOKING_SERVER_FIELDS_INVALID';
@@ -167,7 +167,7 @@ BEGIN
     "customerId", "roomName", notes, "focusAreaNote", "totalAmount", status, tip,
     "idLegacy", "createdAt", "updatedAt"
   ) VALUES (
-    v_id, v_id, 'WEB_BOOKING', COALESCE((p_booking->>'guestCount')::INTEGER, 1),
+    v_id, v_id, 'WebBooking', COALESCE((p_booking->>'guestCount')::INTEGER, 1),
     p_booking->>'branchName', (p_booking->>'bookingDate')::TIMESTAMP,
     p_booking->>'timeBooking', p_booking->>'customerName', p_booking->>'customerPhone',
     p_booking->>'customerEmail', p_booking->>'customerGender', p_booking->>'customerLang',

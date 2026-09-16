@@ -58,8 +58,10 @@ for (const quantity of [1, 2, 3]) {
 }
 
 const bookingRoute = readFileSync(new URL('../src/app/api/bookings/route.ts', import.meta.url), 'utf8');
-assert.match(bookingRoute, /options\.therapist\s*\?/);
+const dispatchItems = readFileSync(new URL('../src/lib/booking/dispatchItems.ts', import.meta.url), 'utf8');
+assert.match(bookingRoute, /therapist: options\.therapist/);
 assert.match(bookingRoute, /options\.addons\?\.privateRoom/);
-assert.match(bookingRoute, /options:\s*\{\s*displayName: 'Phòng riêng', parentServiceId: item\.id, isAddon: true \}/);
+assert.match(bookingRoute, /expandDispatchItems\(dispatchLinesFromPricing\(pricing\), bookingId\)/);
+assert.match(dispatchItems, /displayName: 'Phòng riêng',\s*parentServiceId: line\.serviceId,\s*isAddon: true/);
 
 console.log('PASS: Custom For You DB rules, NHS1000 repair, quantity pricing, and private-room option contract');

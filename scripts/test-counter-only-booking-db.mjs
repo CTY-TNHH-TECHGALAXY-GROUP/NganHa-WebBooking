@@ -46,7 +46,7 @@ const tests = [
     assert.doesNotMatch(route, /webbooking_submit_booking|create_booking_atomic/);
   }],
   ['Application preserves operations fields and legacy marker', () => {
-    assert.match(route, /source: 'WEB_BOOKING'/);
+    assert.match(route, /source: 'WebBooking'/);
     assert.match(route, /status: 'NEW'/);
     assert.match(route, /customerId,/);
     assert.match(route, /idLegacy: `idemp:\$\{idempotencyKey\}`/);
