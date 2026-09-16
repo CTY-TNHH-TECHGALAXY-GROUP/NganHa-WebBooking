@@ -729,7 +729,10 @@ function buildNotes(booking: NormalizedBooking, pricing: CanonicalPricing): { no
     if (operationOptions.strength) output.push(`Lực: ${operationOptions.strength}`);
     if (Array.isArray(operationOptions.tags) && operationOptions.tags.length) output.push(`Ghi chú: ${operationOptions.tags.join(', ')}`);
     if (typeof operationOptions.note === 'string' && operationOptions.note) output.push(operationOptions.note);
-    return output.length ? [`[${serviceName(item.catalog, booking.lang)}]`, ...output] : [];
+    // This note is consumed by the internal admin screen, so its service
+    // heading is always Vietnamese. The customer-facing service list remains
+    // localized with booking.lang in the checkout response and email payload.
+    return output.length ? [`[${serviceName(item.catalog, 'vi')}]`, ...output] : [];
   });
   return { notes: notes.length ? notes.join(' | ') : null, focusAreaNote: preferences.length ? preferences.join('\n') : null };
 }

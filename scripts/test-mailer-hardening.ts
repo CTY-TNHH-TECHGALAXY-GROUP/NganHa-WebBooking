@@ -103,6 +103,23 @@ async function run() {
       assert.ok(String(sent[0].text).includes('My own note <keep>'));
       assert.ok(!String(sent[0].text).includes('Pressure: medium'));
     }
+
+    const vietnameseAdminNoteRenderedForCustomer = generateBookingConfirmationHtml({
+      ...payload,
+      lang: 'en',
+      services: [{ name: 'Massage (EN)', duration: 60, quantity: 1 }],
+      focusAreaNote: '[Massage (VN)]\nKỹ thuật viên: Ngẫu nhiên\nLực: Vừa\nTập trung: Đầu, Cổ\nNé: Bàn chân\nGhi chú: Mang thai, Dị ứng',
+    });
+    assert(!vietnameseAdminNoteRenderedForCustomer.includes('Massage (VN)'), 'customer email must keep its localized service name');
+    assert(vietnameseAdminNoteRenderedForCustomer.includes('Therapist'));
+    assert(vietnameseAdminNoteRenderedForCustomer.includes('Random'));
+    assert(vietnameseAdminNoteRenderedForCustomer.includes('Pressure'));
+    assert(vietnameseAdminNoteRenderedForCustomer.includes('Medium'));
+    assert(vietnameseAdminNoteRenderedForCustomer.includes('Focus'));
+    assert(vietnameseAdminNoteRenderedForCustomer.includes('Head, Neck'));
+    assert(vietnameseAdminNoteRenderedForCustomer.includes('Avoid'));
+    assert(vietnameseAdminNoteRenderedForCustomer.includes('Feet'));
+
     const escapedHtml = generateBookingConfirmationHtml({
       ...payload,
       bookingId: 'WB-<script>alert(1)</script>',

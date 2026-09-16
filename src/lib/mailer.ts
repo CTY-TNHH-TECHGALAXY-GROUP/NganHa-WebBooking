@@ -564,21 +564,56 @@ const PREFERENCE_COPY: Record<string, string[]> = {
   kr: ['마사지 강도', '집중 부위', '피할 부위', '약하게', '보통', '강하게', '머리', '목', '어깨', '등', '팔', '허벅지', '무릎', '종아리', '발', '전신', '프라이빗 룸', '임신 관련 주의사항', '알레르기 또는 민감성 피부 주의사항'],
 };
 
-function localizePreferences(raw: string, lang: string): string {
+function localizePreferences(raw: string, lang: string, serviceNames: string[] = []): string {
   const resolvedLang = I18N_TEMPLATE_1[lang] ? lang : 'vi';
   const t = I18N_TEMPLATE_1[resolvedLang];
   const copy = PREFERENCE_COPY[resolvedLang] || PREFERENCE_COPY.vi;
   const bodyCodes = ['HEAD', 'NECK', 'SHOULDER', 'BACK', 'ARM', 'THIGH', 'KNEE', 'CALF', 'FOOT', 'WHOLE_BODY', 'FULL_BODY'];
+  const bodyAliases: Record<string, string> = {
+    head: 'HEAD', 'đầu': 'HEAD',
+    neck: 'NECK', 'cổ': 'NECK',
+    shoulder: 'SHOULDER', 'vai': 'SHOULDER',
+    back: 'BACK', 'lưng': 'BACK',
+    arm: 'ARM', 'tay': 'ARM',
+    thigh: 'THIGH', 'đùi': 'THIGH',
+    knee: 'KNEE', 'đầu gối': 'KNEE',
+    calf: 'CALF', 'bắp chân': 'CALF',
+    foot: 'FOOT', 'bàn chân': 'FOOT',
+    whole_body: 'WHOLE_BODY', full_body: 'FULL_BODY', 'toàn thân': 'WHOLE_BODY',
+  };
+  const pressureIndex: Record<string, number> = {
+    light: 0, soft: 0, 'nhẹ': 0,
+    medium: 1, normal: 1, 'vừa': 1,
+    strong: 2, hard: 2, 'mạnh': 2,
+  };
+  const noteIndex: Record<string, number> = {
+    'mang thai': 17, pregnant: 17, pregnancy: 17, 'phụ nữ có thai': 17,
+    'dị ứng': 18, allergy: 18, allergies: 18, 'có dị ứng': 18,
+  };
+  const noteLabel: Record<string, string> = { vi: 'Ghi chú', en: 'Note', cn: '备注', jp: 'メモ', kr: '메모' };
+  let serviceIndex = 0;
   return raw.split(/\r?\n/).map(line => {
     const value = line.trim();
     const tag = ['Private Room', 'Pregnancy note', 'Allergy or sensitive skin note'].indexOf(value);
     if (tag >= 0) return copy[16 + tag];
-    const match = /^(Pressure|Focus|Avoid|Therapist):\s*(.*)$/i.exec(value);
+    const localizedTag = { 'phòng riêng': 16, 'mang thai': 17, 'phụ nữ có thai': 17, 'dị ứng': 18, 'có dị ứng': 18 }[value.toLowerCase()];
+    if (localizedTag !== undefined) return copy[localizedTag];
+    if (/^\[.*\]$/.test(value)) {
+      const customerServiceName = serviceNames[serviceIndex];
+      serviceIndex += 1;
+      return customerServiceName ? `[${customerServiceName}]` : line;
+    }
+    const match = /^(Pressure|Focus|Avoid|Therapist|Lực|Tập trung|Né|Kỹ thuật viên|Note|Ghi chú):\s*(.*)$/i.exec(value);
     if (!match) return line;
-    const key = match[1].toLowerCase();
+    const rawKey = match[1].toLowerCase();
+    const key = rawKey === 'lực' ? 'pressure'
+      : rawKey === 'tập trung' ? 'focus'
+        : rawKey === 'né' ? 'avoid'
+          : rawKey === 'kỹ thuật viên' ? 'therapist'
+            : rawKey === 'ghi chú' ? 'note' : rawKey;
     if (key === 'pressure') {
-      const index = ['light', 'medium', 'strong'].indexOf(match[2].toLowerCase());
-      return index < 0 ? line : `${copy[0]}: ${copy[3 + index]}`;
+      const index = pressureIndex[match[2].toLowerCase().trim()];
+      return index === undefined ? line : `${copy[0]}: ${copy[3 + index]}`;
     }
     if (key === 'therapist') {
       const rawVal = match[2].toLowerCase().trim();
@@ -592,16 +627,24 @@ function localizePreferences(raw: string, lang: string): string {
       }
       return `${t.therapistLabel}: ${label}`;
     }
+    if (key === 'note') {
+      const localizedTags = match[2].split(',').map(tag => {
+        const index = noteIndex[tag.trim().toLowerCase()];
+        return index === undefined ? tag.trim() : copy[index];
+      }).filter(Boolean);
+      return `${noteLabel[resolvedLang] || 'Note'}: ${localizedTags.join(', ')}`;
+    }
     const parts = match[2].split(',').map(part => part.trim());
-    if (!parts.every(part => bodyCodes.includes(part))) return line;
-    return `${copy[key === 'focus' ? 1 : 2]}: ${parts.map(part => copy[6 + Math.min(bodyCodes.indexOf(part), 9)]).join(', ')}`;
+    const normalizedParts = parts.map(part => bodyAliases[part.toLowerCase()] || bodyAliases[part.toUpperCase()]);
+    if (!normalizedParts.every(part => part && bodyCodes.includes(part))) return line;
+    return `${copy[key === 'focus' ? 1 : 2]}: ${normalizedParts.map(part => copy[6 + Math.min(bodyCodes.indexOf(part!), 9)]).join(', ')}`;
   }).join('\n');
 }
 
-function renderPreferencesHtml(rawFocusNote?: string, lang = 'vi'): string {
+function renderPreferencesHtml(rawFocusNote?: string, lang = 'vi', serviceNames: string[] = []): string {
   if (!rawFocusNote) return '';
 
-  const lines = localizePreferences(rawFocusNote, lang)
+  const lines = localizePreferences(rawFocusNote, lang, serviceNames)
     .split(/\r?\n/)
     .map(l => l.trim())
     .filter(Boolean);
@@ -644,9 +687,9 @@ function renderPreferencesHtml(rawFocusNote?: string, lang = 'vi'): string {
   `.trim();
 }
 
-function formatPreferencesText(rawNote: string, lang = 'vi'): string {
+function formatPreferencesText(rawNote: string, lang = 'vi', serviceNames: string[] = []): string {
   if (!rawNote) return '';
-  const cleanedNote = localizePreferences(rawNote, lang);
+  const cleanedNote = localizePreferences(rawNote, lang, serviceNames);
   return cleanedNote
     .split(/\r?\n/)
     .map(line => {
@@ -702,6 +745,7 @@ export function generateBookingConfirmationHtml(
   const resolvedLang = I18N_TEMPLATE_1[lang] ? lang : 'vi';
   const t = I18N_TEMPLATE_1[resolvedLang];
   const phoneDisplay = '+84 964 090 277';
+  const localizedServiceNames = services.map(service => service.name || '');
 
   // Calculate total duration & construct service items with quantity
   const serviceItemsHtml = services.length > 0
@@ -870,7 +914,7 @@ export function generateBookingConfirmationHtml(
                   <div style="color: #D4AF37; font-size: 13px; font-weight: 600; margin-bottom: 8px;">
                     • ${t.preferencesLabel}:
                   </div>
-                  ${renderPreferencesHtml(focusAreaNote, lang)}
+                  ${renderPreferencesHtml(focusAreaNote, lang, localizedServiceNames)}
                 </td>
               </tr>
               ` : ''}
@@ -955,6 +999,7 @@ export async function sendBookingConfirmationEmail(
       notes,
       focusAreaNote,
     } = payload;
+    const localizedServiceNames = services.map(service => service.name || '');
 
     const customerRecipient = normalizeEmailRecipient(customerEmail);
     const hasCustomerEmail = Boolean(customerRecipient);
@@ -1061,7 +1106,7 @@ ${serviceItemsText}
 • ${t.guestsLabel}: ${guestsDisplay}
 • ${t.locationLabel}: ${branchName}
 ${totalAmount > 0 ? `• ${t.totalLabel}: ${formatVND(totalAmount)}` : ''}
-${focusAreaNote ? `\n• ${t.preferencesLabel}:\n${formatPreferencesText(focusAreaNote, lang)}` : ''}
+${focusAreaNote ? `\n• ${t.preferencesLabel}:\n${formatPreferencesText(focusAreaNote, lang, localizedServiceNames)}` : ''}
 ${notes ? `\n• ${t.notesLabel}: ${notes}` : ''}
 
 ${t.followUp}
