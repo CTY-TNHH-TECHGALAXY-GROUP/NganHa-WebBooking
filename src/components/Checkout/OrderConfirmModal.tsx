@@ -310,11 +310,11 @@ const MODAL_TEXTS: Record<string, Record<SupportedLang, string>> = {
         kr: '잔돈은 베트남 동(VND) 현금으로 거슬러 드립니다.',
     },
     cardTitle: {
-        vi: 'Card',
+        vi: 'Thanh toán thẻ',
         en: 'Card',
-        cn: 'Card',
-        jp: 'Card',
-        kr: 'Card',
+        cn: '银行卡支付',
+        jp: 'カード払い',
+        kr: '카드 결제',
     },
     cardSub: {
         vi: 'Các loại thẻ và ví điện tử hỗ trợ',
@@ -331,11 +331,11 @@ const MODAL_TEXTS: Record<string, Record<SupportedLang, string>> = {
         kr: 'POS 단말기를 통한 카드 결제 시 수수료가 부과되지 않습니다. 모든 주요 국제 카드 및 간편 결제를 지원합니다:',
     },
     transferTitle: {
-        vi: 'Transfer',
-        en: 'Transfer',
-        cn: 'Transfer',
-        jp: 'Transfer',
-        kr: 'Transfer',
+        vi: 'Chuyển khoản',
+        en: 'Bank transfer',
+        cn: '银行转账',
+        jp: '銀行振込',
+        kr: '계좌이체',
     },
     transferSub: {
         vi: 'Quét mã QR chuyển khoản nhanh',
@@ -509,13 +509,13 @@ export default function OrderConfirmModal({
         {
             id: 'card',
             icon: CreditCard,
-            label: 'Card',
+            label: getModalText('cardTitle', lang),
             desc: lang === 'vi' ? 'Hỗ trợ thẻ Visa, MasterCard, JCB, Napas qua máy POS' : lang === 'cn' ? '支持Visa、万事达卡、JCB及Napas刷卡机' : lang === 'jp' ? 'POS端末経由でVisa、MasterCard、JCB、Napasに対応' : lang === 'kr' ? 'POS기를 통해 Visa, MasterCard, JCB, Napas 카드 지원' : 'Visa, MasterCard, JCB, Napas supported via POS',
         },
         {
             id: 'transfer',
             icon: QrCode,
-            label: 'Transfer',
+            label: getModalText('transferTitle', lang),
             desc: lang === 'vi' ? 'Hỗ trợ chuyển khoản nội địa và quốc tế nhanh chóng' : lang === 'cn' ? '支持国内及国际快速转账' : lang === 'jp' ? '国内および国際送金に対応' : lang === 'kr' ? '국내 및 해외 빠른 계좌이체 지원' : 'Instant dynamic QR & bank transfer',
         },
     ];
@@ -1289,7 +1289,7 @@ export default function OrderConfirmModal({
                                         <div className="w-14 h-14 rounded-2xl bg-[#c9a96e]/15 border border-[#c9a96e]/30 flex items-center justify-center text-[#f2d58d]">
                                             <QrCode size={30} />
                                         </div>
-                                        <div className="text-sm font-bold text-[#f2d58d]">Transfer</div>
+                                        <div className="text-sm font-bold text-[#f2d58d]">{getModalText('transferTitle', lang)}</div>
                                         <p className="text-sm text-gray-200 leading-relaxed font-medium">
                                             {getModalText('transferDesc', lang)}
                                         </p>
