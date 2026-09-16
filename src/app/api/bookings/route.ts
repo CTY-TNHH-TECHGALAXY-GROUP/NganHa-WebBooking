@@ -724,9 +724,9 @@ function buildNotes(booking: NormalizedBooking, pricing: CanonicalPricing): { no
     });
     if (item.options.addons?.privateRoom) output.push('Phòng riêng');
     if (operationOptions.therapist) output.push(`Kỹ thuật viên: ${operationOptions.therapist}`);
+    if (operationOptions.strength) output.push(`Lực: ${operationOptions.strength}`);
     if (Array.isArray(operationOptions.focus) && operationOptions.focus.length) output.push(`Tập trung: ${operationOptions.focus.join(', ')}`);
     if (Array.isArray(operationOptions.avoid) && operationOptions.avoid.length) output.push(`Né: ${operationOptions.avoid.join(', ')}`);
-    if (operationOptions.strength) output.push(`Lực: ${operationOptions.strength}`);
     if (Array.isArray(operationOptions.tags) && operationOptions.tags.length) output.push(`Ghi chú: ${operationOptions.tags.join(', ')}`);
     if (typeof operationOptions.note === 'string' && operationOptions.note) output.push(operationOptions.note);
     // This note is consumed by the internal admin screen, so its service

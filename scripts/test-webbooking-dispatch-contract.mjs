@@ -65,6 +65,8 @@ assert.match(route, /Lực: \$\{operationOptions\.strength\}/, 'admin pressure l
 assert.match(route, /Tập trung: \$\{operationOptions\.focus\.join\(', '\)\}/, 'admin focus label must be Vietnamese');
 assert.match(route, /Né: \$\{operationOptions\.avoid\.join\(', '\)\}/, 'admin avoid label must be Vietnamese');
 assert.match(route, /Ghi chú: \$\{operationOptions\.tags\.join\(', '\)\}/, 'admin note label must be Vietnamese');
+const adminLabelOrder = ['Kỹ thuật viên:', 'Lực:', 'Tập trung:', 'Né:', 'Ghi chú:'];
+assert.ok(adminLabelOrder.every((label, index) => index === 0 || route.indexOf(label) > route.indexOf(adminLabelOrder[index - 1])), 'admin preference labels must follow the agreed order');
 assert.doesNotMatch(route, /Therapist: random|Pressure: medium|Focus: \$\{item\.options\.bodyParts/);
 
 assert.match(route, /source: 'WebBooking'/);
