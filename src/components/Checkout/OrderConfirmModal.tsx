@@ -1,7 +1,8 @@
 'use client';
 
 import { Z } from '@/lib/zIndex';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { 
     X, 
     Clock, 
@@ -25,7 +26,8 @@ import {
     FileText,
     Sparkles,
     ChevronDown,
-    ChevronUp
+    ChevronUp,
+    Send
 } from 'lucide-react';
 import SmartLogo from '@/components/SmartLogo';
 import { CartItem } from '@/components/Menu/types';
@@ -226,11 +228,18 @@ const MODAL_TEXTS: Record<string, Record<SupportedLang, string>> = {
         kr: '이용 가능한 결제 수단:',
     },
     submitting: {
-        vi: 'Đang gửi...',
-        en: 'Processing...',
-        cn: '提交中...',
-        jp: '処理中...',
-        kr: '처리 중...',
+        vi: 'Đang gửi đơn...',
+        en: 'Submitting your booking...',
+        cn: '正在提交预约...',
+        jp: '予約を送信しています...',
+        kr: '예약을 전송하고 있습니다...',
+    },
+    pleaseWait: {
+        vi: 'Vui lòng chờ trong giây lát. Đơn của bạn đang được xử lý.',
+        en: 'Please wait a moment while we process your booking.',
+        cn: '请稍候，我们正在处理您的预约。',
+        jp: '予約を処理しています。少々お待ちください。',
+        kr: '예약을 처리하고 있습니다. 잠시만 기다려 주세요.',
     },
     submitBooking: {
         vi: 'Xác nhận đặt lịch',
@@ -397,6 +406,8 @@ const formatFullPhone = (phone?: string, countryCode?: string) => {
     return trimmed;
 };
 
+type ModalStep = 2 | 'submitting' | 3;
+
 export default function OrderConfirmModal({
     isOpen,
     onClose,
@@ -412,7 +423,8 @@ export default function OrderConfirmModal({
     bookingTime: initialBookingTime,
     onEditService,
 }: OrderConfirmModalProps) {
-    const [currentStep, setCurrentStep] = useState<2 | 3>(2);
+    const router = useRouter();
+    const [currentStep, setCurrentStep] = useState<ModalStep>(2);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [bookingId, setBookingId] = useState<string | null>(null);
     const [isTabletDevice, setIsTabletDevice] = useState(false);
@@ -450,12 +462,20 @@ export default function OrderConfirmModal({
         setExpandedItems(prev => ({ ...prev, [idx]: !prev[idx] }));
     };
 
+    const wasOpenRef = useRef(false);
+
     useEffect(() => {
         if (!isOpen) {
             document.body.classList.remove('has-booking-modal');
+            wasOpenRef.current = false;
+            return;
         }
-        if (isOpen) {
-            document.body.classList.add('has-booking-modal');
+
+        document.body.classList.add('has-booking-modal');
+
+        // Only initialize form fields and step when the modal transitions from closed to open
+        if (!wasOpenRef.current) {
+            wasOpenRef.current = true;
             setIsTermsAgreed(false);
             setCurrentStep(2);
             setIsEditingSchedule(false);
@@ -466,6 +486,7 @@ export default function OrderConfirmModal({
             setLocalDate(initialBookingDate || '');
             setLocalTime(initialBookingTime || '');
         }
+
         return () => { document.body.classList.remove('has-booking-modal'); };
     }, [isOpen, initialCustomerInfo, phoneCountryCode, initialGuestCount, initialBookingDate, initialBookingTime]);
 
@@ -531,6 +552,7 @@ export default function OrderConfirmModal({
     };
 
     const handleConfirmBooking = async () => {
+        if (isSubmitting) return;
         if (cart.length === 0) {
             setAlertState({ 
                 isOpen: true, 
@@ -549,6 +571,7 @@ export default function OrderConfirmModal({
         }
 
         setIsSubmitting(true);
+        setCurrentStep('submitting');
         try {
             const returnedId = await onConfirm({ 
                 paymentMethod,
@@ -566,6 +589,7 @@ export default function OrderConfirmModal({
             clearBookingCart();
             setCurrentStep(3);
         } catch (error: any) {
+            setCurrentStep(2);
             setAlertState({ isOpen: true, message: error?.message || 'Error sending order. Please try again.', type: 'error' });
         } finally {
             setIsSubmitting(false);
@@ -575,13 +599,13 @@ export default function OrderConfirmModal({
     const handleReturnHome = () => {
         clearBookingCart();
         onClose();
-        window.location.href = '/';
+        router.replace('/');
     };
 
     return (
         <div 
-            className={`fixed inset-0 flex ${currentStep === 3 ? 'items-center' : 'items-end sm:items-center'} justify-center bg-black/80 backdrop-blur-md transition-opacity duration-300 animate-in fade-in pb-0 sm:pb-0 p-0 sm:p-4`} style={{ zIndex: Z.MODAL }}
-            onClick={(event) => { if (event.target === event.currentTarget) onClose(); }}
+            className={`fixed inset-0 flex ${currentStep === 3 || currentStep === 'submitting' ? 'items-center' : 'items-end sm:items-center'} justify-center bg-black/80 backdrop-blur-md transition-opacity duration-300 animate-in fade-in pb-0 sm:pb-0 p-0 sm:p-4`} style={{ zIndex: Z.MODAL }}
+            onClick={(event) => { if (event.target === event.currentTarget && !isSubmitting) onClose(); }}
         >
             <div
                 className="bg-black/60 backdrop-blur-3xl border border-[#c9a96e]/30 w-full max-h-[92dvh] md:max-h-[88vh] sm:rounded-[28px] rounded-t-[28px] shadow-[0_25px_60px_rgba(0,0,0,0.85)] flex flex-col overflow-hidden relative animate-in slide-in-from-bottom-10 sm:zoom-in-95 duration-300 md:max-w-4xl"
@@ -1077,7 +1101,7 @@ export default function OrderConfirmModal({
                                 <button
                                     id="modal-step2-cancel-btn"
                                     type="button"
-                                    onClick={onClose}
+                                    onClick={() => { if (!isSubmitting) onClose(); }}
                                     disabled={isSubmitting}
                                     className="flex-1 py-3 rounded-xl border border-white/10 text-gray-400 font-bold uppercase text-xs tracking-wider hover:bg-white/5 transition-colors active:scale-[0.98] cursor-pointer"
                                 >
@@ -1101,6 +1125,105 @@ export default function OrderConfirmModal({
                                     {!isSubmitting && isTermsAgreed && <ArrowRight size={15} className="group-hover:translate-x-1 transition-transform" strokeWidth={3} />}
                                 </button>
                             </div>
+                        </div>
+                    )}
+
+                    {/* ================= SUBMITTING: DEDICATED LOADING SCREEN ================= */}
+                    {currentStep === 'submitting' && (
+                        <div
+                            className="max-w-md mx-auto flex flex-col items-center text-center space-y-6 py-10 sm:py-14 animate-in fade-in duration-300 select-none"
+                            role="status"
+                            aria-live="polite"
+                            aria-busy="true"
+                        >
+                            {/* Bounded Flight Arena with Gold Halo Glow */}
+                            <div className="relative w-36 h-36 sm:w-44 sm:h-44 rounded-full flex items-center justify-center bg-gradient-to-br from-[#c9a96e]/15 via-black/50 to-black/80 border border-[#C9A96E]/30 shadow-[0_0_35px_rgba(201,169,110,0.25)] overflow-hidden">
+                                {/* Subtle radial background glow */}
+                                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(201,169,110,0.18),transparent_70%)]" />
+
+                                {/* Spinning gold border ring */}
+                                <div className="absolute inset-1.5 rounded-full border-2 border-transparent border-t-[#C9A96E] border-r-[#f2d58d]/50 animate-spin [animation-duration:2s]" />
+
+                                {/* Dashed guide ring */}
+                                <div className="absolute inset-3 rounded-full border border-dashed border-[#C9A96E]/20 animate-[spin_20s_linear_infinite]" />
+
+                                {/* Center gold pulse radar */}
+                                <div className="paper-plane-static-glow w-3 h-3 rounded-full bg-gradient-to-r from-[#ecd38f] to-[#c6a55f] shadow-[0_0_12px_#f2d58d] animate-ping opacity-75" />
+
+                                {/* Paper Plane Flight Track (Orbits inside circle) */}
+                                <div className="paper-plane-track absolute inset-0 flex items-center justify-center pointer-events-none">
+                                    <div className="paper-plane-carrier absolute flex items-center justify-center">
+                                        <div className="relative flex items-center justify-center">
+                                            {/* Golden trail tail behind plane */}
+                                            <span className="paper-plane-trail absolute -left-5 top-1/2 -translate-y-1/2 w-6 h-1.5 rounded-full bg-gradient-to-r from-transparent via-[#C9A96E]/40 to-[#f2d58d]/90 blur-[1px]" />
+                                            <Send
+                                                size={30}
+                                                className="paper-plane-icon text-[#f2d58d] drop-shadow-[0_0_14px_rgba(242,213,141,0.9)] -rotate-12"
+                                                strokeWidth={2.3}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Localized Submitting Title & Waiting Message */}
+                            <div className="space-y-2 px-4">
+                                <h3 className="text-xl sm:text-2xl font-bold text-white tracking-wide">
+                                    {getModalText('submitting', lang)}
+                                </h3>
+                                <p className="text-xs sm:text-sm text-[#e2be6f] font-medium max-w-sm leading-relaxed mx-auto">
+                                    {getModalText('pleaseWait', lang)}
+                                </p>
+                            </div>
+
+                            {/* Loading Dots Indicator */}
+                            <div className="flex items-center justify-center gap-2 pt-1" aria-hidden="true">
+                                <span className="w-2 h-2 rounded-full bg-[#c9a96e] animate-bounce [animation-delay:-0.3s]" />
+                                <span className="w-2 h-2 rounded-full bg-[#e2be6f] animate-bounce [animation-delay:-0.15s]" />
+                                <span className="w-2 h-2 rounded-full bg-[#f2d58d] animate-bounce" />
+                            </div>
+
+                            {/* Scoped Keyframes & Prefers-Reduced-Motion */}
+                            <style>{`
+                                @keyframes planeOrbitFlight {
+                                    0% {
+                                        transform: rotate(0deg);
+                                    }
+                                    100% {
+                                        transform: rotate(360deg);
+                                    }
+                                }
+
+                                .paper-plane-track {
+                                    animation: planeOrbitFlight 3.6s linear infinite;
+                                }
+
+                                .paper-plane-carrier {
+                                    transform: translateY(-46px) rotate(90deg);
+                                }
+
+                                @media (min-width: 640px) {
+                                    .paper-plane-carrier {
+                                        transform: translateY(-56px) rotate(90deg);
+                                    }
+                                }
+
+                                @media (prefers-reduced-motion: reduce) {
+                                    .paper-plane-track {
+                                        animation: none !important;
+                                    }
+                                    .paper-plane-carrier {
+                                        transform: none !important;
+                                        position: relative !important;
+                                    }
+                                    .paper-plane-trail {
+                                        display: none !important;
+                                    }
+                                    .paper-plane-icon {
+                                        transform: none !important;
+                                    }
+                                }
+                            `}</style>
                         </div>
                     )}
 

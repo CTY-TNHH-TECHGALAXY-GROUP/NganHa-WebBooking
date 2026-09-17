@@ -120,12 +120,12 @@ const BodyMap: React.FC<BodyMapProps> = ({ focus, avoid, lang, serviceData, onTo
 
     const availableParts = ALL_BODY_PARTS.filter(part => allowedBodyAreas.has(part.key));
 
-    const isFullBody = availableParts.length > 0 && (
-        focus.length >= availableParts.length ||
-        focus.some(p => (p || '').toUpperCase() === 'WHOLE_BODY' || (p || '').toUpperCase() === 'FULL_BODY')
-    );
+    const selectableBodyKeys = ALL_BODY_PARTS.map(part => part.key);
+    const canSelectWholeBody = selectableBodyKeys.every((key) => allowedBodyAreas.has(key));
+    const isFullBody = canSelectWholeBody && selectableBodyKeys.every((key) => focus.includes(key));
 
     const handleFullBodyToggle = () => {
+        if (!canSelectWholeBody) return;
         if (isFullBody) onToggle('focus', 'CLEAR_ALL');
         else onToggle('focus', 'FULL_BODY');
     };
@@ -137,17 +137,19 @@ const BodyMap: React.FC<BodyMapProps> = ({ focus, avoid, lang, serviceData, onTo
 
             {/* CỘT TRÁI: Nút Toàn Thân */}
             <div className="w-[12%] flex flex-col items-center justify-center pr-1 sm:pr-2">
-                {availableParts.length > 1 && (
-                    <label className="flex flex-col items-center justify-center cursor-pointer bg-[#1c1c1e] p-2 rounded-xl border border-white/5 transition-all hover:border-[#C9A96E] active:scale-95 shadow-sm py-4 w-full h-[100px] sm:h-[120px]">
+                <label className={`flex flex-col items-center justify-center p-2 rounded-xl border transition-all shadow-sm py-4 w-full h-[100px] sm:h-[120px] ${
+                    canSelectWholeBody
+                        ? 'cursor-pointer bg-[#1c1c1e] border-white/5 hover:border-[#C9A96E] active:scale-95'
+                        : 'cursor-not-allowed bg-[#111113] border-white/[0.03] opacity-35 grayscale'
+                }`}>
                         <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center mb-2 sm:mb-3 transition-colors border-2 ${isFullBody ? 'bg-[#C9A96E] border-[#C9A96E]' : 'bg-[#0d0d0d] border-white/10'}`}>
                             <Check className={`w-5 h-5 sm:w-6 sm:h-6 text-black transition-opacity ${isFullBody ? 'opacity-100' : 'opacity-0'}`} strokeWidth={3} />
-                            <input type="checkbox" className="hidden" checked={isFullBody} onChange={handleFullBodyToggle} />
+                            <input type="checkbox" className="hidden" checked={isFullBody} onChange={handleFullBodyToggle} disabled={!canSelectWholeBody} />
                         </div>
                         <span className={`text-[10px] sm:text-xs font-bold uppercase leading-snug text-center tracking-tight ${isFullBody ? 'text-[#C9A96E]' : 'text-gray-400'}`}>
                             {getText({ en: 'Whole\nBody', vi: 'Toàn\nThân', jp: '全身', kr: '전신', cn: '全身' }, lang)}
                         </span>
-                    </label>
-                )}
+                </label>
             </div>
 
             {/* CỘT GIỮA: SVG Body Figure */}
