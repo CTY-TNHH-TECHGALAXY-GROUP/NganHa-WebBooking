@@ -1,21 +1,21 @@
 # Content Builder Multi-Agent Task Board
 
 **Project:** NganHa-WebBooking — Dynamic Content Block System  
-**Current Branch:** `feat/content-contract-antigravity`  
+**Current Branch:** `review/content-contract-codex`
 **Last Updated:** 2026-09-18  
 
 ---
 
-## 1. IN REVIEW
-- [ ] **CONTENT-001: Phase 0 Architecture Verification & Contract Definition**
+## 1. DONE
+- [x] **CONTENT-001: Phase 0 Architecture Verification & Contract Definition**
   - **Owner:** Antigravity (Handoff prepared) -> Codex (Review & Freeze)
-  - **Branch:** `feat/content-contract-antigravity`
+  - **Branch:** `review/content-contract-codex`
   - **Deliverable:** `docs/content-system/CONTENT_CONTRACT_V1.md`, `ARCHITECTURE_DECISIONS.md`, `handoffs/ANTIGRAVITY_PHASE_0.md`
-  - **Status:** Antigravity audit and contract drafting complete. Awaiting Codex gatekeeper sign-off to freeze contract.
+  - **Status:** Approved with corrections. Contract V1.0.0 frozen by Codex. No Phase 1 code started.
 
 ---
 
-## 2. READY (Pending Phase 0 Sign-Off)
+## 2. READY (Phase 0 Signed Off; Do Not Start Automatically)
 - [ ] **CONTENT-002: Content Renderer Foundation & Block Registry**
   - **Owner:** Codex
   - **Branch:** `feat/content-renderer`
@@ -55,5 +55,8 @@
 
 ---
 
-## 3. COMPLETED
-- None yet. (Phase 0 in final review).
+## 3. COORDINATION NOTE
+
+Phase 1 and later tasks remain eligible but are intentionally not started by
+this review. Any implementation must use the frozen contract and the existing
+ownership/file-lock rules.

@@ -1,9 +1,14 @@
 # Content Contract V1 — Specification & Type System
 
-**Contract Version:** 1.0.0-draft  
-**Status:** PROPOSED BY ANTIGRAVITY (Awaiting Codex Phase 0 Review & Freeze)  
-**Target Branch:** `feat/content-contract-antigravity`  
+**Contract Version:** 1.0.0
+**Status:** FROZEN (APPROVED WITH CORRECTIONS)
+**Frozen By:** Codex Phase 0 Architecture Review
+**Target Branch:** `review/content-contract-codex`
 **Date:** 2026-09-18  
+
+> This is the frozen Phase 0 contract. It describes the persisted contract and
+> the server-prepared render boundary; it does not mean the Phase 1 renderer,
+> editor, migrations, or media upgrade have been implemented.
 
 ---
 
@@ -19,6 +24,25 @@ The Content Contract V1 establishes the formal, type-safe data schema for the Dy
 5. **Normalized Focal Coordinates:** Image positioning is persisted as normalized percentage coordinates (`x: 0-100`, `y: 0-100`), guaranteeing responsive stability across any viewport size. Raw pixel coordinates (`left: -120px`, `top: -45px`) are strictly forbidden.
 6. **No Arbitrary HTML / CSS Injection:** Admin inputs are constrained to semantic typography and design tokens. Raw HTML, CSS class injection (`customClass`), and arbitrary JavaScript are rejected at both API and validation boundaries.
 7. **Strict Schema Versioning:** Every document declares `schemaVersion: 1`. Future breaking enhancements must provide automated forward migration functions.
+
+### Codex review outcome
+
+The contract is frozen after independent source, migration, API, RLS, upload,
+localization, legacy-rendering, and Next.js boundary review. The corrections
+are limited to contract safety and repository compatibility:
+
+- localized fallback order is explicit: requested locale, then `en`, then `vi`;
+- persisted documents contain media IDs and composition only; resolved assets
+  are server-prepared render data and are never written back to JSONB;
+- internal video uses `mediaId`; external YouTube/Vimeo uses an explicit URL
+  source;
+- rich-text links and external media URLs use the same safe-protocol rules as
+  other content URLs;
+- unknown blocks and unsupported future schema versions are skipped or routed
+  to legacy fallback, never unsafely cast into a renderable document;
+- draft/publish API and RLS requirements are explicit, including the existing
+  `WebbookingContentRevisions` audit-only role and the current mutable blog row
+  as a legacy fallback during migration.
 
 ---
 
@@ -37,14 +61,18 @@ export type LocalizedValue<T> = {
   [K in SupportedLocale]?: T;
 };
 
-/** Strict localized string requiring at least Vietnamese as primary baseline */
-export interface LocalizedString extends LocalizedValue<string> {
-  vi?: string;
-  en?: string;
-  cn?: string;
-  jp?: string;
-  kr?: string;
-}
+/** Required editorial baseline; optional locales remain sparse by design. */
+export type RequiredLocalizedValue<T> = LocalizedValue<T> & { vi: T };
+
+/** Backward-compatible name for localized strings; use RequiredLocalizedValue
+ * where a block requires a baseline value. */
+export type LocalizedString = LocalizedValue<string>;
+
+/**
+ * Runtime fallback used by public and preview renderers. Structural blocks are
+ * never duplicated per locale; only values fall back.
+ */
+export const LOCALIZED_FALLBACK_ORDER = ['requested-locale', 'en', 'vi'] as const;
 ```
 
 ---
@@ -95,7 +123,6 @@ export type MediaReference =
   | {
       type: 'internal';
       mediaId: string;
-      asset?: MediaAsset; // Populated by server resolver
     }
   | {
       type: 'external';
@@ -104,6 +131,14 @@ export type MediaReference =
       height?: number;
       alt?: LocalizedValue<string>;
     };
+
+/**
+ * Resolver output only. `asset` is never persisted inside ContentDocument or
+ * ContentVersion.document and must not be accepted by the persistence schema.
+ */
+export type ResolvedMediaReference =
+  | { type: 'internal'; mediaId: string; asset: MediaAsset }
+  | Extract<MediaReference, { type: 'external' }>;
 ```
 
 ---
@@ -200,12 +235,16 @@ export interface ImageBlockProps {
   presentation?: ImagePresentation; // Default: 'contained'
   alt?: LocalizedValue<string>;
   caption?: LocalizedValue<string>;
-  resolvedAsset?: MediaAsset; // Hydrated on server
 }
 
 export interface ImageBlock extends BaseBlock {
   type: 'image';
   props: ImageBlockProps;
+}
+
+/** Server-prepared props used by the renderer; not part of persisted V1. */
+export interface ResolvedImageBlockProps extends ImageBlockProps {
+  resolvedAsset: MediaAsset;
 }
 ```
 
@@ -217,7 +256,6 @@ export interface GalleryItem {
   alt?: LocalizedValue<string>;
   caption?: LocalizedValue<string>;
   focalPoint?: FocalPoint;
-  resolvedAsset?: MediaAsset;
 }
 
 export type GalleryLayout = 'grid-2' | 'grid-3' | 'grid-4' | 'masonry' | 'carousel';
@@ -231,6 +269,11 @@ export interface GalleryBlockProps {
 export interface GalleryBlock extends BaseBlock {
   type: 'gallery';
   props: GalleryBlockProps;
+}
+
+/** Resolver output only; never persisted in the content document. */
+export interface ResolvedGalleryItem extends GalleryItem {
+  resolvedAsset: MediaAsset;
 }
 ```
 
@@ -255,9 +298,19 @@ export interface QuoteBlock extends BaseBlock {
 ```typescript
 export type VideoProvider = 'youtube' | 'vimeo' | 'storage';
 
+export type VideoSource =
+  | {
+      type: 'internal';
+      mediaId: string;
+    }
+  | {
+      type: 'external';
+      provider: Exclude<VideoProvider, 'storage'>;
+      url: string;
+    };
+
 export interface VideoBlockProps {
-  provider: VideoProvider;
-  url: string;
+  source: VideoSource;
   posterMediaId?: string;
   caption?: LocalizedValue<string>;
   autoplay?: boolean;
@@ -366,7 +419,7 @@ export interface ContentDraftResponse {
   schemaVersion: number;
   draftVersionId: string | null;
   publishedVersionId: string | null;
-  document: ContentDocument;
+  document: ContentDocument | null;
   lastSavedAt: string;
 }
 ```
@@ -376,6 +429,7 @@ export interface ContentDraftResponse {
 ```typescript
 export interface SaveDraftRequest {
   document: ContentDocument;
+  expectedDraftVersionId?: string | null;
   title_i18n?: LocalizedValue<string>;
   seo_metadata?: Record<string, unknown>;
 }
@@ -393,6 +447,7 @@ export interface SaveDraftResponse {
 ```typescript
 export interface PublishVersionRequest {
   versionId?: string; // Optional: if omitted, publishes current draft version
+  expectedPublishedVersionId?: string | null;
 }
 
 export interface PublishVersionResponse {
@@ -425,9 +480,118 @@ export interface RestoreVersionRequest {
 }
 ```
 
+### 8.5 Public published read
+
+Public loaders/routes may expose only the version resolved through
+`current_published_version_id`:
+
+```typescript
+export interface PublishedContentResponse {
+  entityId: string;
+  slug: string;
+  schemaVersion: number;
+  document: ContentDocument;
+  publishedVersionId: string;
+  publishedAt: string;
+}
+```
+
+The public contract does not accept a version ID, draft flag, preview token, or
+arbitrary `entity_id`. Preview is a separate authenticated/expiring flow and
+must use the same renderer with a server-authorized draft DTO.
+
+### 8.6 DTO and persistence boundaries
+
+- `ContentVersion.document` contains only the persisted V1 shape.
+- `resolvedAsset`, signed URLs, diagnostics, and other resolver data are
+  server-only render DTO fields.
+- Publish must verify that the requested version belongs to the entity, is a
+  valid current draft (or an explicitly restored draft), passes the same Zod
+  document validation, and satisfies the optimistic-concurrency precondition.
+- The API must never accept a client-supplied `publishedVersionId` as a direct
+  public read selector.
+
+## 9. Repository-specific database and RLS boundary
+
+The current repository has two distinct legacy layers:
+
+- `WebbookingBlogPosts` is a mutable blog entity with localized metadata and a
+  string-oriented `content` JSONB field.
+- `WebbookingContentRevisions` is an append-only audit log keyed by
+  `content_key`; it is not a version table and must not be repurposed as one.
+- `SystemConfigs`/`WebBookingContent` remain transitional sources for existing
+  editable pages and must not become the permanent Content Builder CMS.
+
+The frozen V1 direction is:
+
+1. Keep `WebbookingBlogPosts` as the blog entity and keep its legacy columns
+   available for dual-mode fallback during migration.
+2. Add a dedicated `WebbookingContentVersions` snapshot table and pointer
+   columns on the relevant entity records, or introduce a shared content-entity
+   registry if a relational foreign key is required across blog/page types.
+3. Use `WebbookingContentPages` for new structured editorial pages such as
+   Local Tour, Home Spa, Academy, and Our Story where appropriate.
+4. Treat `entity_type + entity_id` as a polymorphic boundary only if the
+   migration adds explicit integrity protection (central registry, trigger, or
+   equivalent). A bare polymorphic pair without integrity or authorization is
+   not an approved implementation.
+5. Public reads select only the published pointer. Draft saves update only the
+   draft pointer and insert an immutable snapshot. Publishing atomically moves
+   the published pointer to the chosen validated draft.
+
+RLS/ACL requirements:
+
+- Admin mutations and preview use server route handlers protected by the
+  existing `content.read`, `content.write`, and `content.publish` capability
+  checks. The service-role client is server-only and must never reach a client
+  component.
+- Browser roles receive no direct draft/version write access. If public table
+  reads are ever enabled, the policy must allow only the published pointer; a
+  service-role public route is acceptable only when the route itself enforces
+  the published-pointer predicate.
+- `WebbookingContentRevisions` remains an audit trail for legacy/config writes;
+  it does not satisfy immutable snapshot, restore, or draft isolation
+  requirements.
+- Preview tokens must be scoped to an entity/version, short-lived, and
+  non-indexable. No draft JSON may be returned by the normal public endpoint.
+
+## 10. Legacy dual-mode and renderer boundary
+
+The initial public integration must preserve:
+
+```text
+published ContentDocument -> server ContentRenderer
+otherwise                -> existing legacy renderer
+```
+
+The current `/blogs` page is a client component that fetches post summaries in
+`useEffect`; it is not an SSR article renderer. Phase 1 must therefore keep the
+public `ContentRenderer` server-safe and introduce any client behavior (modal,
+carousel, video controls) as narrow client islands. It must not move the
+existing booking or global content state into public rendering.
+
+The current `SaigonCoffeeArticle`, Local Tour, Home Spa, and Our Story
+components remain legacy renderers until an approved migration/pilot replaces
+them. The content contract does not require a mass migration.
+
+## 11. Media/upload gate before Content Builder use
+
+`MarketingMedia` currently has only identity, URL, type, source, and timestamp
+columns. Dimensions, MIME, file size, localized alt, metadata, and updated time
+are additive Phase 3 work; the resolver must tolerate missing legacy metadata.
+
+The existing Media Library has a client-side direct storage upload path that
+registers the URL through JSON, while the server multipart route calls
+`validateUpload`. Content Builder must use the server-validated multipart path
+or an equivalent server-side validation flow. It must not treat the current
+client upload path as proof of magic-byte validation.
+
+The source file remains pristine; only block-instance framing (`aspectRatio`,
+`fit`, `focalPoint`, `zoom`, `presentation`) is persisted.
+
 ---
 
-## 9. Zod Validation Boundaries (Architecture Specification)
+## 12. Zod Validation Boundaries (Architecture Specification)
 
 When implemented in Phase 1 (`src/lib/content/schemas/`), validation will enforce:
 
@@ -437,30 +601,52 @@ When implemented in Phase 1 (`src/lib/content/schemas/`), validation will enforc
 4. **URL Protocols:**
    - Image/Video: Must start with `http://`, `https://`, or be relative `/`.
    - CTA: Reject `javascript:`, `data:`, `vbscript:`. Allow `/`, `https://`, `mailto:`, `tel:`.
+   - Rich-text links and external media: reject `javascript:`, `data:`, `vbscript:`, `file:`, and protocol-relative URLs; allow only relative `/`, `https://`, and the explicitly supported `mailto:`/`tel:` forms.
 5. **Aspect Ratio:** Enforce enum `['original', '16:9', '4:3', '3:2', '1:1', '3:4']`.
-6. **Block Type Guards:** Unknown block types in JSON are validated gracefully by the fallback parser rather than throwing unhandled exceptions.
+6. **Zoom Step:** Persisted zoom must be within `1.0..2.0` and represent a `0.05` step; UI controls must use the same bounds.
+7. **Rich Text AST:** Only the declared node/mark types and attributes are accepted. Unknown nodes, unknown marks, excessive depth, and malformed child arrays are rejected or omitted by the safe parser.
+8. **Block Type Guards:** Unknown block types in raw JSON are reported and skipped by the safe parser rather than throwing an unhandled exception. The canonical `ContentBlock` union contains only supported V1 blocks.
+9. **Hydration Boundary:** `resolvedAsset` and any resolver cache fields are rejected by persistence Zod schemas and may appear only in a server-prepared render DTO.
 
 ---
 
-## 10. Forward Schema Migration Strategy
+## 13. Forward Schema Migration Strategy
 
 ```typescript
-export type MigrationFn = (doc: any) => ContentDocument;
+export type MigrationFn = (doc: unknown) => ContentDocument;
 
 export const SCHEMA_MIGRATIONS: Record<number, MigrationFn> = {
   // 1 -> 2 placeholder for future contract enhancements
 };
 
-export function migrateToLatestSchema(rawDoc: any): ContentDocument {
-  if (!rawDoc || typeof rawDoc !== 'object') {
+export interface ContentDocumentReadResult {
+  document: ContentDocument;
+  skippedBlockIds: string[];
+  unsupportedSchemaVersion?: number;
+}
+
+// Implemented in Phase 1 as a safe Zod boundary; raw JSON is never cast.
+declare function safeParseContentDocument(rawDoc: unknown): ContentDocumentReadResult;
+
+export function migrateToLatestSchema(rawDoc: unknown): ContentDocument {
+  if (!rawDoc || typeof rawDoc !== 'object' || Array.isArray(rawDoc)) {
     return { schemaVersion: 1, blocks: [] };
   }
-  let currentVersion = rawDoc.schemaVersion ?? 1;
-  let doc = rawDoc;
+  let currentVersion = typeof (rawDoc as { schemaVersion?: unknown }).schemaVersion === 'number'
+    ? (rawDoc as { schemaVersion: number }).schemaVersion
+    : 1;
+  if (!Number.isInteger(currentVersion) || currentVersion < 1 || currentVersion > 1) {
+    return { schemaVersion: 1, blocks: [] };
+  }
+  let doc: unknown = rawDoc;
   while (SCHEMA_MIGRATIONS[currentVersion]) {
     doc = SCHEMA_MIGRATIONS[currentVersion](doc);
-    currentVersion = doc.schemaVersion;
+    const nextVersion = (doc as { schemaVersion?: unknown }).schemaVersion;
+    if (typeof nextVersion !== 'number' || !Number.isInteger(nextVersion) || nextVersion <= currentVersion) {
+      return { schemaVersion: 1, blocks: [] };
+    }
+    currentVersion = nextVersion;
   }
-  return doc as ContentDocument;
+  return safeParseContentDocument(doc).document;
 }
 ```

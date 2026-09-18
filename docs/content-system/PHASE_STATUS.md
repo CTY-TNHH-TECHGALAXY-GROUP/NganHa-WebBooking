@@ -1,7 +1,7 @@
 # Content System Implementation — Phase Status
 
 **Project:** NganHa-WebBooking — Dynamic Content Block System  
-**Current Phase:** Phase 0 — Architecture Verification & Contract Definition  
+**Current Phase:** Phase 0 complete — Phase 1 not started
 **Overall Project Progress:** 5%  
 **Last Updated:** 2026-09-18  
 
@@ -11,7 +11,7 @@
 
 | Phase | Description | Owner | Status | Progress Weight | Target Branch |
 |---|---|---|---|---:|---|
-| **Phase 0** | **Architecture Verification & Contract Definition** | **Antigravity / Codex** | **IN REVIEW** | **5%** | `feat/content-contract-antigravity` |
+| **Phase 0** | **Architecture Verification & Contract Definition** | **Antigravity / Codex** | **COMPLETED** | **5%** | `review/content-contract-codex` |
 | **Phase 1** | Core Renderer Foundation & Block Registry | Codex | READY | 15% | `feat/content-renderer` |
 | **Phase 2** | Saigon Coffee Renderer Pilot (Visual Parity) | Codex | READY | 25% | `feat/content-renderer` |
 | **Phase 3** | Media Core & Media Picker Modal | Codex / Antigravity | READY | 40% | `feat/content-media-core` & `feat/content-media-ui` |
@@ -25,14 +25,14 @@
 
 ## 2. Phase 0 Detailed Milestones
 
-- [x] **Repository Root & Branch Check:** Confirmed root and verified branch `feat/content-contract-antigravity`.
+- [x] **Repository Root & Branch Check:** Confirmed root and verified branch `review/content-contract-codex`.
 - [x] **Canonical Spec Ingestion:** Thorough review of `docs/content-system/IMPLEMENTATION_SPEC.md`.
 - [x] **Real Codebase Audit:** 24-point audit spanning database, media, API, legacy templates, and auth boundaries.
 - [x] **Content Contract V1 Draft:** Created `docs/content-system/CONTENT_CONTRACT_V1.md` defining all block schemas, TypeScript types, DTOs, and Zod rules.
-- [x] **Architecture Decisions:** Created `docs/content-system/ARCHITECTURE_DECISIONS.md` documenting ADR-001 through ADR-009.
+- [x] **Architecture Decisions:** Created `docs/content-system/ARCHITECTURE_DECISIONS.md` documenting ADR-001 through ADR-014, including Codex review corrections and implementation gates.
 - [x] **Coordination & Ownership Setup:** Documented ownership split (`OWNERSHIP.md`), task board (`TASK_BOARD.md`), file locks (`FILE_LOCKS.md`), and agent status (`ANTIGRAVITY.md`).
 - [x] **Phase 0 Handoff Package:** Created `docs/content-system/handoffs/ANTIGRAVITY_PHASE_0.md`.
-- [ ] **Codex Gatekeeper Review:** Pending Codex review on `review/content-contract-codex` to freeze contract.
+- [x] **Codex Gatekeeper Review:** Completed on `review/content-contract-codex`; contract frozen as V1.0.0 with documented corrections and implementation gates.
 
 ---
 
@@ -40,3 +40,14 @@
 1. **No Code Implementation in Phase 0:** Strictly architecture documentation, codebase audit, and coordination setup.
 2. **Contract Freeze Authority:** Only Codex has the authority to declare `CONTENT_CONTRACT_V1.md` as `FROZEN`.
 3. **Branch Hygiene:** No direct feature branch pushes to `main`/`master` or `vercel`. All changes route through feature branches, code reviews, and integration milestones.
+
+---
+
+## 4. Phase 0 Gate Result
+
+- **Review status:** APPROVED WITH CORRECTIONS
+- **Contract status:** FROZEN (`CONTENT_CONTRACT_V1.md`, version `1.0.0`)
+- **Next Phase:** Phase 1 — Core Renderer Foundation
+- **Codex next ownership:** TypeScript types, Zod schemas, ContentRenderer, Block Registry, and core block renderers.
+- **Antigravity next eligible parallel scope:** Media Picker UI shell and Admin UI preparation using the frozen contract.
+- **Phase 1 implementation status:** Not started by this review.
