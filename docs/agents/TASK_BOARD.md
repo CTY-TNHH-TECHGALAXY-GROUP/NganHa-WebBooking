@@ -1,7 +1,7 @@
 # Content Builder Multi-Agent Task Board
 
 **Project:** NganHa-WebBooking — Dynamic Content Block System  
-**Current Branch:** `review/content-contract-codex`
+**Current Branch:** `feat/content-renderer`
 **Last Updated:** 2026-09-18  
 
 ---
@@ -12,14 +12,15 @@
   - **Branch:** `review/content-contract-codex`
   - **Deliverable:** `docs/content-system/CONTENT_CONTRACT_V1.md`, `ARCHITECTURE_DECISIONS.md`, `handoffs/ANTIGRAVITY_PHASE_0.md`
   - **Status:** Approved with corrections. Contract V1.0.0 frozen by Codex. No Phase 1 code started.
+- [x] **CONTENT-002: Content Renderer Foundation & Block Registry**
+  - **Owner:** Codex
+  - **Branch:** `feat/content-renderer`
+  - **Deliverable:** Canonical types, Zod validation, parser, locale resolver, media boundary, registry, ContentRenderer, eight core renderers, focused tests, and Phase 1 handoff.
+  - **Status:** Completed. Phase 2 intentionally not started.
 
 ---
 
-## 2. READY (Phase 0 Signed Off; Do Not Start Automatically)
-- [ ] **CONTENT-002: Content Renderer Foundation & Block Registry**
-  - **Owner:** Codex
-  - **Branch:** `feat/content-renderer`
-  - **Scope:** TypeScript content types, Zod schemas, `ContentRenderer`, registry, 8 block renderers, SSR/SEO validation, unknown block fallback.
+## 2. READY (Phase 1 complete; Do Not Start Automatically)
 - [ ] **CONTENT-003: Saigon Coffee Pilot (Visual Parity)**
   - **Owner:** Codex
   - **Branch:** `feat/content-renderer`
@@ -57,6 +58,6 @@
 
 ## 3. COORDINATION NOTE
 
-Phase 1 and later tasks remain eligible but are intentionally not started by
-this review. Any implementation must use the frozen contract and the existing
-ownership/file-lock rules.
+Phase 2 and later tasks remain eligible but are intentionally not started by
+this implementation. Any future work must use the frozen contract and the
+existing ownership/file-lock rules.

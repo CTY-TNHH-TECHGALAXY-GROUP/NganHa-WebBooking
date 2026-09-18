@@ -1,8 +1,8 @@
 # Content System Implementation — Phase Status
 
 **Project:** NganHa-WebBooking — Dynamic Content Block System  
-**Current Phase:** Phase 0 complete — Phase 1 not started
-**Overall Project Progress:** 5%  
+**Current Phase:** Phase 1 complete — Phase 2 not started
+**Overall Project Progress:** 15%
 **Last Updated:** 2026-09-18  
 
 ---
@@ -12,7 +12,7 @@
 | Phase | Description | Owner | Status | Progress Weight | Target Branch |
 |---|---|---|---|---:|---|
 | **Phase 0** | **Architecture Verification & Contract Definition** | **Antigravity / Codex** | **COMPLETED** | **5%** | `review/content-contract-codex` |
-| **Phase 1** | Core Renderer Foundation & Block Registry | Codex | READY | 15% | `feat/content-renderer` |
+| **Phase 1** | Core Renderer Foundation & Block Registry | Codex | **COMPLETED** | 15% | `feat/content-renderer` |
 | **Phase 2** | Saigon Coffee Renderer Pilot (Visual Parity) | Codex | READY | 25% | `feat/content-renderer` |
 | **Phase 3** | Media Core & Media Picker Modal | Codex / Antigravity | READY | 40% | `feat/content-media-core` & `feat/content-media-ui` |
 | **Phase 4** | Admin Block Editor MVP (DnD, Insert, Edit) | Antigravity | READY | 60% | `feat/content-editor` |
@@ -47,7 +47,20 @@
 
 - **Review status:** APPROVED WITH CORRECTIONS
 - **Contract status:** FROZEN (`CONTENT_CONTRACT_V1.md`, version `1.0.0`)
-- **Next Phase:** Phase 1 — Core Renderer Foundation
-- **Codex next ownership:** TypeScript types, Zod schemas, ContentRenderer, Block Registry, and core block renderers.
+- **Next Phase:** Phase 2 — Saigon Coffee Renderer Pilot
+- **Codex completed ownership:** TypeScript types, Zod schemas, ContentRenderer, Block Registry, and core block renderers.
 - **Antigravity next eligible parallel scope:** Media Picker UI shell and Admin UI preparation using the frozen contract.
-- **Phase 1 implementation status:** Not started by this review.
+- **Phase 1 implementation status:** Completed on `feat/content-renderer`.
+
+## 5. Phase 1 Result
+
+- [x] Canonical TypeScript content types and V1 discriminated union.
+- [x] Zod schemas for documents, blocks, structured RichText, safe URLs, media references, focal points, and zoom.
+- [x] Defensive ContentDocument parser with malformed/unsupported/skip diagnostics.
+- [x] Centralized locale fallback: requested locale -> `en` -> `vi`.
+- [x] Typed eight-block registry and Server Component-compatible ContentRenderer.
+- [x] Core heading, RichText, image, gallery, quote, video, CTA, and divider renderers.
+- [x] Media resolver interface and block-instance image composition mapping.
+- [x] Focused contract tests and Phase 1 handoff created.
+
+Phase 2 has not started. Database migrations, draft/publish workflows, Admin Block Editor, legacy migrations, and booking/business logic remain untouched.
