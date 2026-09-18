@@ -3,7 +3,7 @@
 **Project:** NganHa-WebBooking  
 **Module:** Content System Architecture  
 **Phase:** Phase 0 — Architecture Verification & Contract Definition  
-**Status:** PROPOSED BY ANTIGRAVITY (Pending Codex Architecture Review & Freeze)  
+**Status:** ACCEPTED WITH CORRECTIONS — CONTRACT V1.0.0 FROZEN BY CODEX
 **Date:** 2026-09-18  
 
 ---
@@ -11,7 +11,7 @@
 ## ADR-001: Hybrid Relational Metadata + Typed JSONB Content Document
 
 ### Status
-PROPOSED (Phase 0)
+ACCEPTED (Contract V1.0.0)
 
 ### Context
 Editorial and marketing content across the repository (`src/components/Blogs/BlogsPage.tsx`, `src/components/Blogs/SaigonCoffeeArticle.tsx`, `src/components/LocalTour/LocalTourPackagePage.tsx`, `src/components/OurStory/OurStory.tsx`, `src/components/HomeSpa/HomeSpaPage.tsx`) is currently coupled to static TSX components, split crudely via `\n\n` into simple `<p>` tags, or stored in raw JSON structures inside `public.SystemConfigs`. 
@@ -29,7 +29,7 @@ Adopt the **Hybrid Relational Metadata + Typed JSONB Content Document** architec
 - **JSONB Column / Entity:** `ContentDocument` with schema versioning `{ schemaVersion: 1, blocks: ContentBlock[] }`.
 
 ### Consequences
-- **Positive:** Atomic document updates, zero relational table joins for article rendering, simple immutable snapshot versioning, and seamless mapping to React server/client component props.
+- **Positive:** Atomic document updates, one bounded entity-to-published-version lookup instead of per-block joins, simple immutable snapshot versioning, and seamless mapping to React server/client component props.
 - **Negative:** Schema evolution within JSONB requires forward migration scripts (`migrateContentDocumentV1ToV2`) rather than standard SQL DDL alterations.
 
 ---
@@ -37,7 +37,7 @@ Adopt the **Hybrid Relational Metadata + Typed JSONB Content Document** architec
 ## ADR-002: Single Ordered Block Sequence with Internal Localization
 
 ### Status
-PROPOSED (Phase 0)
+ACCEPTED (Contract V1.0.0)
 
 ### Context
 `NganHa-WebBooking` supports 5 distinct locales: `vi`, `en`, `cn`, `jp`, `kr` (defined in `src/lib/constants.ts`). When an editor alters the document layout (such as inserting an image between paragraphs or swapping two sections), having separate block arrays per language would require editors to perform the exact same layout manipulation 5 times, inevitably causing structural desynchronization.
@@ -64,7 +64,7 @@ export type LocalizedValue<T> = {
 ## ADR-003: Media Reference by Media ID & Enhanced MarketingMedia
 
 ### Status
-PROPOSED (Phase 0)
+ACCEPTED WITH IMPLEMENTATION GATE (Contract V1.0.0)
 
 ### Context
 The repository already contains `public.MarketingMedia` and a Supabase Storage bucket (`media-uploads/marketing/`). However:
@@ -87,7 +87,7 @@ The repository already contains `public.MarketingMedia` and a Supabase Storage b
 ## ADR-004: Block-Instance Specific Framing & Normalized Percentage Focal Point
 
 ### Status
-PROPOSED (Phase 0)
+ACCEPTED (Contract V1.0.0)
 
 ### Context
 Different editorial articles may use the same source media asset with different artistic intents (e.g. an editorial banner needs a wide 16:9 landscape framing focused on the artisan's hands, while a tour card needs a 1:1 square crop focused on a facial expression). Furthermore, permanently cropping images on upload wastes storage, reduces image resolution, and prevents responsive re-framing.
@@ -119,7 +119,7 @@ Different editorial articles may use the same source media asset with different 
 ## ADR-005: Decoupled Immutable Version Snapshots & Draft/Published Pointer Model
 
 ### Status
-PROPOSED (Phase 0)
+ACCEPTED WITH IMPLEMENTATION GATE (Contract V1.0.0)
 
 ### Context
 Currently, `WebbookingBlogPosts` has only a single mutable row per post with a status column (`draft`, `scheduled`, `published`). When an administrator modifies a published blog post, any auto-save or draft save immediately mutates the live row, leaking incomplete drafts to public visitors and search engine bots.
@@ -146,7 +146,7 @@ Furthermore, `WebbookingContentRevisions` currently acts only as an append-only 
 ## ADR-006: Dedicated Content Entities vs Permanent Dependence on SystemConfigs
 
 ### Status
-PROPOSED (Phase 0)
+ACCEPTED (Contract V1.0.0)
 
 ### Context
 `SystemConfigs` is a key-value store intended for system-wide flags, business hours, and operational configurations. In earlier prototypes, full page content was occasionally serialized into `SystemConfigs` JSON keys (`local_tour_content`, `brand_history`). However, `SystemConfigs` lacks foreign keys, relational indexing, draft/publish lifecycle pointers, and per-entity access controls.
@@ -155,7 +155,11 @@ PROPOSED (Phase 0)
 1. `SystemConfigs` is explicitly rejected as the permanent architectural home for the Content Builder.
 2. Blog posts will use `WebbookingBlogPosts` (extended with version pointers and block document support).
 3. Structured editorial pages (e.g. Local Tour, Our Story, Home Spa) will be transitioned to a dedicated entity table `WebbookingContentPages` and version table `WebbookingContentVersions`.
-4. `SystemConfigs` will only be used as a read-only fallback during legacy transitional phases.
+4. Existing legacy admin routes may continue to read/write their existing
+   `SystemConfigs` keys during transition, but the new Content Builder must not
+   use `SystemConfigs` as its draft/publish store. New structured content uses
+   the dedicated entity/version model; public legacy reads remain fallback-only
+   until migrated.
 
 ### Consequences
 - **Positive:** Strong relational schema integrity, proper slug indexing, and clean separation between site-wide settings and editorial content.
@@ -211,3 +215,98 @@ The Content Block System is strictly isolated to editorial and marketing surface
 
 ### Consequences
 - **Positive:** Zero risk of regressions in revenue-generating booking and payment flows.
+
+---
+
+## ADR-010: Published Pointer Is the Only Public Content Selector
+
+### Status
+ACCEPTED WITH IMPLEMENTATION GATE (Contract V1.0.0)
+
+### Evidence
+The current `WebbookingBlogPosts` table is mutable, while the public posts API
+filters by `status`/`published_at`. The admin post API can update the same row
+after checking `content.write`/`content.publish`. That is not sufficient to
+protect a published document from draft edits.
+
+### Decision
+V1 publication uses immutable `WebbookingContentVersions` snapshots plus
+`current_draft_version_id` and `current_published_version_id` pointers on the
+content entity. Public loaders may read only the published pointer. The current
+blog row and `WebbookingContentRevisions` remain legacy/fallback and audit
+structures until the publishing phase replaces the mutable document path.
+
+### Required implementation gate
+Before a ContentDocument can be enabled for a public entity, the save/publish
+routes, entity integrity, optimistic concurrency, and RLS/ACL behavior must be
+implemented and tested against `Published V12 -> Draft V13 -> Draft V14 ->
+Publish V14` without draft leakage.
+
+---
+
+## ADR-011: Server-Validated Media Upload Boundary
+
+### Status
+ACCEPTED WITH IMPLEMENTATION GATE (Contract V1.0.0)
+
+### Evidence
+`src/lib/uploads/validateUpload.ts` performs magic-byte and payload checks, but
+the current Media Library client uploads directly to Supabase Storage before
+registering a JSON metadata row. The client path does not call that validator.
+
+### Decision
+The frozen contract requires Content Builder uploads to use a server-side
+validated multipart flow (or an equivalent server-owned validation boundary).
+The existing direct client upload path is not considered a safe implementation
+of the contract. Internal blocks still persist only `mediaId`; URL registration
+is not a substitute for upload validation.
+
+### Consequences
+Phase 3 must either route the Media Library through the validated endpoint or
+provide a separate server-owned endpoint before Content Builder upload is
+enabled. No migration or production code change is part of this Phase 0 review.
+
+---
+
+## ADR-012: Server Renderer with Narrow Client Islands
+
+### Status
+ACCEPTED (Contract V1.0.0)
+
+### Evidence
+The current `/blogs` surface is a client component that fetches post summaries
+in `useEffect`; `SaigonCoffeeArticle` also uses client-only scroll state. This
+is legacy behavior, not a reason to make the new public renderer client-only.
+
+### Decision
+`ContentRenderer` and media resolution remain Server Component-compatible for
+public SSR/SEO. Interactive behavior is isolated to explicit client islands
+(for example carousel controls or a video player). Legacy client pages remain
+unchanged until a migration pilot proves parity.
+
+---
+
+## ADR-013: Persisted Document vs Prepared Render DTO
+
+### Status
+ACCEPTED (Contract V1.0.0)
+
+### Decision
+`ContentVersion.document` persists only canonical block data. Resolved media
+assets, signed URLs, diagnostics, and other request-time values are prepared on
+the server after validation and are not written into JSONB. Persistence schemas
+must reject these resolver-only fields.
+
+---
+
+## ADR-014: Safe Structured Rich Text Links
+
+### Status
+ACCEPTED (Contract V1.0.0)
+
+### Decision
+Structured rich text remains the canonical format, but link marks are not
+trusted merely because the payload is JSON. Zod validation rejects unsafe and
+protocol-relative URLs; the renderer maps only approved protocols and applies
+safe `rel` behavior for new-tab links. No `dangerouslySetInnerHTML` path is
+introduced by the Content Renderer.

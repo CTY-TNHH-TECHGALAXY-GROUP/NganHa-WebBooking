@@ -39,6 +39,26 @@ package-lock.json
 docs/content-system/**
 ```
 
+### Phase 0 Freeze Record
+
+`docs/content-system/CONTENT_CONTRACT_V1.md` is frozen at version `1.0.0` on
+`review/content-contract-codex`. Future changes require a Change Request at
+`docs/content-system/requests/CR-XXX.md`; no agent may silently alter block
+schemas, URL rules, locale behavior, media references, or draft/publish
+semantics.
+
+Phase 0 review did not authorize Phase 1 implementation. The first renderer,
+schema, media, or publishing code change must be made in its assigned feature
+branch and must preserve the protected booking scope below.
+
+### Review-confirmed implementation gates
+
+- Content Builder uploads must pass the server-side upload validator before a
+  `MarketingMedia` record is created.
+- Public content reads must resolve only `current_published_version_id`.
+- `WebbookingContentRevisions` remains an audit log, not a replacement for
+  immutable content versions.
+
 ---
 
 ## 2. Absolutely Protected Files (FORBIDDEN SCOPE)
