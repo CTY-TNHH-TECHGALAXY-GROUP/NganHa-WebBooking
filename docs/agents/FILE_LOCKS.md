@@ -20,6 +20,10 @@ src/app/api/admin/content/**
 supabase/migrations/**
 ```
 
+Phase 1 renderer, type, schema, and content utility files now exist under the
+Codex-owned paths. Do not casually move them into shared booking, legacy page,
+or Admin UI paths; future changes must preserve the frozen contract boundary.
+
 ### Antigravity Exclusive Lock
 Only Antigravity may modify, add, or delete files in these paths during UI implementation phases.
 

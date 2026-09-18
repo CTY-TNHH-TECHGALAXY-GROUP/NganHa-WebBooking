@@ -1,45 +1,41 @@
 # Codex Status
 
-**Status:** COMPLETE — Phase 0 review finished
-**Branch:** `review/content-contract-codex`
-**Task:** CONTENT-001 — Phase 0 Architecture Review / Contract Gate
-**Progress:** 5%
+**Status:** COMPLETE — Phase 1 Core Renderer Foundation
+**Branch:** `feat/content-renderer`
+**Task:** CONTENT-002 — Core Renderer Foundation & Block Registry
+**Progress:** 15%
 **Last Update:** 2026-09-18
 
 ## Working On
 
-- Completed independent architecture and codebase review.
-- Frozen Content Contract V1.0.0 with compatibility and security corrections.
-- Updated Phase 0 coordination records and created the Codex handoff.
+- Phase 1 implementation complete.
+- Phase 2 intentionally not started.
 
 ## Changed Files
 
-- `docs/content-system/CONTENT_CONTRACT_V1.md`
-- `docs/content-system/ARCHITECTURE_DECISIONS.md`
-- `docs/content-system/PHASE_STATUS.md`
-- `docs/agents/TASK_BOARD.md`
-- `docs/agents/FILE_LOCKS.md`
-- `docs/agents/status/CODEX.md`
-- `docs/content-system/handoffs/CODEX_PHASE_0_REVIEW.md`
+- `package.json`, `package-lock.json` — approved `zod` dependency only.
+- `src/types/content/**` — canonical frozen V1 types.
+- `src/lib/content/**` — schemas, parser, locale resolver, media boundary, composition helper, focused tests.
+- `src/components/ContentRenderer/**` — registry, renderer, frame, and eight renderers.
+- Phase 1 coordination documents and handoff.
 
 ## Tests / Verification
 
 - Worktree and branch verified: PASS.
-- Antigravity Phase 0 handoff and required documents verified: PASS.
-- Independent source, migration, API, RLS, upload, localization, legacy
-  renderer, dependency, and Next.js boundary review: COMPLETE.
-- Database migrations executed: NO (intentionally out of scope).
-- Production code implementation: NO (intentionally out of scope).
+- Frozen contract markers verified: PASS.
+- `npx tsc --noEmit`: PASS.
+- Native Node focused content tests: PASS, 7/7.
+- New-path ESLint: PASS.
+- `npm run lint`: PASS with existing repository warnings.
+- `npm run build`: compilation PASS; prerender blocked by missing Supabase env/mock `maybeSingle()` and `/admin/login` Supabase configuration.
+- Database migrations executed: NO.
+- Booking/cart/checkout/business logic modified: NO.
 
-## Blockers
+## Blockers / Known Issues
 
-No unresolved contract blockers after the documented corrections. Media upload
-validation and draft/publish isolation remain mandatory implementation gates for
-their future phases; they were not silently treated as already implemented.
+No Phase 1 implementation blocker. Production build needs the repository's
+existing Supabase environment/mock issue resolved outside this phase.
 
 ## Next
 
-Phase 1 — Core Renderer Foundation, only after explicit phase start:
-TypeScript types, Zod schemas, ContentRenderer, Block Registry, and core block
-renderers. Antigravity may prepare the Media Picker UI shell against the frozen
-contract in its assigned scope.
+Phase 2 remains READY only. Do not begin it automatically.
