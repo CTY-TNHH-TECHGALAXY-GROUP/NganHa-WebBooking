@@ -76,6 +76,7 @@ export function HeadingInspector({ props, activeLocale, onChange }: HeadingInspe
                 : 'bg-admin-panel border-admin-line text-admin-text-dim hover:text-admin-text'
             }`}
             title="Căn trái"
+            aria-label="Căn trái"
           >
             <AlignLeft size={16} />
           </button>
@@ -88,6 +89,7 @@ export function HeadingInspector({ props, activeLocale, onChange }: HeadingInspe
                 : 'bg-admin-panel border-admin-line text-admin-text-dim hover:text-admin-text'
             }`}
             title="Căn giữa"
+            aria-label="Căn giữa"
           >
             <AlignCenter size={16} />
           </button>
@@ -100,6 +102,7 @@ export function HeadingInspector({ props, activeLocale, onChange }: HeadingInspe
                 : 'bg-admin-panel border-admin-line text-admin-text-dim hover:text-admin-text'
             }`}
             title="Căn phải"
+            aria-label="Căn phải"
           >
             <AlignRight size={16} />
           </button>

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useMemo, useId } from 'react';
+import React, { useState, useEffect, useMemo, useId, useRef } from 'react';
 import {
   X,
   Search,
@@ -15,13 +15,13 @@ import {
   Copy,
   CheckCircle2,
 } from 'lucide-react';
-import type { MediaAsset, SupportedLocale } from '@/types/content';
+import type { SupportedLocale } from '@/types/content';
 import { MOCK_MEDIA_LIBRARY } from './mockMedia';
 
 export interface MediaPickerModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSelect: (mediaId: string, asset: MediaAsset) => void;
+  onSelect: (mediaId: string) => void;
   currentMediaId?: string;
   allowedTypes?: Array<'image' | 'video'>;
   locale?: SupportedLocale;
@@ -48,25 +48,53 @@ export function MediaPickerModal({
 
   const titleId = useId();
   const searchInputId = useId();
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
 
   // Keep internal selection synced when modal opens
   useEffect(() => {
     if (isOpen) {
       setSelectedId(currentMediaId);
+      setSearchQuery('');
+      setTypeFilter('all');
+      setSourceFilter('all');
     }
   }, [isOpen, currentMediaId]);
 
-  // Keyboard accessibility: Close on Escape
+  // Keyboard accessibility: focus entry/return, Escape, and focus containment.
   useEffect(() => {
     if (!isOpen) return;
+    const previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const frame = window.requestAnimationFrame(() => searchInputRef.current?.focus());
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        onClose();
+        e.preventDefault();
+        onCloseRef.current();
+        return;
+      }
+      if (e.key !== 'Tab' || !dialogRef.current) return;
+      const focusable = Array.from(dialogRef.current.querySelectorAll<HTMLElement>(
+        'button:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])',
+      )).filter((element) => element.getClientRects().length > 0);
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (!dialogRef.current.contains(document.activeElement)
+        || (e.shiftKey && document.activeElement === first)
+        || (!e.shiftKey && document.activeElement === last)) {
+        e.preventDefault();
+        (e.shiftKey ? last : first).focus();
       }
     };
     window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, onClose]);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener('keydown', handleKeyDown);
+      previousFocus?.focus();
+    };
+  }, [isOpen]);
 
   // Filter media items
   const filteredMedia = useMemo(() => {
@@ -92,15 +120,15 @@ export function MediaPickerModal({
   }, [allowedTypes, typeFilter, sourceFilter, searchQuery, locale]);
 
   const selectedAsset = useMemo(() => {
-    return MOCK_MEDIA_LIBRARY.find((item) => item.id === selectedId) || null;
-  }, [selectedId]);
+    return MOCK_MEDIA_LIBRARY.find((item) => item.id === selectedId && allowedTypes.includes(item.type)) || null;
+  }, [allowedTypes, selectedId]);
 
   if (!isOpen) return null;
 
   const handleConfirm = () => {
     if (selectedAsset) {
       // mediaId is canonical as per Contract V1
-      onSelect(selectedAsset.id, selectedAsset);
+      onSelect(selectedAsset.id);
       onClose();
     }
   };
@@ -128,7 +156,7 @@ export function MediaPickerModal({
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <div className="bg-admin-panel border border-admin-line-strong rounded-2xl w-full max-w-5xl h-[88vh] max-h-[820px] flex flex-col shadow-2xl overflow-hidden">
+      <div ref={dialogRef} className="bg-admin-panel border border-admin-line-strong rounded-2xl w-full max-w-5xl h-[88vh] max-h-[820px] flex flex-col shadow-2xl overflow-hidden">
         {/* Header */}
         <div className="px-6 py-4 border-b border-admin-line flex items-center justify-between bg-admin-panel">
           <div>
@@ -155,6 +183,7 @@ export function MediaPickerModal({
           <div className="relative flex-1 min-w-[220px]">
             <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-admin-text-faint" />
             <input
+              ref={searchInputRef}
               id={searchInputId}
               type="search"
               placeholder="Tìm theo tiêu đề, alt text hoặc media ID..."
@@ -224,7 +253,7 @@ export function MediaPickerModal({
         </div>
 
         {/* Body (Grid + Inspector) */}
-        <div className="flex-1 flex overflow-hidden">
+        <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
           {/* Media Grid Panel */}
           <div className="flex-1 p-6 overflow-y-auto">
             {isLoading ? (
@@ -335,7 +364,7 @@ export function MediaPickerModal({
           </div>
 
           {/* Asset Detail & Preview Inspector (Right) */}
-          <div className="w-72 sm:w-80 border-l border-admin-line bg-admin-panel-2 p-5 flex flex-col justify-between overflow-y-auto">
+          <div className="w-full md:w-80 max-h-[42%] md:max-h-none border-t md:border-t-0 md:border-l border-admin-line bg-admin-panel-2 p-5 flex flex-col justify-between overflow-y-auto">
             {selectedAsset ? (
               <div className="space-y-4">
                 <div className="flex items-center justify-between">

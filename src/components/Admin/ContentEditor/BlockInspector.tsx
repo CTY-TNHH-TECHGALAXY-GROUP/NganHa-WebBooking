@@ -149,6 +149,7 @@ export function BlockInspector({
             onClick={() => onDeleteBlock(block.id)}
             className="p-1.5 rounded-lg text-admin-text-faint hover:text-red-600 hover:bg-red-50 transition-colors"
             title="Xóa khối này"
+            aria-label="Xóa khối này"
           >
             <Trash2 size={16} />
           </button>
@@ -156,8 +157,9 @@ export function BlockInspector({
             <button
               type="button"
               onClick={onCloseMobileInspector}
-              className="lg:hidden p-1.5 rounded-lg text-admin-text-faint hover:text-admin-text transition-colors"
+              className="xl:hidden p-1.5 rounded-lg text-admin-text-faint hover:text-admin-text transition-colors"
               title="Đóng bảng cài đặt"
+              aria-label="Đóng bảng cài đặt"
             >
               <X size={18} />
             </button>
