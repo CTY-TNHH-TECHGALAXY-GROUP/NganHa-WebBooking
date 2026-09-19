@@ -165,17 +165,30 @@ const externalVideoUrl = safeUrl({ protocols: ['https:'], allowRelative: false }
   }
 }, 'External video host is not supported');
 
+const externalVideoSourceSchema = z.object({
+  type: z.literal('external'),
+  provider: z.enum(['youtube', 'vimeo']),
+  url: externalVideoUrl,
+}).strict().superRefine((source, ctx) => {
+  let hostname: string;
+  try {
+    hostname = new URL(source.url).hostname.toLowerCase();
+  } catch {
+    return;
+  }
+  const matchesProvider = source.provider === 'youtube'
+    ? hostname === 'youtu.be' || hostname === 'youtube.com' || hostname.endsWith('.youtube.com')
+    : hostname === 'vimeo.com' || hostname.endsWith('.vimeo.com');
+  if (!matchesProvider) ctx.addIssue({ code: 'custom', path: ['url'], message: 'Video URL does not match provider' });
+});
+
 export const videoBlockSchema = z.object({
   ...baseBlock,
   type: z.literal('video'),
   props: z.object({
     source: z.discriminatedUnion('type', [
       z.object({ type: z.literal('internal'), mediaId: safeId }).strict(),
-      z.object({
-        type: z.literal('external'),
-        provider: z.enum(['youtube', 'vimeo']),
-        url: externalVideoUrl,
-      }).strict(),
+      externalVideoSourceSchema,
     ]),
     posterMediaId: safeId.optional(),
     caption: localizedString.optional(),

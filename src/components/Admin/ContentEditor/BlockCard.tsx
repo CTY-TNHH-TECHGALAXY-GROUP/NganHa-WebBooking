@@ -150,13 +150,21 @@ export function BlockCard({
         );
       }
       case 'richText': {
-        const doc = block.props.content?.[activeLocale] || block.props.content?.vi;
+        const resolution = resolveLocalizedValue(block.props.content, activeLocale);
+        const doc = resolution.value;
         const firstP = doc?.content?.find((node) => node.type === 'paragraph');
         const textSnippet = firstP?.content?.map((t) => t.text).join('') || '';
         return (
-          <p className="text-xs text-admin-text-dim line-clamp-2 leading-relaxed">
-            {textSnippet || <em className="text-admin-text-faint">Nội dung văn bản trống...</em>}
-          </p>
+          <div className="flex items-center gap-2">
+            <p className="text-xs text-admin-text-dim line-clamp-2 leading-relaxed">
+              {textSnippet || <em className="text-admin-text-faint">Nội dung văn bản trống...</em>}
+            </p>
+            {resolution.locale && resolution.locale !== activeLocale && (
+              <span className="shrink-0 text-[10px] px-1.5 rounded bg-admin-line text-admin-text-faint font-mono">
+                fallback: {resolution.locale.toUpperCase()}
+              </span>
+            )}
+          </div>
         );
       }
       case 'quote': {
@@ -292,6 +300,7 @@ export function BlockCard({
                 : 'text-amber-700 bg-amber-100 hover:bg-amber-200'
             }`}
             title={isVisibleInLocale ? `Ẩn khối này ở ngôn ngữ ${activeLocale.toUpperCase()}` : `Hiện khối này ở ngôn ngữ ${activeLocale.toUpperCase()}`}
+            aria-label={isVisibleInLocale ? `Ẩn khối ở ${activeLocale.toUpperCase()}` : `Hiện khối ở ${activeLocale.toUpperCase()}`}
           >
             {isVisibleInLocale ? <Eye size={15} /> : <EyeOff size={15} />}
           </button>
@@ -303,6 +312,7 @@ export function BlockCard({
             onClick={() => onMoveUp(index)}
             className="p-1.5 rounded-lg text-admin-text-faint hover:text-admin-text hover:bg-admin-line disabled:opacity-30 disabled:hover:bg-transparent disabled:cursor-not-allowed transition-colors"
             title="Di chuyển lên"
+            aria-label="Di chuyển khối lên"
           >
             <ChevronUp size={15} />
           </button>
@@ -314,6 +324,7 @@ export function BlockCard({
             onClick={() => onMoveDown(index)}
             className="p-1.5 rounded-lg text-admin-text-faint hover:text-admin-text hover:bg-admin-line disabled:opacity-30 disabled:hover:bg-transparent disabled:cursor-not-allowed transition-colors"
             title="Di chuyển xuống"
+            aria-label="Di chuyển khối xuống"
           >
             <ChevronDown size={15} />
           </button>
@@ -324,6 +335,7 @@ export function BlockCard({
             onClick={() => onDuplicate(block.id)}
             className="p-1.5 rounded-lg text-admin-text-faint hover:text-admin-text hover:bg-admin-line transition-colors"
             title="Nhân bản khối này"
+            aria-label="Nhân bản khối"
           >
             <Copy size={15} />
           </button>
@@ -334,6 +346,7 @@ export function BlockCard({
             onClick={() => onDelete(block.id)}
             className="p-1.5 rounded-lg text-admin-text-faint hover:text-red-600 hover:bg-red-50 transition-colors"
             title="Xóa khối"
+            aria-label="Xóa khối"
           >
             <Trash2 size={15} />
           </button>

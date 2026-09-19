@@ -11,6 +11,11 @@ export interface RichTextInspectorProps {
 
 export function RichTextInspector({ props, activeLocale, onChange }: RichTextInspectorProps) {
   const currentDoc = props.content?.[activeLocale];
+  const isPlainParagraphDocument = !currentDoc || currentDoc.content.every(
+    (node) => node.type === 'paragraph' && (node.content || []).every(
+      (child) => child.type === 'text' && !child.marks?.length && !child.content?.length,
+    ),
+  );
 
   // Extract raw text from doc
   const getRawText = (doc?: RichTextDocument) => {
@@ -64,9 +69,16 @@ export function RichTextInspector({ props, activeLocale, onChange }: RichTextIns
         rows={6}
         value={rawText}
         onChange={(e) => handleTextChange(e.target.value)}
+        disabled={!isPlainParagraphDocument}
         placeholder={`Nhập các đoạn văn bản bằng tiếng ${activeLocale.toUpperCase()} (phân cách bằng 2 lần Enter)...`}
         className="w-full px-3.5 py-2.5 text-xs leading-relaxed bg-admin-panel border border-admin-line rounded-xl text-admin-text focus:outline-none focus:border-admin-gold focus:ring-1 focus:ring-admin-gold/30 font-sans"
       />
+
+      {!isPlainParagraphDocument && (
+        <p role="status" className="text-[11px] text-amber-700">
+          Nội dung này có định dạng hoặc danh sách. Trình sửa văn bản đơn giản được khóa để tránh làm mất cấu trúc AST.
+        </p>
+      )}
 
       <div className="p-3 rounded-xl bg-admin-panel-2 border border-admin-line text-[11px] text-admin-text-dim space-y-1">
         <p className="font-semibold text-admin-text">Cấu trúc AST RichText chuẩn hóa:</p>

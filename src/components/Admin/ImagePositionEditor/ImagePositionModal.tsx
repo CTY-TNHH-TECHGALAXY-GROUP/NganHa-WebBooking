@@ -43,6 +43,10 @@ export function ImagePositionModal({
   });
 
   const frameRef = useRef<HTMLDivElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
   const isDragging = useRef(false);
   const titleId = useId();
 
@@ -58,15 +62,38 @@ export function ImagePositionModal({
     }
   }, [isOpen, initialFocalPoint, initialZoom]);
 
-  // Keyboard accessibility
+  // Keyboard accessibility: focus entry/return, Escape, and focus containment.
   useEffect(() => {
     if (!isOpen) return;
+    const previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const frame = window.requestAnimationFrame(() => closeButtonRef.current?.focus());
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        onCloseRef.current();
+        return;
+      }
+      if (e.key !== 'Tab' || !dialogRef.current) return;
+      const focusable = Array.from(dialogRef.current.querySelectorAll<HTMLElement>(
+        'button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])',
+      )).filter((element) => element.getClientRects().length > 0);
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (!dialogRef.current.contains(document.activeElement)
+        || (e.shiftKey && document.activeElement === first)
+        || (!e.shiftKey && document.activeElement === last)) {
+        e.preventDefault();
+        (e.shiftKey ? last : first).focus();
+      }
     };
     window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, onClose]);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener('keydown', handleKeyDown);
+      previousFocus?.focus();
+    };
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -98,7 +125,9 @@ export function ImagePositionModal({
   const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
     if (isDragging.current) {
       isDragging.current = false;
-      e.currentTarget.releasePointerCapture(e.pointerId);
+      if (e.currentTarget.hasPointerCapture(e.pointerId)) {
+        e.currentTarget.releasePointerCapture(e.pointerId);
+      }
     }
   };
 
@@ -150,7 +179,7 @@ export function ImagePositionModal({
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <div className="bg-admin-panel border border-admin-line-strong rounded-2xl w-full max-w-4xl max-h-[92vh] flex flex-col shadow-2xl overflow-hidden">
+      <div ref={dialogRef} className="bg-admin-panel border border-admin-line-strong rounded-2xl w-full max-w-4xl max-h-[92vh] flex flex-col shadow-2xl overflow-hidden">
         {/* Header */}
         <div className="px-6 py-4 border-b border-admin-line flex items-center justify-between bg-admin-panel">
           <div>
@@ -162,6 +191,7 @@ export function ImagePositionModal({
             </p>
           </div>
           <button
+            ref={closeButtonRef}
             type="button"
             onClick={onClose}
             className="p-2 rounded-xl text-admin-text-faint hover:text-admin-text hover:bg-admin-line transition-colors"
@@ -186,6 +216,7 @@ export function ImagePositionModal({
               onPointerDown={handlePointerDown}
               onPointerMove={handlePointerMove}
               onPointerUp={handlePointerUp}
+              onPointerCancel={handlePointerUp}
               className={`relative rounded-xl overflow-hidden cursor-crosshair select-none touch-none shadow-2xl border-2 border-dashed border-admin-gold/60 ${getAspectClass(
                 aspectRatio,
               )}`}
@@ -198,7 +229,6 @@ export function ImagePositionModal({
                 style={{
                   objectPosition: `${focal.x}% ${focal.y}%`,
                   transform: `scale(${zoom})`,
-                  transformOrigin: `${focal.x}% ${focal.y}%`,
                 }}
               />
 

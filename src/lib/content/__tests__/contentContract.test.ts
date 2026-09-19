@@ -68,6 +68,16 @@ test('rejects unsafe URLs and out-of-range composition values', () => {
     type: 'video',
     props: { source: { type: 'external', provider: 'youtube', url: 'https://video.example.com/watch?v=bad' } },
   }).success, false);
+  assert.equal(videoBlockSchema.safeParse({
+    id: 'video-2',
+    type: 'video',
+    props: { source: { type: 'external', provider: 'vimeo', url: 'https://www.youtube.com/watch?v=bad' } },
+  }).success, false);
+  assert.equal(videoBlockSchema.safeParse({
+    id: 'video-3',
+    type: 'video',
+    props: { source: { type: 'external', provider: 'youtube', url: 'not-a-url' } },
+  }).success, false);
 });
 
 test('rejects duplicate IDs and excessive block counts', () => {

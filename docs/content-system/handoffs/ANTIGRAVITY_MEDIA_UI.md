@@ -39,7 +39,7 @@ This handoff documents the completion of the Admin UI preparation layer for the 
 5. `src/components/Admin/ImagePositionEditor/index.ts`
    - Barrel export.
 6. `src/components/Admin/ContentEditor/initialMockDocument.ts`
-   - Realistic multi-block `ContentDocument` for Oria Spa (`heading`, `image`, `richText`, `quote`, `cta`, `divider`) with multilingual values across all 5 locales (`vi`, `en`, `cn`, `jp`, `kr`).
+   - Realistic multi-block `ContentDocument` for Oria Spa (`heading`, `image`, `richText`, `quote`, `cta`, `divider`) with multilingual values and contract-valid sparse locale fields across `vi`, `en`, `cn`, `jp`, and `kr`.
 7. `src/components/Admin/ContentEditor/BlockToolbar.tsx`
    - Inserter toolbar containing strictly the 8 frozen V1 block types:
      `heading`, `richText`, `image`, `gallery`, `quote`, `video`, `cta`, `divider`.
@@ -105,7 +105,7 @@ This handoff documents the completion of the Admin UI preparation layer for the 
   - Left column (3 cols): Block Toolbar (sticky).
   - Center column (5 cols): Ordered block list canvas.
   - Right column (4 cols): Selected block inspector (sticky).
-- **Mobile/Tablet Layout:** Responsive tab bar allowing instant switching between:
+- **Mobile/Tablet/1024px Layout:** Responsive tab bar allowing instant switching between:
   - "Thêm khối" (Toolbar)
   - "Khối (#)" (Canvas)
   - "Cài đặt" (Inspector)
@@ -124,7 +124,7 @@ This handoff documents the completion of the Admin UI preparation layer for the 
 - **Canonical Boundary:** Always resolves and persists `mediaId: string` into block properties. Does NOT make public URLs canonical or persist resolved CDN URLs into the `ContentDocument`.
 - **Search & Filters:** Real-time client-side search by title, alt text, or mediaId. Filter by type (`image`, `video`) and storage source (`supabase`, `gdrive`, `external`).
 - **Inspector Panel:** Full asset metadata preview (width, height, file size, MIME type, default focal point, copyable mediaId).
-- **Accessibility:** ARIA dialog role, `aria-modal`, keyboard `Escape` dismissal, focus-reachable inputs and buttons.
+- **Accessibility:** ARIA dialog role, `aria-modal`, labelled dialogs, keyboard `Escape` dismissal, focus entry/containment/return, and focus-reachable inputs and buttons.
 
 ### D. Image Position Editor (`ImagePositionModal.tsx`)
 - **Normalized Coordinates:** Saves only `focalPoint: { x: number, y: number }` (`0..100%`) and `zoom: number` (`1.0..2.0` in `0.05` increments).
@@ -151,8 +151,8 @@ Zero duplicate types or validation schemas were created.
 ## 5. Mock-Only Areas & Deliberate Deferrals
 
 1. **Persistence:** State changes live in React local state (`useState`). "Lưu Mock" persists to memory only; database migrations, drafts, revisions, and publish endpoints remain deferred to Phase 6.
-2. **Drag-and-Drop:** Block reordering is fully functional via bulletproof Move Up / Move Down buttons. `@dnd-kit` is prepared visually (`GripVertical` handle) but deferred to Phase 4 to maintain bundle simplicity.
-3. **Rich Text WYSIWYG:** Structured paragraph AST editing is provided via standard text area splitting. Tiptap / ProseMirror integration is deferred to Phase 4.
+2. **Drag-and-Drop:** Block reordering is functional via Move Up / Move Down buttons. `@dnd-kit` is prepared visually (`GripVertical` handle) but deferred to Phase 4 to maintain bundle simplicity.
+3. **Rich Text WYSIWYG:** Plain paragraph AST editing is provided via standard text area splitting. Documents containing marks, lists, or other structured nodes are read-only in this preparation UI to prevent destructive flattening. Tiptap / ProseMirror integration is deferred to Phase 4.
 4. **Media Upload Pipeline:** Media assets are selected from the mock library. Media upload backend and storage migrations remain owned by Codex Phase 3.
 
 ---
@@ -163,7 +163,7 @@ Zero duplicate types or validation schemas were created.
 |---|---|---|---|
 | **TypeScript Typecheck** | `npx tsc --noEmit` | **PASS (0 errors)** | Strict types across all components |
 | **ESLint Check** | `npx eslint <changed paths>` | **PASS (0 errors)** | Zero syntax or unused variable errors |
-| **Contract Tests** | `node --test src/lib/content/__tests__/contentContract.test.ts` | **PASS (7/7)** | Core Phase 1 contract remains 100% intact |
+| **Contract Tests** | `node --experimental-strip-types --test src/lib/content/__tests__/contentContract.test.ts` | **PASS (7/7)** | Core Phase 1 contract remains compatible; the cross-review added provider/URL agreement validation without changing the contract shape |
 | **Git Diff Check** | `git diff --check` | **PASS (0 issues)** | Clean whitespace, no merge artifacts |
 | **Next.js Build** | `npm run build` | **ENVIRONMENTAL ERROR** | Pre-existing missing Supabase keys on `/admin/login` prerender. All content components compiled cleanly. |
 
@@ -182,3 +182,17 @@ Zero duplicate types or validation schemas were created.
 1. **Phase 2:** Codex proceeds with Saigon Coffee Article Pilot (`feat/content-renderer`).
 2. **Phase 3:** Codex implements `MarketingMedia` core schema upgrade and media resolver API; Antigravity connects `MediaPickerModal` to the real API.
 3. **Phase 4:** Antigravity connects `@dnd-kit` to the prepared `BlockCard` drag handles.
+
+---
+
+## 9. Codex Cross-Review Corrections
+
+The integration review on `review/antigravity-media-ui` applied narrow
+correctness and accessibility corrections. It added schema-gated mock saves,
+collision-resistant IDs, safe handling for structured RichText, media type
+confirmation guards, native eight-type between-block insertion, matching image
+preview/render transforms, viewport-safe picker layout, modal focus management,
+and the 1024px Admin-shell breakpoint correction. The canonical external video
+schema now rejects provider/URL host mismatches. No contract shape, dependency,
+database, persistence, booking, cart, checkout, pricing, payment, or auth
+business behavior changed.

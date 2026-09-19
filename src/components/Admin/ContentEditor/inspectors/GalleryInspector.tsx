@@ -126,6 +126,7 @@ export function GalleryInspector({
                     onClick={() => handleRemoveItem(idx)}
                     className="p-1 rounded text-admin-text-faint hover:text-red-600 transition-colors"
                     title="Xóa khỏi gallery"
+                    aria-label={`Xóa ảnh ${idx + 1} khỏi gallery`}
                   >
                     <Trash2 size={14} />
                   </button>
