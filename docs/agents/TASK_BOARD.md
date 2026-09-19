@@ -1,8 +1,8 @@
 # Content Builder Multi-Agent Task Board
 
-**Project:** NganHa-WebBooking — Dynamic Content Block System  
-**Current Branch:** `feat/content-renderer`
-**Last Updated:** 2026-09-18  
+**Project:** NganHa-WebBooking — Dynamic Content Block System
+**Current Branch:** `feat/content-media-ui`
+**Last Updated:** 2026-09-19
 
 ---
 
@@ -17,6 +17,11 @@
   - **Branch:** `feat/content-renderer`
   - **Deliverable:** Canonical types, Zod validation, parser, locale resolver, media boundary, registry, ContentRenderer, eight core renderers, focused tests, and Phase 1 handoff.
   - **Status:** Completed. Phase 2 intentionally not started.
+- [x] **CONTENT-005 (Preparation): Media Picker Modal UI & Content Builder Admin Shell Foundation**
+  - **Owner:** Antigravity
+  - **Branch:** `feat/content-media-ui`
+  - **Deliverable:** `<MediaPickerModal />`, typed mock assets, `<ImagePositionModal />` (focal drag & zoom), 3-panel `<ContentEditor />` admin shell, 8 frozen block toolbar items, ordered block list, card actions, block inspectors, direct route `/admin/posts/builder`, and handoff `ANTIGRAVITY_MEDIA_UI.md`.
+  - **Status:** Completed UI preparation. Phase 2 pilot, production persistence, and @dnd-kit integration remain deferred.
 
 ---
 
@@ -29,18 +34,14 @@
   - **Owner:** Codex
   - **Branch:** `feat/content-media-core`
   - **Scope:** Migration for `MarketingMedia` metadata (`width`, `height`, `mime_type`, `file_size`, `alt_i18n`), server media resolver by `mediaId`, API routes.
-- [ ] **CONTENT-005: Media Picker Modal UI**
-  - **Owner:** Antigravity
-  - **Branch:** `feat/content-media-ui`
-  - **Scope:** Reusable `<MediaPickerModal />`, search, type filter, upload integration, selection callback using `MediaAsset` contract.
-- [ ] **CONTENT-006: Admin Block Editor MVP**
+- [ ] **CONTENT-006: Admin Block Editor MVP (Production DnD & Persistence)**
   - **Owner:** Antigravity
   - **Branch:** `feat/content-editor`
-  - **Scope:** Block list, add/insert block between items, delete, duplicate, move up/down, `@dnd-kit` drag-and-drop, multilingual tabs.
-- [ ] **CONTENT-007: Image Position Editor (Focal Drag & Frame Controls)**
+  - **Scope:** Connect Admin UI shell to production API routes, `@dnd-kit` drag-and-drop, full undo/redo.
+- [ ] **CONTENT-007: Image Position Editor Production Integration**
   - **Owner:** Antigravity
   - **Branch:** `feat/image-position`
-  - **Scope:** Fixed frame, pointer/touch image drag, normalized percentage output (`x`, `y` 0-100), safe zoom (1.0-2.0), reset control.
+  - **Scope:** Wire ImagePositionModal into production media resolver and draft persistence pipeline.
 - [ ] **CONTENT-008: Draft / Preview / Publish / Version History**
   - **Owner:** Codex
   - **Branch:** `feat/content-publishing`
@@ -58,6 +59,6 @@
 
 ## 3. COORDINATION NOTE
 
-Phase 2 and later tasks remain eligible but are intentionally not started by
-this implementation. Any future work must use the frozen contract and the
+Phase 2 and later production persistence tasks remain eligible but are intentionally not started by
+this UI preparation implementation. Any future work must use the frozen contract and the
 existing ownership/file-lock rules.
