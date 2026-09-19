@@ -24,6 +24,17 @@ Phase 1 renderer, type, schema, and content utility files now exist under the
 Codex-owned paths. Do not casually move them into shared booking, legacy page,
 or Admin UI paths; future changes must preserve the frozen contract boundary.
 
+Phase 2 adds the isolated pilot paths below under Codex ownership:
+
+```text
+src/content/saigonCoffeePilot.ts
+src/components/ContentPilot/**
+src/app/content-pilot/**
+```
+
+The pilot route is fixture-backed, development-only, and noindex. It does not
+authorize a public `/blogs` migration or production media/publishing work.
+
 ### Antigravity Exclusive Lock
 Only Antigravity may modify, add, or delete files in these paths during UI implementation phases.
 
