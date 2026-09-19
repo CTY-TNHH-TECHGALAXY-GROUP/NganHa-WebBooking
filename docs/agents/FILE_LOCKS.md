@@ -1,8 +1,8 @@
 # File Locks & Scope Isolation Registry
 
-**Project:** NganHa-WebBooking — Dynamic Content Block System  
-**Framework:** Codex & Antigravity Dual-Agent Model  
-**Last Updated:** 2026-09-18  
+**Project:** NganHa-WebBooking — Dynamic Content Block System
+**Framework:** Codex & Antigravity Dual-Agent Model
+**Last Updated:** 2026-09-19
 
 ---
 
@@ -28,11 +28,15 @@ or Admin UI paths; future changes must preserve the frozen contract boundary.
 Only Antigravity may modify, add, or delete files in these paths during UI implementation phases.
 
 ```text
-src/components/admin/ContentEditor/**
-src/components/admin/MediaPicker/**
-src/components/admin/ImagePositionEditor/**
+src/components/Admin/ContentEditor/**
+src/components/Admin/MediaPicker/**
+src/components/Admin/ImagePositionEditor/**
 src/app/admin/posts/**
 ```
+
+The Content Builder UI preparation layer now exists under these paths on
+`feat/content-media-ui`. All created components consume canonical Phase 1 types
+and adhere strictly to the frozen contract without mutating Codex core.
 
 ### Shared / Protected Files (Mutual Sign-off Required)
 Both agents must verify before modifying:
