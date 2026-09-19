@@ -1,9 +1,9 @@
 # Content System Implementation — Phase Status
 
 **Project:** NganHa-WebBooking — Dynamic Content Block System  
-**Current Phase:** Phase 1 complete — Phase 2 not started
-**Overall Project Progress:** 15%
-**Last Updated:** 2026-09-18  
+**Current Phase:** Phase 2 complete — Phase 3 not started
+**Overall Project Progress:** 25%
+**Last Updated:** 2026-09-19
 
 ---
 
@@ -13,7 +13,7 @@
 |---|---|---|---|---:|---|
 | **Phase 0** | **Architecture Verification & Contract Definition** | **Antigravity / Codex** | **COMPLETED** | **5%** | `review/content-contract-codex` |
 | **Phase 1** | Core Renderer Foundation & Block Registry | Codex | **COMPLETED** | 15% | `feat/content-renderer` |
-| **Phase 2** | Saigon Coffee Renderer Pilot (Visual Parity) | Codex | READY | 25% | `feat/content-renderer` |
+| **Phase 2** | Saigon Coffee Renderer Pilot (Visual Parity) | Codex | **COMPLETED** | 25% | `feat/saigon-coffee-pilot` |
 | **Phase 3** | Media Core & Media Picker Modal | Codex / Antigravity | READY | 40% | `feat/content-media-core` & `feat/content-media-ui` |
 | **Phase 4** | Admin Block Editor MVP (DnD, Insert, Edit) | Antigravity | READY | 60% | `feat/content-editor` |
 | **Phase 5** | Image Position Editor (Fixed Frame, Focal Drag) | Antigravity | READY | 70% | `feat/image-position` |
@@ -63,4 +63,16 @@
 - [x] Media resolver interface and block-instance image composition mapping.
 - [x] Focused contract tests and Phase 1 handoff created.
 
-Phase 2 has not started. Database migrations, draft/publish workflows, Admin Block Editor, legacy migrations, and booking/business logic remain untouched.
+## 6. Phase 2 Result
+
+- [x] Existing `SaigonCoffeeArticle.tsx` structure, content, styles, assets, route usage, localization, and SEO boundary audited.
+- [x] Typed fixture at `src/content/saigonCoffeePilot.ts` passes the canonical V1 schema and defensive parser.
+- [x] VI and EN share one block tree; CN, JP, and KR use requested locale -> EN -> VI fallback.
+- [x] Legacy media is referenced by `mediaId` in the document and resolved through a typed pilot-only resolver with verified intrinsic dimensions.
+- [x] Canonical server-compatible `ContentRenderer` renders the fixture on a development-only, noindex route.
+- [x] Pilot screenshots reviewed at 1440px, 768px, and 390px against audited legacy markup/CSS; no routed legacy A/B page exists in the baseline.
+- [x] Legacy source and `/blogs` public behavior remain unchanged; the dedicated component remains unmounted as it was before Phase 2.
+
+Phase 3 has not started. Database migrations, production media persistence,
+draft/publish workflows, public route migration, and booking/business logic
+remain untouched.

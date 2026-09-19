@@ -1,7 +1,7 @@
 # Content Builder Multi-Agent Task Board
 
 **Project:** NganHa-WebBooking — Dynamic Content Block System
-**Current Branch:** `feat/content-media-ui`
+**Current Branch:** `feat/saigon-coffee-pilot`
 **Last Updated:** 2026-09-19
 
 ---
@@ -21,15 +21,16 @@
   - **Owner:** Antigravity
   - **Branch:** `feat/content-media-ui`
   - **Deliverable:** `<MediaPickerModal />`, typed mock assets, `<ImagePositionModal />` (focal drag & zoom), 3-panel `<ContentEditor />` admin shell, 8 frozen block toolbar items, ordered block list, card actions, block inspectors, direct route `/admin/posts/builder`, and handoff `ANTIGRAVITY_MEDIA_UI.md`.
-  - **Status:** Completed UI preparation. Phase 2 pilot, production persistence, and @dnd-kit integration remain deferred.
+  - **Status:** Completed UI preparation. Production persistence and @dnd-kit integration remain deferred.
+- [x] **CONTENT-003: Saigon Coffee Pilot (Visual Parity)**
+  - **Owner:** Codex
+  - **Branch:** `feat/saigon-coffee-pilot`
+  - **Deliverable:** Canonical V1 fixture, typed pilot media resolver, development-only SSR comparison route, responsive parity styling, focused tests, and `CODEX_PHASE_2_SAIGON_COFFEE.md`.
+  - **Status:** Completed with documented minor V1 layout differences. Legacy source and public `/blogs` remain unchanged; the dedicated legacy component was already unmounted at baseline.
 
 ---
 
-## 2. READY (Phase 1 complete; Do Not Start Automatically)
-- [ ] **CONTENT-003: Saigon Coffee Pilot (Visual Parity)**
-  - **Owner:** Codex
-  - **Branch:** `feat/content-renderer`
-  - **Scope:** Convert `SaigonCoffeeArticle.tsx` to `ContentDocument` seeded fixture, verify visual parity, SSR, CLS, and responsive layout.
+## 2. READY (Phase 2 complete; Do Not Start Automatically)
 - [ ] **CONTENT-004: Media Core & MarketingMedia Upgrade**
   - **Owner:** Codex
   - **Branch:** `feat/content-media-core`
@@ -59,6 +60,6 @@
 
 ## 3. COORDINATION NOTE
 
-Phase 2 and later production persistence tasks remain eligible but are intentionally not started by
-this UI preparation implementation. Any future work must use the frozen contract and the
-existing ownership/file-lock rules.
+Phase 2 is complete. Production persistence and later phases remain eligible but
+must not start automatically. Any future work must use the frozen contract and
+the existing ownership/file-lock rules.
