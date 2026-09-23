@@ -96,9 +96,9 @@ await test('CF09', 'Reject invalid quantity and recover forged cart prices', asy
 // Inspect schema metadata before any successful booking write; do not run migrations.
 await test('CF10', 'Booking persistence and confirmation email readiness', async () => {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const key = process.env.SUPABASE_SECRET_KEY;
   assert.ok(url && key, 'Missing local DB configuration for read-only readiness check');
-  const r = await fetch(`${url}/rest/v1/`, { headers: { apikey: key, Authorization: `Bearer ${key}`, Accept: 'application/openapi+json' }, signal: AbortSignal.timeout(20000) });
+  const r = await fetch(`${url}/rest/v1/`, { headers: { apikey: key, Accept: 'application/openapi+json' }, signal: AbortSignal.timeout(20000) });
   assert.equal(r.status, 200);
   const schema = await r.json();
   const properties = schema.definitions?.Bookings?.properties || {};

@@ -391,7 +391,7 @@ export function validateCatalogOptions(options: NormalizedOption, service: Catal
 }
 
 function quoteSecret(): string | null {
-  return process.env.BOOKING_QUOTE_SECRET || process.env.SUPABASE_SERVICE_ROLE_KEY || null;
+  return process.env.BOOKING_QUOTE_SECRET || process.env.SUPABASE_SECRET_KEY || null;
 }
 
 export function catalogDigest(catalog: CatalogService[]): string {

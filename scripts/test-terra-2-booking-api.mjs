@@ -113,6 +113,9 @@ const tests = [
     assert.deepEqual(verifyQuote(token, cartIntentFingerprint([{ id: 'NHS1002', quantity: 1, options: {} }]), pricing.catalogDigest), { ok: true });
     assert.equal(verifyQuote(token, 'different', pricing.catalogDigest).ok, false);
     assert.equal(verifyQuote(token, cartIntentFingerprint([{ id: 'NHS1002', quantity: 1, options: {} }]), 'changed').ok, false);
+    delete process.env.BOOKING_QUOTE_SECRET;
+    process.env.SUPABASE_SECRET_KEY = 'mock-only-fallback';
+    assert.ok(createQuote('fallback', pricing));
   }],
   ['API13 mail failure does not turn committed booking into API failure', () => {
     assert.match(routeSource, /emailStatus/);

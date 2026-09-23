@@ -22,7 +22,7 @@ Object.entries(env).forEach(([k, v]) => {
 import { POST as bookingHandler } from '../src/app/api/bookings/route.ts';
 
 const SUPABASE_URL = env.NEXT_PUBLIC_SUPABASE_URL;
-const SUPABASE_KEY = env.SUPABASE_SERVICE_ROLE_KEY;
+const SUPABASE_KEY = env.SUPABASE_SECRET_KEY;
 
 async function runRealTest() {
   console.log('══════════════════════════════════════════════════════════════');
@@ -152,12 +152,12 @@ async function runRealTest() {
 
   // Đơn 1
   const check1Res = await fetch(`${SUPABASE_URL}/rest/v1/Bookings?id=eq.${bookingId1}&select=*`, {
-    headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` },
+    headers: { apikey: SUPABASE_KEY },
   });
   const [b1] = await check1Res.json();
 
   const items1Res = await fetch(`${SUPABASE_URL}/rest/v1/BookingItems?bookingId=eq.${bookingId1}&select=*`, {
-    headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` },
+    headers: { apikey: SUPABASE_KEY },
   });
   const items1 = await items1Res.json();
 
@@ -172,12 +172,12 @@ async function runRealTest() {
 
   // Đơn 2
   const check2Res = await fetch(`${SUPABASE_URL}/rest/v1/Bookings?id=eq.${bookingId2}&select=*`, {
-    headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` },
+    headers: { apikey: SUPABASE_KEY },
   });
   const [b2] = await check2Res.json();
 
   const items2Res = await fetch(`${SUPABASE_URL}/rest/v1/BookingItems?bookingId=eq.${bookingId2}&select=*`, {
-    headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` },
+    headers: { apikey: SUPABASE_KEY },
   });
   const items2 = await items2Res.json();
 

@@ -30,7 +30,7 @@ const getMenuTypeFromId = (id: string): 'standard' | 'vip' => {
 
 export const GET = async () => {
   try {
-    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SECRET_KEY) {
       console.error('[API /services] Missing Supabase env vars; catalog is unavailable.');
       return NextResponse.json([], { status: 503 });
     }

@@ -93,7 +93,7 @@ function harness(scenario = {}) {
   };
   const exports = {};
   const sandbox = { exports, Buffer, Request, Response, setTimeout, console: { error() {}, warn() {}, info() {} },
-    process: { env: { NEXT_PUBLIC_SUPABASE_URL: 'https://test.invalid', SUPABASE_SERVICE_ROLE_KEY: 'mock' } },
+    process: { env: { NEXT_PUBLIC_SUPABASE_URL: 'https://test.invalid', SUPABASE_SECRET_KEY: 'mock' } },
     require(name) {
       if (name === 'node:crypto') return { createHash };
       if (name === 'next/server') return { NextResponse: { json: (value, options) => Response.json(value, options) } };

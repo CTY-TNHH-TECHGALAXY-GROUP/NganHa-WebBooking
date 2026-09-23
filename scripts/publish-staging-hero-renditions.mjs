@@ -6,9 +6,9 @@ import assert from 'node:assert/strict';
 // Explicitly scoped to the staging project/bucket authorized by the owner.
 const base = 'https://adzfohfdindovfcpaizb.supabase.co';
 assert.equal(process.env.NEXT_PUBLIC_SUPABASE_URL, base);
-const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const key = process.env.SUPABASE_SECRET_KEY;
 assert.ok(key, 'Missing service credentials');
-const headers = { apikey: key, Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' };
+const headers = { apikey: key, 'Content-Type': 'application/json' };
 const destination = process.argv.find(arg => arg.startsWith('--evidence='))?.slice(11);
 assert.ok(destination, 'Require --evidence=<new directory>');
 fs.mkdirSync(destination, { recursive: false, mode: 0o700 });

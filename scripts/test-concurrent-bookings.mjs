@@ -22,7 +22,7 @@ Object.entries(env).forEach(([k, v]) => {
 import { POST as bookingHandler } from '../src/app/api/bookings/route.ts';
 
 const SUPABASE_URL = env.NEXT_PUBLIC_SUPABASE_URL;
-const SUPABASE_KEY = env.SUPABASE_SERVICE_ROLE_KEY;
+const SUPABASE_KEY = env.SUPABASE_SECRET_KEY;
 
 async function runConcurrentTest() {
   console.log('══════════════════════════════════════════════════════════════');
@@ -132,7 +132,7 @@ async function runConcurrentTest() {
 
   // Kiểm tra trong Supabase
   const checkRes = await fetch(`${SUPABASE_URL}/rest/v1/Bookings?id=in.(${bookingIdA},${bookingIdB})&select=id,billCode,customerName,customerGender,totalAmount`, {
-    headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` },
+    headers: { apikey: SUPABASE_KEY },
   });
   const dbRecords = await checkRes.json();
   assert.strictEqual(dbRecords.length, 2, 'Cả hai đơn phải tồn tại độc lập trong bảng Bookings của Supabase');

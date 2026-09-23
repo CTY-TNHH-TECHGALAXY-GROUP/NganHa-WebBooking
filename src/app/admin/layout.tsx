@@ -56,7 +56,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
     try {
       const supabase = createBrowserClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+        process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!
       );
 
       const {
@@ -121,7 +121,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
     try {
       const supabase = createBrowserClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
       );
       await supabase.auth.signOut();
     } catch (err) {

@@ -851,7 +851,7 @@ export async function POST(request: Request) {
   // Preserve compatibility with older clients while keeping retries stable for
   // the current checkout, which supplies an explicit request key.
   const finalKey = booking.idempotencyKey || `hash_${booking.intentFingerprint.slice(0, 48)}`;
-  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) return jsonError('BOOKING_TEMPORARILY_UNAVAILABLE', 'Booking is temporarily unavailable. Please try again later.', 503);
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SECRET_KEY) return jsonError('BOOKING_TEMPORARILY_UNAVAILABLE', 'Booking is temporarily unavailable. Please try again later.', 503);
   const supabase = getSupabaseAdmin();
 
   const replay = await findReplay(supabase, finalKey, { waitForItems: true });

@@ -23,7 +23,7 @@ writeFileSync(releaseManifest, `${JSON.stringify(release, null, 2)}\n`);
 const releaseBytes = readFileSync(releaseManifest);
 writeFileSync(join(fixtureRoot, '.env.local'), [
   'NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:9',
-  'SUPABASE_SERVICE_ROLE_KEY=test-service-role-key',
+  'SUPABASE_SECRET_KEY=test-service-role-key',
 ].join('\n'));
 
 const run = (argumentsList) => spawnSync(process.execPath, [migration, ...argumentsList], {
