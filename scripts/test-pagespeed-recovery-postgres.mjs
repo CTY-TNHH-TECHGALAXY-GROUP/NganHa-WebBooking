@@ -79,7 +79,7 @@ async function cli(name,mode='apply',release) {
  const args=['scripts/migrate-pagespeed-renditions.mjs',`--mode=${mode}`,'--config=brand_history',`--run-id=recovery-${name}-${stamp}`,`--run-dir=${runDir}`,`--backup-dir=${backupDir}`];
  if(release)args.push(`--release-manifest=${release}`);
  let stdout='',stderr='';
- child=spawn(process.execPath,args,{cwd:root,env:{...process.env,NEXT_PUBLIC_SUPABASE_URL:origin,SUPABASE_SERVICE_ROLE_KEY:'fixture-service-role-key'}});
+ child=spawn(process.execPath,args,{cwd:root,env:{...process.env,NEXT_PUBLIC_SUPABASE_URL:origin,SUPABASE_SECRET_KEY:'fixture-service-role-key'}});
  child.stdout.on('data',data=>stdout+=data);child.stderr.on('data',data=>stderr+=data);
  const result=await new Promise(resolve=>child.on('close',(code,signal)=>resolve({code,signal})));
  fs.mkdirSync(runDir,{recursive:true});fs.writeFileSync(path.join(runDir,'process.json'),JSON.stringify({args,...result,stdout,stderr},null,2));

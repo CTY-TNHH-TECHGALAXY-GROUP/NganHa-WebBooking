@@ -311,8 +311,8 @@ async function main() {
     throw new Error(`${mode} requires --config=brand_history or --config=about_story_content; one document per release avoids cross-row partial commits`);
   }
   if (mode === 'apply') assertDurablePrivateBackupDir();
-  if (!env.NEXT_PUBLIC_SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) throw new Error('Supabase env vars are required for config inventory');
-  const supabase = createClient(env.NEXT_PUBLIC_SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY, { auth: { persistSession: false, autoRefreshToken: false } });
+  if (!env.NEXT_PUBLIC_SUPABASE_URL || !env.SUPABASE_SECRET_KEY) throw new Error('Supabase env vars are required for config inventory');
+  const supabase = createClient(env.NEXT_PUBLIC_SUPABASE_URL, env.SUPABASE_SECRET_KEY, { auth: { persistSession: false, autoRefreshToken: false } });
   initializeRunArtifacts();
 
   // Rollback is intentionally dispatched before any inventory, image build,

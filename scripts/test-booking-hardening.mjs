@@ -16,7 +16,7 @@ const env = fs.readFileSync(envPath, 'utf8').split('\n').reduce((acc, line) => {
 }, {});
 
 const SUPABASE_URL = env.NEXT_PUBLIC_SUPABASE_URL;
-const SUPABASE_KEY = env.SUPABASE_SERVICE_ROLE_KEY;
+const SUPABASE_KEY = env.SUPABASE_SECRET_KEY;
 
 console.log('────────────────────────────────────────────────────────');
 console.log('🧪 RUNNING COMPREHENSIVE BOOKING HARDENING TEST SUITE');
@@ -129,7 +129,6 @@ async function runTests() {
     const res = await fetch(`${SUPABASE_URL}/rest/v1/Services?select=id,nameVN,priceVND,isActive&limit=10`, {
       headers: {
         apikey: SUPABASE_KEY,
-        Authorization: `Bearer ${SUPABASE_KEY}`,
       },
     });
     assert.strictEqual(res.ok, true, `Failed to query Services: ${res.status}`);
@@ -147,7 +146,7 @@ async function runTests() {
   await test('Price Calculation: Server canonical price replaces client priceVND: 0', async () => {
     // Query a real active service from DB
     const svcRes = await fetch(`${SUPABASE_URL}/rest/v1/Services?select=id,priceVND&isActive=eq.true&limit=1`, {
-      headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` },
+      headers: { apikey: SUPABASE_KEY },
     });
     const [realService] = await svcRes.json();
     assert(realService, 'Real active service not found in DB');

@@ -40,7 +40,7 @@ export async function middleware(request: NextRequest) {
   const isAdminApi = pathname === '/api/admin' || pathname.startsWith('/api/admin/');
 
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
 
   // 1. FAIL-CLOSED: If Supabase credentials are missing, never permit access to admin pages or APIs
   if (!supabaseUrl || !supabaseAnonKey) {

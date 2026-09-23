@@ -39,7 +39,7 @@ export async function POST(request: Request) {
   if (!Array.isArray(body.items)) return errorResponse('VALIDATION_ERROR', 'Please provide cart items as an array.', 400, [{ field: 'items', code: 'INVALID_TYPE', message: 'Cart items must be an array.' }]);
   if (body.items.length > MAX_ITEMS) return errorResponse('CART_TOO_LARGE', 'Too many cart items.', 400);
   if (body.items.length === 0) return NextResponse.json({ valid: true, items: [], totalAmountVND: 0, totalAmountUSD: 0, hasPriceChanged: false, unavailableItems: [], quote: null });
-  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) return errorResponse('BOOKING_TEMPORARILY_UNAVAILABLE', 'Pricing is temporarily unavailable. Please try again later.', 503);
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SECRET_KEY) return errorResponse('BOOKING_TEMPORARILY_UNAVAILABLE', 'Pricing is temporarily unavailable. Please try again later.', 503);
 
   const fieldErrors: { field: string; code: string; message: string }[] = [];
   const normalized: { item: NormalizedService; raw: any; index: number }[] = [];

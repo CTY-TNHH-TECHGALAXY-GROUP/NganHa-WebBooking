@@ -20,10 +20,10 @@ const env = fs.readFileSync(envPath, 'utf8').split('\n').reduce((acc, line) => {
 }, {});
 
 process.env.NEXT_PUBLIC_SUPABASE_URL = env.NEXT_PUBLIC_SUPABASE_URL;
-process.env.SUPABASE_SERVICE_ROLE_KEY = env.SUPABASE_SERVICE_ROLE_KEY;
+process.env.SUPABASE_SECRET_KEY = env.SUPABASE_SECRET_KEY;
 
 const SUPABASE_URL = env.NEXT_PUBLIC_SUPABASE_URL;
-const SUPABASE_KEY = env.SUPABASE_SERVICE_ROLE_KEY;
+const SUPABASE_KEY = env.SUPABASE_SECRET_KEY;
 
 console.log('────────────────────────────────────────────────────────');
 console.log('🧪 RUNNING ROUTE HANDLER INTEGRATION TESTS');
@@ -121,7 +121,7 @@ async function testRoute() {
   // 4. Verify Database Records (Bookings & BookingItems & Demographics)
   console.log('Verifying Supabase record persistence...');
   const checkRes = await fetch(`${SUPABASE_URL}/rest/v1/Bookings?id=eq.${createdBookingId}&select=*`, {
-    headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` },
+    headers: { apikey: SUPABASE_KEY },
   });
   const [dbBooking] = await checkRes.json();
   assert(dbBooking, 'Created booking must exist in Supabase');
@@ -131,7 +131,7 @@ async function testRoute() {
 
   // Verify BookingItems in DB
   const itemsRes = await fetch(`${SUPABASE_URL}/rest/v1/BookingItems?bookingId=eq.${createdBookingId}&select=*`, {
-    headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` },
+    headers: { apikey: SUPABASE_KEY },
   });
   const dbItems = await itemsRes.json();
   assert.strictEqual(dbItems.length, 2, 'Should have 2 items (parent service + private room add-on)');
@@ -165,11 +165,11 @@ async function testRoute() {
   // 6. Cleanup Test Booking
   await fetch(`${SUPABASE_URL}/rest/v1/BookingItems?bookingId=eq.${createdBookingId}`, {
     method: 'DELETE',
-    headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` },
+    headers: { apikey: SUPABASE_KEY },
   });
   await fetch(`${SUPABASE_URL}/rest/v1/Bookings?id=eq.${createdBookingId}`, {
     method: 'DELETE',
-    headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` },
+    headers: { apikey: SUPABASE_KEY },
   });
   console.log('🧹 Cleaned up test booking records from Supabase.');
 

@@ -22,7 +22,7 @@ Object.entries(env).forEach(([k, v]) => {
 });
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const SUPABASE_KEY = process.env.SUPABASE_SECRET_KEY;
 
 // Import route handlers directly
 import { POST as repriceHandler } from '../src/app/api/bookings/reprice/route.ts';
@@ -234,7 +234,7 @@ async function runTests() {
         let dbRows = [];
         const checkLegacy = await fetch(
           `${SUPABASE_URL}/rest/v1/Bookings?idLegacy=eq.idemp:${sharedKey}&select=id`,
-          { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } }
+          { headers: { apikey: SUPABASE_KEY } }
         );
         if (checkLegacy.ok) {
           dbRows = await checkLegacy.json();
@@ -242,7 +242,7 @@ async function runTests() {
         if (!dbRows.length) {
           const checkKey = await fetch(
             `${SUPABASE_URL}/rest/v1/Bookings?idempotency_key=eq.${sharedKey}&select=id`,
-            { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } }
+            { headers: { apikey: SUPABASE_KEY } }
           );
           if (checkKey.ok) {
             dbRows = await checkKey.json();
@@ -300,7 +300,7 @@ async function runTests() {
       if (SUPABASE_URL && SUPABASE_KEY) {
         const itemsRes = await fetch(
           `${SUPABASE_URL}/rest/v1/BookingItems?bookingId=eq.${bookingId}&select=serviceId,quantity,price`,
-          { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } }
+          { headers: { apikey: SUPABASE_KEY } }
         );
         if (itemsRes.ok) {
           const items = await itemsRes.json();
@@ -326,11 +326,11 @@ async function runTests() {
       try {
         await fetch(`${SUPABASE_URL}/rest/v1/BookingItems?bookingId=in.(${idList})`, {
           method: 'DELETE',
-          headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` },
+          headers: { apikey: SUPABASE_KEY },
         });
         await fetch(`${SUPABASE_URL}/rest/v1/Bookings?id=in.(${idList})`, {
           method: 'DELETE',
-          headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` },
+          headers: { apikey: SUPABASE_KEY },
         });
         console.log('✅ Test bookings cleanup complete.');
       } catch (cleanErr) {

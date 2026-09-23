@@ -12,7 +12,7 @@ const updateMedia = withCapability(async (req, _ctx, params) => {
 
   const supabaseAdmin = getSupabaseAdmin();
   if (!supabaseAdmin) {
-    return apiResponse.error('Thiếu cấu hình SUPABASE_SERVICE_ROLE_KEY', 'CONFIG_ERROR', 500);
+    return apiResponse.error('Thiếu cấu hình SUPABASE_SECRET_KEY', 'CONFIG_ERROR', 500);
   }
 
   const { data: current, error: readError } = await supabaseAdmin

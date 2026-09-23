@@ -63,7 +63,7 @@ export async function verifyAdminSessionAction(
 export async function logoutAdminAction(): Promise<{ success: boolean }> {
   try {
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    const anonKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
     if (!url || !anonKey) {
       return { success: true };
     }
