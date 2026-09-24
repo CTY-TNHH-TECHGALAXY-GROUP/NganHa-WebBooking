@@ -3,10 +3,14 @@ export const KNOWN_BODY_AREAS = [
   'WHOLE_BODY', 'FULL_BODY',
 ] as const;
 
+export const STRENGTH_LEVELS = ['light', 'medium', 'strong'] as const;
+export type StrengthLevel = (typeof STRENGTH_LEVELS)[number];
+
 export type CapabilityConfig = {
   showCustomForYou?: boolean | null;
   showPreferences?: boolean | null;
   showStrength?: boolean | null;
+  strengthConfig?: unknown;
   showGender?: boolean | null;
   showFocus?: boolean | null;
   showNotes?: boolean | null;
@@ -16,6 +20,7 @@ export type CapabilityConfig = {
 export type ServiceCapabilities = {
   custom: boolean;
   strength: boolean;
+  allowedStrengths: StrengthLevel[];
   gender: boolean;
   preferences: boolean;
   focus: boolean;
@@ -25,6 +30,12 @@ export type ServiceCapabilities = {
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   Boolean(value) && typeof value === 'object' && !Array.isArray(value);
+
+export function parseAllowedStrengths(value: unknown): StrengthLevel[] {
+  if (value === null || value === undefined) return [...STRENGTH_LEVELS];
+  if (!isRecord(value)) return [];
+  return STRENGTH_LEVELS.filter(level => value[level] === true);
+}
 
 export function parseAllowedBodyAreas(value: unknown): string[] {
   let candidate = value;
@@ -41,13 +52,15 @@ export function parseAllowedBodyAreas(value: unknown): string[] {
 
 export function resolveServiceCapabilities(config: CapabilityConfig): ServiceCapabilities {
   const custom = config.showCustomForYou !== false;
-  const strength = custom && config.showPreferences !== false && config.showStrength === true;
+  const allowedStrengths = parseAllowedStrengths(config.strengthConfig);
+  const strength = custom && config.showPreferences !== false && config.showStrength === true && allowedStrengths.length > 0;
   const gender = custom && config.showPreferences !== false && config.showGender !== false;
   const allowedBodyAreas = parseAllowedBodyAreas(config.focusConfig);
 
   return {
     custom,
     strength,
+    allowedStrengths: strength ? allowedStrengths : [],
     gender,
     preferences: strength || gender,
     focus: custom && config.showFocus !== false && allowedBodyAreas.length > 0,

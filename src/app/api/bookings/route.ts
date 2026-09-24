@@ -869,7 +869,7 @@ export async function POST(request: Request) {
   if (isBookingTimeInPast(booking.date, booking.time)) return jsonError('VALIDATION_ERROR', 'Please choose a future booking time.', 400, [{ field: 'time', code: 'BOOKING_TIME_IN_PAST', message: 'Booking time must be in the future.' }]);
 
   const ids = Array.from(new Set([...booking.selectedServices.map((item) => item.id), PRIVATE_ROOM_SERVICE_ID]));
-  const { data: catalogRows, error: catalogError } = await supabase.from('Services').select('id, nameVN, nameEN, nameCN, nameJP, nameKR, priceVND, priceUSD, duration, isActive, showCustomForYou, showPreferences, showNotes, showGender, showStrength, showFocus, focusConfig, tags').in('id', ids);
+  const { data: catalogRows, error: catalogError } = await supabase.from('Services').select('id, nameVN, nameEN, nameCN, nameJP, nameKR, priceVND, priceUSD, duration, isActive, showCustomForYou, showPreferences, showNotes, showGender, showStrength, strengthConfig, showFocus, focusConfig, tags').in('id', ids);
   if (catalogError) {
     console.error('[API Bookings] Catalog read failed:', catalogError.code || 'unknown');
     return jsonError('BOOKING_TEMPORARILY_UNAVAILABLE', 'Booking is temporarily unavailable. Please try again later.', 503);

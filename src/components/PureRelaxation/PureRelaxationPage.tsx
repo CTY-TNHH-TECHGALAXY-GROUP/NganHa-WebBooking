@@ -578,6 +578,7 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
     if (dbService) {
       payload.FOCUS_POSITION = dbService.FOCUS_POSITION;
       payload.SHOW_STRENGTH = dbService.SHOW_STRENGTH;
+      payload.STRENGTH_CONFIG = dbService.STRENGTH_CONFIG;
       payload.SHOW_NOTES = dbService.SHOW_NOTES;
       payload.SHOW_PREFERENCES = dbService.SHOW_PREFERENCES;
       payload.SHOW_CUSTOM_FOR_YOU = dbService.SHOW_CUSTOM_FOR_YOU;
@@ -1019,6 +1020,7 @@ const ServiceSection = ({ section, contentMedia }: { section: PureRelaxationSect
             FOCUS_POSITION: modalServiceData.FOCUS_POSITION,
             TAGS: modalServiceData.TAGS,
             SHOW_STRENGTH: modalServiceData.SHOW_STRENGTH,
+            STRENGTH_CONFIG: modalServiceData.STRENGTH_CONFIG,
             SHOW_CUSTOM_FOR_YOU: modalServiceData.SHOW_CUSTOM_FOR_YOU,
             HINT: modalServiceData.HINT,
             PRICE_VN: modalServiceData.priceVND,

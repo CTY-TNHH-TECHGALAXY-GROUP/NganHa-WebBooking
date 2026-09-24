@@ -38,7 +38,7 @@ export const GET = async () => {
     const supabase = getSupabaseAdmin();
     const { data, error } = await supabase
       .from('Services')
-      .select('id, category, nameEN, nameVN, nameCN, nameJP, nameKR, description, imageUrl, priceVND, priceUSD, duration, tags, focusConfig, showPreferences, showCustomForYou, showNotes, showGender, showStrength, showFocus, isActive, isBestSeller, isBestChoice, media_url, media_type')
+      .select('id, category, nameEN, nameVN, nameCN, nameJP, nameKR, description, imageUrl, priceVND, priceUSD, duration, tags, focusConfig, showPreferences, showCustomForYou, showNotes, showGender, showStrength, strengthConfig, showFocus, isActive, isBestSeller, isBestChoice, media_url, media_type')
       .eq('isActive', true)
       .order('id', { ascending: true });
 
@@ -101,6 +101,7 @@ export const GET = async () => {
       SHOW_GENDER: item.showGender !== false,
       // Strength is opt-in: null/missing must not create a hidden medium default.
       SHOW_STRENGTH: item.showStrength === true,
+      STRENGTH_CONFIG: item.strengthConfig,
       SHOW_FOCUS: item.showFocus !== false,
       ACTIVE: item.isActive,
       BEST_SELLER: item.isBestSeller,

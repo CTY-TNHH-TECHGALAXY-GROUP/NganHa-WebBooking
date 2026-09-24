@@ -1813,6 +1813,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                       showCustomForYou: currentEditService.SHOW_CUSTOM_FOR_YOU,
                       showPreferences: currentEditService.SHOW_PREFERENCES,
                       showStrength: currentEditService.SHOW_STRENGTH,
+                      strengthConfig: currentEditService.STRENGTH_CONFIG,
                       showGender: currentEditService.SHOW_GENDER,
                       showFocus: currentEditService.SHOW_FOCUS,
                       showNotes: currentEditService.SHOW_NOTES,
@@ -1957,7 +1958,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                               </div>
                             </div>
                             <div className="text-xs text-[#d1cbbd] flex flex-wrap items-center gap-x-3 gap-y-1">
-                              {editCapabilities.strength && item.options?.strength && <span>{lang === 'vi' ? 'Lực:' : lang === 'cn' ? '力度:' : lang === 'jp' ? '強さ:' : lang === 'kr' ? '강도:' : 'Strength:'} <strong className="text-[#f2d58d] capitalize">{(dict.options?.strength_levels as any)?.[item.options.strength.toLowerCase()] || item.options.strength}</strong></span>}
+                              {item.options?.strength && editCapabilities.allowedStrengths.includes(item.options.strength) && <span>{lang === 'vi' ? 'Lực:' : lang === 'cn' ? '力度:' : lang === 'jp' ? '強さ:' : lang === 'kr' ? '강도:' : 'Strength:'} <strong className="text-[#f2d58d] capitalize">{(dict.options?.strength_levels as any)?.[item.options.strength.toLowerCase()] || item.options.strength}</strong></span>}
                               {editCapabilities.gender && item.options?.therapist && <span>{lang === 'vi' ? 'KTV:' : lang === 'cn' ? '技师:' : lang === 'jp' ? 'セラピスト:' : lang === 'kr' ? '관리사:' : 'Therapist:'} <strong className="text-[#f2d58d] capitalize">{(dict.options?.therapist_options as any)?.[item.options.therapist.toLowerCase()] || item.options.therapist}</strong></span>}
                               {item.options?.bodyParts?.focus?.length ? (
                                 <span>{lang === 'vi' ? 'Tập trung:' : lang === 'cn' ? '重点:' : lang === 'jp' ? '重点:' : lang === 'kr' ? '집중:' : 'Focus:'} <strong className="text-[#f2d58d]">{isWholeBodyParts(item.options.bodyParts.focus) ? (dict.custom_for_you?.full_body || (lang === 'vi' ? 'Toàn thân' : lang === 'cn' ? '全身' : lang === 'jp' ? '全身' : lang === 'kr' ? '전신' : 'Full Body')) : item.options.bodyParts.focus.map(p => translatePart(p, lang)).join(', ')}</strong></span>
@@ -2068,6 +2069,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                 FOCUS_POSITION: customizingService.FOCUS_POSITION as any,
                 TAGS: customizingService.TAGS as any,
                 SHOW_STRENGTH: customizingService.SHOW_STRENGTH,
+                STRENGTH_CONFIG: customizingService.STRENGTH_CONFIG,
                 HINT: customizingService.HINT as Record<string, string>,
                 PRICE_VN: customizingService.priceVND,
                 PRICE_USD: customizingService.priceUSD,

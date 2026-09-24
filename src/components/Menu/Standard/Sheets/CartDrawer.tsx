@@ -241,6 +241,7 @@ export default function CartDrawer({ cart, services, lang, isOpen, onClose, onUp
             FOCUS_POSITION: item.FOCUS_POSITION as any,
             TAGS: item.TAGS as any,
             SHOW_STRENGTH: item.SHOW_STRENGTH,
+            STRENGTH_CONFIG: item.STRENGTH_CONFIG,
             SHOW_CUSTOM_FOR_YOU: item.SHOW_CUSTOM_FOR_YOU,
             SHOW_NOTES: item.SHOW_NOTES,
             SHOW_PREFERENCES: item.SHOW_PREFERENCES,

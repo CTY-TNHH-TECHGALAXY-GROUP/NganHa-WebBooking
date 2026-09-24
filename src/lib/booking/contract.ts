@@ -69,6 +69,7 @@ export type CatalogService = {
   showNotes?: boolean | null;
   showGender?: boolean | null;
   showStrength?: boolean | null;
+  strengthConfig?: unknown;
   showFocus?: boolean | null;
   showCustomForYou?: boolean | null;
   focusConfig?: unknown;
@@ -378,7 +379,7 @@ export function validateCatalogOptions(options: NormalizedOption, service: Catal
   const capabilities = capabilitiesForService(service);
   const hasNotes = Boolean(options.notes && (options.notes.content || options.notes.tag0 || options.notes.tag1));
   const hasFocus = Boolean(options.bodyParts && (options.bodyParts.focus.length || options.bodyParts.avoid.length));
-  if (options.strength && !capabilities.strength) errors.push(error(`${field}.strength`, 'UNSUPPORTED_OPTION', 'This service does not support strength selection.'));
+  if (options.strength && !capabilities.allowedStrengths.includes(options.strength)) errors.push(error(`${field}.strength`, 'UNSUPPORTED_OPTION', 'This strength level is unavailable for this service.'));
   if (options.therapist && !capabilities.gender) errors.push(error(`${field}.therapist`, 'UNSUPPORTED_OPTION', 'This service does not support therapist selection.'));
   if (hasNotes && !capabilities.notes) errors.push(error(`${field}.notes`, 'UNSUPPORTED_OPTION', 'This service does not support notes.'));
   if (hasFocus && !capabilities.focus) errors.push(error(`${field}.bodyParts`, 'UNSUPPORTED_OPTION', 'This service does not support body preferences.'));

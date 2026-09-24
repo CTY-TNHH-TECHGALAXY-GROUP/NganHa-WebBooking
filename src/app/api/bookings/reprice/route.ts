@@ -61,7 +61,7 @@ export async function POST(request: Request) {
 
   const ids = Array.from(new Set([...normalized.map(({ item }) => item.id), PRIVATE_ROOM_SERVICE_ID]));
   const supabase = getSupabaseAdmin();
-  const { data: rows, error: catalogError } = await supabase.from('Services').select('id, nameVN, nameEN, nameCN, nameJP, nameKR, priceVND, priceUSD, duration, isActive, showCustomForYou, showPreferences, showNotes, showGender, showStrength, showFocus, focusConfig').in('id', ids);
+  const { data: rows, error: catalogError } = await supabase.from('Services').select('id, nameVN, nameEN, nameCN, nameJP, nameKR, priceVND, priceUSD, duration, isActive, showCustomForYou, showPreferences, showNotes, showGender, showStrength, strengthConfig, showFocus, focusConfig').in('id', ids);
   if (catalogError) {
     console.error('[API Reprice] Catalog read failed:', catalogError.code || 'unknown');
     return errorResponse('BOOKING_TEMPORARILY_UNAVAILABLE', 'Pricing is temporarily unavailable. Please try again later.', schemaUnavailable(catalogError) ? 503 : 503);

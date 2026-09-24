@@ -38,6 +38,7 @@ export default function CustomForYouModal({
         showCustomForYou: serviceData.SHOW_CUSTOM_FOR_YOU,
         showPreferences: serviceData.SHOW_PREFERENCES,
         showStrength: serviceData.SHOW_STRENGTH,
+        strengthConfig: serviceData.STRENGTH_CONFIG,
         showGender: serviceData.SHOW_GENDER,
         showFocus: serviceData.SHOW_FOCUS,
         showNotes: serviceData.SHOW_NOTES,
@@ -55,12 +56,16 @@ export default function CustomForYouModal({
             tag1: source?.notes?.tag1 || false,
             content: source?.notes?.content || '',
         } : { tag0: false, tag1: false, content: '' },
-        strength: capabilities.strength ? source?.strength || 'medium' : undefined,
+        strength: capabilities.strength
+            ? (source?.strength && capabilities.allowedStrengths.includes(source.strength)
+                ? source.strength
+                : capabilities.allowedStrengths.includes('medium') ? 'medium' : capabilities.allowedStrengths[0])
+            : undefined,
         therapist: capabilities.gender ? source?.therapist || 'random' : undefined,
         addons: canAddPrivateRoom ? { privateRoom: source?.addons?.privateRoom || false } : undefined,
     });
     const pendingReview = initialData ? [
-        !capabilities.strength && initialData.strength ? getText({
+        initialData.strength && !capabilities.allowedStrengths.includes(initialData.strength) ? getText({
             en: 'Strength selection', vi: 'Lựa chọn lực tay', jp: '強さの選択', kr: '강도 선택', cn: '力度选择',
         }, lang) : null,
         !capabilities.gender && initialData.therapist ? getText({
@@ -214,6 +219,7 @@ export default function CustomForYouModal({
                                 <Preferences
                                     lang={lang}
                                     showStrength={capabilities.strength}
+                                    allowedStrengths={capabilities.allowedStrengths}
                                     showGender={capabilities.gender}
                                     values={{ strength: prefs.strength, therapist: prefs.therapist }}
                                     onChange={handlePrefChange}

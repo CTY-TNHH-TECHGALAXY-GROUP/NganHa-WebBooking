@@ -62,6 +62,7 @@ export interface Service {
   FOCUS_POSITION?: Record<string, boolean>; // HEAD, NECK...
   TAGS?: MultiLangString[]; // Array of tags [0: Pregnant, 1: Allergy] (Each tag is MultiLangString)
   SHOW_STRENGTH?: boolean;
+  STRENGTH_CONFIG?: { light: boolean; medium: boolean; strong: boolean } | null;
   HINT?: MultiLangString;
   
   // Categorization & Filtering Tags
