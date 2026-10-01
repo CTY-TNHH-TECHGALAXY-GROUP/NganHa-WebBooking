@@ -6,7 +6,6 @@
   align-items: flex-start;
   gap: 2px;
   max-width: min(70vw, 270px);
-  color: #d4af37;
   transition: bottom 200ms ease-out;
 }
 
@@ -25,7 +24,6 @@
   padding: 0;
   border: 0;
   background: transparent;
-  color: inherit;
   cursor: pointer;
   filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.85));
   transition: transform 180ms ease;
@@ -33,15 +31,6 @@
 
 .iconButton:hover {
   transform: translateY(-2px);
-}
-
-.widget[data-weather-status='rain_soon'] {
-  color: #e1c472;
-}
-
-.widget[data-weather-status='light_rain'],
-.widget[data-weather-status='rain'] {
-  color: #c2d7df;
 }
 
 .message {

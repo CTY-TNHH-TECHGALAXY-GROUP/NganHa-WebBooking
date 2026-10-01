@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Cloud, CloudDrizzle, CloudRain, X } from 'lucide-react';
+import { X } from 'lucide-react';
 import { useTranslation } from '@/components/TranslationProvider';
 import type { Locale } from '@/lib/constants';
 import type { SpaWeatherStatus as WeatherStatus } from '@/lib/weather/types';
@@ -11,6 +11,31 @@ import styles from './SpaWeatherStatus.module.css';
 
 const DISMISSED_KEY = 'oria-spa-weather-message-dismissed';
 const validStatuses = new Set<WeatherStatus>(['no_rain', 'rain_soon', 'light_rain', 'rain']);
+
+function WeatherIcon({ status }: { status: WeatherStatus }) {
+  const showSun = status === 'no_rain' || status === 'rain_soon';
+  const isRaining = status === 'light_rain' || status === 'rain';
+
+  return (
+    <svg width="40" height="40" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+      {showSun && (
+        <>
+          <circle cx="15" cy="14" r="6.5" fill="#F4C55D" />
+          <path d="M15 3v3M15 22v3M4 14h3M6.8 5.8 9 8" stroke="#F4C55D" strokeWidth="2.2" strokeLinecap="round" />
+        </>
+      )}
+      <path
+        d="M13 33c-5 0-8.5-3.5-8.5-8 0-4 2.8-7.3 6.7-8.1C13 11.9 17.5 9 22.7 9c5 0 8.9 3.4 9.8 8.1h1.2c5.1 0 8.8 3.4 8.8 8S38.8 33 33.7 33H13Z"
+        fill={isRaining ? '#E4EDF0' : '#F7EBC7'}
+        stroke={isRaining ? '#AFC6D0' : '#D8BF85'}
+        strokeWidth="1.2"
+      />
+      {status === 'rain_soon' && <path d="M26 37l-1.5 4" stroke="#8DBBD0" strokeWidth="2.3" strokeLinecap="round" />}
+      {status === 'light_rain' && <path d="M17 37l-1.5 4m14-4-1.5 4" stroke="#8DBBD0" strokeWidth="2.3" strokeLinecap="round" />}
+      {status === 'rain' && <path d="M14 37l-2 5m13-5-2 5m13-5-2 5" stroke="#79B5D2" strokeWidth="2.7" strokeLinecap="round" />}
+    </svg>
+  );
+}
 
 export default function SpaWeatherStatus({
   isContactMenuOpen,
@@ -47,7 +72,6 @@ export default function SpaWeatherStatus({
     light_rain: copy.lightRain,
     rain: copy.rain,
   }[status];
-  const Icon = status === 'rain' ? CloudRain : status === 'light_rain' ? CloudDrizzle : Cloud;
 
   const closeMessage = () => {
     setDismissed(true);
@@ -72,7 +96,7 @@ export default function SpaWeatherStatus({
         aria-expanded={!dismissed && !isContactMenuOpen}
         aria-controls={dismissed || isContactMenuOpen ? undefined : 'spa-weather-message'}
       >
-        <Icon size={29} strokeWidth={1.7} aria-hidden="true" />
+        <WeatherIcon status={status} />
       </button>
       {!dismissed && !isContactMenuOpen && (
         <div id="spa-weather-message" className={styles.message} role="status">
