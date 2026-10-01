@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useSystemSettings } from '@/components/SystemSettingsProvider';
 import { useTranslation } from '@/components/TranslationProvider';
 import SmartLogo from '@/components/SmartLogo';
+import SpaWeatherStatus from '@/components/weather/SpaWeatherStatus';
 import { HeartPulse, ShieldCheck, X, Check, Copy } from 'lucide-react';
 
 const WeChatIcon = ({ size = 18, className = "" }: { size?: number; className?: string }) => (
@@ -387,6 +388,7 @@ const Footer = () => {
                 {addressText}
               </li>
             </ul>
+            <SpaWeatherStatus />
           </div>
 
           {/* Contact */}
