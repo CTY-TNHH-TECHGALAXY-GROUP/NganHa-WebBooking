@@ -1,13 +1,16 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { ArrowLeft, CalendarClock, FileText, Image as ImageIcon, Plus, Trash2, Video, X } from 'lucide-react';
+import { ArrowLeft, CalendarClock, FileText, Image as ImageIcon, Pencil, Plus, Trash2, Video, X } from 'lucide-react';
 import Link from 'next/link';
+import type { BlogPost } from '@/lib/services/posts.service';
 
 const BlogAdminPage = () => {
-  const [posts, setPosts] = useState<any[]>([]);
+  const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAdding, setIsAdding] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingStatus, setEditingStatus] = useState<BlogPost['status'] | null>(null);
   const [successMessage, setSuccessMessage] = useState('');
 
   // Form
@@ -42,7 +45,7 @@ const BlogAdminPage = () => {
   // Auto-generate slug from title (using Vietnamese title as base)
   const handleTitleChange = (lang: string, value: string) => {
     setTitles(prev => ({ ...prev, [lang]: value }));
-    if (lang === 'vi' && (!slug || slug === slugify(titles.vi))) {
+    if (lang === 'vi' && !editingId && (!slug || slug === slugify(titles.vi))) {
       setSlug(slugify(value));
     }
   };
@@ -56,7 +59,57 @@ const BlogAdminPage = () => {
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/(^-|-$)/g, '');
 
-  const handleAdd = async (e: React.FormEvent) => {
+  const resetForm = () => {
+    setEditingId(null);
+    setEditingStatus(null);
+    setSlug('');
+    setTitles({ vi: '', en: '', cn: '', kr: '', jp: '' });
+    setExcerpts({ vi: '', en: '', cn: '', kr: '', jp: '' });
+    setContents({ vi: '', en: '', cn: '', kr: '', jp: '' });
+    setCategories({ vi: 'Kien thuc Oria', en: 'Oria Knowledge', cn: '', kr: '', jp: '' });
+    setCoverImage('');
+    setCoverType('image');
+    setCoverAlts({ vi: '', en: '', cn: '', kr: '', jp: '' });
+    setReadTimes({ vi: '3 phut', en: '3 min', cn: '', kr: '', jp: '' });
+    setPublishedAt(new Date().toISOString().slice(0, 16));
+  };
+
+  const handleEdit = async (id: string) => {
+    setLoading(true);
+    try {
+      const res = await fetch(`/api/admin/posts/${id}`);
+      const json = await res.json();
+      if (!res.ok || !json.success || !json.data) throw new Error(json.error?.message || 'Không tải được bài viết.');
+      const post: BlogPost = json.data;
+      setEditingId(post.id);
+      setEditingStatus(post.status);
+      setSlug(post.slug);
+      setTitles(post.title || {});
+      setExcerpts(post.excerpt || {});
+      setContents(post.content || {});
+      setCategories(post.category_i18n || {});
+      setCoverImage(post.cover_image || '');
+      setCoverType(post.cover_type === 'video' ? 'video' : 'image');
+      setCoverAlts(post.cover_alt || {});
+      setReadTimes(post.read_time_i18n || {});
+      if (post.published_at) {
+        const date = new Date(post.published_at);
+        setPublishedAt(new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().slice(0, 16));
+      } else {
+        setPublishedAt('');
+      }
+      setActiveLang('vi');
+      setIsAdding(true);
+      setSuccessMessage('');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch (error) {
+      alert(error instanceof Error ? error.message : 'Không tải được bài viết.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
@@ -71,34 +124,29 @@ const BlogAdminPage = () => {
       read_time_i18n: readTimes,
       cover_alt: coverAlts,
       published_at: new Date(publishedAt || Date.now()).toISOString(),
-      status: new Date(publishedAt || Date.now()) > new Date() ? 'scheduled' : 'published',
+      status: editingStatus === 'draft' ? 'draft' : new Date(publishedAt || Date.now()) > new Date() ? 'scheduled' : 'published',
     };
 
-    const res = await fetch('/api/admin/posts', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-
-    if (res.ok) {
-      setSlug('');
-      setTitles({ vi: '', en: '', cn: '', kr: '', jp: '' });
-      setExcerpts({ vi: '', en: '', cn: '', kr: '', jp: '' });
-      setContents({ vi: '', en: '', cn: '', kr: '', jp: '' });
-      setCategories({ vi: 'Kien thuc Oria', en: 'Oria Knowledge', cn: '', kr: '', jp: '' });
-      setCoverImage('');
-      setCoverType('image');
-      setCoverAlts({ vi: '', en: '', cn: '', kr: '', jp: '' });
-      setReadTimes({ vi: '3 phut', en: '3 min', cn: '', kr: '', jp: '' });
-      setPublishedAt(new Date().toISOString().slice(0, 16));
-      setIsAdding(false);
-      setSuccessMessage('✅ Đã thêm bài viết thành công!');
+    try {
+      const res = await fetch(editingId ? `/api/admin/posts/${editingId}` : '/api/admin/posts', {
+        method: editingId ? 'PUT' : 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) {
+        const json = await res.json();
+        throw new Error(json.error?.message || 'Lỗi khi lưu bài viết!');
+      }
+      setSuccessMessage(editingId ? '✅ Đã cập nhật bài viết thành công!' : '✅ Đã thêm bài viết thành công!');
       setTimeout(() => setSuccessMessage(''), 3000);
-      fetchPosts();
-    } else {
-      alert('Lỗi khi lưu bài viết!');
+      resetForm();
+      setIsAdding(false);
+      await fetchPosts();
+    } catch (error) {
+      alert(error instanceof Error ? error.message : 'Lỗi khi lưu bài viết!');
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const handleDelete = async (id: string) => {
@@ -122,7 +170,8 @@ const BlogAdminPage = () => {
             <p className="text-admin-text-dim mt-2">Viết bài blog chia sẻ kinh nghiệm spa, khuyến mãi cho khách đọc.</p>
           </div>
           <button
-            onClick={() => setIsAdding(!isAdding)}
+            onClick={() => { resetForm(); setIsAdding(!isAdding); }}
+            disabled={loading}
             className={`
               flex items-center gap-2 px-5 py-3 rounded-xl font-semibold text-[14px]
               transition-all duration-200 active:scale-[0.98] shadow-sm
@@ -144,10 +193,10 @@ const BlogAdminPage = () => {
         </div>
       )}
 
-      {/* Form Thêm Bài */}
+      {/* Form Bài Viết */}
       {isAdding && (
         <div className="bg-admin-panel border border-admin-line rounded-2xl p-6 mb-8 shadow-[var(--shadow)]">
-          <div className="flex items-start justify-between gap-4 mb-5"><div><p className="text-[12px] font-bold tracking-[0.16em] uppercase text-admin-gold">Daily publishing</p><h2 className="text-xl font-semibold text-admin-text mt-1">Viết bài mới</h2></div><p className="max-w-xs text-right text-sm text-admin-text-dim">Hoàn thiện nội dung theo từng ngôn ngữ, sau đó chọn media và thời điểm xuất hiện.</p></div>
+          <div className="flex items-start justify-between gap-4 mb-5"><div><p className="text-[12px] font-bold tracking-[0.16em] uppercase text-admin-gold">Daily publishing</p><h2 className="text-xl font-semibold text-admin-text mt-1">{editingId ? 'Chỉnh sửa bài viết' : 'Viết bài mới'}</h2></div><p className="max-w-xs text-right text-sm text-admin-text-dim">Hoàn thiện nội dung theo từng ngôn ngữ, sau đó chọn media và thời điểm xuất hiện.</p></div>
           
           <div className="flex gap-2 overflow-x-auto pb-4 mb-4 scrollbar-hide border-b border-admin-line-strong">
             {[
@@ -179,7 +228,7 @@ const BlogAdminPage = () => {
             ))}
           </div>
 
-          <form onSubmit={handleAdd} className="space-y-5 bg-admin-bg p-5 rounded-b-xl rounded-tr-xl border-x border-b border-admin-line-strong -mt-4">
+          <form onSubmit={handleSubmit} className="space-y-5 bg-admin-bg p-5 rounded-b-xl rounded-tr-xl border-x border-b border-admin-line-strong -mt-4">
             <div>
               <label className="block text-sm font-semibold text-admin-text-dim mb-1.5">Tiêu đề bài viết</label>
               <input
@@ -260,7 +309,7 @@ const BlogAdminPage = () => {
                 }
               `}
             >
-              {loading ? '⏳ Đang lưu...' : '✅ Đăng bài viết'}
+              {loading ? '⏳ Đang lưu...' : editingId ? '✅ Lưu thay đổi' : '✅ Đăng bài viết'}
             </button>
           </form>
         </div>
@@ -299,6 +348,16 @@ const BlogAdminPage = () => {
                 <span className="hidden sm:inline-flex items-center gap-1 bg-admin-green-a text-admin-green px-2.5 py-1 rounded-full text-[11px] border border-admin-green-b font-bold tracking-wide uppercase">
                   {post.status === 'scheduled' ? 'Đã lên lịch' : post.status === 'draft' ? 'Bản nháp' : 'Đang hiển thị'}
                 </span>
+
+                <button
+                  onClick={() => handleEdit(post.id)}
+                  disabled={loading}
+                  className="p-2.5 text-admin-text-faint hover:text-admin-gold hover:bg-admin-bg rounded-xl transition-all opacity-60 group-hover:opacity-100 disabled:opacity-40"
+                  title="Chỉnh sửa bài viết"
+                  aria-label={`Chỉnh sửa ${post.title?.vi || post.title?.en || 'bài viết'}`}
+                >
+                  <Pencil size={18} />
+                </button>
 
                 {/* Delete */}
                 <button
