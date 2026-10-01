@@ -36,11 +36,26 @@ const normalizeArticleText = (value: string) => value
   .replace(/&#0?39;/gi, "'")
   .trim();
 
+const linkifyArticleText = (text: string) => text
+  .split(/((?:https?:\/\/|www\.)[^\s<>"']+)/gi)
+  .filter(Boolean)
+  .map((part, index) => {
+    if (!/^(?:https?:\/\/|www\.)/i.test(part)) return part;
+    const url = part.replace(/[.,!?;:)\]}。、，！？；：）】]+$/u, '');
+    try {
+      const href = /^www\./i.test(url) ? `https://${url}` : url;
+      if (!new URL(href).hostname) return part;
+      return <React.Fragment key={index}><a href={href} target="_blank" rel="noopener noreferrer">{url}</a>{part.slice(url.length)}</React.Fragment>;
+    } catch {
+      return part;
+    }
+  });
+
 const ArticleBody = ({ body }: { body: string }) => {
   const paragraphs = normalizeArticleText(body).split(/\n\s*\n+/).filter(Boolean);
   return (
     <div className={styles.articleContent}>
-      {paragraphs.map((paragraph, index) => <p key={`${index}-${paragraph.slice(0, 24)}`}>{paragraph}</p>)}
+      {paragraphs.map((paragraph, index) => <p key={`${index}-${paragraph.slice(0, 24)}`}>{linkifyArticleText(paragraph)}</p>)}
     </div>
   );
 };
