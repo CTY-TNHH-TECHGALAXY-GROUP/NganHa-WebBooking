@@ -11,6 +11,7 @@ import AIChatBot from '@/components/AIChatBot/AIChatBot';
 import { useSystemSettings } from '@/components/SystemSettingsProvider';
 import { trackAnalytics } from '@/lib/analytics/client';
 import GoogleReviewWidget from '@/components/GoogleReviewWidget/GoogleReviewWidget';
+import SpaWeatherStatus from '@/components/weather/SpaWeatherStatus';
 import { useTranslation } from '@/components/TranslationProvider';
 
 const WIDGET_SIZE = 50; 
@@ -496,6 +497,10 @@ const FloatingWidgets = () => {
       </div>
 
       {/* Google Review Widget on Bottom Left */}
+      <SpaWeatherStatus
+        isContactMenuOpen={isMenuOpen}
+        isGreetingVisible={!isMenuOpen && !isFooterVisible && !isGreetingDismissed}
+      />
       <GoogleReviewWidget />
     </>
   );

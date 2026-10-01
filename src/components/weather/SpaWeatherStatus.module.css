@@ -1,0 +1,112 @@
+.widget {
+  position: fixed;
+  left: 10px;
+  bottom: calc(max(12px, env(safe-area-inset-bottom)) + 58px);
+  display: flex;
+  align-items: flex-start;
+  gap: 2px;
+  max-width: min(70vw, 270px);
+  color: #d4af37;
+  transition: bottom 200ms ease-out;
+}
+
+@media (max-width: 540px) {
+  .raised {
+    bottom: calc(max(12px, env(safe-area-inset-bottom)) + 210px);
+  }
+}
+
+.iconButton {
+  display: grid;
+  flex: 0 0 44px;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.85));
+  transition: transform 180ms ease;
+}
+
+.iconButton:hover {
+  transform: translateY(-2px);
+}
+
+.widget[data-weather-status='rain_soon'] {
+  color: #e1c472;
+}
+
+.widget[data-weather-status='light_rain'],
+.widget[data-weather-status='rain'] {
+  color: #c2d7df;
+}
+
+.message {
+  display: flex;
+  align-items: flex-start;
+  gap: 2px;
+  min-width: 0;
+  padding-top: 5px;
+  color: #f7ebc7;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.45;
+  text-shadow: 0 1px 2px #120d09, 0 1px 7px #120d09, 0 0 12px #120d09;
+}
+
+.copy {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.travelDelay {
+  display: block;
+  color: #e2d3b2;
+}
+
+.dismiss {
+  display: grid;
+  flex: 0 0 28px;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  margin-top: -5px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #f7ebc7;
+  cursor: pointer;
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.9));
+}
+
+.iconButton:focus-visible,
+.dismiss:focus-visible {
+  outline: 2px solid #d4af37;
+  outline-offset: 2px;
+}
+
+@media (min-width: 621px) {
+  .widget {
+    left: 24px;
+    bottom: 96px;
+    max-width: 340px;
+  }
+
+  .message {
+    font-size: 13px;
+  }
+}
+
+:global(body.modal-open) .widget,
+:global(body.has-booking-modal) .widget,
+:global(body.has-floating-basket) .widget {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .widget { transition: none; }
+  .iconButton { transition: none; }
+}
