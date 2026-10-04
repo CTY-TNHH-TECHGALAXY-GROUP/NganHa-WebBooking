@@ -47,6 +47,7 @@ export const GET = withCapabilities(async (_request, access) => {
       homepage_styling: null as unknown,
       local_tour_content: null as unknown,
       home_spa_content: null as unknown,
+      oria_care_content: null as unknown,
       farm_retreat_content: null as unknown,
       farm_store_content: null as unknown,
       revisions: {
@@ -66,6 +67,7 @@ export const GET = withCapabilities(async (_request, access) => {
         if (item.key === 'homepage_styling') result.homepage_styling = sanitizeHomepageStyling(item.value) ?? item.value;
         if (item.key === 'local_tour_content') result.local_tour_content = item.value;
         if (item.key === 'home_spa_content') result.home_spa_content = item.value;
+        if (item.key === 'oria_care_content') result.oria_care_content = item.value;
         if (item.key === 'farm_retreat_content') result.farm_retreat_content = item.value;
         if (item.key === 'farm_store_content') result.farm_store_content = item.value;
       });
@@ -106,6 +108,7 @@ export const POST = withCapabilities(async (request: NextRequest, access) => {
       homepage_styling,
       local_tour_content,
       home_spa_content,
+      oria_care_content,
       farm_retreat_content,
       farm_store_content,
       expectedRevision,
@@ -127,6 +130,7 @@ export const POST = withCapabilities(async (request: NextRequest, access) => {
       homepage_styling,
       local_tour_content,
       home_spa_content,
+      oria_care_content,
       farm_retreat_content,
       farm_store_content,
     ].some(value => value !== undefined);
@@ -314,6 +318,14 @@ export const POST = withCapabilities(async (request: NextRequest, access) => {
       });
     }
 
+    if (oria_care_content !== undefined) {
+      upsertData.push({
+        key: 'oria_care_content',
+        value: oria_care_content,
+        updated_at: new Date().toISOString(),
+      });
+    }
+
     if (farm_retreat_content !== undefined) {
       upsertData.push({
         key: 'farm_retreat_content',
@@ -391,6 +403,8 @@ export const POST = withCapabilities(async (request: NextRequest, access) => {
       revalidatePath('/local-tour/[packageSlug]', 'page');
       revalidatePath('/oriahome', 'layout');
       revalidatePath('/[lang]/oriahome', 'layout');
+      revalidatePath('/oriacare', 'layout');
+      revalidatePath('/[lang]/oriacare', 'layout');
       revalidatePath('/oriafarm-retreat', 'layout');
       revalidatePath('/[lang]/oriafarm-retreat', 'layout');
       revalidatePath('/oriafarm-store', 'layout');

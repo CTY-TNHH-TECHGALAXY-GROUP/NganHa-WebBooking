@@ -6,7 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { createBrowserClient } from '@supabase/ssr';
 import {
   LayoutDashboard, BookOpen, FileText, Wrench, Film, Search, Globe, Settings, ArchiveRestore,
-  Menu, X, ChevronRight, LogOut, ImagePlus, Compass, Home, Trees, Store, BarChart3, UserCog, type LucideIcon
+  Menu, X, ChevronRight, LogOut, ImagePlus, Compass, Home, HeartPulse, Trees, Store, BarChart3, UserCog, type LucideIcon
 } from 'lucide-react';
 import { verifyAdminSessionAction } from '@/lib/auth/adminAction';
 
@@ -20,6 +20,7 @@ const NAV_ITEMS: AdminNavItem[] = [
   { label: 'Tổng quan', href: '/admin', icon: LayoutDashboard },
   { label: 'Câu chuyện (Our Story)', href: '/admin/our-story', icon: BookOpen },
   { label: 'Oria Home Spa', href: '/admin/oriahome', icon: Home },
+  { label: 'Oria Care', href: '/admin/oriacare', icon: HeartPulse },
   { label: 'Oria Farm Retreat', href: '/admin/oriafarm-retreat', icon: Trees },
   { label: 'Oria Farm Store', href: '/admin/oriafarm-store', icon: Store },
   { label: 'Local Tour Sài Gòn', href: '/admin/local-tour', icon: Compass },
@@ -56,7 +57,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
     try {
       const supabase = createBrowserClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+        process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!
       );
 
       const {
@@ -121,7 +122,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
     try {
       const supabase = createBrowserClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
       );
       await supabase.auth.signOut();
     } catch (err) {
