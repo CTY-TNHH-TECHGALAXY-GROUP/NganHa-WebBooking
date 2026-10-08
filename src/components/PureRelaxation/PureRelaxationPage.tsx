@@ -31,6 +31,7 @@ import type {
   PureRelaxationVariant,
 } from './pureRelaxationData';
 import styles from './PureRelaxationPage.module.css';
+import WebVoucherCard from '@/components/Promotions/WebVoucherCard';
 
 type ActiveItem = {
   contentKey: string;
@@ -1170,6 +1171,7 @@ const PureRelaxationPage = () => {
 
       {/* Solid background wrapper for the rest of the content to scroll over the fixed image */}
       <div className={styles.contentWrapper}>
+      <WebVoucherCard />
 
       <nav className={styles.sectionNavShell} aria-label="Pure Relaxation categories">
         <div className={styles.sectionNav} ref={navRef}>

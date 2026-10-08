@@ -13,8 +13,10 @@ import GlobalImagePreview from '@/components/Shared/GlobalImagePreview';
 
 const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
-  const isBookingPage = pathname === '/booking' || pathname.startsWith('/admin');
-  const hideFloatingWidgets = pathname.includes('/checkout') || pathname === '/booking' || pathname.startsWith('/admin');
+  // /v/{code}: standalone e-voucher page (same as the admin /voucher page), no site chrome.
+  const isVoucherPage = pathname.startsWith('/v/');
+  const isBookingPage = pathname === '/booking' || pathname.startsWith('/admin') || isVoucherPage;
+  const hideFloatingWidgets = pathname.includes('/checkout') || pathname === '/booking' || pathname.startsWith('/admin') || isVoucherPage;
 
   return (
     <>
