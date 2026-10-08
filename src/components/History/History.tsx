@@ -717,7 +717,10 @@ export const hydrateBrandHistoryConfig = (config?: any) => {
       ...(source.finale || {}),
       eyebrow: mergeLocalizedText(defaults.finale.eyebrow, source.finale?.eyebrow),
       title: mergeLocalizedText(defaults.finale.title, source.finale?.title),
-      body: mergeLocalizedText(defaults.finale.body, source.finale?.body),
+      body: Object.fromEntries(
+        Object.entries(mergeLocalizedText(defaults.finale.body, source.finale?.body))
+          .map(([locale, text]) => [locale, typeof text === 'string' ? text.replace(/Ngân Hà|Ngan Ha/g, 'Oria') : text])
+      ),
     },
     chapters: [...defaults.chapters.map(defaultChapter => {
       const chapter: any = chaptersByYear.get(defaultChapter.year) || {};
@@ -749,9 +752,16 @@ export const hydrateBrandHistoryConfig = (config?: any) => {
 type HistoryProps = {
   /** The History route renders this hero at the top of the document. */
   aboveFold?: boolean;
+  embedded?: boolean;
 };
 
-export const History = ({ aboveFold = false }: HistoryProps) => {
+export const History = ({ aboveFold = false, embedded = false }: HistoryProps) => {
+  const Title = embedded ? 'h2' : 'h1';
+  useEffect(() => {
+    if (!embedded) return;
+    const id = window.location.hash.slice(1);
+    if (id.startsWith('history-')) document.getElementById(id)?.scrollIntoView({ block: 'start' });
+  }, [embedded]);
   const { currentLang } = useTranslation();
   const locale = normalizeHistoryLocale(currentLang);
   const copy = HISTORY_INTERFACE_COPY[locale];
@@ -1021,9 +1031,9 @@ export const History = ({ aboveFold = false }: HistoryProps) => {
           <span className={styles.eyebrow}>
             {resolveHistoryText(hydratedHistory.hero?.eyebrow, locale, HISTORY_HERO_DEFAULTS[locale].eyebrow)}
           </span>
-          <h1>
+          <Title className={styles.heroTitle}>
             {resolveHistoryText(hydratedHistory.hero?.title1, locale, HISTORY_HERO_DEFAULTS[locale].title1)} <em>{resolveHistoryText(hydratedHistory.hero?.title2, locale, HISTORY_HERO_DEFAULTS[locale].title2)}</em>
-          </h1>
+          </Title>
           <p>
             {resolveHistoryText(hydratedHistory.hero?.body, locale, HISTORY_HERO_DEFAULTS[locale].body)}
           </p>

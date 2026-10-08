@@ -58,7 +58,8 @@ const BlogCardView = ({ card, className, onOpen }: { card: BlogCard; className: 
   </article>
 );
 
-const BlogsPage = () => {
+const BlogsPage = ({ embedded = false }: { embedded?: boolean } = {}) => {
+  const Title = embedded ? 'h2' : 'h1';
   const { currentLang } = useTranslation();
   const { systemSettings } = useSystemSettings();
   const content = useMemo(() => resolveBlogContent(systemSettings?.blog_content, currentLang as any), [currentLang, systemSettings?.blog_content]);
@@ -84,13 +85,18 @@ const BlogsPage = () => {
       .catch(() => setPosts([]));
   }, []);
 
+  useEffect(() => {
+    if (!activeStory) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = previousOverflow; };
+  }, [activeStory]);
+
   const openStory = (card: BlogCard) => {
     setActiveStory(card);
-    document.body.style.overflow = 'hidden';
   };
   const closeStory = () => {
     setActiveStory(null);
-    document.body.style.overflow = '';
   };
   const ask = () => openStory({ id: 'ask', eyebrow: content.hero.askLabel, title: searchQuery.trim() || content.hero.quickPrompts[0], body: content.hero.body, meta: content.hero.askLabel });
 
@@ -100,7 +106,7 @@ const BlogsPage = () => {
       <header className={styles.hero}>
         <div>
           <div className={styles.kicker}>{content.hero.kicker}</div>
-          <h1>{content.hero.title.split('\n').map((line) => <React.Fragment key={line}>{line}<br /></React.Fragment>)}</h1>
+          <Title className={styles.pageTitle}>{content.hero.title.split('\n').map((line) => <React.Fragment key={line}>{line}<br /></React.Fragment>)}</Title>
           <p className={styles['hero-copy']}>{content.hero.body}</p>
           <div className={styles.ask}>
             <span>{content.hero.askLabel}</span>

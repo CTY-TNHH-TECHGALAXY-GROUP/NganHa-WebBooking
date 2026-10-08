@@ -10,8 +10,8 @@ interface PageProps {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { lang } = await params;
   return getPageMetadata({ routeKey: 'oriafarm-retreat', pathname: `/${lang}/oriafarm-retreat`, locale: lang as Locale, localized: true, defaultPathname: '/oriafarm-retreat' }, {
-    title: 'Oria Farm Retreat | A Day Away from the City',
-    description: 'Oria Farm Retreat is created as a daytime escape surrounded by nature — private bungalow, steam, bath, and full-body massage.',
+    title: 'OriaFarm Retreat | A Day Away from the City',
+    description: 'OriaFarm Retreat is created as a daytime escape surrounded by nature — private bungalow, steam, bath, and full-body massage.',
   });
 }
 

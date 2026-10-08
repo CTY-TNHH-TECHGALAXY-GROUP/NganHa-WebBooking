@@ -3,8 +3,7 @@
 import React, { useEffect } from 'react';
 import { useTranslation, LANGUAGES } from '@/components/TranslationProvider';
 import Hero from '@/components/Hero/Hero';
-import OurStory from '@/components/OurStory/OurStory';
-import History from '@/components/History/History';
+import OriaSpaTabs from '@/components/OriaSpa/OriaSpaTabs';
 import type { HeroVideoConfig } from '@/lib/config/heroVideos';
 
 type LocalizedHomePageClientProps = {
@@ -27,8 +26,7 @@ export default function LocalizedHomePageClient({
   return (
     <main>
       <Hero initialHeroConfig={initialHeroConfig} />
-      <OurStory />
-      <History />
+      <OriaSpaTabs />
     </main>
   );
 }

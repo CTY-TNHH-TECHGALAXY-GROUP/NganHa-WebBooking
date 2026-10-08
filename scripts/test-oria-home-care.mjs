@@ -1,5 +1,7 @@
 import assert from 'node:assert/strict';
 import { DEFAULT_HOME_SPA_CONFIG, hydrateHomeSpaConfig } from '../src/data/homeSpaData.ts';
+import { DEFAULT_ORIA_CARE_CONFIG } from '../src/data/oriaCareData.ts';
+import { mergeHomeCareIntroduction } from '../src/data/homeCareIntroduction.ts';
 
 const saved = {
   pageTitle: { vi: 'Oria Home Spa', en: 'My Oria Home Spa' },
@@ -33,4 +35,26 @@ for (const title of Object.values(DEFAULT_HOME_SPA_CONFIG.pageTitle)) {
   assert.equal(title, 'Oria Home Care');
 }
 assert.deepEqual(hydrateHomeSpaConfig(null), DEFAULT_HOME_SPA_CONFIG);
+const careBefore = structuredClone(DEFAULT_ORIA_CARE_CONFIG);
+const homeBefore = structuredClone(config);
+const merged = mergeHomeCareIntroduction(config, DEFAULT_ORIA_CARE_CONFIG);
+assert.deepEqual(config, homeBefore);
+assert.deepEqual(DEFAULT_ORIA_CARE_CONFIG, careBefore);
+assert.equal(merged.careIntroductionMerged, true);
+assert.deepEqual(merged.sections[0].heading, config.sections[0].heading);
+assert.deepEqual(merged.sections[0].paragraphs, [config.sections[0].paragraphs[0], ...DEFAULT_ORIA_CARE_CONFIG.sections[0].paragraphs, ...config.sections[0].paragraphs.slice(1)]);
+assert.deepEqual(merged.sections.slice(1), config.sections.slice(1));
+assert.deepEqual(merged.storyPhotos, config.storyPhotos);
+assert.deepEqual(merged.storyPhotosWatermark, config.storyPhotosWatermark);
+assert.deepEqual(merged.storyPhotosWatermarkOpacity, config.storyPhotosWatermarkOpacity);
+assert.equal(mergeHomeCareIntroduction(merged, DEFAULT_ORIA_CARE_CONFIG), merged, 'Saving and reloading must not duplicate the introduction');
+const edited = structuredClone(merged);
+edited.sections[0].heading.en = 'My introduction';
+edited.sections[0].paragraphs[0].en = 'Edited text';
+const reloaded = hydrateHomeSpaConfig(edited);
+assert.equal(mergeHomeCareIntroduction(reloaded, DEFAULT_ORIA_CARE_CONFIG), reloaded);
+assert.equal(reloaded.sections[0].paragraphs[0].en, 'Edited text');
+assert.equal(reloaded.sections[0].heading.en, 'My introduction');
+const empty = { ...config, sections: [] };
+assert.equal(mergeHomeCareIntroduction(empty, DEFAULT_ORIA_CARE_CONFIG), empty);
 console.log('Oria Home Care: legacy names updated; content, photos and settings preserved.');

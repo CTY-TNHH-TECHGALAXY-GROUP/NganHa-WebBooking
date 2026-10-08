@@ -101,7 +101,7 @@ img.heroMedia {
   gap: 40px;
 }
 
-.hero h1 {
+.hero .pageTitle {
   font-family: "Playfair Display", serif;
   font-size: clamp(62px, 9vw, 145px);
   line-height: .84;
@@ -109,7 +109,7 @@ img.heroMedia {
   font-weight: 500;
 }
 
-.hero h1 em {
+.hero .pageTitle em {
   font-weight: 500;
 }
 
@@ -587,7 +587,7 @@ img.heroMedia {
 }
 
 @media(max-width: 600px) {
-  .hero h1 { font-size: 58px; }
+  .hero .pageTitle { font-size: 58px; }
   .hero { min-height: 100svh; }
   .heroCopy { bottom: 9vh; }
   .stickyIndex { right: 8px; }

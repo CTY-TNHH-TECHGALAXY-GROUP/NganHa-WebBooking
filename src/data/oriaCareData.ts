@@ -1,9 +1,16 @@
 export type LocalizedString = Record<string, string>;
 
+export interface OriaCareParagraphImage {
+  src: string;
+  watermarkEnabled: boolean;
+  watermarkOpacity: number;
+}
+
 export interface OriaCareSection {
   id: string;
   heading: LocalizedString;
   paragraphs: LocalizedString[];
+  paragraphImages?: (OriaCareParagraphImage | null)[];
 }
 
 export interface OriaCareConfig {
@@ -158,6 +165,15 @@ export function hydrateOriaCareConfig(raw: any): OriaCareConfig {
       paragraphs: Array.isArray(sec.paragraphs) && sec.paragraphs.length > 0
         ? sec.paragraphs
         : defaultSec.paragraphs,
+      ...(Array.isArray(sec.paragraphImages) ? {
+        paragraphImages: sec.paragraphImages.map((image: any) => image && typeof image.src === 'string' ? {
+          src: image.src.trim(),
+          watermarkEnabled: image.watermarkEnabled !== false,
+          watermarkOpacity: typeof image.watermarkOpacity === 'number' && image.watermarkOpacity >= 0 && image.watermarkOpacity <= 100
+            ? Math.round(image.watermarkOpacity)
+            : 15,
+        } : null),
+      } : {}),
     };
   });
 

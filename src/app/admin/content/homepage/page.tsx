@@ -1,5 +1,7 @@
 'use client';
 
+import { createClient } from '@/lib/supabase';
+import { DEFAULT_NAVIGATION_BACKGROUND, renamedTherapyLabel } from '@/lib/oriaNavigation';
 import React, { useState, useEffect } from 'react';
 import { Save, AlertCircle, CheckCircle2, Globe, LayoutTemplate, MessageCircle } from 'lucide-react';
 
@@ -38,7 +40,7 @@ const DEFAULT_CONTENT = {
     services: { vi: 'Dịch vụ', en: 'Services', kr: '서비스', jp: 'サービス', cn: '服务' },
     pureRelaxation: { vi: 'Thư giãn thuần túy', en: 'Pure relaxation', kr: '순수한 휴식', jp: '純粋なリラクゼーション', cn: '纯粹放松' },
     designJourney: { vi: 'Thiết kế hành trình', en: 'Design Your Journey', kr: '여정 디자인', jp: 'あなたの旅をデザイン', cn: '设计您的旅程' },
-    therapy: { vi: 'Trị liệu', en: 'Therapy', kr: '치료', jp: 'セラピー', cn: '治疗' },
+    therapy: { vi: 'Deep Body Treament', en: 'Deep Body Treament', kr: 'Deep Body Treament', jp: 'Deep Body Treament', cn: 'Deep Body Treament' },
     
     academy: { vi: 'Học viện', en: 'Academy', kr: '아카데미', jp: 'アカデミー', cn: '学院' },
     admissions: { vi: 'Tuyển sinh', en: 'Recruitment/Admission', kr: '모집/입학', jp: '募集・入学', cn: '招聘/入学' },
@@ -51,7 +53,7 @@ const DEFAULT_CONTENT = {
     privileges: { vi: 'Đặc quyền của bạn', en: 'Your privileges', kr: '당신의 특권', jp: 'あなたの特권', cn: '您的特权' },
     blogs: { vi: 'Bài viết', en: 'Blogs', kr: '블로그', jp: 'ブログ', cn: '博客' },
     
-    bgImage: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?q=80&w=2940&auto=format&fit=crop'
+    bgImage: DEFAULT_NAVIGATION_BACKGROUND
   },
   chat: {
     greeting: {
@@ -67,6 +69,7 @@ const DEFAULT_CONTENT = {
 export default function HomepageContentPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [uploadingBackground, setUploadingBackground] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
   const [activeLang, setActiveLang] = useState('vi');
   
@@ -93,6 +96,35 @@ export default function HomepageContentPage() {
         setLoading(false);
       });
   }, []);
+
+  const handleBackgroundUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const input = event.currentTarget;
+    const file = input.files?.[0];
+    if (!file) return;
+    const extensions: Record<string, string> = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp', 'image/avif': 'avif' };
+    const extension = extensions[file.type];
+    if (!extension || file.size > 10 * 1024 * 1024) {
+      setMessage({ type: 'error', text: 'Chọn ảnh JPG, PNG, WebP hoặc AVIF không quá 10 MB.' });
+      input.value = '';
+      return;
+    }
+    setUploadingBackground(true);
+    setMessage({ type: '', text: '' });
+    try {
+      const supabase = createClient();
+      const path = `marketing/navigation-${crypto.randomUUID()}.${extension}`;
+      const { error } = await supabase.storage.from('media-uploads').upload(path, file, { cacheControl: '3600', upsert: false });
+      if (error) throw error;
+      const { data } = supabase.storage.from('media-uploads').getPublicUrl(path);
+      setContent((prev: any) => ({ ...prev, navigation: { ...prev.navigation, bgImage: data.publicUrl } }));
+      setMessage({ type: 'success', text: 'Đã tải ảnh lên. Bấm Lưu nội dung để áp dụng.' });
+    } catch (error) {
+      setMessage({ type: 'error', text: error instanceof Error ? error.message : 'Không thể tải ảnh lên. Vui lòng thử lại.' });
+    } finally {
+      setUploadingBackground(false);
+      input.value = '';
+    }
+  };
 
   const handleSave = async () => {
     setSaving(true);
@@ -145,7 +177,7 @@ export default function HomepageContentPage() {
         </div>
         <button
           onClick={handleSave}
-          disabled={saving}
+          disabled={saving || uploadingBackground}
           className="flex items-center gap-2 px-6 py-3 bg-admin-gold hover:bg-[#a67433] text-[#241804] rounded-xl font-bold transition-all active:scale-[0.98] disabled:opacity-70 shadow-md"
         >
           {saving ? 'Đang lưu...' : <><Save size={18} /> Lưu thay đổi</>}
@@ -319,6 +351,43 @@ export default function HomepageContentPage() {
           4. Menu Điều Hướng (Navigation)
         </h2>
         
+        {/* Navigation background shared by every language */}
+        <div className="mb-8 border-b border-admin-line pb-6">
+          <h3 className="font-bold text-admin-gold uppercase tracking-wider text-sm mb-4">Ảnh nền Navigation (dùng chung cho tất cả ngôn ngữ)</h3>
+          <div className="w-full">
+            <label className="block text-xs text-admin-text-dim mb-1">URL ảnh nền</label>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <input
+                type="text"
+                value={content.navigation.bgImage || ''}
+                onChange={(e) => {
+                  setContent((prev: any) => ({
+                    ...prev,
+                    navigation: {
+                      ...prev.navigation,
+                      bgImage: e.target.value
+                    }
+                  }));
+                }}
+                className="min-w-0 flex-1 bg-admin-background border border-admin-line rounded-lg px-3 py-2 text-sm text-admin-text"
+                placeholder="https://..."
+              />
+            </div>
+            <div className="mt-3">
+              <label className={`inline-flex items-center gap-2 rounded-lg border border-admin-line px-4 py-2 text-sm text-admin-text focus-within:outline focus-within:outline-admin-gold focus-within:outline-offset-2 ${uploadingBackground ? 'opacity-60' : 'cursor-pointer hover:border-admin-gold'}`}>
+                {uploadingBackground ? 'Đang tải ảnh lên…' : 'Upload ảnh nền'}
+                <input type="file" accept="image/jpeg,image/png,image/webp,image/avif" className="sr-only" disabled={uploadingBackground || saving} onChange={handleBackgroundUpload} />
+              </label>
+              <p className="mt-2 text-xs text-admin-text-dim">JPG, PNG, WebP hoặc AVIF, tối đa 10 MB. Bấm Lưu nội dung để áp dụng ảnh lên website.</p>
+            </div>
+            {content.navigation.bgImage && (
+              <div className="mt-4 border border-admin-line rounded-lg overflow-hidden w-full max-w-md aspect-video relative">
+                <img src={content.navigation.bgImage} alt="Menu Background Preview" className="w-full h-full object-cover" />
+              </div>
+            )}
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Cột 1: Spaces */}
           <div className="space-y-4">
@@ -357,8 +426,8 @@ export default function HomepageContentPage() {
               <input type="text" value={content.navigation.designJourney?.[activeLang] || ''} onChange={(e) => handleInputChange('navigation', 'designJourney', e.target.value)} className="w-full bg-admin-background border border-admin-line rounded-lg px-3 py-2 text-sm text-admin-text" />
             </div>
             <div>
-              <label className="block text-xs text-admin-text-dim mb-1">Therapy</label>
-              <input type="text" value={content.navigation.therapy?.[activeLang] || ''} onChange={(e) => handleInputChange('navigation', 'therapy', e.target.value)} className="w-full bg-admin-background border border-admin-line rounded-lg px-3 py-2 text-sm text-admin-text" />
+              <label className="block text-xs text-admin-text-dim mb-1">Deep Body Treament</label>
+              <input type="text" value={renamedTherapyLabel(content.navigation.therapy?.[activeLang] || '')} onChange={(e) => handleInputChange('navigation', 'therapy', e.target.value)} className="w-full bg-admin-background border border-admin-line rounded-lg px-3 py-2 text-sm text-admin-text" />
             </div>
           </div>
 
@@ -406,36 +475,6 @@ export default function HomepageContentPage() {
               <label className="block text-xs text-admin-text-dim mb-1">Blogs</label>
               <input type="text" value={content.navigation.blogs?.[activeLang] || ''} onChange={(e) => handleInputChange('navigation', 'blogs', e.target.value)} className="w-full bg-admin-background border border-admin-line rounded-lg px-3 py-2 text-sm text-admin-text" />
             </div>
-          </div>
-        </div>
-
-        {/* Cột 5: Background Image */}
-        <div className="mt-8 border-t border-admin-line pt-6">
-          <h3 className="font-bold text-admin-gold uppercase tracking-wider text-sm mb-4">ẢNH NỀN MENU (Tất cả ngôn ngữ dùng chung)</h3>
-          <div className="w-full">
-            <label className="block text-xs text-admin-text-dim mb-1">URL Ảnh nền (Nên chọn ảnh chất lượng cao dọc hoặc ngang lớn)</label>
-            <div className="flex gap-4">
-              <input 
-                type="text" 
-                value={content.navigation.bgImage || ''} 
-                onChange={(e) => {
-                  setContent((prev: any) => ({
-                    ...prev,
-                    navigation: {
-                      ...prev.navigation,
-                      bgImage: e.target.value
-                    }
-                  }));
-                }} 
-                className="flex-1 bg-admin-background border border-admin-line rounded-lg px-3 py-2 text-sm text-admin-text" 
-                placeholder="https://..."
-              />
-            </div>
-            {content.navigation.bgImage && (
-              <div className="mt-4 border border-admin-line rounded-lg overflow-hidden w-64 h-40 relative">
-                <img src={content.navigation.bgImage} alt="Menu Background Preview" className="w-full h-full object-cover" />
-              </div>
-            )}
           </div>
         </div>
 

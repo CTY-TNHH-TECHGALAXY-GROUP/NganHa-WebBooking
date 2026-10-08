@@ -24,6 +24,8 @@ import {
   type HomeSpaConfig,
 } from '@/data/homeSpaData';
 import OriaCareEditor from '@/components/Admin/OriaCareEditor';
+import { DEFAULT_ORIA_CARE_CONFIG, hydrateOriaCareConfig } from '@/data/oriaCareData';
+import { mergeHomeCareIntroduction } from '@/data/homeCareIntroduction';
 import { WatermarkControl } from '@/components/Admin/WatermarkControl';
 
 const LANGUAGES = [
@@ -35,7 +37,7 @@ const LANGUAGES = [
 ];
 
 export default function HomeSpaAdminPage() {
-  const [config, setConfig] = useState<HomeSpaConfig>(DEFAULT_HOME_SPA_CONFIG);
+  const [config, setConfig] = useState<HomeSpaConfig>(() => mergeHomeCareIntroduction(DEFAULT_HOME_SPA_CONFIG, DEFAULT_ORIA_CARE_CONFIG));
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
@@ -62,8 +64,9 @@ export default function HomeSpaAdminPage() {
         if (res.ok) {
           const json = await res.json();
           const remoteContent = json.data?.home_spa_content || json.home_spa_content;
+          const careContent = json.data?.oria_care_content || json.oria_care_content;
           if (remoteContent) {
-            setConfig(hydrateHomeSpaConfig(remoteContent));
+            setConfig(mergeHomeCareIntroduction(hydrateHomeSpaConfig(remoteContent), hydrateOriaCareConfig(careContent)));
           }
         }
       } catch (err) {
@@ -552,6 +555,10 @@ export default function HomeSpaAdminPage() {
                   Phần {sIdx + 1}
                 </span>
               </div>
+
+              {sIdx === 0 && config.careIntroductionMerged && (
+                <p className="text-xs text-admin-text-dim">Giới thiệu chung của Oria Home Care và Oria Care. Chỉnh toàn bộ đoạn văn tại đây. Khung ảnh Oria Care 01 nằm sau đoạn đầu; khung ảnh Oria Home Care 01 nằm sau toàn bộ phần giới thiệu.</p>
+              )}
 
               <div>
                 <label className="text-xs text-admin-text-dim block mb-1 font-semibold">
@@ -1217,7 +1224,7 @@ export default function HomeSpaAdminPage() {
         </div>
       </div>
       <section id="oria-care-editor" className="scroll-mt-24">
-        <OriaCareEditor />
+        <OriaCareEditor introductionMerged={config.careIntroductionMerged} />
       </section>
     </div>
   );

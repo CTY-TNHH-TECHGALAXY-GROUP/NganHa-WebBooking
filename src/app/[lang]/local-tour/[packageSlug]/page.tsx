@@ -35,8 +35,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const pkg = getPackageBySlugOrId(packageSlug, config.packages);
   const locale = (lang || 'vi') as Locale;
   const title = pkg
-    ? `${pkg.title[locale] || pkg.title.vi || pkg.title.en} · Local Tour | Oria Spa`
-    : 'Local Tour | Oria Spa';
+    ? `${pkg.title[locale] || pkg.title.vi || pkg.title.en} · Oria Tour`
+    : 'Oria Tour | Oria Spa';
   const description = pkg?.tagline?.[locale] || pkg?.tagline?.vi || 'Discover Saigon the Oria Spa Way.';
 
   return getPageMetadata({

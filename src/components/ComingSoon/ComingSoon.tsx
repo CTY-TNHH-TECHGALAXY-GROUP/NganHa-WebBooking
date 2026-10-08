@@ -65,7 +65,8 @@ const leafIcon = (
   </svg>
 );
 
-const ComingSoon = () => {
+const ComingSoon = ({ embedded = false }: { embedded?: boolean } = {}) => {
+  const Title = embedded ? 'h2' : 'h1';
   const { currentLang } = useTranslation();
   const lang: SupportedLang = (['vi', 'en', 'cn', 'jp', 'kr'].includes(currentLang) ? currentLang : 'vi') as SupportedLang;
   const [email, setEmail] = useState('');
@@ -84,7 +85,7 @@ const ComingSoon = () => {
       <div className={styles.content}>
         <div className={styles.iconWrapper}>{leafIcon}</div>
         <p className={styles.launching}>{COMING_SOON_COPY.launching[lang]}</p>
-        <h1 className={styles.title}>{COMING_SOON_COPY.comingSoon[lang]}</h1>
+        <Title className={styles.title}>{COMING_SOON_COPY.comingSoon[lang]}</Title>
         <div className={styles.divider}>
            <span className={styles.dividerIcon}>{leafIcon}</span>
         </div>

@@ -21,6 +21,7 @@ import {
   DEFAULT_ORIA_CARE_CONFIG,
   hydrateOriaCareConfig,
   type OriaCareConfig,
+  type OriaCareParagraphImage,
 } from '@/data/oriaCareData';
 import { WatermarkControl } from '@/components/Admin/WatermarkControl';
 
@@ -32,7 +33,7 @@ const LANGUAGES = [
   { code: 'kr', label: '한국어', flag: '🇰🇷' },
 ];
 
-export default function OriaCareEditor() {
+export default function OriaCareEditor({ introductionMerged = false }: { introductionMerged?: boolean } = {}) {
   const [config, setConfig] = useState<OriaCareConfig>(DEFAULT_ORIA_CARE_CONFIG);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -110,18 +111,39 @@ export default function OriaCareEditor() {
     }
   };
 
+  const updateParagraphImage = (sectionIndex: number, paragraphIndex: number, patch: Partial<OriaCareParagraphImage> | null) => {
+    updateConfig((prev) => {
+      const sections = [...prev.sections];
+      const paragraphImages = [...(sections[sectionIndex].paragraphImages || [])];
+      paragraphImages[paragraphIndex] = patch === null ? null : {
+        src: '', watermarkEnabled: true, watermarkOpacity: 15,
+        ...paragraphImages[paragraphIndex], ...patch,
+      };
+      sections[sectionIndex] = { ...sections[sectionIndex], paragraphImages };
+      return { ...prev, sections };
+    });
+  };
+
   // Media Upload handler for Supabase (Image & Video)
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, target: 'hero' | 'story-0' | 'story-1' | 'story-2') => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, target: 'hero' | 'story-0' | 'story-1' | 'story-2' | { sectionIndex: number; paragraphIndex: number }) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    const input = e.currentTarget;
+    const imageExtensions: Record<string, string> = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp', 'image/avif': 'avif' };
+    if (typeof target !== 'string' && (!imageExtensions[file.type] || file.size > 10 * 1024 * 1024)) {
+      setMessage({ type: 'error', text: 'Chọn ảnh JPG, PNG, WebP hoặc AVIF không quá 10 MB.' });
+      input.value = '';
+      return;
+    }
 
     const isVideo = file.type.startsWith('video/') || /\.(mp4|mov|webm)$/i.test(file.name);
 
-    setUploadingKey(target);
+    const uploadKey = typeof target === 'string' ? target : `paragraph-${target.sectionIndex}-${target.paragraphIndex}`;
+    setUploadingKey(uploadKey);
     try {
       const supabase = createClient();
-      const ext = file.name.split('.').pop() || (isVideo ? 'mp4' : 'jpg');
-      const fileName = `oriacare/${target}-${Date.now()}.${ext}`;
+      const ext = typeof target === 'string' ? file.name.split('.').pop() || (isVideo ? 'mp4' : 'jpg') : imageExtensions[file.type];
+      const fileName = `oriacare/${uploadKey}-${Date.now()}.${ext}`;
 
       const { error } = await supabase.storage
         .from('media-uploads')
@@ -135,7 +157,9 @@ export default function OriaCareEditor() {
 
       const url = publicUrlData.publicUrl;
 
-      if (target === 'hero') {
+      if (typeof target !== 'string') {
+        updateParagraphImage(target.sectionIndex, target.paragraphIndex, { src: url });
+      } else if (target === 'hero') {
         updateConfig((prev) => ({
           ...prev,
           heroImage: url,
@@ -174,6 +198,7 @@ export default function OriaCareEditor() {
       });
     } finally {
       setUploadingKey(null);
+      if (typeof target !== 'string') input.value = '';
     }
   };
 
@@ -376,7 +401,7 @@ export default function OriaCareEditor() {
                   <input
                     type="file"
                     accept="image/*, video/*, .mp4, .mov, .webm"
-                    disabled={uploadingKey === 'hero'}
+                    disabled={saving || uploadingKey !== null}
                     className="hidden"
                     onChange={(e) => handleImageUpload(e, 'hero')}
                   />
@@ -537,7 +562,10 @@ export default function OriaCareEditor() {
             <span className="text-xs text-admin-text-faint">Đang sửa: {activeLang.toUpperCase()}</span>
           </div>
 
-          {config.sections.map((section, sIdx) => (
+          {introductionMerged && (
+            <p className="text-sm text-admin-text-dim">Phần “Oria Care là gì?” đã được gộp vào phần giới thiệu chung ở trên. Chỉnh phần giới thiệu tại Oria Home Care; các nội dung chuyên sâu và 3 khung ảnh Oria Care vẫn chỉnh tại đây.</p>
+          )}
+          {config.sections.map((section, sIdx) => introductionMerged && sIdx === 0 ? null : (
             <div
               key={section.id || 'sec-' + sIdx}
               className="p-6 rounded-2xl bg-admin-card border border-admin-line space-y-4"
@@ -574,28 +602,56 @@ export default function OriaCareEditor() {
               </div>
 
               <div className="space-y-3 pt-1">
-                {section.paragraphs.map((para, pIdx) => (
-                  <div key={'p-edit-' + sIdx + '-' + pIdx} className="space-y-1">
-                    <label className="text-xs text-admin-text-dim block">
-                      Đoạn {pIdx + 1} ({activeLang.toUpperCase()}):
-                    </label>
-                    <textarea
-                      rows={3}
-                      value={para[activeLang] || ''}
-                      onChange={(e) => {
-                        const val = e.target.value;
-                        updateConfig((prev) => {
-                          const nextSecs = [...prev.sections];
-                          const nextParas = [...nextSecs[sIdx].paragraphs];
-                          nextParas[pIdx] = { ...nextParas[pIdx], [activeLang]: val };
-                          nextSecs[sIdx] = { ...nextSecs[sIdx], paragraphs: nextParas };
-                          return { ...prev, sections: nextSecs };
-                        });
-                      }}
-                      className="w-full bg-admin-bg text-sm text-admin-text p-3 rounded-xl border border-admin-line focus:border-admin-gold outline-none resize-y"
-                    />
-                  </div>
-                ))}
+                {section.paragraphs.map((para, pIdx) => {
+                  const image = section.paragraphImages?.[pIdx];
+                  const imageKey = `paragraph-${sIdx}-${pIdx}`;
+                  return (
+                    <div key={'p-edit-' + sIdx + '-' + pIdx} className="space-y-1">
+                      <label className="text-xs text-admin-text-dim block">
+                        Đoạn {pIdx + 1} ({activeLang.toUpperCase()}):
+                      </label>
+                      <textarea
+                        rows={3}
+                        value={para[activeLang] || ''}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          updateConfig((prev) => {
+                            const nextSecs = [...prev.sections];
+                            const nextParas = [...nextSecs[sIdx].paragraphs];
+                            nextParas[pIdx] = { ...nextParas[pIdx], [activeLang]: val };
+                            nextSecs[sIdx] = { ...nextSecs[sIdx], paragraphs: nextParas };
+                            return { ...prev, sections: nextSecs };
+                          });
+                        }}
+                        className="w-full bg-admin-bg text-sm text-admin-text p-3 rounded-xl border border-admin-line focus:border-admin-gold outline-none resize-y"
+                      />
+                      {image ? (
+                        <div className="mt-3 p-4 border border-admin-line rounded-xl space-y-3">
+                          <div className="flex items-center justify-between gap-3">
+                            <span className="text-xs text-admin-gold">Ảnh sau đoạn {pIdx + 1} · Chung 5 ngôn ngữ</span>
+                            <button type="button" disabled={saving || uploadingKey !== null} onClick={() => updateParagraphImage(sIdx, pIdx, null)} className="text-xs text-admin-text-dim hover:text-admin-text disabled:opacity-50">Bỏ khung ảnh</button>
+                          </div>
+                          <div className="relative aspect-video bg-black/30 rounded-lg overflow-hidden border border-admin-line flex items-center justify-center">
+                            {image.src ? <img src={image.src} alt={`Ảnh sau đoạn ${pIdx + 1}`} className="w-full h-full object-cover" /> : <ImageIcon size={32} className="text-admin-text-faint" />}
+                            {image.src && image.watermarkEnabled && <div className="media-watermark" aria-hidden="true" style={{ opacity: image.watermarkOpacity / 100 }} />}
+                          </div>
+                          <label className="block text-xs text-admin-text-dim">
+                            URL ảnh
+                            <input type="url" value={image.src} disabled={saving || uploadingKey === imageKey} onChange={e => updateParagraphImage(sIdx, pIdx, { src: e.target.value })} placeholder="https://…" className="mt-1 w-full bg-admin-bg text-admin-text p-3 rounded-lg border border-admin-line focus:border-admin-gold outline-none" />
+                          </label>
+                          <label className="inline-flex items-center gap-2 px-3 py-2 border border-admin-line rounded-lg text-xs text-admin-text cursor-pointer focus-within:outline focus-within:outline-admin-gold">
+                            <Upload size={14} />{uploadingKey === imageKey ? 'Đang tải lên…' : 'Upload ảnh'}
+                            <input type="file" accept="image/jpeg,image/png,image/webp,image/avif" className="sr-only" disabled={saving || uploadingKey !== null} onChange={event => handleImageUpload(event, { sectionIndex: sIdx, paragraphIndex: pIdx })} />
+                          </label>
+                          <p className="text-xs text-admin-text-faint">JPG, PNG, WebP hoặc AVIF, tối đa 10 MB. Bấm Lưu Nội Dung Oria Care để áp dụng.</p>
+                          <WatermarkControl checked={image.watermarkEnabled} opacity={image.watermarkOpacity} onChangeChecked={watermarkEnabled => updateParagraphImage(sIdx, pIdx, { watermarkEnabled })} onChangeOpacity={watermarkOpacity => updateParagraphImage(sIdx, pIdx, { watermarkOpacity })} />
+                        </div>
+                      ) : (
+                        <button type="button" disabled={saving || uploadingKey !== null} onClick={() => updateParagraphImage(sIdx, pIdx, {})} className="mt-2 inline-flex items-center gap-2 text-xs text-admin-gold hover:text-admin-text disabled:opacity-50"><ImageIcon size={14} />Thêm ảnh sau đoạn này</button>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             </div>
           ))}
@@ -610,7 +666,7 @@ export default function OriaCareEditor() {
                 3 Khung Ảnh Minh Họa Bài Viết (Xen Kẽ Giữa Các Phần)
               </h2>
               <p className="text-xs text-admin-text-dim mt-0.5">
-                Khung 01 sau Phần 1, Khung 02 sau Phần 2, Khung 03 sau Phần 3.
+                {introductionMerged ? 'Khung 01 nằm giữa phần giới thiệu chung Oria Home Care ở đầu trang. Khung 02 sau Phần 2, Khung 03 sau Phần 3.' : 'Khung 01 sau Phần 1, Khung 02 sau Phần 2, Khung 03 sau Phần 3.'}
               </p>
             </div>
             <span className="text-[11px] px-2.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 font-semibold">
@@ -625,7 +681,7 @@ export default function OriaCareEditor() {
                 <div key={idx} className="p-5 rounded-2xl bg-admin-bg/60 border border-admin-line space-y-3">
                   <div className="flex items-center justify-between">
                     <span className="text-xs uppercase tracking-wider text-admin-gold font-bold">
-                      Khung Ảnh {idx + 1 < 10 ? `0${idx + 1}` : idx + 1} (Sau Phần {idx + 1})
+                      Khung Ảnh {idx + 1 < 10 ? `0${idx + 1}` : idx + 1} ({introductionMerged && idx === 0 ? 'Giữa phần giới thiệu chung' : `Sau Phần ${idx + 1}`})
                     </span>
                     <span className="text-[10px] text-admin-text-faint bg-black/40 px-2 py-0.5 rounded">
                       Chung 5 ngôn ngữ
@@ -666,7 +722,7 @@ export default function OriaCareEditor() {
                       <input
                         type="file"
                         accept="image/*"
-                        disabled={uploadingKey === targetKey}
+                        disabled={saving || uploadingKey !== null}
                         className="hidden"
                         onChange={(e) => handleImageUpload(e, targetKey)}
                       />
@@ -877,7 +933,7 @@ export default function OriaCareEditor() {
 
           <button
             onClick={handleSave}
-            disabled={saving}
+            disabled={saving || uploadingKey !== null}
             className="px-6 py-2.5 bg-admin-gold hover:bg-admin-gold-hover text-admin-bg text-xs font-bold rounded-xl transition-all shadow-lg hover:shadow-admin-gold/20 flex items-center gap-2 disabled:opacity-50 cursor-pointer"
           >
             {saving ? (

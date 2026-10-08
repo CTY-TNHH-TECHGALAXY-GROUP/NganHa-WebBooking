@@ -18,12 +18,14 @@ interface OriaCarePageProps {
   initialConfig?: OriaCareConfig;
   initialLang?: Locale;
   embedded?: boolean;
+  skipIntroduction?: boolean;
 }
 
 export default function OriaCarePage({
   initialConfig,
   initialLang,
   embedded = false,
+  skipIntroduction = false,
 }: OriaCarePageProps = {}) {
   const { currentLang, setCurrentLang } = useTranslation();
   const { systemSettings } = useSystemSettings();
@@ -75,9 +77,9 @@ export default function OriaCarePage({
   const ctaHref = config.ctaLink || `tel:${hotline.replace(/\s+/g, '')}`;
 
   return (
-    <section id="oria-care" className={styles.pageRoot}>
+    <section id="oria-care" className={`${styles.pageRoot} ${embedded ? styles.embedded : ''}`}>
       {/* 1. CINEMATIC HERO BANNER */}
-      <section className={styles.hero}>
+      <section className={`${styles.hero} ${embedded && !config.heroImage ? styles.textIntro : ''}`}>
         <div className={styles.heroBackdrop}>
           {Boolean(config.heroImage) && (
             (config.heroMediaType === 'video' || /\.(mp4|mov|webm)(\?.*)?$/i.test(config.heroImage || '')) ? (
@@ -124,7 +126,7 @@ export default function OriaCarePage({
       {/* 2. MAIN EDITORIAL ARTICLE */}
       <ArticleContainer className={styles.articleContainer}>
         {/* SECTION 1 */}
-        {config.sections[0] && (
+        {!skipIntroduction && config.sections[0] && (
           <motion.article
             className={styles.editorialSection}
             initial={reduceMotion ? false : { opacity: 0, y: 24 }}
@@ -134,15 +136,23 @@ export default function OriaCarePage({
           >
             <h2 className={styles.sectionHeading}>{getText(config.sections[0].heading)}</h2>
             {config.sections[0].paragraphs?.map((p, idx) => (
-              <p key={idx} className={styles.paragraph}>
-                {getText(p)}
-              </p>
+              <React.Fragment key={idx}>
+                <p className={styles.paragraph}>{getText(p)}</p>
+                {config.sections[0].paragraphImages?.[idx]?.src && (
+                  <div className={styles.storyPhotoFrame}>
+                    <img src={config.sections[0].paragraphImages![idx]!.src} alt={getText(config.sections[0].heading)} loading="lazy" />
+                    {config.sections[0].paragraphImages![idx]!.watermarkEnabled !== false && (
+                      <div className="media-watermark" aria-hidden="true" style={{ opacity: config.sections[0].paragraphImages![idx]!.watermarkOpacity / 100 }} />
+                    )}
+                  </div>
+                )}
+              </React.Fragment>
             ))}
           </motion.article>
         )}
 
         {/* PHOTO FRAME 01 (Interleaved after Section 1) */}
-        {config.storyPhotos?.[0] && (
+        {!skipIntroduction && config.storyPhotos?.[0] && (
           <motion.div
             className={styles.storyPhotoFrame}
             initial={reduceMotion ? false : { opacity: 0, scale: 0.98 }}
@@ -176,9 +186,17 @@ export default function OriaCarePage({
           >
             <h2 className={styles.sectionHeading}>{getText(config.sections[1].heading)}</h2>
             {config.sections[1].paragraphs?.map((p, idx) => (
-              <p key={idx} className={styles.paragraph}>
-                {getText(p)}
-              </p>
+              <React.Fragment key={idx}>
+                <p className={styles.paragraph}>{getText(p)}</p>
+                {config.sections[1].paragraphImages?.[idx]?.src && (
+                  <div className={styles.storyPhotoFrame}>
+                    <img src={config.sections[1].paragraphImages![idx]!.src} alt={getText(config.sections[1].heading)} loading="lazy" />
+                    {config.sections[1].paragraphImages![idx]!.watermarkEnabled !== false && (
+                      <div className="media-watermark" aria-hidden="true" style={{ opacity: config.sections[1].paragraphImages![idx]!.watermarkOpacity / 100 }} />
+                    )}
+                  </div>
+                )}
+              </React.Fragment>
             ))}
           </motion.article>
         )}
@@ -218,9 +236,17 @@ export default function OriaCarePage({
           >
             <h2 className={styles.sectionHeading}>{getText(config.sections[2].heading)}</h2>
             {config.sections[2].paragraphs?.map((p, idx) => (
-              <p key={idx} className={styles.paragraph}>
-                {getText(p)}
-              </p>
+              <React.Fragment key={idx}>
+                <p className={styles.paragraph}>{getText(p)}</p>
+                {config.sections[2].paragraphImages?.[idx]?.src && (
+                  <div className={styles.storyPhotoFrame}>
+                    <img src={config.sections[2].paragraphImages![idx]!.src} alt={getText(config.sections[2].heading)} loading="lazy" />
+                    {config.sections[2].paragraphImages![idx]!.watermarkEnabled !== false && (
+                      <div className="media-watermark" aria-hidden="true" style={{ opacity: config.sections[2].paragraphImages![idx]!.watermarkOpacity / 100 }} />
+                    )}
+                  </div>
+                )}
+              </React.Fragment>
             ))}
           </motion.article>
         )}

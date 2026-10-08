@@ -16,6 +16,7 @@ import { trackAnalytics } from '@/lib/analytics/client';
 import { useSystemSettings } from '@/components/SystemSettingsProvider';
 import { Locale } from '@/lib/constants';
 import { getDictionary } from '@/lib/dictionaries';
+import { ORIA_BRANDS, oriaBrandHref, renamedTherapyLabel, DEFAULT_NAVIGATION_BACKGROUND } from '@/lib/oriaNavigation';
 
 // Google Maps Pin Icon with authentic Google brand colors (#EA4335, #4285F4, #FBBC04, #34A853)
 function GoogleMapsPinIcon({ className = "w-5 h-5" }: { className?: string }) {
@@ -80,7 +81,7 @@ const NAV_FALLBACKS: Record<string, Record<Locale, string>> = {
   services: { vi: 'Dịch vụ', en: 'Services', cn: '服务', jp: 'サービス', kr: '서비스' },
   design_journey: { vi: 'Thiết kế hành trình', en: 'Design Your Journey', cn: '定制您的专属旅程', jp: 'ジャーニーをデザイン', kr: '나만의 여정 디자인' },
   pure_relaxation: { vi: 'Thư giãn thuần túy', en: 'Pure relaxation', cn: '纯粹放松', jp: 'ピュアリラクゼーション', kr: '순수한 휴식' },
-  therapy: { vi: 'Trị liệu', en: 'Therapy', cn: '理疗', jp: 'セラピー', kr: '테라피' },
+  therapy: { vi: 'Deep Body Treament', en: 'Deep Body Treament', cn: 'Deep Body Treament', jp: 'Deep Body Treament', kr: 'Deep Body Treament' },
   academy: { vi: 'Học viện', en: 'Academy', cn: '学院', jp: 'アカデミー', kr: '아카데미' },
   academy_admissions: { vi: 'Tuyển dụng / Nhập học', en: 'Recruitment/Admission', cn: '招聘/入学', jp: '採用・入学', kr: '채용 / 입학' },
   academy_training: { vi: 'Đào tạo / Trực tuyến', en: 'Training / Online', cn: '培训/在线', jp: 'トレーニング・オンライン', kr: '교육 / 온라인' },
@@ -120,7 +121,7 @@ const DEFAULT_NAV_ITEMS: NavItem[] = [
     children: [
       { id: 'design_journey', label: 'Design Your Journey', href: '/design-your-journey', badge: '50%' },
       { id: 'pure_relaxation', label: 'Pure relaxation', href: '/pure-relaxation', badge: '30%' },
-      { id: 'therapy', label: 'Therapy', href: '/therapy', badge: '20%' },
+      { id: 'therapy', label: 'Deep Body Treament', href: '/therapy', badge: '20%' },
     ],
   },
   {
@@ -240,12 +241,12 @@ const Header = () => {
     const store = isVi ? 'Cửa hàng' : isCn ? '商店' : isJp ? 'ストア' : isKr ? '스토어' : 'Store';
     const retreat = isVi ? 'Nghỉ dưỡng' : isCn ? '度假村' : isJp ? 'リトリート' : isKr ? '리트릿' : 'Retreat';
 
-    return [
-      { name: 'Oria Spa', location: hcm, href: '/' },
-      { name: 'Oria Home Care', location: hcm, href: '/oriahome' },
-      { name: 'Oria Farm', sub: store, location: hcm, href: '/oriafarm-store' },
-      { name: 'Oria Farm', sub: retreat, location: dongNai, href: '/oriafarm-retreat' }
-    ];
+    return ORIA_BRANDS.map(brand => ({
+      ...brand,
+      href: oriaBrandHref(brand.href, currentLang.code),
+      sub: brand.id === 'oriafarm-store' ? store : brand.id === 'oriafarm-retreat' ? retreat : undefined,
+      location: brand.id === 'oriafarm-retreat' ? dongNai : hcm,
+    }));
   }, [currentLang.code]);
 
   const nextBrand = () => {
@@ -257,7 +258,7 @@ const Header = () => {
   };
 
   const NAV_ITEMS = useMemo(() => {
-    return [
+    const contentItems: NavItem[] = [
       {
         id: 'spaces',
         label: getLocalizedText(hpNav?.spaces, lang, getNavFallback('spaces', lang)),
@@ -275,7 +276,7 @@ const Header = () => {
         children: [
           { id: 'design_journey', label: getLocalizedText(hpNav?.designJourney, lang, getNavFallback('design_journey', lang)), href: '/design-your-journey', badge: hpNav?.designJourneyBadge || '50%' },
           { id: 'pure_relaxation', label: getLocalizedText(hpNav?.pureRelaxation, lang, getNavFallback('pure_relaxation', lang)), href: '/pure-relaxation', badge: hpNav?.pureRelaxationBadge || '30%' },
-          { id: 'therapy', label: getLocalizedText(hpNav?.therapy, lang, getNavFallback('therapy', lang)), href: '/therapy', badge: hpNav?.therapyBadge || '20%' },
+          { id: 'therapy', label: renamedTherapyLabel(getLocalizedText(hpNav?.therapy, lang, getNavFallback('therapy', lang))), href: '/therapy', badge: hpNav?.therapyBadge || '20%' },
         ],
       },
       {
@@ -316,7 +317,17 @@ const Header = () => {
           { id: 'academy_understand', label: getLocalizedText(hpNav?.understandYourself, lang, getNavFallback('academy_understand', lang)), href: '/academy/understand-yourself' },
         ],
       },
-    ] as NavItem[];
+    ];
+    return ORIA_BRANDS.map(brand => ({
+      id: brand.id,
+      label: brand.name,
+      href: oriaBrandHref(brand.href, lang),
+      children: brand.id === 'oria-tour'
+        ? contentItems.find(item => item.id === 'local_tour')?.children
+        : brand.id === 'oria-academy'
+          ? contentItems.find(item => item.id === 'academy')?.children
+          : undefined,
+    }));
   }, [hpNav, lang, getLocalizedText]);
 
   const cartSubtotal = useMemo(
@@ -394,8 +405,8 @@ const Header = () => {
   }, [isMobileMenuOpen]);
 
   const renderCategory = (item: NavItem) => {
-    const isAcademy = item.id === 'academy';
-    const label = item.id ? t('header_menu', item.id) || item.label : item.label;
+    const isAcademy = item.id === 'oria-academy';
+    const label = item.id?.startsWith('oria') ? item.label : item.id ? t('header_menu', item.id) || item.label : item.label;
 
     return (
       <div key={item.id || item.href} className="nav-category-group">
@@ -489,10 +500,6 @@ const Header = () => {
   };
 
   const pathname = usePathname();
-  const isCheckoutPage = pathname.includes('/checkout');
-  const isHomepage = pathname === '/' || ['/vi', '/en', '/cn', '/jp', '/kr'].includes(pathname);
-  const isPageWithTopLogo = isHomepage || isCheckoutPage;
-  const showLogo = !isPageWithTopLogo || isScrolled;
 
   return (
     <>
@@ -520,8 +527,8 @@ const Header = () => {
             </div>
 
             {/* Center Logo */}
-            <div className={`header-logo-slot transition-opacity duration-300 z-0 ${showLogo ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-              <Link href="/" className="header-logo-link" aria-label="Oria Spa home">
+            <div className={`header-logo-slot transition-opacity duration-300 z-0 ${isScrolled ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} aria-hidden={!isScrolled}>
+              <Link href="/" className="header-logo-link" aria-label="Oria Spa home" tabIndex={isScrolled ? 0 : -1}>
                 <SmartLogo theme="dark" className="h-10 sm:h-14 md:h-[68px] w-auto object-contain cursor-pointer" />
               </Link>
             </div>
@@ -651,20 +658,21 @@ const Header = () => {
           {isMobileMenuOpen && (
             <motion.nav
               id="site-mobile-navigation"
+              aria-label="Oria brands"
               className="nav-fullscreen-overlay"
+              style={{ zIndex: 99, backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('${hpNav?.bgImage || DEFAULT_NAVIGATION_BACKGROUND}')` }}
               onKeyDown={(event) => {
                 if (event.key !== 'Escape') return;
                 event.preventDefault();
                 toggleMobileMenu();
               }}
-              style={{ zIndex: 99 }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: MOBILE_MENU_DURATION }}
             >
-              {/* Sticky Top Header Bar with Close Button and Brand Logo */}
-              <div className="nav-fullscreen-header sticky top-0 z-50 flex items-center justify-between w-full px-5 py-3.5 sm:px-8 sm:py-4 md:px-12 md:py-6 bg-[#281B15]/95 backdrop-blur-md border-b border-[rgba(247,235,199,0.1)]">
+              {/* Sticky Top Header Bar with Close Button */}
+              <div className="nav-fullscreen-header sticky top-0 z-50 flex items-center justify-between w-full px-5 py-3.5 sm:px-8 sm:py-4 md:px-12 md:py-6 bg-transparent">
                 <button 
                   className="nav-fullscreen-close text-[#f7ebc7] hover:text-[#D4AF37] active:scale-95 transition-all p-1.5 -ml-1.5 focus:outline-none flex items-center justify-center rounded-lg hover:bg-white/5" 
                   ref={mobileMenuCloseRef}
@@ -673,45 +681,16 @@ const Header = () => {
                 >
                   <X size={28} className="sm:w-8 sm:h-8" strokeWidth={1.5} />
                 </button>
-                <div className="flex-1 flex justify-center md:hidden">
-                  <SmartLogo theme="dark" className="h-8 w-auto object-contain" />
-                </div>
                 <div className="w-8 md:hidden"></div>
               </div>
 
               <div className="nav-fullscreen-inner">
-                {/* Left Panel: Navigation Links */}
-                <div className="nav-panel-left">
-                  {/* Mobile Flow (<768px): 1 unified sequential list in exact order: 1. Space -> 2. Services -> 3. Local tour -> 4. Lost & Found -> 5. Blogs -> 6. Privileges -> 7. Our story -> 8. History -> 9. Academy */}
-                  <div className="nav-links-mobile md:hidden flex flex-col gap-7 w-full">
-                    {NAV_ITEMS.map((item) => renderCategory(item))}
-                  </div>
-
-                  {/* Tablet Flow (768px - 1023px): 2 balanced columns: Col 1 (Space, Services), Col 2 (Local tour, Lost & Found, Blogs, Privileges, History, Academy) */}
-                  <div className="nav-links-tablet hidden md:flex lg:hidden gap-10 w-full">
-                    <div className="nav-links-col flex-1 flex flex-col gap-8">
-                      {NAV_ITEMS.filter(item => !!item.id && ['spaces', 'services'].includes(item.id)).map(item => renderCategory(item))}
-                    </div>
-                    <div className="nav-links-col flex-1 flex flex-col gap-8">
-                      {NAV_ITEMS.filter(item => !!item.id && ['local_tour', 'lost_and_found', 'blogs', 'privileges', 'history', 'academy'].includes(item.id)).map(item => renderCategory(item))}
-                    </div>
-                  </div>
-
-                  {/* Desktop Flow (>=1024px): 2 balanced columns */}
-                  <div className="nav-links-desktop hidden lg:flex gap-12 w-full">
-                    <div className="nav-links-col flex-1 flex flex-col gap-10">
-                      {NAV_ITEMS.filter(item => !!item.id && ['spaces', 'services'].includes(item.id)).map(item => renderCategory(item))}
-                    </div>
-                    <div className="nav-links-col flex-1 flex flex-col gap-10">
-                      {NAV_ITEMS.filter(item => !!item.id && ['local_tour', 'lost_and_found', 'blogs', 'privileges', 'history', 'academy'].includes(item.id)).map(item => renderCategory(item))}
-                    </div>
-                  </div>
-                </div>
+                {/* Keep the card placement on desktop while showing the image behind the empty panel. */}
+                <div className="nav-panel-left nav-panel-empty" aria-hidden="true" />
 
                 {/* Right Panel: Sub-brands Card */}
                 <div 
                   className="nav-panel-right"
-                  style={hpNav?.bgImage ? { backgroundImage: `url('${hpNav.bgImage}')` } : undefined}
                 >
                   <div className="nav-panel-card">
                     <div className="nav-card-header">
@@ -719,7 +698,7 @@ const Header = () => {
                       <div className="nav-card-divider"></div>
                     </div>
                     
-                    <div className="nav-card-brands flex flex-col gap-4 sm:gap-5">
+                    <div id="oria-brand-links" className="nav-card-brands flex flex-col gap-4 sm:gap-5">
                       {[0, 1, 2, 3].map((offset) => {
                         const index = (activeBrandIndex + offset) % BRANDS.length;
                         const brand = BRANDS[index];
@@ -727,7 +706,8 @@ const Header = () => {
                         return (
                           <Link 
                             href={brand.href}
-                            className="nav-brand-item block cursor-pointer" 
+                            className="nav-brand-item block cursor-pointer"
+                            aria-current={pathname === brand.href ? 'page' : undefined}
                             key={`${brand.name}-${index}`}
                             style={{ opacity: isFaded ? 0.35 : 1, transition: 'opacity 0.3s' }}
                             onClick={() => { if(isMobileMenuOpen) toggleMobileMenu(); }}
@@ -741,12 +721,13 @@ const Header = () => {
                         );
                       })}
 
+                      <span className="sr-only" role="status" aria-live="polite">{BRANDS[activeBrandIndex].name}</span>
                       {/* Side-by-side Arrows */}
                       <div className="flex justify-center gap-6 mt-3 sm:mt-4">
-                        <button onClick={prevBrand} className="text-[#f7ebc7] hover:text-[#D4AF37] active:text-[#b89529] active:scale-95 transition-all p-1" aria-label="Previous Brand">
+                        <button type="button" onClick={prevBrand} className="nav-brand-control text-[#f7ebc7] hover:text-[#D4AF37] active:text-[#b89529] active:scale-95 transition-all" aria-label="Previous Brand" aria-controls="oria-brand-links">
                           <ChevronUp size={26} strokeWidth={1.5} />
                         </button>
-                        <button onClick={nextBrand} className="text-[#f7ebc7] hover:text-[#D4AF37] active:text-[#b89529] active:scale-95 transition-all p-1" aria-label="Next Brand">
+                        <button type="button" onClick={nextBrand} className="nav-brand-control text-[#f7ebc7] hover:text-[#D4AF37] active:text-[#b89529] active:scale-95 transition-all" aria-label="Next Brand" aria-controls="oria-brand-links">
                           <ChevronDown size={26} strokeWidth={1.5} />
                         </button>
                       </div>

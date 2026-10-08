@@ -7,6 +7,7 @@ export interface HomeSpaSection {
 }
 
 export interface HomeSpaConfig {
+  careIntroductionMerged?: boolean;
   pageTitle: LocalizedString;
   pageSubtitle: LocalizedString;
   heroImage?: string;
@@ -214,6 +215,7 @@ export function hydrateHomeSpaConfig(raw: any): HomeSpaConfig {
   });
 
   return {
+    careIntroductionMerged: raw.careIntroductionMerged === true,
     pageTitle: renameHomeSpaText(raw.pageTitle || DEFAULT_HOME_SPA_CONFIG.pageTitle),
     pageSubtitle: renameHomeSpaText(raw.pageSubtitle || DEFAULT_HOME_SPA_CONFIG.pageSubtitle),
     heroImage,
