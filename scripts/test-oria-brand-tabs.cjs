@@ -13,6 +13,7 @@ function load(file, mocks = {}) {
 }
 
 const navigation = load('src/lib/oriaNavigation.ts');
+const spaContent = load('src/data/oriaSpaContent.ts');
 assert.equal(navigation.ORIA_BRANDS.length, 6);
 for (const label of ['Therapy', 'Trị liệu', '理疗', '治疗', 'セラピー', '테라피', '치료']) assert.equal(navigation.renamedTherapyLabel(label), 'Deep Body Treament');
 assert.equal(navigation.renamedTherapyLabel('Custom treatment'), 'Custom treatment');
@@ -29,6 +30,7 @@ const slots = [];
 const effects = [];
 let cursor = 0;
 let locale = 'en';
+let savedSpaServiceContent;
 let stripScrolls = 0;
 let focusedIndex = -1;
 global.window = {
@@ -64,10 +66,11 @@ const Tabs = load('src/components/OriaSpa/OriaSpaTabs.tsx', {
   '@/components/OurStory/OurStory': fakeContent('OurStory'),
   '@/components/TranslationProvider': { useTranslation: () => ({ currentLang: locale }) },
   '@/components/SystemSettingsProvider': { useSystemSettings: () => ({
-    systemSettings: { homepage_content: { navigation: { designJourneyBadge: '55%', therapy: { en: 'Therapy' } } } },
+    systemSettings: { homepage_content: { spaServiceContent: savedSpaServiceContent, navigation: { designJourneyBadge: '55%', therapy: { en: 'Therapy' } } } },
     getLocalizedText: (text, lang, fallback) => text?.[lang] || fallback,
   }) },
   '@/lib/oriaNavigation': navigation,
+  '@/data/oriaSpaContent': spaContent,
   './OriaSpaTabs.module.css': { __esModule: true, default: new Proxy({}, { get: (_target, key) => key }) },
 }).default;
 
@@ -218,6 +221,7 @@ async function testNavigationBackgroundUpload() {
       useEffect() {},
     },
     '@/lib/oriaNavigation': navigation,
+    '@/data/oriaSpaContent': spaContent,
     '@/lib/supabase': { createClient: () => ({ storage: { from: bucket => {
       assert.equal(bucket, 'media-uploads');
       return {
@@ -230,6 +234,33 @@ async function testNavigationBackgroundUpload() {
   function input() { return descendants(page()).find(node => node.props?.type === 'file'); }
   function event(type, size) { return { currentTarget: { files: [{ type, size }], value: 'selected' } }; }
   page();
+  const partial = { spaServiceContent: { intro: { vi: 'Nội dung riêng', en: '' } }, untouched: 'keep' };
+  const snapshot = JSON.stringify(partial);
+  const hydrated = spaContent.fillLocalizedDefaults({ spaServiceContent: spaContent.DEFAULT_SPA_SERVICE_CONTENT }, partial);
+  assert.equal(JSON.stringify(partial), snapshot);
+  assert.equal(hydrated.untouched, 'keep');
+  assert.equal(hydrated.spaServiceContent.intro.vi, 'Nội dung riêng');
+  assert.equal(hydrated.spaServiceContent.intro.en, '');
+  for (const field of Object.keys(spaContent.DEFAULT_SPA_SERVICE_CONTENT)) {
+    for (const lang of ['vi', 'en', 'cn', 'jp', 'kr']) assert(state[5].spaServiceContent[field][lang].trim());
+  }
+  const introduction = descendants(page()).find(node => node.type === 'textarea' && node.props.value === state[5].spaServiceContent.intro.vi);
+  introduction.props.onChange({ target: { value: 'Giới thiệu chỉnh trong admin' } });
+  assert.equal(state[5].spaServiceContent.intro.vi, 'Giới thiệu chỉnh trong admin');
+  assert.equal(state[5].spaServiceContent.intro.en, spaContent.DEFAULT_SPA_SERVICE_CONTENT.intro.en);
+  let saved;
+  global.fetch = async (url, options) => { assert.equal(url, '/api/admin/system-settings'); saved = JSON.parse(options.body); return { ok: true }; };
+  const timeout = global.setTimeout;
+  global.setTimeout = () => 0;
+  try {
+    await descendants(page()).find(node => node.type === 'button' && node.props.onClick?.name === 'handleSave').props.onClick();
+  } finally { global.setTimeout = timeout; }
+  assert.equal(saved.homepage_content.spaServiceContent.intro.vi, 'Giới thiệu chỉnh trong admin');
+  savedSpaServiceContent = saved.homepage_content.spaServiceContent;
+  locale = 'vi';
+  const updated = click(render(), 'service');
+  assert(descendants(updated).some(node => node.type === 'p' && node.props.children === 'Giới thiệu chỉnh trong admin'));
+  console.log('Admin service content passed: five-language defaults, preserved saved values, editing, save payload and website display.');
   const before = JSON.parse(JSON.stringify(state[5]));
   assert.equal(before.navigation.bgImage, navigation.DEFAULT_NAVIGATION_BACKGROUND);
   const valid = event('image/webp', 1024);

@@ -243,11 +243,12 @@ const Header = () => {
 
     return ORIA_BRANDS.map(brand => ({
       ...brand,
+      name: getLocalizedText(hpNav?.[brand.id], lang, brand.name),
       href: oriaBrandHref(brand.href, currentLang.code),
       sub: brand.id === 'oriafarm-store' ? store : brand.id === 'oriafarm-retreat' ? retreat : undefined,
       location: brand.id === 'oriafarm-retreat' ? dongNai : hcm,
     }));
-  }, [currentLang.code]);
+  }, [currentLang.code, hpNav, lang, getLocalizedText]);
 
   const nextBrand = () => {
     setActiveBrandIndex((prev) => (prev + 1) % BRANDS.length);
@@ -320,7 +321,7 @@ const Header = () => {
     ];
     return ORIA_BRANDS.map(brand => ({
       id: brand.id,
-      label: brand.name,
+      label: getLocalizedText(hpNav?.[brand.id], lang, brand.name),
       href: oriaBrandHref(brand.href, lang),
       children: brand.id === 'oria-tour'
         ? contentItems.find(item => item.id === 'local_tour')?.children

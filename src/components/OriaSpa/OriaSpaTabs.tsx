@@ -8,6 +8,7 @@ import { useTranslation } from '@/components/TranslationProvider';
 import { useSystemSettings } from '@/components/SystemSettingsProvider';
 import { SPA_TABS, spaTabFromHash, renamedTherapyLabel, type SpaTabId } from '@/lib/oriaNavigation';
 import type { Locale } from '@/lib/constants';
+import { DEFAULT_SPA_SERVICE_CONTENT, fillLocalizedDefaults } from '@/data/oriaSpaContent';
 import styles from './OriaSpaTabs.module.css';
 
 const Space = dynamic(() => import('@/components/Space/SpacePage'));
@@ -22,49 +23,12 @@ const SERVICE_CHOICES = [
   { key: 'therapy', href: '/therapy', badgeKey: 'therapyBadge', badge: '20%', labels: { vi: 'Deep Body Treament', en: 'Deep Body Treament', cn: 'Deep Body Treament', jp: 'Deep Body Treament', kr: 'Deep Body Treament' } },
 ] as const;
 
-const SERVICE_COPY = {
-  vi: {
-    intro: 'Chọn trải nghiệm phù hợp với nhu cầu và thời gian của bạn.',
-    explore: 'Khám phá', soon: 'Sắp ra mắt',
-    designJourney: 'Tự kết hợp các dịch vụ theo thời gian bạn có. Thiết kế trải nghiệm trực tiếp tại Oria Spa.',
-    pureRelaxation: 'Khám phá từng dịch vụ thư giãn, xem thời lượng và chọn liệu trình phù hợp.',
-    therapy: 'Trải nghiệm trị liệu đang được chuẩn bị tại Oria Spa.',
-  },
-  en: {
-    intro: 'Find an experience that fits your needs and the time you have.',
-    explore: 'Explore', soon: 'Coming soon',
-    designJourney: 'Combine services around your own schedule. Create your experience in person at Oria Spa.',
-    pureRelaxation: 'Explore individual relaxation services, compare durations and choose your treatment.',
-    therapy: 'Our therapy experience is in preparation at Oria Spa.',
-  },
-  cn: {
-    intro: '根据您的需求和时间，选择适合自己的体验。',
-    explore: '探索体验', soon: '即将推出',
-    designJourney: '根据您的时间自由组合服务。亲临 Oria Spa，设计专属体验。',
-    pureRelaxation: '探索各项放松服务，查看时长，选择适合您的护理。',
-    therapy: 'Oria Spa 的理疗体验正在筹备中。',
-  },
-  jp: {
-    intro: 'ご希望とお時間に合った体験をお選びください。',
-    explore: '詳しく見る', soon: '近日公開',
-    designJourney: 'お時間に合わせてサービスを自由に組み合わせ。Oria Spa の店頭で体験をデザインできます。',
-    pureRelaxation: 'リラクゼーションサービスと所要時間を見比べて、お好みの施術をお選びください。',
-    therapy: 'Oria Spa のセラピー体験は現在準備中です。',
-  },
-  kr: {
-    intro: '원하는 서비스와 여유 시간에 맞는 경험을 선택하세요.',
-    explore: '자세히 보기', soon: '곧 공개',
-    designJourney: '여유 시간에 맞춰 서비스를 자유롭게 조합하세요. Oria Spa 매장에서 나만의 경험을 설계할 수 있습니다.',
-    pureRelaxation: '개별 휴식 서비스와 소요 시간을 살펴보고 원하는 관리를 선택하세요.',
-    therapy: 'Oria Spa에서 테라피 경험을 준비하고 있습니다.',
-  },
-} satisfies Record<Locale, { intro: string; explore: string; soon: string; designJourney: string; pureRelaxation: string; therapy: string }>;
-
 export default function OriaSpaTabs() {
   const { currentLang } = useTranslation();
   const { systemSettings, getLocalizedText } = useSystemSettings();
   const lang = currentLang as Locale;
-  const serviceCopy = SERVICE_COPY[lang] || SERVICE_COPY.en;
+  const serviceContent = fillLocalizedDefaults(DEFAULT_SPA_SERVICE_CONTENT, systemSettings?.homepage_content?.spaServiceContent);
+  const serviceCopy = Object.fromEntries(Object.keys(DEFAULT_SPA_SERVICE_CONTENT).map(key => [key, serviceContent[key][lang] ?? serviceContent[key].en]));
   const navigation = systemSettings?.homepage_content?.navigation;
   const [activeTab, setActiveTab] = useState<SpaTabId>('our-story');
   const [hasOpenedLostAndFound, setHasOpenedLostAndFound] = useState(false);

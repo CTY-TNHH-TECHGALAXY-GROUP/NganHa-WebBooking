@@ -1,7 +1,8 @@
 'use client';
 
 import { createClient } from '@/lib/supabase';
-import { DEFAULT_NAVIGATION_BACKGROUND, renamedTherapyLabel } from '@/lib/oriaNavigation';
+import { ORIA_BRANDS, SPA_TABS, DEFAULT_NAVIGATION_BACKGROUND, renamedTherapyLabel } from '@/lib/oriaNavigation';
+import { DEFAULT_SPA_SERVICE_CONTENT, fillLocalizedDefaults } from '@/data/oriaSpaContent';
 import React, { useState, useEffect } from 'react';
 import { Save, AlertCircle, CheckCircle2, Globe, LayoutTemplate, MessageCircle } from 'lucide-react';
 
@@ -14,6 +15,7 @@ const LANGUAGES = [
 ];
 
 const DEFAULT_CONTENT = {
+  spaServiceContent: DEFAULT_SPA_SERVICE_CONTENT,
   hero: {
     companyName: { vi: 'TechGalaxy Group', en: 'TechGalaxy Group', kr: 'TechGalaxy Group', jp: 'TechGalaxy Group', cn: 'TechGalaxy Group' },
     subtitle: { vi: '', en: '', kr: '', jp: '', cn: '' },
@@ -32,6 +34,8 @@ const DEFAULT_CONTENT = {
     cta: { vi: 'Đi tới bước đặt lịch', en: 'Proceed to booking', kr: '예약 진행', jp: '予約に進む', cn: '前往预订' }
   },
   navigation: {
+    ...Object.fromEntries(ORIA_BRANDS.map(brand => [brand.id, Object.fromEntries(LANGUAGES.map(lang => [lang.code, brand.name]))])),
+    ourStory: SPA_TABS.find(tab => tab.id === 'our-story')!.labels,
     spaces: { vi: 'Không gian', en: 'Spaces', kr: '공간', jp: 'スペース', cn: '空间' },
     welcomeArea: { vi: 'Khu vực đón khách', en: 'Welcome area', kr: '환영 공간', jp: 'ウェルカムエリア', cn: '欢迎区' },
     firstFloor: { vi: 'Tầng một', en: 'First Floor', kr: '1층', jp: '1階', cn: '一楼' },
@@ -80,14 +84,7 @@ export default function HomepageContentPage() {
       .then(res => res.json())
       .then(data => {
         if (data.homepage_content) {
-          // Merge with default to ensure all fields exist
-          setContent({
-            hero: { ...DEFAULT_CONTENT.hero, ...(data.homepage_content.hero || {}) },
-            bestSeller: { ...DEFAULT_CONTENT.bestSeller, ...(data.homepage_content.bestSeller || {}) },
-            services: { ...DEFAULT_CONTENT.services, ...(data.homepage_content.services || {}) },
-            navigation: { ...DEFAULT_CONTENT.navigation, ...(data.homepage_content.navigation || {}) },
-            chat: { ...DEFAULT_CONTENT.chat, ...(data.homepage_content.chat || {}) },
-          });
+          setContent(fillLocalizedDefaults(DEFAULT_CONTENT, data.homepage_content));
         }
         setLoading(false);
       })
@@ -475,6 +472,31 @@ export default function HomepageContentPage() {
               <label className="block text-xs text-admin-text-dim mb-1">Blogs</label>
               <input type="text" value={content.navigation.blogs?.[activeLang] || ''} onChange={(e) => handleInputChange('navigation', 'blogs', e.target.value)} className="w-full bg-admin-background border border-admin-line rounded-lg px-3 py-2 text-sm text-admin-text" />
             </div>
+          </div>
+        </div>
+
+        <div className="mt-8 border-t border-admin-line pt-6 space-y-5">
+          <h3 className="font-bold text-admin-gold">Nội dung đang hiển thị tại Oria Spa · {activeLang.toUpperCase()}</h3>
+          <p className="text-sm text-admin-text-dim">Điền sẵn 5 ngôn ngữ. Các thay đổi được áp dụng lên website sau khi Lưu thay đổi.</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {ORIA_BRANDS.map(brand => (
+              <label key={brand.id} className="block text-xs text-admin-text-dim">
+                Tên thương hiệu · {brand.name}
+                <input type="text" value={content.navigation[brand.id]?.[activeLang] ?? ''} onChange={event => handleInputChange('navigation', brand.id, event.target.value)} className="mt-1 w-full bg-admin-background border border-admin-line rounded-lg px-3 py-2 text-sm text-admin-text" />
+              </label>
+            ))}
+            <label className="block text-xs text-admin-text-dim">
+              Tab Our Story
+              <input type="text" value={content.navigation.ourStory?.[activeLang] ?? ''} onChange={event => handleInputChange('navigation', 'ourStory', event.target.value)} className="mt-1 w-full bg-admin-background border border-admin-line rounded-lg px-3 py-2 text-sm text-admin-text" />
+            </label>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {Object.entries({ intro: 'Đoạn giới thiệu Service', designJourney: 'Mô tả Design Your Journey', pureRelaxation: 'Mô tả Pure Relaxation', therapy: 'Mô tả Deep Body Treament', explore: 'Chữ liên kết Khám phá', soon: 'Chữ trạng thái Sắp ra mắt' }).map(([field, label]) => (
+              <label key={field} className="block text-xs text-admin-text-dim">
+                {label}
+                <textarea rows={3} value={content.spaServiceContent[field]?.[activeLang] ?? ''} onChange={event => handleInputChange('spaServiceContent', field, event.target.value)} className="mt-1 w-full bg-admin-background border border-admin-line rounded-lg px-3 py-2 text-sm text-admin-text" />
+              </label>
+            ))}
           </div>
         </div>
 
