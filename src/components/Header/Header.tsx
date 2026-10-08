@@ -242,8 +242,7 @@ const Header = () => {
 
     return [
       { name: 'Oria Spa', location: hcm, href: '/' },
-      { name: 'Oria Home', location: hcm, href: '/oriahome' },
-      { name: 'Oria Care', location: hcm, href: '/oriacare' },
+      { name: 'Oria Home Care', location: hcm, href: '/oriahome' },
       { name: 'Oria Farm', sub: store, location: hcm, href: '/oriafarm-store' },
       { name: 'Oria Farm', sub: retreat, location: dongNai, href: '/oriafarm-retreat' }
     ];

@@ -14,16 +14,14 @@ import {
   ImageIcon,
   Video,
   FileText,
-  HelpCircle,
   ExternalLink,
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase';
 import {
-  DEFAULT_HOME_SPA_CONFIG,
-  hydrateHomeSpaConfig,
-  type HomeSpaConfig,
-} from '@/data/homeSpaData';
-import OriaCareEditor from '@/components/Admin/OriaCareEditor';
+  DEFAULT_ORIA_CARE_CONFIG,
+  hydrateOriaCareConfig,
+  type OriaCareConfig,
+} from '@/data/oriaCareData';
 import { WatermarkControl } from '@/components/Admin/WatermarkControl';
 
 const LANGUAGES = [
@@ -34,8 +32,8 @@ const LANGUAGES = [
   { code: 'kr', label: '한국어', flag: '🇰🇷' },
 ];
 
-export default function HomeSpaAdminPage() {
-  const [config, setConfig] = useState<HomeSpaConfig>(DEFAULT_HOME_SPA_CONFIG);
+export default function OriaCareEditor() {
+  const [config, setConfig] = useState<OriaCareConfig>(DEFAULT_ORIA_CARE_CONFIG);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
@@ -46,7 +44,7 @@ export default function HomeSpaAdminPage() {
     text: '',
   });
 
-  const updateConfig = (updater: (prev: HomeSpaConfig) => HomeSpaConfig) => {
+  const updateConfig = (updater: (prev: OriaCareConfig) => OriaCareConfig) => {
     setConfig((prev) => {
       const next = updater(prev);
       setIsDirty(true);
@@ -61,13 +59,13 @@ export default function HomeSpaAdminPage() {
         const res = await fetch('/api/admin/content');
         if (res.ok) {
           const json = await res.json();
-          const remoteContent = json.data?.home_spa_content || json.home_spa_content;
+          const remoteContent = json.data?.oria_care_content || json.oria_care_content;
           if (remoteContent) {
-            setConfig(hydrateHomeSpaConfig(remoteContent));
+            setConfig(hydrateOriaCareConfig(remoteContent));
           }
         }
       } catch (err) {
-        console.error('Failed to load home-spa config:', err);
+        console.error('Failed to load oria-care config:', err);
       } finally {
         setLoading(false);
       }
@@ -84,21 +82,21 @@ export default function HomeSpaAdminPage() {
       const res = await fetch('/api/admin/content', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ home_spa_content: config }),
+        body: JSON.stringify({ oria_care_content: config }),
       });
 
       // 2. Dual save to system-settings API
       await fetch('/api/admin/system-settings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ home_spa_content: config }),
+        body: JSON.stringify({ oria_care_content: config }),
       }).catch((e) => console.warn('Sync to system-settings skipped:', e));
 
       if (res.ok) {
         setIsDirty(false);
         setMessage({
           type: 'success',
-          text: 'Đã lưu cấu hình Oria Home Care và đồng bộ Weblive thành công!',
+          text: 'Đã lưu cấu hình Oria Care và đồng bộ Weblive thành công!',
         });
         setTimeout(() => setMessage({ type: '', text: '' }), 4000);
       } else {
@@ -123,9 +121,9 @@ export default function HomeSpaAdminPage() {
     try {
       const supabase = createClient();
       const ext = file.name.split('.').pop() || (isVideo ? 'mp4' : 'jpg');
-      const fileName = `oriahome/${target}-${Date.now()}.${ext}`;
+      const fileName = `oriacare/${target}-${Date.now()}.${ext}`;
 
-      const { data, error } = await supabase.storage
+      const { error } = await supabase.storage
         .from('media-uploads')
         .upload(fileName, file, { upsert: true });
 
@@ -184,7 +182,7 @@ export default function HomeSpaAdminPage() {
       <div className="min-h-screen bg-admin-bg p-8 flex items-center justify-center">
         <div className="flex items-center gap-3 text-admin-text">
           <div className="w-5 h-5 border-2 border-admin-gold border-t-transparent rounded-full animate-spin" />
-          <span>Đang tải dữ liệu Oria Home Care...</span>
+          <span>Đang tải dữ liệu Oria Care...</span>
         </div>
       </div>
     );
@@ -193,7 +191,7 @@ export default function HomeSpaAdminPage() {
   return (
     <div className="min-h-screen bg-admin-bg text-admin-text pb-36">
       {/* 1. TOP HEADER */}
-      <header className="sticky top-0 z-30 bg-admin-card/90 backdrop-blur-md border-b border-admin-line px-6 py-4">
+      <header className="bg-admin-card/90 backdrop-blur-md border-b border-admin-line px-6 py-4">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <Link
@@ -204,22 +202,22 @@ export default function HomeSpaAdminPage() {
             </Link>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-xl font-bold text-admin-text tracking-wide">
-                  Quản Trị Oria Home Care
-                </h1>
+                <h2 className="text-xl font-bold text-admin-text tracking-wide">
+                  Quản Trị Oria Care
+                </h2>
                 <span className="text-xs px-2.5 py-0.5 rounded-full bg-admin-gold/15 text-admin-gold border border-admin-gold/30 font-medium">
                   5 Ngôn Ngữ
                 </span>
               </div>
               <p className="text-xs text-admin-text-faint mt-0.5">
-                Chỉnh sửa Oria Home và phần Oria Care bên dưới, với hình ảnh xen kẽ. Mỗi phần có nút lưu riêng.
+                Điều chỉnh bài viết giới thiệu editorial, hình ảnh hero, và 3 khung ảnh minh họa xen kẽ cho Oria Care.
               </p>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
             <Link
-              href="/oriahome"
+              href="/oriahome#oria-care"
               target="_blank"
               className="px-3.5 py-2 text-xs text-admin-text-dim hover:text-admin-gold border border-admin-line hover:border-admin-gold rounded-xl transition-all flex items-center gap-1.5"
             >
@@ -612,7 +610,7 @@ export default function HomeSpaAdminPage() {
                 3 Khung Ảnh Minh Họa Bài Viết (Xen Kẽ Giữa Các Phần)
               </h2>
               <p className="text-xs text-admin-text-dim mt-0.5">
-                Khung 01 sau Phần 1, Khung 02 sau Phần 2, Khung 03 sau Phần 3 (Khi nào nên book Oria Home Care).
+                Khung 01 sau Phần 1, Khung 02 sau Phần 2, Khung 03 sau Phần 3.
               </p>
             </div>
             <span className="text-[11px] px-2.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 font-semibold">
@@ -621,491 +619,171 @@ export default function HomeSpaAdminPage() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-2">
-            {/* Story Photo 1 */}
-            <div className="p-5 rounded-2xl bg-admin-bg/60 border border-admin-line space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-xs uppercase tracking-wider text-admin-gold font-bold">
-                  Khung Ảnh 01 (Nằm sau Phần 1)
-                </span>
-                <span className="text-[10px] text-admin-text-faint bg-black/40 px-2 py-0.5 rounded">
-                  Chung 5 ngôn ngữ
-                </span>
-              </div>
-
-              <div className="relative rounded-xl overflow-hidden border border-admin-line w-full aspect-[16/9] bg-black/50">
-                {config.storyPhotos?.[0] ? (
-                  <img
-                    src={config.storyPhotos[0]}
-                    alt="Story photo 1"
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full flex flex-col items-center justify-center text-admin-text-dim text-xs gap-2 p-4 text-center">
-                    <ImageIcon size={24} className="opacity-40 text-admin-gold" />
-                    <span>Chưa có Khung Ảnh 01</span>
-                    <span className="text-[10px] text-admin-text-faint">Dán link URL hoặc tải ảnh từ máy tính</span>
-                  </div>
-                )}
-                {config.storyPhotos?.[0] && config.storyPhotosWatermark?.[0] !== false && (
-                  <div
-                    className="media-watermark pointer-events-none"
-                    style={{ opacity: (config.storyPhotosWatermarkOpacity?.[0] ?? 15) / 100 }}
-                  />
-                )}
-                {uploadingKey === 'story-0' && (
-                  <div className="absolute inset-0 bg-black/75 flex items-center justify-center text-xs text-admin-gold font-semibold">
-                    Đang tải ảnh lên...
-                  </div>
-                )}
-              </div>
-
-              <div className="space-y-2 pt-1">
-                <label className="flex items-center justify-center gap-2 w-full py-2 bg-admin-line hover:bg-admin-line-strong text-admin-text text-xs font-semibold rounded-xl cursor-pointer transition-colors">
-                  <Upload size={14} />
-                  <span>Tải ảnh mới từ máy tính</span>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    disabled={uploadingKey === 'story-0'}
-                    className="hidden"
-                    onChange={(e) => handleImageUpload(e, 'story-0')}
-                  />
-                </label>
-
-                <div className="flex gap-2">
-                  <div className="relative flex-1">
-                    <input
-                      type="text"
-                      value={config.storyPhotos?.[0] ?? ''}
-                      onFocus={(e) => e.target.select()}
-                      onChange={(e) => {
-                        const val = e.target.value;
-                        updateConfig((prev) => {
-                          const nextP = [...(prev.storyPhotos || ['', ''])];
-                          nextP[0] = val;
-                          return { ...prev, storyPhotos: nextP };
-                        });
-                      }}
-                      onPaste={(e) => {
-                        const pasted = e.clipboardData.getData('text');
-                        if (pasted) {
-                          e.preventDefault();
-                          updateConfig((prev) => {
-                            const nextP = [...(prev.storyPhotos || ['', ''])];
-                            nextP[0] = pasted.trim();
-                            return { ...prev, storyPhotos: nextP };
-                          });
-                        }
-                      }}
-                      placeholder="Dán link URL ảnh mới vào đây..."
-                      className="w-full bg-admin-bg text-xs text-admin-text p-2.5 pr-8 rounded-xl border border-admin-line focus:border-admin-gold outline-none font-mono"
-                    />
-                    {config.storyPhotos?.[0] ? (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          updateConfig((prev) => {
-                            const nextP = [...(prev.storyPhotos || ['', ''])];
-                            nextP[0] = '';
-                            return { ...prev, storyPhotos: nextP };
-                          });
-                        }}
-                        className="absolute right-2 top-1/2 -translate-y-1/2 text-admin-text-faint hover:text-red-400 text-xs p-1"
-                        title="Xóa link ảnh để dán link mới"
-                      >
-                        <X size={14} />
-                      </button>
-                    ) : null}
+            {[0, 1, 2].map((idx) => {
+              const targetKey = `story-${idx}` as 'story-0' | 'story-1' | 'story-2';
+              return (
+                <div key={idx} className="p-5 rounded-2xl bg-admin-bg/60 border border-admin-line space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs uppercase tracking-wider text-admin-gold font-bold">
+                      Khung Ảnh {idx + 1 < 10 ? `0${idx + 1}` : idx + 1} (Sau Phần {idx + 1})
+                    </span>
+                    <span className="text-[10px] text-admin-text-faint bg-black/40 px-2 py-0.5 rounded">
+                      Chung 5 ngôn ngữ
+                    </span>
                   </div>
 
-                  <button
-                    type="button"
-                    onClick={async () => {
-                      try {
-                        const text = await navigator.clipboard.readText();
-                        if (text && text.trim()) {
-                          updateConfig((prev) => {
-                            const nextP = [...(prev.storyPhotos || ['', ''])];
-                            nextP[0] = text.trim();
-                            return { ...prev, storyPhotos: nextP };
-                          });
-                        } else {
-                          const url = prompt('Dán link URL ảnh vào đây:');
-                          if (url) {
-                            updateConfig((prev) => {
-                              const nextP = [...(prev.storyPhotos || ['', ''])];
-                              nextP[0] = url.trim();
-                              return { ...prev, storyPhotos: nextP };
-                            });
-                          }
-                        }
-                      } catch {
-                        const url = prompt('Dán link URL ảnh vào đây:');
-                        if (url) {
-                          updateConfig((prev) => {
-                            const nextP = [...(prev.storyPhotos || ['', ''])];
-                            nextP[0] = url.trim();
-                            return { ...prev, storyPhotos: nextP };
-                          });
-                        }
-                      }
-                    }}
-                    className="px-3.5 py-2 bg-admin-line hover:bg-admin-line-strong text-admin-text text-xs font-semibold rounded-xl transition-all shrink-0 flex items-center gap-1.5"
-                    title="Dán nhanh link từ bộ nhớ tạm"
-                  >
-                    <ClipboardPaste size={14} className="text-admin-gold" />
-                    <span>Dán link</span>
-                  </button>
-                </div>
-
-                <div className="pt-2">
-                  <WatermarkControl
-                    checked={config.storyPhotosWatermark?.[0] !== false}
-                    opacity={config.storyPhotosWatermarkOpacity?.[0] ?? 15}
-                    onChangeChecked={(checked) => {
-                      updateConfig((prev) => {
-                        const nextWm = [...(prev.storyPhotosWatermark || [true, true, true])];
-                        while (nextWm.length < 3) nextWm.push(true);
-                        nextWm[0] = checked;
-                        return { ...prev, storyPhotosWatermark: nextWm };
-                      });
-                    }}
-                    onChangeOpacity={(opacity) => {
-                      updateConfig((prev) => {
-                        const nextO = [...(prev.storyPhotosWatermarkOpacity || [15, 15, 15])];
-                        while (nextO.length < 3) nextO.push(15);
-                        nextO[0] = opacity;
-                        return { ...prev, storyPhotosWatermarkOpacity: nextO };
-                      });
-                    }}
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Story Photo 2 */}
-            <div className="p-5 rounded-2xl bg-admin-bg/60 border border-admin-line space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-xs uppercase tracking-wider text-admin-gold font-bold">
-                  Khung Ảnh 02 (Nằm sau Phần 2)
-                </span>
-                <span className="text-[10px] text-admin-text-faint bg-black/40 px-2 py-0.5 rounded">
-                  Chung 5 ngôn ngữ
-                </span>
-              </div>
-
-              <div className="relative rounded-xl overflow-hidden border border-admin-line w-full aspect-[16/9] bg-black/50">
-                {config.storyPhotos?.[1] ? (
-                  <img
-                    src={config.storyPhotos[1]}
-                    alt="Story photo 2"
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full flex flex-col items-center justify-center text-admin-text-dim text-xs gap-2 p-4 text-center">
-                    <ImageIcon size={24} className="opacity-40 text-admin-gold" />
-                    <span>Chưa có Khung Ảnh 02</span>
-                    <span className="text-[10px] text-admin-text-faint">Dán link URL hoặc tải ảnh từ máy tính</span>
-                  </div>
-                )}
-                {config.storyPhotos?.[1] && config.storyPhotosWatermark?.[1] !== false && (
-                  <div
-                    className="media-watermark pointer-events-none"
-                    style={{ opacity: (config.storyPhotosWatermarkOpacity?.[1] ?? 15) / 100 }}
-                  />
-                )}
-                {uploadingKey === 'story-1' && (
-                  <div className="absolute inset-0 bg-black/75 flex items-center justify-center text-xs text-admin-gold font-semibold">
-                    Đang tải ảnh lên...
-                  </div>
-                )}
-              </div>
-
-              <div className="space-y-2 pt-1">
-                <label className="flex items-center justify-center gap-2 w-full py-2 bg-admin-line hover:bg-admin-line-strong text-admin-text text-xs font-semibold rounded-xl cursor-pointer transition-colors">
-                  <Upload size={14} />
-                  <span>Tải ảnh mới từ máy tính</span>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    disabled={uploadingKey === 'story-1'}
-                    className="hidden"
-                    onChange={(e) => handleImageUpload(e, 'story-1')}
-                  />
-                </label>
-
-                <div className="flex gap-2">
-                  <div className="relative flex-1">
-                    <input
-                      type="text"
-                      value={config.storyPhotos?.[1] ?? ''}
-                      onFocus={(e) => e.target.select()}
-                      onChange={(e) => {
-                        const val = e.target.value;
-                        updateConfig((prev) => {
-                          const nextP = [...(prev.storyPhotos || ['', ''])];
-                          nextP[1] = val;
-                          return { ...prev, storyPhotos: nextP };
-                        });
-                      }}
-                      onPaste={(e) => {
-                        const pasted = e.clipboardData.getData('text');
-                        if (pasted) {
-                          e.preventDefault();
-                          updateConfig((prev) => {
-                            const nextP = [...(prev.storyPhotos || ['', ''])];
-                            nextP[1] = pasted.trim();
-                            return { ...prev, storyPhotos: nextP };
-                          });
-                        }
-                      }}
-                      placeholder="Dán link URL ảnh mới vào đây..."
-                      className="w-full bg-admin-bg text-xs text-admin-text p-2.5 pr-8 rounded-xl border border-admin-line focus:border-admin-gold outline-none font-mono"
-                    />
-                    {config.storyPhotos?.[1] ? (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          updateConfig((prev) => {
-                            const nextP = [...(prev.storyPhotos || ['', ''])];
-                            nextP[1] = '';
-                            return { ...prev, storyPhotos: nextP };
-                          });
-                        }}
-                        className="absolute right-2 top-1/2 -translate-y-1/2 text-admin-text-faint hover:text-red-400 text-xs p-1"
-                        title="Xóa link ảnh để dán link mới"
-                      >
-                        <X size={14} />
-                      </button>
-                    ) : null}
+                  <div className="relative rounded-xl overflow-hidden border border-admin-line w-full aspect-[16/9] bg-black/50">
+                    {config.storyPhotos?.[idx] ? (
+                      <img
+                        src={config.storyPhotos[idx]}
+                        alt={`Story photo ${idx + 1}`}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex flex-col items-center justify-center text-admin-text-dim text-xs gap-2 p-4 text-center">
+                        <ImageIcon size={24} className="opacity-40 text-admin-gold" />
+                        <span>Chưa có Khung Ảnh {idx + 1 < 10 ? `0${idx + 1}` : idx + 1}</span>
+                        <span className="text-[10px] text-admin-text-faint">Dán link URL hoặc tải ảnh từ máy tính</span>
+                      </div>
+                    )}
+                    {config.storyPhotos?.[idx] && config.storyPhotosWatermark?.[idx] !== false && (
+                      <div
+                        className="media-watermark pointer-events-none"
+                        style={{ opacity: (config.storyPhotosWatermarkOpacity?.[idx] ?? 15) / 100 }}
+                      />
+                    )}
+                    {uploadingKey === targetKey && (
+                      <div className="absolute inset-0 bg-black/75 flex items-center justify-center text-xs text-admin-gold font-semibold">
+                        Đang tải ảnh lên...
+                      </div>
+                    )}
                   </div>
 
-                  <button
-                    type="button"
-                    onClick={async () => {
-                      try {
-                        const text = await navigator.clipboard.readText();
-                        if (text && text.trim()) {
-                          updateConfig((prev) => {
-                            const nextP = [...(prev.storyPhotos || ['', ''])];
-                            nextP[1] = text.trim();
-                            return { ...prev, storyPhotos: nextP };
-                          });
-                        } else {
-                          const url = prompt('Dán link URL ảnh vào đây:');
-                          if (url) {
-                            updateConfig((prev) => {
-                              const nextP = [...(prev.storyPhotos || ['', ''])];
-                              nextP[1] = url.trim();
-                              return { ...prev, storyPhotos: nextP };
-                            });
-                          }
-                        }
-                      } catch {
-                        const url = prompt('Dán link URL ảnh vào đây:');
-                        if (url) {
-                          updateConfig((prev) => {
-                            const nextP = [...(prev.storyPhotos || ['', ''])];
-                            nextP[1] = url.trim();
-                            return { ...prev, storyPhotos: nextP };
-                          });
-                        }
-                      }
-                    }}
-                    className="px-3.5 py-2 bg-admin-line hover:bg-admin-line-strong text-admin-text text-xs font-semibold rounded-xl transition-all shrink-0 flex items-center gap-1.5"
-                    title="Dán nhanh link từ bộ nhớ tạm"
-                  >
-                    <ClipboardPaste size={14} className="text-admin-gold" />
-                    <span>Dán link</span>
-                  </button>
-                </div>
+                  <div className="space-y-2 pt-1">
+                    <label className="flex items-center justify-center gap-2 w-full py-2 bg-admin-line hover:bg-admin-line-strong text-admin-text text-xs font-semibold rounded-xl cursor-pointer transition-colors">
+                      <Upload size={14} />
+                      <span>Tải ảnh mới từ máy tính</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        disabled={uploadingKey === targetKey}
+                        className="hidden"
+                        onChange={(e) => handleImageUpload(e, targetKey)}
+                      />
+                    </label>
 
-                <div className="pt-2">
-                  <WatermarkControl
-                    checked={config.storyPhotosWatermark?.[1] !== false}
-                    opacity={config.storyPhotosWatermarkOpacity?.[1] ?? 15}
-                    onChangeChecked={(checked) => {
-                      updateConfig((prev) => {
-                        const nextWm = [...(prev.storyPhotosWatermark || [true, true, true])];
-                        while (nextWm.length < 3) nextWm.push(true);
-                        nextWm[1] = checked;
-                        return { ...prev, storyPhotosWatermark: nextWm };
-                      });
-                    }}
-                    onChangeOpacity={(opacity) => {
-                      updateConfig((prev) => {
-                        const nextO = [...(prev.storyPhotosWatermarkOpacity || [15, 15, 15])];
-                        while (nextO.length < 3) nextO.push(15);
-                        nextO[1] = opacity;
-                        return { ...prev, storyPhotosWatermarkOpacity: nextO };
-                      });
-                    }}
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Story Photo 3 */}
-            <div className="p-5 rounded-2xl bg-admin-bg/60 border border-admin-line space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-xs uppercase tracking-wider text-admin-gold font-bold">
-                  Khung Ảnh 03 (Nằm ở Phần 3)
-                </span>
-                <span className="text-[10px] text-admin-text-faint bg-black/40 px-2 py-0.5 rounded">
-                  Chung 5 ngôn ngữ
-                </span>
-              </div>
-
-              <div className="relative rounded-xl overflow-hidden border border-admin-line w-full aspect-[16/9] bg-black/50">
-                {config.storyPhotos?.[2] ? (
-                  <img
-                    src={config.storyPhotos[2]}
-                    alt="Story photo 3"
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full flex flex-col items-center justify-center text-admin-text-dim text-xs gap-2 p-4 text-center">
-                    <ImageIcon size={24} className="opacity-40 text-admin-gold" />
-                    <span>Chưa có Khung Ảnh 03</span>
-                    <span className="text-[10px] text-admin-text-faint">Dán link URL hoặc tải ảnh từ máy tính</span>
-                  </div>
-                )}
-                {config.storyPhotos?.[2] && config.storyPhotosWatermark?.[2] !== false && (
-                  <div
-                    className="media-watermark pointer-events-none"
-                    style={{ opacity: (config.storyPhotosWatermarkOpacity?.[2] ?? 15) / 100 }}
-                  />
-                )}
-                {uploadingKey === 'story-2' && (
-                  <div className="absolute inset-0 bg-black/75 flex items-center justify-center text-xs text-admin-gold font-semibold">
-                    Đang tải ảnh lên...
-                  </div>
-                )}
-              </div>
-
-              <div className="space-y-2 pt-1">
-                <label className="flex items-center justify-center gap-2 w-full py-2 bg-admin-line hover:bg-admin-line-strong text-admin-text text-xs font-semibold rounded-xl cursor-pointer transition-colors">
-                  <Upload size={14} />
-                  <span>Tải ảnh mới từ máy tính</span>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    disabled={uploadingKey === 'story-2'}
-                    className="hidden"
-                    onChange={(e) => handleImageUpload(e, 'story-2')}
-                  />
-                </label>
-
-                <div className="flex gap-2">
-                  <div className="relative flex-1">
-                    <input
-                      type="text"
-                      value={config.storyPhotos?.[2] ?? ''}
-                      onFocus={(e) => e.target.select()}
-                      onChange={(e) => {
-                        const val = e.target.value;
-                        updateConfig((prev) => {
-                          const nextP = [...(prev.storyPhotos || ['', '', ''])];
-                          nextP[2] = val;
-                          return { ...prev, storyPhotos: nextP };
-                        });
-                      }}
-                      onPaste={(e) => {
-                        const pasted = e.clipboardData.getData('text');
-                        if (pasted) {
-                          e.preventDefault();
-                          updateConfig((prev) => {
-                            const nextP = [...(prev.storyPhotos || ['', '', ''])];
-                            nextP[2] = pasted.trim();
-                            return { ...prev, storyPhotos: nextP };
-                          });
-                        }
-                      }}
-                      placeholder="Dán link URL ảnh mới vào đây..."
-                      className="w-full bg-admin-bg text-xs text-admin-text p-2.5 pr-8 rounded-xl border border-admin-line focus:border-admin-gold outline-none font-mono"
-                    />
-                    {config.storyPhotos?.[2] ? (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          updateConfig((prev) => {
-                            const nextP = [...(prev.storyPhotos || ['', '', ''])];
-                            nextP[2] = '';
-                            return { ...prev, storyPhotos: nextP };
-                          });
-                        }}
-                        className="absolute right-2 top-1/2 -translate-y-1/2 text-admin-text-faint hover:text-red-400 text-xs p-1"
-                        title="Xóa link ảnh để dán link mới"
-                      >
-                        <X size={14} />
-                      </button>
-                    ) : null}
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={async () => {
-                      try {
-                        const text = await navigator.clipboard.readText();
-                        if (text && text.trim()) {
-                          updateConfig((prev) => {
-                            const nextP = [...(prev.storyPhotos || ['', '', ''])];
-                            nextP[2] = text.trim();
-                            return { ...prev, storyPhotos: nextP };
-                          });
-                        } else {
-                          const url = prompt('Dán link URL ảnh vào đây:');
-                          if (url) {
+                    <div className="flex gap-2">
+                      <div className="relative flex-1">
+                        <input
+                          type="text"
+                          value={config.storyPhotos?.[idx] ?? ''}
+                          onFocus={(e) => e.target.select()}
+                          onChange={(e) => {
+                            const val = e.target.value;
                             updateConfig((prev) => {
                               const nextP = [...(prev.storyPhotos || ['', '', ''])];
-                              nextP[2] = url.trim();
+                              nextP[idx] = val;
                               return { ...prev, storyPhotos: nextP };
                             });
-                          }
-                        }
-                      } catch {
-                        const url = prompt('Dán link URL ảnh vào đây:');
-                        if (url) {
-                          updateConfig((prev) => {
-                            const nextP = [...(prev.storyPhotos || ['', '', ''])];
-                            nextP[2] = url.trim();
-                            return { ...prev, storyPhotos: nextP };
-                          });
-                        }
-                      }
-                    }}
-                    className="px-3.5 py-2 bg-admin-line hover:bg-admin-line-strong text-admin-text text-xs font-semibold rounded-xl transition-all shrink-0 flex items-center gap-1.5"
-                    title="Dán nhanh link từ bộ nhớ tạm"
-                  >
-                    <ClipboardPaste size={14} className="text-admin-gold" />
-                    <span>Dán link</span>
-                  </button>
-                </div>
+                          }}
+                          onPaste={(e) => {
+                            const pasted = e.clipboardData.getData('text');
+                            if (pasted) {
+                              e.preventDefault();
+                              updateConfig((prev) => {
+                                const nextP = [...(prev.storyPhotos || ['', '', ''])];
+                                nextP[idx] = pasted.trim();
+                                return { ...prev, storyPhotos: nextP };
+                              });
+                            }
+                          }}
+                          placeholder="Dán link URL ảnh mới vào đây..."
+                          className="w-full bg-admin-bg text-xs text-admin-text p-2.5 pr-8 rounded-xl border border-admin-line focus:border-admin-gold outline-none font-mono"
+                        />
+                        {config.storyPhotos?.[idx] ? (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              updateConfig((prev) => {
+                                const nextP = [...(prev.storyPhotos || ['', '', ''])];
+                                nextP[idx] = '';
+                                return { ...prev, storyPhotos: nextP };
+                              });
+                            }}
+                            className="absolute right-2 top-1/2 -translate-y-1/2 text-admin-text-faint hover:text-red-400 text-xs p-1"
+                            title="Xóa link ảnh"
+                          >
+                            <X size={14} />
+                          </button>
+                        ) : null}
+                      </div>
 
-                <div className="pt-2">
-                  <WatermarkControl
-                    checked={config.storyPhotosWatermark?.[2] !== false}
-                    opacity={config.storyPhotosWatermarkOpacity?.[2] ?? 15}
-                    onChangeChecked={(checked) => {
-                      updateConfig((prev) => {
-                        const nextWm = [...(prev.storyPhotosWatermark || [true, true, true])];
-                        while (nextWm.length < 3) nextWm.push(true);
-                        nextWm[2] = checked;
-                        return { ...prev, storyPhotosWatermark: nextWm };
-                      });
-                    }}
-                    onChangeOpacity={(opacity) => {
-                      updateConfig((prev) => {
-                        const nextO = [...(prev.storyPhotosWatermarkOpacity || [15, 15, 15])];
-                        while (nextO.length < 3) nextO.push(15);
-                        nextO[2] = opacity;
-                        return { ...prev, storyPhotosWatermarkOpacity: nextO };
-                      });
-                    }}
-                  />
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          try {
+                            const text = await navigator.clipboard.readText();
+                            if (text && text.trim()) {
+                              updateConfig((prev) => {
+                                const nextP = [...(prev.storyPhotos || ['', '', ''])];
+                                nextP[idx] = text.trim();
+                                return { ...prev, storyPhotos: nextP };
+                              });
+                            } else {
+                              const url = prompt('Dán link URL ảnh vào đây:');
+                              if (url) {
+                                updateConfig((prev) => {
+                                  const nextP = [...(prev.storyPhotos || ['', '', ''])];
+                                  nextP[idx] = url.trim();
+                                  return { ...prev, storyPhotos: nextP };
+                                });
+                              }
+                            }
+                          } catch {
+                            const url = prompt('Dán link URL ảnh vào đây:');
+                            if (url) {
+                              updateConfig((prev) => {
+                                const nextP = [...(prev.storyPhotos || ['', '', ''])];
+                                nextP[idx] = url.trim();
+                                return { ...prev, storyPhotos: nextP };
+                              });
+                            }
+                          }
+                        }}
+                        className="px-3.5 py-2 bg-admin-line hover:bg-admin-line-strong text-admin-text text-xs font-semibold rounded-xl transition-all shrink-0 flex items-center gap-1.5"
+                        title="Dán nhanh link từ bộ nhớ tạm"
+                      >
+                        <ClipboardPaste size={14} className="text-admin-gold" />
+                        <span>Dán link</span>
+                      </button>
+                    </div>
+
+                    <div className="pt-2">
+                      <WatermarkControl
+                        checked={config.storyPhotosWatermark?.[idx] !== false}
+                        opacity={config.storyPhotosWatermarkOpacity?.[idx] ?? 15}
+                        onChangeChecked={(checked) => {
+                          updateConfig((prev) => {
+                            const nextWm = [...(prev.storyPhotosWatermark || [true, true, true])];
+                            while (nextWm.length < 3) nextWm.push(true);
+                            nextWm[idx] = checked;
+                            return { ...prev, storyPhotosWatermark: nextWm };
+                          });
+                        }}
+                        onChangeOpacity={(opacity) => {
+                          updateConfig((prev) => {
+                            const nextO = [...(prev.storyPhotosWatermarkOpacity || [15, 15, 15])];
+                            while (nextO.length < 3) nextO.push(15);
+                            nextO[idx] = opacity;
+                            return { ...prev, storyPhotosWatermarkOpacity: nextO };
+                          });
+                        }}
+                      />
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
+              );
+            })}
           </div>
         </section>
 
@@ -1176,7 +854,7 @@ export default function HomeSpaAdminPage() {
         </section>
       </main>
 
-      {/* Save the Home content before the Care editor */}
+      {/* Save the Care content independently */}
       <div className="px-6 pb-6">
         <div className="max-w-4xl mx-auto flex items-center justify-between p-4 bg-admin-card/95 border border-admin-gold/30 rounded-2xl shadow-2xl backdrop-blur-md pointer-events-auto">
           <div className="flex items-center gap-3">
@@ -1191,7 +869,7 @@ export default function HomeSpaAdminPage() {
               </p>
               <p className="text-[11px] text-admin-text-dim">
                 {isDirty
-                  ? 'Bấm "Lưu Nội Dung Oria Home" để cập nhật phần Home trên trang Oria Home Care'
+                  ? 'Bấm "Lưu Nội Dung Oria Care" để cập nhật phần Care trên trang Oria Home Care'
                   : 'Hệ thống tự động đồng bộ cả 5 ngôn ngữ'}
               </p>
             </div>
@@ -1210,15 +888,12 @@ export default function HomeSpaAdminPage() {
             ) : (
               <>
                 <Save size={16} />
-                <span>Lưu Nội Dung Oria Home</span>
+                <span>Lưu Nội Dung Oria Care</span>
               </>
             )}
           </button>
         </div>
       </div>
-      <section id="oria-care-editor" className="scroll-mt-24">
-        <OriaCareEditor />
-      </section>
     </div>
   );
 }

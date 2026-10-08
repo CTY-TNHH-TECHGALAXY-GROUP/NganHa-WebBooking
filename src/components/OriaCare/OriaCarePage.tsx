@@ -17,11 +17,13 @@ import styles from './OriaCarePage.module.css';
 interface OriaCarePageProps {
   initialConfig?: OriaCareConfig;
   initialLang?: Locale;
+  embedded?: boolean;
 }
 
 export default function OriaCarePage({
   initialConfig,
   initialLang,
+  embedded = false,
 }: OriaCarePageProps = {}) {
   const { currentLang, setCurrentLang } = useTranslation();
   const { systemSettings } = useSystemSettings();
@@ -61,6 +63,8 @@ export default function OriaCarePage({
   }, []);
 
   const config = remoteConfig || DEFAULT_ORIA_CARE_CONFIG;
+  const ArticleContainer = embedded ? 'div' : 'main';
+  const Title = embedded ? 'h2' : 'h1';
 
   const getText = (localized?: Record<string, string>): string => {
     if (!localized) return '';
@@ -71,7 +75,7 @@ export default function OriaCarePage({
   const ctaHref = config.ctaLink || `tel:${hotline.replace(/\s+/g, '')}`;
 
   return (
-    <div className={styles.pageRoot}>
+    <section id="oria-care" className={styles.pageRoot}>
       {/* 1. CINEMATIC HERO BANNER */}
       <section className={styles.hero}>
         <div className={styles.heroBackdrop}>
@@ -111,14 +115,14 @@ export default function OriaCarePage({
           transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
         >
           <span className={styles.heroPre}>ORIA WELLNESS CARE</span>
-          <h1 className={styles.heroTitle}>{getText(config.pageTitle)}</h1>
+          <Title className={styles.heroTitle}>{getText(config.pageTitle)}</Title>
           <p className={styles.heroSubtitle}>{getText(config.pageSubtitle)}</p>
           <div className={styles.heroDivider} />
         </motion.div>
       </section>
 
       {/* 2. MAIN EDITORIAL ARTICLE */}
-      <main className={styles.articleContainer}>
+      <ArticleContainer className={styles.articleContainer}>
         {/* SECTION 1 */}
         {config.sections[0] && (
           <motion.article
@@ -281,7 +285,7 @@ export default function OriaCarePage({
             )}
           </div>
         )}
-      </main>
-    </div>
+      </ArticleContainer>
+    </section>
   );
 }

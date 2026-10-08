@@ -12,6 +12,7 @@ import {
   hydrateHomeSpaConfig,
   type HomeSpaConfig,
 } from '@/data/homeSpaData';
+import OriaCarePage from '@/components/OriaCare/OriaCarePage';
 import styles from './HomeSpaPage.module.css';
 
 interface HomeSpaPageProps {
@@ -146,7 +147,7 @@ export default function HomeSpaPage({
               >
                 <img
                   src={config.storyPhotos[0]}
-                  alt="Oria Home Spa"
+                  alt="Oria Home Care"
                   loading="lazy"
                 />
                 {config.storyPhotosWatermark?.[0] !== false && (
@@ -170,7 +171,7 @@ export default function HomeSpaPage({
               >
                 <img
                   src={config.storyPhotos[1]}
-                  alt="Oria Home Spa"
+                  alt="Oria Home Care"
                   loading="lazy"
                 />
                 {config.storyPhotosWatermark?.[1] !== false && (
@@ -194,7 +195,7 @@ export default function HomeSpaPage({
               >
                 <img
                   src={config.storyPhotos[2]}
-                  alt="Oria Home Spa"
+                  alt="Oria Home Care"
                   loading="lazy"
                 />
                 {config.storyPhotosWatermark?.[2] !== false && (
@@ -238,6 +239,7 @@ export default function HomeSpaPage({
           </motion.div>
         )}
       </main>
+      <OriaCarePage embedded initialLang={initialLang} />
     </div>
   );
 }

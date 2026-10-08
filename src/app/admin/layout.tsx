@@ -19,8 +19,7 @@ type AdminNavItem = { label: string; href: string; icon: LucideIcon; gate?: Navi
 const NAV_ITEMS: AdminNavItem[] = [
   { label: 'Tổng quan', href: '/admin', icon: LayoutDashboard },
   { label: 'Câu chuyện (Our Story)', href: '/admin/our-story', icon: BookOpen },
-  { label: 'Oria Home Spa', href: '/admin/oriahome', icon: Home },
-  { label: 'Oria Care', href: '/admin/oriacare', icon: HeartPulse },
+  { label: 'Oria Home Care', href: '/admin/oriahome', icon: Home },
   { label: 'Oria Farm Retreat', href: '/admin/oriafarm-retreat', icon: Trees },
   { label: 'Oria Farm Store', href: '/admin/oriafarm-store', icon: Store },
   { label: 'Local Tour Sài Gòn', href: '/admin/local-tour', icon: Compass },

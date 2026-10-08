@@ -9,14 +9,12 @@ export const PUBLIC_SITEMAP_ROUTES: SitemapRoute[] = [
   { routeKey: 'design-your-journey', pathname: '/design-your-journey' },
   { routeKey: 'showcase', pathname: '/showcase' },
   { routeKey: 'oriahome', pathname: '/oriahome' },
-  { routeKey: 'oriacare', pathname: '/oriacare' },
   { routeKey: 'oriafarm-retreat', pathname: '/oriafarm-retreat' },
 ];
 
 export const PUBLIC_LOCALIZED_SITEMAP_ROUTES: SitemapRoute[] = [
   { routeKey: 'home', pathname: '/', localized: true, defaultPathname: '/' },
   { routeKey: 'oriahome', pathname: '/oriahome', localized: true },
-  { routeKey: 'oriacare', pathname: '/oriacare', localized: true },
   { routeKey: 'oriafarm-retreat', pathname: '/oriafarm-retreat', localized: true },
   { routeKey: 'pure-relaxation', pathname: '/pure-relaxation', localized: true },
 ];

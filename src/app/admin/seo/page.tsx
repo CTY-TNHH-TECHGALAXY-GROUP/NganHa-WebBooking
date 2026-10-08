@@ -13,7 +13,7 @@ const ROUTES = [
   { key: 'global', label: 'Global defaults' },
   { key: 'home', label: 'Homepage' },
   { key: 'pure-relaxation', label: 'Pure Relaxation' },
-  { key: 'oriahome', label: 'Oria Home Spa' },
+  { key: 'oriahome', label: 'Oria Home Care' },
   { key: 'oriacare', label: 'Oria Care' },
   { key: 'oriafarm-retreat', label: 'Oria Farm Retreat' },
   { key: 'local-tour-detail', label: 'Local Tour detail' },
