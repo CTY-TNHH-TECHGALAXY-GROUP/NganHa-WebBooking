@@ -8,6 +8,8 @@
  * follow the same expansion and remain linked to their parent service.
  */
 
+import type { CanonicalPricing } from '@/lib/booking/contract';
+
 export const MAX_DISPATCH_ITEMS = 100;
 export const PRIVATE_ROOM_SERVICE_ID = 'NHS0900';
 
@@ -195,4 +197,34 @@ export function expandDispatchItems(
     }
   }
   return rows;
+}
+
+// Moved unchanged from app/api/bookings/route.ts so the voucher preview builds
+// exactly the rows the atomic writer receives.
+export function bookingItemOptions(item: CanonicalPricing['items'][number]): Record<string, unknown> {
+    const options = item.options;
+    return canonicalizeDispatchOptions({
+      strength: options.strength,
+      therapist: options.therapist,
+      focus: options.bodyParts?.focus,
+      avoid: options.bodyParts?.avoid,
+      notes: options.notes,
+      tags: item.catalog.tags,
+    });
+}
+
+export function dispatchLinesFromPricing(pricing: CanonicalPricing): DispatchBookingLine[] {
+  return pricing.items.map((item, lineIndex) => ({
+    serviceId: item.id,
+    lineIndex,
+    quantity: item.quantity,
+    priceVND: item.basePriceVND,
+    addonPriceVND: item.addonPriceVND,
+    hasPrivateRoom: item.hasPrivateRoom,
+    options: bookingItemOptions(item),
+  }));
+}
+
+export function buildBookingItems(pricing: CanonicalPricing, bookingId: string): Record<string, unknown>[] {
+  return expandDispatchItems(dispatchLinesFromPricing(pricing), bookingId);
 }

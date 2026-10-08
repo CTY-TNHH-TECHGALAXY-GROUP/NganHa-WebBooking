@@ -22,6 +22,8 @@ export interface BookingEmailPayload {
   branchName?: string;
   services: BookingEmailServiceItem[];
   totalAmount: number;
+  /** Web-claim voucher on this booking: subtotal before it and the amount taken off totalAmount. */
+  discount?: { amount: number; subtotal: number };
   therapist?: string;
   lang?: string;
   notes?: string;
@@ -109,6 +111,8 @@ const I18N_TEMPLATE_1: Record<string, {
   locationLabel: string;
   bookingCodeLabel: string;
   totalLabel: string;
+  subtotalLabel: string;
+  discountLabel: string;
   preferencesLabel: string;
   notesLabel: string;
   followUp: string;
@@ -135,6 +139,8 @@ const I18N_TEMPLATE_1: Record<string, {
     locationLabel: "Location",
     bookingCodeLabel: "Booking Code",
     totalLabel: "Estimated Total",
+    subtotalLabel: "Subtotal",
+    discountLabel: "Oria Booking Reward",
     preferencesLabel: "Service Preferences & Notes",
     notesLabel: "Special Requests / Notes",
     followUp: "You'll receive a confirmation email shortly once we've secured your appointment. If we need to adjust anything, we'll be in touch.",
@@ -161,6 +167,8 @@ const I18N_TEMPLATE_1: Record<string, {
     locationLabel: "Chi nhánh",
     bookingCodeLabel: "Mã đặt lịch",
     totalLabel: "Tổng thanh toán dự kiến",
+    subtotalLabel: "Tạm tính",
+    discountLabel: "Ưu đãi Oria Booking Reward",
     preferencesLabel: "Yêu cầu & Lưu ý dịch vụ",
     notesLabel: "Ghi chú của khách hàng",
     followUp: "Bạn sẽ nhận được email xác nhận chính thức ngay sau khi lịch hẹn được sắp xếp hoàn tất. Nếu cần điều chỉnh bất kỳ điều gì, chúng tôi sẽ chủ động liên hệ với bạn.",
@@ -187,6 +195,8 @@ const I18N_TEMPLATE_1: Record<string, {
     locationLabel: "水疗中心地址",
     bookingCodeLabel: "预约编号",
     totalLabel: "预计总额",
+    subtotalLabel: "小计",
+    discountLabel: "Oria 预约礼遇",
     preferencesLabel: "服务偏好与特别要求",
     notesLabel: "客户特别备注",
     followUp: "预约确认后，我们将在第一时间向您发送正式确认邮件。如需对时间或项目进行微调，我们将主动与您取得联系。",
@@ -213,6 +223,8 @@ const I18N_TEMPLATE_1: Record<string, {
     locationLabel: "店舗所在地",
     bookingCodeLabel: "ご予約番号",
     totalLabel: "お支払い概算",
+    subtotalLabel: "小計",
+    discountLabel: "Oria ご予約特典",
     preferencesLabel: "サービスのご要望・特記事項",
     notesLabel: "お客様からのご要望・メモ",
     followUp: "ご予約枠が確定いたしましたら、改めて正式な「ご予約確定メール」をお送りいたします。万が一、日時の調整が必要な場合には、担当スタッフより速やかにご連絡申し上げます。",
@@ -239,6 +251,8 @@ const I18N_TEMPLATE_1: Record<string, {
     locationLabel: "지점 위치",
     bookingCodeLabel: "예약 번호",
     totalLabel: "예상 결제 금액",
+    subtotalLabel: "소계",
+    discountLabel: "Oria 예약 리워드",
     preferencesLabel: "서비스 요청 및 참고 사항",
     notesLabel: "고객 요청 메모",
     followUp: "예약 일정이 확정되는 즉시 공식 확정 안내 이메일을 발송해 드리겠습니다. 일정 조정이 필요한 경우 사전에 미리 연락드리겠습니다.",
@@ -736,6 +750,7 @@ export function generateBookingConfirmationHtml(
     branchName = '11 Ngô Đức Kế, Q.1, TP.HCM & 6B Thi Sách, Q.1, TP.HCM',
     services = [],
     totalAmount = 0,
+    discount,
     therapist,
     lang = 'vi',
     notes,
@@ -897,7 +912,24 @@ export function generateBookingConfirmationHtml(
                 </td>
               </tr>
               ` : ''}
-              ${totalAmount > 0 ? `
+              ${discount && discount.amount > 0 ? `
+              <tr>
+                <td style="padding: 5px 0; color: rgba(247, 235, 199, 0.6); vertical-align: middle;">
+                  • <strong>${t.subtotalLabel}:</strong>
+                </td>
+                <td style="padding: 5px 0; color: #ffffff; white-space: nowrap; vertical-align: middle;">
+                  ${formatVND(discount.subtotal)}
+                </td>
+              </tr>
+              <tr>
+                <td style="padding: 5px 0; color: rgba(247, 235, 199, 0.6); vertical-align: middle;">
+                  • <strong>${t.discountLabel}:</strong>
+                </td>
+                <td style="padding: 5px 0; color: #9FD08C; font-weight: 600; white-space: nowrap; vertical-align: middle;">
+                  −${formatVND(discount.amount)}
+                </td>
+              </tr>
+              ` : ''}${totalAmount > 0 ? `
               <tr>
                 <td style="padding: 7px 0; color: rgba(247, 235, 199, 0.6); vertical-align: middle;">
                   • <strong>${t.totalLabel}:</strong>
@@ -994,6 +1026,7 @@ export async function sendBookingConfirmationEmail(
       branchName = '11 Ngô Đức Kế, Q.1, TP.HCM & 6B Thi Sách, Q.1, TP.HCM',
       services = [],
       totalAmount = 0,
+      discount,
       therapist,
       lang = 'vi',
       notes,
@@ -1105,7 +1138,7 @@ ${serviceItemsText}
 • ${t.durationLabel}: ${durationDisplay}
 • ${t.guestsLabel}: ${guestsDisplay}
 • ${t.locationLabel}: ${branchName}
-${totalAmount > 0 ? `• ${t.totalLabel}: ${formatVND(totalAmount)}` : ''}
+${discount && discount.amount > 0 ? `• ${t.subtotalLabel}: ${formatVND(discount.subtotal)}\n• ${t.discountLabel}: −${formatVND(discount.amount)}\n` : ''}${totalAmount > 0 ? `• ${t.totalLabel}: ${formatVND(totalAmount)}` : ''}
 ${focusAreaNote ? `\n• ${t.preferencesLabel}:\n${formatPreferencesText(focusAreaNote, lang, localizedServiceNames)}` : ''}
 ${notes ? `\n• ${t.notesLabel}: ${notes}` : ''}
 

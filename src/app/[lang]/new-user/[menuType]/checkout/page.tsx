@@ -6,6 +6,11 @@ import { useRouter } from 'next/navigation';
 import SmartLogo from '@/components/SmartLogo';
 import AlertModal from '@/components/Shared/AlertModal';
 import OrderConfirmModal from '@/components/Checkout/OrderConfirmModal';
+import CheckoutVoucher from '@/components/Promotions/CheckoutVoucher';
+import type { AppliedVoucher } from '@/components/Promotions/CheckoutVoucher.logic';
+import { WEB_VOUCHER_I18N, pickWebVoucherLang, webVoucherError } from '@/components/Promotions/WebVoucher.i18n';
+import { removeFromWallet } from '@/lib/voucherWallet';
+import { Z } from '@/lib/zIndex';
 import CustomForYouModal from '@/components/CustomForYou';
 import { CustomPreferences } from '@/components/CustomForYou/types';
 import { CATEGORIES } from '@/components/Menu/constants';
@@ -744,6 +749,11 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
   const [idempotencyKey] = useState(() => 'idemp_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 8));
   const [bookingQuote, setBookingQuote] = useState<string>();
   const quoteLoading = useRef(false);
+  // Web-claim voucher: preview from the checkout block, result from the booking response.
+  const [appliedVoucher, setAppliedVoucher] = useState<AppliedVoucher | null>(null);
+  const [bookingVoucher, setBookingVoucher] = useState<{ applied: boolean; discountAmount: number; subtotalAmount: number; totalAmount: number; reason?: string } | null>(null);
+  const [voucherAsk, setVoucherAsk] = useState<{ reason: string; resolve: (bookWithout: boolean) => void } | null>(null);
+  const askBookWithoutVoucher = (reason: string) => new Promise<boolean>((resolve) => setVoucherAsk({ reason, resolve }));
 
   // Sync route lang with global TranslationProvider
   useEffect(() => {
@@ -1218,52 +1228,65 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
       options: item.options || {},
     }));
 
-    const controller = new AbortController();
-    const timeoutId = window.setTimeout(() => controller.abort(), 20_000);
-    const analyticsHeaders = getAnalyticsAttributionHeaders();
-    let response: Response;
-    try {
-      response = await fetch('/api/bookings', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Idempotency-Key': idempotencyKey,
-          ...analyticsHeaders,
-        },
-        signal: controller.signal,
-        body: JSON.stringify({
-          idempotencyKey,
-          quote: bookingQuote,
-          name: effectiveName,
-          phone: phoneWithCountry,
-          email: effectiveEmail,
-          customerGender: effectiveGender,
-          note,
-          date: effectiveDate,
-          time: effectiveTime,
-          branchId: 'ngan-ha-spa',
-          branchName: 'ORIA SPA',
-          guests: effectiveGuests,
-          staffGender: 'any',
-          lang,
-          selectedServices,
-          paymentMethod: chosenMethod,
-          amountPaid: 0,
-          changeDenominations: [],
-        }),
-      });
-    } catch (error) {
-      if (error instanceof DOMException && error.name === 'AbortError') {
+    // One POST; the same idempotency key is reused when the customer books again without the voucher.
+    const submitOnce = async (voucherCode: string | null): Promise<{ response: Response; resData: any }> => {
+      const controller = new AbortController();
+      const timeoutId = window.setTimeout(() => controller.abort(), 20_000);
+      const analyticsHeaders = getAnalyticsAttributionHeaders();
+      let response: Response;
+      try {
+        response = await fetch('/api/bookings', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Idempotency-Key': idempotencyKey,
+            ...analyticsHeaders,
+          },
+          signal: controller.signal,
+          body: JSON.stringify({
+            idempotencyKey,
+            quote: bookingQuote,
+            name: effectiveName,
+            phone: phoneWithCountry,
+            email: effectiveEmail,
+            customerGender: effectiveGender,
+            note,
+            date: effectiveDate,
+            time: effectiveTime,
+            branchId: 'ngan-ha-spa',
+            branchName: 'ORIA SPA',
+            guests: effectiveGuests,
+            staffGender: 'any',
+            lang,
+            selectedServices,
+            paymentMethod: chosenMethod,
+            amountPaid: 0,
+            changeDenominations: [],
+            ...(voucherCode ? { voucherCode } : {}),
+          }),
+        });
+      } catch (error) {
+        if (error instanceof DOMException && error.name === 'AbortError') {
+          trackAnalytics('booking_failed', { identifier: 'network', language: lang });
+          throw new Error(t('submitTimeout', lang));
+        }
         trackAnalytics('booking_failed', { identifier: 'network', language: lang });
-        throw new Error(t('submitTimeout', lang));
+        throw new Error(t('temporaryUnavailable', lang));
+      } finally {
+        window.clearTimeout(timeoutId);
       }
-      trackAnalytics('booking_failed', { identifier: 'network', language: lang });
-      throw new Error(t('temporaryUnavailable', lang));
-    } finally {
-      window.clearTimeout(timeoutId);
-    }
 
-    const resData = await response.json().catch(() => ({}));
+      const resData = await response.json().catch(() => ({}));
+      return { response, resData };
+    };
+
+    let { response, resData } = await submitOnce(appliedVoucher?.code ?? null);
+    if (response.status === 409 && resData?.code === 'VOUCHER_REJECTED') {
+      // The writer rolled the booking back: nothing exists yet for this key.
+      const bookWithout = await askBookWithoutVoucher(String(resData?.voucherError || 'UNKNOWN'));
+      if (!bookWithout) throw new Error(webVoucherError(WEB_VOUCHER_I18N[pickWebVoucherLang(lang)], resData?.voucherError));
+      ({ response, resData } = await submitOnce(null));
+    }
     if (!response.ok || resData?.success === false) {
       trackAnalytics('booking_failed', { identifier: 'server', language: lang });
       if (resData?.code === 'CART_REQUIRES_REVIEW' || resData?.code === 'PRICE_CHANGED') {
@@ -1279,6 +1302,9 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
       }
       throw new Error(resData?.error || 'Failed to submit booking');
     }
+    const voucherResult = resData?.data?.voucher ?? null;
+    setBookingVoucher(voucherResult);
+    if (voucherResult?.applied && voucherResult.voucherCode) removeFromWallet(voucherResult.voucherCode);
     return resData?.data?.bookingId || resData?.bookingId;
   };
 
@@ -2031,6 +2057,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                 <small>{formatUSD(totalUSD)}</small>
               </span>
             </div>
+            <CheckoutVoucher cart={cart} lang={lang} onChange={setAppliedVoucher} />
             <div className={styles.vatNote}>{t('vat', lang)}</div>
 
             <button 
@@ -2090,6 +2117,8 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
         isOpen={isConfirmOpen}
         onClose={() => setIsConfirmOpen(false)}
         onConfirm={handleFinalSubmit}
+        voucherPreview={appliedVoucher}
+        bookingVoucher={bookingVoucher}
         lang={lang}
         dict={dict}
         cart={cart}
@@ -2116,6 +2145,32 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
           setIsConfirmOpen(false);
         }}
       />
+
+      {voucherAsk && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/70 p-4" style={{ zIndex: Z.MODAL_NESTED }}>
+          <div role="alertdialog" aria-modal="true" aria-labelledby="voucher-ask-title" className="w-full max-w-sm rounded-2xl border border-[#c9a96e]/30 bg-[#15100b] p-5 text-center text-[#f1e9dc] shadow-2xl">
+            <h2 id="voucher-ask-title" className="text-lg font-bold text-[#f2d58d]">{WEB_VOUCHER_I18N[pickWebVoucherLang(lang)].checkout.rejectedTitle}</h2>
+            <p className="mt-2 text-sm text-white/80">{webVoucherError(WEB_VOUCHER_I18N[pickWebVoucherLang(lang)], voucherAsk.reason)}</p>
+            <p className="mt-2 text-sm font-semibold">{WEB_VOUCHER_I18N[pickWebVoucherLang(lang)].checkout.rejectedAsk}</p>
+            <div className="mt-5 grid gap-2">
+              <button
+                type="button"
+                className="min-h-12 rounded-xl bg-[#c9a96e] text-sm font-bold text-[#1a120b]"
+                onClick={() => { voucherAsk.resolve(true); setVoucherAsk(null); }}
+              >
+                {WEB_VOUCHER_I18N[pickWebVoucherLang(lang)].checkout.bookWithout}
+              </button>
+              <button
+                type="button"
+                className="min-h-12 rounded-xl border border-white/20 text-sm font-semibold text-white/80"
+                onClick={() => { voucherAsk.resolve(false); setVoucherAsk(null); }}
+              >
+                {WEB_VOUCHER_I18N[pickWebVoucherLang(lang)].checkout.goBack}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <AlertModal
         isOpen={alertState.isOpen}

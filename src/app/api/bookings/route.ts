@@ -30,13 +30,14 @@ import {
   type NormalizedBooking,
 } from '@/lib/booking/contract';
 import {
+  buildBookingItems,
   canonicalizeDispatchOptions,
   canonicalizeStoredDispatchOptions,
+  dispatchLinesFromPricing,
   expandedDispatchItemCount,
-  expandDispatchItems,
   MAX_DISPATCH_ITEMS,
-  type DispatchBookingLine,
 } from '@/lib/booking/dispatchItems';
+import { isValidVoucherCode, normalizeVoucherCode } from '@/lib/voucherWallet.server';
 
 export const dynamic = 'force-dynamic';
 
@@ -66,8 +67,8 @@ type AnalyticsAttribution = {
   campaign?: AnalyticsCampaign;
 };
 
-const jsonError = (code: string, message: string, status: number, fieldErrors?: unknown[]) =>
-  NextResponse.json({ success: false, code, error: message, ...(fieldErrors?.length ? { fieldErrors } : {}) }, { status });
+const jsonError = (code: string, message: string, status: number, fieldErrors?: unknown[], extra?: Record<string, unknown>) =>
+  NextResponse.json({ success: false, code, error: message, ...(fieldErrors?.length ? { fieldErrors } : {}), ...(extra || {}) }, { status });
 
 const EMAIL_OUTCOMES = ['accepted', 'failed', 'unknown', 'skipped'] as const;
 type EmailOutcome = typeof EMAIL_OUTCOMES[number];
@@ -274,7 +275,8 @@ function mapAllocatorError(error: any): NextResponse {
   return jsonError('BOOKING_NUMBER_UNAVAILABLE', 'A booking number could not be reserved. Please try again.', 503);
 }
 
-function responseForSnapshot(snapshot: BookingSnapshot, idempotent: boolean): NextResponse {
+function responseForSnapshot(snapshot: BookingSnapshot, idempotent: boolean, voucherCode: string | null = null): NextResponse {
+  const voucher = voucherOutcome(snapshot, voucherCode);
   console.info('[API Bookings] Stored booking returned without email dispatch', {
     bookingId: snapshot.bookingId,
     idempotent,
@@ -297,6 +299,7 @@ function responseForSnapshot(snapshot: BookingSnapshot, idempotent: boolean): Ne
       totalAmount: snapshot.totalAmount,
       lang: snapshot.lang,
       status: snapshot.status || 'NEW',
+      ...(voucher ? { voucher } : {}),
       // This request deliberately does not resend. The stored snapshot has no
       // historical delivery receipt, so the diagnostics remain unknown.
       ...(idempotent ? { emailStatus: emailDiagnosticsForReplay() } : {}),
@@ -400,7 +403,7 @@ function servicesFromItems(items: any[]): unknown[] {
     options: Record<string, unknown>;
   }>();
   for (const item of items) {
-    if (item?.options?.isAddon) continue;
+    if (item?.options?.isAddon || item?.options?.isPromotion === true) continue;
     const options = item?.options && typeof item.options === 'object' ? item.options : {};
     const saved = options._booking;
     const quantity = Number(item?.quantity || 0);
@@ -553,18 +556,27 @@ function mapWriterError(error: any): NextResponse | null {
 }
 
 type BookingWriterResult =
-  | { state: 'committed'; bookingId: string; billCode: string; replay: boolean }
+  | { state: 'committed'; bookingId: string; billCode: string; replay: boolean; voucherDiscount?: number }
   | { state: 'incomplete'; bookingId: string }
   | { state: 'unavailable' };
 
 // Adapter boundary for the website-only atomic writer. The SQL contract is
 // intentionally kept outside this route: public.webbooking_commit_booking(
 // jsonb, jsonb) owns the parent plus all child inserts in one transaction.
-async function commitBookingAtomically(supabase: any, bookingPayload: Record<string, unknown>, items: Record<string, unknown>[]): Promise<BookingWriterResult> {
-  const { data, error } = await supabase.rpc('webbooking_commit_booking', {
-    p_booking: bookingPayload,
-    p_items: items,
-  });
+// With a voucher code the v16 wrapper writes the booking and activates the
+// voucher in the same transaction; without one the original writer is called
+// exactly as before.
+async function commitBookingAtomically(supabase: any, bookingPayload: Record<string, unknown>, items: Record<string, unknown>[], voucherCode: string | null = null): Promise<BookingWriterResult> {
+  const { data, error } = voucherCode
+    ? await supabase.rpc('webbooking_commit_booking_with_voucher', {
+      p_booking: bookingPayload,
+      p_items: items,
+      p_voucher_code: voucherCode,
+    })
+    : await supabase.rpc('webbooking_commit_booking', {
+      p_booking: bookingPayload,
+      p_items: items,
+    });
   if (error) throw error;
   const result = Array.isArray(data) ? data.length === 1 ? data[0] : null : data;
   if (!result || typeof result !== 'object' || Array.isArray(result)) return { state: 'unavailable' };
@@ -579,7 +591,14 @@ async function commitBookingAtomically(supabase: any, bookingPayload: Record<str
   if (typeof bookingId !== 'string' || !bookingId.trim() || typeof billCode !== 'string' || !billCode.trim() || typeof replay !== 'boolean') {
     return { state: 'unavailable' };
   }
-  return { state: 'committed', bookingId: bookingId.trim(), billCode: billCode.trim(), replay };
+  const voucherDiscount = Number(result.voucher?.discountAmount);
+  return {
+    state: 'committed',
+    bookingId: bookingId.trim(),
+    billCode: billCode.trim(),
+    replay,
+    ...(Number.isFinite(voucherDiscount) ? { voucherDiscount } : {}),
+  };
 }
 
 function replayIdentityMatches(snapshot: BookingSnapshot, booking: NormalizedBooking): boolean {
@@ -628,6 +647,8 @@ function replayLineKeysFromRequest(booking: NormalizedBooking): string[] {
 function replayLineKeysFromSnapshot(snapshot: BookingSnapshot): string[] {
   return (snapshot.items || []).flatMap((item: any) => {
     const options = item?.options && typeof item.options === 'object' ? item.options : {};
+    // Web-claim voucher line (KM####) is added by the writer, never by the request.
+    if (options.isPromotion === true) return [];
     const quantity = Number(item?.quantity || 0);
     if (!Number.isInteger(quantity) || quantity < 1) return [];
     if (options.isAddon === true) {
@@ -665,27 +686,85 @@ function replayLinesMatch(snapshot: BookingSnapshot, booking: NormalizedBooking)
   return saved.length > 0 && stableStringify(saved) === stableStringify(current);
 }
 
-async function resolveReplayConflict(supabase: any, key: string, booking: NormalizedBooking, attribution: AnalyticsAttribution): Promise<NextResponse> {
+const isPromotionItem = (item: any) => item?.options?.isPromotion === true;
+
+/** Voucher discount stored on the booking (KM lines are negative). 0 when there is none. */
+function discountOf(snapshot: BookingSnapshot): number {
+  return (snapshot.items || []).reduce<number>((sum, item: any) => (
+    isPromotionItem(item) ? sum - Number(item?.price || 0) * Number(item?.quantity || 1) : sum
+  ), 0);
+}
+
+/** Stored total is net of the voucher; the quote / pricing total is before it (v16). */
+function totalMatchesPricing(snapshot: BookingSnapshot, pricing: CanonicalPricing): boolean {
+  return snapshot.totalAmount + discountOf(snapshot) === pricing.totalAmountVND;
+}
+
+type VoucherOutcome = {
+  applied: boolean;
+  voucherCode: string | null;
+  discountAmount: number;
+  subtotalAmount: number;
+  totalAmount: number;
+  reason?: 'REPLAY_WITHOUT_VOUCHER';
+};
+
+/**
+ * Always derived from the stored booking (one source for first write, replay and
+ * reconcile). Absent for bookings without a code and without a voucher line, so
+ * those responses stay exactly as before.
+ */
+function voucherOutcome(snapshot: BookingSnapshot, voucherCode: string | null): VoucherOutcome | null {
+  const applied = (snapshot.items || []).some(isPromotionItem);
+  if (!voucherCode && !applied) return null;
+  const discountAmount = discountOf(snapshot);
+  return {
+    applied,
+    voucherCode,
+    discountAmount,
+    subtotalAmount: snapshot.totalAmount + discountAmount,
+    totalAmount: snapshot.totalAmount,
+    // Same key was first committed without a voucher: the stored booking wins.
+    ...(voucherCode && !applied ? { reason: 'REPLAY_WITHOUT_VOUCHER' as const } : {}),
+  };
+}
+
+/** VOUCHER_REJECTED:<CODE> from the v16 writer (booking rolled back), or the writer is missing. */
+function voucherRejection(error: any, voucherCode: string | null): string | null {
+  if (!voucherCode) return null;
+  const match = /VOUCHER_REJECTED:([A-Z_]+)/.exec(String(error?.message || ''));
+  if (match) return match[1];
+  // v16 not deployed yet (B20): nothing was written, the customer can book without the voucher.
+  if (['PGRST202', '42883'].includes(error?.code) || /webbooking_commit_booking_with_voucher/i.test(String(error?.message || ''))) {
+    return 'FEATURE_DISABLED';
+  }
+  return null;
+}
+
+const voucherRejectedResponse = (voucherError: string) =>
+  jsonError('VOUCHER_REJECTED', 'The voucher could not be applied.', 409, undefined, { voucherError });
+
+async function resolveReplayConflict(supabase: any, key: string, booking: NormalizedBooking, attribution: AnalyticsAttribution, voucherCode: string | null = null): Promise<NextResponse> {
   const replay = await findReplay(supabase, key, { waitForItems: true });
   if (replay.state === 'complete') {
     if (!replayIdentityMatches(replay.snapshot, booking) || !replayLinesMatch(replay.snapshot, booking)) {
       return jsonError('IDEMPOTENCY_KEY_REUSED', 'This booking request key is already linked to a different booking.', 409);
     }
     await recordConversionAfterVerifiedCommit(supabase, replay.snapshot, attribution);
-    return responseForSnapshot(replay.snapshot, true);
+    return responseForSnapshot(replay.snapshot, true, voucherCode);
   }
   if (replay.state === 'incomplete') return responseForIncompleteBooking(replay.bookingId);
   return responseForUnverifiedBooking();
 }
 
-async function reconcileAfterUncertainCommit(supabase: any, key: string, booking: NormalizedBooking, attribution: AnalyticsAttribution): Promise<NextResponse> {
+async function reconcileAfterUncertainCommit(supabase: any, key: string, booking: NormalizedBooking, attribution: AnalyticsAttribution, voucherCode: string | null = null): Promise<NextResponse> {
   const replay = await findReplay(supabase, key, { waitForItems: true });
   if (replay.state === 'complete') {
     if (!replayIdentityMatches(replay.snapshot, booking) || !replayLinesMatch(replay.snapshot, booking)) {
       return jsonError('IDEMPOTENCY_KEY_REUSED', 'This booking request key is already linked to a different booking.', 409);
     }
     await recordConversionAfterVerifiedCommit(supabase, replay.snapshot, attribution);
-    return responseForSnapshot(replay.snapshot, true);
+    return responseForSnapshot(replay.snapshot, true, voucherCode);
   }
   if (replay.state === 'incomplete') return responseForIncompleteBooking(replay.bookingId);
   return responseForUnverifiedBooking();
@@ -756,34 +835,6 @@ function buildBookingPayload(booking: NormalizedBooking, pricing: CanonicalPrici
   };
 }
 
-function bookingItemOptions(item: CanonicalPricing['items'][number]): Record<string, unknown> {
-    const options = item.options;
-    return canonicalizeDispatchOptions({
-      strength: options.strength,
-      therapist: options.therapist,
-      focus: options.bodyParts?.focus,
-      avoid: options.bodyParts?.avoid,
-      notes: options.notes,
-      tags: item.catalog.tags,
-    });
-}
-
-function dispatchLinesFromPricing(pricing: CanonicalPricing): DispatchBookingLine[] {
-  return pricing.items.map((item, lineIndex) => ({
-    serviceId: item.id,
-    lineIndex,
-    quantity: item.quantity,
-    priceVND: item.basePriceVND,
-    addonPriceVND: item.addonPriceVND,
-    hasPrivateRoom: item.hasPrivateRoom,
-    options: bookingItemOptions(item),
-  }));
-}
-
-function buildBookingItems(pricing: CanonicalPricing, bookingId: string): Record<string, unknown>[] {
-  return expandDispatchItems(dispatchLinesFromPricing(pricing), bookingId);
-}
-
 async function resolveCustomerId(supabase: any, booking: NormalizedBooking): Promise<string | null> {
   const phone = booking.phone.trim();
   const email = booking.email.trim().toLowerCase();
@@ -847,6 +898,11 @@ export async function POST(request: Request) {
   const parsed = parseBookingRequest(body, request, { allowPastForReplay: true });
   if (!parsed.ok) return jsonError('VALIDATION_ERROR', 'Please correct the highlighted fields.', 400, parsed.errors);
   const booking = parsed.value;
+  // Web-claim voucher: read beside the parsed booking, never part of the intent
+  // fingerprint or quote (both stay pre-discount, plan v16).
+  const rawVoucherCode = (body as Record<string, unknown>).voucherCode;
+  const hasVoucherField = rawVoucherCode !== undefined && rawVoucherCode !== null && rawVoucherCode !== '';
+  const voucherCode = typeof rawVoucherCode === 'string' && rawVoucherCode.trim() ? normalizeVoucherCode(rawVoucherCode) : null;
   const analyticsAttribution = analyticsAttributionFromRequest(request);
   // Preserve compatibility with older clients while keeping retries stable for
   // the current checkout, which supplies an explicit request key.
@@ -861,9 +917,10 @@ export async function POST(request: Request) {
       return jsonError('IDEMPOTENCY_KEY_REUSED', 'This booking request key is already linked to a different booking.', 409);
     }
     await recordConversionAfterVerifiedCommit(supabase, replay.snapshot, analyticsAttribution);
-    return responseForSnapshot(replay.snapshot, true);
+    return responseForSnapshot(replay.snapshot, true, voucherCode);
   }
   if (replay.state === 'incomplete') return responseForIncompleteBooking(replay.bookingId);
+  if (hasVoucherField && (!voucherCode || !isValidVoucherCode(voucherCode))) return voucherRejectedResponse('VOUCHER_NOT_FOUND');
 
   if (!booking.quote) return jsonError('PRICE_CHANGED', 'Please review current pricing before confirming.', 409, [{ field: 'quote', code: 'QUOTE_REQUIRED', message: 'A current quote is required.' }]);
   if (isBookingTimeInPast(booking.date, booking.time)) return jsonError('VALIDATION_ERROR', 'Please choose a future booking time.', 400, [{ field: 'time', code: 'BOOKING_TIME_IN_PAST', message: 'Booking time must be in the future.' }]);
@@ -926,6 +983,7 @@ export async function POST(request: Request) {
   let bookingPayload: Record<string, unknown> | null = null;
   let items: Record<string, unknown>[] = [];
   let writerReplay = false;
+  let writerVoucherDiscount: number | undefined;
 
   for (let attempt = 0; attempt < 5 && !committedId; attempt += 1) {
     try {
@@ -944,19 +1002,24 @@ export async function POST(request: Request) {
     bookingPayload = buildBookingPayload(canonicalBooking, pricing, committedId, customerId, finalKey);
     items = buildBookingItems(pricing, committedId);
     try {
-      const result = await commitBookingAtomically(supabase, bookingPayload, items);
+      const result = await commitBookingAtomically(supabase, bookingPayload, items, voucherCode);
       if (result.state === 'incomplete') return responseForIncompleteBooking(result.bookingId);
-      if (result.state === 'unavailable') return reconcileAfterUncertainCommit(supabase, finalKey, canonicalBooking, analyticsAttribution);
+      if (result.state === 'unavailable') return reconcileAfterUncertainCommit(supabase, finalKey, canonicalBooking, analyticsAttribution, voucherCode);
       committedId = result.bookingId;
       writerReplay = result.replay;
+      writerVoucherDiscount = result.voucherDiscount;
     } catch (writerError: any) {
-      if (isWriterIdempotencyConflict(writerError)) return resolveReplayConflict(supabase, finalKey, canonicalBooking, analyticsAttribution);
+      // Must run before the retry/reconcile branches: a rejected voucher rolled
+      // the whole booking back, and the schema regexes below match the wrapper name.
+      const rejected = voucherRejection(writerError, voucherCode);
+      if (rejected) return voucherRejectedResponse(rejected);
+      if (isWriterIdempotencyConflict(writerError)) return resolveReplayConflict(supabase, finalKey, canonicalBooking, analyticsAttribution, voucherCode);
       if (isBookingIdentifierConflict(writerError)) {
         committedId = '';
         continue;
       }
       if (isRetryableWriterError(writerError)) {
-        return reconcileAfterUncertainCommit(supabase, finalKey, canonicalBooking, analyticsAttribution);
+        return reconcileAfterUncertainCommit(supabase, finalKey, canonicalBooking, analyticsAttribution, voucherCode);
       }
       const mapped = mapWriterError(writerError);
       if (mapped) return mapped;
@@ -970,18 +1033,27 @@ export async function POST(request: Request) {
   if (committedLookup.state === 'unavailable') return responseForUnverifiedBooking();
   if (committedLookup.state === 'incomplete') return responseForIncompleteBooking(committedLookup.bookingId);
   const committedSnapshot = committedLookup.snapshot;
+  if (voucherCode && writerVoucherDiscount !== undefined && writerVoucherDiscount !== discountOf(committedSnapshot)) {
+    // The booking is committed: reporting it as incomplete would make the customer book twice.
+    console.error('[API Bookings] Voucher discount differs between writer and stored booking; using stored booking', {
+      bookingId: committedSnapshot.bookingId,
+      writerDiscount: writerVoucherDiscount,
+      storedDiscount: discountOf(committedSnapshot),
+    });
+  }
+  const committedVoucher = voucherOutcome(committedSnapshot, voucherCode);
 
   if (writerReplay) {
-    if (!replayIdentityMatches(committedSnapshot, canonicalBooking) || !replayLinesMatch(committedSnapshot, canonicalBooking) || committedSnapshot.totalAmount !== pricing.totalAmountVND) {
+    if (!replayIdentityMatches(committedSnapshot, canonicalBooking) || !replayLinesMatch(committedSnapshot, canonicalBooking) || !totalMatchesPricing(committedSnapshot, pricing)) {
       return jsonError('IDEMPOTENCY_KEY_REUSED', 'This booking request key is already linked to a different booking.', 409);
     }
     await recordConversionAfterVerifiedCommit(supabase, committedSnapshot, analyticsAttribution);
-    return responseForSnapshot(committedSnapshot, true);
+    return responseForSnapshot(committedSnapshot, true, voucherCode);
   }
   // Never acknowledge or email from a read that proves only a partial item
   // set. The writer should make this impossible, but this guard protects the
   // response boundary if a stale/legacy read observes incomplete state.
-  if (!replayIdentityMatches(committedSnapshot, canonicalBooking) || !replayLinesMatch(committedSnapshot, canonicalBooking) || committedSnapshot.totalAmount !== pricing.totalAmountVND) {
+  if (!replayIdentityMatches(committedSnapshot, canonicalBooking) || !replayLinesMatch(committedSnapshot, canonicalBooking) || !totalMatchesPricing(committedSnapshot, pricing)) {
     return responseForIncompleteBooking(committedId);
   }
 
@@ -1016,6 +1088,9 @@ export async function POST(request: Request) {
         options: item.options,
       })) as any,
       totalAmount: committedSnapshot.totalAmount,
+      ...(committedVoucher?.applied && committedVoucher.discountAmount > 0
+        ? { discount: { amount: committedVoucher.discountAmount, subtotal: committedVoucher.subtotalAmount } }
+        : {}),
       therapist: pricing.items.find((item) => item.options.therapist)?.options.therapist || 'any',
       lang: committedSnapshot.lang,
       notes: committedSnapshot.notes || undefined,
@@ -1048,5 +1123,5 @@ export async function POST(request: Request) {
     });
   }
 
-  return NextResponse.json({ success: true, idempotent: false, data: { ...committedSnapshot, emailStatus } });
+  return NextResponse.json({ success: true, idempotent: false, data: { ...committedSnapshot, emailStatus, ...(committedVoucher ? { voucher: committedVoucher } : {}) } });
 }

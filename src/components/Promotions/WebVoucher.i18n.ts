@@ -22,6 +22,7 @@ export type WebVoucherErrorCode =
   | 'VOUCHER_CUSTOMER_REQUIRED'
   | 'ORDER_CONDITION_NOT_MET'
   | 'BOT_DETECTED'
+  | 'SERVICE_NOT_BOOKABLE'
   | 'NETWORK'
   | 'UNKNOWN';
 
@@ -57,6 +58,25 @@ export interface WebVoucherStrings {
   qrOpenOnDevice: string;
   backToMenu: string;
   errors: Record<WebVoucherErrorCode, string>;
+  checkout: {
+    title: string;
+    savedFound: string;
+    haveCode: string;
+    placeholder: string;
+    apply: string;
+    applying: string;
+    remove: string;
+    discountLabel: string;
+    totalAfter: string;
+    estimateNote: string;
+    notEligible: (conditions: string) => string;
+    rejectedTitle: string;
+    rejectedAsk: string;
+    bookWithout: string;
+    goBack: string;
+    replayWithout: string;
+    applied: (amount: string) => string;
+  };
 }
 
 export const WEB_VOUCHER_I18N: Record<WebVoucherLang, WebVoucherStrings> = {
@@ -115,8 +135,28 @@ export const WEB_VOUCHER_I18N: Record<WebVoucherLang, WebVoucherStrings> = {
       VOUCHER_CUSTOMER_REQUIRED: 'Vui lòng nhập thông tin khách hàng để áp dụng voucher.',
       ORDER_CONDITION_NOT_MET: 'Đơn chưa đạt điều kiện áp dụng voucher.',
       BOT_DETECTED: 'Không xác minh được trình duyệt. Vui lòng tải lại trang và thử lại.',
+      SERVICE_NOT_BOOKABLE: 'Dịch vụ trong giỏ hiện không đặt được. Vui lòng xem lại giỏ hàng.',
       NETWORK: 'Không có kết nối mạng. Vui lòng kiểm tra và thử lại.',
       UNKNOWN: 'Đã có lỗi xảy ra. Vui lòng thử lại.',
+    },
+    checkout: {
+      title: 'Voucher Web Booking',
+      savedFound: 'Voucher bạn đã lưu',
+      haveCode: 'Có mã voucher?',
+      placeholder: 'Nhập mã voucher',
+      apply: 'Áp dụng',
+      applying: 'Đang kiểm tra…',
+      remove: 'Bỏ voucher',
+      discountLabel: 'Ưu đãi Oria Booking Reward',
+      totalAfter: 'Tổng sau giảm',
+      estimateNote: 'Số tiền giảm chính xác được xác nhận khi đặt lịch.',
+      notEligible: (c) => `Đơn chưa đạt điều kiện áp dụng voucher: ${c}.`,
+      rejectedTitle: 'Không áp dụng được voucher',
+      rejectedAsk: 'Bạn có muốn tiếp tục đặt lịch không kèm voucher?',
+      bookWithout: 'Đặt không kèm voucher',
+      goBack: 'Quay lại',
+      replayWithout: 'Lịch hẹn này đã được ghi nhận trước đó nên voucher chưa được áp dụng. Voucher vẫn được giữ cho bạn.',
+      applied: (a) => `Đã áp dụng voucher: −${a}`,
     },
   },
   en: {
@@ -174,8 +214,28 @@ export const WEB_VOUCHER_I18N: Record<WebVoucherLang, WebVoucherStrings> = {
       VOUCHER_CUSTOMER_REQUIRED: 'Please enter your details to apply the voucher.',
       ORDER_CONDITION_NOT_MET: 'Your booking does not meet the voucher conditions yet.',
       BOT_DETECTED: 'We could not verify your browser. Please reload the page and try again.',
+      SERVICE_NOT_BOOKABLE: 'A service in your cart cannot be booked right now. Please review your cart.',
       NETWORK: 'No connection. Please check your network and try again.',
       UNKNOWN: 'Something went wrong. Please try again.',
+    },
+    checkout: {
+      title: 'Web Booking voucher',
+      savedFound: 'Your saved voucher',
+      haveCode: 'Have a voucher code?',
+      placeholder: 'Enter voucher code',
+      apply: 'Apply',
+      applying: 'Checking…',
+      remove: 'Remove voucher',
+      discountLabel: 'Oria Booking Reward',
+      totalAfter: 'Total after discount',
+      estimateNote: 'The exact discount is confirmed when you book.',
+      notEligible: (c) => `Your booking does not meet the voucher conditions yet: ${c}.`,
+      rejectedTitle: 'The voucher could not be applied',
+      rejectedAsk: 'Would you like to continue booking without the voucher?',
+      bookWithout: 'Book without voucher',
+      goBack: 'Go back',
+      replayWithout: 'This booking was already received earlier, so the voucher was not applied. Your voucher is still kept for you.',
+      applied: (a) => `Voucher applied: −${a}`,
     },
   },
   cn: {
@@ -233,8 +293,28 @@ export const WEB_VOUCHER_I18N: Record<WebVoucherLang, WebVoucherStrings> = {
       VOUCHER_CUSTOMER_REQUIRED: '请填写客户信息以使用优惠券。',
       ORDER_CONDITION_NOT_MET: '订单尚未满足优惠券使用条件。',
       BOT_DETECTED: '无法验证您的浏览器，请刷新页面后重试。',
+      SERVICE_NOT_BOOKABLE: '购物车中的某项服务目前无法预约，请检查购物车。',
       NETWORK: '网络未连接，请检查后重试。',
       UNKNOWN: '出现错误，请重试。',
+    },
+    checkout: {
+      title: '网上预约优惠券',
+      savedFound: '您已领取的优惠券',
+      haveCode: '有优惠券码？',
+      placeholder: '输入优惠券码',
+      apply: '使用',
+      applying: '正在验证…',
+      remove: '取消使用',
+      discountLabel: 'Oria 预约礼遇',
+      totalAfter: '优惠后合计',
+      estimateNote: '实际优惠金额以预约时确认为准。',
+      notEligible: (c) => `订单尚未满足优惠券使用条件：${c}。`,
+      rejectedTitle: '无法使用此优惠券',
+      rejectedAsk: '是否继续预约（不使用优惠券）？',
+      bookWithout: '不使用优惠券预约',
+      goBack: '返回',
+      replayWithout: '此预约此前已提交，因此未使用优惠券。优惠券仍为您保留。',
+      applied: (a) => `已使用优惠券：−${a}`,
     },
   },
   jp: {
@@ -292,8 +372,28 @@ export const WEB_VOUCHER_I18N: Record<WebVoucherLang, WebVoucherStrings> = {
       VOUCHER_CUSTOMER_REQUIRED: 'クーポンを適用するにはお客様情報を入力してください。',
       ORDER_CONDITION_NOT_MET: 'ご予約内容がクーポンの適用条件を満たしていません。',
       BOT_DETECTED: 'ブラウザを確認できませんでした。ページを再読み込みしてお試しください。',
+      SERVICE_NOT_BOOKABLE: 'カート内のサービスは現在予約できません。カートをご確認ください。',
       NETWORK: '接続がありません。ネットワークを確認してもう一度お試しください。',
       UNKNOWN: 'エラーが発生しました。もう一度お試しください。',
+    },
+    checkout: {
+      title: 'Web予約クーポン',
+      savedFound: '保存済みのクーポン',
+      haveCode: 'クーポンコードをお持ちですか？',
+      placeholder: 'クーポンコードを入力',
+      apply: '適用',
+      applying: '確認中…',
+      remove: 'クーポンを外す',
+      discountLabel: 'Oria ご予約特典',
+      totalAfter: '割引後合計',
+      estimateNote: '正確な割引額はご予約時に確定します。',
+      notEligible: (c) => `ご予約内容がクーポンの適用条件を満たしていません：${c}。`,
+      rejectedTitle: 'クーポンを適用できませんでした',
+      rejectedAsk: 'クーポンなしで予約を続けますか？',
+      bookWithout: 'クーポンなしで予約',
+      goBack: '戻る',
+      replayWithout: 'このご予約は以前に受付済みのため、クーポンは適用されていません。クーポンは引き続き確保されています。',
+      applied: (a) => `クーポン適用済み：−${a}`,
     },
   },
   kr: {
@@ -351,8 +451,28 @@ export const WEB_VOUCHER_I18N: Record<WebVoucherLang, WebVoucherStrings> = {
       VOUCHER_CUSTOMER_REQUIRED: '바우처를 적용하려면 고객 정보를 입력해 주세요.',
       ORDER_CONDITION_NOT_MET: '예약 내용이 바우처 적용 조건을 충족하지 않습니다.',
       BOT_DETECTED: '브라우저를 확인할 수 없습니다. 페이지를 새로고침한 후 다시 시도해 주세요.',
+      SERVICE_NOT_BOOKABLE: '장바구니의 서비스를 현재 예약할 수 없습니다. 장바구니를 확인해 주세요.',
       NETWORK: '인터넷 연결이 없습니다. 확인 후 다시 시도해 주세요.',
       UNKNOWN: '오류가 발생했습니다. 다시 시도해 주세요.',
+    },
+    checkout: {
+      title: '웹 예약 바우처',
+      savedFound: '저장한 바우처',
+      haveCode: '바우처 코드가 있으신가요?',
+      placeholder: '바우처 코드 입력',
+      apply: '적용',
+      applying: '확인 중…',
+      remove: '바우처 해제',
+      discountLabel: 'Oria 예약 리워드',
+      totalAfter: '할인 후 합계',
+      estimateNote: '정확한 할인 금액은 예약 시 확정됩니다.',
+      notEligible: (c) => `예약 내용이 바우처 적용 조건을 충족하지 않습니다: ${c}.`,
+      rejectedTitle: '바우처를 적용할 수 없습니다',
+      rejectedAsk: '바우처 없이 예약을 계속하시겠습니까?',
+      bookWithout: '바우처 없이 예약',
+      goBack: '돌아가기',
+      replayWithout: '이 예약은 이전에 이미 접수되어 바우처가 적용되지 않았습니다. 바우처는 계속 보관됩니다.',
+      applied: (a) => `바우처 적용됨: −${a}`,
     },
   },
 };

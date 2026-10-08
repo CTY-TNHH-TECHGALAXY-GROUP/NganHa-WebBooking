@@ -37,6 +37,7 @@ import { QRCodeSVG } from 'qrcode.react';
 import AlertModal from '@/components/Shared/AlertModal';
 import { VND_DENOMINATIONS, USD_INFO, ACCEPTED_CARDS } from '@/lib/paymentConstants';
 import { clearBookingCart } from '@/lib/bookingCartStorage';
+import { WEB_VOUCHER_I18N, pickWebVoucherLang } from '@/components/Promotions/WebVoucher.i18n';
 import { resolveCtaUrl } from '@/lib/config/urlSettings';
 import { useSystemSettings } from '@/components/SystemSettingsProvider';
 import { useMenuData } from '@/components/Menu/MenuContext';
@@ -396,6 +397,10 @@ interface OrderConfirmModalProps {
     bookingTime?: string;
     onEditService?: (item: CartItem) => void;
     onEditCustomerInfo?: () => void;
+    /** Web-claim voucher previewed at checkout (display only). */
+    voucherPreview?: { code: string; discountAmount: number; totalAmount: number } | null;
+    /** Voucher outcome returned by /api/bookings for the success screen. */
+    bookingVoucher?: { applied: boolean; discountAmount: number; totalAmount: number; reason?: string } | null;
 }
 
 const formatFullPhone = (phone?: string, countryCode?: string) => {
@@ -422,7 +427,10 @@ export default function OrderConfirmModal({
     bookingDate: initialBookingDate,
     bookingTime: initialBookingTime,
     onEditService,
+    voucherPreview = null,
+    bookingVoucher = null,
 }: OrderConfirmModalProps) {
+    const voucherText = WEB_VOUCHER_I18N[pickWebVoucherLang(lang)].checkout;
     const router = useRouter();
     const [currentStep, setCurrentStep] = useState<ModalStep>(2);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -1042,6 +1050,12 @@ export default function OrderConfirmModal({
                                                     <span>{formatCurrency(totalVND)} VND</span>
                                                     <small className="block text-[10px] text-[#c9a96e]">{formatUSD(totalUSD)}</small>
                                                 </div>
+                                                {voucherPreview && voucherPreview.discountAmount > 0 && (
+                                                    <div className="mt-1 text-[11px] leading-snug">
+                                                        <div className="text-[#9FD08C]">{voucherText.discountLabel}: −{formatCurrency(voucherPreview.discountAmount)} VND</div>
+                                                        <div className="font-bold text-[#f2d58d]">{voucherText.totalAfter}: {formatCurrency(voucherPreview.totalAmount)} VND</div>
+                                                    </div>
+                                                )}
                                             </div>
                                         </div>
                                     </div>
@@ -1247,6 +1261,14 @@ export default function OrderConfirmModal({
                                     </div>
                                 )}
 
+                                {bookingVoucher?.applied && bookingVoucher.discountAmount > 0 && (
+                                    <p className="text-xs font-semibold text-[#9FD08C]">
+                                        {voucherText.applied(`${formatCurrency(bookingVoucher.discountAmount)} VND`)} · {voucherText.totalAfter}: {formatCurrency(bookingVoucher.totalAmount)} VND
+                                    </p>
+                                )}
+                                {bookingVoucher?.reason === 'REPLAY_WITHOUT_VOUCHER' && (
+                                    <p className="text-xs text-[#f5c08a] max-w-sm mx-auto leading-relaxed">{voucherText.replayWithout}</p>
+                                )}
                                 <p className="text-[11px] md:text-xs text-white/55 pt-1 max-w-sm mx-auto leading-relaxed" aria-live="polite">
                                     {getModalText('confirmationEmailNotice', lang).replace('{hotline}', hotline)}
                                 </p>
