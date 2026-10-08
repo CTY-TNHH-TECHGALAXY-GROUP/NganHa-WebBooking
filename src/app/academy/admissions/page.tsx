@@ -4,8 +4,8 @@ import { getPageMetadata } from '@/lib/seo/metadata';
 
 export async function generateMetadata(): Promise<Metadata> {
   return getPageMetadata({ routeKey: 'academy/admissions', pathname: '/academy/admissions', localized: false }, {
-    title: 'Recruitment / Admission | Oria Spa Academy',
-    description: 'Application form for Oria Spa Academy recruitment and admissions.',
+    title: 'Recruitment / Admission | Oria Academy',
+    description: 'Application form for Oria Academy recruitment and admissions.',
   });
 }
 

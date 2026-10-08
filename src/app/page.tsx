@@ -1,6 +1,5 @@
 import Hero from '@/components/Hero/Hero';
-import OurStory from '@/components/OurStory/OurStory';
-import History from '@/components/History/History';
+import OriaSpaTabs from '@/components/OriaSpa/OriaSpaTabs';
 import SeoStructuredData from '@/components/Seo/SeoStructuredData';
 import { getHeroVideoConfig } from '@/lib/config/heroVideos';
 
@@ -15,11 +14,7 @@ const HomePage = async () => {
         {/* Hero Section - Fullscreen with video/image background */}
         <Hero initialHeroConfig={initialHeroConfig} />
 
-        {/* Our Story Section - Saigon & Oria Location, Architecture & Film Strip */}
-        <OurStory />
-
-        {/* History / About Story Section */}
-        <History />
+        <OriaSpaTabs />
       </main>
       <SeoStructuredData routeKey="home" locale="vi" pathname="/" />
     </>

@@ -32,7 +32,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { packageSlug } = await params;
   const config = await getServerTourConfig();
   const pkg = getPackageBySlugOrId(packageSlug, config.packages);
-  const title = pkg ? `${pkg.title.vi || pkg.title.en} · Local Tour | Oria Spa` : 'Local Tour | Oria Spa';
+  const title = pkg ? `${pkg.title.vi || pkg.title.en} · Oria Tour` : 'Oria Tour | Oria Spa';
   const description = pkg?.tagline?.vi || 'Khám phá Sài Gòn theo cách của Oria Spa: tour di sản văn hóa kết hợp trị liệu phục hồi.';
 
   return getPageMetadata({

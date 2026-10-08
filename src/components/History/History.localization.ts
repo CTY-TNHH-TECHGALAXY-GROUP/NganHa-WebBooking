@@ -47,27 +47,27 @@ export const HISTORY_FINALE_DEFAULTS: Record<HistoryLocale, { eyebrow: string; t
   vi: {
     eyebrow: 'Câu chuyện còn tiếp tục',
     title: 'Ít cảm giác giao diện hơn. Nhiều cảm xúc hơn.',
-    body: 'Lịch sử trở thành một hành trình điện ảnh nhẹ nhàng qua thương hiệu, con người và những không gian đã tạo nên Ngân Hà.',
+    body: 'Lịch sử trở thành một hành trình điện ảnh nhẹ nhàng qua thương hiệu, con người và những không gian đã tạo nên Oria.',
   },
   en: {
     eyebrow: 'The story continues',
     title: 'Less interface. More feeling.',
-    body: 'History becomes a quiet cinematic journey through the brand, its people, and the spaces that shaped Ngan Ha.',
+    body: 'History becomes a quiet cinematic journey through the brand, its people, and the spaces that shaped Oria.',
   },
   jp: {
     eyebrow: '物語は続きます',
     title: '画面よりも、心に残るものを。',
-    body: 'ブランド、人、そしてNgân Hàを形づくった空間をめぐる、静かな映像のような旅として歴史を感じてください。',
+    body: 'ブランド、人、そしてOriaを形づくった空間をめぐる、静かな映像のような旅として歴史を感じてください。',
   },
   kr: {
     eyebrow: '이야기는 계속됩니다',
     title: '화면은 덜하게. 감정은 더 깊게.',
-    body: 'Ngân Hà를 만들어 온 브랜드와 사람, 공간을 따라가는 잔잔하고 영화 같은 여정으로 역사를 느껴 보세요.',
+    body: 'Oria를 만들어 온 브랜드와 사람, 공간을 따라가는 잔잔하고 영화 같은 여정으로 역사를 느껴 보세요.',
   },
   cn: {
     eyebrow: '故事仍在继续',
     title: '少一点界面，多一点感受。',
-    body: '历史化作一段安静而富有电影感的旅程，穿过品牌、人与塑造了Ngân Hà的空间。',
+    body: '历史化作一段安静而富有电影感的旅程，穿过品牌、人与塑造了Oria的空间。',
   },
 };
 

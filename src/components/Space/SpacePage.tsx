@@ -81,7 +81,15 @@ const MediaRenderer = ({ mediaObj, className, alt, onEnded, eager = false }: { m
   return <img ref={mediaNodeRef} key={mediaObj.src} src={mediaObj.src} alt={alt || ""} className={className} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: mediaObj.objectPosition || 'center', display: 'block' }} />;
 };
 
-export default function SpacePage({ initialMedia }: { initialMedia?: any } = {}) {
+export default function SpacePage({ initialMedia, embedded = false }: { initialMedia?: any; embedded?: boolean } = {}) {
+  useEffect(() => {
+    if (!embedded) return;
+    const id = window.location.hash.slice(1);
+    if (['welcome', 'floor1', 'floor2'].includes(id)) document.getElementById(id)?.scrollIntoView({ block: 'start' });
+  }, [embedded]);
+
+  const heroId = embedded ? 'space-hero' : 'hero';
+  const Title = embedded ? 'h2' : 'h1';
   const { currentLang } = useTranslation();
   const { systemSettings } = useSystemSettings();
   const space = useMemo(() => getSpaceContent(currentLang), [currentLang]);
@@ -113,7 +121,7 @@ export default function SpacePage({ initialMedia }: { initialMedia?: any } = {})
   const [floor1Fading, setFloor1Fading] = useState(false);
   const [floor2Fading, setFloor2Fading] = useState(false);
 
-  const [activeSection, setActiveSection] = useState('hero');
+  const [activeSection, setActiveSection] = useState(heroId);
   const [isDarkNav, setIsDarkNav] = useState(false);
 
   useEffect(() => {
@@ -228,7 +236,7 @@ export default function SpacePage({ initialMedia }: { initialMedia?: any } = {})
       });
     }, { rootMargin: '-35% 0px -45% 0px' });
 
-    const sections = ['hero', 'welcome', 'floor1', 'floor2'];
+    const sections = [heroId, 'welcome', 'floor1', 'floor2'];
     sections.forEach(id => {
       const el = document.getElementById(id);
       if (el) activeObs.observe(el);
@@ -238,7 +246,7 @@ export default function SpacePage({ initialMedia }: { initialMedia?: any } = {})
       revealObs.disconnect();
       activeObs.disconnect();
     };
-  }, []);
+  }, [heroId]);
 
   const handleTabChange = (section: 'welcome' | 'floor1' | 'floor2', tab: string) => {
     if (section === 'welcome') {
@@ -280,17 +288,17 @@ export default function SpacePage({ initialMedia }: { initialMedia?: any } = {})
     <div className={styles.container}>
 
       <div className={`${styles.stickyIndex} ${isDarkNav ? styles.dark : ''}`}>
-        <button className={activeSection === 'hero' ? styles.active : ''} onClick={() => scrollTo('hero')} aria-label={space.nav.hero}></button>
+        <button className={activeSection === heroId ? styles.active : ''} onClick={() => scrollTo(heroId)} aria-label={space.nav.hero}></button>
         <button className={activeSection === 'welcome' ? styles.active : ''} onClick={() => scrollTo('welcome')} aria-label={space.nav.welcome}></button>
         <button className={activeSection === 'floor1' ? styles.active : ''} onClick={() => scrollTo('floor1')} aria-label={space.nav.floor1}></button>
         <button className={activeSection === 'floor2' ? styles.active : ''} onClick={() => scrollTo('floor2')} aria-label={space.nav.floor2}></button>
       </div>
 
-      <section className={styles.hero} id="hero">
+      <section className={styles.hero} id={heroId}>
         <MediaRenderer mediaObj={getMedia('hero', defaultMedia.hero)} alt="Oria Spa" className={styles.heroMedia} eager />
         <div className={styles['media-watermark']}></div>
         <div className={styles.heroCopy}>
-          <h1>{space.hero.title}<br/><em>{space.hero.titleEm}</em></h1>
+          <Title className={styles.pageTitle}>{space.hero.title}<br/><em>{space.hero.titleEm}</em></Title>
           <div className={styles.heroSide}>
             <p>{space.hero.subtitle}</p>
             <span>{space.hero.scrollPrompt}</span>

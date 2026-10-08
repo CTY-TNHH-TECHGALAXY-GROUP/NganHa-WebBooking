@@ -10,7 +10,7 @@ interface PageProps {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { lang } = await params;
   return getPageMetadata({ routeKey: 'oriafarm-store', pathname: `/${lang}/oriafarm-store`, locale: lang as Locale, localized: true, defaultPathname: '/oriafarm-store' }, {
-    title: 'Oria Farm Store | Green Nutrition from our Own Farm',
+    title: 'OriaFarm Store | Green Nutrition from our Own Farm',
     description: '100% natural and free from preservatives — fresh fruits and organic ingredients from our farm for your everyday nutrition.',
   });
 }

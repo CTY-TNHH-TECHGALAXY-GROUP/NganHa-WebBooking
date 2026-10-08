@@ -115,7 +115,7 @@
   background: linear-gradient(90deg, transparent, var(--history-gold));
 }
 
-.heroCopy h1,
+.heroCopy .heroTitle,
 .intro h2,
 .finale h2,
 .copy h3,
@@ -125,7 +125,7 @@
   font-family: var(--font-heading, "Playfair Display", Georgia, serif);
 }
 
-.heroCopy h1 {
+.heroCopy .heroTitle {
   margin: 18px 0 22px;
   max-width: 780px;
   font-size: clamp(4rem, 10vw, 9rem);
@@ -134,7 +134,7 @@
   letter-spacing: -0.055em;
 }
 
-.heroCopy h1 em {
+.heroCopy .heroTitle em {
   display: block;
   color: var(--history-gold-soft);
   font-style: italic;
@@ -1059,7 +1059,7 @@
       radial-gradient(circle at 50% 22%, transparent 0 12rem, rgba(10, 10, 12, 0.78) 28rem);
   }
 
-  .heroCopy h1 {
+  .heroCopy .heroTitle {
     font-size: clamp(3.7rem, 17vw, 6.1rem);
   }
 
