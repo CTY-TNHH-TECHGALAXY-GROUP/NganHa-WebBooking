@@ -52,15 +52,24 @@ export default function SpaWeatherStatus({
     try { setDismissed(sessionStorage.getItem(DISMISSED_KEY) === '1'); } catch { /* Storage may be unavailable. */ }
 
     const controller = new AbortController();
-    fetch('/api/weather/spa', { signal: controller.signal })
-      .then(response => response.ok ? response.json() : null)
-      .then(data => {
+    let refreshTimer: ReturnType<typeof setTimeout>;
+    const loadWeather = async () => {
+      let nextRefresh = 30_000;
+      try {
+        const response = await fetch('/api/weather/spa', { signal: controller.signal });
+        const data = response.ok ? await response.json() : null;
         if (!controller.signal.aborted && data && validStatuses.has(data.status)) {
           setStatus(data.status as WeatherStatus);
+          nextRefresh = 10 * 60_000;
         }
-      })
-      .catch(() => {});
-    return () => controller.abort();
+      } catch { /* Retry temporary API failures without inventing weather data. */ }
+      if (!controller.signal.aborted) refreshTimer = setTimeout(loadWeather, nextRefresh);
+    };
+    void loadWeather();
+    return () => {
+      controller.abort();
+      clearTimeout(refreshTimer);
+    };
   }, []);
 
   if (!status) return null;
