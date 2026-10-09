@@ -9,7 +9,7 @@ const TABS = [
   { label: 'Design your journey', href: '/admin/services', icon: LayoutDashboard },
   { label: 'Pure Relaxation', href: '/admin/services/pure', icon: Sparkles },
   { label: 'Space Experience', href: '/admin/services/space', icon: Sparkles },
-  { label: 'Therapy (Sắp ra mắt)', href: '/admin/services/therapy', icon: Flower2 },
+  { label: 'Deep Body Treament (Sắp ra mắt)', href: '/admin/services/therapy', icon: Flower2 },
 ];
 
 export default function ServicesLayout({ children }: { children: React.ReactNode }) {

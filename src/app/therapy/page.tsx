@@ -5,7 +5,7 @@ import { getPageMetadata } from '@/lib/seo/metadata';
 export async function generateMetadata(): Promise<Metadata> {
   return getPageMetadata({ routeKey: 'therapy', pathname: '/therapy', localized: false }, {
     title: 'Coming Soon | Oria Spa',
-    description: 'Therapy services at Oria Spa.',
+    description: 'Deep Body Treament services at Oria Spa.',
   });
 }
 

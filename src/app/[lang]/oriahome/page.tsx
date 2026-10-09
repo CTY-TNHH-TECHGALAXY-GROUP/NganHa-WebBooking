@@ -10,7 +10,7 @@ interface PageProps {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { lang } = await params;
   return getPageMetadata({ routeKey: 'oriahome', pathname: `/${lang}/oriahome`, locale: lang as Locale, localized: true, defaultPathname: '/oriahome' }, {
-    title: 'Oria Home Spa | Oria Spa',
+    title: 'Oria Home Care | Oria Spa',
     description: 'Oria Spa sends a technician directly to where you are - your home, apartment, or hotel room.',
   });
 }

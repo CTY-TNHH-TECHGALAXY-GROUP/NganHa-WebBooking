@@ -24,10 +24,12 @@ const toLocaleDate = (date: string, locale: string) => new Intl.DateTimeFormat(l
 
 export default function LostAndFoundPage({ 
   initialItems, 
-  forcedLang 
+  forcedLang,
+  embedded = false,
 }: { 
   initialItems?: WebbookingLostFoundItem[];
   forcedLang?: string;
+  embedded?: boolean;
 }) {
   const { currentLang, setCurrentLang } = useTranslation();
   const { systemSettings } = useSystemSettings();
@@ -103,14 +105,17 @@ export default function LostAndFoundPage({
     }
   };
 
+  const Container = embedded ? 'div' : 'main';
+  const Title = embedded ? 'h2' : 'h1';
+
   return (
-    <main className={styles.page}>
+    <Container className={styles.page}>
       <section className={styles.hero}>
         <Image src="/images/lost-and-found/lost-and-found-still-life.png" alt="Carefully held personal belongings" fill priority sizes="100vw" className={styles.heroImage} />
         <div className={styles.heroShade} />
         <div className={styles.heroCopy}>
           <span className={styles.eyebrow}>{copy.eyebrow}</span>
-          <h1>{copy.title}</h1>
+          <Title className={styles.pageTitle}>{copy.title}</Title>
           <p>{copy.intro}</p>
         </div>
       </section>
@@ -171,6 +176,6 @@ export default function LostAndFoundPage({
           </section>
         </div>
       )}
-    </main>
+    </Container>
   );
 }

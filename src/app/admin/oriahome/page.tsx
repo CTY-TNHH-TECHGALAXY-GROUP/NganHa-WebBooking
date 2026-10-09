@@ -23,6 +23,9 @@ import {
   hydrateHomeSpaConfig,
   type HomeSpaConfig,
 } from '@/data/homeSpaData';
+import OriaCareEditor from '@/components/Admin/OriaCareEditor';
+import { DEFAULT_ORIA_CARE_CONFIG, hydrateOriaCareConfig } from '@/data/oriaCareData';
+import { mergeHomeCareIntroduction } from '@/data/homeCareIntroduction';
 import { WatermarkControl } from '@/components/Admin/WatermarkControl';
 
 const LANGUAGES = [
@@ -34,7 +37,7 @@ const LANGUAGES = [
 ];
 
 export default function HomeSpaAdminPage() {
-  const [config, setConfig] = useState<HomeSpaConfig>(DEFAULT_HOME_SPA_CONFIG);
+  const [config, setConfig] = useState<HomeSpaConfig>(() => mergeHomeCareIntroduction(DEFAULT_HOME_SPA_CONFIG, DEFAULT_ORIA_CARE_CONFIG));
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
@@ -61,8 +64,9 @@ export default function HomeSpaAdminPage() {
         if (res.ok) {
           const json = await res.json();
           const remoteContent = json.data?.home_spa_content || json.home_spa_content;
+          const careContent = json.data?.oria_care_content || json.oria_care_content;
           if (remoteContent) {
-            setConfig(hydrateHomeSpaConfig(remoteContent));
+            setConfig(mergeHomeCareIntroduction(hydrateHomeSpaConfig(remoteContent), hydrateOriaCareConfig(careContent)));
           }
         }
       } catch (err) {
@@ -97,7 +101,7 @@ export default function HomeSpaAdminPage() {
         setIsDirty(false);
         setMessage({
           type: 'success',
-          text: 'Đã lưu cấu hình Oria Home Spa và đồng bộ Weblive thành công!',
+          text: 'Đã lưu cấu hình Oria Home Care và đồng bộ Weblive thành công!',
         });
         setTimeout(() => setMessage({ type: '', text: '' }), 4000);
       } else {
@@ -183,7 +187,7 @@ export default function HomeSpaAdminPage() {
       <div className="min-h-screen bg-admin-bg p-8 flex items-center justify-center">
         <div className="flex items-center gap-3 text-admin-text">
           <div className="w-5 h-5 border-2 border-admin-gold border-t-transparent rounded-full animate-spin" />
-          <span>Đang tải dữ liệu Oria Home Spa...</span>
+          <span>Đang tải dữ liệu Oria Home Care...</span>
         </div>
       </div>
     );
@@ -204,14 +208,14 @@ export default function HomeSpaAdminPage() {
             <div>
               <div className="flex items-center gap-2">
                 <h1 className="text-xl font-bold text-admin-text tracking-wide">
-                  Quản Trị Oria Home Spa
+                  Quản Trị Oria Home Care
                 </h1>
                 <span className="text-xs px-2.5 py-0.5 rounded-full bg-admin-gold/15 text-admin-gold border border-admin-gold/30 font-medium">
                   5 Ngôn Ngữ
                 </span>
               </div>
               <p className="text-xs text-admin-text-faint mt-0.5">
-                Điều chỉnh bài viết giới thiệu editorial, hình ảnh hero, và 2 khung ảnh minh họa xen kẽ.
+                Chỉnh sửa Oria Home và phần Oria Care bên dưới, với hình ảnh xen kẽ. Mỗi phần có nút lưu riêng.
               </p>
             </div>
           </div>
@@ -552,6 +556,10 @@ export default function HomeSpaAdminPage() {
                 </span>
               </div>
 
+              {sIdx === 0 && config.careIntroductionMerged && (
+                <p className="text-xs text-admin-text-dim">Giới thiệu chung của Oria Home Care và Oria Care. Chỉnh toàn bộ đoạn văn tại đây. Khung ảnh Oria Care 01 nằm sau đoạn đầu; khung ảnh Oria Home Care 01 nằm sau toàn bộ phần giới thiệu.</p>
+              )}
+
               <div>
                 <label className="text-xs text-admin-text-dim block mb-1 font-semibold">
                   Tiêu Đề Phần ({activeLang.toUpperCase()}):
@@ -611,7 +619,7 @@ export default function HomeSpaAdminPage() {
                 3 Khung Ảnh Minh Họa Bài Viết (Xen Kẽ Giữa Các Phần)
               </h2>
               <p className="text-xs text-admin-text-dim mt-0.5">
-                Khung 01 sau Phần 1, Khung 02 sau Phần 2, Khung 03 sau Phần 3 (Khi nào nên book Oria Home Spa).
+                Khung 01 sau Phần 1, Khung 02 sau Phần 2, Khung 03 sau Phần 3 (Khi nào nên book Oria Home Care).
               </p>
             </div>
             <span className="text-[11px] px-2.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 font-semibold">
@@ -1175,8 +1183,8 @@ export default function HomeSpaAdminPage() {
         </section>
       </main>
 
-      {/* 4. STICKY FLOATING SAVE BAR */}
-      <div className="fixed bottom-6 inset-x-0 z-50 px-6 pointer-events-none">
+      {/* Save the Home content before the Care editor */}
+      <div className="px-6 pb-6">
         <div className="max-w-4xl mx-auto flex items-center justify-between p-4 bg-admin-card/95 border border-admin-gold/30 rounded-2xl shadow-2xl backdrop-blur-md pointer-events-auto">
           <div className="flex items-center gap-3">
             <span
@@ -1190,7 +1198,7 @@ export default function HomeSpaAdminPage() {
               </p>
               <p className="text-[11px] text-admin-text-dim">
                 {isDirty
-                  ? 'Bấm nút "Lưu thay đổi" để cập nhật ngay trang Oria Home Spa'
+                  ? 'Bấm "Lưu Nội Dung Oria Home" để cập nhật phần Home trên trang Oria Home Care'
                   : 'Hệ thống tự động đồng bộ cả 5 ngôn ngữ'}
               </p>
             </div>
@@ -1209,12 +1217,15 @@ export default function HomeSpaAdminPage() {
             ) : (
               <>
                 <Save size={16} />
-                <span>Lưu Thay Đổi</span>
+                <span>Lưu Nội Dung Oria Home</span>
               </>
             )}
           </button>
         </div>
       </div>
+      <section id="oria-care-editor" className="scroll-mt-24">
+        <OriaCareEditor introductionMerged={config.careIntroductionMerged} />
+      </section>
     </div>
   );
 }

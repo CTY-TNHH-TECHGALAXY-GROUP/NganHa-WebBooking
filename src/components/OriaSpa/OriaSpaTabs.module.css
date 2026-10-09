@@ -1,0 +1,137 @@
+.root {
+  background: #281b15;
+  color: #f7ebc7;
+}
+
+.tabs {
+  display: flex;
+  align-items: center;
+  justify-content: safe center;
+  gap: clamp(24px, 3vw, 48px);
+  overflow-x: auto;
+  padding: 28px 24px 24px;
+  scroll-margin-top: 88px;
+  scrollbar-width: thin;
+  scrollbar-color: #79664e transparent;
+}
+
+.tab {
+  flex: 0 0 auto;
+  appearance: none;
+  border: 0;
+  border-bottom: 1px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  padding: 8px 0;
+  color: #b8aa97;
+  font-family: var(--font-body), sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: .035em;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 180ms ease, border-color 180ms ease;
+}
+
+.tab:hover,
+.tab[aria-selected='true'] {
+  color: #f7ebc7;
+}
+
+.tab[aria-selected='true'] {
+  border-bottom-color: #c5a880;
+}
+
+.tab:focus-visible,
+.panel:focus-visible {
+  outline: 1px solid #c5a880;
+  outline-offset: 6px;
+}
+
+.services {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: clamp(48px, 8vw, 100px) 24px;
+}
+
+.services h2 {
+  margin: 0 0 16px;
+  font-family: var(--font-heading), serif;
+  font-size: clamp(32px, 5vw, 56px);
+  font-weight: 400;
+}
+
+.serviceIntro {
+  max-width: 560px;
+  margin: 0 0 32px;
+  color: #b8aa97;
+  font-family: var(--font-body), sans-serif;
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.serviceLink {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: start;
+  gap: clamp(12px, 3vw, 32px);
+  padding: 32px 0;
+  border-bottom: 1px solid rgba(247, 235, 199, .18);
+  color: inherit;
+  text-decoration: none;
+  font-family: var(--font-heading), serif;
+  font-size: clamp(22px, 3vw, 32px);
+}
+
+.serviceLink:hover .serviceTitle,
+.serviceLink:focus-visible .serviceTitle {
+  color: #c5a880;
+}
+
+.serviceLink:focus-visible {
+  outline: 1px solid #c5a880;
+  outline-offset: 6px;
+}
+
+.serviceContent {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.serviceTitle {
+  transition: color 180ms ease;
+}
+
+.serviceDescription {
+  max-width: 540px;
+  color: #b8aa97;
+  font-family: var(--font-body), sans-serif;
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.serviceAction {
+  color: #c5a880;
+  font-family: var(--font-body), sans-serif;
+  font-size: 13px;
+}
+
+.serviceArrow {
+  color: #c5a880;
+  font-size: 24px;
+  line-height: 1.4;
+}
+
+.badge {
+  padding-top: 6px;
+  color: #41b8a6;
+  font-family: var(--font-body), sans-serif;
+  font-size: 16px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tab, .serviceTitle { transition: none; }
+}

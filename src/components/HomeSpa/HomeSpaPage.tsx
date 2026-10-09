@@ -12,6 +12,9 @@ import {
   hydrateHomeSpaConfig,
   type HomeSpaConfig,
 } from '@/data/homeSpaData';
+import OriaCarePage from '@/components/OriaCare/OriaCarePage';
+import { DEFAULT_ORIA_CARE_CONFIG, hydrateOriaCareConfig, type OriaCareConfig } from '@/data/oriaCareData';
+import { mergeHomeCareIntroduction } from '@/data/homeCareIntroduction';
 import styles from './HomeSpaPage.module.css';
 
 interface HomeSpaPageProps {
@@ -29,6 +32,7 @@ export default function HomeSpaPage({
   const reduceMotion = useReducedMotion();
 
   const [remoteConfig, setRemoteConfig] = useState<HomeSpaConfig | null>(initialConfig || null);
+  const [careConfig, setCareConfig] = useState<OriaCareConfig>(DEFAULT_ORIA_CARE_CONFIG);
 
   // Synchronize initialLang into translation context if provided
   useEffect(() => {
@@ -54,13 +58,15 @@ export default function HomeSpaPage({
         if (remoteContent) {
           setRemoteConfig(hydrateHomeSpaConfig(remoteContent));
         }
+        const careContent = data?.oria_care_content || data?.content?.oria_care_content;
+        if (careContent) setCareConfig(hydrateOriaCareConfig(careContent));
       })
       .catch((err) => {
         console.error('Failed to load home-spa site-content:', err);
       });
   }, []);
 
-  const config = remoteConfig || DEFAULT_HOME_SPA_CONFIG;
+  const config = mergeHomeCareIntroduction(remoteConfig || DEFAULT_HOME_SPA_CONFIG, careConfig);
 
   const getText = (localized?: Record<string, string>): string => {
     if (!localized) return '';
@@ -129,9 +135,21 @@ export default function HomeSpaPage({
             >
               <h2 className={styles.sectionHeading}>{getText(section.heading)}</h2>
               {section.paragraphs.map((para, pIdx) => (
-                <p key={'sec-' + sIdx + '-p-' + pIdx} className={styles.paragraph}>
-                  {getText(para)}
-                </p>
+                <React.Fragment key={'sec-' + sIdx + '-p-' + pIdx}>
+                  <p className={styles.paragraph}>{getText(para)}</p>
+                  {sIdx === 0 && pIdx === 0 && config.careIntroductionMerged && careConfig.storyPhotos?.[0] && (
+                    <div className={styles.storyPhotoFrame}>
+                      <img src={careConfig.storyPhotos[0]} alt="Oria Home Care" loading="lazy" />
+                      {careConfig.storyPhotosWatermark?.[0] !== false && (
+                        <div
+                          className="media-watermark"
+                          aria-hidden="true"
+                          style={{ opacity: (careConfig.storyPhotosWatermarkOpacity?.[0] ?? 15) / 100 }}
+                        />
+                      )}
+                    </div>
+                  )}
+                </React.Fragment>
               ))}
             </motion.section>
 
@@ -146,7 +164,7 @@ export default function HomeSpaPage({
               >
                 <img
                   src={config.storyPhotos[0]}
-                  alt="Oria Home Spa"
+                  alt="Oria Home Care"
                   loading="lazy"
                 />
                 {config.storyPhotosWatermark?.[0] !== false && (
@@ -170,7 +188,7 @@ export default function HomeSpaPage({
               >
                 <img
                   src={config.storyPhotos[1]}
-                  alt="Oria Home Spa"
+                  alt="Oria Home Care"
                   loading="lazy"
                 />
                 {config.storyPhotosWatermark?.[1] !== false && (
@@ -194,7 +212,7 @@ export default function HomeSpaPage({
               >
                 <img
                   src={config.storyPhotos[2]}
-                  alt="Oria Home Spa"
+                  alt="Oria Home Care"
                   loading="lazy"
                 />
                 {config.storyPhotosWatermark?.[2] !== false && (
@@ -238,6 +256,7 @@ export default function HomeSpaPage({
           </motion.div>
         )}
       </main>
+      <OriaCarePage embedded skipIntroduction={config.careIntroductionMerged} initialLang={initialLang} />
     </div>
   );
 }

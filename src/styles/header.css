@@ -851,6 +851,8 @@ body.menu-open .site-header {
   width: 100vw;
   height: 100dvh;
   background-color: #281B15;
+  background-size: cover;
+  background-position: center;
   z-index: 99 !important;
   display: flex;
   flex-direction: column;
@@ -1020,9 +1022,6 @@ body.menu-open .site-header {
 .nav-panel-right {
   flex: 1;
   position: relative;
-  background-image: url('https://images.unsplash.com/photo-1540555700478-4be289fbecef?q=80&w=2940&auto=format&fit=crop'); 
-  background-size: cover;
-  background-position: center;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1042,14 +1041,14 @@ body.menu-open .site-header {
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0, 0, 0, 0.4);
+  background: transparent;
   z-index: 1;
 }
 
 .nav-panel-card {
   position: relative;
   z-index: 2;
-  background-color: rgba(40, 27, 21, 0.95);
+  background-color: transparent;
   padding: 1.75rem 1.25rem;
   width: 100%;
   max-width: 380px;
@@ -1128,4 +1127,32 @@ body.menu-open .site-header {
   mask-image: linear-gradient(to bottom, transparent 0%, black 100%);
   -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 100%);
   pointer-events: none;
+}
+
+/* The brand card is the only visible navigation in this menu. */
+.nav-panel-left.nav-panel-empty {
+  display: none;
+  background-color: transparent;
+}
+
+@media (min-width: 1024px) {
+  .nav-panel-left.nav-panel-empty {
+    display: flex;
+  }
+}
+
+.nav-panel-card .nav-brand-control {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: transparent;
+  border: 0;
+}
+
+.nav-panel-card .nav-brand-control:focus-visible,
+.nav-panel-card .nav-brand-item:focus-visible {
+  outline: 1px solid #D4AF37;
+  outline-offset: 4px;
 }

@@ -74,9 +74,22 @@ export const useHeaderLogic = () => {
     if (!isMobileMenuOpen) return;
 
     const handleMenuKeyDown = (event: KeyboardEvent) => {
-      if (event.key !== 'Escape') return;
-      event.preventDefault();
-      setIsMobileMenuOpen(false);
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        setIsMobileMenuOpen(false);
+        return;
+      }
+      if (event.key !== 'Tab') return;
+      const menu = mobileMenuCloseRef.current?.closest('nav');
+      const focusable = Array.from(menu?.querySelectorAll<HTMLElement>('a[href], button:not([disabled]), [tabindex="0"]') || [])
+        .filter(element => element.getClientRects().length > 0 && element.tabIndex >= 0);
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (!first || !last) return;
+      if (!menu?.contains(document.activeElement) || (event.shiftKey ? document.activeElement === first : document.activeElement === last)) {
+        event.preventDefault();
+        (event.shiftKey ? last : first).focus();
+      }
     };
 
     document.addEventListener('keydown', handleMenuKeyDown);

@@ -182,10 +182,6 @@
 .closingSection {
   margin-top: 12px;
   padding: 36px 32px;
-  background: rgba(26, 18, 14, 0.55);
-  border: 1px solid rgba(216, 182, 106, 0.22);
-  border-radius: 20px;
-  backdrop-filter: blur(8px);
   text-align: center;
 }
 
@@ -202,7 +198,7 @@
 /* 5. MINIMAL EDITORIAL CTA (LIKE PIC 1 IN OUR STORY) */
 .ctaWrap {
   margin-top: 36px;
-  display: flex;
+  display: none;
   justify-content: center;
   align-items: center;
 }

@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Playfair_Display, Inter } from "next/font/google";
+import { getSpaWeather } from '@/lib/weather/weather-api';
 import LayoutWrapper from "@/components/LayoutWrapper";
 import { TranslationProvider } from "@/components/TranslationProvider";
 import { SystemSettingsProvider } from "@/components/SystemSettingsProvider";
@@ -76,6 +77,7 @@ const RootLayout = async ({
 }: Readonly<{
   children: React.ReactNode;
 }>) => {
+  const initialWeatherPromise = getSpaWeather();
   // Fetch WebBookingContent translations
   let translations = {};
   try {
@@ -136,6 +138,8 @@ const RootLayout = async ({
       })
     : null;
 
+  const initialWeather = await initialWeatherPromise;
+
   return (
     <html lang="vi" className={`${playfair.variable} ${inter.variable}`}>
       <head>
@@ -154,7 +158,7 @@ const RootLayout = async ({
           <TranslationProvider initialTranslations={translations}>
             <AnalyticsRuntime />
             <AnalyticsConsentControl />
-            <LayoutWrapper>{children}</LayoutWrapper>
+            <LayoutWrapper initialWeatherStatus={initialWeather?.status ?? null}>{children}</LayoutWrapper>
           </TranslationProvider>
         </SystemSettingsProvider>
       </body>

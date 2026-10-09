@@ -7,6 +7,7 @@ export interface HomeSpaSection {
 }
 
 export interface HomeSpaConfig {
+  careIntroductionMerged?: boolean;
   pageTitle: LocalizedString;
   pageSubtitle: LocalizedString;
   heroImage?: string;
@@ -24,11 +25,11 @@ export interface HomeSpaConfig {
 
 export const DEFAULT_HOME_SPA_CONFIG: HomeSpaConfig = {
   pageTitle: {
-    vi: 'Oria Home Spa',
-    en: 'Oria Home Spa',
-    cn: 'Oria Home Spa',
-    kr: 'Oria Home Spa',
-    jp: 'Oria Home Spa',
+    vi: 'Oria Home Care',
+    en: 'Oria Home Care',
+    cn: 'Oria Home Care',
+    kr: 'Oria Home Care',
+    jp: 'Oria Home Care',
   },
   pageSubtitle: {
     vi: 'Khi spa đến tận nhà bạn',
@@ -48,11 +49,11 @@ export const DEFAULT_HOME_SPA_CONFIG: HomeSpaConfig = {
     {
       id: 'sec-1',
       heading: {
-        vi: 'Oria Home Spa là gì?',
-        en: 'What is Oria Home Spa?',
-        cn: '什么是Oria Home Spa?',
-        kr: 'Oria Home Spa란?',
-        jp: 'Oria Home Spaとは?',
+        vi: 'Oria Home Care là gì?',
+        en: 'What is Oria Home Care?',
+        cn: '什么是Oria Home Care?',
+        kr: 'Oria Home Care란?',
+        jp: 'Oria Home Careとは?',
       },
       paragraphs: [
         {
@@ -107,11 +108,11 @@ export const DEFAULT_HOME_SPA_CONFIG: HomeSpaConfig = {
     {
       id: 'sec-3',
       heading: {
-        vi: 'Khi nào nên book Oria Home Spa?',
-        en: 'When should you book Oria Home Spa?',
-        cn: '什么时候适合预约Oria Home Spa到家服务?',
-        kr: '언제 Oria Home Spa를 예약해야 할까요?',
-        jp: 'どんな時にOria Home Spaを予約すべき?',
+        vi: 'Khi nào nên book Oria Home Care?',
+        en: 'When should you book Oria Home Care?',
+        cn: '什么时候适合预约Oria Home Care到家服务?',
+        kr: '언제 Oria Home Care를 예약해야 할까요?',
+        jp: 'どんな時にOria Home Careを予約すべき?',
       },
       paragraphs: [
         {
@@ -136,21 +137,21 @@ export const DEFAULT_HOME_SPA_CONFIG: HomeSpaConfig = {
           jp: '施術後そのまま眠りたい時。マッサージが終わればそのままベッドへ - 着替えたり、車を呼んだり、帰宅したりする必要はありません - その心地よさを眠りにつくまでそのまま保てます。',
         },
         {
-          vi: 'Và khi bạn đang ở khách sạn. Thay vì tìm hiểu xem nên đi spa nào, cứ để Oria Home Spa đến tận phòng.',
-          en: "And when you're staying at a hotel. Instead of researching which spa to visit, let Oria Home Spa come straight to your room.",
-          cn: '以及当您正在酒店入住时。与其研究该去哪家水疗馆,不如让Oria Home Spa直接来到您的房间。',
-          kr: '그리고 호텔에 머무르고 있을 때. 어느 스파를 갈지 알아보는 대신, Oria Home Spa가 객실로 직접 찾아오게 하세요.',
-          jp: 'そしてホテルに滞在中の时。どのスパに行くか調べる代わりに、Oria Home Spaに客室まで直接来てもらいましょう。',
+          vi: 'Và khi bạn đang ở khách sạn. Thay vì tìm hiểu xem nên đi spa nào, cứ để Oria Home Care đến tận phòng.',
+          en: "And when you're staying at a hotel. Instead of researching which spa to visit, let Oria Home Care come straight to your room.",
+          cn: '以及当您正在酒店入住时。与其研究该去哪家水疗馆,不如让Oria Home Care直接来到您的房间。',
+          kr: '그리고 호텔에 머무르고 있을 때. 어느 스파를 갈지 알아보는 대신, Oria Home Care가 객실로 직접 찾아오게 하세요.',
+          jp: 'そしてホテルに滞在中の时。どのスパに行くか調べる代わりに、Oria Home Careに客室まで直接来てもらいましょう。',
         },
       ],
     },
   ],
   closingText: {
-    vi: 'Hai lựa chọn, hai hoàn cảnh khác nhau. Đến Oria Spa khi bạn muốn một trải nghiệm trọn vẹn, đầy đủ. Book Oria Home Spa khi bạn chỉ muốn được thư giãn mà không phải đi đâu cả.',
-    en: 'Two options, two different situations. Visit Oria Spa when you want a full, complete experience. Book Oria Home Spa when all you want is to relax without going anywhere.',
-    cn: '两种选择,两种不同的场景。想要完整、全面的体验时,请到Oria Spa;只想放松、不想出门时,就预约Oria Home Spa。',
-    kr: '두 가지 선택, 두 가지 다른 상황. 온전하고 완전한 경험을 원할 땐 Oria Spa 매장으로. 어디도 가지 않고 그저 편안히 쉬고 싶을 땐 Oria Home Spa를 예약하세요.',
-    jp: '2つの選択肢、2つの異なるシーン。完全で充実した体験を求めるなら店舗のOria Spaへ。どこにも行かずただリラックスしたいならOria Home Spaをご予約ください。',
+    vi: 'Hai lựa chọn, hai hoàn cảnh khác nhau. Đến Oria Spa khi bạn muốn một trải nghiệm trọn vẹn, đầy đủ. Book Oria Home Care khi bạn chỉ muốn được thư giãn mà không phải đi đâu cả.',
+    en: 'Two options, two different situations. Visit Oria Spa when you want a full, complete experience. Book Oria Home Care when all you want is to relax without going anywhere.',
+    cn: '两种选择,两种不同的场景。想要完整、全面的体验时,请到Oria Spa;只想放松、不想出门时,就预约Oria Home Care。',
+    kr: '두 가지 선택, 두 가지 다른 상황. 온전하고 완전한 경험을 원할 땐 Oria Spa 매장으로. 어디도 가지 않고 그저 편안히 쉬고 싶을 땐 Oria Home Care를 예약하세요.',
+    jp: '2つの選択肢、2つの異なるシーン。完全で充実した体験を求めるなら店舗のOria Spaへ。どこにも行かずただリラックスしたいならOria Home Careをご予約ください。',
   },
   ctaText: {
     vi: 'Liên Hệ Đặt Lịch Homespa',
@@ -161,6 +162,12 @@ export const DEFAULT_HOME_SPA_CONFIG: HomeSpaConfig = {
   },
   ctaLink: 'tel:+84964090277',
 };
+
+function renameHomeSpaText(text: LocalizedString): LocalizedString {
+  return Object.fromEntries(
+    Object.entries(text).map(([locale, value]) => [locale, typeof value === 'string' ? value.replaceAll('Oria Home Spa', 'Oria Home Care') : value])
+  );
+}
 
 export function hydrateHomeSpaConfig(raw: any): HomeSpaConfig {
   if (!raw || typeof raw !== 'object') {
@@ -175,10 +182,10 @@ export function hydrateHomeSpaConfig(raw: any): HomeSpaConfig {
     const defaultSec = DEFAULT_HOME_SPA_CONFIG.sections[idx] || DEFAULT_HOME_SPA_CONFIG.sections[0];
     return {
       id: sec.id || defaultSec.id || `sec-${idx + 1}`,
-      heading: sec.heading || defaultSec.heading,
-      paragraphs: Array.isArray(sec.paragraphs) && sec.paragraphs.length > 0
+      heading: renameHomeSpaText(sec.heading || defaultSec.heading),
+      paragraphs: (Array.isArray(sec.paragraphs) && sec.paragraphs.length > 0
         ? sec.paragraphs
-        : defaultSec.paragraphs,
+        : defaultSec.paragraphs).map(renameHomeSpaText),
     };
   });
 
@@ -208,8 +215,9 @@ export function hydrateHomeSpaConfig(raw: any): HomeSpaConfig {
   });
 
   return {
-    pageTitle: raw.pageTitle || DEFAULT_HOME_SPA_CONFIG.pageTitle,
-    pageSubtitle: raw.pageSubtitle || DEFAULT_HOME_SPA_CONFIG.pageSubtitle,
+    careIntroductionMerged: raw.careIntroductionMerged === true,
+    pageTitle: renameHomeSpaText(raw.pageTitle || DEFAULT_HOME_SPA_CONFIG.pageTitle),
+    pageSubtitle: renameHomeSpaText(raw.pageSubtitle || DEFAULT_HOME_SPA_CONFIG.pageSubtitle),
     heroImage,
     heroMediaType,
     heroWatermarkEnabled: raw.heroWatermarkEnabled !== false,
@@ -220,8 +228,8 @@ export function hydrateHomeSpaConfig(raw: any): HomeSpaConfig {
       : [true, true, true],
     storyPhotosWatermarkOpacity,
     sections: hydratedSections,
-    closingText: raw.closingText || DEFAULT_HOME_SPA_CONFIG.closingText,
-    ctaText: raw.ctaText || DEFAULT_HOME_SPA_CONFIG.ctaText,
+    closingText: renameHomeSpaText(raw.closingText || DEFAULT_HOME_SPA_CONFIG.closingText),
+    ctaText: renameHomeSpaText(raw.ctaText || DEFAULT_HOME_SPA_CONFIG.ctaText),
     ctaLink: raw.ctaLink || DEFAULT_HOME_SPA_CONFIG.ctaLink,
   };
 }
