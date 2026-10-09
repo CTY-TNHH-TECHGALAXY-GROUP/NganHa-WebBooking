@@ -1,3 +1,4 @@
+import 'server-only';
 import { createHash } from 'crypto';
 import type { NextRequest } from 'next/server';
 import type { SupabaseClient } from '@supabase/supabase-js';
@@ -14,7 +15,7 @@ import type { WebClaimCampaign, WebClaimStock, WebClaimStockStatus, WebVoucherSt
 
 // 🔧 CONFIGURATION
 const FEATURE_FLAG_KEY = 'promotion_web_claim_enabled';
-const LISTED_STOCK_STATUSES: WebClaimStockStatus[] = ['OPEN', 'PAUSED', 'SOLD_OUT'];
+const LISTED_STOCK_STATUSES: WebClaimStockStatus[] = ['OPEN', 'PAUSED', 'SOLD_OUT', 'NOT_STARTED'];
 const MAX_LISTED_CAMPAIGNS = 3;
 const SLUG_RE = /^[a-z0-9][a-z0-9-]{1,59}$/;
 const VOUCHER_CODE_RE = /^[A-Z0-9]{2,10}-[A-Z0-9]{6}$/; // <voucher_prefix>-<promo_random_code(6)>
@@ -69,6 +70,11 @@ export const toStock = (row: Record<string, unknown>): WebClaimStock => ({
 
 /** Campaigns shown as a card: switch on + stock OPEN / PAUSED / SOLD_OUT. Never throws for "nothing to show". */
 export const listWebClaimCampaigns = async (): Promise<WebClaimCampaign[]> => {
+  // Without the IP-hash secret "Lưu voucher" can only fail: do not show a card customers cannot use.
+  if (!process.env.VOUCHER_IP_HASH_SECRET) {
+    console.warn('[web-claim] VOUCHER_IP_HASH_SECRET is missing; voucher card hidden');
+    return [];
+  }
   const admin = requireAdmin();
   if (!(await isWebClaimEnabled(admin))) return [];
 
@@ -130,10 +136,41 @@ export const reserveWebVoucher = async (slug: string, deviceId: string, ip: stri
   return data as RpcResult<{ reused: boolean; voucherCode: string; status: 'RESERVED'; expiresAt: string; stock: Record<string, unknown> | null }>;
 };
 
-export const getWebVoucherStatus = async (code: string) => {
+/** Only the fields the public pages render; never the raw benefit_config or other campaign settings. */
+const toPublicVoucherStatus = (v: WebVoucherStatus): WebVoucherStatus => ({
+  voucherCode: v.voucherCode,
+  status: v.status,
+  expiresAt: v.expiresAt ?? null,
+  activatedAt: v.activatedAt ?? null,
+  bookingRef: v.bookingRef ?? null,
+  campaign: {
+    slug: v.campaign?.slug ?? null,
+    name: v.campaign?.name ?? '',
+    nameI18n: v.campaign?.nameI18n ?? null,
+    benefitType: v.campaign?.benefitType,
+    benefitValue: Number(v.campaign?.benefitValue),
+    benefitConfig: Number(v.campaign?.benefitConfig?.maxDiscountAmount) > 0
+      ? { maxDiscountAmount: Number(v.campaign.benefitConfig!.maxDiscountAmount) }
+      : null,
+    conditions: v.campaign?.conditions ?? null,
+    validUntil: v.campaign?.validUntil,
+  },
+});
+
+export const getWebVoucherStatus = async (code: string): Promise<RpcResult<WebVoucherStatus>> => {
   const { data, error } = await requireAdmin().rpc('promo_web_voucher_status', { p_code: code });
   if (error) throw error;
-  return data as RpcResult<WebVoucherStatus>;
+  const result = data as RpcResult<WebVoucherStatus>;
+  return result?.success ? { success: true, data: toPublicVoucherStatus(result.data) } : result;
+};
+
+/** `%` sequences that are not valid UTF-8 (e.g. /v/%E0) must not crash the route. */
+export const safeDecodeURIComponent = (value: string): string => {
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return '';
+  }
 };
 
 /** Spa contact printed on the e-voucher: same SystemConfigs keys as the admin /voucher page. */

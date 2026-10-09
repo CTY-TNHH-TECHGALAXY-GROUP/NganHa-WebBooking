@@ -929,7 +929,7 @@ export function generateBookingConfirmationHtml(
                   −${formatVND(discount.amount)}
                 </td>
               </tr>
-              ` : ''}${totalAmount > 0 ? `
+              ` : ''}${totalAmount > 0 || (discount && discount.amount > 0) ? `
               <tr>
                 <td style="padding: 7px 0; color: rgba(247, 235, 199, 0.6); vertical-align: middle;">
                   • <strong>${t.totalLabel}:</strong>
@@ -1138,7 +1138,7 @@ ${serviceItemsText}
 • ${t.durationLabel}: ${durationDisplay}
 • ${t.guestsLabel}: ${guestsDisplay}
 • ${t.locationLabel}: ${branchName}
-${discount && discount.amount > 0 ? `• ${t.subtotalLabel}: ${formatVND(discount.subtotal)}\n• ${t.discountLabel}: −${formatVND(discount.amount)}\n` : ''}${totalAmount > 0 ? `• ${t.totalLabel}: ${formatVND(totalAmount)}` : ''}
+${discount && discount.amount > 0 ? `• ${t.subtotalLabel}: ${formatVND(discount.subtotal)}\n• ${t.discountLabel}: −${formatVND(discount.amount)}\n` : ''}${totalAmount > 0 || (discount && discount.amount > 0) ? `• ${t.totalLabel}: ${formatVND(totalAmount)}` : ''}
 ${focusAreaNote ? `\n• ${t.preferencesLabel}:\n${formatPreferencesText(focusAreaNote, lang, localizedServiceNames)}` : ''}
 ${notes ? `\n• ${t.notesLabel}: ${notes}` : ''}
 

@@ -8,6 +8,7 @@ import {
   isRateLimited,
   isValidVoucherCode,
   normalizeVoucherCode,
+  safeDecodeURIComponent,
 } from '@/lib/voucherWallet.server';
 
 export const dynamic = 'force-dynamic';
@@ -19,7 +20,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
   if (isRateLimited(`voucher:${clientIp(request)}`, STATUS_LIMIT_PER_MINUTE, 60_000)) {
     return apiResponse.error('Too many requests', 'RATE_LIMITED', 429);
   }
-  const code = normalizeVoucherCode(decodeURIComponent((await params).code));
+  const code = normalizeVoucherCode(safeDecodeURIComponent((await params).code));
   if (!isValidVoucherCode(code)) return apiResponse.error('Voucher not found', 'VOUCHER_NOT_FOUND', 404);
   try {
     const result = await getWebVoucherStatus(code);

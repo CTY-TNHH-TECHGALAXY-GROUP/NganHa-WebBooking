@@ -18,6 +18,7 @@ import {
 
 // 🔧 CONFIGURATION
 const STOCK_POLL_MS = 60_000;
+const CLOCK_TICK_MS = 30_000;
 const STOCK_TABLE = 'PromotionCampaignStock';
 
 export type CardState = 'OPEN' | 'PAUSED' | 'SOLD_OUT' | 'ENDED' | 'NOT_STARTED';
@@ -44,12 +45,27 @@ const stockFromRow = (row: Record<string, unknown>): WebClaimStock => ({
   validUntil: String(row.valid_until ?? row.validUntil),
 });
 
-/** Server status → what the card shows. INACTIVE (campaign switched off) reads as paused. */
+/**
+ * Server status → what the card shows. The validity window is also checked
+ * against the clock: the stock row only changes on a DB write, so an expired
+ * campaign would otherwise stay "open" until the next write. INACTIVE reads as paused.
+ */
 export const cardStateOf = (stock: WebClaimStock, now = Date.now()): CardState => {
-  if (stock.status === 'ENDED') return 'ENDED';
+  if (stock.status === 'ENDED' || now > new Date(stock.validUntil).getTime()) return 'ENDED';
+  if (stock.status === 'NOT_STARTED' || now < new Date(stock.validFrom).getTime()) return 'NOT_STARTED';
   if (stock.status === 'PAUSED' || stock.status === 'INACTIVE') return 'PAUSED';
   if (stock.status === 'SOLD_OUT' || stock.available <= 0) return 'SOLD_OUT';
-  return now < new Date(stock.validFrom).getTime() ? 'NOT_STARTED' : 'OPEN';
+  return 'OPEN';
+};
+
+/** Re-render periodically so time-based states (opens / ends) flip without a DB write. */
+export const useClock = (intervalMs = CLOCK_TICK_MS) => {
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    const timer = window.setInterval(() => setNow(Date.now()), intervalMs);
+    return () => window.clearInterval(timer);
+  }, [intervalMs]);
+  return now;
 };
 
 /** Campaigns to show; [] on any error (the card simply does not render). */
@@ -75,7 +91,8 @@ export const useWebClaimCampaigns = () => {
 export const useCampaignStock = (slug: string, initial: WebClaimStock) => {
   const [stock, setStock] = useState<WebClaimStock>(initial);
   const [hidden, setHidden] = useState(false);
-  const stockRef = useRef<WebClaimStock>(initial);
+  // null = no trusted version (row deleted / recreated): the next row is accepted whatever its version.
+  const stockRef = useRef<WebClaimStock | null>(initial);
 
   const apply = useCallback((incoming: WebClaimStock) => {
     if (!isNewerStock(incoming, stockRef.current)) return;
@@ -84,15 +101,24 @@ export const useCampaignStock = (slug: string, initial: WebClaimStock) => {
   }, []);
 
   const refresh = useCallback(async () => {
+    const startedVersion = stockRef.current?.version ?? null;
     try {
       const { status, body } = await getJson<WebClaimStock | null>(`/api/promotions/web-claim/${encodeURIComponent(slug)}`);
       if (status !== 200 || !body.success) return; // transient: keep what we show, the DB re-checks on save
       if (!body.data) {
+        stockRef.current = null;
         setHidden(true);
         return;
       }
       setHidden(false);
-      apply(body.data);
+      // A fresh server read is authoritative unless a newer realtime row arrived
+      // meanwhile; this also recovers a recreated row whose version restarted at 1.
+      if ((stockRef.current?.version ?? null) === startedVersion) {
+        stockRef.current = body.data;
+        setStock(body.data);
+      } else {
+        apply(body.data);
+      }
     } catch {
       // offline: next focus / online / poll retries
     }
@@ -107,6 +133,7 @@ export const useCampaignStock = (slug: string, initial: WebClaimStock) => {
         { event: '*', schema: 'public', table: STOCK_TABLE, filter: `public_slug=eq.${slug}` },
         (payload: RealtimePostgresChangesPayload<Record<string, unknown>>) => {
           if (payload.eventType === 'DELETE') {
+            stockRef.current = null;
             void refresh();
             return;
           }

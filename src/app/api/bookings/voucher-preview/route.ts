@@ -24,6 +24,8 @@ export const dynamic = 'force-dynamic';
 const PREVIEW_LIMIT_PER_MINUTE = 20;
 const PREVIEW_BOOKING_ID = 'WB-PREVIEW';
 const MAX_ITEM_QUANTITY = 20;
+/** Appointment wall time in Vietnam, no zone — same shape as the writer's bookingDate (v17 p_booking_at). */
+const BOOKING_AT_RE = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:00$/;
 
 const fail = (code: string, status: number) =>
   NextResponse.json({ success: false, error: { code, message: code } }, { status, headers: { 'Cache-Control': 'no-store' } });
@@ -31,7 +33,7 @@ const fail = (code: string, status: number) =>
 export async function POST(request: NextRequest) {
   if (isRateLimited(`voucher-preview:${clientIp(request)}`, PREVIEW_LIMIT_PER_MINUTE, 60_000)) return fail('RATE_LIMITED', 429);
 
-  let body: { items?: unknown; voucherCode?: unknown };
+  let body: { items?: unknown; voucherCode?: unknown; bookingAt?: unknown };
   try {
     const raw = await request.text();
     if (Buffer.byteLength(raw, 'utf8') > MAX_BODY_BYTES) return fail('INVALID_REQUEST', 413);
@@ -42,6 +44,9 @@ export async function POST(request: NextRequest) {
   const code = typeof body?.voucherCode === 'string' ? normalizeVoucherCode(body.voucherCode) : '';
   if (!isValidVoucherCode(code)) return fail('VOUCHER_NOT_FOUND', 404);
   if (!Array.isArray(body.items) || body.items.length === 0 || body.items.length > MAX_ITEMS) return fail('INVALID_REQUEST', 400);
+  // Optional until the customer picks a slot; then the DB checks it against the campaign window (D2).
+  const bookingAt = body.bookingAt === undefined || body.bookingAt === null ? null : body.bookingAt;
+  if (bookingAt !== null && (typeof bookingAt !== 'string' || !BOOKING_AT_RE.test(bookingAt))) return fail('INVALID_REQUEST', 400);
 
   const selected: NormalizedService[] = [];
   for (let index = 0; index < body.items.length; index += 1) {
@@ -81,13 +86,20 @@ export async function POST(request: NextRequest) {
       options: row.options,
     }));
 
-    const { data, error } = await supabase.rpc('promo_web_preview', { p_code: code, p_items: items });
+    const { data, error } = await supabase.rpc('promo_web_preview', {
+      p_code: code,
+      p_items: items,
+      ...(bookingAt ? { p_booking_at: bookingAt } : {}),
+    });
     if (error) throw error;
     const result = data as { success?: boolean; error?: { code?: string } };
     const status = result?.success ? 200 : result?.error?.code === 'VOUCHER_NOT_FOUND' ? 404 : 409;
     return NextResponse.json(result, { status, headers: { 'Cache-Control': 'no-store' } });
   } catch (error: any) {
-    if (String(error?.message || '').startsWith('SERVICE_')) return fail('SERVICE_NOT_BOOKABLE', 409);
+    // Cart/catalog problems thrown by the shared pricing helpers are not server faults.
+    if (/^(SERVICE_|CATALOG_INVALID|ADDON_CATALOG_INVALID|BOOKING_ITEMS_LIMIT|BOOKING_ITEM_QUANTITY_INVALID)/.test(String(error?.message || ''))) {
+      return fail('SERVICE_NOT_BOOKABLE', 409);
+    }
     // v16 not deployed (B20) behaves like the switch being off: the checkout simply has no voucher.
     if (['PGRST202', '42883'].includes(error?.code)) return fail('FEATURE_DISABLED', 409);
     console.error('[voucher-preview] failed:', error?.code || error?.message);

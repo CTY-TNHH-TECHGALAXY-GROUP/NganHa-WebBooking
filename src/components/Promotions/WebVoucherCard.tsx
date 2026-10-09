@@ -16,6 +16,7 @@ import {
   cardStateOf,
   useCampaignStock,
   useReserve,
+  useClock,
   useSavedVoucher,
   useWebClaimCampaigns,
   type CardState,
@@ -172,10 +173,11 @@ const CampaignCard = ({ campaign, s, lang, onContinue }: CampaignCardProps) => {
   const saved = useSavedVoucher(campaign.slug);
   const { reserve, saving, errorCode, sheet, openSheet, closeSheet } = useReserve(campaign.slug, stockApi);
   const { stock, hidden } = stockApi;
+  const now = useClock();
 
   if (hidden) return null;
 
-  const state = cardStateOf(stock);
+  const state = cardStateOf(stock, now);
   const labels = VOUCHER_CARD_LABELS[lang];
   const conditions = formatPromotionConditions(campaign.conditionsSummary, lang);
   const filled = stock.total > 0 ? Math.round((stock.available / stock.total) * 100) : 0;

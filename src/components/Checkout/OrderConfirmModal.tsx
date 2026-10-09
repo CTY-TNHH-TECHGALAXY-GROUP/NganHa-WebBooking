@@ -398,7 +398,7 @@ interface OrderConfirmModalProps {
     onEditService?: (item: CartItem) => void;
     onEditCustomerInfo?: () => void;
     /** Web-claim voucher previewed at checkout (display only). */
-    voucherPreview?: { code: string; discountAmount: number; totalAmount: number } | null;
+    voucherPreview?: { code: string; discountAmount: number; totalAmount: number; stale?: boolean } | null;
     /** Voucher outcome returned by /api/bookings for the success screen. */
     bookingVoucher?: { applied: boolean; discountAmount: number; totalAmount: number; reason?: string } | null;
 }
@@ -1050,7 +1050,7 @@ export default function OrderConfirmModal({
                                                     <span>{formatCurrency(totalVND)} VND</span>
                                                     <small className="block text-[10px] text-[#c9a96e]">{formatUSD(totalUSD)}</small>
                                                 </div>
-                                                {voucherPreview && voucherPreview.discountAmount > 0 && (
+                                                {voucherPreview && !voucherPreview.stale && voucherPreview.discountAmount > 0 && (
                                                     <div className="mt-1 text-[11px] leading-snug">
                                                         <div className="text-[#9FD08C]">{voucherText.discountLabel}: −{formatCurrency(voucherPreview.discountAmount)} VND</div>
                                                         <div className="font-bold text-[#f2d58d]">{voucherText.totalAfter}: {formatCurrency(voucherPreview.totalAmount)} VND</div>

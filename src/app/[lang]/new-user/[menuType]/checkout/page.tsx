@@ -9,7 +9,7 @@ import OrderConfirmModal from '@/components/Checkout/OrderConfirmModal';
 import CheckoutVoucher from '@/components/Promotions/CheckoutVoucher';
 import type { AppliedVoucher } from '@/components/Promotions/CheckoutVoucher.logic';
 import { WEB_VOUCHER_I18N, pickWebVoucherLang, webVoucherError } from '@/components/Promotions/WebVoucher.i18n';
-import { removeFromWallet } from '@/lib/voucherWallet';
+import { removeFromWalletIfUsed } from '@/lib/voucherWallet';
 import { Z } from '@/lib/zIndex';
 import CustomForYouModal from '@/components/CustomForYou';
 import { CustomPreferences } from '@/components/CustomForYou/types';
@@ -753,6 +753,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
   const [appliedVoucher, setAppliedVoucher] = useState<AppliedVoucher | null>(null);
   const [bookingVoucher, setBookingVoucher] = useState<{ applied: boolean; discountAmount: number; subtotalAmount: number; totalAmount: number; reason?: string } | null>(null);
   const [voucherAsk, setVoucherAsk] = useState<{ reason: string; resolve: (bookWithout: boolean) => void } | null>(null);
+  const [voucherResetSignal, setVoucherResetSignal] = useState(0);
   const askBookWithoutVoucher = (reason: string) => new Promise<boolean>((resolve) => setVoucherAsk({ reason, resolve }));
 
   // Sync route lang with global TranslationProvider
@@ -1284,6 +1285,9 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
     if (response.status === 409 && resData?.code === 'VOUCHER_REJECTED') {
       // The writer rolled the booking back: nothing exists yet for this key.
       const bookWithout = await askBookWithoutVoucher(String(resData?.voucherError || 'UNKNOWN'));
+      // Rejected either way: do not keep sending this code (W4).
+      setAppliedVoucher(null);
+      setVoucherResetSignal((n) => n + 1);
       if (!bookWithout) throw new Error(webVoucherError(WEB_VOUCHER_I18N[pickWebVoucherLang(lang)], resData?.voucherError));
       ({ response, resData } = await submitOnce(null));
     }
@@ -1304,7 +1308,7 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
     }
     const voucherResult = resData?.data?.voucher ?? null;
     setBookingVoucher(voucherResult);
-    if (voucherResult?.applied && voucherResult.voucherCode) removeFromWallet(voucherResult.voucherCode);
+    if (voucherResult?.applied && voucherResult.voucherCode) void removeFromWalletIfUsed(voucherResult.voucherCode);
     return resData?.data?.bookingId || resData?.bookingId;
   };
 
@@ -2057,7 +2061,13 @@ export default function CheckoutPage({ params }: { params: PageParams }) {
                 <small>{formatUSD(totalUSD)}</small>
               </span>
             </div>
-            <CheckoutVoucher cart={cart} lang={lang} onChange={setAppliedVoucher} />
+            <CheckoutVoucher
+              cart={cart}
+              lang={lang}
+              onChange={setAppliedVoucher}
+              resetSignal={voucherResetSignal}
+              bookingAt={bookingDate && bookingTime ? `${bookingDate}T${bookingTime}:00` : null}
+            />
             <div className={styles.vatNote}>{t('vat', lang)}</div>
 
             <button 

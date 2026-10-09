@@ -5,6 +5,8 @@ import { readWallet, subscribeWallet, type WebVoucherStatus } from '@/lib/vouche
 
 // 🔧 CONFIGURATION
 const REPREVIEW_DEBOUNCE_MS = 600;
+/** Errors that say nothing about the voucher itself: keep the code, the writer decides at booking. */
+const TRANSIENT_PREVIEW_ERRORS = new Set(['RATE_LIMITED', 'INTERNAL_ERROR', 'NETWORK', 'UNKNOWN', 'BOT_DETECTED']);
 
 export interface CheckoutCartLine {
   id: string;
@@ -18,6 +20,8 @@ export interface AppliedVoucher {
   discountAmount: number;
   subtotalAmount: number;
   totalAmount: number;
+  /** Amounts belong to an older cart (refresh pending or failed): do not display them. */
+  stale?: boolean;
 }
 
 export interface SavedCandidate {
@@ -45,7 +49,8 @@ const previewItems = (cart: CheckoutCartLine[]) => cart.map((item) => ({ id: ite
  * Checkout voucher state. Never blocks booking: every failure leaves the
  * checkout without a voucher. `applied` is non-null only for an eligible code.
  */
-export const useCheckoutVoucher = (cart: CheckoutCartLine[]) => {
+/** `bookingAt`: `${date}T${time}:00` (VN wall time) once a slot is picked, else null. */
+export const useCheckoutVoucher = (cart: CheckoutCartLine[], bookingAt: string | null = null) => {
   const [enabled, setEnabled] = useState(false);
   const [candidate, setCandidate] = useState<SavedCandidate | null>(null);
   const [applied, setApplied] = useState<AppliedVoucher | null>(null);
@@ -54,7 +59,17 @@ export const useCheckoutVoucher = (cart: CheckoutCartLine[]) => {
   const [unmet, setUnmet] = useState<{ conditions: WebVoucherStatus['campaign']['conditions'] } | null>(null);
   const cartRef = useRef(cart);
   cartRef.current = cart;
-  const cartKey = useMemo(() => JSON.stringify(previewItems(cart)), [cart]);
+  // Everything the preview depends on: cart lines and the appointment slot (D2).
+  const cartKey = useMemo(() => JSON.stringify({ items: previewItems(cart), bookingAt }), [cart, bookingAt]);
+  const bookingAtRef = useRef(bookingAt);
+  bookingAtRef.current = bookingAt;
+  const cartKeyRef = useRef(cartKey);
+  cartKeyRef.current = cartKey;
+  const appliedRef = useRef<AppliedVoucher | null>(null);
+  appliedRef.current = applied;
+  // Only the latest preview may write state (responses can arrive out of order).
+  const requestSeq = useRef(0);
+  const runPreviewRef = useRef<(code: string) => Promise<void>>(async () => undefined);
 
   // Show the block only when the programme runs or this browser holds a code.
   useEffect(() => {
@@ -89,6 +104,20 @@ export const useCheckoutVoucher = (cart: CheckoutCartLine[]) => {
   }, []);
 
   const runPreview = useCallback(async (code: string) => {
+    const requestId = ++requestSeq.current;
+    const requestCartKey = cartKeyRef.current;
+    const isCurrent = () => requestId === requestSeq.current && requestCartKey === cartKeyRef.current;
+    const normalized = code.trim().toUpperCase();
+    // Transient failure while this code is applied: keep it (marked stale) instead of silently dropping it.
+    const keepOrDrop = (failure: string) => {
+      if (TRANSIENT_PREVIEW_ERRORS.has(failure) && appliedRef.current?.code === normalized) {
+        setApplied({ ...appliedRef.current, stale: true });
+        setErrorCode('PREVIEW_STALE');
+        return;
+      }
+      setApplied(null);
+      setErrorCode(failure);
+    };
     setBusy(true);
     setErrorCode(null);
     setUnmet(null);
@@ -97,13 +126,21 @@ export const useCheckoutVoucher = (cart: CheckoutCartLine[]) => {
         getJson<PreviewData>('/api/bookings/voucher-preview', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ voucherCode: code, items: previewItems(cartRef.current) }),
+          body: JSON.stringify({
+            voucherCode: code,
+            items: previewItems(cartRef.current),
+            ...(bookingAtRef.current ? { bookingAt: bookingAtRef.current } : {}),
+          }),
         }),
         getJson<WebVoucherStatus>(`/api/vouchers/${encodeURIComponent(code)}`).catch(() => null),
       ]);
+      if (!isCurrent()) {
+        // Cart changed while this was the latest request: price the current cart instead.
+        if (requestId === requestSeq.current) void runPreviewRef.current(normalized);
+        return;
+      }
       if (!preview.success || !preview.data) {
-        setApplied(null);
-        setErrorCode(preview.error?.code ?? 'UNKNOWN');
+        keepOrDrop(preview.error?.code ?? 'UNKNOWN');
         return;
       }
       if (!preview.data.eligible) {
@@ -112,19 +149,25 @@ export const useCheckoutVoucher = (cart: CheckoutCartLine[]) => {
         return;
       }
       const { discountAmount, subtotalAmount, totalAmount } = preview.data;
-      setApplied({ code: code.trim().toUpperCase(), discountAmount, subtotalAmount, totalAmount });
+      setApplied({ code: normalized, discountAmount, subtotalAmount, totalAmount });
     } catch {
-      setApplied(null);
-      setErrorCode(typeof navigator !== 'undefined' && navigator.onLine === false ? 'NETWORK' : 'UNKNOWN');
+      if (!isCurrent()) {
+        if (requestId === requestSeq.current) void runPreviewRef.current(normalized);
+        return;
+      }
+      keepOrDrop(typeof navigator !== 'undefined' && navigator.onLine === false ? 'NETWORK' : 'UNKNOWN');
     } finally {
-      setBusy(false);
+      if (requestId === requestSeq.current) setBusy(false);
     }
   }, []);
+  runPreviewRef.current = runPreview;
 
   // Cart changed after Apply: preview again, never keep a stale discount.
   const appliedCode = applied?.code ?? null;
   useEffect(() => {
     if (!appliedCode || !cartRef.current.length) return;
+    // Amounts on screen belong to the previous cart until the new preview lands.
+    setApplied((current) => (current ? { ...current, stale: true } : current));
     const timer = window.setTimeout(() => void runPreview(appliedCode), REPREVIEW_DEBOUNCE_MS);
     return () => window.clearTimeout(timer);
     // Only the cart content triggers a refresh.
@@ -132,6 +175,7 @@ export const useCheckoutVoucher = (cart: CheckoutCartLine[]) => {
   }, [cartKey]);
 
   const remove = useCallback(() => {
+    requestSeq.current += 1; // ignore any preview still in flight
     setApplied(null);
     setErrorCode(null);
     setUnmet(null);

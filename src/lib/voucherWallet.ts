@@ -16,7 +16,7 @@ const MAX_WALLET_ENTRIES = 10;
 
 // ─── Shared DTOs (server routes ↔ UI) ──────────────────────────────────────────
 
-export type WebClaimStockStatus = 'OPEN' | 'PAUSED' | 'SOLD_OUT' | 'ENDED' | 'INACTIVE';
+export type WebClaimStockStatus = 'OPEN' | 'PAUSED' | 'SOLD_OUT' | 'ENDED' | 'INACTIVE' | 'NOT_STARTED';
 
 export interface WebClaimStock {
   status: WebClaimStockStatus;
@@ -146,6 +146,20 @@ export const saveToWallet = (entry: SavedVoucher) => {
 export const removeFromWallet = (code: string) => {
   const list = readWallet();
   if (list.some((v) => v.code === code)) writeWallet(list.filter((v) => v.code !== code));
+};
+
+/**
+ * After a booking: drop the code only once the server says it was used
+ * (ACTIVE / REDEEMED). The booking response may echo a code that was not applied.
+ */
+export const removeFromWalletIfUsed = async (code: string) => {
+  try {
+    const res = await fetch(`/api/vouchers/${encodeURIComponent(code)}`, { cache: 'no-store' });
+    const body = (await res.json()) as { success?: boolean; data?: { status?: WebVoucherClaimStatus } };
+    if (body.success && (body.data?.status === 'ACTIVE' || body.data?.status === 'REDEEMED')) removeFromWallet(code);
+  } catch {
+    // offline: the wallet re-checks the code on its next sync
+  }
 };
 
 export const findSavedForSlug = (slug: string) => readWallet().find((v) => v.slug === slug) ?? null;

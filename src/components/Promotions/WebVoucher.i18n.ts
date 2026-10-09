@@ -23,6 +23,7 @@ export type WebVoucherErrorCode =
   | 'ORDER_CONDITION_NOT_MET'
   | 'BOT_DETECTED'
   | 'SERVICE_NOT_BOOKABLE'
+  | 'BOOKING_DATE_OUT_OF_RANGE'
   | 'NETWORK'
   | 'UNKNOWN';
 
@@ -76,6 +77,8 @@ export interface WebVoucherStrings {
     goBack: string;
     replayWithout: string;
     applied: (amount: string) => string;
+    updating: string;
+    previewStale: string;
   };
 }
 
@@ -136,6 +139,7 @@ export const WEB_VOUCHER_I18N: Record<WebVoucherLang, WebVoucherStrings> = {
       ORDER_CONDITION_NOT_MET: 'Đơn chưa đạt điều kiện áp dụng voucher.',
       BOT_DETECTED: 'Không xác minh được trình duyệt. Vui lòng tải lại trang và thử lại.',
       SERVICE_NOT_BOOKABLE: 'Dịch vụ trong giỏ hiện không đặt được. Vui lòng xem lại giỏ hàng.',
+      BOOKING_DATE_OUT_OF_RANGE: 'Ngày hẹn nằm ngoài thời gian chương trình voucher. Vui lòng chọn ngày hẹn trong thời gian chương trình.',
       NETWORK: 'Không có kết nối mạng. Vui lòng kiểm tra và thử lại.',
       UNKNOWN: 'Đã có lỗi xảy ra. Vui lòng thử lại.',
     },
@@ -157,6 +161,8 @@ export const WEB_VOUCHER_I18N: Record<WebVoucherLang, WebVoucherStrings> = {
       goBack: 'Quay lại',
       replayWithout: 'Lịch hẹn này đã được ghi nhận trước đó nên voucher chưa được áp dụng. Voucher vẫn được giữ cho bạn.',
       applied: (a) => `Đã áp dụng voucher: −${a}`,
+      updating: 'Đang cập nhật số tiền giảm…',
+      previewStale: 'Chưa cập nhật được số tiền giảm cho giỏ hiện tại. Voucher vẫn được gửi kèm, số giảm chính xác sẽ được xác nhận khi đặt lịch.',
     },
   },
   en: {
@@ -215,6 +221,7 @@ export const WEB_VOUCHER_I18N: Record<WebVoucherLang, WebVoucherStrings> = {
       ORDER_CONDITION_NOT_MET: 'Your booking does not meet the voucher conditions yet.',
       BOT_DETECTED: 'We could not verify your browser. Please reload the page and try again.',
       SERVICE_NOT_BOOKABLE: 'A service in your cart cannot be booked right now. Please review your cart.',
+      BOOKING_DATE_OUT_OF_RANGE: 'Your appointment date is outside the voucher period. Please choose a date within the offer period.',
       NETWORK: 'No connection. Please check your network and try again.',
       UNKNOWN: 'Something went wrong. Please try again.',
     },
@@ -236,6 +243,8 @@ export const WEB_VOUCHER_I18N: Record<WebVoucherLang, WebVoucherStrings> = {
       goBack: 'Go back',
       replayWithout: 'This booking was already received earlier, so the voucher was not applied. Your voucher is still kept for you.',
       applied: (a) => `Voucher applied: −${a}`,
+      updating: 'Updating your discount…',
+      previewStale: 'We could not update the discount for your current cart. The voucher is still included and the exact discount is confirmed when you book.',
     },
   },
   cn: {
@@ -294,6 +303,7 @@ export const WEB_VOUCHER_I18N: Record<WebVoucherLang, WebVoucherStrings> = {
       ORDER_CONDITION_NOT_MET: '订单尚未满足优惠券使用条件。',
       BOT_DETECTED: '无法验证您的浏览器，请刷新页面后重试。',
       SERVICE_NOT_BOOKABLE: '购物车中的某项服务目前无法预约，请检查购物车。',
+      BOOKING_DATE_OUT_OF_RANGE: '预约日期不在优惠券活动期间内，请选择活动期间内的日期。',
       NETWORK: '网络未连接，请检查后重试。',
       UNKNOWN: '出现错误，请重试。',
     },
@@ -315,6 +325,8 @@ export const WEB_VOUCHER_I18N: Record<WebVoucherLang, WebVoucherStrings> = {
       goBack: '返回',
       replayWithout: '此预约此前已提交，因此未使用优惠券。优惠券仍为您保留。',
       applied: (a) => `已使用优惠券：−${a}`,
+      updating: '正在更新优惠金额…',
+      previewStale: '暂时无法更新当前购物车的优惠金额。优惠券仍会随预约提交，实际优惠以预约时确认为准。',
     },
   },
   jp: {
@@ -373,6 +385,7 @@ export const WEB_VOUCHER_I18N: Record<WebVoucherLang, WebVoucherStrings> = {
       ORDER_CONDITION_NOT_MET: 'ご予約内容がクーポンの適用条件を満たしていません。',
       BOT_DETECTED: 'ブラウザを確認できませんでした。ページを再読み込みしてお試しください。',
       SERVICE_NOT_BOOKABLE: 'カート内のサービスは現在予約できません。カートをご確認ください。',
+      BOOKING_DATE_OUT_OF_RANGE: 'ご予約日がクーポンの有効期間外です。キャンペーン期間内の日付をお選びください。',
       NETWORK: '接続がありません。ネットワークを確認してもう一度お試しください。',
       UNKNOWN: 'エラーが発生しました。もう一度お試しください。',
     },
@@ -394,6 +407,8 @@ export const WEB_VOUCHER_I18N: Record<WebVoucherLang, WebVoucherStrings> = {
       goBack: '戻る',
       replayWithout: 'このご予約は以前に受付済みのため、クーポンは適用されていません。クーポンは引き続き確保されています。',
       applied: (a) => `クーポン適用済み：−${a}`,
+      updating: '割引額を更新しています…',
+      previewStale: '現在のカートの割引額を更新できませんでした。クーポンはそのまま送信され、正確な割引額はご予約時に確定します。',
     },
   },
   kr: {
@@ -452,6 +467,7 @@ export const WEB_VOUCHER_I18N: Record<WebVoucherLang, WebVoucherStrings> = {
       ORDER_CONDITION_NOT_MET: '예약 내용이 바우처 적용 조건을 충족하지 않습니다.',
       BOT_DETECTED: '브라우저를 확인할 수 없습니다. 페이지를 새로고침한 후 다시 시도해 주세요.',
       SERVICE_NOT_BOOKABLE: '장바구니의 서비스를 현재 예약할 수 없습니다. 장바구니를 확인해 주세요.',
+      BOOKING_DATE_OUT_OF_RANGE: '예약 날짜가 바우처 기간을 벗어났습니다. 이벤트 기간 내의 날짜를 선택해 주세요.',
       NETWORK: '인터넷 연결이 없습니다. 확인 후 다시 시도해 주세요.',
       UNKNOWN: '오류가 발생했습니다. 다시 시도해 주세요.',
     },
@@ -473,6 +489,8 @@ export const WEB_VOUCHER_I18N: Record<WebVoucherLang, WebVoucherStrings> = {
       goBack: '돌아가기',
       replayWithout: '이 예약은 이전에 이미 접수되어 바우처가 적용되지 않았습니다. 바우처는 계속 보관됩니다.',
       applied: (a) => `바우처 적용됨: −${a}`,
+      updating: '할인 금액을 업데이트하는 중…',
+      previewStale: '현재 장바구니의 할인 금액을 업데이트하지 못했습니다. 바우처는 그대로 함께 전송되며 정확한 할인 금액은 예약 시 확정됩니다.',
     },
   },
 };

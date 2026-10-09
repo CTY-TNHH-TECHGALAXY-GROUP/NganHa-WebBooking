@@ -16,21 +16,31 @@ interface CheckoutVoucherProps {
   cart: CheckoutCartLine[];
   lang: string;
   onChange: (applied: AppliedVoucher | null) => void;
+  /** Bumped by the page when the booking rejected the voucher: drop the applied code. */
+  resetSignal?: number;
+  /** `${date}T${time}:00` once the customer picked a slot (checked against the campaign window). */
+  bookingAt?: string | null;
 }
 
-const CheckoutVoucherBlock = ({ cart, lang, onChange }: CheckoutVoucherProps) => {
+const CheckoutVoucherBlock = ({ cart, lang, onChange, resetSignal = 0, bookingAt = null }: CheckoutVoucherProps) => {
   const l = pickWebVoucherLang(lang);
   const s = WEB_VOUCHER_I18N[l];
   const c = s.checkout;
-  const { visible, candidate, applied, busy, errorCode, unmet, apply, remove } = useCheckoutVoucher(cart);
+  const { visible, candidate, applied, busy, errorCode, unmet, apply, remove } = useCheckoutVoucher(cart, bookingAt);
   const [input, setInput] = useState('');
   const [showInput, setShowInput] = useState(false);
 
+  const shown = visible && cart.length > 0;
+  // A hidden block must never send a code with the booking.
   useEffect(() => {
-    onChange(applied);
-  }, [applied, onChange]);
+    onChange(shown ? applied : null);
+  }, [applied, shown, onChange]);
 
-  if (!visible || !cart.length) return null;
+  useEffect(() => {
+    if (resetSignal) remove();
+  }, [resetSignal, remove]);
+
+  if (!shown) return null;
 
   const unmetText = unmet
     ? c.notEligible(formatPromotionConditions(unmet.conditions, l).join('; ') || s.allServices)
@@ -56,14 +66,22 @@ const CheckoutVoucherBlock = ({ cart, lang, onChange }: CheckoutVoucherProps) =>
               {c.remove}
             </button>
           </div>
-          <div className="flex justify-between gap-3">
-            <span className="text-white/70">{c.discountLabel}</span>
-            <span className="font-semibold text-[#9FD08C]">−{vnd(applied.discountAmount)}</span>
-          </div>
-          <div className="flex justify-between gap-3 text-base font-bold">
-            <span>{c.totalAfter}</span>
-            <span className="text-[#f2d58d]">{vnd(applied.totalAmount)}</span>
-          </div>
+          {applied.stale ? (
+            <p role="status" className="rounded-xl bg-black/25 px-3 py-2 text-xs text-[#f5c08a]">
+              {errorCode === 'PREVIEW_STALE' && !busy ? c.previewStale : c.updating}
+            </p>
+          ) : (
+            <>
+              <div className="flex justify-between gap-3">
+                <span className="text-white/70">{c.discountLabel}</span>
+                <span className="font-semibold text-[#9FD08C]">−{vnd(applied.discountAmount)}</span>
+              </div>
+              <div className="flex justify-between gap-3 text-base font-bold">
+                <span>{c.totalAfter}</span>
+                <span className="text-[#f2d58d]">{vnd(applied.totalAmount)}</span>
+              </div>
+            </>
+          )}
           <p className="text-[11px] text-white/50">{c.estimateNote}</p>
         </div>
       ) : (

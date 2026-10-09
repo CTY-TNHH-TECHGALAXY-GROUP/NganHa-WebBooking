@@ -8,6 +8,7 @@ import {
   getWebVoucherStatus,
   isValidVoucherCode,
   normalizeVoucherCode,
+  safeDecodeURIComponent,
 } from '@/lib/voucherWallet.server';
 
 export const dynamic = 'force-dynamic';
@@ -40,7 +41,7 @@ const resolveView = async (code: string): Promise<WebVoucherView> => {
 /** Public web-claim e-voucher page: /v/{code}?lang= (link shown after "Lưu voucher"). */
 const VoucherCodePage = async ({ params, searchParams }: PageProps) => {
   const [{ code: rawCode }, query, h] = await Promise.all([params, searchParams, headers()]);
-  const code = normalizeVoucherCode(decodeURIComponent(rawCode));
+  const code = normalizeVoucherCode(safeDecodeURIComponent(rawCode));
   const lang = pickVoucherLang(first(query.lang));
   const [view, contact] = await Promise.all([resolveView(code), getSpaContact()]);
   const host = h.get('x-forwarded-host') ?? h.get('host') ?? '';
