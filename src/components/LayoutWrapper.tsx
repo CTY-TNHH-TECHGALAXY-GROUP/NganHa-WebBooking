@@ -5,24 +5,26 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
+import type { SpaWeatherStatus } from '@/lib/weather/types';
 import Header from '@/components/Header/Header';
 import FloatingWidgets from '@/components/FloatingWidgets/FloatingWidgets';
 import Footer from '@/components/Footer/Footer';
 import SplashScreen from '@/components/SplashScreen/SplashScreen';
 import GlobalImagePreview from '@/components/Shared/GlobalImagePreview';
 
-const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
+const LayoutWrapper = ({ children, initialWeatherStatus }: { children: React.ReactNode; initialWeatherStatus?: SpaWeatherStatus | null }) => {
   const pathname = usePathname();
+  const isHomepage = pathname === '/' || /^\/(vi|en|cn|jp|kr)\/?$/.test(pathname);
   const isBookingPage = pathname === '/booking' || pathname.startsWith('/admin');
   const hideFloatingWidgets = pathname.includes('/checkout') || pathname === '/booking' || pathname.startsWith('/admin');
 
   return (
     <>
-      {!isBookingPage && <SplashScreen />}
+      {!isBookingPage && !isHomepage && <SplashScreen />}
       {!isBookingPage && <Header />}
       {children}
       {!isBookingPage && <Footer />}
-      {!hideFloatingWidgets && <FloatingWidgets />}
+      {!hideFloatingWidgets && <FloatingWidgets initialWeatherStatus={initialWeatherStatus} />}
       <GlobalImagePreview />
     </>
   );

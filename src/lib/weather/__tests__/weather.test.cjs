@@ -168,3 +168,27 @@ test('invalid coordinates or provider errors never return weather data', async (
     }
   }
 });
+
+test('refreshes stale cached data before rendering initial weather', async () => {
+  const previousFetch = global.fetch;
+  const previousEnv = Object.fromEntries(['WEATHER_API_KEY', 'ORIA_SPA_LAT', 'ORIA_SPA_LNG'].map(key => [key, process.env[key]]));
+  Object.assign(process.env, { WEATHER_API_KEY: 'test-secret', ORIA_SPA_LAT: '10.77', ORIA_SPA_LNG: '106.70' });
+  const now = Math.floor(Date.now() / 1000);
+  const fresh = makeRaw();
+  fresh.current.last_updated_epoch = now - 60;
+  fresh.forecast.forecastday[0].hour[0].time_epoch = now + 1800;
+  const stale = { ...fresh, current: { ...fresh.current, last_updated_epoch: now - 3600 } };
+  const requests = [];
+  global.fetch = async (_url, options) => { requests.push(options); return Response.json(requests.length === 1 ? stale : fresh); };
+  try {
+    assert.equal((await getSpaWeather()).status, 'no_rain');
+    assert.equal(requests.length, 2);
+    assert.equal(requests[0].next.revalidate, WEATHER_CACHE_SECONDS);
+    assert.equal(requests[1].cache, 'no-store');
+  } finally {
+    global.fetch = previousFetch;
+    for (const [key, value] of Object.entries(previousEnv)) {
+      if (value === undefined) delete process.env[key]; else process.env[key] = value;
+    }
+  }
+});

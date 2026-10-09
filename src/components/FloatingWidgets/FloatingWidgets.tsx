@@ -11,6 +11,7 @@ import AIChatBot from '@/components/AIChatBot/AIChatBot';
 import { useSystemSettings } from '@/components/SystemSettingsProvider';
 import { trackAnalytics } from '@/lib/analytics/client';
 import GoogleReviewWidget from '@/components/GoogleReviewWidget/GoogleReviewWidget';
+import type { SpaWeatherStatus as WeatherStatus } from '@/lib/weather/types';
 import SpaWeatherStatus from '@/components/weather/SpaWeatherStatus';
 import { useTranslation } from '@/components/TranslationProvider';
 
@@ -73,7 +74,7 @@ const ZaloIcon = ({ size = 18, className = "" }: { size?: number; className?: st
   </svg>
 );
 
-const FloatingWidgets = () => {
+const FloatingWidgets = ({ initialWeatherStatus }: { initialWeatherStatus?: WeatherStatus | null } = {}) => {
   const { currentLang } = useTranslation();
   const pathname = usePathname();
   const routeLang = pathname.split('/')[1];
@@ -498,6 +499,8 @@ const FloatingWidgets = () => {
 
       {/* Google Review Widget on Bottom Left */}
       <SpaWeatherStatus
+        initialStatus={initialWeatherStatus}
+        lang={lang}
         isContactMenuOpen={isMenuOpen}
         isGreetingVisible={!isMenuOpen && !isFooterVisible && !isGreetingDismissed}
       />

@@ -40,12 +40,16 @@ function WeatherIcon({ status }: { status: WeatherStatus }) {
 export default function SpaWeatherStatus({
   isContactMenuOpen,
   isGreetingVisible,
+  initialStatus = null,
+  lang,
 }: {
   isContactMenuOpen: boolean;
   isGreetingVisible: boolean;
+  initialStatus?: WeatherStatus | null;
+  lang?: string;
 }) {
   const { currentLang } = useTranslation();
-  const [status, setStatus] = useState<WeatherStatus | null>(null);
+  const [status, setStatus] = useState<WeatherStatus | null>(initialStatus && validStatuses.has(initialStatus) ? initialStatus : null);
   const [dismissed, setDismissed] = useState(false);
 
   useEffect(() => {
@@ -74,7 +78,7 @@ export default function SpaWeatherStatus({
 
   if (!status) return null;
 
-  const copy = weatherTexts[currentLang as Locale] || weatherTexts.en;
+  const copy = weatherTexts[(lang || currentLang) as Locale] || weatherTexts.en;
   const label = {
     no_rain: copy.noRain,
     rain_soon: copy.rainSoon,

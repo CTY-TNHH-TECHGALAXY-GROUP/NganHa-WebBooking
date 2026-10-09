@@ -354,7 +354,9 @@ const Hero = ({ initialHeroConfig, initialVideos }: HeroProps) => {
     ? posterFallback?.key === posterKey
       ? posterFallback.source
       : configuredPoster || DEFAULT_HERO_POSTER
-    : null;
+    : initialResolvedVideos?.length
+      ? initialResolvedVideos[0].poster || DEFAULT_HERO_POSTER
+      : null;
   const activeAttemptKey = activeVideoKey && selectedVideoSource
     ? `${activeVideoKey}|${selectedVideoSource}|${videoRetryCount}`
     : null;
@@ -589,7 +591,7 @@ const Hero = ({ initialHeroConfig, initialVideos }: HeroProps) => {
   // Keep the first paint usable while the video negotiates a range request or
   // when autoplay/source loading fails. The poster is the visual fallback;
   // the configured video still fades in once its first frame is decoded.
-  const heroVisible = heroReady || Boolean(activeVideo && posterSource);
+  const heroVisible = heroReady || Boolean(posterSource);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -623,7 +625,7 @@ const Hero = ({ initialHeroConfig, initialVideos }: HeroProps) => {
 
       {/* The configured source is the only video mounted on the homepage. */}
       <div className="hero-bg" aria-hidden={!heroVisible}>
-        {activeVideo && selectionReady && posterSource ? (
+        {posterSource ? (
           <img
             data-testid="hero-poster"
             className="hero-image"
@@ -738,7 +740,7 @@ const Hero = ({ initialHeroConfig, initialVideos }: HeroProps) => {
 
       {heroVisible ? <motion.div
         className="hero-content"
-        initial="hidden"
+        initial={false}
         animate="visible"
         variants={heroStagger}
       >

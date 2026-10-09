@@ -34,7 +34,12 @@ export async function getSpaWeather(): Promise<SpaWeather | null> {
       return null;
     }
 
-    const weather = normalizeSpaWeather(await response.json());
+    let weather = normalizeSpaWeather(await response.json());
+    // Refresh invalid cached data before using weather in the initial HTML.
+    if (!weather) {
+      const fresh = await fetch(url, { cache: 'no-store', signal: AbortSignal.timeout(WEATHER_TIMEOUT_MS) });
+      if (fresh.ok) weather = normalizeSpaWeather(await fresh.json());
+    }
     if (!weather) console.error('[Spa Weather] Provider data is incomplete or stale');
     return weather;
   } catch {
